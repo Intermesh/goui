@@ -1,0 +1,32 @@
+{
+  "type": "module",
+  "devDependencies": {
+    "@types/chai": "^4.2.22",
+    "@types/mocha": "^9.0.0",
+    "@types/node": "^16.11.2",
+    "chai": "^4.3.4",
+    "jsdom": "18.0.0",
+    "jsdom-global": "3.0.2",
+    "mocha": "^9.1.3",
+    "npm-run-all": "^4.1.5",
+    "rimraf": "^3.0.2",
+    "ts-node": "^10.4.0",
+    "uglifyjs": "^2.4.11"
+  },
+  "scripts": {
+    "test": "node ./node_modules/mocha/bin/mocha",
+    "clean": "./node_modules/.bin/rimraf ./dist",
+    "dist": "mkdir -p ./dist",
+    "start": "./node_modules/.bin/npm-run-all clean dist resources --parallel watch:tsc watch:sass --print-label ",
+    "resources": "cp -r ./resources ./dist/resources",
+    "watch:tsc": "./node_modules/.bin/tsc --watch",
+    "watch:sass": "sass --watch scss:dist",
+    "build": "../html/node_modules/.bin/npm-run-all clean dist resources build:tsc build:uglify build:sass --print-label",
+    "build:tsc": "./node_modules/.bin/tsc --project tsconfig.production.json",
+    "build:sass": "sass --no-source-map --style=compressed scss:dist",
+    "build:uglify": "find ../html/dist -name \\\"*.js\\\" -exec npx uglifyjs {} -o {} \\\\;"
+  },
+  "dependencies": {
+    "uglify-js": "^3.14.2"
+  }
+}

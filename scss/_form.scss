@@ -1,0 +1,346 @@
+%input {
+	font: $fontBase;
+	min-width: dp(300); //for select element
+	margin: 0;
+	transition: border-color 100ms linear, box-shadow 225ms linear;
+	border-radius: dp(12);
+	background-color: $colorBackgroundInput;
+	border: 2px solid $colorBorder;
+	padding: dp(13) dp(18);
+
+	width: 100%;
+	outline: none;
+	color: #2e2e2e;
+	display: block;// for text area which has inline-block by default and gets some extra margin
+
+	&::placeholder {
+		transition: all 200ms linear;
+		color: transparent;
+	}
+}
+
+%float-label {
+	&::placeholder {
+		color: $colorTextPlaceholder;
+	}
+	&+div.label {
+		font-size: dp(12);
+		top: dp(5);
+		color: $colorPrimary;
+	}
+	padding-top: dp(21); padding-bottom: dp(5);
+}
+
+$formLabelWidth: dp(160);
+
+
+
+.go-form-field {
+	display: block;
+
+	+ hr {
+		margin-top: 0;
+	}
+
+
+	position: relative;
+
+	&:focus-within {
+		.text, select, textarea {
+			border-color: $colorPrimary;
+		}
+	}
+
+
+	&.frame-hint {
+		.control.text {
+			border-bottom: 0;
+			border-bottom-left-radius: 0;
+			border-bottom-right-radius: 0;
+		}
+
+		margin-bottom: dp(30); //matches hint size
+
+		&:focus-within:not(.invalid) {
+			.hint {
+				border-color: $colorPrimary;
+			}
+		}
+
+		.hint {
+			transition: border-color 100ms linear, box-shadow 225ms linear;
+			background-color: $colorBackgroundInput;
+			border: 2px solid $colorBorder;
+			border-radius: 0 0 dp(12) dp(12);
+			padding: dp(3) dp(18);
+		}
+	}
+
+
+
+
+	div.label {
+		display: block;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		color: $colorTextSecondary;
+		vertical-align: top;
+		transition: all 200ms linear;
+		pointer-events: none;
+		position:absolute;
+		left: dp(20);
+		top: dp(14);
+	}
+
+	>.control {
+		//flex: 1;
+		appearance: none;
+		-webkit-appearance: none; /*Removes default chrome and safari style*/
+		-moz-appearance: none; /* Removes Default Firefox style*/
+	}
+
+	&.invalid {
+		input.text, textarea, select, .hint {
+			border-color: $colorError;
+		}
+		.hint {
+			color: $colorError;
+		}
+	}
+
+	.error {
+		font-size: dp(12);
+		color: $colorError;
+		line-height: dp(20); //match icon
+		padding: 2px dp(12);
+		height: dp(20);
+	}
+
+	.hint {
+
+		font-size: dp(12);
+		color: $colorTextSecondary;
+		line-height: dp(20); //match icon
+		padding: dp(2) dp(18) dp(10);
+		height: dp(30);
+	}
+
+	/** start text and textarea **/
+	input.text, textarea, select {
+		@extend %input;
+
+		&:focus, &:not(:placeholder-shown) {
+			@extend %float-label;
+		}
+	}
+
+	/**  end text and textarea **/
+
+
+
+
+	/** start checkbox **/
+
+	&.checkbox{
+		.control {
+			display: flex;
+			padding: dp(8) 0;
+
+			input  {
+				height: dp(24);
+				width: dp(24);
+				border: 2px solid $colorBorder;
+				background-color: $colorBackgroundInput;
+
+				border-radius: 4px;
+				display: inline-block;
+				position: relative;
+				margin: auto 0;
+				//color: $colorTextSecondary;
+				text-align: center;
+				line-height: 18px;
+				font-size: 16px;
+			}
+
+			input:checked {
+
+				background-color: $colorPrimary;
+				border-color: $colorPrimary;
+
+				&:before {
+					margin-top: -2px;
+					margin-left: -2px;
+					@extend %icon;
+					content: "check";
+					color: white;
+
+				}
+			}
+
+			.box-label {
+				flex: 1;
+				display: block;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+
+				padding: 0 dp(8);
+				margin: auto 0;
+				user-select: none;
+				-webkit-user-select: none;
+				-moz-user-select: none;
+			}
+
+		}
+	}
+
+
+
+	/** end checkbox **/
+
+	/** start select **/
+	&.go-select {
+		position: relative;
+
+		select {
+			padding-right: dp(32);
+		}
+
+		&:after {
+			color: $colorPrimary;
+			position: absolute;
+			display: inline-block;
+			top: dp(14);
+			right: dp(12);
+			@extend %icon;
+			margin-right: 0;
+			content: "expand_more";
+			pointer-events: none;
+		}
+	}
+
+	/** end select **/
+
+
+
+
+
+
+
+}
+
+//&.invalid {
+//	label {
+//		input:invalid:not([type=checkbox]):not([type=radio]):not([type=button]):not([type=submit]), textarea:invalid, select:invalid {
+//			border-color: red;
+//		}
+//	}
+//}
+
+fieldset {
+	border: 0;
+	min-width: 0;
+	padding: 0;
+	margin: 0;
+
+	.legend {
+		font-size: dp(24);
+		font-weight: 500;
+		margin: dp(8) 0 dp(24) 0;
+		color: black;
+
+	}
+}
+
+
+
+.go-html-field {
+	position: relative;
+
+
+
+
+	&.invalid {
+		div.editor{
+			border-color: $colorError;
+		}
+	}
+
+	div.editor {
+		@extend %input;
+		@extend .go-normalize;
+		min-height: dp(50);
+
+		&:focus, &:not(:empty) {
+			@extend %float-label;
+
+			&:empty:before {
+				color: $colorTextPlaceholder;
+			}
+		}
+
+		//placeholder support
+		&:empty:before {
+			content: attr(data-placeholder);
+			color: transparent;
+			pointer-events: none;
+			transition: all 200ms linear;
+		}
+
+	}
+
+	&:focus-within {
+		menu.go-toolbar {
+			display:flex;
+		}
+	}
+
+	//menu.go-toolbar {
+	//	display:none;
+	//	border: 2px solid $colorBorder;
+	//	border-radius: dp(8);
+	//	background-color: $colorBackgroundWindow;
+	//
+	//	position: absolute;
+	//	left: 0;
+	//	top: dp(-64);
+	//
+	//	padding: dp(8) !important;
+	//
+	//	>*:not(hr) {
+	//		margin-right: 0;
+	//	}
+	//	hr {
+	//		margin-left: dp(8);
+	//	}
+	//}
+
+
+
+
+}
+
+.go-html-field-toolbar {
+	position: absolute;
+	z-index: $zIndexMenu;
+}
+
+
+
+form {
+	.go-row {
+		display: flex;
+		flex-wrap: wrap;
+		column-gap: dp(12);
+		row-gap: 0;
+		align-items: stretch;
+		>* {
+			flex: 1;
+		}
+	}
+
+	//hr {
+	//	margin: dp(12) 0 dp(36) 0;
+	//}
+}

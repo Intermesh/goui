@@ -1,0 +1,114 @@
+
+// Stack items horizontally
+// For border layout use width's on north and south and add class "go-scroll" on center
+.go-hbox {
+	display: flex;
+	flex-direction: row;
+	align-items: stretch;
+	> * {
+		//setting flex none prevents squishing of elements with no flex setting.
+		flex:none;
+		min-width: 0;
+	}
+
+	> hr {
+		@extend %vr;
+	}
+
+	.break {
+		&:before {
+			content: '';
+			width: 100%;
+			order: 1;
+		}
+	}
+}
+
+
+// Stack items vertically
+// For border layout use height's on east and west and add class "go-scroll" on center
+.go-vbox {
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	> * {
+		//setting flex none prevents squishing of elements with no flex setting.
+		flex:none;
+		min-height: 0;
+	}
+}
+
+
+
+// Make the element fit it's parent
+.go-fit {
+	height: 100%;
+}
+
+// padding for text contet
+.go-pad {
+	padding: dp(24) dp(18) !important;
+}
+
+.go-border-bottom {
+	border-bottom: 2px solid $colorBorder;
+}
+
+.go-border-top {
+	border-top: 2px solid $colorBorder;
+}
+
+.go-border-left {
+	border-left: 2px solid $colorBorder;
+}
+
+.go-border-right {
+	border-bottom: 2px solid $colorBorder;
+}
+
+.go-frame {
+	border: 2px solid $colorBorder;
+	border-radius: dp(12);
+	overflow:hidden;
+	background-color: $colorBackground;
+
+	> .go-toolbar {
+		background-color: $colorBackgroundDarker;
+		padding: dp(18);
+		border-bottom: 2px solid $colorBorder;
+	}
+}
+
+// Scrolling panel
+.go-scroll {
+	overflow: auto;
+}
+
+
+%vr {
+	border: 0;
+	&.draggable {
+		cursor: col-resize;
+	}
+
+	z-index: 1;
+
+	padding: 0;
+	//height: 100%;
+	width: 6px;
+
+	display: block;
+
+	margin: 0 -2px;
+
+	background-color: transparent;
+
+	// make it easy to grab with 5px but only show 1px border
+	&:after {
+		display:block;
+		content: "";
+		height: 100%;
+		margin: 0 2px;
+		background-color: $colorBorder;
+	}
+}

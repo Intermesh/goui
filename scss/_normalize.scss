@@ -1,0 +1,88 @@
+.go-normalize {
+	> * {
+		margin: 0;
+		padding: 0;
+		box-sizing: border-box;
+		&:focus {
+			outline: none; //remove safari outline
+		}
+		text-align: left;
+	}
+
+	font: $fontBase;
+	color: $colorText;
+
+	blockquote {
+		display: block;
+		margin: 1em dp(40);
+		padding: 0 dp(16);
+	}
+
+	td {
+		display: table-cell;
+	}
+
+	th {
+		display: table-cell;
+		vertical-align: inherit;
+		font-weight: bold;
+		padding: 1px;
+	}
+
+	ul, menu, dir {
+		display: block;
+		list-style-type: disc;
+		list-style-position: outside;
+		margin: 0;
+		padding: 0 0 0 2em;
+
+		> ul {
+			list-style-type: circle;
+			> ul {
+				list-style-type: square;
+			}
+		}
+	}
+
+	ol {
+		display: block;
+		list-style-type: decimal;
+		list-style-position: outside;
+		margin: 0;
+		padding: 0 0 0 2em;
+
+		> ol {
+			list-style-type: lower-alpha;
+
+			> ol {
+				list-style-type: lower-roman;
+			}
+		}
+	}
+
+	li {
+		display: list-item;
+	}
+
+	p {
+		margin: dp(8) 0;
+	}
+
+	a:link, a:visited, a:active {
+		text-decoration: underline;
+		color: $colorPrimary;
+	}
+
+	a:visited {
+		color: purple;
+	}
+
+	hr {
+		border:0;
+		border-top: 2px solid $colorBorder;
+		margin: dp(24) 0;
+		padding:0;
+	}
+
+}
+

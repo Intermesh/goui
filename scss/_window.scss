@@ -1,0 +1,92 @@
+
+.go-window {
+
+	background-color: white;
+
+	@extend .go-vbox;
+
+	box-shadow: $windowShadow;
+	position: absolute;
+	border: 2px solid $colorBorderWindow;
+	border-radius: dp(12);
+	z-index: $zIndexWindow;
+	//focussed window on top
+	&:focus-within {
+		z-index: $zIndexWindow + 1;
+	}
+	overflow: hidden;
+	form.go-form {
+		fieldset {
+			@extend .go-pad;
+		}
+	}
+
+	&.center {
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+	}
+
+	min-height: dp(160);
+	min-width: dp(160);
+
+	.go-toolbar {
+		padding: dp(12) dp(18);
+		background-color: $colorWindowHeader;
+	}
+
+	.go-cardmenu {
+		background-color: $colorWindowHeader;
+		width: 100%;
+		padding-top:0;
+		padding-bottom:0;
+		border-bottom: 2px solid $colorBorderWindow;
+	}
+
+	.go-header {
+		color: #313131;
+		background: $colorWindowHeader;
+		position: relative;
+		//border-bottom: 1px solid $colorBorderWindow;
+		margin: 0;
+		h3 {
+			color: inherit;
+			font-size: dp(22);
+			font-weight: 600;
+			line-height: 1;
+			padding: 0;
+			margin-top: 0;
+			margin-bottom: 0;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+
+		& + *:not(.go-cardmenu) {
+			border-top: 1px solid $colorBorderWindow;
+		}
+	}
+
+	> p {
+		padding: dp(18);
+	}
+
+	> * {
+		text-align: left;
+	}
+
+	.go-toolbar:last-child:not(:only-child) {
+		padding-left: dp(18);
+		padding-right: dp(18);
+		//background: $colorBackgroundToolbar;
+		border-top: 2px solid $colorBorderWindow;
+	}
+}
+
+// login dialog must always be on top
+.go-login {
+	z-index: $zIndexWindow + 3;
+	&:focus-within {
+		z-index: $zIndexWindow + 3;
+	}
+}

@@ -1,0 +1,46 @@
+
+.go-alert {
+	z-index: $zIndexAlert;
+	position: fixed;
+	top: dp(16);
+	left: 50%;
+	width: dp(400);
+	margin-left: dp(-200);
+	color:#555;
+	border-radius:dp(10);
+	font-family:Tahoma,Geneva,Arial,sans-serif;font-size:dp(11);
+	padding:dp(10) dp(10) dp(10) dp(36);
+	animation: go-alert .5s ease-out;
+	cursor: pointer;
+}
+
+@keyframes go-alert {
+	0%   {
+		transform: translateY(-200%);
+	}
+	100% {
+		transform: translateY(0%);
+	}
+}
+
+.go-alert span {
+	font-weight:bold;
+	text-transform:uppercase;
+}
+
+.go-error {
+	background:#ffecec url('#{$resourcePath}/error.png') no-repeat dp(10) 50%;
+	border:1px solid #f5aca6;
+}
+.go-success {
+	background:#e9ffd9 url('#{$resourcePath}/success.png') no-repeat dp(10) 50%;
+	border:1px solid #a6ca8a;
+}
+.go-warning {
+	background:#fff8c4 url('#{$resourcePath}/warning.png') no-repeat dp(10) 50%;
+	border:1px solid #f2c779;
+}
+.go-notice {
+	background:#e3f7fc url('#{$resourcePath}/notice.png') no-repeat dp(10) 50%;
+	border:1px solid #8ed9f6;
+}

@@ -1,0 +1,206 @@
+$resourcePath: "resources/";
+
+$scale: 1;
+
+@function dp($width) {
+	@return $width * $scale * 1px;
+}
+
+//$windowShadow: 0 dp(8) dp(16) 0 rgba(0,0,0,0.2);
+$windowShadow: 0 dp(3) dp(12) 0 rgba(0,0,0,0.1);
+
+$colorLine: rgba(black, 0.04);
+$colorBorder: rgb(30 ,18, 70, 0.2); //#D3D3D3;
+$colorBorderWindow: $colorBorder;
+$colorHover: rgb(1 ,4, 10, 0.06);//#f1f1f6;//rgba(black, 0.04);
+
+$colorSelectedRow: #1e1246;
+
+$colorPrimary: #1652a1;
+$colorSecondary: #78a22f;
+$colorAccent: #f39345;
+$colorButton: #f1f1f1;
+
+$colorButtonTertiary: #00b0ad;
+
+$colorText: rgb(1, 4, 10);
+$colorTextSecondary: rgba(1, 4, 10, 0.44);
+$colorTextPlaceholder: rgba(black, 0.5);
+
+$colorBackground: white;
+$colorBackgroundDarker: #f8f8f9;//rgb(30 ,18, 70, 0.03);
+$colorBackgroundWindow: $colorBackgroundDarker; //rgb(30 ,18, 70, 0.03);
+$colorWindowHeader: $colorBackgroundWindow;//#f5f5f5;
+$colorError: #f36363;
+
+$colorBorderSelectedInput: rgb(0,176,173);
+$colorBackgroundInput: #fafafb;
+
+$borderRadius: dp(8);
+$padding: dp(8);
+
+$curveStandard: cubic-bezier(0.4, 0.0, 0.2, 1);
+
+$fontBase: #{dp(18)}/#{dp(22)} Lato, Helvetica ;
+
+$zIndexTableHead: 2;
+$zIndexMask: 300;
+$zIndexWindow: 200;
+$zIndexAlert: 400;
+$zIndexMenu: 500;
+
+body {
+	font: $fontBase;
+	color: $colorText;
+	background-color: $colorBackground;
+}
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	&:focus {
+		outline: none; //remove safari outline
+	}
+}
+
+
+/**
+	hide and show .
+
+	Setting the attribute "hidden" on elements hides them with display:none.
+	You can add class "fade-in" or "fade-out" to fade it out or in with opacity:0 and visibility:hidden
+ */
+.fade-out  {
+	transition: all 0s;
+}
+
+.fade-in {
+	//https://easings.net/#easeInCubic
+	transition: all 1000ms cubic-bezier(0.32, 0, 0.67, 0);
+}
+
+
+
+*[hidden] {
+	&:not(.fade-out):not(.fade-in) {
+		display: none !important;
+	}
+
+	&.fade-in, &.fade-out {
+		opacity: 0;
+		visibility: hidden;
+	}
+
+	&.fade-in {
+		transition: 0s;
+	}
+
+	&.fade-out {
+		//https://easings.net/#easeInCubic
+		transition: all 200ms cubic-bezier(0.32, 0, 0.67, 0);
+	}
+}
+
+*[disabled] {
+	cursor: not-allowed;
+	opacity: .4;
+	-moz-opacity: .4;
+	filter: alpha(opacity=60);
+	pointer-events: none;
+}
+
+/**
+	End hide and show.
+ */
+
+a {
+	color: $colorPrimary;
+}
+
+hr {
+	border:0;
+	border-top: 2px solid $colorBorder;
+	margin: dp(24) 0;
+}
+
+
+.go-draghandle {
+	cursor: move;
+}
+
+.go-resizable {
+	resize: both;
+	overflow: auto;
+	&::-webkit-resizer {
+		background-color: transparent;
+	}
+}
+
+
+.go-cards {
+	>* {
+		@extend .go-fit;
+	}
+}
+
+menu.go-cardmenu {
+	@extend .go-hbox;
+	margin: 0 auto;
+	padding: 0;
+
+	button.go-button {
+		padding: dp(12) dp(18);
+		margin-right: dp(24);
+		background: none;
+		border: none;
+		border-radius: 0;
+		//color: $colorTextPlaceholder;
+		border-bottom: 4px solid transparent;
+		border-top: 4px solid transparent;
+		color: $colorTextSecondary;
+		&.active {
+			border-bottom: 4px solid #f1df41;
+			color: $colorText;
+		}
+
+		&:hover {
+			color:black;
+		}
+	}
+}
+
+.go-avatar {
+	cursor: default;
+	position: relative;
+	display: inline-block;
+	color:white;
+	padding: 0;
+	background-color: $colorTextSecondary;
+	background-size: cover;
+	border-radius: 50%;
+	width: dp(40);
+	height: dp(40);
+	line-height: dp(40);
+	font-size: dp(16);
+	text-align: center;
+	overflow: hidden;
+	img {
+		height:100%;
+		margin: 0;
+		borderr:0;
+	}
+}
+
+
+.go-empty-state {
+	text-align: center;
+	color: $colorTextSecondary;
+	.icon {
+		font-size: dp(48);
+	}
+	width: 100%;
+	padding: dp(20);
+}
+
+

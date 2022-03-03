@@ -1,0 +1,1 @@
+This folder is copied on build. When making changes run npm or npm build to publish.

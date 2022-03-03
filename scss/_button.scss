@@ -1,0 +1,112 @@
+
+button.go-button {
+	color: inherit;
+
+	background-color: transparent;
+	border: 0;
+	border-radius: dp(12);
+	padding: dp(11) dp(18); //padding 11 because line height is 24 instead of 22
+
+	display: flex;
+	align-items: center;
+
+	&.with-icon:not(.with-text) {
+		//icon only
+		padding: dp(11);
+	}
+
+	&.with-text {
+		i.icon {
+			margin-right: dp(12);
+		}
+	}
+
+	.text {
+		width: 100%;
+	}
+
+	position: relative;
+	font: $fontBase;
+	font-weight: 600;
+	line-height: dp(24); //match icon
+
+	&.pressed {
+		box-shadow: inset -2px -2px -2 $colorBorder; // underline
+		background-color: $colorPrimary;
+		color: white;
+	}
+
+	&:active {
+		filter: brightness(150%);
+	}
+
+	&:hover {
+		background-color: $colorPrimary;
+		color:white;
+		outline: none;
+	}
+
+	&.raised {
+		color: $colorAccent;
+		border: 2px solid $colorAccent;
+		&:hover {
+			color: white;
+			background-color: $colorAccent;
+		}
+	}
+
+	&.primary, &[type=submit] {
+		background-color: $colorAccent;
+		color:white;
+		&:hover {
+			filter: brightness(120%);
+		}
+	}
+
+	&.secondary {
+		background-color: $colorButtonTertiary;
+		color:white;
+		&:hover {
+			filter: brightness(120%);
+		}
+	}
+
+	&.accent {
+		background-color: $colorPrimary;
+		color:white;
+		&:hover {
+			filter: brightness(120%);
+		}
+	}
+}
+
+
+.go-toolbar {
+	@extend .go-hbox;
+	align-items: center;
+	user-select: none;
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	padding: 0;
+	margin: 0;
+	//removed for htmlfield toolbar inside menu
+	//padding-bottom: dp(18);
+
+	> h3 {
+		margin:0;
+	}
+	>* {
+		margin: 0 dp(12) 0 0;
+		&:last-child {
+			margin-right: 0;
+		}
+	}
+	//> button {
+	//	border: 0;
+	//}
+
+	> hr {
+		height: dp(24);
+		//margin: 0px dp(12) 0px 0;
+	}
+}

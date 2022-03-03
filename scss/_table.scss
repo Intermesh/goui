@@ -1,0 +1,151 @@
+
+.go-table {
+
+	background-color: $colorBackgroundDarker;
+
+
+	&.rowSelect {
+		cursor: default;
+		user-select: none;
+		-webkit-user-select: none;
+		-moz-user-select: none;
+	}
+
+	table {
+		background-color: white;
+		border-collapse: collapse;
+		border-spacing: 0;
+		table-layout: fixed;
+		width: dp(100);
+
+		tbody {
+			tr {
+				border-bottom: 1px solid $colorBorder;
+				&:hover {
+					background-color: $colorHover;
+				}
+
+				&.selected {
+					color: white;
+					background-color: $colorSelectedRow;
+
+					a {
+						color: white;
+					}
+				}
+			}
+		}
+
+		thead {
+
+			position: sticky;
+			top: 0;
+			z-index: $zIndexTableHead;
+
+			tr {
+				th {
+					background-color: $colorBackgroundDarker;
+					font-weight: 600; //semibold
+					padding: dp(14) dp(8);
+					&.sorted {
+
+						padding-right: dp(40);
+
+						&:after {
+							//asc
+							content: "south";
+							@extend %icon;
+							position: absolute;
+							right: dp(8);
+							color: inherit;
+						}
+
+						&.desc {
+							&:after {
+								content: "north";
+							}
+						}
+					}
+
+					hr {
+						@extend %vr;
+						position: absolute;
+						top: 0;
+						right: 0;
+						bottom: 0;
+					}
+
+					&:before {
+						//normal border on th didn't stick :( so I used this workaround.
+						content: "";
+						position: absolute;
+						left: 0;
+						bottom: 0;
+						width: 100%;
+						border-bottom: 2px solid $colorBorder;
+					}
+
+				}
+			}
+		}
+
+
+
+		td, th {
+			min-width: dp(30);
+			text-align: left;
+			vertical-align: top;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			padding: dp(8);
+			position: relative;
+
+			&:first-child {
+				padding-left: dp(16);
+				//border-radius: dp(10) 0 0 dp(10) ;
+			}
+
+			&:last-child {
+				padding-right: dp(16);
+				//border-radius: 0 dp(10) dp(10) 0;
+			}
+
+
+
+			&.r, &.right {
+				text-align: right;
+				float: none
+			}
+		}
+
+
+		tr.line td, td.line, th.line, tr.line th {
+			border-bottom: 1px solid $colorLine;
+		}
+
+		tr.totals th {
+			padding: dp(8);
+			vertical-align: middle;
+			border-right: 1px solid $colorLine;
+		}
+
+		tr.bold-line td, td.bold-line, tr.line th, th.line {
+			border-bottom: 1px solid $colorLine;
+		}
+
+		table {
+			td:first-child {
+				padding-left: 0;
+			}
+
+			td:last-child {
+				padding-right: 0;
+			}
+		}
+	}
+
+	+.go-toolbar {
+		margin-top: dp(16);
+	}
+}

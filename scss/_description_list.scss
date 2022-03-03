@@ -1,0 +1,19 @@
+dl.go-dl {
+	dt {
+		display: block;
+		font-size: dp(12);
+		top: dp(5);
+		color: $colorPrimary;
+		margin: dp(16) 0 0 0;
+		&:first-child {
+			margin: 0;
+		}
+	}
+
+	dd {
+		display: block;
+		text-overflow: ellipsis;
+		overflow: hidden;
+		white-space: nowrap;
+	}
+}
