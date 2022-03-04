@@ -5,21 +5,16 @@
     "sourceMap": true,
     "lib": ["es2018", "dom"],
     "moduleResolution": "node",
-//        "esModuleInterop": true,
-    "baseUrl": "./",
+
+    //es6
     "module":"es2020",
     "outDir": "./dist",
-    "rootDir": "./ts"
-    //    "typeRoots" : [
-    //      "../node_modules/@types"
-    //    ],
-    //    "paths": {
-    //      "@go/*" : ["./src/lib/*"],
-    //      "@app/*" : ["./src/*"]
-    //    }
 
-    //            "module": "system",
-    //        "outFile": "./resources/scripts.js"
+    //Systemjs
+//    "module":"system",
+//    "outFile": "./examples/typings/goui",
+
+    "rootDir": "./ts"
   }
 
 

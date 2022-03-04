@@ -2,13 +2,9 @@
   "extends": "../tsconfig-base.json",
   "compilerOptions": {
     "rootDir": "./ts",
-    "outDir": "./dist"
+    "outDir": "./dist/",
+    "baseUrl": ".",
   },
-
-  // reference to goui main library
-  "references": [
-    {"path": "../"}
-  ],
 
   "include": [
     "./ts/**/*.ts"
