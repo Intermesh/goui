@@ -39,7 +39,7 @@ export class PlayGround extends Container {
 									Window.create({
 										title: "Hoi Teun",
 										items: [Component.create({tagName:"h1", cls:"go-pad", html: "Jij moet naar bed!"})]
-									}).open();
+									}).show();
 								}
 							}),
 							Component.create({
