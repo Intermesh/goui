@@ -196,9 +196,11 @@ export class Button extends Component {
 						}
 						const rect = el.getBoundingClientRect();
 
-						//must be rendered to get width below
-						if(!this.menu.isRendered())
+						//must be rendered and visible to get width below
+						if(!this.menu.isRendered()) {
 							body.addItem(this.menu);
+						}
+						this.menu.show();
 
 						this.menu.showAt({x: this.menu.isLeftExpanding() ? rect.right - this.menu.getWidth()!  : rect.x, y: rect.bottom});
 						this.fire("showmenu", this, this.menu, ev);

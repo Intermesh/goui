@@ -1,6 +1,5 @@
 import {Component, ComponentConfig, ComponentEventMap, ComponentState} from "./Component.js";
 import {TableRowSelect, TableRowSelectConfig} from "./TableRowSelect.js";
-import {DraggableComponent} from "./DraggableComponent.js";
 import {Store, StoreRecord} from "../data/Store.js";
 import {Observable, ObservableConfig, ObservableListener, ObservableListenerOpts} from "./Observable.js";
 import {Format} from "../util/Format.js";
@@ -8,6 +7,7 @@ import {ObjectUtil} from "../util/ObjectUtil.js";
 import {Menu} from "./menu/Menu.js";
 import {CheckboxField} from "./form/CheckboxField.js";
 import {Alert} from "../Alert.js";
+import {DraggableContainer} from "./DraggableContainer.js";
 
 /**
  * @inheritDoc
@@ -525,7 +525,7 @@ export class Table extends Component {
 	private createColumnSplitter(h:TableColumn, header:HTMLTableCellElement, colIndex:number) {
 
 		if (h.resizable) {
-			const splitter = DraggableComponent.create({
+			const splitter = DraggableContainer.create({
 				tagName: "hr",
 				setPosition: false
 			});

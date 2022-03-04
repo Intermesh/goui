@@ -166,10 +166,10 @@ export class Window extends DraggableContainer {
 	public show() {
 		if(!this.isRendered()) {
 
-			if (this.modal) {
-				body.addItem(this);
+			body.addItem(this);
 
-				this.mask = Mask.create({
+			if (this.modal) {
+					this.mask = Mask.create({
 					spinner: false,
 					cls: "fade-in fade-out",
 					style: {zIndex: (parseInt(getComputedStyle(this.getEl()).zIndex) - 1).toString()},
@@ -180,8 +180,6 @@ export class Window extends DraggableContainer {
 
 				this.mask.show();
 			}
-
-
 
 			this.center();
 			this.focus();

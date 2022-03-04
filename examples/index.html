@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <meta theme-color="black">
+
+    <link rel="icon"
+          type="image/png"
+          href="../resources/favicon.png">
+    <link href="../dist/style.css" rel="stylesheet">
+
+    <title>Group-Office Customer Portal</title>
+    <!--    start SystemJS works too like this. Change tsconfig module to system-->
+    <!--    <script type="module" src="./node_modules/systemjs/dist/system.min.js"></script>-->
+    <!--    <script type="module" src="./node_modules/systemjs/dist/extras/named-register.min.js"></script>-->
+    <!--    <script type="systemjs-importmap">-->
+    <!--    {-->
+    <!--      "imports": {-->
+    <!--        "@go/": "./dist/lib/",-->
+    <!--        "@app/": "./dist/"-->
+    <!--      }-->
+    <!--    }-->
+    <!--    </script>-->
+    <!--    <script type="systemjs-module" src="./dist/Index.js"></script>-->
+    <!-- end system js-->
+
+
+
+
+    <!--    start ES6 Native module-->
+    <script type="module" src="./dist/Index.js"></script>
+    <!--    end ES6 Native module-->
+
+
+
+    <meta http-equiv="Content-Security-Policy"
+          content="default-src 'self' data:; style-src 'unsafe-inline' 'self'; script-src 'self'; child-src 'none'; connect-src 'self' http://host.docker.internal:6580; img-src data: blob: 'self' http://host.docker.internal:6580">
+</head>
+<body>
+
+<div id="goui"></div>
+
+</body>
+</html>

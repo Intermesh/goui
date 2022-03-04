@@ -1,13 +1,11 @@
-import {Container, ContainerConfig, ContainerEventMap} from "../Container.js";
-import {Fieldify, FieldifyConfig, FieldifyEventMap} from "./Fieldify.js";
-import {Field, FieldInterface} from "./Field.js";
+import {Field, FieldConfig, FieldEventMap, FieldInterface} from "./Field.js";
 import {Observable, ObservableListener, ObservableListenerOpts} from "../Observable.js";
 
 
 /**
  * @inheritDoc
  */
-export interface ContainerFieldConfig<T extends Observable> extends ContainerConfig<T>, FieldifyConfig<T> {
+export interface ContainerFieldConfig<T extends Observable> extends FieldConfig<T> {
 	/**
 	 * @inheritDoc
 	 */
@@ -19,10 +17,10 @@ export type FieldContainerValue = Record<string, any>;
 /**
  * @inheritDoc
  */
-export interface ContainerFieldEventMap<T extends Observable> extends ContainerEventMap<T>, FieldifyEventMap<T> {
+export interface ContainerFieldEventMap<T extends Observable> extends FieldEventMap<T> {
 }
 
-export interface ContainerField {
+export interface ContainerField extends Field {
 	on<K extends keyof ContainerFieldEventMap<ContainerField>>(eventName: K, listener: ContainerFieldEventMap<ContainerField>[K], options?: ObservableListenerOpts): void;
 	fire<K extends keyof ContainerFieldEventMap<ContainerField>>(eventName: K, ...args: Parameters<NonNullable<ContainerFieldEventMap<ContainerField>[K]>>): boolean
 }
@@ -32,7 +30,7 @@ export interface ContainerField {
  *
  * The value that it returns is an object with the field names as keys.
  */
-export class ContainerField extends Fieldify(Container) {
+export class ContainerField extends Field {
 
 	protected tagName = "div" as keyof HTMLElementTagNameMap;
 

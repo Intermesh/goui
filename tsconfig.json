@@ -1,26 +1,7 @@
 {
+  "extends": "./tsconfig-base.json",
   "compilerOptions": {
-    "strict" : true,
-    "target": "es6",
-    "removeComments": true,
-    "sourceMap": true,
-    "lib": ["es2018", "dom"],
-    "moduleResolution": "node",
-    "esModuleInterop": true,
-    "baseUrl": "./",
-    "module":"es2020",
-    "outDir": "./dist/",
-    "rootDir": "./ts"
-//    "typeRoots" : [
-//      "../node_modules/@types"
-//    ],
-//    "paths": {
-//      "@go/*" : ["./src/lib/*"],
-//      "@app/*" : ["./src/*"]
-//    }
-
-    //            "module": "system",
-//        "outFile": "./resources/scripts.js"
+    "composite": true
   },
 
   "include": [

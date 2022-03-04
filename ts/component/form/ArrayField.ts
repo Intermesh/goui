@@ -1,21 +1,19 @@
-import {Container, ContainerConfig, ContainerEventMap} from "../Container.js";
-import {Fieldify, FieldifyConfig, FieldifyEventMap} from "./Fieldify.js";
 import {Observable, ObservableListener, ObservableListenerOpts} from "../Observable.js";
-import {FieldInterface} from "./Field.js";
+import {FieldConfig, FieldEventMap, FieldInterface} from "./Field.js";
+import {ContainerField} from "./ContainerField.js";
 
-const FieldifiedContainer = Fieldify(Container);
 
 /**
  * @inheritDoc
  */
-export interface ArrayFieldEventMap<T extends Observable> extends ContainerEventMap<T>,FieldifyEventMap<T> {
+export interface ArrayFieldEventMap<T extends Observable> extends FieldEventMap<T> {
 
 }
 
 /**
  * @inheritDoc
  */
-interface ArrayFieldConfig<T extends Observable> extends ContainerConfig<T>, FieldifyConfig<T> {
+interface ArrayFieldConfig<T extends Observable> extends FieldConfig<T> {
 	/**
 	 * Function that returns a new form field for an array item
 	 */
@@ -40,7 +38,7 @@ export interface ArrayField {
  *
  * @see Form
  */
-export class ArrayField extends FieldifiedContainer {
+export class ArrayField extends ContainerField {
 
 	protected tagName = "div" as keyof HTMLElementTagNameMap
 

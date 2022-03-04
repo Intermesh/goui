@@ -12,7 +12,7 @@ export class Translate {
 	}
 
 	public static t(key:any | string) {
-		if(Translate.lang[key]) {
+		if(Translate.lang && Translate.lang[key]) {
 			return Translate.lang[key];
 		} else
 		{

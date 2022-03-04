@@ -70,14 +70,7 @@ ul.go-menu {
 	}
 
 	button & {
-		//display:block;
 		color: $colorText;
-		//top: dp(24);
-		//left: 0;
-		//&.expand-left {
-		//	right: 0;
-		//	left: auto;
-		//}
 	}
 
 	// First menu is always visible. button must be clicked to toggle hidden attribute.
@@ -93,12 +86,12 @@ ul.go-menu {
 	}
 
 	&.expand-left {
-		//button > & {
-			button > ul.go-menu {
-				left: -100%;
-				transform: translateX(dp(-10));
-			}
-		//}
+
+		button > ul.go-menu {
+			left: -100%;
+			transform: translateX(dp(-10));
+		}
+
 	}
 
 	//second expands on hover

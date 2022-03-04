@@ -59,7 +59,7 @@ export interface HtmlFieldEventMap<T extends Observable> extends FieldEventMap<T
 }
 
 
-export interface HtmlField {
+export interface HtmlField extends Field {
 	on<K extends keyof HtmlFieldEventMap<HtmlField>>(eventName: K, listener: HtmlFieldEventMap<HtmlField>[K], options?: ObservableListenerOpts): void
 
 	fire<K extends keyof HtmlFieldEventMap<HtmlField>>(eventName: K, ...args: Parameters<NonNullable<HtmlFieldEventMap<HtmlField>[K]>>): boolean
@@ -131,7 +131,7 @@ export class HtmlField extends Field {
 		"image"
 	]
 
-	private items:Record<string, CmdConfig> = {
+	private commands:Record<string, CmdConfig> = {
 		bold : {icon: 'format_bold', title: "Bold"},
 		italic : {icon: 'format_italic', title: "Italic"},
 		underline : {icon: 'format_underlined', title: "Underline"},
@@ -220,7 +220,7 @@ export class HtmlField extends Field {
 		for (const cmd of this.toolbarItems) {
 			if(cmd == "-") continue;
 
-			const config = this.items[cmd];
+			const config = this.commands[cmd];
 
 			if(config.updateFn) {
 				config.updateFn.call(this, <Button> t.findItem(cmd)!);
@@ -235,7 +235,7 @@ export class HtmlField extends Field {
 	private execCmd(cmd:string, value?:string) {
 		document.execCommand(cmd, false, value);
 
-		const t = this.toolbar!, config = this.items[cmd];
+		const t = this.toolbar!, config = this.commands[cmd];
 		if(config) {
 			if (config.updateFn) {
 				config.updateFn.call(this, <Button>t.findItem(cmd)!);
@@ -279,7 +279,7 @@ export class HtmlField extends Field {
 				this.toolbar.addItem(Component.create({tagName:"hr"}));
 			} else {
 
-				const config = this.items[cmd];
+				const config = this.commands[cmd];
 
 				this.toolbar.addItem(Button.create({
 					itemId: cmd,
@@ -548,7 +548,7 @@ export class HtmlField extends Field {
 
 		const files = Array.from(e.clipboardData.files as FileList) ;
 
-		//Chrome /safari has clibBoardData.items
+		//Chrome /safari has clibBoardData.commands
 		files.forEach((file ) => {
 			if (file.type.match(/^image\//)) {
 				this.handleImage(file);

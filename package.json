@@ -17,16 +17,19 @@
     "test": "node ./node_modules/mocha/bin/mocha",
     "clean": "./node_modules/.bin/rimraf ./dist",
     "dist": "mkdir -p ./dist",
-    "start": "./node_modules/.bin/npm-run-all clean dist resources --parallel watch:tsc watch:sass --print-label ",
+    "start": "./node_modules/.bin/npm-run-all clean dist resources --parallel watch:tsc watch:sass http-server --print-label ",
     "resources": "cp -r ./resources ./dist/resources",
-    "watch:tsc": "./node_modules/.bin/tsc --watch",
+    "watch:tsc": "./node_modules/.bin/tsc -b --watch",
     "watch:sass": "sass --watch scss:dist",
-    "build": "../html/node_modules/.bin/npm-run-all clean dist resources build:tsc build:uglify build:sass --print-label",
+    "http-server": "./node_modules/.bin/http-server",
+    "build": "./node_modules/.bin/npm-run-all clean dist resources build:tsc build:uglify build:sass --print-label",
     "build:tsc": "./node_modules/.bin/tsc --project tsconfig.production.json",
-    "build:sass": "sass --no-source-map --style=compressed scss:dist",
-    "build:uglify": "find ../html/dist -name \\\"*.js\\\" -exec npx uglifyjs {} -o {} \\\\;"
+    "build:sass": "sass --style=compressed scss:dist",
+    "build:uglify": "find ./dist -name \"*.js\" -exec npx uglifyjs {} -o {} \\;"
   },
   "dependencies": {
+    "@angular/core": "^13.2.5",
+    "http-server": "^14.1.0",
     "uglify-js": "^3.14.2"
   }
 }
