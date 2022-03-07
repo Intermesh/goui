@@ -23,7 +23,7 @@
 	}
 }
 
-.alert span {
+.alert span:first-child {
 	font-weight:bold;
 	text-transform:uppercase;
 }

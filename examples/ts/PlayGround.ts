@@ -7,6 +7,7 @@ import {CheckboxField} from "../../dist/component/form/CheckboxField.js";
 import {ColorMenu} from "../../dist/component/menu/ColorMenu.js";
 import {Window} from "../../dist/component/Window.js";
 import {router} from "../../dist/Router.js";
+import {Alert} from "../../dist/Alert.js";
 
 export class PlayGround extends Container {
 
@@ -33,6 +34,43 @@ export class PlayGround extends Container {
 
 								}
 							}),
+
+							Button.create({
+								text: "Alerts",
+								menu: Menu.create({
+									// expandLeft: true,
+									items: [
+										Button.create({
+											text: "Success",
+											handler: () => {
+												Alert.success("That went super!")
+											}
+										}),
+
+										Button.create({
+											text: "Error",
+											handler: () => {
+												Alert.error("That went wrong!")
+											}
+										}),
+
+										Button.create({
+											text: "Warning",
+											handler: () => {
+												Alert.warning("Look out!")
+											}
+										}),
+
+										Button.create({
+											text: "Notice",
+											handler: () => {
+												Alert.notice("Heads up.")
+											}
+										})
+									]
+								})
+							}),
+
 							Button.create({
 								text: "Teun",
 								handler: () => {

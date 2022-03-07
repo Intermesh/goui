@@ -1,7 +1,6 @@
-import {isString} from "util";
-import {Container} from "../../../goui/component/Container.js";
-import {Component} from "../../../goui/component/Component.js";
-import {root} from "../../../goui/component/Root.js";
+import {Container} from "./component/Container.js";
+import {Component} from "./component/Component.js";
+import {root} from "./component/Root.js";
 
 export {Alert};
 
@@ -33,8 +32,8 @@ class Alert {
 		return new Message(msg, "notice");
 	}
 
-	public static danger(msg: string) {
-		return new Message(msg, "danger");
+	public static warning(msg: string) {
+		return new Message(msg, "warning");
 	}
 
 }
@@ -49,7 +48,7 @@ class Message {
 			items: [
 				Component.create({
 					tagName:"span",
-					text: type.toUpperCase()
+					text: type.toUpperCase() + ": "
 				}),
 				Component.create({
 					tagName:"span",
@@ -61,11 +60,11 @@ class Message {
 		root.addItem(alert);
 
 		this.timeout = window.setTimeout(() => {
-			root.remove();
+			alert.remove();
 		}, 3000);
 
 		alert.getEl().addEventListener("click", () => {
-			root.remove();
+			alert.remove();
 			clearTimeout(this.timeout);
 		});
 	}
