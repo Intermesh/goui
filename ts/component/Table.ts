@@ -204,7 +204,7 @@ export interface Table {
  * 			records: records,
  * 		  sort: [{property: "number", isAscending: true}]
  * 		}),
- * 		cls: "go-fit",
+ * 		cls: "fit",
  * 		columns: [
  * 			{
  * 				header: "Index",
@@ -241,13 +241,13 @@ export interface Table {
  */
 export class Table extends Component {
 
-	protected emptyStateHtml = `<div class="go-empty-state"><i class="icon">article</i><p>Nothing to show</p></div>`
+	protected emptyStateHtml = `<div class="empty-state"><i class="icon">article</i><p>Nothing to show</p></div>`
 
 	private minCellWidth = 30
 
 	protected tagName = "div" as keyof HTMLElementTagNameMap;
 
-	protected baseCls = "go-table go-scroll"
+	protected baseCls = "table scroll"
 
 	protected columns: TableColumn[] = []
 

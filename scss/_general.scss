@@ -9,6 +9,70 @@
 	}
 }
 
+h1{
+	font-weight: 500;
+	display: block;
+	font-size: 2em;
+	margin-top: 0.67em;
+	margin-bottom: 0.67em;
+	margin-left: 0;
+	margin-right: 0;
+}
+
+h2 {
+	display: block;
+	font-weight: bold;
+	font-size: 1.5em;
+	margin-top: 0.83em;
+	margin-bottom: 0.83em;
+	margin-left: 0;
+	margin-right: 0;
+}
+
+h3 {
+	display: block;
+	font-weight: bold;
+	font-size: 1.17em;
+	margin-top: 1em;
+	margin-bottom: 1em;
+	margin-left: 0;
+	margin-right: 0;
+}
+
+h4 {
+	display: block;
+	font-weight: bold;
+	margin-top: 1.33em;
+	margin-bottom: 1.33em;
+	margin-left: 0;
+	margin-right: 0;
+}
+
+h5 {
+	display: block;
+	font-size: .83em;
+	margin-top: 1.67em;
+	margin-bottom: 1.67em;
+	margin-left: 0;
+	margin-right: 0;
+	font-weight: bold;
+}
+
+h6 {
+	display: block;
+	font-size: .67em;
+	margin-top: 2.33em;
+	margin-bottom: 2.33em;
+	margin-left: 0;
+	margin-right: 0;
+	font-weight: bold;
+}
+
+p {
+	margin: dp(8) 0;
+}
+
+
 
 
 /**
@@ -71,11 +135,11 @@ hr {
 }
 
 
-.go-draghandle {
+.draghandle {
 	cursor: move;
 }
 
-.go-resizable {
+.resizable {
 	resize: both;
 	overflow: auto;
 	&::-webkit-resizer {
@@ -84,18 +148,18 @@ hr {
 }
 
 
-.go-cards {
+.cards {
 	>* {
-		@extend .go-fit;
+		@extend .fit;
 	}
 }
 
-menu.go-cardmenu {
-	@extend .go-hbox;
+menu.cardmenu {
+	@extend .hbox;
 	margin: 0 auto;
 	padding: 0;
 
-	button.go-button {
+	button.button {
 		padding: dp(12) dp(18);
 		margin-right: dp(24);
 		background: none;
@@ -116,7 +180,7 @@ menu.go-cardmenu {
 	}
 }
 
-.go-avatar {
+.avatar {
 	cursor: default;
 	position: relative;
 	display: inline-block;
@@ -139,7 +203,7 @@ menu.go-cardmenu {
 }
 
 
-.go-empty-state {
+.empty-state {
 	text-align: center;
 	color: $colorTextSecondary;
 	.icon {

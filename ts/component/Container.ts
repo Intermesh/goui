@@ -49,11 +49,11 @@ export interface Container {
  * const comp = Container.create({
  * 	items: [
  * 		Component.create({
- * 			cls: "go-pad",
+ * 			cls: "pad",
  * 			html: "<h1>Item 1</h1><p>Item 1 content</p>",
  * 		}),
  * 		Component.create({
- * 			cls: "go-pad",
+ * 			cls: "pad",
  * 			html: "<h1>Item 2</h1><p>Tab2 content</p>",
  * 		})
  * 	]

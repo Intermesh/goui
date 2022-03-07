@@ -117,7 +117,7 @@ export class Button extends Component {
 
 	protected type:ButtonType = "button"
 
-	baseCls = "go-button"
+	baseCls = "button"
 
 	protected handler?: (button: this, ev?: MouseEvent) => any;
 

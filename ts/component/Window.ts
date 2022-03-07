@@ -53,14 +53,14 @@ export interface Window {
  * ```
  * const win = Window.create({
  * 	title: "Hello World",
- * 	items: [Component.create({tagName: "h1", cls: "go-pad", html: "Just saying hi!"})]
+ * 	items: [Component.create({tagName: "h1", cls: "pad", html: "Just saying hi!"})]
  * });
  *
  * win.open();
  * ```
  */
 export class Window extends DraggableContainer {
-	protected baseCls = "go-window"
+	protected baseCls = "window"
 
 	private titleCmp!: Component;
 	private header!: Toolbar;
@@ -78,7 +78,7 @@ export class Window extends DraggableContainer {
 		super.init();
 
 		this.header = Toolbar.create({
-			cls: "go-header",
+			cls: "header",
 			items: [
 				this.titleCmp = Component.create({
 					tagName: "h3",

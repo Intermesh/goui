@@ -38,7 +38,7 @@ export interface Form {
  * @example
  * ```
  * const form = Form.create({
- * 	cls: "go-scroll go-fit",
+ * 	cls: "scroll fit",
  * 	handler: () => {
  *
  * 		console.log(form.getValues());
@@ -115,7 +115,7 @@ export interface Form {
  *
  */
 export class Form extends ContainerField {
-	protected baseCls = "go-form"
+	protected baseCls = "form"
 	protected hideLabel = true;
 	protected tagName = "form" as keyof HTMLElementTagNameMap
 

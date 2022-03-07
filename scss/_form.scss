@@ -35,7 +35,7 @@ $formLabelWidth: dp(160);
 
 
 
-.go-form-field {
+.form-field {
 	display: block;
 
 	+ hr {
@@ -200,7 +200,7 @@ $formLabelWidth: dp(160);
 	/** end checkbox **/
 
 	/** start select **/
-	&.go-select {
+	&.select {
 		position: relative;
 
 		select {
@@ -255,7 +255,7 @@ fieldset {
 
 
 
-.go-html-field {
+.html-field {
 	position: relative;
 
 
@@ -269,7 +269,7 @@ fieldset {
 
 	div.editor {
 		@extend %input;
-		@extend .go-normalize;
+		@extend .normalize;
 		min-height: dp(50);
 
 		&:focus, &:not(:empty) {
@@ -291,12 +291,12 @@ fieldset {
 	}
 
 	&:focus-within {
-		menu.go-toolbar {
+		menu.toolbar {
 			display:flex;
 		}
 	}
 
-	//menu.go-toolbar {
+	//menu.toolbar {
 	//	display:none;
 	//	border: 2px solid $colorBorder;
 	//	border-radius: dp(8);
@@ -321,7 +321,7 @@ fieldset {
 
 }
 
-.go-html-field-toolbar {
+.html-field-toolbar {
 	position: absolute;
 	z-index: $zIndexMenu;
 }
@@ -329,7 +329,7 @@ fieldset {
 
 
 form {
-	.go-row {
+	.row {
 		display: flex;
 		flex-wrap: wrap;
 		column-gap: dp(12);

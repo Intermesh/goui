@@ -1,9 +1,9 @@
 
-.go-window {
+.window {
 
 	background-color: white;
 
-	@extend .go-vbox;
+	@extend .vbox;
 
 	box-shadow: $windowShadow;
 	position: absolute;
@@ -15,9 +15,9 @@
 		z-index: $zIndexWindow + 1;
 	}
 	overflow: hidden;
-	form.go-form {
+	form.form {
 		fieldset {
-			@extend .go-pad;
+			@extend .pad;
 		}
 	}
 
@@ -30,12 +30,12 @@
 	min-height: dp(160);
 	min-width: dp(160);
 
-	.go-toolbar {
+	.toolbar {
 		padding: dp(12) dp(18);
 		background-color: $colorWindowHeader;
 	}
 
-	.go-cardmenu {
+	.cardmenu {
 		background-color: $colorWindowHeader;
 		width: 100%;
 		padding-top:0;
@@ -43,7 +43,7 @@
 		border-bottom: 2px solid $colorBorderWindow;
 	}
 
-	.go-header {
+	.header {
 		color: #313131;
 		background: $colorWindowHeader;
 		position: relative;
@@ -62,7 +62,7 @@
 			white-space: nowrap;
 		}
 
-		& + *:not(.go-cardmenu) {
+		& + *:not(.cardmenu) {
 			border-top: 1px solid $colorBorderWindow;
 		}
 	}
@@ -75,7 +75,7 @@
 		text-align: left;
 	}
 
-	.go-toolbar:last-child:not(:only-child) {
+	.toolbar:last-child:not(:only-child) {
 		padding-left: dp(18);
 		padding-right: dp(18);
 		//background: $colorBackgroundToolbar;
@@ -84,7 +84,7 @@
 }
 
 // login dialog must always be on top
-.go-login {
+.login {
 	z-index: $zIndexWindow + 3;
 	&:focus-within {
 		z-index: $zIndexWindow + 3;

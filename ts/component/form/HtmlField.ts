@@ -84,7 +84,7 @@ export class HtmlField extends Field {
 
 	protected tagName = "div" as keyof HTMLElementTagNameMap;
 
-	protected baseCls = 'go-form-field go-html-field'
+	protected baseCls = 'form-field html-field'
 
 	private placeholder: string | undefined;
 	private editor: HTMLDivElement | undefined;
@@ -271,7 +271,7 @@ export class HtmlField extends Field {
 		}
 
 		this.toolbar = Toolbar.create({
-			cls: "go-frame go-html-field-toolbar"
+			cls: "frame html-field-toolbar"
 		});
 
 		for (const cmd of this.toolbarItems) {
@@ -522,7 +522,7 @@ export class HtmlField extends Field {
 	 * Generate unique ID
 	 */
 	private static imgUID() {
-		return "go-img-" + (++HtmlField._uid);
+		return "img-" + (++HtmlField._uid);
 	}
 
 	private handleImage(file:File) {

@@ -17,7 +17,7 @@ export interface MaskConfig<T extends Observable> extends ComponentConfig<T> {
  */
 export class Mask extends Component {
 
-	baseCls = "go-mask"
+	baseCls = "mask"
 
 	spinner = true
 
@@ -29,7 +29,7 @@ export class Mask extends Component {
 		super.init();
 
 		if (this.spinner) {
-			this.html = '<div class="go-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>';
+			this.html = '<div class="spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>';
 		}
 	}
 }

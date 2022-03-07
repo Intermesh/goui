@@ -20,8 +20,6 @@ export class DescriptionList extends Component {
 	}
 	protected tagName = "dl" as keyof HTMLElementTagNameMap
 
-	protected baseCls = "go-dl";
-
 	protected records?: DLRecord;
 
 	protected internalRender(): HTMLElement {

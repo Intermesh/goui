@@ -1,7 +1,7 @@
 
 // Stack items horizontally
 // For border layout use width's on north and south and add class "go-scroll" on center
-.go-hbox {
+.hbox {
 	display: flex;
 	flex-direction: row;
 	align-items: stretch;
@@ -27,7 +27,7 @@
 
 // Stack items vertically
 // For border layout use height's on east and west and add class "go-scroll" on center
-.go-vbox {
+.vbox {
 	display: flex;
 	flex-direction: column;
 	align-items: stretch;
@@ -41,38 +41,38 @@
 
 
 // Make the element fit it's parent
-.go-fit {
+.fit {
 	height: 100%;
 }
 
 // padding for text contet
-.go-pad {
+.pad {
 	padding: dp(24) dp(18) !important;
 }
 
-.go-border-bottom {
+.border-bottom {
 	border-bottom: 2px solid $colorBorder;
 }
 
-.go-border-top {
+.border-top {
 	border-top: 2px solid $colorBorder;
 }
 
-.go-border-left {
+.border-left {
 	border-left: 2px solid $colorBorder;
 }
 
-.go-border-right {
+.border-right {
 	border-bottom: 2px solid $colorBorder;
 }
 
-.go-frame {
+.frame {
 	border: 2px solid $colorBorder;
 	border-radius: dp(12);
 	overflow:hidden;
 	background-color: $colorBackground;
 
-	> .go-toolbar {
+	> .toolbar {
 		background-color: $colorBackgroundDarker;
 		padding: dp(18);
 		border-bottom: 2px solid $colorBorder;
@@ -80,7 +80,7 @@
 }
 
 // Scrolling panel
-.go-scroll {
+.scroll {
 	overflow: auto;
 }
 

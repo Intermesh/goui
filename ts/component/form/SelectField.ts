@@ -20,7 +20,7 @@ export interface SelectFieldConfig<T extends Observable> extends FieldConfig<T> 
  */
 export class SelectField extends Field {
 
-	baseCls = "go-form-field go-select"
+	baseCls = "form-field select"
 
 	public static create<T extends typeof Observable>(this: T, config?: SelectFieldConfig<InstanceType<T>>) {
 		return <InstanceType<T>> super.create(<any> config);

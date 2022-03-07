@@ -12,7 +12,7 @@
 //	padding: 0;
 //	margin: 0;
 //	height: 100%;
-//	@extend .go-vbox;
+//	@extend .vbox;
 //	> h1 {
 //		font-size: dp(48);
 //		margin: dp(40) auto;
@@ -31,7 +31,7 @@
 //	background-color: white;
 //	padding: dp(24);
 //
-//	.go-toolbar {
+//	.toolbar {
 //		padding-bottom: 0;
 //	}
 //}
@@ -68,7 +68,7 @@
 
 #account {
 
-	.go-cardmenu {
+	.cardmenu {
 		align-items: center;
 		justify-content: center;
 		margin-bottom: dp(40);
@@ -85,18 +85,18 @@
 
 #support {
 
-	.go-frame {
+	.frame {
 		min-height: dp(400);
 	}
 
-	.go-table {
+	.table {
 		min-width: dp(300);
 	}
 
 	.thread {
 		background-color: $colorBackground;
 	}
-	.go-html-field img, .comment .text img {
+	.html-field img, .comment .text img {
 		max-width: dp(400);
 		border: 2px solid $colorLine;
 		box-shadow: $windowShadow;
@@ -108,7 +108,7 @@
 		cursor: pointer;
 	};
 
-	form .go-avatar {
+	form .avatar {
 		margin-right: dp(16);
 	}
 
@@ -143,7 +143,7 @@
 			align-items: center;
 			display: flex;
 
-			.go-avatar {
+			.avatar {
 				margin-right: dp(16);
 			}
 
@@ -160,7 +160,7 @@
 		.text {
 			margin-left: dp(56);
 			display:block;
-			@extend .go-normalize;
+			@extend .normalize;
 		}
 	}
 

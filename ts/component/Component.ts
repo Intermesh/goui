@@ -125,12 +125,12 @@ export interface ComponentConfig<T extends Observable> extends ObservableConfig<
 	 *
 	 * Some common classes to add for layout:
 	 *
-	 * - go-hbox: Set's flex layout to horizontal boxes. Use flex: n to stretch columns
-	 * - go-vbox: As above but vertical
-	 * - go-fit: Fit the parent's size
-	 * - go-scroll: Set's autoscroll: true
-	 * - go-pad: Set common padding on the element
-	 * - go-border-(top|bottom|left|right) to add a border
+	 * - hbox: Set's flex layout to horizontal boxes. Use flex: n to stretch columns
+	 * - vbox: As above but vertical
+	 * - fit: Fit the parent's size
+	 * - scroll: Set's autoscroll: true
+	 * - pad: Set common padding on the element
+	 * - border-(top|bottom|left|right) to add a border
 	 *
 	 * Other:
 	 *
@@ -421,7 +421,7 @@ export class Component extends Observable {
 		}
 
 		if (this.resizable) {
-			this.el.classList.add("go-resizable");
+			this.el.classList.add("resizable");
 		}
 
 		if (this.flex) {

@@ -41,8 +41,8 @@ class Message {
 
 	constructor(msg: string, type: string) {
 		const alert = document.createElement("div");
-		alert.classList.add("go-alert");
-		alert.classList.add("go-" + type);
+		alert.classList.add("alert");
+		alert.classList.add("" + type);
 		alert.innerHTML = "<span>" + type.toUpperCase() + ":</span> " + msg;
 
 		document.body.appendChild(alert);

@@ -1,5 +1,5 @@
 
-.go-mask {
+.mask {
 	opacity: .5;
 	background-color: black;
 	top: 0;
@@ -10,12 +10,12 @@
 	z-index: $zIndexMask;
 }
 
-.go-spinner,
-.go-spinner div,
-.go-spinner div:after {
+.spinner,
+.spinner div,
+.spinner div:after {
 	box-sizing: border-box;
 }
-.go-spinner {
+.spinner {
 	color: white;
 	position: absolute;
 	width: dp(80);
@@ -25,11 +25,11 @@
 	margin-top: dp(-40);
 	margin-left: dp(-40);
 }
-.go-spinner div {
+.spinner div {
 	animation: go-spinner 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
 	transform-origin: dp(40) dp(40);
 }
-.go-spinner div:after {
+.spinner div:after {
 	content: " ";
 	display: block;
 	position: absolute;
@@ -39,59 +39,59 @@
 	background: currentColor;
 	margin: -3.6px 0 0 -3.6px;
 }
-.go-spinner div:nth-child(1) {
+.spinner div:nth-child(1) {
 	animation-delay: -0.036s;
 }
-.go-spinner div:nth-child(1):after {
+.spinner div:nth-child(1):after {
 	top: dp(62.62742);
 	left: dp(62.62742);
 }
-.go-spinner div:nth-child(2) {
+.spinner div:nth-child(2) {
 	animation-delay: -0.072s;
 }
-.go-spinner div:nth-child(2):after {
+.spinner div:nth-child(2):after {
 	top: dp(67.71281);
 	left: dp(56);
 }
-.go-spinner div:nth-child(3) {
+.spinner div:nth-child(3) {
 	animation-delay: -0.108s;
 }
-.go-spinner div:nth-child(3):after {
+.spinner div:nth-child(3):after {
 	top: dp(70.90963);
 	left: dp(48.28221);
 }
-.go-spinner div:nth-child(4) {
+.spinner div:nth-child(4) {
 	animation-delay: -0.144s;
 }
-.go-spinner div:nth-child(4):after {
+.spinner div:nth-child(4):after {
 	top: dp(72);
 	left: dp(40);
 }
-.go-spinner div:nth-child(5) {
+.spinner div:nth-child(5) {
 	animation-delay: -0.18s;
 }
-.go-spinner div:nth-child(5):after {
+.spinner div:nth-child(5):after {
 	top: dp(70.90963);
 	left: dp(31.71779);
 }
-.go-spinner div:nth-child(6) {
+.spinner div:nth-child(6) {
 	animation-delay: -0.216s;
 }
-.go-spinner div:nth-child(6):after {
+.spinner div:nth-child(6):after {
 	top: dp(67.71281);
 	left: dp(24);
 }
-.go-spinner div:nth-child(7) {
+.spinner div:nth-child(7) {
 	animation-delay: -0.252s;
 }
-.go-spinner div:nth-child(7):after {
+.spinner div:nth-child(7):after {
 	top: dp(62.62742);
 	left: dp(17.37258);
 }
-.go-spinner div:nth-child(8) {
+.spinner div:nth-child(8) {
 	animation-delay: -0.288s;
 }
-.go-spinner div:nth-child(8):after {
+.spinner div:nth-child(8):after {
 	top: dp(56);
 	left: dp(12.28719);
 }

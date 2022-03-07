@@ -57,7 +57,7 @@ export class ColorMenu extends Menu {
 
 	protected updateButton = true;
 
-	protected baseCls = "go-menu go-menu-color"
+	protected baseCls = "menu menu-color"
 
 	protected colors = [
 		'000000', //Black

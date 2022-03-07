@@ -85,7 +85,7 @@ export interface MenuConfig<T extends Observable> extends ContainerConfig<T> {
  */
 export class Menu extends Container {
 
-	protected baseCls = "go-menu fade-out";
+	protected baseCls = "menu fade-out";
 	protected tagName = "ul" as keyof HTMLElementTagNameMap;
 	protected expandLeft = false;
 	public removeOnClose = true;

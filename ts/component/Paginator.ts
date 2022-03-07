@@ -17,7 +17,7 @@ export class Paginator extends Toolbar {
 
 	protected store!: Store;
 
-	protected baseCls = "go-toolbar go-paginator";
+	protected baseCls = "toolbar paginator";
 
 	protected init() {
 		super.init();

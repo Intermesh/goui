@@ -1,5 +1,5 @@
 
-button.go-button {
+button.button {
 	color: inherit;
 
 	background-color: transparent;
@@ -81,8 +81,8 @@ button.go-button {
 }
 
 
-.go-toolbar {
-	@extend .go-hbox;
+.toolbar {
+	@extend .hbox;
 	align-items: center;
 	user-select: none;
 	-moz-user-select: none;

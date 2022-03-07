@@ -46,7 +46,7 @@ export class CardMenu extends Container {
 
 	tagName = "menu" as keyof HTMLElementTagNameMap
 	cardContainer!: CardContainer
-	baseCls = "go-cardmenu"
+	baseCls = "cardmenu"
 
 	public static create<T extends typeof Observable>(this: T, config?: CardMenuConfig<InstanceType<T>>) {
 		return (<InstanceType<T>>super.create(<any> config));

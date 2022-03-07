@@ -16,7 +16,7 @@ export class CheckboxField extends Field {
 
 	protected input: HTMLInputElement | undefined;
 
-	protected baseCls = 'go-form-field checkbox';
+	protected baseCls = 'form-field checkbox';
 
 
 	public static create<T extends typeof Observable>(this: T, config?: CheckboxFieldConfig<InstanceType<T>>) {

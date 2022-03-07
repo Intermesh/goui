@@ -10,7 +10,7 @@ import {router} from "../../dist/Router.js";
 
 export class PlayGround extends Container {
 
-	protected cls = "go-frame go-scroll"
+	protected cls = "frame scroll"
 
 	protected init() {
 
@@ -38,7 +38,7 @@ export class PlayGround extends Container {
 								handler: () => {
 									Window.create({
 										title: "Hoi Teun",
-										items: [Component.create({tagName:"h1", cls:"go-pad", html: "Jij moet naar bed!"})]
+										items: [Component.create({tagName:"h1", cls:".pad", html: "Jij moet naar bed!"})]
 									}).show();
 								}
 							}),

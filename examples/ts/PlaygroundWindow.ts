@@ -45,7 +45,7 @@ export class PlaygroundWindow extends Window {
 				records: records,
 				sort: [{property: "number", isAscending: true}]
 			}),
-			cls: "go-fit",
+			cls: "fit",
 			columns: [
 				{
 					header: "Number",
@@ -71,7 +71,7 @@ export class PlaygroundWindow extends Window {
 
 		const form = Form.create({
 			title: "Form",
-			cls: "go-scroll go-fit",
+			cls: "scroll fit",
 			handler: () => {
 
 				console.log(form.getValues());

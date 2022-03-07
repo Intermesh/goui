@@ -14,7 +14,7 @@ export class Avatar extends Component {
 
 	protected displayName = "";
 
-	protected baseCls = "go-avatar";
+	protected baseCls = "avatar";
 
 	static colors = [
 		'C62828', 'AD1457', '6A1B9A', '4527A0', '283593', '1565C0', '0277BD', '00838F',

@@ -134,7 +134,7 @@ export class DraggableContainer extends Container {
 	}
 
 	private initDragHandle() {
-		this.getDragHandle().classList.add("go-draghandle")
+		this.getDragHandle().classList.add("draghandle")
 		this.getDragHandle().addEventListener('click', (e) => {
 			//prevent click events under draggable items
 			//needed for table header resize that triggered a sort on click too

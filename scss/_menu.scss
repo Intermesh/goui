@@ -1,6 +1,6 @@
 $menuWidth: dp(160);
 
-ul.go-menu {
+ul.menu {
 	z-index: $zIndexMenu;
 	box-shadow: $windowShadow;
 	list-style: none;
@@ -38,14 +38,14 @@ ul.go-menu {
 
 		}
 
-		.go-form-field {
+		.form-field {
 			.hint {
 				height: 0;
 				padding: 0;
 			}
 		}
 
-		label.go-form-field.checkbox {
+		label.form-field.checkbox {
 			margin-bottom: 0;
 			.control {
 				.box-label {
@@ -74,7 +74,7 @@ ul.go-menu {
 	}
 
 	// First menu is always visible. button must be clicked to toggle hidden attribute.
-	button > ul.go-menu {
+	button > ul.menu {
 		&:not(:hover) {
 			//https://easings.net/#easeInCubic
 			transition: all 200ms cubic-bezier(0.32, 0, 0.67, 0);;
@@ -87,7 +87,7 @@ ul.go-menu {
 
 	&.expand-left {
 
-		button > ul.go-menu {
+		button > ul.menu {
 			left: -100%;
 			transform: translateX(dp(-10));
 		}
@@ -95,7 +95,7 @@ ul.go-menu {
 	}
 
 	//second expands on hover
-	button:hover > ul.go-menu, button:focus-within > ul.go-menu {
+	button:hover > ul.menu, button:focus-within > ul.menu {
 		transition: 0s;
 		visibility: visible;
 		opacity: 1;
@@ -105,7 +105,7 @@ ul.go-menu {
 
 }
 
-button.go-button.has-menu {
+button.button.has-menu {
 	padding-right: dp(36);
 	&:active {
 		filter: none;
@@ -118,14 +118,14 @@ button.go-button.has-menu {
 		@extend %icon;
 		margin-right: 0;
 		content: "expand_more";
-		.go-menu & {
+		.menu & {
 			content: "chevron_right";
 		}
 	}
 }
 
 
-ul.go-menu-color {
+ul.menu-color {
 	display:flex;
 	flex-direction: row;
 	flex-wrap: wrap;

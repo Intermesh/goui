@@ -30,7 +30,7 @@ export class Login extends Window {
 
 	private loginForm!: Form;
 
-	protected cls = "go-login";
+	protected cls = "login";
 
 	private otpForm!: Form;
 
@@ -47,7 +47,7 @@ export class Login extends Window {
 
 		this.loginForm = Form.create({
 			flex: "1 2 auto",
-			cls: "go-vbox",
+			cls: "vbox",
 			handler: (form: Form) => {
 				this.login(form);
 			},
@@ -204,7 +204,7 @@ export class Login extends Window {
 	private showRegisterForm () {
 
 		this.registerForm = Form.create({
-			cls: "go-vbox",
+			cls: "vbox",
 			handler: async (form: Form) => {
 				const data = {action: "register" as RegisterData['action'], user:  form.getValues()};
 				data.user.mail_reminders = true;

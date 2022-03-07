@@ -116,7 +116,7 @@ export interface FieldInterface extends Component {
 export class Field extends Container {
 	readonly isFormField = true
 
-	protected baseCls = "go-form-field"
+	protected baseCls = "form-field"
 
 	protected tagName = "label" as keyof HTMLElementTagNameMap
 

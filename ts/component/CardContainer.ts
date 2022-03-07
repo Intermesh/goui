@@ -45,12 +45,12 @@ export interface CardContainerConfig<T extends Observable> extends ContainerConf
  * 	tagName: "main",
  * 	items: [
  * 		Component.create({
- * 			cls: "go-pad",
+ * 			cls: "pad",
  * 			html: "<h1>Tab 1</h1><p>Tab 1 content</p>",
  * 			id: "tab1"
  * 		}),
  * 		Component.create({
- * 			cls: "go-pad",
+ * 			cls: "pad",
  * 			html: "<h1>Tab 2</h1><p>Tab2 content</p>",
  * 			id: "tab2"
  * 		})
@@ -63,7 +63,7 @@ export class CardContainer extends Container {
 
 	protected activeItem?: number;
 
-	protected baseCls = "go-cards"
+	protected baseCls = "cards"
 
 	public static create<T extends typeof Observable>(this: T, config?: CardContainerConfig<InstanceType<T>>) {
 		return (<InstanceType<T>>super.create(<any> config));
