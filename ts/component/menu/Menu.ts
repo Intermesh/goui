@@ -1,6 +1,6 @@
 import {Component} from "../Component.js";
 import {Container, ContainerConfig} from "../Container.js";
-import {body} from "../Body.js";
+import {root} from "../Root.js";
 import {Button} from "../Button.js";
 import {Observable} from "../Observable.js";
 
@@ -154,13 +154,13 @@ export class Menu extends Container {
 		this.getStyle().top = coords.y + "px";
 
 		if(!this.parent) {
-			body.addItem(this);
+			root.addItem(this);
 		}
 
 		this.show();
 
 		//hide menu when clicked elsewhere
-		body.getEl().addEventListener("mousedown", () => {
+		root.getEl().addEventListener("mousedown", () => {
 				this.close();
 		}, {once:true});
 

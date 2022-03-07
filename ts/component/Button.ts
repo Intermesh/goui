@@ -1,6 +1,6 @@
 import {Component, ComponentConfig, ComponentEventMap} from "./Component.js";
 import {Menu} from "./menu/Menu.js";
-import {body} from "./Body.js";
+import {root} from "./Root.js";
 import {Observable, ObservableListener, ObservableListenerOpts} from "./Observable.js";
 import {router} from "../Router.js";
 
@@ -198,7 +198,7 @@ export class Button extends Component {
 
 						//must be rendered and visible to get width below
 						if(!this.menu.isRendered()) {
-							body.addItem(this.menu);
+							root.addItem(this.menu);
 						}
 						this.menu.show();
 

@@ -6,7 +6,7 @@ import {Mask} from "./Mask.js";
 import {Button} from "./Button.js";
 import {DraggableContainer, DraggableContainerEventMap} from "./DraggableContainer.js";
 import {Observable, ObservableListener, ObservableListenerOpts} from "./Observable.js";
-import {body} from "./Body.js";
+import {root} from "./Root.js";
 import {FunctionUtil} from "../util/FunctionUtil.js";
 import {Form} from "./form/Form.js";
 import {Fieldset} from "./form/Fieldset.js";
@@ -166,7 +166,7 @@ export class Window extends DraggableContainer {
 	public show() {
 		if(!this.isRendered()) {
 
-			body.addItem(this);
+			root.addItem(this);
 
 			if (this.modal) {
 					this.mask = Mask.create({
@@ -176,7 +176,7 @@ export class Window extends DraggableContainer {
 					hidden: true
 				});
 
-				body.addItem(this.mask);
+				root.addItem(this.mask);
 
 				this.mask.show();
 			}

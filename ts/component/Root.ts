@@ -1,12 +1,13 @@
 import {Container} from "./Container.js";
 import {Mask} from "./Mask.js";
 
+
 /**
- * Body container to add the top level components to the body.
+ * Root container to add the top level components to the body.
  *
  * Use the export variable body below
  */
-class Body extends Container {
+class Root extends Container {
 	private _mask: Mask | undefined
 
 	protected internalRender() {
@@ -18,6 +19,10 @@ class Body extends Container {
 		super.init();
 		this.el = document.body;
 		this.rendered = true;
+	}
+
+	public setEl(el: HTMLElement) {
+		this.el = el;
 	}
 
 	/**
@@ -52,7 +57,7 @@ class Body extends Container {
  *
  * @example
  * ```
- * body.addItem(Compoment.create({html: "Hello world!"});
+ * root.addItem(Compoment.create({html: "Hello world!"});
  * ```
  */
-export const body = Body.create();
+export const root = Root.create();

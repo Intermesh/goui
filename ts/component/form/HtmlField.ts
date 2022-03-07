@@ -10,7 +10,7 @@ import {ColorMenu} from "../menu/ColorMenu.js";
 import {Menu} from "../menu/Menu.js";
 import {Component} from "../Component.js";
 import {FunctionUtil} from "../../util/FunctionUtil.js";
-import {body} from "../Body.js";
+import {root} from "../Root.js";
 
 /**
  * @inheritDoc
@@ -297,7 +297,7 @@ export class HtmlField extends Field {
 			}
 		}
 
-		body.addItem(this.toolbar);
+		root.addItem(this.toolbar);
 
 		return this.toolbar;
 	}

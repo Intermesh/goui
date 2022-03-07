@@ -8,6 +8,7 @@ export class Translate {
 	public static async load(lang:string) {
 		const mods = await import("../locale/" + lang + ".js");
 
+
 		this.lang = mods.lang;
 	}
 

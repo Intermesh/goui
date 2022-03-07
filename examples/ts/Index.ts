@@ -3,6 +3,7 @@ import {Component} from "../../dist/component/Component.js";
 import {router} from "../../dist/Router.js";
 import {client} from "../../dist/api/Client.js";
 import {Translate} from "../../dist/Translate.js";
+import {root} from "../../dist/component/Root.js";
 
 // Setup Group-Office connection
 client.uri = "http://host.docker.internal:6780/api/";
@@ -36,11 +37,8 @@ function loadCard(cls: string, id: string, mod = `./${cls}.js` ) : Promise<Compo
 // Create main card panel for displaying SPA pages
 const cards = CardContainer.create();
 
-// Add components to body
-// body.addItem(Header.create());
-// body.addItem(cards);
-//render to div
-cards.render(document.getElementById("goui")!);
+root.setEl(document.getElementById("goui")!);
+root.addItem(cards);
 
 router.on("change", () => {
 	console.warn(`Missing translations`, Translate.missing);

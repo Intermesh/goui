@@ -1,7 +1,7 @@
 import {EntityStore} from "./EntityStore.js";
 import {User} from "../model/User.js";
 import {Observable, ObservableEventMap} from "../component/Observable.js";
-import {body} from "../component/Body.js";
+import {root} from "../component/Root.js";
 import {Format} from "../util/Format.js";
 import {Timezone} from "../util/DateTime.js";
 
@@ -55,11 +55,11 @@ export class Client extends Observable {
 	private requireLoginPromise?: Promise<any>;
 
 	private static mask() {
-		body.mask();
+		root.mask();
 	}
 
 	private static unmask() {
-		 body.unmask();
+		 root.unmask();
 	}
 
 	set session(value) {

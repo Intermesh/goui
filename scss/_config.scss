@@ -1,0 +1,50 @@
+$resourcePath: "resources/";
+
+$scale: 1;
+
+@function dp($width) {
+	@return $width * $scale * 1px;
+}
+
+//$windowShadow: 0 dp(8) dp(16) 0 rgba(0,0,0,0.2);
+$windowShadow: 0 dp(3) dp(12) 0 rgba(0,0,0,0.1);
+
+$colorLine: rgba(black, 0.04);
+$colorBorder: rgb(30 ,18, 70, 0.2); //#D3D3D3;
+$colorBorderWindow: $colorBorder;
+$colorHover: rgb(1 ,4, 10, 0.06);//#f1f1f6;//rgba(black, 0.04);
+
+$colorSelectedRow: #1e1246;
+
+$colorPrimary: #1652a1;
+$colorSecondary: #78a22f;
+$colorAccent: #f39345;
+$colorButton: #f1f1f1;
+
+$colorButtonTertiary: #00b0ad;
+
+$colorText: rgb(1, 4, 10);
+$colorTextSecondary: rgba(1, 4, 10, 0.44);
+$colorTextPlaceholder: rgba(black, 0.5);
+
+$colorBackground: white;
+$colorBackgroundDarker: #f8f8f9;//rgb(30 ,18, 70, 0.03);
+$colorBackgroundWindow: $colorBackgroundDarker; //rgb(30 ,18, 70, 0.03);
+$colorWindowHeader: $colorBackgroundWindow;//#f5f5f5;
+$colorError: #f36363;
+
+$colorBorderSelectedInput: rgb(0,176,173);
+$colorBackgroundInput: #fafafb;
+
+$borderRadius: dp(8);
+$padding: dp(8);
+
+$curveStandard: cubic-bezier(0.4, 0.0, 0.2, 1);
+
+$fontBase: #{dp(18)}/#{dp(22)} Lato, Helvetica ;
+
+$zIndexTableHead: 2;
+$zIndexMask: 300;
+$zIndexWindow: 200;
+$zIndexAlert: 400;
+$zIndexMenu: 500;
