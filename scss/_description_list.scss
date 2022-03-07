@@ -8,9 +8,12 @@ dl {
 		&:first-child {
 			margin: 0;
 		}
+		padding: 0;
 	}
 
 	dd {
+		margin: 0;
+		padding: 0;
 		display: block;
 		text-overflow: ellipsis;
 		overflow: hidden;
