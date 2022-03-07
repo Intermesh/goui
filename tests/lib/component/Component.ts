@@ -1,6 +1,6 @@
 import {expect} from "chai";
-import {Component} from "../../../ts/lib/component/Component.js";
-import {body} from "../../../ts/lib/component/Body.js";
+import {Component} from "../../../dist/component/Component.js";
+import {root} from "../../../dist/component/Root.js";
 
 describe('Component class', () => {
 	describe("Create", () => {
@@ -8,9 +8,9 @@ describe('Component class', () => {
 		it('Create a component', function () {
 			const comp = Component.create();
 
-			body.addItem(comp);
+			root.addItem(comp);
 
-			expect(document.body.children.length).to.equal(1);
+			expect(root.getEl().children.length).to.equal(1);
 
 		});
 

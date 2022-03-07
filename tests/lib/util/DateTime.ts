@@ -1,5 +1,5 @@
 import {expect} from "chai";
-import {DateTime} from "../../../ts/lib/util/DateTime.js";
+import {DateTime} from "../../../dist/util/DateTime.js";
 
 
 describe('Date class', () => {

@@ -36,7 +36,11 @@ export class PlaygroundWindow extends Window {
 		const records:StoreRecord[] = [];
 
 		for(let i = 1; i <= 20; i++) {
-			records.push({number: i, description: "Test " + i, createdAt: (new DateTime()).format("c")});
+			records.push({
+				number: i,
+				description: "Test " + i,
+				createdAt: (new DateTime()).addDays(Math.ceil(Math.random() * -365)).format("c")
+			});
 		}
 
 		const table = Table.create({
