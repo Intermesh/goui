@@ -1,4 +1,7 @@
 import {isString} from "util";
+import {Container} from "../../../goui/component/Container.js";
+import {Component} from "../../../goui/component/Component.js";
+import {root} from "../../../goui/component/Root.js";
 
 export {Alert};
 
@@ -40,19 +43,29 @@ class Message {
 	readonly timeout: number;
 
 	constructor(msg: string, type: string) {
-		const alert = document.createElement("div");
-		alert.classList.add("alert");
-		alert.classList.add("" + type);
-		alert.innerHTML = "<span>" + type.toUpperCase() + ":</span> " + msg;
 
-		document.body.appendChild(alert);
+		const alert = Container.create({
+			cls: "alert " + type,
+			items: [
+				Component.create({
+					tagName:"span",
+					text: type.toUpperCase()
+				}),
+				Component.create({
+					tagName:"span",
+					text: msg
+				})
+			]
+		});
+
+		root.addItem(alert);
 
 		this.timeout = window.setTimeout(() => {
-			document.body.removeChild(alert);
+			root.remove();
 		}, 3000);
 
-		alert.addEventListener("click", () => {
-			document.body.removeChild(alert);
+		alert.getEl().addEventListener("click", () => {
+			root.remove();
 			clearTimeout(this.timeout);
 		});
 	}
