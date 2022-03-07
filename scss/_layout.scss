@@ -5,6 +5,11 @@
 	display: flex;
 	flex-direction: row;
 	align-items: stretch;
+	max-width: none;
+	max-height: none;
+	gap: 0;
+	justify-content: flex-start;
+	flex-wrap: nowrap;
 	> * {
 		//setting flex none prevents squishing of elements with no flex setting.
 		flex:none;
@@ -28,9 +33,14 @@
 // Stack items vertically
 // For border layout use height's on east and west and add class "go-scroll" on center
 .vbox {
+	max-width: none;
+	max-height: none;
+	gap: 0;
+	justify-content: flex-start;
 	display: flex;
 	flex-direction: column;
 	align-items: stretch;
+	flex-wrap: nowrap;
 	> * {
 		//setting flex none prevents squishing of elements with no flex setting.
 		flex:none;

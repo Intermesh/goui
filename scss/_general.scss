@@ -1,8 +1,6 @@
 
 
 * {
-	margin: 0;
-	padding: 0;
 	box-sizing: border-box;
 	&:focus {
 		outline: none; //remove safari outline
@@ -72,6 +70,15 @@ p {
 	margin: dp(8) 0;
 }
 
+code {
+	display: block;
+	word-break: break-all;
+	white-space: break-spaces;
+	background-color: #f1f1f1;
+	border: 2px solid $colorBorder;
+	border-radius: $borderRadius;
+	padding: dp(8);
+}
 
 
 
