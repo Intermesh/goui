@@ -1,7 +1,7 @@
 import {Observable} from "./Observable.js";
 import {Component, ComponentConfig} from "./Component.js";
 
-type renderFunc = (dd: HTMLElement) => void;
+type renderFunc = (dd: Component) => void;
 
 export type DLRecord = [string,string|renderFunc,...(string|renderFunc)[]][];
 /**
@@ -10,6 +10,18 @@ export type DLRecord = [string,string|renderFunc,...(string|renderFunc)[]][];
 export interface DescriptionListConfig<T extends Observable> extends ComponentConfig<T> {
 
 
+	/**
+	 * The records to display
+	 *
+	 * @example
+	 * ```
+	 * 	const records: DLRecord = [
+	 * 			['Number', record.number],
+	 * 			['Description', record.description],
+	 * 			['Created At', Format.date(record.createdAt)]
+	 * 		];
+	 *```
+	 */
 	records?: DLRecord
 
 }
@@ -30,29 +42,48 @@ export class DescriptionList extends Component {
 		return el;
 	}
 
+	/**
+	 * Set the records to display
+	 *
+	 * @example
+	 * ```
+	 * const records: DLRecord = [
+	 * 			['Number', record.number],
+	 * 			['Description', record.description],
+	 * 			['Created At', Format.date(record.createdAt)]
+	 * 		];
+	 * dl.setRecords(records);
+	 * ```
+	 * @param records
+	 */
 	public setRecords(records:DLRecord) {
 		this.records = records;
 		this.renderList();
 	}
 
 	private renderList() {
-		const el = this.getEl();
+		this.removeAll();
 		this.records?.forEach((record) => {
 
-			const dt = document.createElement("dt");
-			dt.innerText = <string> record.shift();
-			el.appendChild(dt);
+			this.addItem(Component.create({
+				tagName:"dt",
+				text: <string> record.shift()
+			}));
+
 
 			record.forEach((r) => {
-				const dd = document.createElement("dd");
+
+				const dd = Component.create({
+					tagName:"dd"
+				});
 
 				if(typeof r == 'function')
 					r(dd);
 				else
 				{
-					dd.innerText =  r + "";
+					dd.setText(r + "");
 				}
-				el.appendChild(dd);
+				this.addItem(dd);
 			});
 		});
 	}

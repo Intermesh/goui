@@ -1,10 +1,9 @@
-import {Container, ContainerConfig} from "./Container.js";
+import {Component, ComponentConfig} from "./Component.js";
 import {CardContainer} from "./CardContainer.js";
 import {Button} from "./Button.js";
 import {Observable} from "./Observable.js";
-import {router} from "../Router.js";
 
-export interface CardMenuConfig<T extends Observable> extends ContainerConfig<T> {
+export interface CardMenuConfig<T extends Observable> extends ComponentConfig<T> {
 	cardContainer: CardContainer
 }
 
@@ -42,7 +41,7 @@ export interface CardMenuConfig<T extends Observable> extends ContainerConfig<T>
  *
  */
 
-export class CardMenu extends Container {
+export class CardMenu extends Component {
 
 	tagName = "menu" as keyof HTMLElementTagNameMap
 	cardContainer!: CardContainer

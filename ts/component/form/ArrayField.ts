@@ -1,5 +1,5 @@
 import {Observable, ObservableListener, ObservableListenerOpts} from "../Observable.js";
-import {FieldConfig, FieldEventMap, FieldInterface} from "./Field.js";
+import {Field, FieldConfig, FieldEventMap} from "./Field.js";
 import {ContainerField} from "./ContainerField.js";
 
 
@@ -24,11 +24,11 @@ interface ArrayFieldConfig<T extends Observable> extends FieldConfig<T> {
 	listeners?: ObservableListener<ArrayFieldEventMap<T>>
 }
 
-type ItemComponent = (value?:Record<string, any>) => FieldInterface;
+type ItemComponent = (value?:Record<string, any>) => Field;
 type ArrayFieldValue = Record<string, any>[];
 
 export interface ArrayField {
-	items: FieldInterface[];
+	items: Field[];
 	on<K extends keyof ArrayFieldEventMap<ArrayField>>(eventName: K, listener: ArrayFieldEventMap<ArrayField>[K], options?: ObservableListenerOpts): void
 	fire<K extends keyof ArrayFieldEventMap<ArrayField>>(eventName: K, ...args: Parameters<NonNullable<ArrayFieldEventMap<ArrayField>[K]>>): boolean
 }

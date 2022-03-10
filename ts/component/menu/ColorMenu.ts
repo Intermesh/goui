@@ -1,12 +1,12 @@
 import {Menu} from "./Menu.js";
 import {Button} from "../Button.js";
 import {Observable, ObservableListener, ObservableListenerOpts} from "../Observable.js";
-import {ContainerConfig, ContainerEventMap} from "../Container.js";
+import {ComponentConfig, ComponentEventMap} from "../Component.js";
 
 /**
  * @inheritDoc
  */
-export interface ColorMenuEventMap<T extends Observable> extends ContainerEventMap<T> {
+export interface ColorMenuEventMap<T extends Observable> extends ComponentEventMap<T> {
 	/**
 	 * Fires when color is selected
 	 *
@@ -24,7 +24,7 @@ export interface ColorMenu {
 /**
  * @inheritDoc
  */
-export interface ColorMenuConfig<T extends Observable> extends ContainerConfig<T> {
+export interface ColorMenuConfig<T extends Observable> extends ComponentConfig<T> {
 	/**
 	 * Color hex value eg. #000000
 	 */

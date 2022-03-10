@@ -35,6 +35,20 @@ export interface TableRowSelectEventMap<T extends Observable> extends Observable
 	 * Fires when selection changes. When holding arrow on keyboard it will only fire once at key up to prevent
 	 * flooding the server with requests
 	 *
+	 * @example get store record in table config
+	 * ```
+	 * rowSelection: {
+	 * 				multiSelect: true,
+	 * 				listeners: {
+	 * 					selectionchange: (tableRowSelect) => {
+	 * 						if(tableRowSelect.getSelected().length == 1) {
+	 * 							const table = tableRowSelect.getTable();
+	 * 							const record = table.getStore().getRecordAt(tableRowSelect.getSelected()[0]);
+	 * 						}
+	 * 					}
+	 * 				}
+	 * 			}
+	 * ```
 	 * @param tableRowSelect
 	 */
 	selectionchange?: (tableRowSelect: TableRowSelect) => void
@@ -99,6 +113,10 @@ export class TableRowSelect extends Observable {
 
 	public getSelected() {
 		return [...this._selected];
+	}
+
+	public getTable() {
+		return this.table;
 	}
 
 	private onRowClick(table: Table, index: number, e: MouseEvent) {

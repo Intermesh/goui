@@ -1,6 +1,6 @@
 import {Component, ComponentConfig, ComponentState} from "./Component.js";
 import {Observable} from "./Observable.js";
-import {DraggableContainer} from "./DraggableContainer.js";
+import {DraggableComponent} from "./DraggableComponent.js";
 
 /**
  * @inheritDoc
@@ -11,10 +11,11 @@ export interface SplitterConfig<T extends Observable> extends ComponentConfig<T>
 }
 
 /**
- * Splitter to resize panels
+ * Splitter
  *
+ * Used to resize panels
  */
-export class Splitter extends DraggableContainer {
+export class Splitter extends DraggableComponent {
 	tagName = "hr" as keyof HTMLElementTagNameMap
 
 	resizeComponent!:Component;

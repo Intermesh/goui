@@ -1,8 +1,7 @@
-import {Component} from "./Component.js";
-import {Container, ContainerConfig, ContainerEventMap} from "./Container.js";
+import {Component, ComponentConfig, ComponentEventMap} from "./Component.js";
 import {Observable, ObservableListener, ObservableListenerOpts} from "./Observable.js";
 
-export interface CardContainerEventMap<T extends Observable> extends ContainerEventMap<T> {
+export interface CardContainerEventMap<T extends Observable> extends ComponentEventMap<T> {
 	/**
 	 * Fires before adding an item. Return false to abort.
 	 *
@@ -19,7 +18,7 @@ export interface CardContainer {
 	fire<K extends keyof CardContainerEventMap<CardContainer>>(eventName: K, ...args: Parameters<NonNullable<CardContainerEventMap<CardContainer>[K]>>): boolean;
 }
 
-export interface CardContainerConfig<T extends Observable> extends ContainerConfig<T> {
+export interface CardContainerConfig<T extends Observable> extends ComponentConfig<T> {
 	/**
 	 * Active card item
 	 */
@@ -59,7 +58,7 @@ export interface CardContainerConfig<T extends Observable> extends ContainerConf
  * ```
  *
  */
-export class CardContainer extends Container {
+export class CardContainer extends Component {
 
 	protected activeItem?: number;
 

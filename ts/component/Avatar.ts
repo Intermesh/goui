@@ -1,6 +1,5 @@
 import {Component, ComponentConfig} from "./Component.js";
 import {Observable} from "./Observable.js";
-import {ContainerConfig} from "./Container.js";
 
 export interface AvatarConfig<T extends Observable> extends ComponentConfig<T> {
 	displayName:string

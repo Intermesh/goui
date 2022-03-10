@@ -1,12 +1,7 @@
 import {Component, ComponentConfig, ComponentEventMap} from "../Component.js";
 import {Observable, ObservableListener, ObservableListenerOpts} from "../Observable.js";
 
-import {Container, ContainerConfig, ContainerEventMap} from "../Container.js";
-
-
-
-
-export interface FieldConfig<T extends Observable> extends ContainerConfig<T>{
+export interface FieldConfig<T extends Observable> extends ComponentConfig<T>{
 	/**
 	 * Form element name which will be the key in values
 	 * If omitted the field won't be included in the form values.
@@ -50,7 +45,7 @@ export interface FieldConfig<T extends Observable> extends ContainerConfig<T>{
 /**
  * @inheritDoc
  */
-export interface FieldEventMap<T extends Observable> extends ContainerEventMap<T> {
+export interface FieldEventMap<T extends Observable> extends ComponentEventMap<T> {
 	/**
 	 * Fires when the field changes. It fires on blur.
 	 *
@@ -90,30 +85,35 @@ export interface FieldEventMap<T extends Observable> extends ContainerEventMap<T
 
 
 
-export interface Field extends Container {
+export interface Field extends Component {
 	on<K extends keyof FieldEventMap<Field>>(eventName: K, listener: FieldEventMap<Field>[K], options?: ObservableListenerOpts): void;
 	fire<K extends keyof FieldEventMap<Field>>(eventName: K, ...args: Parameters<NonNullable<FieldEventMap<Field>[K]>>): boolean
 }
 
-/**
- * @inheritDoc
- */
-export interface FieldInterface extends Component {
-	readonly isFormField: true
-	getName():string
-	setName(name:string):void
-	getValue():any
-	setValue(value:any, useForReset?:boolean):any
-	reset():void
-	setInvalid(msg: string):void
-	clearInvalid():void
-	isValid():boolean,
-	isEmpty():boolean
-	on<K extends keyof FieldEventMap<FieldInterface>>(eventName: K, listener: FieldEventMap<FieldInterface>[K], options?: ObservableListenerOpts): void;
-	fire<K extends keyof FieldEventMap<FieldInterface>>(eventName: K, ...args: Parameters<NonNullable<FieldEventMap<FieldInterface>[K]>>): boolean
-}
+// /**
+//  * @inheritDoc
+//  */
+// export interface FieldInterface extends Component {
+// 	readonly isFormField: true
+// 	getName():string
+// 	setName(name:string):void
+// 	getValue():any
+// 	setValue(value:any, useForReset?:boolean):any
+// 	reset():void
+// 	setInvalid(msg: string):void
+// 	clearInvalid():void
+// 	isValid():boolean,
+// 	isEmpty():boolean
+// 	on<K extends keyof FieldEventMap<FieldInterface>>(eventName: K, listener: FieldEventMap<FieldInterface>[K], options?: ObservableListenerOpts): void;
+// 	fire<K extends keyof FieldEventMap<FieldInterface>>(eventName: K, ...args: Parameters<NonNullable<FieldEventMap<FieldInterface>[K]>>): boolean
+// }
 
-export class Field extends Container {
+export class Field extends Component {
+
+	public static create<T extends typeof Observable>(this: T, config?: FieldConfig<InstanceType<T>>) {
+		return <InstanceType<T>> super.create(<any> config);
+	}
+
 	readonly isFormField = true
 
 	protected baseCls = "form-field"

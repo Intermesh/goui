@@ -6,7 +6,6 @@ import {
 	ObservableListenerOpts
 } from "./Observable.js";
 import {State} from "../State.js";
-import {Container} from "./Container.js";
 
 export type ComponentConstructor<T extends Component> = new (...args: any[]) => T;
 export interface ComponentEventMap<T extends Observable> extends ObservableEventMap<T> {
@@ -90,6 +89,42 @@ export interface ComponentEventMap<T extends Observable> extends ObservableEvent
 	 */
 	focus?: (comp: T, o?: FocusOptions) => void
 
+	/**
+	 * Fires before adding an item. Return false to abort.
+	 *
+	 * @param Component
+	 * @param item
+	 * @param index
+	 */
+	beforeadditem?: (Component: T, item: Component, index: number) => false | void
+
+	/**
+	 * Fires after adding an item. Return false to abort.
+	 *
+	 * @param Component
+	 * @param item
+	 * @param index
+	 */
+	additem?: (Component: T, item: Component, index: number) => void
+
+	/**
+	 * Fires before removing an item. Return false to abort.
+	 *
+	 * @param Component
+	 * @param item
+	 * @param index
+	 */
+	beforeremoveitem?: (Component: T, item: Component, index: number) => false | void
+
+	/**
+	 * Fires after removing an item. Return false to abort.
+	 *
+	 * @param Component
+	 * @param item
+	 * @param index
+	 */
+	removeitem?: (Component: T, item: Component, index: number) => | void
+
 }
 
 export interface Component {
@@ -111,7 +146,7 @@ export interface ComponentConfig<T extends Observable> extends ObservableConfig<
 	id?: string
 
 	/**
-	 * Container item ID that can be used to lookup the Component inside a Container with Container.findItem() and Container.findItemIndex();
+	 * Component item ID that can be used to lookup the Component inside a Component with Component.findItem() and Component.findItemIndex();
 	 */
 	itemId?: string
 
@@ -199,6 +234,12 @@ export interface ComponentConfig<T extends Observable> extends ObservableConfig<
 	 * @inheritDoc
 	 */
 	listeners?: ObservableListener<ComponentEventMap<T>>
+
+	/**
+	 * The child components
+	 */
+	items?: Component[]
+
 }
 
 
@@ -232,7 +273,7 @@ export class Component extends Observable {
 	 *
 	 * @protected
 	 */
-	protected baseCls?: string;
+	protected baseCls: string = "";
 
 	protected resizable = false
 
@@ -255,8 +296,8 @@ export class Component extends Observable {
 	protected id : string = "";
 
 	/**
-	 * Container item ID that can be used to lookup the Component inside a Container with Container.findItem() and
-	 * Container.findItemIndex();
+	 * Component item ID that can be used to lookup the Component inside a Component with Component.findItem() and
+	 * Component.findItemIndex();
 	 */
 	public itemId : string = "";
 
@@ -271,10 +312,12 @@ export class Component extends Observable {
 	protected title?: string;
 
 	/**
-	 * When this item is added to a container this is set to the parent container
+	 * When this item is added to a Component this is set to the parent Component
 	 */
-	public parent?: Container;
+	public parent?: Component;
 	private _isRemoving = false;
+
+	protected items: Component[] = [];
 
 	public static create<T extends typeof Observable>(this: T, config?: ComponentConfig<InstanceType<T>>) {
 		return <InstanceType<T>> super.create(config);
@@ -290,9 +333,16 @@ export class Component extends Observable {
 			this.restoreState(this.getState());
 		}
 
+		this.initItems();
+
 		super.init();
 	}
 
+	private initItems()  {
+		this.items.forEach(i => {
+			this.setupItem(i);
+		});
+	}
 	private getState() {
 		return State.get().getItem(this.stateId!);
 	}
@@ -432,16 +482,18 @@ export class Component extends Observable {
 			this.applyTitle();
 		}
 
+		this.renderItems();
+
 		return this.el;
 	}
 
 	/**
 	 * Renders the component
 	 *
-	 * @param container Node
+	 * @param Component Node
 	 * @param refChild Node
 	 */
-	public render(container: Node, refChild?:Node|null ) {
+	public render(Component: Node, refChild?:Node|null ) {
 		if(this.rendered) {
 			throw new Error("Already rendered");
 		}
@@ -456,10 +508,10 @@ export class Component extends Observable {
 
 		this.fire("beforedom", this);
 		if(!refChild) {
-			container.appendChild(this.getEl());
+			Component.appendChild(this.getEl());
 		} else
 		{
-			container.insertBefore(this.getEl(), refChild);
+			Component.insertBefore(this.getEl(), refChild);
 		}
 
 		this.rendered = true;
@@ -471,7 +523,7 @@ export class Component extends Observable {
 
 
 	/**
-	 * Used by Container to prevent infinite remove loop
+	 * Used by Component to prevent infinite remove loop
 	 */
 	public isRemoving() {
 		return this._isRemoving;
@@ -495,7 +547,9 @@ export class Component extends Observable {
 	protected internalRemove() {
 		this._isRemoving = true;
 
-		// remove this item from the container
+		this.removeAll();
+
+		// remove this item from the Component
 		if(this.parent) {
 			this.parent.removeItem(this);
 		}
@@ -533,6 +587,7 @@ export class Component extends Observable {
 	 * You can change this to fade with css class "fade-in" and "fade-out"
 	 */
 	public hide() {
+		// noinspection PointlessBooleanExpressionJS
 		if(this.fire("beforehide", this) === false) {
 			return false;
 		}
@@ -553,6 +608,7 @@ export class Component extends Observable {
 	 * Show the compenent
 	 */
 	public show() {
+		// noinspection PointlessBooleanExpressionJS
 		if(this.fire("beforeshow", this) === false) {
 			return false;
 		}
@@ -633,7 +689,7 @@ export class Component extends Observable {
 	/**
 	 * Set the HTML contents
 	 *
-	 * @param html
+	 * @param text
 	 */
 	public setText(text:string) {
 		this.text = text;
@@ -750,7 +806,7 @@ export class Component extends Observable {
 	 *
 	 * @param fn When the function returns true the item will be returned. Otherwise it will move up to the next parent.
 	 */
-	public findAncestor(fn:(container:Container) => void|boolean) : Container | undefined {
+	public findAncestor(fn:(Component:Component) => void|boolean) : Component | undefined {
 		let p = this.parent;
 		while(p != undefined) {
 			if (fn(p)) {
@@ -773,8 +829,8 @@ export class Component extends Observable {
 	 * ```
 	 * @param cls
 	 */
-	public findAncestorByInstanceType<T extends typeof Container>(cls: T) : InstanceType<T> | undefined {
-		const p = this.findAncestor(container => container instanceof cls);
+	public findAncestorByInstanceType<T extends typeof Component>(cls: T) : InstanceType<T> | undefined {
+		const p = this.findAncestor(Component => Component instanceof cls);
 		if(p) {
 			return <InstanceType<T>> p;
 		} else
@@ -782,6 +838,214 @@ export class Component extends Observable {
 			return undefined;
 		}
 	}
+
+
+
+
+	private setupItem(item:Component) {
+		item.parent = this;
+	}
+
+	/**
+	 * Replace all items
+	 *
+	 * @param items
+	 */
+	public setItems(items: Component[]) {
+
+		this.removeAll();
+
+		items.forEach((item) => {
+			this.addItem(item);
+		});
+	}
+
+	/**
+	 * Get all items
+	 */
+	public getItems() {
+		return this.items;
+	}
+
+
+	protected renderItems() {
+		this.items.forEach((item) => {
+			this.renderItem(item);
+		});
+	}
+
+	/**
+	 * Renders a Component item
+	 * @param item
+	 * @param refItem
+	 * @protected
+	 */
+	protected renderItem(item: Component, refItem?: Component) {
+		item.render(this.getEl(), refItem && refItem.isRendered() ? refItem.getEl() : undefined);
+	}
+
+	/**
+	 * Add item to Component
+	 *
+	 * @param item
+	 * @return Index of item
+	 */
+	addItem(item: Component) {
+		return this.insertItem(item, this.items.length);
+	}
+
+	/**
+	 * Insert item in Component
+	 *
+	 * @param item
+	 * @param index Index in the Component. if negative then it's added from the end.
+	 * @return Index of item
+	 */
+	insertItem(item: Component, index = 0): number {
+
+		if (!this.fire("beforeadditem", this, item, index)) {
+			return -1;
+		}
+
+		this.internalInsertItem(item, index)
+
+		this.fire("additem", this, item, index);
+
+		return index;
+	}
+
+	protected internalInsertItem(item: Component, index = 0) {
+		this.setupItem(item);
+
+		if(index < 0) {
+			index = this.items.length + index;
+		}
+
+		const refItem = this.getItemAt(index);
+
+		this.items.splice(index, 0, item);
+
+		if (this.isRendered()) {
+			//	refItem && refItem.isRendered() ? this.getEl().insertBefore(item.render(), refItem.getEl()) : this.getEl().appendChild(item.render())
+			this.renderItem(item, refItem);
+		}
+	}
+
+	/**
+	 * Get item at given index
+	 *
+	 * @param index If negative then it's the index from the end of the items
+	 */
+	public getItemAt(index: number) {
+
+		if(index < 0) {
+			index = this.items.length + index;
+		}
+
+		if (!this.items[index]) {
+			// throw new Error(`Index "${index}" not found in Component`);
+			return undefined;
+		}
+
+		return this.items[index];
+	}
+
+	/**
+	 * Remove an item
+	 *
+	 * @param ref Item index or Component
+	 */
+	public removeItem(ref: number|Component){
+
+		const item = ref instanceof Component ? ref : this.getItemAt(ref);
+		const index = ref instanceof Component ? this.items.indexOf(ref) : ref;
+
+		if (!item) {
+			return false;
+		}
+		if (!this.fire("beforeremoveitem", this, item, index)) {
+			return false;
+		}
+
+		if(!item.isRemoving()) {
+			item.remove();
+		}
+
+		this.items.splice(index, 1);
+
+		this.fire("removeitem", this, item, index);
+
+		return true;
+	}
+
+	/**
+	 * Removes all items
+	 */
+	public removeAll() {
+		for (let i = this.items.length - 1; i >= 0; i--) {
+			this.removeItem(i);
+		}
+	}
+
+	/**
+	 * Find the item by element ID
+	 *
+	 * @param id
+	 */
+	public findItemIndex(id: string|Component): number {
+		return this.items.findIndex((item) => {
+			return item === id || item.itemId === id || item.getId() === id;
+		});
+	}
+
+	/**
+	 * Get item by DOM id or the itemId of the component
+	 *
+	 * @param id
+	 */
+	public findItem(id: string|Component) {
+		return this.items.find((item) => {
+			return item === id || item.itemId === id || item.getId() === id;
+		});
+	}
+
+	/**
+	 * Cascade down the component hierarchy
+	 *
+	 * @param fn When the function returns false then the cascading will be stopped. The current Component will be finished!
+	 */
+	cascade(fn: (comp: Component) => boolean | void) {
+		if (fn(this) === false) {
+			return this;
+		}
+		for (let cmp of this.items) {
+			cmp.cascade(fn);
+		}
+
+		return this;
+	}
+
+	/**
+	 * Find a child by function
+	 *
+	 * It cascades down the component hierarchy.
+	 *
+	 * @param fn
+	 */
+	findChild(fn: (comp: Component) => boolean | void): Component | undefined {
+
+		let child;
+		this.cascade((item: any) => {
+			if(fn(item)) {
+				child = item;
+				return false;
+			}
+		});
+
+		return child;
+	}
+
+
 
 
 }

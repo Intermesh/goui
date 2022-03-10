@@ -1,10 +1,9 @@
-import {Container, ContainerConfig} from "./Container.js";
-import {Component} from "./Component.js";
+import {Component, ComponentConfig} from "./Component.js";
 import {Toolbar} from "./Toolbar.js";
 import {Key} from "../util/Key.js";
 import {Mask} from "./Mask.js";
 import {Button} from "./Button.js";
-import {DraggableContainer, DraggableContainerEventMap} from "./DraggableContainer.js";
+import {DraggableComponent, DraggableComponentEventMap} from "./DraggableComponent.js";
 import {Observable, ObservableListener, ObservableListenerOpts} from "./Observable.js";
 import {root} from "./Root.js";
 import {FunctionUtil} from "../util/FunctionUtil.js";
@@ -15,7 +14,7 @@ import {TextField} from "./form/TextField.js";
 /**
  * @inheritDoc
  */
-export interface WindowConfig<T extends Observable> extends ContainerConfig<T> {
+export interface WindowConfig<T extends Observable> extends ComponentConfig<T> {
 
 	/**
 	 * Make the window modal so the user can only interact with this window.
@@ -30,7 +29,7 @@ export interface WindowConfig<T extends Observable> extends ContainerConfig<T> {
 /**
  * @inheritDoc
  */
-export interface WindowEventMap<T extends Observable> extends DraggableContainerEventMap<T> {
+export interface WindowEventMap<T extends Observable> extends DraggableComponentEventMap<T> {
 	/**
 	 * Fires when the window is closed
 	 *
@@ -59,7 +58,7 @@ export interface Window {
  * win.open();
  * ```
  */
-export class Window extends DraggableContainer {
+export class Window extends DraggableComponent {
 	protected baseCls = "window"
 
 	private titleCmp!: Component;

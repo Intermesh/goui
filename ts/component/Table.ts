@@ -7,7 +7,7 @@ import {ObjectUtil} from "../util/ObjectUtil.js";
 import {Menu} from "./menu/Menu.js";
 import {CheckboxField} from "./form/CheckboxField.js";
 import {Alert} from "../Alert.js";
-import {DraggableContainer} from "./DraggableContainer.js";
+import {DraggableComponent} from "./DraggableComponent.js";
 
 /**
  * @inheritDoc
@@ -37,7 +37,7 @@ export interface TableConfig<T extends Observable> extends ComponentConfig<T> {
 	 * Make the table fit it's container in width by setting min-width: 100%
 	 * Defaults to true
 	 */
-	fitContainer?: boolean
+	fitComponent?: boolean
 }
 
 type TableColumnRenderer = (columnValue:any, record:StoreRecord, td:HTMLTableCellElement, table:Table) => string|Promise<string>|Component|Promise<Component>;
@@ -49,7 +49,7 @@ interface TableColumnConfig<T extends Observable> extends ObservableConfig<T>{
 	/**
 	 * Header in the table
 	 */
-	header: string;
+	header?: string;
 
 	/**
 	 * Path to property
@@ -100,7 +100,7 @@ export class TableColumn extends Observable {
 	/**
 	 * Header in the table
 	 */
-	header!: string;
+	header: string = "";
 	/**
 	 * Path to property
 	 *
@@ -136,6 +136,16 @@ export class DateColumn extends TableColumn {
 	//argh!? https://stackoverflow.com/questions/43121661/typescript-type-inference-issue-with-string-literal
 	align = "right" as const
 	width = 128
+}
+
+
+export class CheckboxColumn extends TableColumn {
+	width = 40
+	renderer = (val:boolean) => {
+		return CheckboxField.create({
+			value: val
+		});
+	}
 }
 
 /**
@@ -260,7 +270,7 @@ export class Table extends Component {
 	private rowSelect?: TableRowSelect;
 	private tbody?: HTMLTableSectionElement;
 
-	protected fitContainer = true;
+	protected fitComponent = true;
 	private loadOnScroll: boolean = false;
 	private emptyStateEl?: HTMLDivElement;
 
@@ -376,7 +386,7 @@ export class Table extends Component {
 		this.tableEl = document.createElement('table');
 		this.tableEl.hidden = this.getStore().getRecords().length == 0;
 
-		if(this.fitContainer) {
+		if(this.fitComponent) {
 			this.tableEl.style.minWidth = "100%";
 		}
 
@@ -525,7 +535,7 @@ export class Table extends Component {
 	private createColumnSplitter(h:TableColumn, header:HTMLTableCellElement, colIndex:number) {
 
 		if (h.resizable) {
-			const splitter = DraggableContainer.create({
+			const splitter = DraggableComponent.create({
 				tagName: "hr",
 				setPosition: false
 			});
@@ -593,9 +603,11 @@ export class Table extends Component {
 
 			h.headerEl = header;
 
-			const splitter = this.createColumnSplitter(h, header, index);
+			if(h.resizable) {
+				const splitter = this.createColumnSplitter(h, header, index);
+				splitter.render(header);
+			}
 
-			splitter.render(header);
 			if (h.sortable) {
 				header.addEventListener("click", () => {
 					this.onSort(h.property, header);

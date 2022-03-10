@@ -1,11 +1,11 @@
 import {Toolbar} from "./Toolbar.js";
 import {Observable} from "./Observable.js";
-import {ContainerConfig} from "./Container.js";
+import {ComponentConfig} from "./Component.js";
 import {Store} from "../data/Store.js";
 import {Button} from "./Button.js";
 import {Component} from "./Component.js";
 
-export interface PaginatorConfig<T extends Observable> extends ContainerConfig<T> {
+export interface PaginatorConfig<T extends Observable> extends ComponentConfig<T> {
 	store: Store
 }
 export class Paginator extends Toolbar {

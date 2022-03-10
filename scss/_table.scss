@@ -11,6 +11,16 @@
 		-moz-user-select: none;
 	}
 
+	&.no-row-lines {
+		table {
+			tbody {
+				tr {
+					border-bottom: 1px solid transparent;
+				}
+			}
+		}
+	}
+
 	table {
 		background-color: white;
 		border-collapse: collapse;
@@ -73,6 +83,7 @@
 						top: 0;
 						right: 0;
 						bottom: 0;
+						height: 100%;
 					}
 
 					&:before {
@@ -111,28 +122,39 @@
 				//border-radius: 0 dp(10) dp(10) 0;
 			}
 
-
-
 			&.r, &.right {
 				text-align: right;
 				float: none
 			}
+
+			//checkboxes in table should be compact
+			.checkbox {
+				.control {
+					padding: 0;
+					.box-label {
+						display: none;
+					}
+				}
+				.hint, .label{
+					display: none;
+				}
+			}
 		}
 
 
-		tr.line td, td.line, th.line, tr.line th {
-			border-bottom: 1px solid $colorLine;
-		}
-
-		tr.totals th {
-			padding: dp(8);
-			vertical-align: middle;
-			border-right: 1px solid $colorLine;
-		}
-
-		tr.bold-line td, td.bold-line, tr.line th, th.line {
-			border-bottom: 1px solid $colorLine;
-		}
+		//tr.line td, td.line, th.line, tr.line th {
+		//	border-bottom: 1px solid $colorLine;
+		//}
+		//
+		//tr.totals th {
+		//	padding: dp(8);
+		//	vertical-align: middle;
+		//	border-right: 1px solid $colorLine;
+		//}
+		//
+		//tr.bold-line td, td.bold-line, tr.line th, th.line {
+		//	border-bottom: 1px solid $colorLine;
+		//}
 
 		table {
 			td:first-child {

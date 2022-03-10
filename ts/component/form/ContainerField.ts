@@ -1,4 +1,4 @@
-import {Field, FieldConfig, FieldEventMap, FieldInterface} from "./Field.js";
+import {Field, FieldConfig, FieldEventMap} from "./Field.js";
 import {Observable, ObservableListener, ObservableListenerOpts} from "../Observable.js";
 
 
@@ -12,7 +12,7 @@ export interface ContainerFieldConfig<T extends Observable> extends FieldConfig<
 	listeners?: ObservableListener<ContainerFieldEventMap<T>>
 }
 
-export type FieldContainerValue = Record<string, any>;
+export type FieldComponentValue = Record<string, any>;
 
 /**
  * @inheritDoc
@@ -42,8 +42,8 @@ export class ContainerField extends Field {
 		return <InstanceType<T>> super.create(<any> config);
 	}
 
-	findFields() {
-		const fields: FieldInterface[] = [];
+	public findFields() {
+		const fields: Field[] = [];
 
 		const fn = (item: any) => {
 
@@ -69,7 +69,7 @@ export class ContainerField extends Field {
 	 *
 	 * @param nameOrItemId
 	 */
-	findField(nameOrItemId: string): FieldInterface | undefined {
+	public findField(nameOrItemId: string): Field | undefined {
 
 		let field;
 
@@ -88,9 +88,7 @@ export class ContainerField extends Field {
 	}
 
 
-	setValue(v: FieldContainerValue, useForReset = true) {
-		const form = <HTMLFormElement>this.el;
-
+	public setValue(v: FieldComponentValue, useForReset = true) {
 		for (let name in v) {
 			let field = <Field>this.findField(name);
 			if (field) {
@@ -101,8 +99,8 @@ export class ContainerField extends Field {
 		return super.setValue(v, useForReset);
 	}
 
-	getValue(): FieldContainerValue {
-		const formProps: FieldContainerValue = super.getValue() || {};
+	public getValue(): FieldComponentValue {
+		const formProps: FieldComponentValue = super.getValue() || {};
 
 		this.findFields().forEach((field) => {
 			if(field.getName()) {

@@ -1,4 +1,3 @@
-import {Container} from "./component/Container.js";
 import {Component} from "./component/Component.js";
 import {root} from "./component/Root.js";
 
@@ -43,7 +42,7 @@ class Message {
 
 	constructor(msg: string, type: string) {
 
-		const alert = Container.create({
+		const alert = Component.create({
 			cls: "alert " + type,
 			items: [
 				Component.create({

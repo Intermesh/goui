@@ -1,10 +1,9 @@
-import {Component} from "../Component.js";
-import {Container, ContainerConfig} from "../Container.js";
+import {Component, ComponentConfig} from "../Component.js";
 import {root} from "../Root.js";
 import {Button} from "../Button.js";
 import {Observable} from "../Observable.js";
 
-export interface MenuConfig<T extends Observable> extends ContainerConfig<T> {
+export interface MenuConfig<T extends Observable> extends ComponentConfig<T> {
 	/**
 	 * Expand menu's to the right
 	 */
@@ -83,7 +82,7 @@ export interface MenuConfig<T extends Observable> extends ContainerConfig<T> {
  * })
  * ```
  */
-export class Menu extends Container {
+export class Menu extends Component {
 
 	protected baseCls = "menu fade-out";
 	protected tagName = "ul" as keyof HTMLElementTagNameMap;

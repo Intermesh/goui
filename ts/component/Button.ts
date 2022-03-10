@@ -17,7 +17,7 @@ export interface ButtonEventMap<T extends Observable> extends ComponentEventMap<
 	 * @param item
 	 * @param index
 	 */
-	beforeshowmenu: (button: Button, menu: Menu, ev:MouseEvent) => false | void
+	beforeshowmenu?: (button: Button, menu: Menu, ev:MouseEvent) => false | void
 
 	/**
 	 * Fires when the button menu is shown
@@ -26,7 +26,7 @@ export interface ButtonEventMap<T extends Observable> extends ComponentEventMap<
 	 * @param menu
 	 * @param ev
 	 */
-	showmenu: (button: Button, menu: Menu, ev:MouseEvent) => false | void,
+	showmenu?: (button: Button, menu: Menu, ev:MouseEvent) => false | void,
 
 	/**
 	 * Fires when the button is clicked.
@@ -37,7 +37,7 @@ export interface ButtonEventMap<T extends Observable> extends ComponentEventMap<
 	 * @param button
 	 * @param ev
 	 */
-	click: (button: Button, ev:MouseEvent) => void
+	click?: (button: Button, ev:MouseEvent) => void
 }
 
 
@@ -191,6 +191,7 @@ export class Button extends Component {
 
 				el.addEventListener("click", ev => {
 					if (this.menu.isHidden()) {
+						// noinspection PointlessBooleanExpressionJS
 						if(this.fire("beforeshowmenu", this, this.menu, ev) === false) {
 							return;
 						}

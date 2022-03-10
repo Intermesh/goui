@@ -33,7 +33,7 @@ export interface ObservableConfig<T extends Observable> {
 	 *
 	 * @example
 	 * ```
-	 * Container.create({
+	 * Component.create({
 	 * 		listeners: {
 	 *
 	 * 			//simple syntax add the listener directly

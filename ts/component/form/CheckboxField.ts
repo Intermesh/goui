@@ -1,11 +1,4 @@
-import {Field, FieldConfig} from "./Field.js";
-import {Observable} from "../Observable.js";
-
-/**
- * @inheritDoc
- */
-export interface CheckboxFieldConfig<T extends Observable> extends FieldConfig<T> {
-}
+import {Field} from "./Field.js";
 
 /**
  * Checkbox field
@@ -18,10 +11,6 @@ export class CheckboxField extends Field {
 
 	protected baseCls = 'form-field checkbox';
 
-
-	public static create<T extends typeof Observable>(this: T, config?: CheckboxFieldConfig<InstanceType<T>>) {
-		return <InstanceType<T>> super.create(<any> config);
-	}
 
 	protected applyTitle() {
 		if(this.title) {

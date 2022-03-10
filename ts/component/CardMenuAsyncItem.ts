@@ -1,6 +1,6 @@
 import {Button, ButtonConfig} from "./Button.js";
 import {CardMenu} from "./CardMenu.js";
-import {Component, ComponentConfig} from "./Component.js";
+import {Component} from "./Component.js";
 import {Observable} from "./Observable.js";
 /**
  * @inheritDoc
@@ -61,7 +61,7 @@ export class CardMenuAsyncItem extends Button {
 	private static nextId = 0;
 	protected module?: string;
 	protected import!: string;
-	handler = async () => {
+	public handler = async () => {
 
 		if(!this.itemId) {
 			this.itemId = 'CardMenuAsyncItem-' + CardMenuAsyncItem.nextId++;

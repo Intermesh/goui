@@ -1,4 +1,4 @@
-import {Container} from "./Container.js";
+import {Component} from "./Component.js";
 
 /**
  * Toolbar component
@@ -28,7 +28,7 @@ import {Container} from "./Container.js";
  * });
  *  ```
  */
-export class Toolbar extends Container {
+export class Toolbar extends Component {
 	protected baseCls = "toolbar"
 	protected tagName = "menu" as keyof HTMLElementTagNameMap
 }

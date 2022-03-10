@@ -148,10 +148,14 @@ $formLabelWidth: dp(160);
 			padding: dp(8) 0;
 
 			input  {
-				height: dp(24);
-				width: dp(24);
+				height: dp(22);
+				width: dp(22);
 				border: 2px solid $colorBorder;
 				background-color: $colorBackgroundInput;
+
+				appearance: none;
+				-webkit-appearance: none;
+				-moz-appearance: none;
 
 				border-radius: 4px;
 				display: inline-block;
@@ -159,8 +163,8 @@ $formLabelWidth: dp(160);
 				margin: auto 0;
 				//color: $colorTextSecondary;
 				text-align: center;
-				line-height: 18px;
-				font-size: 16px;
+				line-height: dp(18);
+				font-size: dp(14);
 			}
 
 			input:checked {
@@ -172,6 +176,7 @@ $formLabelWidth: dp(160);
 					margin-top: -2px;
 					margin-left: -2px;
 					@extend %icon;
+					font-size: 22px;
 					content: "check";
 					color: white;
 

@@ -1,4 +1,4 @@
-import {Container} from "./Container.js";
+import {Component} from "./Component.js";
 import {Mask} from "./Mask.js";
 
 
@@ -7,7 +7,7 @@ import {Mask} from "./Mask.js";
  *
  * Use the export variable body below
  */
-class Root extends Container {
+class Root extends Component {
 	private _mask: Mask | undefined
 
 	protected internalRender() {

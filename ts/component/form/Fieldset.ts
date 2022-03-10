@@ -1,10 +1,10 @@
-import {Container, ContainerConfig} from "../Container.js";
+import {Component, ComponentConfig} from "../Component.js";
 import {Observable} from "../Observable.js";
 
 /**
  * @inheritDoc
  */
-export interface FieldsetConfig<T extends Observable> extends ContainerConfig<T> {
+export interface FieldsetConfig<T extends Observable> extends ComponentConfig<T> {
 	/**
 	 * Active card item
 	 */
@@ -16,7 +16,7 @@ export interface FieldsetConfig<T extends Observable> extends ContainerConfig<T>
  *
  * @see Form
  */
-export class Fieldset extends Container {
+export class Fieldset extends Component {
 	tagName = "fieldset" as keyof HTMLElementTagNameMap
 	protected legend?: string;
 
