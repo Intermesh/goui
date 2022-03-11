@@ -22,7 +22,7 @@ export class Paginator extends Toolbar {
 	protected init() {
 		super.init();
 
-		this.items = [
+		this.setItems([
 			this.prev = Button.create({
 				icon: "chevron_left",
 				text: "Previous",
@@ -42,7 +42,7 @@ export class Paginator extends Toolbar {
 					this.store.loadNext();
 				}
 			})
-		];
+		]);
 
 		this.store.on("load", () => {
 			this.onStoreLoad();

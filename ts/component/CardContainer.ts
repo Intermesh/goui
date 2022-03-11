@@ -71,7 +71,7 @@ export class CardContainer extends Component {
 	protected init() {
 		super.init();
 
-		if(this.activeItem == undefined && this.items.length) {
+		if(this.activeItem == undefined && this.getItems().length) {
 			this.activeItem = 0;
 		}
 	}
@@ -100,7 +100,7 @@ export class CardContainer extends Component {
 
 	private setCardVisibilities() {
 
-		this.items.forEach((item, index) => {
+		this.getItems().forEach((item, index) => {
 			if (index == this.activeItem) {
 				if (this.isRendered() && !item.isRendered()) {
 					super.renderItem(item);

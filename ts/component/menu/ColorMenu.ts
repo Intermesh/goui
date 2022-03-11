@@ -154,7 +154,7 @@ export class ColorMenu extends Menu {
 			color = "auto";
 		}
 
-		this.items.forEach((btn) => {
+		this.getItems().forEach((btn) => {
 			// console.log(btn.itemId, color);
 			btn.getEl().classList.toggle("pressed", btn.itemId == color);
 		});

@@ -28,7 +28,7 @@ type ItemComponent = (value?:Record<string, any>) => Field;
 type ArrayFieldValue = Record<string, any>[];
 
 export interface ArrayField {
-	items: Field[];
+	getItems(): Field[];
 	on<K extends keyof ArrayFieldEventMap<ArrayField>>(eventName: K, listener: ArrayFieldEventMap<ArrayField>[K], options?: ObservableListenerOpts): void
 	fire<K extends keyof ArrayFieldEventMap<ArrayField>>(eventName: K, ...args: Parameters<NonNullable<ArrayFieldEventMap<ArrayField>[K]>>): boolean
 }
@@ -66,7 +66,7 @@ export class ArrayField extends ContainerField {
 
 		const v:ArrayFieldValue = [];
 
-		this.items.forEach((item) => {
+		this.getItems().forEach((item) => {
 			v.push(item.getValue());
 		});
 

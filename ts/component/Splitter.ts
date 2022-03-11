@@ -6,8 +6,15 @@ import {DraggableComponent} from "./DraggableComponent.js";
  * @inheritDoc
  */
 export interface SplitterConfig<T extends Observable> extends ComponentConfig<T> {
-	resizeComponent: Component,
-	resizeWidth: boolean
+	/**
+	 * The component to resize in height or width
+	 */
+	resizeComponent: Component
+
+	/**
+	 * The minimum size it will set
+	 */
+	minSize?:number
 }
 
 /**
@@ -18,16 +25,22 @@ export interface SplitterConfig<T extends Observable> extends ComponentConfig<T>
 export class Splitter extends DraggableComponent {
 	tagName = "hr" as keyof HTMLElementTagNameMap
 
-	resizeComponent!:Component;
+	protected resizeComponent!:Component;
 
 	/**
-	 * resize the widths when this hr is styled as a vertical splitter
+	 * Resize the widths when this hr is styled as a vertical splitter, otherwise the height is set.
 	 */
-	resizeWidth = true;
+	private resizeWidth?:boolean;
 
-	minWidth = 50;
+	/**
+	 * When the panel is on the left of a center panel that auto sizes. The x offset can be added to the width. But if
+	 * the panel is on the right the x offset must be inverted.
+	 * If not given the splitter will auto detect it's position relative to the component it resizes
+	 */
+	private invert?:boolean;
 
-	minHeight = 50;
+	public minSize = 50;
+
 
 	protected restoreState(state: ComponentState) {
 		if(state.width)
@@ -48,7 +61,18 @@ export class Splitter extends DraggableComponent {
 	protected init() {
 
 		this.on("dragstart", (comp, dragData, e) => {
-			// console.log(dragData);
+			//resize width if this is a vertical splitter
+			if(this.resizeWidth === undefined) {
+				this.resizeWidth = this.getEl().offsetHeight > this.getEl().offsetWidth;
+			}
+
+			// if invert is undefined then auto detect based on the component order
+			if(this.invert === undefined) {
+				const splitterIndex = this.parent!.findItemIndex(this)!;
+				const resizeCmpIndex = this.parent!.findItemIndex(this.resizeComponent)!;
+				this.invert = splitterIndex < resizeCmpIndex;
+			}
+
 			if(this.resizeWidth) {
 				dragData.data.startWidth = this.resizeComponent.getEl().offsetWidth;
 			} else {
@@ -58,10 +82,24 @@ export class Splitter extends DraggableComponent {
 
 		this.on("drag",  (dc,dragData,ev) => {
 			if(this.resizeWidth) {
-				this.resizeComponent.getEl().style.width = Math.max(this.minWidth, dragData.data.startWidth + dragData.x - dragData.startX) + "px";
+				let offset = dragData.x - dragData.startX;
+
+				if(this.invert) {
+					offset *= -1;
+				}
+
+				this.resizeComponent.getEl().style.width =
+					Math.max(this.minSize, dragData.data.startWidth + offset) + "px";
 			} else
 			{
-				this.resizeComponent.getEl().style.height = Math.max(this.minHeight, dragData.data.startHeight + dragData.y - dragData.startY) + "px";
+				let offset = dragData.y - dragData.startY;
+
+				if(this.invert) {
+					offset *= -1;
+				}
+
+				this.resizeComponent.getEl().style.height =
+					Math.max(this.minSize, dragData.data.startHeight + offset) + "px";
 			}
 		});
 

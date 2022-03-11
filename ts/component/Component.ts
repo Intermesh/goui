@@ -317,7 +317,7 @@ export class Component extends Observable {
 	public parent?: Component;
 	private _isRemoving = false;
 
-	protected items: Component[] = [];
+	private items: Component[] = [];
 
 	public static create<T extends typeof Observable>(this: T, config?: ComponentConfig<InstanceType<T>>) {
 		return <InstanceType<T>> super.create(config);
