@@ -87,14 +87,13 @@ button.button {
 	user-select: none;
 	-moz-user-select: none;
 	-webkit-user-select: none;
-	padding: 0;
+	padding: dp(8) dp(16);
 	margin: 0;
 	//removed for htmlfield toolbar inside menu
 	//padding-bottom: dp(18);
 
 	> h3 {
-		margin:0;
-		margin-left: dp(16);
+		margin: 0;
 	}
 	>* {
 		margin: 0 dp(12) 0 0;
