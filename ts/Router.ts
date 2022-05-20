@@ -33,10 +33,8 @@ class Router extends Observable {
 	private suspendEvent = false;
 
 	private loadedPath = "";
-	private matchingPath = "";
 
 	private defaultRoute?: Function;
-	private matches?: { route: Route, args: string[] }[];
 
 	private debug = false;
 
@@ -82,16 +80,16 @@ class Router extends Observable {
 	/**
 	 * Add a route
 	 *
-	 * All matching routes will be executed! You can even add routes inside a route handler.
+	 * The first mathing route will be executed
 	 *
 	 * @example
 	 * ```
-	 * go.Router.add(/([a-zA-Z0-9]*)\/([\d]*)/, (entity:string, id:string) => {
+	 * go.Router.add(/^([a-zA-Z0-9]*)\/([\d]*)$/, (entity:string, id:string) => {
 	 *
 	 * });
 	 * ```
 	 *
-	 * @param re /notes/(.*)/
+	 * @param re /^notes/(.*)$/
 	 * @param handler Is called with the arguments matched in the route regexp. May return Promise. When the
 	 *  promise is resolved it will continue matching sub routes.
 	 */
@@ -111,25 +109,8 @@ class Router extends Observable {
 
 		this.routes.push(route);
 
-		//if we're currently processing a path then check if we can add this route to the matches on the fly.
-		// This allows to dynamically add routes while matching.
-		if (this.matches) {
-			this.matchRoute(route)
-		}
 		return this;
 	}
-
-	private matchRoute(route: Route) {
-		const args = this.matchingPath.match(route.re);
-		if (args) {
-			if(this.debug) {
-				console.debug("Router match: ", route.re);
-			}
-			args.shift();
-			this.matches!.push({route: route, args: args});
-		}
-	}
-
 
 	/**
 	 * Start the router and run the matching route handlers
@@ -138,7 +119,6 @@ class Router extends Observable {
 		const path = this.getPath();
 
 		const oldPath = this.loadedPath;
-		this.matchingPath = path;
 
 		if (this.suspendEvent) {
 			setTimeout(() => {
@@ -148,52 +128,36 @@ class Router extends Observable {
 			return;
 		}
 
-		this.matches = [];
+
+		this.loadedPath = path;
 
 		for (let i = 0; i < this.routes.length; i++) {
-			this.matchRoute(this.routes[i]);
-		}
-
-		if (!this.matches.length) {
-			this.loadedPath = path;
-			this.fire("change", this.getPath(), oldPath);
-
-			return this.defaultRoute ? this.handleRoute(this.defaultRoute, []) : this;
-		} else {
-			const doNextRoute = (n: number) => {
+			const args = path.match(this.routes[i].re);
+			if (args) {
 				if(this.debug) {
-					console.debug("Router handle:", this.matches![n].route.re);
+					console.debug("Router match: ", this.routes[i].re);
 				}
-				this.handleRoute(this.matches![n].route.handler, this.matches![n].args).then(() => {
-					n++
-					if (n < this.matches!.length) {
-						doNextRoute(n);
-					} else {
-
-						if(this.debug) {
-							console.debug("Router done: ", path, this.matches);
-						}
-
-						this.loadedPath = path;
-						this.fire("change", this.getPath(), oldPath);
-					}
-				})
-			};
-
-			doNextRoute(0);
+				args.shift();
+				return this.handleRoute(this.routes[i].handler, args, oldPath);
+			}
 		}
+
+		//nothing matched so we load the default
+
+		return this.defaultRoute ? this.handleRoute(this.defaultRoute, [], oldPath) : this;
+
 	}
 
-	private handleRoute(handler: Function, match: RegExpMatchArray) {
+	private handleRoute(handler: Function, match: RegExpMatchArray, oldPath:string) {
 
 		for (let n = 0, l = match.length; n < l; n++) {
 			match[n] = decodeURIComponent(match[n]);
 		}
 
 		this.params = match;
-		// this.routing = true;
 		const result = handler.apply({}, match);
-		// this.routing = false;
+
+		this.fire("change", this.getPath(), oldPath);
 
 		return result instanceof Promise ? result : Promise.resolve();
 	}

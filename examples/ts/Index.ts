@@ -47,7 +47,7 @@ router.on("change", () => {
 // Setup router
 // Translate.load("nl").then(() => {
 	router
-		.add(/playground/, () => {
+		.add(/^playground$/, () => {
 			return loadCard("PlayGround", "playground");
 		})
 

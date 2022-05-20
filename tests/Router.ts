@@ -9,14 +9,10 @@ describe('Router class', () => {
 			let routeNo, subRouteNo;
 
 			// create route with a param
-			router.add(/test\/(\d+)/, (no) => {
+			router.add(/^test\/(\d+)$/, (no) => {
 
 				// set param to local var
 				routeNo = no;
-
-				router.add(/test\/(\d+)\/sub\/(\d+)/, (no, subNo) => {
-					subRouteNo = subNo;
-				});
 			});
 
 			// goto route
@@ -24,13 +20,6 @@ describe('Router class', () => {
 
 			// param should be set
 			expect(routeNo).to.equal("123");
-
-
-			// goto route
-			await router.goto("test/123/sub/456");
-
-			// param should be set
-			expect(subRouteNo).to.equal("456");
 
 		});
 

@@ -2,7 +2,6 @@ import {Component, ComponentConfig, ComponentEventMap} from "./Component.js";
 import {Menu} from "./menu/Menu.js";
 import {root} from "./Root.js";
 import {Observable, ObservableListener, ObservableListenerOpts} from "./Observable.js";
-import {router} from "../Router.js";
 
 type ButtonType = "button" | "submit" | "reset";
 
@@ -52,11 +51,6 @@ export interface ButtonConfig<T extends Observable> extends ComponentConfig<T> {
 	 * only fire once!
 	 */
 	handler?: (button: Button, ev: MouseEvent) => any,
-
-	/**
-	 * Button handler will be executed when route matches
-	 */
-	route?: string,
 
 	/**
 	 * Button type. "button" or "submit", defaults to "button".
@@ -127,20 +121,6 @@ export class Button extends Component {
 
 	protected text?: string
 
-	protected route?: string
-
-	protected init() {
-		super.init();
-
-		if(this.route) {
-			router.add(new RegExp(this.route ), () => {
-				// when route is passed handler returns a promise which must be returned
-				// to the router so it can evaluate new router paths after the promise is ressolved
-				return this.handler!.call(this, this);
-			});
-		}
-	}
-
 	protected internalRender() {
 
 		const el = <HTMLButtonElement> super.internalRender();
@@ -157,10 +137,6 @@ export class Button extends Component {
 				// check detail for being the first click. We don't want double clicks to call the handler twice
 				if (e.button == 0  && e.detail == 1) {
 					this.handler!.call(this, this, e);
-
-					if(this.route) {
-						router.setPath(this.route);
-					}
 				}
 
 				this.fire("click", this, e);
