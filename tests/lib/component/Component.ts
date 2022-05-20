@@ -15,4 +15,28 @@ describe('Component class', () => {
 		});
 
 	});
+
+	describe("Listener", () => {
+
+		it('Fires an event once', function () {
+			const comp = Component.create();
+
+			root.addItem(comp);
+
+			let fired = false;
+			comp.on("show", () => {
+				fired = true;
+			}, {once: true});
+
+			comp.show();
+
+			expect(fired).to.equal(true);
+
+			fired = false;
+			comp.show();
+			expect(fired).to.equal(false);
+
+		});
+
+	});
 });

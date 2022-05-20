@@ -1,4 +1,4 @@
-import {Observable, ObservableEventMap} from "./component/Observable.js";
+import {Observable, ObservableEventMap, ObservableListenerOpts} from "./component/Observable.js";
 
 interface Route {
 	re: RegExp
@@ -14,7 +14,7 @@ interface RouterEventMap<T extends Observable> extends ObservableEventMap<T> {
 }
 
 interface Router {
-	on<K extends keyof RouterEventMap<Router>>(eventName: K, listener: RouterEventMap<Router>[K]): void
+	on<K extends keyof RouterEventMap<Router>>(eventName: K, listener: RouterEventMap<Router>[K], options?: ObservableListenerOpts): void
 
 	fire<K extends keyof RouterEventMap<Router>>(eventName: K, ...args: Parameters<NonNullable<RouterEventMap<Router>[K]>>): boolean
 }
@@ -40,6 +40,8 @@ class Router extends Observable {
 
 	private debug = false;
 
+	private params:RegExpMatchArray = [];
+
 	constructor() {
 		super();
 
@@ -48,8 +50,18 @@ class Router extends Observable {
 		}, false);
 	}
 
-	private getPath() {
+	/**
+	 * Get the router path
+	 */
+	public getPath() {
 		return window.location.hash.substr(1);
+	}
+
+	/**
+	 * Get the parameters evaluated from the router path
+	 */
+	public getParams() {
+		return this.params;
 	}
 
 	/**
@@ -74,7 +86,7 @@ class Router extends Observable {
 	 *
 	 * @example
 	 * ```
-	 * go.Router.add(/([a-zA-Z0-9]*)\/([0-9]*)/, (entity:string, id:string) => {
+	 * go.Router.add(/([a-zA-Z0-9]*)\/([\d]*)/, (entity:string, id:string) => {
 	 *
 	 * });
 	 * ```
@@ -142,10 +154,10 @@ class Router extends Observable {
 			this.matchRoute(this.routes[i]);
 		}
 
-		this.fire("change", this.getPath(), oldPath);
-
 		if (!this.matches.length) {
 			this.loadedPath = path;
+			this.fire("change", this.getPath(), oldPath);
+
 			return this.defaultRoute ? this.handleRoute(this.defaultRoute, []) : this;
 		} else {
 			const doNextRoute = (n: number) => {
@@ -163,6 +175,7 @@ class Router extends Observable {
 						}
 
 						this.loadedPath = path;
+						this.fire("change", this.getPath(), oldPath);
 					}
 				})
 			};
@@ -176,6 +189,8 @@ class Router extends Observable {
 		for (let n = 0, l = match.length; n < l; n++) {
 			match[n] = decodeURIComponent(match[n]);
 		}
+
+		this.params = match;
 		// this.routing = true;
 		const result = handler.apply({}, match);
 		// this.routing = false;
@@ -195,10 +210,16 @@ class Router extends Observable {
 	 * Go to the give router path
 	 *
 	 * @param path
+	 * @return Promise<Router>
 	 */
 	public goto(path: string) {
+		const p = new Promise((resolve, reject) => {
+			this.on("change", (path1, oldPath) => {
+				resolve(this);
+			}, {once: true});
+		});
 		window.location.hash = path || "";
-		return this;
+		return p;
 	}
 }
 

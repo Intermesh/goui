@@ -185,7 +185,7 @@ export class Observable {
 	private once(eventName: keyof ObservableEventMap<Observable>, listener: Function) {
 		const newfn = (...args: any[]) => {
 			listener.apply(null, args);
-			this.un(eventName, newfn);
+			this.un(eventName, listener);
 		}
 		return newfn;
 	}
