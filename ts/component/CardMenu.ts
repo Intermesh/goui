@@ -58,7 +58,7 @@ export class CardMenu extends Component {
 
 			const activeItem = index != undefined ? cardContainer.getItemAt(index)! : undefined;
 
-			this.getItems().forEach((item) => {
+			this.getItems().forEach((item, menuIndex) => {
 
 				if (activeItem && item.itemId == activeItem.itemId) {
 					item.getEl().classList.add("active");

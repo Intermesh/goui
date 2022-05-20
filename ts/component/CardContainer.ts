@@ -1,5 +1,6 @@
 import {Component, ComponentConfig, ComponentEventMap} from "./Component.js";
 import {Observable, ObservableListener, ObservableListenerOpts} from "./Observable.js";
+import {CardMenu} from "./CardMenu.js";
 
 export interface CardContainerEventMap<T extends Observable> extends ComponentEventMap<T> {
 	/**
@@ -158,6 +159,23 @@ export class CardContainer extends Component {
 
 		super.focus(o);
 
+	}
+
+	public async loadCard (cls:string, module:string = `../../${cls}.js`) {
+
+		const cardMenu = this.parent as CardMenu;
+		let item = cardMenu.cardContainer.findItem(cls);
+		if(!item) {
+
+			const mods = await import(module);
+			item = <Component> mods[cls].create({
+				itemId: cls
+			});
+			cardMenu.cardContainer.addItem(item);
+		}
+		item.show();
+
+		return item;
 	}
 
 }
