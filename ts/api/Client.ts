@@ -47,7 +47,7 @@ export class Client extends Observable {
 	private _session: any;
 	private timeout?: number;
 
-	private debugParam = "?XDEBUG_SESSION=1"
+	private debugParam = ""
 
 	public user: User | undefined;
 
