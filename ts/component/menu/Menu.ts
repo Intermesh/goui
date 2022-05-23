@@ -84,8 +84,8 @@ export interface MenuConfig<T extends Observable> extends ComponentConfig<T> {
  */
 export class Menu extends Component {
 
-	protected baseCls = "menu fade-out";
-	protected tagName = "ul" as keyof HTMLElementTagNameMap;
+	protected baseCls = "dropdown fade-out";
+	protected tagName = "menu" as keyof HTMLElementTagNameMap;
 	protected expandLeft = false;
 	public removeOnClose = true;
 

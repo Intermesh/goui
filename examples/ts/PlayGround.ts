@@ -1,5 +1,4 @@
 import {Component} from "../../dist/component/Component.js";
-import {Container} from "../../dist/component/Container.js";
 import {Toolbar} from "../../dist/component/Toolbar.js";
 import {Button} from "../../dist/component/Button.js";
 import {Menu} from "../../dist/component/menu/Menu.js";
@@ -9,7 +8,8 @@ import {Window} from "../../dist/component/Window.js";
 import {router} from "../../dist/Router.js";
 import {Alert} from "../../dist/Alert.js";
 
-export class PlayGround extends Container {
+
+export class PlayGround extends Component {
 
 	protected cls = "frame scroll"
 

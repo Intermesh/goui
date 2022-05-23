@@ -1,6 +1,7 @@
 $menuWidth: dp(160);
 
-ul.menu {
+menu.dropdown {
+	display: block;
 	z-index: $zIndexMenu;
 	box-shadow: $windowShadow;
 	list-style: none;
@@ -74,7 +75,7 @@ ul.menu {
 	}
 
 	// First menu is always visible. button must be clicked to toggle hidden attribute.
-	button > ul.menu {
+	button > menu.dropdown {
 		&:not(:hover) {
 			//https://easings.net/#easeInCubic
 			transition: all 200ms cubic-bezier(0.32, 0, 0.67, 0);;
@@ -87,7 +88,7 @@ ul.menu {
 
 	&.expand-left {
 
-		button > ul.menu {
+		button > menu.dropdown {
 			left: -100%;
 			transform: translateX(dp(-10));
 		}
@@ -95,7 +96,7 @@ ul.menu {
 	}
 
 	//second expands on hover
-	button:hover > ul.menu, button:focus-within > ul.menu {
+	button:hover > menu.dropdown, button:focus-within > menu {
 		transition: 0s;
 		visibility: visible;
 		opacity: 1;
@@ -125,7 +126,7 @@ button.button.has-menu {
 }
 
 
-ul.menu-color {
+menu.dropdown.menu-color {
 	display:flex;
 	flex-direction: row;
 	flex-wrap: wrap;
