@@ -1,7 +1,6 @@
 import {ContainerField, ContainerFieldConfig, ContainerFieldEventMap} from "./ContainerField.js";
 import {Observable, ObservableListener, ObservableListenerOpts} from "../Observable.js";
 import {Alert} from "../../Alert.js";
-import {Key} from "../../util/Key.js";
 
 export interface FormConfig<T extends Observable> extends ContainerFieldConfig<T> {
 	/**
@@ -146,7 +145,7 @@ export class Form extends ContainerField {
 
 		//Submit forms on CTRL + ENTER. (For html area or text area's)
 		el.addEventListener("keydown", (e) => {
-			if((e.ctrlKey || e.metaKey) && e.key == Key.Enter) {
+			if((e.ctrlKey || e.metaKey) && e.key == "Enter") {
 				e.preventDefault();
 				if(document.activeElement && "blur" in document.activeElement) {
 					(<HTMLElement>document.activeElement).blur();

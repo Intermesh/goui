@@ -5,7 +5,6 @@ import {Toolbar} from "../Toolbar.js";
 import {Button, MaterialIcon} from "../Button.js";
 import {Observable, ObservableListener, ObservableListenerOpts} from "../Observable.js";
 import {browserDetect} from "../../util/BrowserDetect.js";
-import {Key} from "../../util/Key.js";
 import {ColorMenu} from "../menu/ColorMenu.js";
 import {Menu} from "../menu/Menu.js";
 import {Component} from "../Component.js";
@@ -433,7 +432,7 @@ export class HtmlField extends Field {
 		this.clearInvalid();
 
 		//track first 3 chars of sentence for auto lists below
-		if(ev.key == Key.Enter) {
+		if(ev.key == "Enter") {
 			this.lineIndex = 0;
 			this.lineSequence = "";
 		} else if(this.lineIndex < 3) {
@@ -442,14 +441,14 @@ export class HtmlField extends Field {
 		}
 
 		if (
-			browserDetect.isWebkit() && ev.shiftKey && ev.key == Key.Enter &&
+			browserDetect.isWebkit() && ev.shiftKey && ev.key == "Enter" &&
 			(document.queryCommandState('insertorderedlist') || document.queryCommandState('insertunorderedlist'))
 		) {
 			ev.stopPropagation();
 			//Firefox wants two??
 			this.execCmd('InsertHtml', browserDetect.isFirefox() ? '<br />' : '<br /><br />');
 			this.focus();
-		} else if (ev.key == Key.Tab) {
+		} else if (ev.key == "Tab") {
 			ev.preventDefault();
 			if (document.queryCommandState('insertorderedlist') || document.queryCommandState('insertunorderedlist')) {
 				this.execCmd(ev.shiftKey ? 'outdent' : 'indent');
@@ -457,7 +456,7 @@ export class HtmlField extends Field {
 				this.execCmd('InsertText', '\t');
 			}
 			this.focus();
-		} else if(ev.key == Key.Space) {
+		} else if(ev.key == "Space") {
 
 			// Auto lists
 			if(this.lineSequence == "1. ") {
@@ -475,13 +474,13 @@ export class HtmlField extends Field {
 			if(ev.ctrlKey) {
 				let cmd;
 				switch(ev.key){
-					case Key.b:
+					case "b":
 						cmd = 'bold';
 						break;
-					case Key.i:
+					case "i":
 						cmd = 'italic';
 						break;
-					case  Key.u:
+					case  "u":
 						cmd = 'underline';
 						break;
 				}

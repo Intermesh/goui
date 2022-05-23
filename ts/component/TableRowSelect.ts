@@ -5,7 +5,6 @@ import {
 	ObservableListener,
 	ObservableListenerOpts
 } from "./Observable.js";
-import {Key} from "../util/Key.js";
 import {Table} from "./Table.js";
 import {ArrayUtil} from "../util/ArrayUtil.js";
 
@@ -177,24 +176,24 @@ export class TableRowSelect extends Observable {
 
 	private onKeyDown(e: KeyboardEvent) {
 
-		if (e.key == Key.Shift) {
+		if (e.key == "Shift") {
 
 			this.shiftStartIndex = this.lastIndex;
 		}
 
-		if (e.key != Key.ArrowDown && e.key != Key.ArrowUp) {
+		if (e.key != "ArrowDown" && e.key != "ArrowUp") {
 			return;
 		}
 		e.preventDefault();
 
 		let index = 0, change = false;
-		if (e.key == Key.ArrowDown) {
+		if (e.key == "ArrowDown") {
 			if (this.lastIndex == this.table.getStore().getRecords().length - 1) {
 				return;
 			}
 
 			index = this.lastIndex + 1
-		} else if (e.key == Key.ArrowUp) {
+		} else if (e.key == "ArrowUp") {
 			if (this.lastIndex == 0) {
 				return;
 			}
@@ -205,7 +204,7 @@ export class TableRowSelect extends Observable {
 
 			const selected = this.getSelected();
 
-			if ((e.key == Key.ArrowDown && index > this.shiftStartIndex!) || (e.key == Key.ArrowUp && index < this.shiftStartIndex!)) {
+			if ((e.key == "ArrowDown" && index > this.shiftStartIndex!) || (e.key == "ArrowUp" && index < this.shiftStartIndex!)) {
 
 				if (selected.indexOf(index) == -1) {
 					selected.push(index);

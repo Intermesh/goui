@@ -1,6 +1,5 @@
 import {Component, ComponentConfig} from "./Component.js";
 import {Toolbar} from "./Toolbar.js";
-import {Key} from "../util/Key.js";
 import {Mask} from "./Mask.js";
 import {Button} from "./Button.js";
 import {DraggableComponent, DraggableComponentEventMap} from "./DraggableComponent.js";
@@ -120,7 +119,7 @@ export class Window extends DraggableComponent {
 
 		//remove window on escape
 		this.el!.addEventListener('keydown', (e: KeyboardEvent) => {
-			if (e.key == Key.Escape) {
+			if (e.key == "Escape") {
 				this.close();
 			}
 		});
