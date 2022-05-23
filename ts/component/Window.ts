@@ -23,6 +23,11 @@ export interface WindowConfig<T extends Observable> extends ComponentConfig<T> {
 	 * @inheritDoc
 	 */
 	listeners?: ObservableListener<WindowEventMap<T>>
+
+	/**
+	 * Maximize the window
+	 */
+	maximized?: boolean
 }
 
 /**
@@ -65,6 +70,8 @@ export class Window extends DraggableComponent {
 
 	protected resizable = true
 
+	protected maximized = false
+
 	protected modal = false
 	private mask: Mask | undefined;
 
@@ -97,21 +104,25 @@ export class Window extends DraggableComponent {
 
 	}
 
-	getHeader() {
+	public getHeader() {
 		return this.header;
 	}
 
-	applyTitle() {
+	protected applyTitle() {
 		// don't set title on el
 	}
 
-	getDragHandle() {
+	protected getDragHandle() {
 		return this.header.getEl();
 	}
 
 	protected internalRender() {
 
 		const el = super.internalRender();
+
+		if(this.maximized) {
+			this.maximize();
+		}
 
 		this.header.render(el, el.firstChild);
 
@@ -141,8 +152,20 @@ export class Window extends DraggableComponent {
 		return el;
 	}
 
-	protected buildState(): {} {
-		return {width: this.el!.offsetWidth, height: this.el!.offsetHeight};
+	protected buildState()
+	{
+		if(this.isMaximized()) {
+			const s = this.getState();
+			s.maximized = true;
+			return s;
+		} else {
+			return {
+				width: this.el!.offsetWidth,
+				height: this.el!.offsetHeight,
+				left: this.getLeft(),
+				top: this.getTop()
+			};
+		}
 	}
 
 	protected restoreState(s: Record<string, any>) {
@@ -150,6 +173,21 @@ export class Window extends DraggableComponent {
 			this.width = s.width;
 		if (s.height)
 			this.height = s.height;
+
+		if(s.top) {
+			this.setTop(s.top);
+
+			if (s.left) {
+				this.setLeft(s.left);
+			}
+		} else
+		{
+			this.center();
+		}
+
+		if(s.maximized) {
+			this.maximized = true;
+		}
 	}
 
 	/**
@@ -157,7 +195,7 @@ export class Window extends DraggableComponent {
 	 * Use show()
 	 * @deprecated
 	 */
-	open() {
+	public open() {
 		return this.show();
 	}
 
@@ -179,7 +217,7 @@ export class Window extends DraggableComponent {
 				this.mask.show();
 			}
 
-			this.center();
+			//this.center();
 			this.focus();
 		}
 
@@ -189,7 +227,7 @@ export class Window extends DraggableComponent {
 	/**
 	 * @inheritDoc
 	 */
-	remove() {
+	public remove() {
 		if (this.mask) {
 			this.mask.remove();
 		}
@@ -200,7 +238,7 @@ export class Window extends DraggableComponent {
 	/**
 	 * Close the window by removing it
 	 */
-	close() {
+	public close() {
 		this.fire("close", this);
 		this.remove();
 	}
@@ -208,9 +246,34 @@ export class Window extends DraggableComponent {
 	/**
 	 * Center the window in the screen
 	 */
-	center() {
+	public center() {
 		this.getEl().style.top = (window.innerHeight - this.getEl().offsetHeight) / 2 + "px"
 		this.getEl().style.left = (window.innerWidth - this.getEl().offsetWidth) / 2 + "px"
+
+		return this;
+	}
+
+	/**
+	 * Returns true if the window is maximized
+	 */
+	public isMaximized() {
+		return this.getEl().classList.contains("maximized");
+	}
+
+	/**
+	 * Grow window to the maximum of the viewport
+	 */
+	public maximize() {
+		this.getEl().classList.add('maximized');
+
+		return this;
+	}
+
+	/**
+	 * Make the window smaller than the viewport
+	 */
+	public unmaximize() {
+		this.getEl().classList.remove('maximized');
 
 		return this;
 	}
@@ -308,7 +371,7 @@ export class Window extends DraggableComponent {
 				]
 			});
 
-			win.open();
+			win.show();
 		});
 	}
 

@@ -32,6 +32,13 @@ export class PlaygroundWindow extends Window {
 		super.init();
 
 		this.getHeader().insertItem(PlaygroundWindow.createHeaderMenu(), -1)
+		this.getHeader().insertItem(Button.create({
+				icon: "zoom_in",
+				handler: () => {
+					this.isMaximized() ? this.unmaximize() : this.maximize();
+				}
+			}
+		), -1)
 
 		const records:StoreRecord[] = [];
 

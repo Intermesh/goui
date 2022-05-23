@@ -1,3 +1,5 @@
+// noinspection JSUnusedGlobalSymbols
+
 import {
 	Observable,
 	ObservableConfig,
@@ -211,6 +213,16 @@ export interface ComponentConfig<T extends Observable> extends ObservableConfig<
 	height?: number
 
 	/**
+	 * Left offset in pixels
+	 */
+	left?: number,
+
+	/**
+	 * Top offset in pixels
+	 */
+	top?: number
+
+	/**
 	 * Make it resizable
 	 */
 	resizable?: boolean
@@ -318,6 +330,8 @@ export class Component extends Observable {
 	private _isRemoving = false;
 
 	private items: Component[] = [];
+	protected top?: number;
+	protected left?: number;
 
 	public static create<T extends typeof Observable>(this: T, config?: ComponentConfig<InstanceType<T>>) {
 		return <InstanceType<T>> super.create(config);
@@ -343,7 +357,8 @@ export class Component extends Observable {
 			this.setupItem(i);
 		});
 	}
-	private getState() {
+
+	protected getState() {
 		return State.get().getItem(this.stateId!);
 	}
 
@@ -468,6 +483,14 @@ export class Component extends Observable {
 
 		if (this.height) {
 			this.el.style.height = this.height + "px";
+		}
+
+		if (this.top) {
+			this.el.style.top = this.top + "px";
+		}
+
+		if (this.left) {
+			this.el.style.left = this.left + "px";
 		}
 
 		if (this.resizable) {
@@ -742,6 +765,47 @@ export class Component extends Observable {
 	public getHeight() {
 		return this.el ? this.el.offsetHeight : this.height;
 	}
+
+	/**
+	 * Set the top in pixels
+	 *
+	 * @param top
+	 */
+	public setTop(top:number) {
+		this.top = top;
+		if (this.rendered) {
+			this.el!.style.top = top +"px";
+		}
+	}
+
+	/**
+	 * Get top in pixels
+	 */
+	public getTop() {
+		return this.el ? this.el.offsetTop : this.top;
+	}
+
+
+	/**
+	 * Set the top in pixels
+	 *
+	 * @param left
+	 */
+	public setLeft(left:number) {
+		this.left = left;
+		if (this.rendered) {
+			this.el!.style.left = left +"px";
+		}
+	}
+
+	/**
+	 * Get left in pixels
+	 */
+	public getLeft() {
+		return this.el ? this.el.offsetLeft : this.left;
+	}
+
+
 
 	protected applyId() {
 		this.el!.id = this.id!;

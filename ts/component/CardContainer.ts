@@ -168,9 +168,10 @@ export class CardContainer extends Component {
 		if(!item) {
 
 			const mods = await import(module);
-			item = <Component> mods[cls].create({
+			item = mods[cls].create({
 				itemId: cls
-			});
+			}) as Component;
+
 			cardMenu.cardContainer.addItem(item);
 		}
 		item.show();
