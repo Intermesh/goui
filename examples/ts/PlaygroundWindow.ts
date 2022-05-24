@@ -22,23 +22,18 @@ export class PlaygroundWindow extends Window {
 	title = "Window test"
 	width = 800
 	height = 600
+	maximizable = true
 
 	focus(o?: FocusOptions) {
 		//focus card panel, card panel will focus active item
 		this.getItemAt(1)!.focus(o);
 	}
 
+
 	protected init() {
 		super.init();
 
-		this.getHeader().insertItem(PlaygroundWindow.createHeaderMenu(), -1)
-		this.getHeader().insertItem(Button.create({
-				icon: "zoom_in",
-				handler: () => {
-					this.isMaximized() ? this.unmaximize() : this.maximize();
-				}
-			}
-		), -1)
+		this.getHeader().insertItem(PlaygroundWindow.createHeaderMenu(), -2);
 
 		const records:StoreRecord[] = [];
 

@@ -9,6 +9,7 @@ import {FunctionUtil} from "../util/FunctionUtil.js";
 import {Form} from "./form/Form.js";
 import {Fieldset} from "./form/Fieldset.js";
 import {TextField} from "./form/TextField.js";
+import {t} from "../../dist/Translate.js";
 
 /**
  * @inheritDoc
@@ -28,6 +29,16 @@ export interface WindowConfig<T extends Observable> extends ComponentConfig<T> {
 	 * Maximize the window
 	 */
 	maximized?: boolean
+
+	/**
+	 * Enable tool to maximize window
+	 */
+	maximizable?: boolean
+
+	/**
+	 * Enable tool to close window
+	 */
+	closable?: boolean
 }
 
 /**
@@ -40,6 +51,20 @@ export interface WindowEventMap<T extends Observable> extends DraggableComponent
 	 * @param window
 	 */
 	close?: (window: T) => void
+
+	/**
+	 * Fires when the window is maximized
+	 *
+	 * @param window
+	 */
+	maximize?: (window: T) => void
+
+	/**
+	 * Fires when the window is restored after being maximized
+	 *
+	 * @param window
+	 */
+	unmaximize?: (window: T) => void
 }
 
 export interface Window {
@@ -72,6 +97,10 @@ export class Window extends DraggableComponent {
 
 	protected maximized = false
 
+	protected maximizable = false
+
+	protected closable = true
+
 	protected modal = false
 	private mask: Mask | undefined;
 
@@ -91,18 +120,49 @@ export class Window extends DraggableComponent {
 				}),
 				Component.create({
 					flex: 1
-				}),
-				Button.create({
-					// html: "&#x2715;",
-					icon: "close",
-					handler: () => {
-						this.close();
-					}
 				})
 			]
-		})
+		});
+
+		if(this.maximizable) {
+			this.header.addItem(this.initMaximizeTool());
+		}
+
+		if(this.closable) {
+			this.header.addItem(Button.create({
+				icon: "close",
+				handler: () => {
+					this.close();
+				}
+			}));
+		}
 
 	}
+
+	private initMaximizeTool() {
+		const btn = Button.create({
+			icon: "maximize",
+			title: t("Maximize"),
+			handler: () => {
+				this.isMaximized() ? this.unmaximize() : this.maximize();
+			}
+		});
+
+
+		this.on('maximize', () => {
+			btn.setIcon("minimize");
+			btn.setTitle(t("Restore"));
+		});
+
+		this.on('unmaximize', () => {
+			btn.setIcon("maximize");
+			btn.setTitle(t("Maximize"));
+		});
+
+		return btn;
+
+	}
+
 
 	public getHeader() {
 		return this.header;
@@ -266,6 +326,8 @@ export class Window extends DraggableComponent {
 	public maximize() {
 		this.getEl().classList.add('maximized');
 
+		this.fire("maximize", this);
+
 		return this;
 	}
 
@@ -274,6 +336,8 @@ export class Window extends DraggableComponent {
 	 */
 	public unmaximize() {
 		this.getEl().classList.remove('maximized');
+
+		this.fire("unmaximize", this);
 
 		return this;
 	}

@@ -252,7 +252,7 @@ export class Button extends Component {
 			html = this.html + "";
 		} else {
 			if(this.icon) {
-				html = `<i class="icon">${this.icon}</i>${el.innerHTML}`;
+				html = `<i class="icon">${this.icon}</i>`;
 			}
 
 			if(this.text) {
@@ -791,6 +791,8 @@ export type MaterialIcon = "3d_rotation" |
 	"map" |
 	"mark_as_unread" |
 	"markunread" |
+	"maximize" |
+	"minimize" |
 	"markunread_mailbox" |
 	"memory" |
 	"menu" |
