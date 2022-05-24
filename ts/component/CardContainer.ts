@@ -82,7 +82,7 @@ export class CardContainer extends Component {
 
 		this.setCardVisibilities();
 
-		this.on("beforeadditem", (card, item) => {
+		this.getItems().on("beforeadd", (card, item) => {
 			item.hide();
 		})
 

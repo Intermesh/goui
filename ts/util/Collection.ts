@@ -3,19 +3,34 @@ import {Observable, ObservableEventMap, ObservableListenerOpts} from "../compone
  * @inheritDoc
  */
 export interface CollectionEventMap<T extends Observable, I> extends ObservableEventMap<T> {
+
 	/**
-	 * Fires when the window is closed
+	 * Fires before adding an item. Return false to abort.
+	 *
+	 * @param window
+	 */
+	beforeadd?: (collection: T, item:I, index:number) => void|false
+
+	/**
+	 * Fires after adding an item.
 	 *
 	 * @param window
 	 */
 	add?: (collection: T, item:I, index:number) => void
 
 	/**
-	 * Fires when the window is maximized
+	 * Fires after removing an item.
 	 *
 	 * @param window
 	 */
 	remove?: (collection: T, item:I, index:number) => void
+
+	/**
+	 * Fires before removing an item. Return false to abort.
+	 *
+	 * @param window
+	 */
+	beforeremove?: (collection: T, item:I, index:number) => void|false
 }
 
 export interface Collection<T> {
@@ -45,9 +60,13 @@ export class Collection<T> extends Observable implements Iterable<T>{
 	 * @param item
 	 */
 	public add(item:T) {
+		const l = this.items.length;
+		if(!this.fire("beforeadd", this, item, l)) {
+			return false;
+		}
 		this.items.push(item);
-		this.fire("add", this, item, this.items.length -1);
-		return this;
+		this.fire("add", this, item, l - 1);
+		return true;
 	}
 
 	/**
@@ -62,11 +81,15 @@ export class Collection<T> extends Observable implements Iterable<T>{
 			index = this.items.length + index;
 		}
 
+		if(!this.fire("beforeadd", this, item, index)) {
+			return false;
+		}
+
 		this.items.splice(index, 0, item);
 
 		this.fire("add", this, item, index);
 
-		return this;
+		return true;
 	}
 
 	/**
@@ -108,11 +131,15 @@ export class Collection<T> extends Observable implements Iterable<T>{
 
 		const item = this.get(index);
 
+		if(!this.fire("beforeremove", this, item, index)) {
+			return false;
+		}
+
 		this.items.splice(index, 1);
 
 		this.fire("remove", this, item, index);
 
-		return this;
+		return true;
 	}
 
 	/**

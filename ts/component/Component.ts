@@ -92,41 +92,7 @@ export interface ComponentEventMap<T extends Observable> extends ObservableEvent
 	 */
 	focus?: (comp: T, o?: FocusOptions) => void
 
-	/**
-	 * Fires before adding an item. Return false to abort.
-	 *
-	 * @param Component
-	 * @param item
-	 * @param index
-	 */
-	beforeadditem?: (Component: T, item: Component, index: number) => false | void
 
-	/**
-	 * Fires after adding an item. Return false to abort.
-	 *
-	 * @param Component
-	 * @param item
-	 * @param index
-	 */
-	additem?: (Component: T, item: Component, index: number) => void
-
-	/**
-	 * Fires before removing an item. Return false to abort.
-	 *
-	 * @param Component
-	 * @param item
-	 * @param index
-	 */
-	beforeremoveitem?: (Component: T, item: Component, index: number) => false | void
-
-	/**
-	 * Fires after removing an item. Return false to abort.
-	 *
-	 * @param Component
-	 * @param item
-	 * @param index
-	 */
-	removeitem?: (Component: T, item: Component, index: number) => | void
 
 }
 
@@ -264,7 +230,7 @@ export interface ComponentConfig<T extends Observable> extends ObservableConfig<
 /**
  * Component
  *
- * A component in it's simplest form.
+ * A component in its simplest form.
  *
  * @example
  *
@@ -336,7 +302,6 @@ export class Component extends Observable {
 	public static create<T extends typeof Observable>(this: T, config?: ComponentConfig<InstanceType<T>>) {
 		return <InstanceType<T>> super.create(config);
 	}
-
 
 	/**
 	 * @inheritDoc
