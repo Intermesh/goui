@@ -60,13 +60,13 @@ export class Collection<T> extends Observable implements Iterable<T>{
 	 * @param item
 	 */
 	public add(item:T) {
-		const l = this.items.length;
-		if(!this.fire("beforeadd", this, item, l)) {
-			return false;
+		let index = this.items.length;
+		if(!this.fire("beforeadd", this, item, index)) {
+			return -1;
 		}
 		this.items.push(item);
-		this.fire("add", this, item, l - 1);
-		return true;
+		this.fire("add", this, item, index);
+		return index;
 	}
 
 	/**
@@ -82,14 +82,14 @@ export class Collection<T> extends Observable implements Iterable<T>{
 		}
 
 		if(!this.fire("beforeadd", this, item, index)) {
-			return false;
+			return -1;
 		}
 
 		this.items.splice(index, 0, item);
 
 		this.fire("add", this, item, index);
 
-		return true;
+		return index;
 	}
 
 	/**

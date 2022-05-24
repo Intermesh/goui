@@ -20,10 +20,10 @@ function loadCard(cls: string, id: string, mod = `./${cls}.js` ) : Promise<Compo
 	if (index == -1) {
 
 		return import(mod).then((mods:any) => {
-			cards.getItems().add(mods[cls].create({
+			index = cards.getItems().add(mods[cls].create({
 				id: id
 			}));
-			cards.setActiveItem(cards.getItems().count() - 1);
+			cards.setActiveItem(index);
 		}).then(() => {
 			return cards.getItems().get(cards.getActiveItem()!)!;
 		})
