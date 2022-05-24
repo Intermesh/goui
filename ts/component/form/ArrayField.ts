@@ -1,6 +1,7 @@
 import {Observable, ObservableListener, ObservableListenerOpts} from "../Observable.js";
 import {Field, FieldConfig, FieldEventMap} from "./Field.js";
 import {ContainerField} from "./ContainerField.js";
+import {Collection} from "../../util/Collection.js";
 
 
 /**
@@ -28,7 +29,7 @@ type ItemComponent = (value?:Record<string, any>) => Field;
 type ArrayFieldValue = Record<string, any>[];
 
 export interface ArrayField {
-	getItems(): Field[];
+	getItems(): Collection<Field>;
 	on<K extends keyof ArrayFieldEventMap<ArrayField>>(eventName: K, listener: ArrayFieldEventMap<ArrayField>[K], options?: ObservableListenerOpts): void
 	fire<K extends keyof ArrayFieldEventMap<ArrayField>>(eventName: K, ...args: Parameters<NonNullable<ArrayFieldEventMap<ArrayField>[K]>>): boolean
 }

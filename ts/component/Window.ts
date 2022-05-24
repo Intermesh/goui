@@ -9,7 +9,7 @@ import {FunctionUtil} from "../util/FunctionUtil.js";
 import {Form} from "./form/Form.js";
 import {Fieldset} from "./form/Fieldset.js";
 import {TextField} from "./form/TextField.js";
-import {t} from "../../dist/Translate.js";
+import {t} from "../Translate.js";
 
 /**
  * @inheritDoc

@@ -72,7 +72,7 @@ export class CardContainer extends Component {
 	protected init() {
 		super.init();
 
-		if(this.activeItem == undefined && this.getItems().length) {
+		if(this.activeItem == undefined && this.getItems().count()) {
 			this.activeItem = 0;
 		}
 	}

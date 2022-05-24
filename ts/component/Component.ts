@@ -8,6 +8,7 @@ import {
 	ObservableListenerOpts
 } from "./Observable.js";
 import {State} from "../State.js";
+import {Collection} from "../util/Collection.js";
 
 export type ComponentConstructor<T extends Component> = new (...args: any[]) => T;
 export interface ComponentEventMap<T extends Observable> extends ObservableEventMap<T> {
@@ -327,9 +328,8 @@ export class Component extends Observable {
 	 * When this item is added to a Component this is set to the parent Component
 	 */
 	public parent?: Component;
-	private _isRemoving = false;
 
-	private items: Component[] = [];
+	private items!: Collection<Component>;
 	protected top?: number;
 	protected left?: number;
 
@@ -352,9 +352,35 @@ export class Component extends Observable {
 		super.init();
 	}
 
+	protected applyConfig(config: any) {
+		if(!config.items || Array.isArray(config.items)) {
+			config.items = new Collection<Component>(config.items);
+		}
+		super.applyConfig(config);
+	}
+
 	private initItems()  {
-		this.items.forEach(i => {
-			this.setupItem(i);
+
+
+
+		this.items.on("add", (collection, item, index) => {
+			this.setupItem(item);
+
+			const refItem = index < collection.count() - 1 ? this.items.get(index - 1) : undefined;
+
+			if (this.isRendered()) {
+				this.renderItem(item, refItem);
+			}
+
+		});
+
+		this.items.on("remove", (collection, item, index) => {
+			item.parent = undefined;
+			item.remove();
+		});
+
+		this.items.forEach(comp => {
+			this.setupItem(comp);
 		});
 	}
 
@@ -544,14 +570,6 @@ export class Component extends Observable {
 		return this.getEl();
 	}
 
-
-	/**
-	 * Used by Component to prevent infinite remove loop
-	 */
-	public isRemoving() {
-		return this._isRemoving;
-	}
-
 	/**
 	 * Remove component from the component tree
 	 */
@@ -568,8 +586,6 @@ export class Component extends Observable {
 	}
 
 	protected internalRemove() {
-		this._isRemoving = true;
-
 		this.removeAll();
 
 		// remove this item from the Component
@@ -581,8 +597,6 @@ export class Component extends Observable {
 		if (this.el) {
 			this.el.remove();
 		}
-
-		this._isRemoving = false;
 	}
 
 	protected applyHidden() {
@@ -903,9 +917,6 @@ export class Component extends Observable {
 		}
 	}
 
-
-
-
 	private setupItem(item:Component) {
 		item.parent = this;
 	}
@@ -955,7 +966,7 @@ export class Component extends Observable {
 	 * @return Index of item
 	 */
 	addItem(item: Component) {
-		return this.insertItem(item, this.items.length);
+		return this.insertItem(item, this.items.count());
 	}
 
 	/**
@@ -971,29 +982,14 @@ export class Component extends Observable {
 			return -1;
 		}
 
-		this.internalInsertItem(item, index)
+		this.items.insert(item, index);
 
 		this.fire("additem", this, item, index);
 
 		return index;
 	}
 
-	protected internalInsertItem(item: Component, index = 0) {
-		this.setupItem(item);
 
-		if(index < 0) {
-			index = this.items.length + index;
-		}
-
-		const refItem = this.getItemAt(index);
-
-		this.items.splice(index, 0, item);
-
-		if (this.isRendered()) {
-			//	refItem && refItem.isRendered() ? this.getEl().insertBefore(item.render(), refItem.getEl()) : this.getEl().appendChild(item.render())
-			this.renderItem(item, refItem);
-		}
-	}
 
 	/**
 	 * Get item at given index
@@ -1002,16 +998,7 @@ export class Component extends Observable {
 	 */
 	public getItemAt(index: number) {
 
-		if(index < 0) {
-			index = this.items.length + index;
-		}
-
-		if (!this.items[index]) {
-			// throw new Error(`Index "${index}" not found in Component`);
-			return undefined;
-		}
-
-		return this.items[index];
+		return this.items.get(index);
 	}
 
 	/**
@@ -1031,11 +1018,9 @@ export class Component extends Observable {
 			return false;
 		}
 
-		if(!item.isRemoving()) {
-			item.remove();
-		}
+		this.items.removeAt(index);
 
-		this.items.splice(index, 1);
+
 
 		this.fire("removeitem", this, item, index);
 
@@ -1046,7 +1031,7 @@ export class Component extends Observable {
 	 * Removes all items
 	 */
 	public removeAll() {
-		for (let i = this.items.length - 1; i >= 0; i--) {
+		for (let i = this.items.count() - 1; i >= 0; i--) {
 			this.removeItem(i);
 		}
 	}
@@ -1057,7 +1042,7 @@ export class Component extends Observable {
 	 * @param id
 	 */
 	public findItemIndex(id: string|Component): number {
-		return this.items.findIndex((item) => {
+		return this.items.getArray().findIndex((item) => {
 			return item === id || item.itemId === id || item.getId() === id;
 		});
 	}
@@ -1068,7 +1053,7 @@ export class Component extends Observable {
 	 * @param id
 	 */
 	public findItem(id: string|Component) {
-		return this.items.find((item) => {
+		return this.items.getArray().find((item) => {
 			return item === id || item.itemId === id || item.getId() === id;
 		});
 	}

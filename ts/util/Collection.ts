@@ -39,12 +39,23 @@ export class Collection<T> extends Observable implements Iterable<T>{
 		return this.items[Symbol.iterator]();
 	}
 
+	/**
+	 * Add an item at the end
+	 *
+	 * @param item
+	 */
 	public add(item:T) : T {
 		this.items.push(item);
 		this.fire("add", this, item, this.items.length -1);
 		return item;
 	}
 
+	/**
+	 * Insert an item at the given index
+	 *
+	 * @param item
+	 * @param index
+	 */
 	public insert(item:T, index = 0) : T {
 
 		if(index < 0) {
@@ -58,14 +69,26 @@ export class Collection<T> extends Observable implements Iterable<T>{
 		return item;
 	}
 
+	/**
+	 * Get an item at the given index
+	 * @param index
+	 */
 	public get(index:number) : T {
 		return this.items[index];
 	}
 
+	/**
+	 * Find the index of an item. Returns -1 if not found.
+	 * @param item
+	 */
 	public indexOf(item:T) {
 		return this.items.indexOf(item)
 	}
 
+	/**
+	 * remove an item
+	 * @param item
+	 */
 	public remove(item:T) {
 		const index = this.indexOf(item);
 		if(index == -1) {
@@ -92,10 +115,16 @@ export class Collection<T> extends Observable implements Iterable<T>{
 		return true;
 	}
 
+	/**
+	 * Count the number of items
+	 */
 	public count() {
 		return this.items.length;
 	}
 
+	/**
+	 * Clears all items
+	 */
 	public clear() {
 		const l = this.count();
 		for(let i = l - 1; i >= 0; i--) {
@@ -103,5 +132,17 @@ export class Collection<T> extends Observable implements Iterable<T>{
 		}
 	}
 
+	/**
+	 * Performs the specified action for each element in an array.
+	 * @param callbackfn  A function that accepts up to three arguments. forEach calls the callbackfn function one time for each element in the array.
+	 * @param thisArg  An object to which the this keyword can refer in the callbackfn function. If thisArg is omitted, undefined is used as the this value.
+	 */
+	public forEach(callbackfn: (value: T, index: number, array: T[]) => void, thisArg?: any) {
+		return this.items.forEach(callbackfn, thisArg);
+	}
+
+	public getArray() {
+		return this.items;
+	}
 
 }

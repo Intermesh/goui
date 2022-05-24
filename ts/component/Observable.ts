@@ -112,7 +112,9 @@ export class Observable {
 	 */
 	public static create<T extends typeof Observable>(config?: ObservableConfig<InstanceType<T>>) {
 		const c = new this() as InstanceType<T>;
-		Object.assign(c, config);
+
+		c.applyConfig(config || {});
+
 		c.init();
 		return c;
 	}
@@ -122,6 +124,11 @@ export class Observable {
 	protected listeners: ObservableEventMap<Observable> | undefined;
 
 	protected initCalled = false;
+
+
+	protected applyConfig(config: any) {
+		Object.assign(this, config);
+	}
 
 	/**
 	 * Initialise your object with this method. Call super.init() at the end of your override.
