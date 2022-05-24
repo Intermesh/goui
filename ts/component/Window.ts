@@ -137,6 +137,10 @@ export class Window extends DraggableComponent {
 			}));
 		}
 
+		this.on("drop", () => {
+			this.saveState();
+		});
+
 	}
 
 	private initMaximizeTool() {
@@ -277,7 +281,11 @@ export class Window extends DraggableComponent {
 				this.mask.show();
 			}
 
-			//this.center();
+			if(!this.hasState()) {
+				this.center();
+			} else {
+				this.constrainTo(window);
+			}
 			this.focus();
 		}
 

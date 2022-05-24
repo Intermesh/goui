@@ -351,6 +351,10 @@ export class Component extends Observable {
 		return State.get().getItem(this.stateId!);
 	}
 
+	protected hasState() {
+		return this.stateId && State.get().hasItem(this.stateId);
+	}
+
 	/**
 	 * Restore state of the component in this function. It's called before render in init().
 	 *

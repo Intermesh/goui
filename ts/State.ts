@@ -8,6 +8,10 @@ export class State {
 		return new State();
 	}
 
+	hasItem(id: string) {
+		return localStorage.getItem("state-" + id) !== null;
+	}
+
 	getItem(id: string): Record<string, any> {
 		const json = localStorage.getItem("state-" + id);
 		if (!json) {

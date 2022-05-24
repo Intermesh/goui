@@ -187,7 +187,7 @@ export class DraggableComponent extends Component {
 	}
 
 	/**
-	 * Contstain draggin to this element
+	 * Constrain dragging to this element
 	 * @param el
 	 * @param pad Supply paddings
 	 */
@@ -196,42 +196,45 @@ export class DraggableComponent extends Component {
 		this._dragConstrainPad = pad;
 	}
 
-	private calcConstrainBox() {
-		if (this._dragConstrainTo instanceof Window) {
-			this.constrainBox = {
-				left: 0,
-				right: window.innerWidth,
-				bottom: window.innerHeight,
-				top: 0
-			};
+	private calcConstrainBox(el: HTMLElement | Window, pad?: Partial<ConstrainBox>) : ConstrainBox {
+		let box = {
+			left: 0,
+			right: 0,
+			bottom: 0,
+			top: 0
+		};
+
+		if (el instanceof Window) {
+			box.right = window.innerWidth;
+			box.bottom = window.innerHeight;
 		} else {
-			const rect = this._dragConstrainTo.getBoundingClientRect();
-			this.constrainBox = {
-				left: rect.left,
-				right: rect.right,
-				bottom: rect.bottom,
-				top: rect.top
-			};
+			const rect = el.getBoundingClientRect();
+			box.left = rect.left;
+			box.right = rect.right;
+			box.bottom = rect.bottom;
+			box.top = rect.top;
 		}
 
-		if (this._dragConstrainPad) {
-			if (this._dragConstrainPad.left)
-				this.constrainBox.left += this._dragConstrainPad.left;
+		if (pad) {
+			if (pad.left)
+				box.left += pad.left;
 
-			if (this._dragConstrainPad.right)
-				this.constrainBox.right -= this._dragConstrainPad.right;
+			if (pad.right)
+				box.right -= pad.right;
 
-			if (this._dragConstrainPad.top)
-				this.constrainBox.top += this._dragConstrainPad.top;
+			if (pad.top)
+				box.top += pad.top;
 
-			if (this._dragConstrainPad.bottom)
-				this.constrainBox.bottom -= this._dragConstrainPad.bottom;
+			if (pad.bottom)
+				box.bottom -= pad.bottom;
 		}
+
+		return box;
 	}
 
 	private onDragStart(e: MouseEvent) {
 		e.preventDefault();
-		this.calcConstrainBox();
+		this.constrainBox = this.calcConstrainBox(this._dragConstrainTo, this._dragConstrainPad);
 
 		const onDrag = FunctionUtil.onRepaint((e: MouseEvent) => {
 			this.onDrag(e);
@@ -276,5 +279,28 @@ export class DraggableComponent extends Component {
 		this.dragData!.x = Math.max(this.constrainBox.left + this.dragData!.grabOffsetLeft, Math.min(this.dragData!.x, maxLeft))
 
 		return;
+	}
+
+	/**
+	 * Constrain the component to the given element
+	 *
+	 * @param el
+	 * @param pad
+	 */
+	public constrainTo(el: HTMLElement | Window, pad?: Partial<ConstrainBox>) {
+		const constraints = this.calcConstrainBox(el, pad);
+
+		const current = this.getEl().getBoundingClientRect();
+
+		const maxTop = constraints.bottom - this.getEl().offsetHeight;
+		const maxLeft = constraints.right - this.getEl().offsetWidth;
+
+		if(this.getTop()! > maxTop) {
+			this.setTop(maxTop);
+		}
+
+		if(this.getLeft()! > maxLeft) {
+			this.setLeft(maxLeft);
+		}
 	}
 }
