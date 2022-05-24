@@ -56,7 +56,7 @@ class Message {
 			]
 		});
 
-		root.addItem(alert);
+		root.getItems().add(alert);
 
 		this.timeout = window.setTimeout(() => {
 			alert.remove();

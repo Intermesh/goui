@@ -44,10 +44,10 @@ export class Collection<T> extends Observable implements Iterable<T>{
 	 *
 	 * @param item
 	 */
-	public add(item:T) : T {
+	public add(item:T) {
 		this.items.push(item);
 		this.fire("add", this, item, this.items.length -1);
-		return item;
+		return this;
 	}
 
 	/**
@@ -56,7 +56,7 @@ export class Collection<T> extends Observable implements Iterable<T>{
 	 * @param item
 	 * @param index
 	 */
-	public insert(item:T, index = 0) : T {
+	public insert(item:T, index = 0)  {
 
 		if(index < 0) {
 			index = this.items.length + index;
@@ -66,7 +66,7 @@ export class Collection<T> extends Observable implements Iterable<T>{
 
 		this.fire("add", this, item, index);
 
-		return item;
+		return this;
 	}
 
 	/**
@@ -112,7 +112,7 @@ export class Collection<T> extends Observable implements Iterable<T>{
 
 		this.fire("remove", this, item, index);
 
-		return true;
+		return this;
 	}
 
 	/**
@@ -130,6 +130,16 @@ export class Collection<T> extends Observable implements Iterable<T>{
 		for(let i = l - 1; i >= 0; i--) {
 			this.removeAt(i);
 		}
+	}
+
+	/**
+	 * Replace the collection with an array
+	 *
+	 * @param items
+	 */
+	public replace(items:T[]) {
+		this.clear();
+		items.forEach(item => this.add(item));
 	}
 
 	/**

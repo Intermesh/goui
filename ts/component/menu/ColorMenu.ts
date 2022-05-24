@@ -96,7 +96,7 @@ export class ColorMenu extends Menu {
 	protected init() {
 
 
-		this.addItem(Button.create({
+		this.getItems().add(Button.create({
 			itemId: "auto",
 			text: "Auto",
 			cls: this.value == "" ? "pressed" : "",
@@ -108,7 +108,7 @@ export class ColorMenu extends Menu {
 		}));
 
 		this.colors.forEach(color => {
-			this.addItem(Button.create({
+			this.getItems().add(Button.create({
 				itemId: "#" + color,
 				cls: this.value == color ? 'with-icon pressed' : 'with-icon',
 				html: `<div style="background-color: #${color}"></div>`,

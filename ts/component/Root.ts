@@ -31,7 +31,7 @@ class Root extends Component {
 	mask() {
 		if (!this._mask) {
 			this._mask = Mask.create();
-			this.addItem(this._mask);
+			this.getItems().add(this._mask);
 		} else
 		{
 			this._mask.show();

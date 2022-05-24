@@ -62,10 +62,10 @@ export class DescriptionList extends Component {
 	}
 
 	private renderList() {
-		this.removeAll();
+		this.getItems().clear();
 		this.records?.forEach((record) => {
 
-			this.addItem(Component.create({
+			this.getItems().add(Component.create({
 				tagName:"dt",
 				text: <string> record.shift()
 			}));
@@ -83,7 +83,7 @@ export class DescriptionList extends Component {
 				{
 					dd.setText(r + "");
 				}
-				this.addItem(dd);
+				this.getItems().add(dd);
 			});
 		});
 	}

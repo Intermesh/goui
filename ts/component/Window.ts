@@ -125,11 +125,11 @@ export class Window extends DraggableComponent {
 		});
 
 		if(this.maximizable) {
-			this.header.addItem(this.initMaximizeTool());
+			this.header.getItems().add(this.initMaximizeTool());
 		}
 
 		if(this.closable) {
-			this.header.addItem(Button.create({
+			this.header.getItems().add(Button.create({
 				icon: "close",
 				handler: () => {
 					this.close();
@@ -262,7 +262,7 @@ export class Window extends DraggableComponent {
 	public show() {
 		if(!this.isRendered()) {
 
-			root.addItem(this);
+			root.getItems().add(this);
 
 			if (this.modal) {
 					this.mask = Mask.create({
@@ -272,7 +272,7 @@ export class Window extends DraggableComponent {
 					hidden: true
 				});
 
-				root.addItem(this.mask);
+				root.getItems().add(this.mask);
 
 				this.mask.show();
 			}
@@ -388,7 +388,7 @@ export class Window extends DraggableComponent {
 				title: title,
 				listeners: {
 					focus: () => {
-						win.getItemAt(0)!.focus();
+						win.getItems().get(0)!.focus();
 					},
 					close: () => {
 						if(cancelled) {

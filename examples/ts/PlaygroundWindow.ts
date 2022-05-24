@@ -26,14 +26,14 @@ export class PlaygroundWindow extends Window {
 
 	focus(o?: FocusOptions) {
 		//focus card panel, card panel will focus active item
-		this.getItemAt(1)!.focus(o);
+		this.getItems().get(1)!.focus(o);
 	}
 
 
 	protected init() {
 		super.init();
 
-		this.getHeader().insertItem(PlaygroundWindow.createHeaderMenu(), -2);
+		this.getHeader().getItems().insert(PlaygroundWindow.createHeaderMenu(), -2);
 
 		const records:StoreRecord[] = [];
 
@@ -133,7 +133,7 @@ export class PlaygroundWindow extends Window {
 			items: [form, table]
 		})
 
-		this.setItems([
+		this.getItems().replace([
 
 			CardMenu.create({
 				cardContainer: cards

@@ -150,7 +150,7 @@ export class CardContainer extends Component {
 
 	focus(o?: FocusOptions) {
 		if(this.activeItem != undefined) {
-			const activeItem = this.getItemAt(this.activeItem);
+			const activeItem = this.getItems().get(this.activeItem);
 			if (activeItem) {
 				activeItem.focus(o);
 				return;
@@ -172,7 +172,7 @@ export class CardContainer extends Component {
 				itemId: cls
 			}) as Component;
 
-			cardMenu.cardContainer.addItem(item);
+			cardMenu.cardContainer.getItems().add(item);
 		}
 		item.show();
 

@@ -56,7 +56,7 @@ export class CardMenu extends Component {
 
 		this.cardContainer.on("cardchange", (cardContainer, index) => {
 
-			const activeItem = index != undefined ? cardContainer.getItemAt(index)! : undefined;
+			const activeItem = index != undefined ? cardContainer.getItems().get(index)! : undefined;
 
 			this.getItems().forEach((item, menuIndex) => {
 
@@ -81,7 +81,7 @@ export class CardMenu extends Component {
 				item.itemId = 'card-' + index;
 			}
 
-			this.insertItem(
+			this.getItems().insert(
 				Button.create({
 					itemId: item.itemId,
 					cls: index == this.cardContainer.getActiveItem() ? "active" : "",

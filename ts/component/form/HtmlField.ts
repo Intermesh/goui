@@ -275,12 +275,12 @@ export class HtmlField extends Field {
 
 		for (const cmd of this.toolbarItems) {
 			if(cmd == "-") {
-				this.toolbar.addItem(Component.create({tagName:"hr"}));
+				this.toolbar.getItems().add(Component.create({tagName:"hr"}));
 			} else {
 
 				const config = this.commands[cmd];
 
-				this.toolbar.addItem(Button.create({
+				this.toolbar.getItems().add(Button.create({
 					itemId: cmd,
 					icon: config.icon,
 					menu: config.menu,
@@ -296,7 +296,7 @@ export class HtmlField extends Field {
 			}
 		}
 
-		root.addItem(this.toolbar);
+		root.getItems().add(this.toolbar);
 
 		return this.toolbar;
 	}

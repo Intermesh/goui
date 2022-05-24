@@ -175,7 +175,7 @@ export class Button extends Component {
 
 						//must be rendered and visible to get width below
 						if(!this.menu.isRendered()) {
-							root.addItem(this.menu);
+							root.getItems().add(this.menu);
 						}
 						this.menu.show();
 

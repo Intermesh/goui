@@ -19,7 +19,7 @@ export class PlayGround extends Component {
 			this.showWindow();
 		});
 
-		this.addItem(Toolbar.create({
+		this.getItems().add(Toolbar.create({
 			items: [
 				Button.create({
 					text: "Menu",

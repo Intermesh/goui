@@ -361,12 +361,10 @@ export class Component extends Observable {
 
 	private initItems()  {
 
-
-
-		this.items.on("add", (collection, item, index) => {
+		this.getItems().on("add", (collection, item, index) => {
 			this.setupItem(item);
 
-			const refItem = index < collection.count() - 1 ? this.items.get(index - 1) : undefined;
+			const refItem = index < collection.count() - 1 ? this.getItems().get(index - 1) : undefined;
 
 			if (this.isRendered()) {
 				this.renderItem(item, refItem);
@@ -374,12 +372,12 @@ export class Component extends Observable {
 
 		});
 
-		this.items.on("remove", (collection, item, index) => {
+		this.getItems().on("remove", (collection, item, index) => {
 			item.parent = undefined;
 			item.remove();
 		});
 
-		this.items.forEach(comp => {
+		this.getItems().forEach(comp => {
 			this.setupItem(comp);
 		});
 	}
@@ -586,11 +584,11 @@ export class Component extends Observable {
 	}
 
 	protected internalRemove() {
-		this.removeAll();
+		this.getItems().clear();
 
 		// remove this item from the Component
 		if(this.parent) {
-			this.parent.removeItem(this);
+			this.parent.getItems().remove(this);
 		}
 
 		//remove it from the DOM
@@ -921,19 +919,6 @@ export class Component extends Observable {
 		item.parent = this;
 	}
 
-	/**
-	 * Replace all items
-	 *
-	 * @param items
-	 */
-	public setItems(items: Component[]) {
-
-		this.removeAll();
-
-		items.forEach((item) => {
-			this.addItem(item);
-		});
-	}
 
 	/**
 	 * Get all items
@@ -944,7 +929,7 @@ export class Component extends Observable {
 
 
 	protected renderItems() {
-		this.items.forEach((item) => {
+		this.getItems().forEach((item) => {
 			this.renderItem(item);
 		});
 	}
@@ -960,89 +945,12 @@ export class Component extends Observable {
 	}
 
 	/**
-	 * Add item to Component
-	 *
-	 * @param item
-	 * @return Index of item
-	 */
-	addItem(item: Component) {
-		return this.insertItem(item, this.items.count());
-	}
-
-	/**
-	 * Insert item in Component
-	 *
-	 * @param item
-	 * @param index Index in the Component. if negative then it's added from the end.
-	 * @return Index of item
-	 */
-	insertItem(item: Component, index = 0): number {
-
-		if (!this.fire("beforeadditem", this, item, index)) {
-			return -1;
-		}
-
-		this.items.insert(item, index);
-
-		this.fire("additem", this, item, index);
-
-		return index;
-	}
-
-
-
-	/**
-	 * Get item at given index
-	 *
-	 * @param index If negative then it's the index from the end of the items
-	 */
-	public getItemAt(index: number) {
-
-		return this.items.get(index);
-	}
-
-	/**
-	 * Remove an item
-	 *
-	 * @param ref Item index or Component
-	 */
-	public removeItem(ref: number|Component){
-
-		const item = ref instanceof Component ? ref : this.getItemAt(ref);
-		const index = ref instanceof Component ? this.items.indexOf(ref) : ref;
-
-		if (!item) {
-			return false;
-		}
-		if (!this.fire("beforeremoveitem", this, item, index)) {
-			return false;
-		}
-
-		this.items.removeAt(index);
-
-
-
-		this.fire("removeitem", this, item, index);
-
-		return true;
-	}
-
-	/**
-	 * Removes all items
-	 */
-	public removeAll() {
-		for (let i = this.items.count() - 1; i >= 0; i--) {
-			this.removeItem(i);
-		}
-	}
-
-	/**
 	 * Find the item by element ID
 	 *
 	 * @param id
 	 */
 	public findItemIndex(id: string|Component): number {
-		return this.items.getArray().findIndex((item) => {
+		return this.getItems().getArray().findIndex((item) => {
 			return item === id || item.itemId === id || item.getId() === id;
 		});
 	}
@@ -1053,7 +961,7 @@ export class Component extends Observable {
 	 * @param id
 	 */
 	public findItem(id: string|Component) {
-		return this.items.getArray().find((item) => {
+		return this.getItems().getArray().find((item) => {
 			return item === id || item.itemId === id || item.getId() === id;
 		});
 	}

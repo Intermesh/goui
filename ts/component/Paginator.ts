@@ -22,7 +22,7 @@ export class Paginator extends Toolbar {
 	protected init() {
 		super.init();
 
-		this.setItems([
+		this.getItems().replace([
 			this.prev = Button.create({
 				icon: "chevron_left",
 				text: "Previous",

@@ -20,16 +20,16 @@ function loadCard(cls: string, id: string, mod = `./${cls}.js` ) : Promise<Compo
 	if (index == -1) {
 
 		return import(mod).then((mods:any) => {
-			index = cards.addItem(mods[cls].create({
+			cards.getItems().add(mods[cls].create({
 				id: id
 			}));
-			cards.setActiveItem(index);
+			cards.setActiveItem(cards.getItems().count() - 1);
 		}).then(() => {
-			return cards.getItemAt(cards.getActiveItem()!)!;
+			return cards.getItems().get(cards.getActiveItem()!)!;
 		})
 	} else {
 		cards.setActiveItem(index);
-		return Promise.resolve(cards.getItemAt(cards.getActiveItem()!)!);
+		return Promise.resolve(cards.getItems().get(cards.getActiveItem()!)!);
 	}
 }
 
@@ -38,7 +38,7 @@ function loadCard(cls: string, id: string, mod = `./${cls}.js` ) : Promise<Compo
 const cards = CardContainer.create();
 
 root.setEl(document.getElementById("goui")!);
-root.addItem(cards);
+root.getItems().add(cards);
 
 router.on("change", () => {
 	console.warn(`Missing translations`, Translate.missing);
@@ -55,7 +55,7 @@ router.on("change", () => {
 
 			let index = cards.findItemIndex("notfound");
 			if(index == -1) {
-				index = cards.addItem(Component.create({
+				cards.getItems().add(Component.create({
 					cls: "pad",
 					html: `
 <h1>Heading 1</h1>
@@ -69,6 +69,8 @@ router.on("change", () => {
 <p><a href="#playground">Visit play ground</a></p>`,
 					id: "notfound"
 				}));
+
+				index = cards.getItems().count() - 1;
 			}
 			cards.setActiveItem(index);
 		})

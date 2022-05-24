@@ -514,7 +514,7 @@ export class Table extends Component {
 			});
 
 			this.columns.forEach((c) => {
-				this.columnMenu!.addItem(CheckboxField.create({
+				this.columnMenu!.getItems().add(CheckboxField.create({
 					label: c.header,
 					name: c.property,
 					value: !c.hidden,

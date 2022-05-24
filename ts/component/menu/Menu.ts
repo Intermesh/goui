@@ -153,7 +153,7 @@ export class Menu extends Component {
 		this.getStyle().top = coords.y + "px";
 
 		if(!this.parent) {
-			root.addItem(this);
+			root.getItems().add(this);
 		}
 
 		this.show();

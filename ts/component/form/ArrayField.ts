@@ -54,12 +54,12 @@ export class ArrayField extends ContainerField {
 	setValue(v: ArrayFieldValue, useForReset = true) {
 		super.setValue(v, useForReset);
 
-		this.removeAll();
+		this.getItems().clear();
 
 		v.forEach((item) => {
 			const field = this.itemComponent(item);
 			field.setValue(item);
-			this.addItem(field);
+			this.getItems().add(field);
 		});
 	}
 

@@ -198,7 +198,7 @@ export class Login extends Window {
 			items: [this.loginForm, this.otpForm]
 		})
 
-		this.addItem(this.cardContainer);
+		this.getItems().add(this.cardContainer);
 	}
 
 	private showRegisterForm () {
@@ -302,8 +302,8 @@ export class Login extends Window {
 			]
 		});
 
-		const index = this.cardContainer.addItem(this.registerForm);
-		this.cardContainer.setActiveItem(index);
+		this.cardContainer.getItems().add(this.registerForm);
+		this.cardContainer.setActiveItem(this.cardContainer.getItems().count() - 1);
 
 		this.registerForm.findField("displayName")!.focus();
 
