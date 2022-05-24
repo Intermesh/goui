@@ -1,7 +1,18 @@
-
 .window {
 
-	&.maximized {
+	&.maximized
+	{
+		top: 0 !important;
+		bottom: 0 !important;
+		left: 0 !important;
+		right: 0 !important;
+		border-radius: 0 !important;
+		border: 0 !important;
+		width: auto !important;
+		height: auto !important;
+	}
+
+	@media only screen and (max-width: 745px) {
 		top: 0 !important;
 		bottom: 0 !important;
 		left: 0 !important;

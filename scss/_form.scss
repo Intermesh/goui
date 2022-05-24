@@ -1,6 +1,6 @@
 %input {
 	font: $fontBase;
-	min-width: dp(300); //for select element
+	min-width: dp(100); //for select element
 	margin: 0;
 	transition: border-color 100ms linear, box-shadow 225ms linear;
 	border-radius: dp(12);
@@ -331,6 +331,9 @@ fieldset {
 .html-field-toolbar {
 	position: absolute;
 	z-index: $zIndexMenu;
+
+	flex-wrap: wrap;
+	max-width: 100%;
 }
 
 
