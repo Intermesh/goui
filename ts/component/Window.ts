@@ -315,8 +315,8 @@ export class Window extends DraggableComponent {
 	 * Center the window in the screen
 	 */
 	public center() {
-		this.getEl().style.top = (window.innerHeight - this.getEl().offsetHeight) / 2 + "px"
-		this.getEl().style.left = (window.innerWidth - this.getEl().offsetWidth) / 2 + "px"
+		this.setTop((window.innerHeight - this.getHeight()) / 2);
+		this.setLeft((window.innerWidth - this.getWidth()) / 2);
 
 		return this;
 	}

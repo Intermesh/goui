@@ -725,7 +725,7 @@ export class Component extends Observable {
 	 * Get width in pixels
 	 */
 	public getWidth() {
-		return this.el ? this.el.offsetWidth : this.width;
+		return this.el ? this.el.offsetWidth : (this.width || 0);
 	}
 
 	/**
@@ -744,7 +744,7 @@ export class Component extends Observable {
 	 * Get height in pixels
 	 */
 	public getHeight() {
-		return this.el ? this.el.offsetHeight : this.height;
+		return this.el ? this.el.offsetHeight : (this.height || 0);
 	}
 
 	/**

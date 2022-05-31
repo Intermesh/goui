@@ -54,12 +54,20 @@ export class Client extends Observable {
 	public uri = "";
 	private requireLoginPromise?: Promise<any>;
 
+	private static masked = false;
+
 	private static mask() {
-		root.mask();
+		this.masked = true;
+		setTimeout(() => {
+			if(this.masked) {
+				root.mask();
+			}
+		}, 500);
 	}
 
 	private static unmask() {
-		 root.unmask();
+		this.masked = false;
+		root.unmask();
 	}
 
 	set session(value) {

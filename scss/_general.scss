@@ -162,11 +162,9 @@ hr {
 }
 
 menu.cardmenu {
-	@extend .hbox;
-	margin: 0 auto;
-	padding: 0;
-
+	text-align: center;
 	button.button {
+		display: inline-block;
 		padding: dp(12) dp(18);
 		margin: 0 dp(24) 0 0;
 		background: none;

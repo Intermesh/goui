@@ -1,13 +1,11 @@
 dl {
+	margin: 0;
 	dt {
 		display: block;
 		font-size: dp(12);
 		top: dp(5);
 		color: $colorPrimary;
 		margin: dp(16) 0 0 0;
-		&:first-child {
-			margin: 0;
-		}
 		padding: 0;
 	}
 
@@ -15,8 +13,8 @@ dl {
 		margin: 0;
 		padding: 0;
 		display: block;
-		text-overflow: ellipsis;
-		overflow: hidden;
-		white-space: nowrap;
+		//text-overflow: ellipsis;
+		//overflow: hidden;
+		//white-space: nowrap;
 	}
 }
