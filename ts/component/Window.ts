@@ -105,6 +105,12 @@ export class Window extends DraggableComponent {
 	private mask: Mask | undefined;
 	private resizeObserver?: ResizeObserver;
 
+	/**
+	 * Return focus to element focussed before opening it when closing the window
+	 * @private
+	 */
+	private focussedBeforeOpen?: Element;
+
 	public static create<T extends typeof Observable>(this: T, config?: WindowConfig<InstanceType<T>>) {
 		return <InstanceType<T>> super.create(<any> config);
 	}
@@ -279,6 +285,9 @@ export class Window extends DraggableComponent {
 	}
 
 	public show() {
+
+		this.focussedBeforeOpen = document.activeElement || undefined;
+
 		if(!this.isRendered()) {
 
 			root.getItems().add(this);
@@ -312,6 +321,10 @@ export class Window extends DraggableComponent {
 	 * @inheritDoc
 	 */
 	public remove() {
+
+		if(this.focussedBeforeOpen instanceof HTMLElement) {
+			this.focussedBeforeOpen.focus();
+		}
 
 		if(this.resizeObserver) {
 			//otherwise it will fire when removing this element.
