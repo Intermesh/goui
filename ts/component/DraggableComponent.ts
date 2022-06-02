@@ -205,6 +205,7 @@ export class DraggableComponent extends Component {
 		};
 
 		if (el instanceof Window) {
+			//window is a special case. The page might be scrolled and we want to constrain to the viewport then.
 			box.right = window.innerWidth;
 			box.bottom = window.innerHeight;
 		} else {
@@ -290,16 +291,21 @@ export class DraggableComponent extends Component {
 	public constrainTo(el: HTMLElement | Window, pad?: Partial<ConstrainBox>) {
 		const constraints = this.calcConstrainBox(el, pad);
 
-		const current = this.getEl().getBoundingClientRect();
+		let maxTop = constraints.bottom - this.getEl().offsetHeight;
+		let maxLeft = constraints.right - this.getEl().offsetWidth;
 
-		const maxTop = constraints.bottom - this.getEl().offsetHeight;
-		const maxLeft = constraints.right - this.getEl().offsetWidth;
+		if(el instanceof Window) {
+			maxTop += window.scrollY;
+			maxLeft += window.scrollX;
+		}
 
 		if(this.getTop()! > maxTop) {
+			console.warn("Contraining to top " + maxTop);
 			this.setTop(maxTop);
 		}
 
 		if(this.getLeft()! > maxLeft) {
+			console.warn("Contraining to left " + maxLeft);
 			this.setLeft(maxLeft);
 		}
 	}

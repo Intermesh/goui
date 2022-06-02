@@ -1,6 +1,5 @@
 import {Component, ComponentConfig, ComponentEventMap} from "./Component.js";
 import {Observable, ObservableListener, ObservableListenerOpts} from "./Observable.js";
-import {CardMenu} from "./CardMenu.js";
 
 export interface CardContainerEventMap<T extends Observable> extends ComponentEventMap<T> {
 	/**
@@ -163,8 +162,7 @@ export class CardContainer extends Component {
 
 	public async loadCard (cls:string, module:string = `../../${cls}.js`) {
 
-		const cardMenu = this.parent as CardMenu;
-		let item = cardMenu.cardContainer.findItem(cls);
+		let item = this.findItem(cls);
 		if(!item) {
 
 			const mods = await import(module);
@@ -172,7 +170,7 @@ export class CardContainer extends Component {
 				itemId: cls
 			}) as Component;
 
-			cardMenu.cardContainer.getItems().add(item);
+			this.getItems().add(item);
 		}
 		item.show();
 

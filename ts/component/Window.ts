@@ -103,6 +103,7 @@ export class Window extends DraggableComponent {
 
 	protected modal = false
 	private mask: Mask | undefined;
+	private resizeObserver?: ResizeObserver;
 
 	public static create<T extends typeof Observable>(this: T, config?: WindowConfig<InstanceType<T>>) {
 		return <InstanceType<T>> super.create(<any> config);
@@ -199,21 +200,35 @@ export class Window extends DraggableComponent {
 			}
 		});
 
-		//Observe resize
 		if(this.resizable) {
-			const saveState = FunctionUtil.buffer(200, () => {
-				this.saveState();
-			});
-			const ro = new ResizeObserver(entries => {
-				//it fires on close too with size 0. Don't save that.
-				if (entries[0].borderBoxSize[0].blockSize > 0) {
-					saveState();
-				}
-			})
-			ro.observe(this.el!);
+			this.observerResize();
 		}
 
 		return el;
+	}
+
+	private observerResize() {
+
+		const saveState = FunctionUtil.buffer(200, () => {
+			this.saveState();
+		});
+
+		// observer callback always fires inititally and we don't want to save state on init. ONly on resize.
+		// See: https://github.com/WICG/resize-observer/issues/8
+		let init = false;
+
+		this.resizeObserver = new ResizeObserver(entries => {
+
+			if(init) {
+				saveState();
+			} else
+			{
+				init = true;
+			}
+		});
+
+		this.resizeObserver.observe(this.el!);
+
 	}
 
 	protected buildState()
@@ -226,8 +241,8 @@ export class Window extends DraggableComponent {
 			return {
 				width: this.el!.offsetWidth,
 				height: this.el!.offsetHeight,
-				left: this.getLeft(),
-				top: this.getTop()
+				left: (this.getLeft() || 0) - window.scrollX,
+				top: (this.getTop() || 0) - window.scrollY
 			};
 		}
 	}
@@ -238,11 +253,11 @@ export class Window extends DraggableComponent {
 		if (s.height)
 			this.height = s.height;
 
-		if(s.top) {
-			this.setTop(s.top);
+		if(s.top != undefined) {
+			this.setTop(s.top  + window.scrollY);
 
-			if (s.left) {
-				this.setLeft(s.left);
+			if (s.left != undefined) {
+				this.setLeft(s.left + window.scrollX);
 			}
 		} else
 		{
@@ -288,6 +303,7 @@ export class Window extends DraggableComponent {
 			}
 			this.focus();
 		}
+		document.body.style.overflow = "hidden";
 
 		return super.show();
 	}
@@ -296,10 +312,19 @@ export class Window extends DraggableComponent {
 	 * @inheritDoc
 	 */
 	public remove() {
+
+		if(this.resizeObserver) {
+			//otherwise it will fire when removing this element.
+			this.resizeObserver.disconnect();
+		}
+
 		if (this.mask) {
 			this.mask.remove();
 		}
 		this.header.remove();
+
+		document.body.style.overflow = "";
+
 		return super.remove();
 	}
 
@@ -315,8 +340,8 @@ export class Window extends DraggableComponent {
 	 * Center the window in the screen
 	 */
 	public center() {
-		this.setTop((window.innerHeight - this.getHeight()) / 2);
-		this.setLeft((window.innerWidth - this.getWidth()) / 2);
+		this.setTop(((window.innerHeight - this.getHeight())  / 2) + window.scrollY);
+		this.setLeft(((window.innerWidth - this.getWidth()) / 2) + window.scrollX);
 
 		return this;
 	}

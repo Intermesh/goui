@@ -190,6 +190,11 @@ export interface ComponentConfig<T extends Observable> extends ObservableConfig<
 	top?: number
 
 	/**
+	 * The tabindex attribute specifies the tab order of an element (when the "tab" button is used for navigating).
+	 */
+	tabIndex?: number
+
+	/**
 	 * Make it resizable
 	 */
 	resizable?: boolean
@@ -284,6 +289,8 @@ export class Component extends Observable {
 
 	protected width?: number;
 	protected height?: number;
+
+	protected tabIndex?: number;
 	protected flex?: string | number;
 
 	protected stateId?: string;
@@ -496,6 +503,10 @@ export class Component extends Observable {
 
 		if(this.title) {
 			this.applyTitle();
+		}
+
+		if(this.tabIndex) {
+			this.el.tabIndex = this.tabIndex;
 		}
 
 		this.renderItems();

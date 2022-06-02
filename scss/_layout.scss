@@ -65,6 +65,7 @@
 // Make the element fit it's parent
 .fit {
 	height: 100%;
+	width: 100%;
 }
 
 // padding for text contet
@@ -98,6 +99,14 @@
 		background-color: $colorBackgroundDarker;
 		padding: dp(18);
 		border-bottom: 2px solid $colorBorder;
+	}
+
+	> :first-child {
+		.toolbar:first-child {
+			background-color: $colorBackgroundDarker;
+			padding: dp(18);
+			border-bottom: 2px solid $colorBorder;
+		}
 	}
 }
 
@@ -134,3 +143,28 @@
 		background-color: $colorBorder;
 	}
 }
+
+
+@media only screen and (max-width: $deviceSmallWidth) {
+	.hbox.mobile-cards {
+		> * {
+			display: none;
+		}
+
+		>.active {
+			width: 100% !important; //important to override inline width applied by splitter state.
+			height: 100% !important;
+			display:block;
+		}
+	}
+}
+
+
+
+@media only screen and (min-width: $deviceSmallWidth) {
+	.for-small-device {
+		display: none !important;
+	}
+}
+
+
