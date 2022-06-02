@@ -190,7 +190,17 @@ export interface TableEventMap<T extends Observable> extends ComponentEventMap<T
 	 * @param table
 	 * @param records
 	 */
-	renderrows?: (table: Table, records: StoreRecord) => void;
+	renderrows?: (table: Table, records: StoreRecord[]) => void;
+
+	/**
+	 * Fires when a row is clicked or navigated with arrows
+	 *
+	 * @param table
+	 * @param rowIndex
+	 * @param ev
+	 */
+	navigate?: (table: Table, rowIndex: number, record: StoreRecord) => void
+
 }
 
 export interface Table {
@@ -282,6 +292,41 @@ export class Table extends Component {
 	protected init() {
 		super.init();
 
+		this.initRowSelect();
+
+		this.initNavigateEvent();
+
+		this.normalizeColumns();
+	}
+
+	private initNavigateEvent() {
+		this.on('rowclick', (table, rowIndex, ev) => {
+			if(!ev.shiftKey && !ev.ctrlKey) {
+				const record = this.store.getRecordAt(rowIndex);
+
+				this.fire("navigate", this, rowIndex, record);
+			}
+		});
+
+		if(this.rowSelection) {
+			this.on("render", (comp) => {
+				this.getEl().addEventListener('keydown', (ev) => {
+					if (!ev.shiftKey && !ev.ctrlKey && (ev.key == "ArrowDown" || ev.key == "ArrowUp")) {
+
+						const selected = this.rowSelect!.getSelected();
+						if(selected.length) {
+							const rowIndex = selected[0];
+							const record = this.store.getRecordAt(rowIndex);
+
+							this.fire("navigate", this, rowIndex, record);
+						}
+					}
+				})
+			});
+		}
+	}
+
+	private initRowSelect() {
 		if (this.rowSelection) {
 
 			if (typeof this.rowSelection != "boolean") {
@@ -291,12 +336,7 @@ export class Table extends Component {
 			{
 				this.rowSelect = TableRowSelect.create({table: this});
 			}
-
 		}
-
-
-
-		this.normalizeColumns();
 	}
 
 	protected internalRemove() {
@@ -306,6 +346,9 @@ export class Table extends Component {
 		return super.internalRemove();
 	}
 
+	/**
+	 * Get row selection model
+	 */
 	public getRowSelection() {
 		return this.rowSelect;
 	}
@@ -333,6 +376,13 @@ export class Table extends Component {
 		}
 	}
 
+	/**
+	 * Find column by "property" property.
+	 *
+	 * It's the property path of the data linked to the column
+	 *
+	 * @param property
+	 */
 	public findColumnByProperty(property: string) {
 		return this.columns.find((col) => {
 			return col.property == property;
@@ -570,9 +620,6 @@ export class Table extends Component {
 		}
 	}
 
-
-
-
 	private renderHeaders() {
 
 		const thead = document.createElement('thead');
@@ -736,7 +783,6 @@ export class Table extends Component {
 		return this.store;
 	}
 
-
 	private renderRow(record: any, tbody: DocumentFragment) {
 		const row = document.createElement("tr");
 
@@ -781,4 +827,6 @@ export class Table extends Component {
 
 		tbody.appendChild(row);
 	}
+
+
 }

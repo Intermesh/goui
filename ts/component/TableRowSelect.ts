@@ -110,10 +110,16 @@ export class TableRowSelect extends Observable {
 		})
 	}
 
+	/**
+	 * Get selected indexes
+	 */
 	public getSelected() {
 		return [...this._selected];
 	}
 
+	/**
+	 * Get the table this selection model belongs to
+	 */
 	public getTable() {
 		return this.table;
 	}
@@ -147,6 +153,12 @@ export class TableRowSelect extends Observable {
 	}
 
 
+	/**
+	 * Set selected indexes
+	 *
+	 * @param newSelection
+	 * @param silent Suspends 'selectionchange' event
+	 */
 	public setSelected(newSelection: number[], silent = false) {
 
 		const old = this._selected;
