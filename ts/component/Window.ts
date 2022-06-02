@@ -312,7 +312,6 @@ export class Window extends DraggableComponent {
 			}
 			this.focus();
 		}
-		document.body.style.overflow = "hidden";
 
 		return super.show();
 	}
@@ -335,8 +334,6 @@ export class Window extends DraggableComponent {
 			this.mask.remove();
 		}
 		this.header.remove();
-
-		document.body.style.overflow = "";
 
 		return super.remove();
 	}

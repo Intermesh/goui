@@ -788,6 +788,9 @@ export class Table extends Component {
 	private renderRow(record: any, tbody: DocumentFragment) {
 		const row = document.createElement("tr");
 
+		// useful so it scrolls into view
+		row.setAttribute('tabindex', '0');
+
 		for (let c of this.columns) {
 
 			if(c.hidden) {

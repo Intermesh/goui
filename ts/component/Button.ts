@@ -2,6 +2,7 @@ import {Component, ComponentConfig, ComponentEventMap} from "./Component.js";
 import {Menu} from "./menu/Menu.js";
 import {root} from "./Root.js";
 import {Observable, ObservableListener, ObservableListenerOpts} from "./Observable.js";
+import {t} from "../Translate.js";
 
 type ButtonType = "button" | "submit" | "reset";
 
@@ -121,6 +122,8 @@ export class Button extends Component {
 
 	protected text?: string
 
+	private block = false;
+
 	protected internalRender() {
 
 		const el = <HTMLButtonElement> super.internalRender();
@@ -132,22 +135,28 @@ export class Button extends Component {
 			e.stopPropagation();
 		});
 
-		if (this.handler) {
-			el.addEventListener("click", (e) => {
-				// check detail for being the first click. We don't want double clicks to call the handler twice.
-				// the detail property contains the click count. When spacebar is used it will be 0
-				if (e.button == 0  && e.detail < 2) {
-					this.handler!.call(this, this, e);
-				}
+		el.addEventListener("click", (e) => {
+			// prevent double submissions for 1s
+			if(this.block) {
+				this.setDisabled(true);
+				e.preventDefault();
+				return;
+			}
+			this.block = true;
+			setTimeout(() => {
+				this.block = false;
+				this.setDisabled(false);
+			}, 1000);
 
-				this.fire("click", this, e);
-			});
-		} else
-		{
-			el.addEventListener("click", (e) => {
-				this.fire("click", this, e);
-			});
-		}
+			// check detail for being the first click. We don't want double clicks to call the handler twice.
+			// the detail property contains the click count. When spacebar is used it will be 0
+			if (this.handler && e.button == 0 && e.detail < 2) {
+				this.handler.call(this, this, e);
+			}
+
+			this.fire("click", this, e);
+		});
+
 
 		this.applyTextAndIcon();
 
