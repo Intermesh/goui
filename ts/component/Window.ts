@@ -241,8 +241,8 @@ export class Window extends DraggableComponent {
 			return {
 				width: this.el!.offsetWidth,
 				height: this.el!.offsetHeight,
-				left: (this.getLeft() || 0) - window.scrollX,
-				top: (this.getTop() || 0) - window.scrollY
+				left: this.getLeft(),
+				top: this.getTop()
 			};
 		}
 	}
@@ -254,10 +254,10 @@ export class Window extends DraggableComponent {
 			this.height = s.height;
 
 		if(s.top != undefined) {
-			this.setTop(s.top  + window.scrollY);
+			this.setTop(s.top);
 
 			if (s.left != undefined) {
-				this.setLeft(s.left + window.scrollX);
+				this.setLeft(s.left);
 			}
 		} else
 		{
@@ -340,8 +340,9 @@ export class Window extends DraggableComponent {
 	 * Center the window in the screen
 	 */
 	public center() {
-		this.setTop(((window.innerHeight - this.getHeight())  / 2) + window.scrollY);
-		this.setLeft(((window.innerWidth - this.getWidth()) / 2) + window.scrollX);
+		console.warn(window.innerHeight, this.getHeight(), window.scrollY);
+		this.setTop(((window.innerHeight - this.getHeight())  / 2));
+		this.setLeft(((window.innerWidth - this.getWidth()) / 2));
 
 		return this;
 	}

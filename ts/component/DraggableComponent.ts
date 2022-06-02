@@ -153,7 +153,8 @@ export class DraggableComponent extends Component {
 			const el = this.getEl(), rect = el.getBoundingClientRect();
 
 			if(this.setPosition === undefined) {
-				this.setPosition = getComputedStyle(el).position == 'absolute';
+				const cmpStyle = getComputedStyle(el);
+				this.setPosition = cmpStyle.position == 'absolute' || cmpStyle.position == 'fixed';
 			}
 
 			this.dragData = {
@@ -291,22 +292,25 @@ export class DraggableComponent extends Component {
 	public constrainTo(el: HTMLElement | Window, pad?: Partial<ConstrainBox>) {
 		const constraints = this.calcConstrainBox(el, pad);
 
-		let maxTop = constraints.bottom - this.getEl().offsetHeight;
-		let maxLeft = constraints.right - this.getEl().offsetWidth;
-
-		if(el instanceof Window) {
-			maxTop += window.scrollY;
-			maxLeft += window.scrollX;
-		}
+		let maxTop = constraints.bottom - this.getEl().offsetHeight,
+		 maxLeft = constraints.right - this.getEl().offsetWidth,
+			minTop = 0,
+			minLeft = 0;
 
 		if(this.getTop()! > maxTop) {
 			console.warn("Contraining to top " + maxTop);
 			this.setTop(maxTop);
+		} else if(this.getTop()! < minTop) {
+			console.warn("Contraining to top " + minTop);
+			this.setTop(minTop);
 		}
 
 		if(this.getLeft()! > maxLeft) {
 			console.warn("Contraining to left " + maxLeft);
 			this.setLeft(maxLeft);
+		} else if(this.getLeft()! < minLeft) {
+			console.warn("Contraining to left " + minLeft);
+			this.setTop(minLeft);
 		}
 	}
 }

@@ -49,7 +49,7 @@
 	}
 }
 
-.flex {
+.container {
 	display: flex;
 	flex-direction: row;
 	flex-wrap: wrap;
@@ -59,6 +59,7 @@
 		min-width: 300px;
 	}
 }
+
 
 
 
@@ -145,7 +146,7 @@
 }
 
 
-@media only screen and (max-width: $deviceSmallWidth) {
+@media only screen and (max-width: $breakpointSmall) {
 	.hbox.mobile-cards {
 		> * {
 			display: none;
@@ -161,7 +162,7 @@
 
 
 
-@media only screen and (min-width: $deviceSmallWidth) {
+@media only screen and (min-width: $breakpointSmall) {
 	.for-small-device {
 		display: none !important;
 	}

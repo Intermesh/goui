@@ -764,6 +764,7 @@ export class Component extends Observable {
 	 * @param top
 	 */
 	public setTop(top:number) {
+		console.warn(top);
 		this.top = top;
 		if (this.rendered) {
 			this.el!.style.top = top +"px";
