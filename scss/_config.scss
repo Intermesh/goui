@@ -15,6 +15,7 @@ $colorBorderWindow: $colorBorder;
 $colorHover: rgb(1 ,4, 10, 0.06);//#f1f1f6;//rgba(black, 0.04);
 
 $colorSelectedRow: #1e1246;
+$colorSelectedRowInactive: #f1f1f1;
 
 $colorPrimary: #1652a1;
 $colorSecondary: #78a22f;
@@ -32,6 +33,7 @@ $colorBackgroundDarker: #f8f8f9;//rgb(30 ,18, 70, 0.03);
 $colorBackgroundWindow: $colorBackgroundDarker; //rgb(30 ,18, 70, 0.03);
 $colorWindowHeader: $colorBackgroundWindow;//#f5f5f5;
 $colorError: #f36363;
+$colorFocus: rgba(2, 119, 189, 0.16);
 
 $colorBorderSelectedInput: rgb(0,176,173);
 $colorBackgroundInput: #fafafb;

@@ -284,6 +284,8 @@ export class Table extends Component {
 	private loadOnScroll: boolean = false;
 	private emptyStateEl?: HTMLDivElement;
 
+	protected tabIndex = 0;
+
 
 	public static create<T extends typeof Observable>(this: T, config: TableConfig<InstanceType<T>>)  {
 		return <InstanceType<T>> super.create(<any> config);
@@ -785,8 +787,6 @@ export class Table extends Component {
 
 	private renderRow(record: any, tbody: DocumentFragment) {
 		const row = document.createElement("tr");
-
-		row.setAttribute("tabindex", "0");
 
 		for (let c of this.columns) {
 

@@ -82,7 +82,7 @@ export class TableRowSelect extends Observable {
 
 	private _selected: number[] = [];
 
-	private lastIndex = 0;
+	private lastIndex = -1;
 	private shiftStartIndex?: number;
 
 	public multiSelect = true;
@@ -99,7 +99,6 @@ export class TableRowSelect extends Observable {
 			const tableEl = this.table.getEl();
 
 			tableEl.classList.add('rowSelect');
-			tableEl.setAttribute("tabindex", "-1");
 			tableEl.addEventListener("keydown", (e) => {
 				this.onKeyDown(e);
 			})
@@ -107,6 +106,13 @@ export class TableRowSelect extends Observable {
 			this.table.on('rowclick', (table: Table, index: number, e: MouseEvent) => {
 				this.onRowClick(table, index, e);
 			});
+
+			tableEl.addEventListener("focus", (e) => {
+				console.warn(e);
+				if(!this.getSelected().length && this.table.getStore().getRecordAt(0)) {
+					this.setSelected([0]);
+				}
+			})
 		})
 	}
 

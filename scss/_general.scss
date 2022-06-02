@@ -182,6 +182,10 @@ menu.cardmenu {
 		&:hover {
 			color:black;
 		}
+
+		&:focus-visible {
+			background-color: $colorFocus;
+		}
 	}
 }
 

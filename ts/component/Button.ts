@@ -134,8 +134,9 @@ export class Button extends Component {
 
 		if (this.handler) {
 			el.addEventListener("click", (e) => {
-				// check detail for being the first click. We don't want double clicks to call the handler twice
-				if (e.button == 0  && e.detail == 1) {
+				// check detail for being the first click. We don't want double clicks to call the handler twice.
+				// the detail property contains the click count. When spacebar is used it will be 0
+				if (e.button == 0  && e.detail < 2) {
 					this.handler!.call(this, this, e);
 				}
 

@@ -505,7 +505,7 @@ export class Component extends Observable {
 			this.applyTitle();
 		}
 
-		if(this.tabIndex) {
+		if(this.tabIndex != undefined) {
 			this.el.tabIndex = this.tabIndex;
 		}
 

@@ -1,6 +1,20 @@
 
 .table {
 
+	&:focus-within {
+		table {
+			tbody {
+				tr.selected {
+					background-color: $colorSelectedRow;
+					color: white;
+					a {
+						color: white;
+					}
+				}
+			}
+		}
+	}
+
 	background-color: $colorBackgroundDarker;
 
 
@@ -36,12 +50,7 @@
 				}
 
 				&.selected {
-					color: white;
-					background-color: $colorSelectedRow;
-
-					a {
-						color: white;
-					}
+					background-color: $colorSelectedRowInactive;
 				}
 			}
 		}

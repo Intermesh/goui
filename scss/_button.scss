@@ -78,6 +78,10 @@ button.button {
 			filter: brightness(120%);
 		}
 	}
+
+	&:focus-visible {
+		background-color: $colorFocus;
+	}
 }
 
 
