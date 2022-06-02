@@ -108,10 +108,12 @@ export class TableRowSelect extends Observable {
 			});
 
 			tableEl.addEventListener("focus", (e) => {
-				console.warn(e);
-				if(!this.getSelected().length && this.table.getStore().getRecordAt(0)) {
-					this.setSelected([0]);
-				}
+				// use set timeout so rowclick event will be handled first
+				setTimeout(() => {
+					if(!this.getSelected().length && this.table.getStore().getRecordAt(0)) {
+						this.setSelected([0]);
+					}
+				}, 300);
 			})
 		})
 	}
