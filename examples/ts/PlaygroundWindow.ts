@@ -51,6 +51,11 @@ export class PlaygroundWindow extends Window {
 				records: records,
 				sort: [{property: "number", isAscending: true}]
 			}),
+			listeners: {
+				navigate: (table, rowIndex, record) => {
+					Window.alert("Selected", "You navigated to " + record.number + ". Press 'Escape' to close me and navigate the grid with the arrow keys.");
+				}
+			},
 			cls: "fit",
 			columns: [
 				{

@@ -293,14 +293,18 @@ export class Window extends DraggableComponent {
 			root.getItems().add(this);
 
 			if (this.modal) {
-					this.mask = Mask.create({
+				this.mask = Mask.create({
 					spinner: false,
 					cls: "fade-in fade-out",
-					style: {zIndex: (parseInt(getComputedStyle(this.getEl()).zIndex) - 1).toString()},
+					style: {zIndex: (parseInt(getComputedStyle(this.getEl()).zIndex)).toString()},
 					hidden: true
 				});
 
-				root.getItems().add(this.mask);
+				root.getItems().insert(this.mask, -1);
+
+				this.mask.getEl().addEventListener("click", (ev) => {
+					this.focus();
+				});
 
 				this.mask.show();
 			}

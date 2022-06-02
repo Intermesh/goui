@@ -32,4 +32,5 @@ export class Mask extends Component {
 			this.html = '<div class="spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>';
 		}
 	}
+
 }

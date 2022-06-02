@@ -15,9 +15,6 @@ export class PlayGround extends Component {
 
 	protected init() {
 
-		router.add(/playground\/window/, () => {
-			this.showWindow();
-		});
 
 		this.getItems().add(Toolbar.create({
 			items: [

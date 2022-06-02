@@ -4,6 +4,7 @@ import {router} from "../../dist/Router.js";
 import {client} from "../../dist/api/Client.js";
 import {Translate} from "../../dist/Translate.js";
 import {root} from "../../dist/component/Root.js";
+import {PlayGround} from "./PlayGround.js";
 
 // Setup Group-Office connection
 client.uri = "http://host.docker.internal:6780/api/";
@@ -51,7 +52,13 @@ router.on("change", () => {
 			return loadCard("PlayGround", "playground");
 		})
 
-		.add(() => {
+		.add(/playground\/window/, async () => {
+			const playground = await loadCard("PlayGround", "playground") as PlayGround;
+			playground.showWindow();
+		})
+
+
+.add(() => {
 
 			let index = cards.findItemIndex("notfound");
 			if(index == -1) {

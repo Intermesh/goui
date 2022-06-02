@@ -72,13 +72,13 @@ export class Collection<T> extends Observable implements Iterable<T>{
 	/**
 	 * Insert an item at the given index
 	 *
-	 * @param item
+	 * @param item Use negative indexes to insert from the end. For example -1 inserts before the last item.
 	 * @param index
 	 */
 	public insert(item:T, index = 0)  {
 
 		if(index < 0) {
-			index = this.items.length + index;
+			index = this.items.length + index + 1;
 		}
 
 		if(!this.fire("beforeadd", this, item, index)) {
