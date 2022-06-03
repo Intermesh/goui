@@ -47,7 +47,7 @@ export class Client extends Observable {
 	private _session: any;
 	private timeout?: number;
 
-	private debugParam = ""
+	private debugParam = "?XDEBUG_SESSION=1"
 
 	public user: User | undefined;
 
@@ -87,9 +87,9 @@ export class Client extends Observable {
 		return "call-" + this._lastCallId;
 	}
 
-	public isLoggedIn(): Promise<User> {
+	public isLoggedIn(): Promise<User|false> {
 		if(!("accessToken" in this.session)) {
-			return Promise.reject();
+			return Promise.resolve(false);
 		} else if(this.user)
 		{
 			return Promise.resolve(this.user);
@@ -208,7 +208,15 @@ export class Client extends Observable {
 		}
 
 		return this.requireLoginPromise.then(() => {
-			return this.isLoggedIn().catch(() => {
+			return this.isLoggedIn().then(user => {
+				if(!user) {
+					this.session = {};
+					return this.requireLogin();
+				} else
+				{
+					return user;
+				}
+			}).catch(() => {
 				this.session = {};
 				return this.requireLogin();
 			});

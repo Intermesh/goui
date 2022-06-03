@@ -78,7 +78,7 @@ export class Collection<T> extends Observable implements Iterable<T>{
 	public insert(item:T, index = 0)  {
 
 		if(index < 0) {
-			index = this.items.length + index;
+			index = this.count() + index;
 		}
 
 		if(!this.fire("beforeadd", this, item, index)) {
@@ -98,6 +98,20 @@ export class Collection<T> extends Observable implements Iterable<T>{
 	 */
 	public get(index:number) : T {
 		return this.items[index];
+	}
+
+	/**
+	 * Return first item
+	 */
+	public first() {
+		return this.get(0);
+	}
+
+	/**
+	 * return the last item
+	 */
+	public last() {
+		return this.get(this.count() - 1);
 	}
 
 	/**

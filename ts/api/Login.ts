@@ -45,6 +45,15 @@ export class Login extends Window {
 	protected init() {
 		super.init();
 
+		this.on("close", async window => {
+			if(!await client.isLoggedIn()) {
+				// closed without successful login
+				await Window.alert(t("Login required"), t("Login is required for this page. You will return to the previous page."));
+
+				history.back();
+			}
+		})
+
 		this.loginForm = Form.create({
 			flex: "1 2 auto",
 			cls: "vbox",
@@ -314,9 +323,11 @@ export class Login extends Window {
 		this.loginForm.focus(o);
 	}
 
-	login(form: Form) {
+	async login(form: Form) {
 
-		client.auth(form.getValues()).then((response) => {
+		try {
+			const response = await client.auth(form.getValues());
+
 			switch (response.status) {
 				case 200:
 					response.json().then((responseData: any) => {
@@ -336,18 +347,16 @@ export class Login extends Window {
 
 					Alert.error(response.statusText);
 			}
-		});
-
+		}
+		catch(e) {
+			Alert.error("Sorry, an unexpected error occurred: " + e);
+		}
 	}
 
-	onLoginSuccess(response: any) {
-		response.json().then((session: any) => {
-			client.session = session;
-		}).then(() => {
-			Alert.success(t("Logged in successfully"));
-			this.close();
-
-			this.fire("login");
-		})
+	private async onLoginSuccess(response: any) {
+		client.session =  await response.json();
+		Alert.success(t("Logged in successfully"));
+		this.close();
+		this.fire("login");
 	}
 }
