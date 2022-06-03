@@ -160,7 +160,7 @@ export class CardContainer extends Component {
 
 	}
 
-	public async loadCard (cls:string, module:string = `../../${cls}.js`) {
+	public async loadCard (cls:string, module:string = `../../../../script/${cls}.js`) {
 
 		let item = this.findItem(cls);
 		if(!item) {

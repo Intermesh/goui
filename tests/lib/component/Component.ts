@@ -1,6 +1,6 @@
 import {expect} from "chai";
-import {Component} from "../../../dist/component/Component.js";
-import {root} from "../../../dist/component/Root.js";
+import {Component} from "../../../script/component/Component.js";
+import {root} from "../../../script/component/Root.js";
 
 describe('Component class', () => {
 	describe("Create", () => {
@@ -8,7 +8,7 @@ describe('Component class', () => {
 		it('Create a component', function () {
 			const comp = Component.create();
 
-			root.addItem(comp);
+			root.getItems().add(comp);
 
 			expect(root.getEl().children.length).to.equal(1);
 
@@ -21,7 +21,7 @@ describe('Component class', () => {
 		it('Fires an event once', function () {
 			const comp = Component.create();
 
-			root.addItem(comp);
+			root.getItems().add(comp);
 
 			let fired = false;
 			comp.on("show", () => {

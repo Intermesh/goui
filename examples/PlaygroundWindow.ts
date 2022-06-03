@@ -1,20 +1,20 @@
-import {Window} from "../../dist/component/Window.js";
-import {DateColumn, Table} from "../../dist/component/Table.js";
-import {Store, StoreRecord} from "../../dist/data/Store.js";
-import {Form} from "../../dist/component/form/Form.js";
-import {Fieldset} from "../../dist/component/form/Fieldset.js";
-import {TextField} from "../../dist/component/form/TextField.js";
-import {HtmlField} from "../../dist/component/form/HtmlField.js";
-import {ContainerField} from "../../dist/component/form/ContainerField.js";
-import {CardContainer} from "../../dist/component/CardContainer.js";
-import {CardMenu} from "../../dist/component/CardMenu.js";
-import {Toolbar} from "../../dist/component/Toolbar.js";
-import {Button} from "../../dist/component/Button.js";
-import {Component} from "../../dist/component/Component.js";
-import {DateField} from "../../dist/component/form/DateField.js";
-import {CheckboxField} from "../../dist/component/form/CheckboxField.js";
-import {Menu} from "../../dist/component/menu/Menu.js";
-import {DateTime} from "../../dist/util/DateTime.js";
+import {Window} from "../script/component/Window.js";
+import {DateColumn, Table} from "../script/component/Table.js";
+import {Store, StoreRecord} from "../script/data/Store.js";
+import {Form} from "../script/component/form/Form.js";
+import {Fieldset} from "../script/component/form/Fieldset.js";
+import {TextField} from "../script/component/form/TextField.js";
+import {HtmlField} from "../script/component/form/HtmlField.js";
+import {ContainerField} from "../script/component/form/ContainerField.js";
+import {CardContainer} from "../script/component/CardContainer.js";
+import {CardMenu} from "../script/component/CardMenu.js";
+import {Toolbar} from "../script/component/Toolbar.js";
+import {Button} from "../script/component/Button.js";
+import {Component} from "../script/component/Component.js";
+import {DateField} from "../script/component/form/DateField.js";
+import {CheckboxField} from "../script/component/form/CheckboxField.js";
+import {Menu} from "../script/component/menu/Menu.js";
+import {DateTime} from "../script/util/DateTime.js";
 
 export class PlaygroundWindow extends Window {
 	stateId = "playground-window"

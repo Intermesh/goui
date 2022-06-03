@@ -17,16 +17,14 @@
   },
   "scripts": {
     "test": "node ./node_modules/mocha/bin/mocha",
-    "clean": "./node_modules/.bin/rimraf ./dist ./tsconfig.tsbuildinfo ./tsconfig.production.tsbuildinfo",
-    "dist": "mkdir -p ./dist",
-    "start": "./node_modules/.bin/npm-run-all clean dist resources --parallel watch:tsc watch:sass http-server --print-label ",
+    "start": "./node_modules/.bin/npm-run-all --parallel watch:tsc watch:sass http-server --print-label ",
     "resources": "cp -r ./resources ./dist/resources && cp -r ./node_modules/material-icons/iconfont ./dist/resources/material-icons",
     "watch:tsc": "./node_modules/.bin/tsc --watch",
-    "watch:sass": "sass --watch scss:dist",
+    "watch:sass": "sass --watch style:style",
     "http-server": "./node_modules/.bin/http-server",
     "build": "./node_modules/.bin/npm-run-all clean dist resources build:tsc build:sass --print-label",
     "build:tsc": "./node_modules/.bin/tsc --project tsconfig.production.json",
-    "build:sass": "sass --style=compressed scss:dist",
+    "build:sass": "sass --style=compressed style:style",
     "build:uglify": "find ./dist -name \"*.js\" -exec npx uglifyjs {} -o {} \\;"
   }
 }

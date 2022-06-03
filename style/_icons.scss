@@ -1,10 +1,4 @@
-//@font-face {
-//	font-family: 'Material Icons Round';
-//	font-style: normal;
-//	font-weight: 400;
-//	src: url(#{$resourcePath}/font/Material-Icons-Round.woff2) format('woff2');
-//}
-$material-icons-font-path: './resources/material-icons/';
+$material-icons-font-path: '../node_modules/material-icons/iconfont/';
 
 @import '../node_modules/material-icons/iconfont/round';
 

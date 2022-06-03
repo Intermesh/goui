@@ -1,5 +1,5 @@
 import {expect} from "chai";
-import {router} from "../dist/Router.js";
+import {router} from "../script/Router.js";
 
 describe('Router class', () => {
 	describe("goto", () => {

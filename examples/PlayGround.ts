@@ -1,12 +1,12 @@
-import {Component} from "../../dist/component/Component.js";
-import {Toolbar} from "../../dist/component/Toolbar.js";
-import {Button} from "../../dist/component/Button.js";
-import {Menu} from "../../dist/component/menu/Menu.js";
-import {CheckboxField} from "../../dist/component/form/CheckboxField.js";
-import {ColorMenu} from "../../dist/component/menu/ColorMenu.js";
-import {Window} from "../../dist/component/Window.js";
-import {router} from "../../dist/Router.js";
-import {Alert} from "../../dist/Alert.js";
+import {Component} from "../script/component/Component.js";
+import {Toolbar} from "../script/component/Toolbar.js";
+import {Button} from "../script/component/Button.js";
+import {Menu} from "../script/component/menu/Menu.js";
+import {CheckboxField} from "../script/component/form/CheckboxField.js";
+import {ColorMenu} from "../script/component/menu/ColorMenu.js";
+import {Window} from "../script/component/Window.js";
+import {router} from "../script/Router.js";
+import {Alert} from "../script/Alert.js";
 
 
 export class PlayGround extends Component {
@@ -89,7 +89,7 @@ export class PlayGround extends Component {
 										Button.create({
 											html: "Show",
 											handler: () => {
-												import("../../dist/api/Login.js").then(mods => {
+												import("../script/api/Login.js").then(mods => {
 													const login = mods.Login.create();
 													login.open();
 												})

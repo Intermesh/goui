@@ -8,13 +8,13 @@
 
     //es6
     "module":"es2020",
-    "outDir": "./dist",
+//    "outDir": "./dist",
 
     //Systemjs
 //    "module":"system",
 //    "outFile": "./examples/typings/goui",
 
-    "rootDir": "./ts"
+//    "rootDir": "./script"
   }
 
 

@@ -1,9 +1,9 @@
-import {CardContainer} from "../../dist/component/CardContainer.js";
-import {Component} from "../../dist/component/Component.js";
-import {router} from "../../dist/Router.js";
-import {client} from "../../dist/api/Client.js";
-import {Translate} from "../../dist/Translate.js";
-import {root} from "../../dist/component/Root.js";
+import {CardContainer} from "../script/component/CardContainer.js";
+import {Component} from "../script/component/Component.js";
+import {router} from "../script/Router.js";
+import {client} from "../script/api/Client.js";
+import {Translate} from "../script/Translate.js";
+import {root} from "../script/component/Root.js";
 import {PlayGround} from "./PlayGround.js";
 
 // Setup Group-Office connection
