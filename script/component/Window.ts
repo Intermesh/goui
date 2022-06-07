@@ -354,7 +354,6 @@ export class Window extends DraggableComponent {
 	 * Center the window in the screen
 	 */
 	public center() {
-		console.warn(window.innerHeight, this.getHeight(), window.scrollY);
 		this.setTop(((window.innerHeight - this.getHeight())  / 2));
 		this.setLeft(((window.innerWidth - this.getWidth()) / 2));
 

@@ -1,15 +1,14 @@
 // import {LanguageKeys} from "../locale/LanguageKeys";
 
+type lang = {[key: string]: string}
+
 export class Translate {
-	private static lang: any;
+	private static lang: lang;
 
 	public static missing: any = {};
 
-	public static async load(lang:string) {
-		const mods = await import("../locale/" + lang + ".js");
-
-
-		this.lang = mods.lang;
+	public static load(lang:lang) {
+		this.lang = lang;
 	}
 
 	public static t(key:any | string) {
