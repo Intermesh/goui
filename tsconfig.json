@@ -1,12 +1,6 @@
 {
   "extends": "./tsconfig-base.json",
-  "compilerOptions": {
-//    "composite": true
-  },
 
-  "include": [
-    "./**/*.ts"
-    //    "./tests/**/*.ts"
-  ]
+
 
 }

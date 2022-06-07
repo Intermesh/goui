@@ -5,17 +5,10 @@
     "sourceMap": true,
     "lib": ["es2018", "dom"],
     "moduleResolution": "node",
-
-    //es6
     "module":"es2020",
-//    "outDir": "./dist",
+  },
 
-    //Systemjs
-//    "module":"system",
-//    "outFile": "./examples/typings/goui",
-
-//    "rootDir": "./script"
-  }
-
-
+  "include": [
+    "./**/*.ts"
+  ]
 }
