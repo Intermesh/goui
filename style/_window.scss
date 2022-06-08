@@ -1,5 +1,10 @@
 .window {
 
+	&.modal {
+		box-shadow: 0 0px 20px 0 rgb(0 0 0 / 40%);
+		border: 2px solid rgba(30, 18, 70, 0.6);
+	}
+
 	&.maximized
 	{
 		top: 0 !important;
@@ -28,9 +33,11 @@
 	@extend .vbox;
 
 	box-shadow: $windowShadow;
+
 	position: fixed;
 	border: 2px solid $colorBorderWindow;
 	border-radius: dp(12);
+
 	z-index: $zIndexWindow;
 	//focussed window on top
 	&:focus-within {

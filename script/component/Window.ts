@@ -210,6 +210,10 @@ export class Window extends DraggableComponent {
 			this.observerResize();
 		}
 
+		if(this.modal) {
+			el.classList.add("modal");
+		}
+
 		return el;
 	}
 
