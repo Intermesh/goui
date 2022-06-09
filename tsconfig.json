@@ -1,6 +1,8 @@
 {
   "extends": "./tsconfig-base.json",
-
-
-
+  "compilerOptions": {
+    "extendedDiagnostics": false,
+    "skipLibCheck": true,
+    "assumeChangesOnlyAffectDirectDependencies": true
+  }
 }
