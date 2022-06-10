@@ -14,33 +14,33 @@ export {Alert};
  */
 class Alert {
 
-	public static error(msg: string|Error) {
+	public static error(msg: string|Error, timeout = 3000) {
 		console.error(msg);
 		if(typeof msg != "string") {
 			msg = msg.message;
 		}
 
-		return new Message(msg, "error");
+		return new Message(msg, "error", timeout);
 	}
 
-	public static success(msg: string) {
-		return new Message(msg, "success");
+	public static success(msg: string, timeout = 3000) {
+		return new Message(msg, "success", timeout);
 	}
 
-	public static notice(msg: string) {
-		return new Message(msg, "notice");
+	public static notice(msg: string, timeout = 3000) {
+		return new Message(msg, "notice", timeout);
 	}
 
-	public static warning(msg: string) {
-		return new Message(msg, "warning");
+	public static warning(msg: string, timeout = 3000) {
+		return new Message(msg, "warning", timeout);
 	}
 
 }
 
 class Message {
-	readonly timeout: number;
+	readonly timeout?: number;
 
-	constructor(msg: string, type: string) {
+	constructor(msg: string, type: string, timeout = 3000) {
 
 		const alert = Component.create({
 			cls: "alert " + type,
@@ -58,13 +58,17 @@ class Message {
 
 		root.getItems().add(alert);
 
-		this.timeout = window.setTimeout(() => {
-			alert.remove();
-		}, 3000);
+		if(timeout) {
+			this.timeout = window.setTimeout(() => {
+				alert.remove();
+			}, timeout);
+		}
 
 		alert.getEl().addEventListener("click", () => {
 			alert.remove();
-			clearTimeout(this.timeout);
+			if(this.timeout) {
+				clearTimeout(this.timeout);
+			}
 		});
 	}
 }

@@ -24,8 +24,10 @@
 		color: $colorTextPlaceholder;
 	}
 	&+div.label {
-		font-size: dp(12);
-		top: dp(5);
+		//font-size: dp(12);
+		//top: dp(5);
+		transform: translateY(dp(-9)) scale(.7);
+
 		color: $colorPrimary;
 	}
 	padding-top: dp(21); padding-bottom: dp(5);
@@ -86,7 +88,10 @@ $formLabelWidth: dp(160);
 		white-space: nowrap;
 		color: $colorTextSecondary;
 		vertical-align: top;
-		transition: all 200ms linear;
+		transition: transform 200ms linear;
+		will-change: transform;
+		transform: none;
+		transform-origin: top left;
 		pointer-events: none;
 		position:absolute;
 		left: dp(20);
