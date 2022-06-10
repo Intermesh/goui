@@ -47,10 +47,6 @@ class Message {
 			items: [
 				Component.create({
 					tagName:"span",
-					text: type.toUpperCase() + ": "
-				}),
-				Component.create({
-					tagName:"span",
 					text: msg
 				})
 			]

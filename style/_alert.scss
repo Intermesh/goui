@@ -23,10 +23,10 @@
 	}
 }
 
-.alert span:first-child {
-	font-weight:bold;
-	text-transform:uppercase;
-}
+//.alert span:first-child {
+//	font-weight:bold;
+//	text-transform:uppercase;
+//}
 
 .error {
 	background:#ffecec url('#{$resourcePath}/error.png') no-repeat dp(10) 50%;
