@@ -95,7 +95,12 @@ export class Menu extends Component {
 		return <InstanceType<T>> super.create(<any> config);
 	}
 
-	internalRender() {
+	/**
+	 * Is true when any menu is visible
+	 */
+	public static openedMenu?:Menu;
+
+	protected internalRender() {
 		const el = super.internalRender()
 
 		if (this.expandLeft) {
@@ -157,6 +162,7 @@ export class Menu extends Component {
 		}
 
 		this.show();
+		Menu.openedMenu = this;
 
 		//hide menu when clicked elsewhere
 		window.addEventListener("mousedown", (ev) => {
@@ -169,7 +175,10 @@ export class Menu extends Component {
 		});
 	}
 
-	close()  {
+	public close()  {
+		if(Menu.openedMenu == this) {
+			Menu.openedMenu = undefined;
+		}
 		return this.removeOnClose ? this.remove() : this.hide();
 	}
 

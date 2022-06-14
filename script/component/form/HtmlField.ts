@@ -2,7 +2,7 @@
 
 import {Field, FieldConfig, FieldEventMap} from "./Field.js";
 import {Toolbar} from "../Toolbar.js";
-import {Button, MaterialIcon} from "../Button.js";
+import {Button} from "../Button.js";
 import {Observable, ObservableListener, ObservableListenerOpts} from "../Observable.js";
 import {browserDetect} from "../../util/BrowserDetect.js";
 import {ColorMenu} from "../menu/ColorMenu.js";
@@ -10,6 +10,7 @@ import {Menu} from "../menu/Menu.js";
 import {Component} from "../Component.js";
 import {FunctionUtil} from "../../util/FunctionUtil.js";
 import {root} from "../Root.js";
+import {MaterialIcon} from "../MaterialIcon.js";
 
 /**
  * @inheritDoc
