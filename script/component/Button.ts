@@ -129,12 +129,6 @@ export class Button extends Component {
 		const el = <HTMLButtonElement> super.internalRender();
 		el.type = this.type;
 
-		// to prevent dragging in window header when buttons are clicked.
-		// not sure if this will cause problems for other functions.
-		el.addEventListener("mousedown", e => {
-			e.stopPropagation();
-		});
-
 		el.addEventListener("click", (e) => {
 			// prevent double submissions for 1s
 			if(this.block) {
@@ -156,7 +150,6 @@ export class Button extends Component {
 
 			this.fire("click", this, e);
 		});
-
 
 		this.applyTextAndIcon();
 
@@ -211,10 +204,6 @@ export class Button extends Component {
 			this.menu.remove();
 		}
 		super.internalRemove();
-	}
-
-	protected applyText() {
-
 	}
 
 

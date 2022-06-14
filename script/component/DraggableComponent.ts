@@ -141,6 +141,13 @@ export class DraggableComponent extends Component {
 		});
 
 		this.getDragHandle().addEventListener('mousedown', (e: MouseEvent) => {
+
+			//stop if clicked on button inside drag handle. to prevent window dragging on buttons.
+			const target = e.target as HTMLElement;
+			if(target != this.getEl() && (target.tagName == "BUTTON" || target.closest("BUTTON"))) {
+				return;
+			}
+
 			if (e.button != 0) {
 				//only drag with left click
 				return;

@@ -159,7 +159,7 @@ export class Menu extends Component {
 		this.show();
 
 		//hide menu when clicked elsewhere
-		root.getEl().addEventListener("mousedown", () => {
+		window.addEventListener("mousedown", (ev) => {
 				this.close();
 		}, {once:true});
 
