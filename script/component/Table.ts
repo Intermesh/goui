@@ -27,7 +27,7 @@ export interface TableConfig<T extends Observable> extends ComponentConfig<T> {
 	/**
 	 * Store to provide data
 	 */
-	store: Store
+	store?: Store
 	/**
 	 * @inheritDoc
 	 */
@@ -269,9 +269,9 @@ export class Table extends Component {
 
 	protected baseCls = "table scroll"
 
-	protected columns: TableColumn[] = []
+	private columns: TableColumn[] = []
 
-	private store!: Store;
+	protected store!: Store;
 
 	protected rowSelection: boolean | TableRowSelectConfig<TableRowSelect> = true
 
@@ -287,7 +287,7 @@ export class Table extends Component {
 	protected tabIndex = 0;
 
 
-	public static create<T extends typeof Observable>(this: T, config: TableConfig<InstanceType<T>>)  {
+	public static create<T extends typeof Observable>(this: T, config?: TableConfig<InstanceType<T>>)  {
 		return <InstanceType<T>> super.create(<any> config);
 	}
 
@@ -298,7 +298,7 @@ export class Table extends Component {
 
 		this.initNavigateEvent();
 
-		this.normalizeColumns();
+		this.setColumns(this.columns);
 	}
 
 	private initNavigateEvent() {
@@ -355,12 +355,14 @@ export class Table extends Component {
 		return this.rowSelect;
 	}
 
-	private normalizeColumns() {
-		for(let i = 0, l = this.columns.length; i < l; i++) {
-			if(!(this.columns[i] instanceof TableColumn)) {
-				this.columns[i] = TableColumn.create(<TableColumnConfig<TableColumn>> <unknown> this.columns[i]);
+	public setColumns(cols:(TableColumnConfig<TableColumn>|TableColumn)[]) {
+		for(let i = 0, l = cols.length; i < l; i++) {
+			if(!(cols[i] instanceof TableColumn)) {
+				cols[i] = TableColumn.create(<TableColumnConfig<TableColumn>> <unknown> cols[i]);
 			}
 		}
+
+		this.columns = cols as TableColumn[];
 	}
 
 	protected restoreState(state: ComponentState) {

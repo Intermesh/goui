@@ -36,7 +36,9 @@ function loadCard(cls: string, id: string, mod = `./${cls}.js` ) : Promise<Compo
 
 
 // Create main card panel for displaying SPA pages
-const cards = CardContainer.create();
+const cards = CardContainer.create({
+	cls: "fit"
+});
 
 root.setEl(document.getElementById("goui")!);
 root.getItems().add(cards);

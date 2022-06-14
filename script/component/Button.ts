@@ -124,6 +124,23 @@ export class Button extends Component {
 
 	private block = false;
 
+	/**
+	 * Find the first menu in the tree of submenu's
+	 */
+	private findTopMenu(): Menu|undefined {
+		if(this.parent instanceof Menu) {
+			if(this.parent.parentButton && this.parent.parentButton.parent instanceof Menu) {
+				return this.parent.parentButton.findTopMenu();
+			} else
+			{
+				return this.parent;
+			}
+		} else
+		{
+			return undefined;
+		}
+	}
+
 	protected internalRender() {
 
 		const el = super.internalRender() as HTMLButtonElement;
@@ -146,6 +163,13 @@ export class Button extends Component {
 			// the detail property contains the click count. When spacebar is used it will be 0
 			if (this.handler && e.button == 0 && e.detail < 2) {
 				this.handler.call(this, this, e);
+
+				// close menu if handler is set
+				const topMenu = this.findTopMenu();
+				if(topMenu) {
+					topMenu.close();
+				}
+
 			}
 
 			this.fire("click", this, e);
@@ -169,7 +193,8 @@ export class Button extends Component {
 
 				// When a menu is opened. other top level will open on mouse enter
 				el.addEventListener("mouseenter", (ev) => {
-					if(Menu.openedMenu) {
+					if(Menu.openedMenu && Menu.openedMenu != this.menu) {
+						Menu.openedMenu.getEl().classList.remove("fade-out");
 						Menu.openedMenu.close();
 						this.showMenu(el, ev);
 					}
@@ -205,10 +230,16 @@ export class Button extends Component {
 			root.getItems().add(this.menu);
 		}
 
+		//show first for positioning correctly below
+		this.menu.show();
+
 		this.menu.showAt({
 				x: this.menu.isLeftExpanding() ? rect.right - this.menu.getWidth()!  : rect.x,
 				y: rect.bottom
 			});
+
+		//put back fade out class removed in mouseenter listener above
+		this.menu.getEl().classList.add("fade-out");
 
 		this.fire("showmenu", this, this.menu, ev);
 	}

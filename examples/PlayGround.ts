@@ -7,16 +7,21 @@ import {ColorMenu} from "../script/component/menu/ColorMenu.js";
 import {Window} from "../script/component/Window.js";
 import {router} from "../script/Router.js";
 import {Alert} from "../script/Alert.js";
+import {PlaygroundTable} from "./PlaygroundTable.js";
 
 
 export class PlayGround extends Component {
 
-	protected cls = "frame scroll"
+	protected cls = "vbox"
 
 	protected init() {
 
-
-		this.getItems().add(Toolbar.create({
+		this.getItems().add(
+			Toolbar.create({
+			style: {
+				backgroundColor: "#0277bd",
+				color: "white"
+			},
 			items: [
 				Button.create({
 					text: "Menu",
@@ -149,7 +154,7 @@ export class PlayGround extends Component {
 				}),
 
 				Button.create({
-					text: "Expand on the left",
+					icon: "menu",
 					menu: Menu.create({
 						expandLeft: true,
 						items: [
@@ -177,7 +182,15 @@ export class PlayGround extends Component {
 				})
 
 			]
-		}))
+		}));
+
+		this.getItems().add(
+
+					PlaygroundTable.create({
+						cls: "fit"
+					})
+
+			);
 
 		super.init();
 	}

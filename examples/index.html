@@ -9,6 +9,7 @@
     <link rel="icon"
           type="image/png"
           href="../resources/favicon.png">
+
     <link href="../style/lato.css" rel="stylesheet">
     <link href="../style/goui.css" rel="stylesheet">
 
@@ -37,10 +38,20 @@
 
     <meta http-equiv="Content-Security-Policy"
           content="default-src 'self' data:; style-src 'unsafe-inline' 'self'; script-src 'self'; child-src 'none'; connect-src 'self' http://host.docker.internal:6780; img-src data: blob: 'self' http://host.docker.internal:6780">
+
 </head>
 <body>
 
-<div id="goui" class="goui"></div>
+<!--
+
+Root element of GOUI
+
+Use class "fullscreen" to use entire viewport
+
+Use "fit" to fill up container
+
+-->
+<div id="goui" class="fullscreen"></div>
 
 </body>
 </html>

@@ -114,17 +114,7 @@ export class Menu extends Component {
 		return this.expandLeft;
 	}
 
-	/**
-	 * Find the first menu in the tree of submenu's
-	 */
-	public findTopMenu():Menu {
-		if(!this.parentButton || !(this.parentButton.parent instanceof Menu)) {
-			return this;
-		} else
-		{
-			return this.parentButton.parent.findTopMenu();
-		}
-	}
+
 
 	protected renderItem(item: Component, refItem?: Component) {
 		if(!refItem) {
@@ -136,12 +126,6 @@ export class Menu extends Component {
 
 	private wrapLI(item: Component) {
 		const li = document.createElement("li");
-
-		if(item instanceof Button) {
-			item.on("click", () => {
-				this.findTopMenu().close();
-			});
-		}
 
 		item.render(li);
 
@@ -181,6 +165,5 @@ export class Menu extends Component {
 		}
 		return this.removeOnClose ? this.remove() : this.hide();
 	}
-
 
 }

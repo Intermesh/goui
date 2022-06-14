@@ -3,10 +3,11 @@
 	z-index: $zIndexAlert;
 	position: fixed;
 	top: dp(64);
-	left: 50%;
+	left: 0;
+	right: 0;
 	width: dp(600);
 	max-width: 80%;
-	margin-left: dp(-300);
+	margin:0 auto;
 	border-radius:dp(10);
 	padding:dp(24) dp(24) dp(24) dp(64);
 	animation: go-alert .5s ease-out;

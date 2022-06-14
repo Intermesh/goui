@@ -15,6 +15,7 @@ import {DateField} from "../script/component/form/DateField.js";
 import {CheckboxField} from "../script/component/form/CheckboxField.js";
 import {Menu} from "../script/component/menu/Menu.js";
 import {DateTime} from "../script/util/DateTime.js";
+import {PlaygroundTable} from "./PlaygroundTable.js";
 
 export class PlaygroundWindow extends Window {
 	stateId = "playground-window"
@@ -35,50 +36,6 @@ export class PlaygroundWindow extends Window {
 
 		this.getHeader().getItems().insert(PlaygroundWindow.createHeaderMenu(), -2);
 
-		const records:StoreRecord[] = [];
-
-		for(let i = 1; i <= 20; i++) {
-			records.push({
-				number: i,
-				description: "Test " + i,
-				createdAt: (new DateTime()).addDays(Math.ceil(Math.random() * -365)).format("c")
-			});
-		}
-
-		const table = Table.create({
-			title: "Table",
-			store: Store.create({
-				records: records,
-				sort: [{property: "number", isAscending: true}]
-			}),
-			listeners: {
-				navigate: (table, rowIndex, record) => {
-					Window.alert("Selected", "You navigated to " + record.number + ". Press 'Escape' to close me and navigate the grid with the arrow keys.");
-				}
-			},
-			cls: "fit",
-			columns: [
-				{
-					header: "Number",
-					property: "number",
-					sortable: true,
-					resizable: true,
-					width: 200
-				},
-				{
-					header: "Description",
-					property: "description",
-					sortable: true,
-					resizable: true,
-					width: 300
-				},
-				DateColumn.create({
-					header: "Created At",
-					property: "createdAt",
-					sortable: true
-				})
-				]
-		});
 
 		const form = Form.create({
 			title: "Form",
@@ -135,7 +92,12 @@ export class PlaygroundWindow extends Window {
 
 		const cards = CardContainer.create({
 			flex: 1,
-			items: [form, table]
+			items: [
+				form,
+				PlaygroundTable.create({
+					cls: "fit"
+				})
+			]
 		})
 
 		this.getItems().replace([
