@@ -10,7 +10,7 @@
 
 	width: 100%;
 	outline: none;
-	color: #2e2e2e;
+	color: $colorText;
 	display: block;// for text area which has inline-block by default and gets some extra margin
 
 	&::placeholder {
@@ -24,18 +24,12 @@
 		color: $colorTextPlaceholder;
 	}
 	&+div.label {
-		//font-size: dp(12);
-		//top: dp(5);
 		transform: translateY(dp(-9)) scale(.7);
-
-		color: $colorPrimary;
 	}
 	padding-top: dp(21); padding-bottom: dp(5);
 }
 
 $formLabelWidth: dp(160);
-
-
 
 .form-field {
 	display: block;
@@ -50,6 +44,10 @@ $formLabelWidth: dp(160);
 	&:focus-within {
 		.text, select, textarea {
 			border-color: $colorPrimary;
+		}
+
+		.label {
+			color: $colorPrimary;
 		}
 	}
 
@@ -137,6 +135,10 @@ $formLabelWidth: dp(160);
 
 		&:focus, &:not(:placeholder-shown) {
 			@extend %float-label;
+		}
+
+		&:focus {
+			color: $colorPrimary;
 		}
 	}
 

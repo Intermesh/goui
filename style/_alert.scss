@@ -2,16 +2,21 @@
 .alert {
 	z-index: $zIndexAlert;
 	position: fixed;
-	top: dp(16);
+	top: dp(64);
 	left: 50%;
-	width: dp(400);
-	margin-left: dp(-200);
-	color:#555;
+	width: dp(600);
+	max-width: 80%;
+	margin-left: dp(-300);
 	border-radius:dp(10);
-	font-family:Tahoma,Geneva,Arial,sans-serif;font-size:dp(11);
-	padding:dp(10) dp(10) dp(10) dp(36);
+	padding:dp(24) dp(24) dp(24) dp(64);
 	animation: go-alert .5s ease-out;
 	cursor: pointer;
+
+	&:before {
+		position: absolute;
+		left: dp(24);
+		@extend %icon;
+	}
 }
 
 @keyframes go-alert {
@@ -29,18 +34,38 @@
 //}
 
 .error {
-	background:#ffecec url('#{$resourcePath}/error.png') no-repeat dp(10) 50%;
-	border:1px solid #f5aca6;
+	background: $colorErrorBg;
+	border:2px solid $colorErrorBorder;
+	color: $colorError;
+	&:before {
+		color: $colorError;
+		content: "error";
+	}
 }
 .success {
-	background:#e9ffd9 url('#{$resourcePath}/success.png') no-repeat dp(10) 50%;
-	border:1px solid #a6ca8a;
+	background: $colorSuccessBg;
+	border:2px solid $colorSuccessBorder;
+	color: $colorSuccess;
+	&:before {
+		color: $colorSuccess;
+		content: "check_circle";
+	}
 }
 .warning {
-	background:#fff8c4 url('#{$resourcePath}/warning.png') no-repeat dp(10) 50%;
-	border:1px solid #f2c779;
+	background: $colorWarningBg;
+	border:2px solid $colorWarningBorder;
+	color: $colorWarning;
+	&:before {
+		color: $colorWarning;
+		content: "warning";
+	}
 }
 .notice {
-	background:#e3f7fc url('#{$resourcePath}/notice.png') no-repeat dp(10) 50%;
-	border:1px solid #8ed9f6;
+	background:$colorNoticeBg;
+	border:2px solid $colorNoticeBorder;
+	color: $colorNotice;
+	&:before {
+		color: $colorNotice;
+		content: "info";
+	}
 }
