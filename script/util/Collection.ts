@@ -133,17 +133,18 @@ export class Collection<T> extends Observable implements Iterable<T>{
 	}
 
 	/**
-	 * remove an item
-	 * @param item
+	 * Remove items
 	 */
-	public remove(item:T) {
-		const index = this.indexOf(item);
-		if(index == -1) {
-			return false;
-		} else
-		{
-			return this.removeAt(index);
-		}
+	public remove(...items:T[]) {
+		items.forEach((item) => {
+			const index = this.indexOf(item);
+			if(index == -1) {
+				return false;
+			} else
+			{
+				return this.removeAt(index);
+			}
+		});
 	}
 
 	/**
