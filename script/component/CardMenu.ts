@@ -81,7 +81,7 @@ export class CardMenu extends Component {
 				item.itemId = 'card-' + index;
 			}
 
-			this.getItems().insert(
+			this.getItems().insert(index,
 				Button.create({
 					itemId: item.itemId,
 					cls: index == this.cardContainer.getActiveItem() ? "active" : "",
@@ -89,7 +89,7 @@ export class CardMenu extends Component {
 					handler: () => {
 						this.cardContainer.setActiveItem(item);
 					}
-				}), index
+				})
 			);
 
 			item.setTitle("");

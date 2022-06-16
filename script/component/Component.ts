@@ -233,6 +233,19 @@ export interface ComponentConfig<T extends Observable> extends ObservableConfig<
 // 	function create<T extends typeof Observable>(this: T, config?: ComponentConfig<InstanceType<T>>): InstanceType<T>;
 // }
 
+export const Box = (config: ComponentConfig<Component>, ...items: Component[]) => {
+	if(items.length) {
+		config.items = items;
+	}
+
+	return Component.create(config);
+}
+
+export const El = (config: ComponentConfig<Component>) => {
+
+	return Component.create(config);
+}
+
 
 /**
  * Component
@@ -342,7 +355,10 @@ export class Component extends Observable {
 		this.getItems().on("add", (collection, item, index) => {
 			this.setupItem(item);
 
+
 			const refItem = index < collection.count() - 1 ? this.getItems().get(index) : undefined;
+
+			console.warn(index, item, refItem);
 
 			if (this.isRendered()) {
 				this.renderItem(item, refItem);

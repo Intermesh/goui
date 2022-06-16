@@ -303,7 +303,7 @@ export class Window extends DraggableComponent {
 					hidden: true
 				});
 
-				root.getItems().insert(this.modalOverlay, -1);
+				root.getItems().insert(-1, this.modalOverlay);
 
 				this.modalOverlay.getEl().addEventListener("click", (ev) => {
 					this.focus();

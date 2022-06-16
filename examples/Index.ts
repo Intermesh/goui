@@ -1,5 +1,5 @@
 import {CardContainer} from "../script/component/CardContainer.js";
-import {Component} from "../script/component/Component.js";
+import {Box, Component, El} from "../script/component/Component.js";
 import {router} from "../script/Router.js";
 import {client} from "../script/api/Client.js";
 import {Translate} from "../script/Translate.js";
@@ -64,20 +64,42 @@ router.on("change", () => {
 
 			let index = cards.findItemIndex("notfound");
 			if(index == -1) {
-				cards.getItems().add(Component.create({
-					cls: "pad",
-					html: `
-<h1>Heading 1</h1>
-<h2>Heading 2</h2>
-<h3>Heading 3</h3>
-<h4>Heading 4</h4>
-<h5>Heading 5</h5>
-<h6>Heading 6</h6>
-<p>Paragraph</p>
+				cards.getItems()
+					.add(
+						Box({
+						cls: "pad",
+						id: "notfound"
+					},
+							El({
+								html: `
+									<h1>Heading 1</h1>
+									<h2>Heading 2</h2>
+									<h3>Heading 3</h3>
+									<h4>Heading 4</h4>
+									<h5>Heading 5</h5>
+									<h6>Heading 6</h6>
+									<p>Paragraph</p>
+									
+									<p><a href="#playground">Visit play ground</a></p>`,
+							}),
 
-<p><a href="#playground">Visit play ground</a></p>`,
-					id: "notfound"
-				}));
+							Box({cls: "pad"},
+								El({tagName: "h1", text: "Heading 1"}),
+								El({tagName: "h2", text: "Heading 2"})
+							),
+
+							Box({
+									cls: "pad",
+									items: [
+										El({tagName: "h3", text: "Heading 3"}),
+										El({tagName: "h4", text: "Heading 4"})
+									]
+								},
+
+							)),
+
+
+					);
 
 				index = cards.getItems().count() - 1;
 			}

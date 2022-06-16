@@ -56,39 +56,48 @@ export class Collection<T> extends Observable implements Iterable<T>{
 	}
 
 	/**
-	 * Add an item at the end
+	 * Add items at the end
 	 *
-	 * @param item
+	 * @returns the index of the last added item
 	 */
-	public add(item:T) {
-		let index = this.items.length;
-		if(!this.fire("beforeadd", this, item, index)) {
-			return -1;
-		}
-		this.items.push(item);
-		this.fire("add", this, item, index);
+	public add(...items:T[]) : number {
+		let index = -1;
+		items.forEach((item) => {
+			index = this.items.length;
+
+			if (!this.fire("beforeadd", this, item, index)) {
+				return -1;
+			}
+			this.items.push(item);
+
+			this.fire("add", this, item, index);
+		});
+
 		return index;
 	}
 
 	/**
-	 * Insert an item at the given index
+	 * Insert items at the given index
 	 *
-	 * @param item Use negative indexes to insert from the end. For example -1 inserts before the last item.
-	 * @param index
+	 * @param index Use negative indexes to insert from the end. For example -1 inserts before the last item.
 	 */
-	public insert(item:T, index = 0)  {
+	public insert(index:number, ...items:T[])  {
 
 		if(index < 0) {
 			index = this.count() + index;
 		}
 
-		if(!this.fire("beforeadd", this, item, index)) {
-			return -1;
-		}
+		items.forEach((item) => {
 
-		this.items.splice(index, 0, item);
+			if (!this.fire("beforeadd", this, item, index)) {
+				return -1;
+			}
+			this.items.splice(index, 0, item);
 
-		this.fire("add", this, item, index);
+			this.fire("add", this, item, index);
+
+			index++;
+		});
 
 		return index;
 	}

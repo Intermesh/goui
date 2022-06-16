@@ -265,8 +265,6 @@ export class Table extends Component {
 
 	private minCellWidth = 30
 
-	protected tagName = "div" as keyof HTMLElementTagNameMap;
-
 	protected baseCls = "table scroll"
 
 	private columns: TableColumn[] = []

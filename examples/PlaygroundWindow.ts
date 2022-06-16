@@ -33,7 +33,7 @@ export class PlaygroundWindow extends Window {
 	protected init() {
 		super.init();
 
-		this.getHeader().getItems().insert(this.createHeaderMenu(), -2);
+		this.getHeader().getItems().insert(-2, this.createHeaderMenu());
 
 
 		const form = Form.create({

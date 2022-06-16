@@ -37,9 +37,9 @@ describe('Collection class', () => {
 			text: "test1"
 		}));
 
-		c.insert(Component.create({
+		c.insert(0, Component.create({
 			text: "test2"
-		}), 0);
+		}));
 
 		expect(c.count()).to.equal(2);
 
