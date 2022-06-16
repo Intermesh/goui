@@ -342,7 +342,7 @@ export class Component extends Observable {
 		this.getItems().on("add", (collection, item, index) => {
 			this.setupItem(item);
 
-			const refItem = index < collection.count() - 1 ? this.getItems().get(index - 1) : undefined;
+			const refItem = index < collection.count() - 1 ? this.getItems().get(index) : undefined;
 
 			if (this.isRendered()) {
 				this.renderItem(item, refItem);
