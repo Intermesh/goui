@@ -1,8 +1,6 @@
 import {Component} from "./component/Component.js";
 import {root} from "./component/Root.js";
 
-export {Alert};
-
 /**
  * Alert factory
  *
@@ -12,7 +10,7 @@ export {Alert};
  * Alert.error("Oops!");
  * ```
  */
-class Alert {
+export class Notifier {
 
 	public static error(msg: string|Error, timeout = 3000) {
 		console.error(msg);

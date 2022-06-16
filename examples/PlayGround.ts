@@ -6,8 +6,9 @@ import {CheckboxField} from "../script/component/form/CheckboxField.js";
 import {ColorMenu} from "../script/component/menu/ColorMenu.js";
 import {Window} from "../script/component/Window.js";
 import {router} from "../script/Router.js";
-import {Alert} from "../script/Alert.js";
+import {Notifier} from "../script/Notifier.js";
 import {PlaygroundTable} from "./PlaygroundTable.js";
+import {root} from "../script/component/Root.js";
 
 
 export class PlayGround extends Component {
@@ -45,28 +46,28 @@ export class PlayGround extends Component {
 										Button.create({
 											text: "Success",
 											handler: () => {
-												Alert.success("That went super!")
+												Notifier.success("That went super!")
 											}
 										}),
 
 										Button.create({
 											text: "Error",
 											handler: () => {
-												Alert.error("That went wrong!")
+												Notifier.error("That went wrong!")
 											}
 										}),
 
 										Button.create({
 											text: "Warning",
 											handler: () => {
-												Alert.warning("Look out!")
+												Notifier.warning("Look out!")
 											}
 										}),
 
 										Button.create({
 											text: "Notice",
 											handler: () => {
-												Alert.notice("Heads up.")
+												Notifier.notice("Heads up.")
 											}
 										})
 									]
@@ -74,12 +75,12 @@ export class PlayGround extends Component {
 							}),
 
 							Button.create({
-								text: "Teun",
+								text: "Mask 3s",
 								handler: () => {
-									Window.create({
-										title: "Hoi Teun",
-										items: [Component.create({tagName:"h1", cls:".pad", html: "Jij moet naar bed!"})]
-									}).show();
+									root.mask();
+									setTimeout(() => {
+										root.unmask();
+									}, 1000);
 								}
 							}),
 							Component.create({

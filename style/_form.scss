@@ -347,6 +347,9 @@ fieldset {
 
 
 form {
+	// for loading mask
+	position: relative;
+
 	.row {
 		display: flex;
 		flex-wrap: wrap;

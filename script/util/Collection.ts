@@ -1,4 +1,5 @@
 import {Observable, ObservableEventMap, ObservableListenerOpts} from "../component/Observable.js";
+import {Component} from "../component/Component.js";
 /**
  * @inheritDoc
  */
@@ -195,5 +196,31 @@ export class Collection<T> extends Observable implements Iterable<T>{
 	public getArray() {
 		return this.items;
 	}
+
+
+	/**
+	 * Returns the value of the first element in the array where predicate is true, and undefined
+	 * otherwise.
+	 * @param predicate find calls predicate once for each element of the array, in ascending
+	 * order, until it finds one where predicate returns true. If such an element is found, find
+	 * immediately returns that element value. Otherwise, find returns undefined.
+	 *
+	 */
+	public find(predicate: (value: T, index: number, obj: T[]) => unknown): T|undefined {
+		return this.items.find(predicate) as T;
+	}
+
+	/**
+	 * Returns the index of the first element in the array where predicate is true, and -1
+	 * otherwise.
+	 * @param predicate find calls predicate once for each element of the array, in ascending
+	 * order, until it finds one where predicate returns true. If such an element is found,
+	 * findIndex immediately returns that element index. Otherwise, findIndex returns -1.
+	 */
+	public findIndex(predicate: (value: T, index: number, obj: T[]) => unknown): number {
+		return this.items.findIndex(predicate);
+	}
+
+
 
 }

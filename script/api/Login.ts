@@ -6,7 +6,7 @@ import {Toolbar} from "../component/Toolbar.js";
 import {Window, WindowEventMap} from "../component/Window.js";
 import {Fieldset} from "../component/form/Fieldset.js";
 import {client, RegisterData} from "./Client.js";
-import {Alert} from "../Alert.js";
+import {Notifier} from "../Notifier.js";
 import {t} from "../Translate.js";
 import {CardContainer} from "../component/CardContainer.js";
 import {Observable} from "../component/Observable.js";
@@ -156,7 +156,7 @@ export class Login extends Window {
 							return this.onLoginSuccess(response);
 
 						default:
-							Alert.error(response.statusText);
+							Notifier.error(response.statusText);
 					}
 				})
 			},
@@ -224,13 +224,13 @@ export class Login extends Window {
 					case 201:
 						client.session = await response.json()
 						this.close();
-						Alert.success(t("Registration and successful"));
+						Notifier.success(t("Registration and successful"));
 						this.fire("login");
 						break;
 
 					default:
 
-						Alert.error(response.statusText);
+						Notifier.error(response.statusText);
 				}
 
 			},
@@ -345,17 +345,17 @@ export class Login extends Window {
 				default:
 					this.loginForm.findField("username")!.setInvalid(response.statusText);
 
-					Alert.error(response.statusText);
+					Notifier.error(response.statusText);
 			}
 		}
 		catch(e) {
-			Alert.error("Sorry, an unexpected error occurred: " + e);
+			Notifier.error("Sorry, an unexpected error occurred: " + e);
 		}
 	}
 
 	private async onLoginSuccess(response: any) {
 		client.session =  await response.json();
-		Alert.success(t("Logged in successfully"));
+		Notifier.success(t("Logged in successfully"));
 		this.close();
 		this.fire("login");
 	}

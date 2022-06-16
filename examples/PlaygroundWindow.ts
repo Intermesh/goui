@@ -14,7 +14,6 @@ import {Component} from "../script/component/Component.js";
 import {DateField} from "../script/component/form/DateField.js";
 import {CheckboxField} from "../script/component/form/CheckboxField.js";
 import {Menu} from "../script/component/menu/Menu.js";
-import {DateTime} from "../script/util/DateTime.js";
 import {PlaygroundTable} from "./PlaygroundTable.js";
 
 export class PlaygroundWindow extends Window {
@@ -34,10 +33,11 @@ export class PlaygroundWindow extends Window {
 	protected init() {
 		super.init();
 
-		this.getHeader().getItems().insert(PlaygroundWindow.createHeaderMenu(), -2);
+		this.getHeader().getItems().insert(this.createHeaderMenu(), -2);
 
 
 		const form = Form.create({
+			itemId: "form",
 			title: "Form",
 			cls: "scroll fit",
 			handler: () => {
@@ -95,6 +95,7 @@ export class PlaygroundWindow extends Window {
 			items: [
 				form,
 				PlaygroundTable.create({
+					itemId: "table",
 					cls: "fit"
 				})
 			]
@@ -136,7 +137,7 @@ export class PlaygroundWindow extends Window {
 
 	}
 
-	private static createHeaderMenu() {
+	private createHeaderMenu() {
 		const items = [];
 		for(let i = 0; i < 10; i++) {
 			items.push(Button.create({
@@ -147,7 +148,43 @@ export class PlaygroundWindow extends Window {
 			text: "Menu",
 			menu: Menu.create({
 				expandLeft: true,
-				items: items
+				items: [
+					Button.create({
+						text: "Mask window",
+						handler: () =>{
+							this.mask();
+							setTimeout(() => {
+								this.unmask();
+							}, 1000);
+						}
+					}),
+
+					Button.create({
+						text: "Mask form",
+						handler: () =>{
+							const form = this.findChild("form")!;
+							form.show();
+
+							form.mask();
+							setTimeout(() => {
+								form.unmask();
+							}, 1000);
+						}
+					}),
+
+					Button.create({
+						text: "Mask table",
+						handler: () =>{
+							const table = this.findChild("table")!;
+							table.show();
+
+							table.mask();
+							setTimeout(() => {
+								table.unmask();
+							}, 1000);
+						}
+					})
+				]
 			})
 		});
 	}

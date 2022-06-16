@@ -6,7 +6,7 @@ import {Format} from "../util/Format.js";
 import {ObjectUtil} from "../util/ObjectUtil.js";
 import {Menu} from "./menu/Menu.js";
 import {CheckboxField} from "./form/CheckboxField.js";
-import {Alert} from "../Alert.js";
+import {Notifier} from "../Notifier.js";
 import {DraggableComponent} from "./DraggableComponent.js";
 
 /**
@@ -411,6 +411,15 @@ export class Table extends Component {
 
 	protected internalRender() {
 		const el = super.internalRender();
+
+		el.addEventListener("click", (e) => {
+			this.onClick(e);
+		});
+
+		el.addEventListener("dblclick", (e) => {
+			this.onDblClick(e);
+		});
+
 		this.renderEmptyState()
 		this.renderTable();
 		return el;
@@ -455,14 +464,6 @@ export class Table extends Component {
 				this.onScroll();
 			}, {passive: true});
 		}
-
-		el.addEventListener("click", (e) => {
-			this.onClick(e);
-		});
-
-		el.addEventListener("dblclick", (e) => {
-			this.onDblClick(e);
-		});
 
 		// Use unshift = true so that this listener executes first so that other load listners execute when the table is
 		// rendered and can select rows.
@@ -714,7 +715,7 @@ export class Table extends Component {
 		}];
 
 		this.store.reload().catch((reason) => {
-			Alert.error(reason);
+			Notifier.error(reason);
 		});
 
 		this.saveState();

@@ -245,7 +245,7 @@ export class Client extends Observable {
 	 */
 	public getUser()  {
 		if(!this._user) {
-			this._user = <Promise<User>>this.store('User').single(this.session.userId, [
+			this._user = this.store('User').single(this.session.userId, [
 				'id', 'username', 'displayName', 'email', 'avatarId', 'dateFormat', 'timeFormat', 'timezone', 'thousandsSeparator', 'decimalSeparator', 'currency']).then((user) => {
 				this.user = <User>user;
 				Format.dateFormat = user.dateFormat;
@@ -259,7 +259,7 @@ export class Client extends Observable {
 			}).catch((reason) => {
 				this._user = undefined;
 				return Promise.reject(reason);
-			});
+			}) as Promise<User>;
 		}
 
 		return this._user;

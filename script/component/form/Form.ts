@@ -1,6 +1,6 @@
 import {ContainerField, ContainerFieldConfig, ContainerFieldEventMap} from "./ContainerField.js";
 import {Observable, ObservableListener, ObservableListenerOpts} from "../Observable.js";
-import {Alert} from "../../Alert.js";
+import {Notifier} from "../../Notifier.js";
 
 export interface FormConfig<T extends Observable> extends ContainerFieldConfig<T> {
 	/**
@@ -204,7 +204,7 @@ export class Form extends ContainerField {
 			el.classList.add('invalid');
 			el.classList.remove('valid');
 
-			Alert.error("The form is invalid. Please check your input.");
+			Notifier.error("The form is invalid. Please check your input.");
 		}
 	}
 

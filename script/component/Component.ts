@@ -10,6 +10,8 @@ import {
 import {State} from "../State.js";
 import {Collection} from "../util/Collection.js";
 
+type findPredicate = string|Component|((comp: Component) => boolean | void);
+
 export type ComponentConstructor<T extends Component> = new (...args: any[]) => T;
 export interface ComponentEventMap<T extends Observable> extends ObservableEventMap<T> {
 	/**
@@ -302,9 +304,11 @@ export class Component extends Observable {
 	 */
 	public parent?: Component;
 
-	private items!: Collection<Component>;
+	private items?: Collection<Component>;
 	protected top?: number;
 	protected left?: number;
+
+	private _mask: Mask | undefined;
 
 	public static create<T extends typeof Observable>(this: T, config?: ComponentConfig<InstanceType<T>>) {
 		return <InstanceType<T>> super.create(config);
@@ -319,13 +323,15 @@ export class Component extends Observable {
 			this.restoreState(this.getState());
 		}
 
-		this.initItems();
+		if(this.items) {
+			this.initItems();
+		}
 
 		super.init();
 	}
 
 	protected applyConfig(config: any) {
-		if(!config.items || Array.isArray(config.items)) {
+		if(Array.isArray(config.items)) {
 			config.items = new Collection<Component>(config.items);
 		}
 		super.applyConfig(config);
@@ -904,6 +910,10 @@ export class Component extends Observable {
 	 * Get all items
 	 */
 	public getItems() {
+		if(!this.items) {
+			this.items = new Collection<Component>();
+			this.initItems();
+		}
 		return this.items;
 	}
 
@@ -925,25 +935,22 @@ export class Component extends Observable {
 	}
 
 	/**
-	 * Find the item by element ID
-	 *
-	 * @param id
+	 * Find the item by element ID, itemId property, Component instance or custom function
 	 */
-	public findItemIndex(id: string|Component): number {
-		return this.getItems().getArray().findIndex((item) => {
-			return item === id || item.itemId === id || item.getId() === id;
-		});
+	public findItemIndex(predicate: findPredicate): number {
+		let fn = this.getFindPredicate(predicate);
+		return this.getItems().findIndex(fn);
 	}
 
 	/**
-	 * Get item by DOM id or the itemId of the component
+	 * Find the item by element ID, itemId property, Component instance or custom function.
 	 *
-	 * @param id
+	 * If you want to search the component tree hierarchy use {@see findChild()}
+	 *
 	 */
-	public findItem(id: string|Component) {
-		return this.getItems().getArray().find((item) => {
-			return item === id || item.itemId === id || item.getId() === id;
-		});
+	public findItem(predicate: findPredicate) : Component | undefined{
+		let fn = this.getFindPredicate(predicate);
+		return this.getItems().find(fn);
 	}
 
 	/**
@@ -951,25 +958,38 @@ export class Component extends Observable {
 	 *
 	 * @param fn When the function returns false then the cascading will be stopped. The current Component will be finished!
 	 */
-	cascade(fn: (comp: Component) => boolean | void) {
+	public cascade(fn: (comp: Component) => boolean | void) {
 		if (fn(this) === false) {
 			return this;
 		}
-		for (let cmp of this.items) {
-			cmp.cascade(fn);
+		if(this.items) {
+			for (let cmp of this.items) {
+				cmp.cascade(fn);
+			}
 		}
 
 		return this;
 	}
 
+	private getFindPredicate(predicate: findPredicate) :  (comp: Component) => boolean | void {
+		if(predicate instanceof Function) {
+			return predicate;
+		} else
+		{
+			return (item: Component) => {
+				return item === predicate || item.itemId === predicate || item.getId() === predicate;
+			}
+		}
+	}
+
 	/**
-	 * Find a child by function
+	 * Find a child by element ID, itemId property, Component instance or custom function.
 	 *
 	 * It cascades down the component hierarchy.
 	 *
-	 * @param fn
 	 */
-	findChild(fn: (comp: Component) => boolean | void): Component | undefined {
+	public findChild(predicate: findPredicate): Component | undefined {
+		let fn = this.getFindPredicate(predicate);
 
 		let child;
 		this.cascade((item: any) => {
@@ -983,6 +1003,65 @@ export class Component extends Observable {
 	}
 
 
+	/**
+	 * Mask the component to disable user interaction
+	 * It creates an absolute positioned Mask
+	 * component. This component should have a non-static position style for this to work.
+	 */
+	public mask() {
+		if (!this._mask) {
+			this._mask = Mask.create();
+			this.getItems().add(this._mask);
+		} else
+		{
+			this._mask.show();
+		}
+	}
 
+	/**
+	 * Unmask the body
+	 */
+	public unmask() {
+		if(this._mask) {
+			this._mask.hide();
+		}
+	}
+
+
+}
+
+
+
+export interface MaskConfig<T extends Observable> extends ComponentConfig<T> {
+	/**
+	 * Show loading spinner
+	 */
+	spinner?: boolean
+}
+
+/**
+ * Mask element
+ *
+ * Shows a mask over the entire (position:relative) element it's in.
+ *
+ * Used in {@see Body.mask()}
+ */
+export class Mask extends Component {
+
+	baseCls = "mask"
+
+	spinner = true
+
+	public static create<T extends typeof Observable>(this: T, config?: MaskConfig<InstanceType<T>>) {
+		return <InstanceType<T>> super.create(<any> config);
+	}
+
+	protected init() {
+		super.init();
+
+		if (this.spinner) {
+			this.html = '<div class="spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>';
+		}
+	}
 
 }

@@ -1,6 +1,5 @@
-import {Component, ComponentConfig} from "./Component.js";
+import {Component, ComponentConfig, Mask} from "./Component.js";
 import {Toolbar} from "./Toolbar.js";
-import {Mask} from "./Mask.js";
 import {Button} from "./Button.js";
 import {DraggableComponent, DraggableComponentEventMap} from "./DraggableComponent.js";
 import {Observable, ObservableListener, ObservableListenerOpts} from "./Observable.js";
@@ -102,7 +101,7 @@ export class Window extends DraggableComponent {
 	protected closable = true
 
 	protected modal = false
-	private mask: Mask | undefined;
+	private modalOverlay: Mask | undefined;
 	private resizeObserver?: ResizeObserver;
 
 	/**
@@ -297,20 +296,20 @@ export class Window extends DraggableComponent {
 			root.getItems().add(this);
 
 			if (this.modal) {
-				this.mask = Mask.create({
+				this.modalOverlay = Mask.create({
 					spinner: false,
 					cls: "fade-in fade-out",
 					style: {zIndex: (parseInt(getComputedStyle(this.getEl()).zIndex)).toString()},
 					hidden: true
 				});
 
-				root.getItems().insert(this.mask, -1);
+				root.getItems().insert(this.modalOverlay, -1);
 
-				this.mask.getEl().addEventListener("click", (ev) => {
+				this.modalOverlay.getEl().addEventListener("click", (ev) => {
 					this.focus();
 				});
 
-				this.mask.show();
+				this.modalOverlay.show();
 			}
 
 			if(!this.hasState()) {
@@ -338,8 +337,8 @@ export class Window extends DraggableComponent {
 			this.resizeObserver.disconnect();
 		}
 
-		if (this.mask) {
-			this.mask.remove();
+		if (this.modalOverlay) {
+			this.modalOverlay.remove();
 		}
 		this.header.remove();
 
