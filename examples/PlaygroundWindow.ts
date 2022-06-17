@@ -1,6 +1,4 @@
 import {Window} from "../script/component/Window.js";
-import {DateColumn, Table} from "../script/component/Table.js";
-import {Store, StoreRecord} from "../script/data/Store.js";
 import {Form} from "../script/component/form/Form.js";
 import {Fieldset} from "../script/component/form/Fieldset.js";
 import {TextField} from "../script/component/form/TextField.js";
@@ -33,7 +31,7 @@ export class PlaygroundWindow extends Window {
 	protected init() {
 		super.init();
 
-		this.getHeader().getItems().insert(-2, this.createHeaderMenu());
+		this.getHeader().getItems().insert(-2, this.createHeaderMenu(), );
 
 
 		const form = Form.create({
@@ -155,7 +153,7 @@ export class PlaygroundWindow extends Window {
 							this.mask();
 							setTimeout(() => {
 								this.unmask();
-							}, 1000);
+							}, 3000);
 						}
 					}),
 

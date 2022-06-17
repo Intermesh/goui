@@ -1,13 +1,10 @@
-import {CardContainer} from "../script/component/CardContainer.js";
-import {Box, Component, El} from "../script/component/Component.js";
-import {router} from "../script/Router.js";
-import {client} from "../script/api/Client.js";
-import {Translate} from "../script/Translate.js";
-import {root} from "../script/component/Root.js";
 import {PlayGround} from "./PlayGround.js";
+import * as Goui from "../script/Goui.js"
+import {Button, Component} from "../script/Generators.js";
+
 
 // Setup Group-Office connection
-client.uri = "http://host.docker.internal:6780/api/";
+Goui.client.uri = "http://host.docker.internal:6780/api/";
 
 /**
  * Card loader that dynamically loads a module for the card
@@ -16,14 +13,13 @@ client.uri = "http://host.docker.internal:6780/api/";
  * @param id
  * @param mod
  */
-function loadCard(cls: string, id: string, mod = `./${cls}.js` ) : Promise<Component>{
+function loadCard(cls: string, id: string, mod = `./${cls}.js` ) : Promise<Goui.Component>{
 	let index = cards.findItemIndex(id);
 	if (index == -1) {
 
 		return import(mod).then((mods:any) => {
-			index = cards.getItems().add(mods[cls].create({
-				id: id
-			}));
+			mods[cls].setId(id);
+			index = cards.getItems().add(mods[cls]);
 			cards.setActiveItem(index);
 		}).then(() => {
 			return cards.getItems().get(cards.getActiveItem()!)!;
@@ -36,27 +32,27 @@ function loadCard(cls: string, id: string, mod = `./${cls}.js` ) : Promise<Compo
 
 
 // Create main card panel for displaying SPA pages
-const cards = CardContainer.create({
+const cards = Goui.CardContainer.create({
 	cls: "fit"
 });
 
-root.setEl(document.getElementById("goui")!);
-root.getItems().add(cards);
+Goui.root.getItems().add(cards);
 
-router.on("change", () => {
-	console.warn(`Missing translations`, Translate.missing);
+Goui.router.on("change", () => {
+	console.warn(`Missing translations`, Goui.Translate.missing);
 });
 
 // Setup router
 // Translate.load("nl").then(() => {
-	router
+Goui.router
 		.add(/^playground$/, () => {
 			return loadCard("PlayGround", "playground");
 		})
 
 		.add(/playground\/window/, async () => {
-			const playground = await loadCard("PlayGround", "playground") as PlayGround;
-			playground.showWindow();
+			const playground = await loadCard("PlayGround", "playground");
+			const mods = await import("./PlayGround.js");
+			mods.showWindow();
 		})
 
 
@@ -66,11 +62,11 @@ router.on("change", () => {
 			if(index == -1) {
 				cards.getItems()
 					.add(
-						Box({
-						cls: "pad",
-						id: "notfound"
-					},
-							El({
+						Component ({
+							cls: "pad",
+							id: "notfound"
+						},
+							Component({
 								html: `
 									<h1>Heading 1</h1>
 									<h2>Heading 2</h2>
@@ -80,23 +76,25 @@ router.on("change", () => {
 									<h6>Heading 6</h6>
 									<p>Paragraph</p>
 									
-									<p><a href="#playground">Visit play ground</a></p>`,
+									<p><a href="#playground">Visit play ground</a></p>
+								`,
 							}),
 
-							Box({cls: "pad"},
-								El({tagName: "h1", text: "Heading 1"}),
-								El({tagName: "h2", text: "Heading 2"})
+							Component({cls: "pad"},
+								Component({tagName: "h1", text: "Heading 1"}),
+								Component({tagName: "h2", text: "Heading 2"})
 							),
 
-							Box({
-									cls: "pad",
-									items: [
-										El({tagName: "h3", text: "Heading 3"}),
-										El({tagName: "h4", text: "Heading 4"})
-									]
-								},
+							Component({cls: "pad"},
+								Component({tagName: "h3", text: "Heading 3"}),
+								Component({tagName: "h4", text: "Heading 4"})
+							),
 
-							)),
+							Button({
+								text: "Text"
+							})
+
+						),
 
 
 					);
