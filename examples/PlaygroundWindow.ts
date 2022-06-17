@@ -27,6 +27,7 @@ export const playgroundWin = () => {
 				}
 			}
 		},
+
 		cardmenu(),
 		cards({flex: 1},
 			form({
@@ -68,8 +69,8 @@ export const playgroundWin = () => {
 					}),
 
 					containerfield({
-						name: "sub"
-					},
+							name: "sub"
+						},
 						textfield({
 							label: "A freaking long stupid label",
 							name: "test1",

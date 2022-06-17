@@ -1,4 +1,4 @@
-import {Component, ComponentConfig, ComponentState} from "./Component.js";
+import {Component, ComponentConfig, ComponentState, FindComponentPredicate} from "./Component.js";
 import {Observable} from "./Observable.js";
 import {DraggableComponent} from "./DraggableComponent.js";
 
@@ -7,9 +7,10 @@ import {DraggableComponent} from "./DraggableComponent.js";
  */
 export interface SplitterConfig<T extends Observable> extends ComponentConfig<T> {
 	/**
-	 * The component to resize in height or width
+	 * The component to resize in height or width.
+	 * Can be a component ID, itemId property, Component instance or custom function
 	 */
-	resizeComponent: Component
+	resizeComponent: FindComponentPredicate
 
 	/**
 	 * The minimum size it will set
@@ -43,11 +44,19 @@ export class Splitter extends DraggableComponent {
 
 
 	protected restoreState(state: ComponentState) {
-		if(state.width)
-			this.resizeComponent.setWidth(state.width);
 
-		if(state.height)
-			this.resizeComponent.setHeight(state.height);
+		this.on("added", (cmp) => {
+			// find component to resize if it's an id string
+			if(!(this.resizeComponent instanceof Component)) {
+				this.resizeComponent = this.parent!.findChild(this.resizeComponent)!;
+			}
+
+			if (state.width)
+				this.resizeComponent.setWidth(state.width);
+
+			if (state.height)
+				this.resizeComponent.setHeight(state.height);
+		});
 	}
 
 	protected buildState() {

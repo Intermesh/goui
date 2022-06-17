@@ -59,4 +59,4 @@ export class Paginator extends Toolbar {
  *
  * @param config
  */
-export const paginator = (config?:PaginatorConfig<Paginator>) => Paginator.create(config);
+export const paginator = (config:PaginatorConfig<Paginator>) => Paginator.create(config);

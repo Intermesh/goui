@@ -4,7 +4,7 @@ import {btn, Button, ButtonConfig} from "./Button.js";
 import {Observable} from "./Observable.js";
 
 export interface CardMenuConfig<T extends Observable> extends ComponentConfig<T> {
-	cardContainer: CardContainer
+	cardContainer?: CardContainer
 }
 
 /**
@@ -61,7 +61,7 @@ export class CardMenu extends Component {
 
 				this.getItems().forEach((item, menuIndex) => {
 
-					if (activeItem && item.itemId == activeItem.itemId) {
+					if (activeItem && (item.itemId == activeItem.itemId || item.itemId == activeItem.getId())) {
 						item.getEl().classList.add("active");
 					} else {
 						item.getEl().classList.remove("active");

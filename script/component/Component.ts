@@ -10,7 +10,7 @@ import {
 import {State} from "../State.js";
 import {Collection} from "../util/Collection.js";
 
-type findPredicate = string|Component|((comp: Component) => boolean | void);
+export type FindComponentPredicate = string|Component|((comp: Component) => boolean | void);
 
 export type ComponentConstructor<T extends Component> = new (...args: any[]) => T;
 export interface ComponentEventMap<T extends Observable> extends ObservableEventMap<T> {
@@ -92,7 +92,15 @@ export interface ComponentEventMap<T extends Observable> extends ObservableEvent
  	 * @param comp
 	 * @param o
 	 */
-	focus?: (comp: T, o?: FocusOptions) => void
+	focus?: (comp: T, o?: FocusOptions) => void,
+
+	/**
+	 * Fires when this component is added to a parent
+	 *
+	 * @param comp
+	 * @param index the index in the parents' items
+	 */
+	added?: (comp: T, index: number) => void
 
 
 
@@ -117,7 +125,10 @@ export interface ComponentConfig<T extends Observable> extends ObservableConfig<
 	id?: string
 
 	/**
-	 * Component item ID that can be used to lookup the Component inside a Component with Component.findItem() and Component.findItemIndex();
+	 * Component item ID that can be used to lookup the Component inside a Component with
+	 * Component.findItem() and Component.findItemIndex();
+	 *
+	 * if stateId is given it will also be used as itemId
 	 */
 	itemId?: string
 
@@ -213,7 +224,10 @@ export interface ComponentConfig<T extends Observable> extends ObservableConfig<
 
 	/**
 	 * ID used for storing state of the component in the State storage.
-	 * If not set then the component won't store it's state
+	 *
+	 * If stateId is given it will also be used as itemId
+	 *
+	 * If not set then the component won't store it's state.
 	 */
 	stateId?: string
 	/**
@@ -274,6 +288,8 @@ export class Component extends Observable {
 	/**
 	 * Component item ID that can be used to lookup the Component inside a Component with Component.findItem() and
 	 * Component.findItemIndex();
+	 *
+	 * if stateId is given it will also be used as itemId
 	 */
 	public itemId : string = "";
 
@@ -307,6 +323,10 @@ export class Component extends Observable {
 
 		if (this.stateId) {
 			this.restoreState(this.getState());
+
+			if(!this.itemId) {
+				this.itemId = this.stateId;
+			}
 		}
 
 		super.init();
@@ -323,6 +343,8 @@ export class Component extends Observable {
 
 		this.getItems().on("add", (collection, item, index) => {
 			this.setupItem(item);
+
+			item.fire("added", item, index);
 
 			const refItem = index < collection.count() - 1 ? this.getItems().get(index - 1) : undefined;
 
@@ -922,7 +944,7 @@ export class Component extends Observable {
 	/**
 	 * Find the item by element ID, itemId property, Component instance or custom function
 	 */
-	public findItemIndex(predicate: findPredicate): number {
+	public findItemIndex(predicate: FindComponentPredicate): number {
 		let fn = this.getFindPredicate(predicate);
 		return this.getItems().findIndex(fn);
 	}
@@ -933,7 +955,7 @@ export class Component extends Observable {
 	 * If you want to search the component tree hierarchy use {@see findChild()}
 	 *
 	 */
-	public findItem(predicate: findPredicate) : Component | undefined{
+	public findItem(predicate: FindComponentPredicate) : Component | undefined{
 		let fn = this.getFindPredicate(predicate);
 		return this.getItems().find(fn);
 	}
@@ -956,7 +978,7 @@ export class Component extends Observable {
 		return this;
 	}
 
-	private getFindPredicate(predicate: findPredicate) :  (comp: Component) => boolean | void {
+	private getFindPredicate(predicate: FindComponentPredicate) :  (comp: Component) => boolean | void {
 		if(predicate instanceof Function) {
 			return predicate;
 		} else
@@ -973,7 +995,7 @@ export class Component extends Observable {
 	 * It cascades down the component hierarchy.
 	 *
 	 */
-	public findChild(predicate: findPredicate): Component | undefined {
+	public findChild(predicate: FindComponentPredicate): Component | undefined {
 		let fn = this.getFindPredicate(predicate);
 
 		let child;
