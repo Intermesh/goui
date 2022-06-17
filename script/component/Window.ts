@@ -101,7 +101,7 @@ export class Window extends DraggableComponent {
 	protected closable = true
 
 	protected modal = false
-	private modalOverlay: Mask | undefined;
+	private modalOverlay: Component | undefined;
 	private resizeObserver?: ResizeObserver;
 
 	/**
@@ -292,9 +292,8 @@ export class Window extends DraggableComponent {
 			root.getItems().add(this);
 
 			if (this.modal) {
-				this.modalOverlay = Mask.create({
-					spinner: false,
-					cls: "fade-in fade-out",
+				this.modalOverlay = comp({
+					cls: "window-modal-overlay fade-in fade-out",
 					style: {zIndex: (parseInt(getComputedStyle(this.getEl()).zIndex)).toString()},
 					hidden: true
 				});

@@ -1,3 +1,14 @@
+.window-modal-overlay {
+	opacity: .8;
+	background-color: #7b7a7a;
+	top: 0;
+	left:0;
+	bottom:0;
+	right:0;
+	width: 100%;
+	height: 100%;
+	position: fixed;
+}
 .window {
 	&.modal {
 		box-shadow: 0 0px 20px 0 rgb(0 0 0 / 40%);
