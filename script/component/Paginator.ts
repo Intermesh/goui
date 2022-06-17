@@ -1,8 +1,8 @@
 import {Toolbar} from "./Toolbar.js";
 import {Observable} from "./Observable.js";
-import {ComponentConfig} from "./Component.js";
+import {comp, ComponentConfig} from "./Component.js";
 import {Store} from "../data/Store.js";
-import {Button} from "./Button.js";
+import {btn, Button} from "./Button.js";
 import {Component} from "./Component.js";
 
 export interface PaginatorConfig<T extends Observable> extends ComponentConfig<T> {
@@ -11,9 +11,6 @@ export interface PaginatorConfig<T extends Observable> extends ComponentConfig<T
 export class Paginator extends Toolbar {
 	private prev!: Button;
 	private next!: Button;
-	public static create<T extends typeof Observable>(this: T, config?: PaginatorConfig<InstanceType<T>>) {
-		return <InstanceType<T>> super.create(<any> config);
-	}
 
 	protected store!: Store;
 
@@ -22,8 +19,8 @@ export class Paginator extends Toolbar {
 	protected init() {
 		super.init();
 
-		this.getItems().replace([
-			this.prev = Button.create({
+		this.getItems().add(
+			this.prev = btn({
 				icon: "chevron_left",
 				text: "Previous",
 				disabled: true,
@@ -31,10 +28,12 @@ export class Paginator extends Toolbar {
 					this.store.loadPrevious();
 				}
 			}),
-			Component.create({
+
+			comp({
 				flex:1
 			}),
-			this.next = Button.create({
+
+			this.next = btn({
 				icon: "chevron_right",
 				text: "Next",
 				disabled: true,
@@ -42,7 +41,7 @@ export class Paginator extends Toolbar {
 					this.store.loadNext();
 				}
 			})
-		]);
+		);
 
 		this.store.on("load", () => {
 			this.onStoreLoad();
@@ -54,3 +53,10 @@ export class Paginator extends Toolbar {
 		this.next.setDisabled(!this.store.hasNext());
 	}
 }
+
+/**
+ * Shorthand function to create {@see Paginator}
+ *
+ * @param config
+ */
+export const paginator = (config?:PaginatorConfig<Paginator>) => Paginator.create(config);

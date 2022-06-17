@@ -1,13 +1,13 @@
-import {Component, ComponentConfig, Mask} from "./Component.js";
-import {Toolbar} from "./Toolbar.js";
-import {Button} from "./Button.js";
+import {comp, Component, ComponentConfig, Mask} from "./Component.js";
+import {tbar, Toolbar} from "./Toolbar.js";
+import {btn, Button} from "./Button.js";
 import {DraggableComponent, DraggableComponentEventMap} from "./DraggableComponent.js";
 import {Observable, ObservableListener, ObservableListenerOpts} from "./Observable.js";
 import {root} from "./Root.js";
 import {FunctionUtil} from "../util/FunctionUtil.js";
-import {Form} from "./form/Form.js";
-import {Fieldset} from "./form/Fieldset.js";
-import {TextField} from "./form/TextField.js";
+import {form, Form} from "./form/Form.js";
+import {fieldset, Fieldset} from "./form/Fieldset.js";
+import {textfield, TextField} from "./form/TextField.js";
 import {t} from "../Translate.js";
 
 /**
@@ -109,10 +109,6 @@ export class Window extends DraggableComponent {
 	 * @private
 	 */
 	private focussedBeforeOpen?: Element;
-
-	public static create<T extends typeof Observable>(this: T, config?: WindowConfig<InstanceType<T>>) {
-		return <InstanceType<T>> super.create(<any> config);
-	}
 
 	protected init() {
 		super.init();
@@ -447,41 +443,39 @@ export class Window extends DraggableComponent {
 					}
 				},
 				items: [
-					Form.create({
+					form({
 
 						handler: (form) => {
 							resolve(form.getValues()['input']);
 							cancelled = false;
 							win.close();
-						},
+						}
+					},
 
-						items: [
-							Fieldset.create({
-								items: [
-									Component.create({
-										tagName: "p",
-										html: text
-									}),
-									TextField.create({
-										label: inputLabel,
-										name: "input",
-										required: true
-									})
-								]
+						fieldset({},
+							comp({
+								tagName: "p",
+								html: text
 							}),
-							Toolbar.create({
-								items: [
-									Component.create({
-										flex: 1
-									}),
-									Button.create({
-										type: "submit",
-										text: "Ok"
-									})
-								]
+							textfield({
+								label: inputLabel,
+								name: "input",
+								required: true
 							})
-						]
-					})
+						),
+
+						tbar({},
+							comp({
+								flex: 1
+							}),
+
+							btn({
+								type: "submit",
+								text: "Ok"
+							})
+						)
+
+					)
 				]
 			});
 
@@ -490,3 +484,13 @@ export class Window extends DraggableComponent {
 	}
 
 }
+
+/**
+ * Shorthand function to create window
+ *
+ * @param config
+ * @param items
+ */
+export const win = (config?:WindowConfig<Window>, ...items:Component[]) => Window.create(config, items);
+
+

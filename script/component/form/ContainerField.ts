@@ -1,5 +1,7 @@
 import {Field, FieldConfig, FieldEventMap} from "./Field.js";
 import {Observable, ObservableListener, ObservableListenerOpts} from "../Observable.js";
+import {Component} from "../Component.js";
+import {Menu, MenuConfig} from "../menu/Menu.js";
 
 
 /**
@@ -37,10 +39,6 @@ export class ContainerField extends Field {
 	protected baseCls = "";
 
 	protected hideLabel = true;
-
-	public static create<T extends typeof Observable>(this: T, config?: ContainerFieldConfig<InstanceType<T>>) {
-		return <InstanceType<T>> super.create(<any> config);
-	}
 
 	public findFields() {
 		const fields: Field[] = [];
@@ -152,3 +150,11 @@ export class ContainerField extends Field {
 		}
 	}
 }
+
+/**
+ * Shorthand function to create {@see ContainerField}
+ *
+ * @param config
+ * @param items
+ */
+export const containerfield = (config?:ContainerFieldConfig<ContainerField>, ...items:Component[]) => ContainerField.create(config, items);

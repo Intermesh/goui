@@ -1,7 +1,8 @@
 import {Observable, ObservableListener, ObservableListenerOpts} from "../Observable.js";
 import {Field, FieldConfig, FieldEventMap} from "./Field.js";
-import {ContainerField} from "./ContainerField.js";
+import {ContainerField, ContainerFieldConfig} from "./ContainerField.js";
 import {Collection} from "../../util/Collection.js";
+import {Component} from "../Component.js";
 
 
 /**
@@ -47,10 +48,6 @@ export class ArrayField extends ContainerField {
 
 	protected value = []
 
-	public static create<T extends typeof Observable>(this: T, config?: ArrayFieldConfig<InstanceType<T>>) {
-		return <InstanceType<T>> super.create(<any> config);
-	}
-
 	setValue(v: ArrayFieldValue, useForReset = true) {
 		super.setValue(v, useForReset);
 
@@ -76,3 +73,12 @@ export class ArrayField extends ContainerField {
 
 
 }
+
+
+/**
+ * Shorthand function to create {@see ArrayField}
+ *
+ * @param config
+ * @param items
+ */
+export const arrayfield = (config?:ArrayFieldConfig<ArrayField>, ...items:Component[]) => ArrayField.create(config, items);

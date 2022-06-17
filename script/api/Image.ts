@@ -1,6 +1,7 @@
 import {Component, ComponentConfig} from "../component/Component.js";
 import {client} from "./Client.js";
 import {Observable} from "../component/Observable.js";
+import {Table, TableConfig} from "../component/Table.js";
 
 interface ImageConfig<T extends Observable> extends ComponentConfig<T> {
 	blobId:string
@@ -12,9 +13,6 @@ interface ImageConfig<T extends Observable> extends ComponentConfig<T> {
  * Uses the fetch API to fetch the image with an Authorization header and creates an objectURL using URL.createObjectURL()
  */
 export class Image extends Component {
-	public static create<T extends typeof Observable>(this: T, config?: ImageConfig<InstanceType<T>>) {
-		return <InstanceType<T>> super.create(<any> config);
-	}
 
 	protected blobId = "";
 
@@ -83,3 +81,11 @@ export class Image extends Component {
 	}
 
 }
+
+
+/**
+ * Shorthand function to create table
+ *
+ * @param config
+ */
+export const img = (config?:ImageConfig<Image>) => Image.create(config);

@@ -111,9 +111,6 @@ export interface DraggableComponent {
 }
 
 export class DraggableComponent extends Component {
-	public static create<T extends typeof Observable>(this: T, config?: DraggableComponentConfig<InstanceType<T>>) {
-		return <InstanceType<T>> super.create(<any> config);
-	}
 
 	protected dragData?: DragData;
 
@@ -321,3 +318,11 @@ export class DraggableComponent extends Component {
 		}
 	}
 }
+
+/**
+ * Shorthand function to create {@see DraggableComponent}
+ *
+ * @param config
+ * @param items
+ */
+export const draggable = (config?:DraggableComponentConfig<DraggableComponent>, ...items:Component[]) => DraggableComponent.create(config, items);

@@ -1,10 +1,14 @@
 import {PlayGround} from "./PlayGround.js";
-import * as Goui from "../script/Goui.js"
-import {Button, Component} from "../script/Generators.js";
-
+import {client} from "../script/api/Client.js";
+import {cards} from "../script/component/CardContainer.js";
+import {root} from "../script/component/Root.js";
+import {router} from "../script/Router.js";
+import {comp, Component} from "../script/component/Component.js";
+import {btn} from "../script/component/Button.js";
+import {Translate} from "../script/Translate.js";
 
 // Setup Group-Office connection
-Goui.client.uri = "http://host.docker.internal:6780/api/";
+client.uri = "http://host.docker.internal:6780/api/";
 
 /**
  * Card loader that dynamically loads a module for the card
@@ -13,60 +17,58 @@ Goui.client.uri = "http://host.docker.internal:6780/api/";
  * @param id
  * @param mod
  */
-function loadCard(cls: string, id: string, mod = `./${cls}.js` ) : Promise<Goui.Component>{
-	let index = cards.findItemIndex(id);
+function loadCard(cls: string, id: string, mod = `./${cls}.js` ) : Promise<Component>{
+	let index = main.findItemIndex(id);
 	if (index == -1) {
 
 		return import(mod).then((mods:any) => {
 			mods[cls].setId(id);
-			index = cards.getItems().add(mods[cls]);
-			cards.setActiveItem(index);
+			index = main.getItems().add(mods[cls]);
+			main.setActiveItem(index);
 		}).then(() => {
-			return cards.getItems().get(cards.getActiveItem()!)!;
+			return main.getItems().get(main.getActiveItem()!)!;
 		})
 	} else {
-		cards.setActiveItem(index);
-		return Promise.resolve(cards.getItems().get(cards.getActiveItem()!)!);
+		main.setActiveItem(index);
+		return Promise.resolve(main.getItems().get(main.getActiveItem()!)!);
 	}
 }
 
 
 // Create main card panel for displaying SPA pages
-const cards = Goui.CardContainer.create({
-	cls: "fit"
-});
+const main = cards();
+root.getItems().add(main);
 
-Goui.root.getItems().add(cards);
 
-Goui.router.on("change", () => {
-	console.warn(`Missing translations`, Goui.Translate.missing);
+router.on("change", () => {
+	console.warn(`Missing translations`, Translate.missing);
 });
 
 // Setup router
 // Translate.load("nl").then(() => {
-Goui.router
-		.add(/^playground$/, () => {
-			return loadCard("PlayGround", "playground");
-		})
+router
+	.add(/^playground$/, () => {
+		return loadCard("PlayGround", "playground");
+	})
 
-		.add(/playground\/window/, async () => {
-			const playground = await loadCard("PlayGround", "playground");
-			const mods = await import("./PlayGround.js");
-			mods.showWindow();
-		})
+	.add(/playground\/window/, async () => {
+		const playground = await loadCard("PlayGround", "playground");
+		const mods = await import("./PlayGround.js");
+		mods.showWindow();
+	})
 
+	.add(() => {
 
-.add(() => {
-
-			let index = cards.findItemIndex("notfound");
+			let index = main.findItemIndex("notfound");
 			if(index == -1) {
-				cards.getItems()
+				main.getItems()
 					.add(
-						Component ({
+
+						comp({
 							cls: "pad",
 							id: "notfound"
 						},
-							Component({
+							comp({
 								html: `
 									<h1>Heading 1</h1>
 									<h2>Heading 2</h2>
@@ -80,17 +82,17 @@ Goui.router
 								`,
 							}),
 
-							Component({cls: "pad"},
-								Component({tagName: "h1", text: "Heading 1"}),
-								Component({tagName: "h2", text: "Heading 2"})
+							comp({cls: "pad"},
+								comp({tagName: "h1", text: "Heading 1"}),
+								comp({tagName: "h2", text: "Heading 2"})
 							),
 
-							Component({cls: "pad"},
-								Component({tagName: "h3", text: "Heading 3"}),
-								Component({tagName: "h4", text: "Heading 4"})
+							comp({cls: "pad"},
+								comp({tagName: "h3", text: "Heading 3"}),
+								comp({tagName: "h4", text: "Heading 4"})
 							),
 
-							Button({
+							btn({
 								text: "Text"
 							})
 
@@ -99,9 +101,9 @@ Goui.router
 
 					);
 
-				index = cards.getItems().count() - 1;
+				index = main.getItems().count() - 1;
 			}
-			cards.setActiveItem(index);
+			main.setActiveItem(index);
 		})
 
 		.start();

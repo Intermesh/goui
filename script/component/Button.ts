@@ -94,7 +94,7 @@ export interface Button {
  * @example
  *
  * ```typescript
- * Button.create({
+ * btn({
  *   icon: "star",
  *   text: "Test 1"
  *   handler: (e) => alert("Hi!")
@@ -103,10 +103,6 @@ export interface Button {
  *
  */
 export class Button extends Component {
-
-	public static create<T extends typeof Observable>(this: T, config?: ButtonConfig<InstanceType<T>>){
-		return <InstanceType<T>> super.create(<any> config);
-	}
 
 	protected tagName = "button" as keyof HTMLElementTagNameMap
 
@@ -119,8 +115,6 @@ export class Button extends Component {
 	protected menu!: Menu;
 
 	protected icon: MaterialIcon | undefined;
-
-	protected text?: string
 
 	private block = false;
 
@@ -308,3 +302,10 @@ export class Button extends Component {
 
 	}
 }
+
+/**
+ * Shorthand function to create {@see Button}
+ *
+ * @param config
+ */
+export const btn = (config?:ButtonConfig<Button>) => Button.create(config);

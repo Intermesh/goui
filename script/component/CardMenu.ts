@@ -1,6 +1,6 @@
 import {Component, ComponentConfig} from "./Component.js";
 import {CardContainer} from "./CardContainer.js";
-import {Button} from "./Button.js";
+import {btn, Button, ButtonConfig} from "./Button.js";
 import {Observable} from "./Observable.js";
 
 export interface CardMenuConfig<T extends Observable> extends ComponentConfig<T> {
@@ -44,50 +44,52 @@ export interface CardMenuConfig<T extends Observable> extends ComponentConfig<T>
 export class CardMenu extends Component {
 
 	tagName = "menu" as keyof HTMLElementTagNameMap
-	cardContainer!: CardContainer
+	cardContainer?: CardContainer
 	baseCls = "cardmenu"
-
-	public static create<T extends typeof Observable>(this: T, config?: CardMenuConfig<InstanceType<T>>) {
-		return (<InstanceType<T>>super.create(<any> config));
-	}
-
 
 	protected init() {
 
-		this.cardContainer.on("cardchange", (cardContainer, index) => {
 
-			const activeItem = index != undefined ? cardContainer.getItems().get(index)! : undefined;
+		this.on("beforerender", () => {
+			if (!this.cardContainer) {
+				this.cardContainer = this.parent!.findChildByType(CardContainer);
+			}
 
-			this.getItems().forEach((item, menuIndex) => {
+			this.cardContainer!.on("cardchange", (cardContainer, index) => {
 
-				if (activeItem && item.itemId == activeItem.itemId) {
-					item.getEl().classList.add("active");
-				} else {
-					item.getEl().classList.remove("active");
-				}
+				const activeItem = index != undefined ? cardContainer.getItems().get(index)! : undefined;
+
+				this.getItems().forEach((item, menuIndex) => {
+
+					if (activeItem && item.itemId == activeItem.itemId) {
+						item.getEl().classList.add("active");
+					} else {
+						item.getEl().classList.remove("active");
+					}
+				});
 			});
-		});
 
-		this.createMenu();
+			this.createMenu();
+		});
 
 		super.init();
 	}
 
 	private createMenu() {
 
-		this.cardContainer.getItems().forEach((item, index) => {
+		this.cardContainer!.getItems().forEach((item, index) => {
 
 			if(!item.itemId) {
 				item.itemId = 'card-' + index;
 			}
 
 			this.getItems().insert(index,
-				Button.create({
+				btn({
 					itemId: item.itemId,
-					cls: index == this.cardContainer.getActiveItem() ? "active" : "",
+					cls: index == this.cardContainer!.getActiveItem() ? "active" : "",
 					text: item.getTitle(),
 					handler: () => {
-						this.cardContainer.setActiveItem(item);
+						this.cardContainer!.setActiveItem(item);
 					}
 				})
 			);
@@ -98,3 +100,13 @@ export class CardMenu extends Component {
 		});
 	}
 }
+
+
+
+/**
+ * Shorthand function to create {@see CardMenu}
+ *
+ * @param config
+ * @param items
+ */
+export const cardmenu = (config?:CardMenuConfig<CardMenu>, ...items:Component[]) => CardMenu.create(config, items);

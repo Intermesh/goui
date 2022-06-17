@@ -1,13 +1,14 @@
-import {Component, ComponentConfig, ComponentEventMap, ComponentState} from "./Component.js";
-import {TableRowSelect, TableRowSelectConfig} from "./TableRowSelect.js";
+import {comp, Component, ComponentConfig, ComponentEventMap, ComponentState} from "./Component.js";
+import {rowselect, TableRowSelect, TableRowSelectConfig} from "./TableRowSelect.js";
 import {Store, StoreRecord} from "../data/Store.js";
 import {Observable, ObservableConfig, ObservableListener, ObservableListenerOpts} from "./Observable.js";
 import {Format} from "../util/Format.js";
 import {ObjectUtil} from "../util/ObjectUtil.js";
 import {Menu} from "./menu/Menu.js";
-import {CheckboxField} from "./form/CheckboxField.js";
+import {checkbox, CheckboxField} from "./form/CheckboxField.js";
 import {Notifier} from "../Notifier.js";
-import {DraggableComponent} from "./DraggableComponent.js";
+import {draggable} from "./DraggableComponent.js";
+
 
 /**
  * @inheritDoc
@@ -17,7 +18,7 @@ export interface TableConfig<T extends Observable> extends ComponentConfig<T> {
 	/**
 	 * Columns of the table
 	 */
-	columns?: (TableColumn | TableColumnConfig<TableColumn>)[],
+	columns?: TableColumn[],
 
 	/**
 	 * Row selection object
@@ -93,10 +94,6 @@ type align = "left" | "right" | "center";
 
 export class TableColumn extends Observable {
 
-	public static create<T extends typeof Observable>(this: T, config: TableColumnConfig<InstanceType<T>>) {
-		return <InstanceType<T>> super.create(<any> config);
-	}
-
 	/**
 	 * Header in the table
 	 */
@@ -117,6 +114,8 @@ export class TableColumn extends Observable {
 	headerEl?:HTMLTableCellElement;
 }
 
+export const column = (config?: TableColumnConfig<TableColumn>) => TableColumn.create(config);
+
 export class DateTimeColumn extends TableColumn {
 	renderer = (date:string) => {
 		return Format.dateTime(date);
@@ -126,6 +125,8 @@ export class DateTimeColumn extends TableColumn {
 	align = "right" as const
 	width = 192
 }
+
+export const datetimecolumn = (config?: TableColumnConfig<TableColumn>) => DateTimeColumn.create(config);
 
 
 export class DateColumn extends TableColumn {
@@ -138,6 +139,9 @@ export class DateColumn extends TableColumn {
 	width = 128
 }
 
+export const datecolumn = (config?: TableColumnConfig<DateColumn>) => DateColumn.create(config);
+
+
 
 export class CheckboxColumn extends TableColumn {
 	width = 40
@@ -147,6 +151,9 @@ export class CheckboxColumn extends TableColumn {
 		});
 	}
 }
+
+export const checkboxcolumn = (config?: TableColumnConfig<CheckboxColumn>) => CheckboxColumn.create(config);
+
 
 /**
  * @inheritDoc
@@ -267,7 +274,7 @@ export class Table extends Component {
 
 	protected baseCls = "table scroll"
 
-	private columns: TableColumn[] = []
+	protected columns: TableColumn[] = []
 
 	protected store!: Store;
 
@@ -284,19 +291,12 @@ export class Table extends Component {
 
 	protected tabIndex = 0;
 
-
-	public static create<T extends typeof Observable>(this: T, config?: TableConfig<InstanceType<T>>)  {
-		return <InstanceType<T>> super.create(<any> config);
-	}
-
 	protected init() {
 		super.init();
 
 		this.initRowSelect();
 
 		this.initNavigateEvent();
-
-		this.setColumns(this.columns);
 	}
 
 	private initNavigateEvent() {
@@ -331,10 +331,10 @@ export class Table extends Component {
 
 			if (typeof this.rowSelection != "boolean") {
 				this.rowSelection.table = this;
-				this.rowSelect = TableRowSelect.create(this.rowSelection);
+				this.rowSelect = rowselect(this.rowSelection);
 			} else
 			{
-				this.rowSelect = TableRowSelect.create({table: this});
+				this.rowSelect = rowselect({table: this});
 			}
 		}
 	}
@@ -567,7 +567,7 @@ export class Table extends Component {
 			});
 
 			this.columns.forEach((c) => {
-				this.columnMenu!.getItems().add(CheckboxField.create({
+				this.columnMenu!.getItems().add(checkbox({
 					label: c.header,
 					name: c.property,
 					value: !c.hidden,
@@ -588,7 +588,7 @@ export class Table extends Component {
 	private createColumnSplitter(h:TableColumn, header:HTMLTableCellElement, colIndex:number) {
 
 		if (h.resizable) {
-			const splitter = DraggableComponent.create({
+			const splitter = draggable({
 				tagName: "hr",
 				setPosition: false
 			});
@@ -618,7 +618,7 @@ export class Table extends Component {
 
 		} else {
 
-			return Component.create({tagName: "hr"});
+			return comp({tagName: "hr"});
 
 		}
 	}
@@ -831,6 +831,12 @@ export class Table extends Component {
 
 		tbody.appendChild(row);
 	}
-
-
 }
+
+
+/**
+ * Shorthand function to create {@see Table}
+ *
+ * @param config
+ */
+export const table = (config?:TableConfig<Table>) => Table.create(config);

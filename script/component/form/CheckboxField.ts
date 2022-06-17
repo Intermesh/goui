@@ -1,4 +1,4 @@
-import {Field} from "./Field.js";
+import {Field, FieldConfig} from "./Field.js";
 
 /**
  * Checkbox field
@@ -143,3 +143,11 @@ export class CheckboxField extends Field {
 
 
 }
+
+
+/**
+ * Shorthand function to create {@see CheckboxField}
+ *
+ * @param config
+ */
+export const checkbox = (config?:FieldConfig<CheckboxField>) => CheckboxField.create(config);

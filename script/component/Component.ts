@@ -221,11 +221,6 @@ export interface ComponentConfig<T extends Observable> extends ObservableConfig<
 	 */
 	listeners?: ObservableListener<ComponentEventMap<T>>
 
-	/**
-	 * The child components
-	 */
-	items?: Component[]
-
 }
 
 
@@ -305,14 +300,6 @@ export class Component extends Observable {
 
 	private _mask: Mask | undefined;
 
-	public static create<T extends typeof Observable>(this: T, config?: ComponentConfig<InstanceType<T>>, ...items:Component[]) {
-		const comp =  super.create(config) as InstanceType<T>;
-		if(items.length) {
-			(comp as Component).getItems().replace(items);
-		}
-		return comp;
-	}
-
 	/**
 	 * @inheritDoc
 	 */
@@ -320,10 +307,6 @@ export class Component extends Observable {
 
 		if (this.stateId) {
 			this.restoreState(this.getState());
-		}
-
-		if(this.items) {
-			this.initItems();
 		}
 
 		super.init();
@@ -341,7 +324,7 @@ export class Component extends Observable {
 		this.getItems().on("add", (collection, item, index) => {
 			this.setupItem(item);
 
-			const refItem = index < collection.count() - 1 ? this.getItems().get(index) : undefined;
+			const refItem = index < collection.count() - 1 ? this.getItems().get(index - 1) : undefined;
 
 			if (this.isRendered()) {
 				this.renderItem(item, refItem);
@@ -526,13 +509,14 @@ export class Component extends Observable {
 	 * @param refChild Node
 	 */
 	public render(Component: Node, refChild?:Node|null ) {
+
 		if(this.rendered) {
 			throw new Error("Already rendered");
 		}
 
-		// if(!this.initCalled) {
-		// 	throw new Error("Please don't construct a component with 'new Component' but use Component.create();");
-		// }
+		if(!this.initCalled) {
+			throw new Error("Please don't construct a component with 'new Component' but use comp();");
+		}
 
 		this.fire("beforerender", this);
 
@@ -886,11 +870,11 @@ export class Component extends Observable {
 	 *
 	 * @example
 	 * ```
-	 * const form = textField.findAncestorByInstanceType(Form);
+	 * const form = textField.findAncestorByType(Form);
 	 * ```
 	 * @param cls
 	 */
-	public findAncestorByInstanceType<T extends typeof Component>(cls: T) : InstanceType<T> | undefined {
+	public findAncestorByType<T extends typeof Component>(cls: T) : InstanceType<T> | undefined {
 		const p = this.findAncestor(Component => Component instanceof cls);
 		if(p) {
 			return <InstanceType<T>> p;
@@ -918,9 +902,11 @@ export class Component extends Observable {
 
 
 	protected renderItems() {
-		this.getItems().forEach((item) => {
-			this.renderItem(item);
-		});
+		if(this.items) {
+			this.getItems().forEach((item) => {
+				this.renderItem(item);
+			});
+		}
 	}
 
 	/**
@@ -1001,6 +987,25 @@ export class Component extends Observable {
 		return child;
 	}
 
+	/**
+	 * Find child by instance type of the parent
+	 *
+	 * @example
+	 * ```
+	 * const form = textField.findAncestorByType(Form);
+	 * ```
+	 * @param cls
+	 */
+	public findChildByType<T extends typeof Component>(cls: T) : InstanceType<T> | undefined {
+		const p = this.findChild(Component => Component instanceof cls);
+		if(p) {
+			return <InstanceType<T>> p;
+		} else
+		{
+			return undefined;
+		}
+	}
+
 
 	/**
 	 * Mask the component to disable user interaction
@@ -1009,7 +1014,7 @@ export class Component extends Observable {
 	 */
 	public mask() {
 		if (!this._mask) {
-			this._mask = Mask.create();
+			this._mask = mask();
 			this.getItems().add(this._mask);
 		} else
 		{
@@ -1025,10 +1030,7 @@ export class Component extends Observable {
 			this._mask.hide();
 		}
 	}
-
-
 }
-
 
 
 export interface MaskConfig<T extends Observable> extends ComponentConfig<T> {
@@ -1051,10 +1053,6 @@ export class Mask extends Component {
 
 	spinner = true
 
-	public static create<T extends typeof Observable>(this: T, config?: MaskConfig<InstanceType<T>>) {
-		return <InstanceType<T>> super.create(<any> config);
-	}
-
 	protected init() {
 		super.init();
 
@@ -1062,5 +1060,16 @@ export class Mask extends Component {
 			this.html = '<div class="spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>';
 		}
 	}
-
 }
+
+export const mask = (config?:MaskConfig<Mask>) => Mask.create(config);
+
+
+/**
+ * Shorthand function to create {@see Component}
+ *
+ * @param config
+ * @param items
+ */
+export const comp = (config?:ComponentConfig<Component>, ...items:Component[]) => Component.create(config, items);
+

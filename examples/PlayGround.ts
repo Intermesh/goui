@@ -1,75 +1,84 @@
 import {PlaygroundTable} from "./PlaygroundTable.js";
-import * as Goui from "../script/Goui.js"
-import {Button, CheckboxField, Component, Menu, Toolbar, ColorMenu} from "../script/Generators.js";
+import {comp} from "../script/component/Component.js";
+import {tbar} from "../script/component/Toolbar.js";
+import {btn} from "../script/component/Button.js";
+import {menu} from "../script/component/menu/Menu.js";
+import {router} from "../script/Router.js";
+import {Notifier} from "../script/Notifier.js";
+import {root} from "../script/component/Root.js";
+import {checkbox} from "../script/component/form/CheckboxField.js";
+import {colormenu} from "../script/component/menu/ColorMenu.js";
 
-export const PlayGround = Component ({cls : "vbox"},
 
-			Toolbar({
+
+export const PlayGround = comp({cls : "vbox"},
+
+			tbar({
 				style: {
 					backgroundColor: "#0277bd",
 					color: "white"
 				}
 			},
-				Button({
+				btn({
 					text: "Menu",
-					menu: Menu({},
-						Button({
+					menu: menu({},
+						btn({
 							text: "Window",
 							handler: () => {
-								Goui.router.goto("playground/window");
+								router.goto("playground/window");
 							}
 						}),
 
-						Button({
+						btn({
 							text: "Alerts",
-							menu: Menu({},
-								Button({
+							menu: menu({},
+								btn({
 									text: "Success",
 									handler: () => {
-										Goui.Notifier.success("That went super!")
+										Notifier.success("That went super!")
 									}
 								}),
 
-								Button({
+								btn({
 									text: "Error",
 									handler: () => {
-										Goui.Notifier.error("That went wrong!")
+										Notifier.error("That went wrong!")
 									}
 								}),
 
-								Button({
+								btn({
 									text: "Warning",
 									handler: () => {
-										Goui.Notifier.warning("Look out!")
+										Notifier.warning("Look out!")
 									}
 								}),
 
-								Button({
+								btn({
 									text: "Notice",
 									handler: () => {
-										Goui.Notifier.notice("Heads up.")
+										Notifier.notice("Heads up.")
 									}
 								})
 							)
 						}),
 
-						Button({
+						btn({
 							text: "Mask 3s",
 							handler: () => {
-								Goui.root.mask();
+								root.mask();
 								setTimeout(() => {
-									Goui.root.unmask();
+									root.unmask();
 								}, 1000);
 							}
 						}),
-						Component({
+						comp({
 							tagName: "hr"
 						}),
 
-						Button({
+						btn({
 							text: "Login",
-							menu: Menu({},
-								Button({
+							menu: menu({},
+								btn({
 									html: "Show",
 									handler: async () => {
 										const mods = await import("../script/api/Login.js");
@@ -78,69 +87,69 @@ export const PlayGround = Component ({cls : "vbox"},
 									}
 								}),
 
-								Button({
+								btn({
 									text: "Test 2.2",
-									menu: Menu({},
-										Button({
+									menu: menu({},
+										btn({
 											html: "Test 2.2.1"
 										}),
-										Button({
+										btn({
 											html: "Test 2.2.2"
 										})
 									)
 								}),
-								Button({
+								btn({
 									text: "Test 2.3"
 								})
 							)
 						}),
 
-						CheckboxField({
+						checkbox({
 							label: "Checkbox menu item 1",
 							name: "checkbox1",
 							value: true
 						}),
 
-						CheckboxField({
+						checkbox({
 							label: "Checkbox menu item 2",
 							name: "checkbox2",
 							value: true
 						}),
 
-						Button({
+						btn({
 							text: "And a button",
 
 						})
 						)
 				}),
 
-				Button({
+				btn({
 					text: "Color",
-					menu: ColorMenu()
+					menu: colormenu()
 				}),
 
-				Component({
+				comp({
 					flex: 1
 				}),
 
-				Button({
+				btn({
 					icon: "menu",
-					menu: Menu({
+					menu: menu({
 						expandLeft: true,
 					},
-						Button({
+						btn({
 							text: "Item 1"
 						}),
-						Button({
+						btn({
 							text: "Item 2"
 						}),
-						Button({
+						btn({
 							text: "Item 3",
-							menu: Menu({},
-								Button({
+							menu: menu({},
+								btn({
 									text: "Item 3.1"
 								}),
-								Button({
+								btn({
 									text: "Item 3.2"
 								})
 							)
@@ -157,11 +166,10 @@ export const PlayGround = Component ({cls : "vbox"},
 export const showWindow = () =>
 {
 	import("./PlaygroundWindow.js").then(mods => {
-		const win = mods.PlaygroundWindow.create();
-
+		const win = mods.playgroundWin();
 		win.show();
 		win.on('close', () => {
-			Goui.router.setPath("playground");
+			router.setPath("playground");
 		})
 	})
 }

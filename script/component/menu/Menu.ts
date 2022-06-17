@@ -91,10 +91,6 @@ export class Menu extends Component {
 
 	public parentButton: Button|undefined;
 
-	public static create<T extends typeof Observable>(this: T, config?: MenuConfig<InstanceType<T>>) {
-		return <InstanceType<T>> super.create(<any> config);
-	}
-
 	/**
 	 * Is true when any menu is visible
 	 */
@@ -167,3 +163,12 @@ export class Menu extends Component {
 	}
 
 }
+
+/**
+ * Shorthand function to create {@see Menu}
+ *
+ * @param config
+ * @param items
+ */
+export const menu = (config?:MenuConfig<Menu>, ...items:Component[]) => Menu.create(config, items);
+

@@ -80,9 +80,7 @@ export interface FieldEventMap<T extends Observable> extends ComponentEventMap<T
 	 * @param field
 	 */
 	validate?: (field: T) => void
-
 }
-
 
 
 export interface Field extends Component {
@@ -108,11 +106,7 @@ export interface Field extends Component {
 // 	fire<K extends keyof FieldEventMap<FieldInterface>>(eventName: K, ...args: Parameters<NonNullable<FieldEventMap<FieldInterface>[K]>>): boolean
 // }
 
-export class Field extends Component {
-
-	public static create<T extends typeof Observable>(this: T, config?: FieldConfig<InstanceType<T>>) {
-		return <InstanceType<T>> super.create(<any> config);
-	}
+export abstract class Field extends Component {
 
 	readonly isFormField = true
 

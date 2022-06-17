@@ -1,5 +1,5 @@
 import {Observable} from "./Observable.js";
-import {Component, ComponentConfig} from "./Component.js";
+import {comp, Component, ComponentConfig} from "./Component.js";
 
 type renderFunc = (dd: Component) => void;
 
@@ -27,9 +27,7 @@ export interface DescriptionListConfig<T extends Observable> extends ComponentCo
 }
 
 export class DescriptionList extends Component {
-	public static create<T extends typeof Observable>(this: T, config?: DescriptionListConfig<InstanceType<T>>) {
-		return <InstanceType<T>> super.create(<any> config);
-	}
+
 	protected tagName = "dl" as keyof HTMLElementTagNameMap
 
 	protected records?: DLRecord;
@@ -65,7 +63,7 @@ export class DescriptionList extends Component {
 		this.getItems().clear();
 		this.records?.forEach((record) => {
 
-			this.getItems().add(Component.create({
+			this.getItems().add(comp({
 				tagName:"dt",
 				text: <string> record.shift()
 			}));
@@ -73,7 +71,7 @@ export class DescriptionList extends Component {
 
 			record.forEach((r) => {
 
-				const dd = Component.create({
+				const dd = comp({
 					tagName:"dd"
 				});
 
@@ -88,3 +86,11 @@ export class DescriptionList extends Component {
 		});
 	}
 }
+
+/**
+ * Shorthand function to create {@see DescriptionList}
+ *
+ * @param config
+ * @param items
+ */
+export const dl = (config?:DescriptionListConfig<DescriptionList>, ...items:Component[]) => DescriptionList.create(config, items);

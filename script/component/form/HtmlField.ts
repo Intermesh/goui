@@ -2,15 +2,16 @@
 
 import {Field, FieldConfig, FieldEventMap} from "./Field.js";
 import {Toolbar} from "../Toolbar.js";
-import {Button} from "../Button.js";
+import {btn, Button} from "../Button.js";
 import {Observable, ObservableListener, ObservableListenerOpts} from "../Observable.js";
 import {browserDetect} from "../../util/BrowserDetect.js";
-import {ColorMenu} from "../menu/ColorMenu.js";
+import {colormenu, ColorMenu} from "../menu/ColorMenu.js";
 import {Menu} from "../menu/Menu.js";
 import {Component} from "../Component.js";
 import {FunctionUtil} from "../../util/FunctionUtil.js";
 import {root} from "../Root.js";
 import {MaterialIcon} from "../MaterialIcon.js";
+import {SelectField, SelectFieldConfig} from "./SelectField.js";
 
 /**
  * @inheritDoc
@@ -139,7 +140,7 @@ export class HtmlField extends Field {
 		foreColor: {
 			title: "Text color",
 			icon: 'format_color_text',
-			menu: ColorMenu.create({
+			menu: colormenu({
 				listeners: {
 					select: (menu, color) => {
 						this.execCmd("foreColor", color || "#000000")
@@ -160,7 +161,7 @@ export class HtmlField extends Field {
 		backColor: {
 			icon: 'format_color_fill',
 			title: "Background color",
-			menu: ColorMenu.create({
+			menu: colormenu({
 				listeners: {
 					select: (menu, color) => {
 						this.execCmd("backColor", color || "#ffffff")
@@ -208,10 +209,6 @@ export class HtmlField extends Field {
 		// emoji: {icon: 'insert_emoticon'},
 		// html: {icon: 'code'}
 	};
-
-	public static create<T extends typeof Observable>(this: T, config?: HtmlFieldConfig<InstanceType<T>>) {
-		return <InstanceType<T>> super.create(<any> config);
-	}
 
 	private updateToolbar() {
 
@@ -281,7 +278,7 @@ export class HtmlField extends Field {
 
 				const config = this.commands[cmd];
 
-				this.toolbar.getItems().add(Button.create({
+				this.toolbar.getItems().add(btn({
 					itemId: cmd,
 					icon: config.icon,
 					menu: config.menu,
@@ -563,3 +560,11 @@ export class HtmlField extends Field {
 
 	}
 }
+
+
+/**
+ * Shorthand function to create {@see HtmlField}
+ *
+ * @param config
+ */
+export const htmlfield = (config?:HtmlFieldConfig<HtmlField>) => HtmlField.create(config);

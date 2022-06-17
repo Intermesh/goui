@@ -77,10 +77,6 @@ export class Store extends Observable {
 	 */
 	public sort: Comparator[] = [];
 
-	public static create<T extends typeof Observable>(this: T, config?: StoreConfig<InstanceType<T>>) {
-		return <InstanceType<T>> super.create(<any> config);
-	}
-
 	/**
 	 * Get all records in this store
 	 */
@@ -204,3 +200,11 @@ export class Store extends Observable {
 	}
 
 }
+
+
+/**
+ * Shorthand function to create store
+ *
+ * @param config
+ */
+export const store = (config?:StoreConfig<Store>) => Store.create(config);

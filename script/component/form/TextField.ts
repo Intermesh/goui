@@ -1,5 +1,7 @@
 import {Field, FieldConfig} from "./Field.js";
 import {Observable} from "../Observable.js";
+import {Component} from "../Component.js";
+import {Fieldset, FieldsetConfig} from "./Fieldset.js";
 
 export type TextFieldType = ("text" | "password" | "email" | "url" | "tel" | "search");
 
@@ -38,10 +40,6 @@ export class TextField extends Field {
 	protected placeholder:string = " ";
 	protected autocomplete:string | undefined;
 	protected pattern:HTMLInputElement["pattern"] | undefined;
-
-	public static create<T extends typeof Observable>(this: T, config?: TextFieldConfig<InstanceType<T>>) {
-		return <InstanceType<T>> super.create(<any> config);
-	}
 
 	protected applyTitle() {
 		if(this.title && this.input) {
@@ -183,3 +181,10 @@ export class TextField extends Field {
 
 
 }
+
+/**
+ * Shorthand function to create {@see TextField}
+ *
+ * @param config
+ */
+export const textfield = (config?:TextFieldConfig<TextField>) => TextField.create(config);

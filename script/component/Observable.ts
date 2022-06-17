@@ -1,4 +1,5 @@
 import {FunctionUtil} from "../util/FunctionUtil.js";
+import {Component} from "./Component.js";
 
 type Func = ((...args:any[]) => any) ;
 
@@ -110,10 +111,14 @@ export class Observable {
 	 *
 	 * @param config
 	 */
-	public static create<T extends typeof Observable>(config?: ObservableConfig<InstanceType<T>>) {
+	public static create<T extends typeof Observable>(this: T, config?: any, items?: Component[]) : InstanceType<T> {
 		const c = new this() as InstanceType<T>;
 
 		c.applyConfig(config || {});
+
+		if(items && items.length) {
+			(c as unknown as Component).getItems().replace(...items);
+		}
 
 		c.init();
 		return c;

@@ -54,10 +54,6 @@ export class Splitter extends DraggableComponent {
 		return this.resizeWidth ? {width: this.resizeComponent.getEl().offsetWidth} : {height: this.resizeComponent.getEl().offsetHeight};
 	}
 
-	public static create<T extends typeof Observable>(this: T, config?: SplitterConfig<InstanceType<T>>) {
-		return <InstanceType<T>> super.create(<any>config);
-	}
-
 	protected init() {
 
 		this.on("dragstart", (comp, dragData, e) => {
@@ -110,3 +106,11 @@ export class Splitter extends DraggableComponent {
 		super.init();
 	}
 }
+
+/**
+ * Shorthand function to create {@see Splitter}
+ *
+ * @param config
+ * @param items
+ */
+export const splitter = (config?:SplitterConfig<Splitter>) => Splitter.create(config);

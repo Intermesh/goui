@@ -1,7 +1,7 @@
-import {Menu} from "./Menu.js";
-import {Button} from "../Button.js";
+import {Menu, MenuConfig} from "./Menu.js";
+import {btn, Button} from "../Button.js";
 import {Observable, ObservableListener, ObservableListenerOpts} from "../Observable.js";
-import {ComponentConfig, ComponentEventMap} from "../Component.js";
+import {Component, ComponentConfig, ComponentEventMap} from "../Component.js";
 
 /**
  * @inheritDoc
@@ -86,17 +86,9 @@ export class ColorMenu extends Menu {
 
 
 	]
-	//whites = ['fff', 'f4f2ef', 'a1a8ab', '535f65', '000']
-
-
-	public static create<T extends typeof Observable>(this: T, config?: ColorMenuConfig<InstanceType<T>>) {
-		return <InstanceType<T>> super.create(<any> config);
-	}
 
 	protected init() {
-
-
-		this.getItems().add(Button.create({
+		this.getItems().add(btn({
 			itemId: "auto",
 			text: "Auto",
 			cls: this.value == "" ? "pressed" : "",
@@ -108,7 +100,7 @@ export class ColorMenu extends Menu {
 		}));
 
 		this.colors.forEach(color => {
-			this.getItems().add(Button.create({
+			this.getItems().add(btn({
 				itemId: "#" + color,
 				cls: this.value == color ? 'with-icon pressed' : 'with-icon',
 				html: `<div style="background-color: #${color}"></div>`,
@@ -164,3 +156,11 @@ export class ColorMenu extends Menu {
 		return this.value;
 	}
 }
+
+/**
+ * Shorthand function to create {@see ColorMenu}
+ *
+ * @param config
+ * @param items
+ */
+export const colormenu = (config?:ColorMenuConfig<ColorMenu>) => ColorMenu.create(config);

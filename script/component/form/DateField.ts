@@ -19,11 +19,6 @@ export class DateField extends TextField {
 	protected inputFormat = "d-m-Y"
 	protected outputFormat = "Y-m-d"
 
-
-	public static create<T extends typeof Observable>(this: T, config?: DateFieldConfig<InstanceType<T>>) {
-		return <InstanceType<T>> super.create(<any> config);
-	}
-
 	init() {
 		super.init();
 
@@ -66,3 +61,10 @@ export class DateField extends TextField {
 
 
 }
+
+/**
+ * Shorthand function to create {@see DateField}
+ *
+ * @param config
+ */
+export const datefield = (config?:DateFieldConfig<DateField>) => DateField.create(config);

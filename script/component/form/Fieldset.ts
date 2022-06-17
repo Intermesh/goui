@@ -1,5 +1,6 @@
 import {Component, ComponentConfig} from "../Component.js";
 import {Observable} from "../Observable.js";
+import {Form, FormConfig} from "./Form.js";
 
 /**
  * @inheritDoc
@@ -20,10 +21,6 @@ export class Fieldset extends Component {
 	tagName = "fieldset" as keyof HTMLElementTagNameMap
 	protected legend?: string;
 
-	public static create<T extends typeof Observable>(this: T, config?: FieldsetConfig<InstanceType<T>>) {
-		return <InstanceType<T>> super.create(<any> config);
-	}
-
 	internalRender() {
 		const el = super.internalRender();
 
@@ -38,3 +35,12 @@ export class Fieldset extends Component {
 		return el;
 	}
 }
+
+
+/**
+ * Shorthand function to create fieldset
+ *
+ * @param config
+ * @param items
+ */
+export const fieldset = (config?:FieldsetConfig<Fieldset>, ...items:Component[]) => Fieldset.create(config, items);

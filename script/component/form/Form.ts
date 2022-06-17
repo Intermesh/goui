@@ -1,6 +1,7 @@
 import {ContainerField, ContainerFieldConfig, ContainerFieldEventMap} from "./ContainerField.js";
 import {Observable, ObservableListener, ObservableListenerOpts} from "../Observable.js";
 import {Notifier} from "../../Notifier.js";
+import {Component} from "../Component.js";
 
 export interface FormConfig<T extends Observable> extends ContainerFieldConfig<T> {
 	/**
@@ -120,10 +121,6 @@ export class Form extends ContainerField {
 
 	protected handler: ((this: this, form: Form) => void) | undefined;
 
-	public static create<T extends typeof Observable>(this: T, config?: FormConfig<InstanceType<T>>) {
-		return <InstanceType<T>> super.create(<any> config);
-	}
-
 	protected internalRender() {
 		const el = <HTMLFormElement> super.internalRender();
 
@@ -221,3 +218,11 @@ export class Form extends ContainerField {
 	}
 
 }
+
+/**
+ * Shorthand function to create {@see Form}
+ *
+ * @param config
+ * @param items
+ */
+export const form = (config?:FormConfig<Form>, ...items:Component[]) => Form.create(config, items);

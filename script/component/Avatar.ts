@@ -7,10 +7,6 @@ export interface AvatarConfig<T extends Observable> extends ComponentConfig<T> {
 
 export class Avatar extends Component {
 
-	public static create<T extends typeof Observable>(this: T, config?: AvatarConfig<InstanceType<T>>) {
-		return <InstanceType<T>> super.create(<any> config);
-	}
-
 	protected displayName = "";
 
 	protected baseCls = "avatar";
@@ -53,3 +49,10 @@ export class Avatar extends Component {
 
 }
 
+
+/**
+ * Shorthand function to create {@see Avatar}
+ *
+ * @param config
+ */
+export const avatar = (config?:AvatarConfig<Avatar>) => Avatar.create(config);

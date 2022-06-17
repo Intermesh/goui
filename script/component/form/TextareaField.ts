@@ -1,4 +1,4 @@
-import {TextField} from "./TextField.js";
+import {TextField, TextFieldConfig} from "./TextField.js";
 
 /**
  * Text Area component
@@ -31,3 +31,10 @@ export class TextAreaField extends TextField {
 		return this.input;
 	}
 }
+
+/**
+ * Shorthand function to create {@see TextAreaField}
+ *
+ * @param config
+ */
+export const textarea = (config?:TextFieldConfig<TextAreaField>) => TextAreaField.create(config);

@@ -64,10 +64,6 @@ export class CardContainer extends Component {
 
 	protected baseCls = "cards"
 
-	public static create<T extends typeof Observable>(this: T, config?: CardContainerConfig<InstanceType<T>>) {
-		return (<InstanceType<T>>super.create(<any> config));
-	}
-
 	protected init() {
 		super.init();
 
@@ -178,3 +174,11 @@ export class CardContainer extends Component {
 	}
 
 }
+
+/**
+ * Shorthand function to create {@see CardContainer}
+ *
+ * @param config
+ * @param items
+ */
+export const cards = (config?:CardContainerConfig<CardContainer>, ...items:Component[]) => CardContainer.create(config, items);

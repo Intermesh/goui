@@ -133,3 +133,10 @@ export class JmapStore extends Store {
 
 
 }
+
+/**
+ * Shorthand function to create store
+ *
+ * @param config
+ */
+export const jmapstore = (config?:JmapStoreConfig<Store>) => JmapStore.create(config);

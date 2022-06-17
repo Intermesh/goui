@@ -1,190 +1,160 @@
-import {Window} from "../script/component/Window.js";
-import {Form} from "../script/component/form/Form.js";
-import {Fieldset} from "../script/component/form/Fieldset.js";
-import {TextField} from "../script/component/form/TextField.js";
-import {HtmlField} from "../script/component/form/HtmlField.js";
-import {ContainerField} from "../script/component/form/ContainerField.js";
-import {CardContainer} from "../script/component/CardContainer.js";
-import {CardMenu} from "../script/component/CardMenu.js";
-import {Toolbar} from "../script/component/Toolbar.js";
-import {Button} from "../script/component/Button.js";
-import {Component} from "../script/component/Component.js";
-import {DateField} from "../script/component/form/DateField.js";
-import {CheckboxField} from "../script/component/form/CheckboxField.js";
-import {Menu} from "../script/component/menu/Menu.js";
+import {win, Window} from "../script/component/Window.js";
+import {form, Form} from "../script/component/form/Form.js";
+import {fieldset} from "../script/component/form/Fieldset.js";
+import {textfield, TextField} from "../script/component/form/TextField.js";
+import {htmlfield} from "../script/component/form/HtmlField.js";
+import {containerfield, ContainerField} from "../script/component/form/ContainerField.js";
+import {cards} from "../script/component/CardContainer.js";
+import {cardmenu} from "../script/component/CardMenu.js";
+import {tbar} from "../script/component/Toolbar.js";
+import {btn} from "../script/component/Button.js";
+import {datefield} from "../script/component/form/DateField.js";
+import {checkbox} from "../script/component/form/CheckboxField.js";
 import {PlaygroundTable} from "./PlaygroundTable.js";
+import {menu} from "../script/component/menu/Menu.js";
 
-export class PlaygroundWindow extends Window {
-	stateId = "playground-window"
-	modal = false
-	title = "Window test"
-	width = 800
-	height = 600
-	maximizable = true
+export const playgroundWin = () => {
+	const playgroundWin = win({
+			stateId: "playground-window",
+			modal: false,
+			title: "Window test",
+			width: 800,
+			height: 600,
+			maximizable: true,
+			listeners: {
+				focus: (win) => {
+					win.findChild("requiredField")!.focus();
+				}
+			}
+		},
+		cardmenu(),
+		cards({flex: 1},
+			form({
+					itemId: "form",
+					title: "Form",
+					cls: "scroll fit",
+					handler: (form) => {
 
-	focus(o?: FocusOptions) {
-		//focus card panel, card panel will focus active item
-		this.getItems().get(1)!.focus(o);
-	}
+						console.log(form.getValues());
 
+						const sub = form.findField("sub") as ContainerField;
+						const test1 = sub.findField("test1") as TextField;
 
-	protected init() {
-		super.init();
+						test1.setInvalid("Hey something went wrong!");
+					}
+				},
 
-		this.getHeader().getItems().insert(-2, this.createHeaderMenu(), );
+				fieldset({},
 
+					textfield({
+						itemId: "requiredField",
+						label: "Required field",
+						// placeholder: "Here's the placeholder",
+						name: "test",
+						required: true,
+						hint: "Please fill in something awesome"
+					}),
 
-		const form = Form.create({
-			itemId: "form",
-			title: "Form",
-			cls: "scroll fit",
-			handler: () => {
+					datefield({
+						label: "Date",
+						name: "date"
 
-				console.log(form.getValues());
+					}),
 
-				const sub = <ContainerField>form.findField("sub");
-				const test1 = <TextField>sub.findField("test1");
-				test1.setInvalid("Hey something went wrong!");
-			},
-			items: [
-				Fieldset.create({
-					items: [
-						TextField.create({
-							label: "Required field",
-							// placeholder: "Here's the placeholder",
-							name: "test",
-							required: true,
-							hint: "Please fill in something awesome"
+					htmlfield({
+						label: "Html",
+						hint: "Attach files by dropping or pasting them",
+						// cls: "frame-hint"
+					}),
+
+					containerfield({
+						name: "sub"
+					},
+						textfield({
+							label: "A freaking long stupid label",
+							name: "test1",
 						}),
-						DateField.create({
-							label: "Date",
-							name: "date"
 
-						}),
-						HtmlField.create({
-							label: "Html",
-							hint: "Attach files by dropping or pasting them",
-							// cls: "frame-hint"
-						}),
-						ContainerField.create({
-							name: "sub",
-							items: [
-								TextField.create({
-									label: "A freaking long stupid label",
-									name: "test1",
-								}),
-								TextField.create({
-									label: "Test 2",
-									name: "test2",
-								}),
-							]
-						}),
-						CheckboxField.create({
-							label: "A checkbox label comes after",
-							name: "checkbox"
+						textfield({
+							label: "Test 2",
+							name: "test2",
 						})
-					]
-				})
-			]
-		})
+					),
 
-		const cards = CardContainer.create({
-			flex: 1,
-			items: [
-				form,
-				PlaygroundTable.create({
-					itemId: "table",
-					cls: "fit"
-				})
-			]
-		})
+					checkbox({
+						label: "A checkbox label comes after",
+						name: "checkbox"
+					})
+				)
+			),
+			PlaygroundTable.create()
+		),
 
-		this.getItems().replace([
+		tbar({cls: "bottom"},
 
-			CardMenu.create({
-				cardContainer: cards
+			btn({
+				html: "Close",
+				handler: (button) => {
+					button.findAncestorByType(Window)!.close();
+				}
 			}),
 
-			cards,
+			"->",
 
-			Toolbar.create({
-				cls: "bottom",
-				items: [
-					Button.create({
-						html: "Close",
-						handler: () => {
-							this.close();
-						}
-					}),
-
-					Component.create({
-						flex: 1
-					}),
-					Button.create({
-						cls: "primary",
-						html: "Save",
-						handler: () => {
-							form.submit();
-						}
-					})
-
-
-				]
-			})
-		]);
-
-	}
-
-	private createHeaderMenu() {
-		const items = [];
-		for(let i = 0; i < 10; i++) {
-			items.push(Button.create({
-				html: "Button " + i
+			btn({
+				cls: "primary",
+				html: "Save",
+				handler: (button, ev) => {
+					//button is not inside form so we have to do it programmatically
+					button.findAncestorByType(Window)!.findChildByType(Form)!.submit();
+				}
 			}))
-		}
-		return Button.create({
+	);
+
+	playgroundWin.getHeader().getItems().insert(
+		-2,
+
+		btn({
 			text: "Menu",
-			menu: Menu.create({
-				expandLeft: true,
-				items: [
-					Button.create({
-						text: "Mask window",
-						handler: () =>{
-							this.mask();
-							setTimeout(() => {
-								this.unmask();
-							}, 3000);
-						}
-					}),
+			menu: menu({expandLeft: true},
+				btn({
+					text: "Mask window",
+					handler: () => {
+						playgroundWin.mask();
+						setTimeout(() => {
+							playgroundWin.unmask();
+						}, 1000);
+					}
+				}),
 
-					Button.create({
-						text: "Mask form",
-						handler: () =>{
-							const form = this.findChild("form")!;
-							form.show();
+				btn({
+					text: "Mask form",
+					handler: () => {
+						const form = playgroundWin.findChild("form")!;
+						form.show();
 
-							form.mask();
-							setTimeout(() => {
-								form.unmask();
-							}, 1000);
-						}
-					}),
+						form.mask();
+						setTimeout(() => {
+							form.unmask();
+						}, 1000);
+					}
+				}),
 
-					Button.create({
-						text: "Mask table",
-						handler: () =>{
-							const table = this.findChild("table")!;
-							table.show();
+				btn({
+					text: "Mask table",
+					handler: () => {
+						const table = playgroundWin.findChild("table")!;
+						table.show();
 
-							table.mask();
-							setTimeout(() => {
-								table.unmask();
-							}, 1000);
-						}
-					})
-				]
-			})
-		});
-	}
+						table.mask();
+						setTimeout(() => {
+							table.unmask();
+						}, 1000);
+					}
+				})
+			)
+		})
+	);
 
-}
+	return playgroundWin;
+};

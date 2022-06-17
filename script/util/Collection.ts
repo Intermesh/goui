@@ -182,6 +182,8 @@ export class Collection<T> extends Observable implements Iterable<T>{
 		for(let i = l - 1; i >= 0; i--) {
 			this.removeAt(i);
 		}
+
+		return this;
 	}
 
 	/**
@@ -189,9 +191,8 @@ export class Collection<T> extends Observable implements Iterable<T>{
 	 *
 	 * @param items
 	 */
-	public replace(items:T[]) {
-		this.clear();
-		items.forEach(item => this.add(item));
+	public replace(...items:T[]) {
+		return this.clear().add(...items);
 	}
 
 	/**

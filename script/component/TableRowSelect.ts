@@ -7,6 +7,7 @@ import {
 } from "./Observable.js";
 import {Table} from "./Table.js";
 import {ArrayUtil} from "../util/ArrayUtil.js";
+import {Button, ButtonConfig} from "./Button.js";
 
 /**
  * @inheritDoc
@@ -87,10 +88,6 @@ export class TableRowSelect extends Observable {
 
 	public multiSelect = true;
 	private hasKeyUpListener: Boolean = false;
-
-	public static create<T extends typeof Observable>(this: T, config?: TableRowSelectConfig<InstanceType<T>>) {
-		return <InstanceType<T>> super.create(<any> config);
-	}
 
 	protected init() {
 		super.init();
@@ -253,3 +250,11 @@ export class TableRowSelect extends Observable {
 	}
 
 }
+
+
+/**
+ * Shorthand function to create {@see TableRowSelect}
+ *
+ * @param config
+ */
+export const rowselect = (config?:TableRowSelectConfig<TableRowSelect>) => TableRowSelect.create(config);

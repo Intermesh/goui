@@ -1,14 +1,14 @@
-import {Form} from "../component/form/Form.js";
-import {Button} from "../component/Button.js";
-import {TextField} from "../component/form/TextField.js";
-import {Component} from "../component/Component.js";
-import {Toolbar} from "../component/Toolbar.js";
+import {form, Form} from "../component/form/Form.js";
+import {btn, Button} from "../component/Button.js";
+import {textfield, TextField} from "../component/form/TextField.js";
+import {comp, Component} from "../component/Component.js";
+import {tbar, Toolbar} from "../component/Toolbar.js";
 import {Window, WindowEventMap} from "../component/Window.js";
-import {Fieldset} from "../component/form/Fieldset.js";
+import {fieldset, Fieldset} from "../component/form/Fieldset.js";
 import {client, RegisterData} from "./Client.js";
 import {Notifier} from "../Notifier.js";
 import {t} from "../Translate.js";
-import {CardContainer} from "../component/CardContainer.js";
+import {CardContainer, cards} from "../component/CardContainer.js";
 import {Observable} from "../component/Observable.js";
 
 
@@ -54,92 +54,63 @@ export class Login extends Window {
 			}
 		})
 
-		this.loginForm = Form.create({
+		this.loginForm = form({
 			flex: "1 2 auto",
 			cls: "vbox",
 			handler: (form: Form) => {
 				this.login(form);
+			}
+		},
+			fieldset({
+				flex: "1 2 auto",
+				style: {
+					overflow: "auto"
+				}
 			},
-			items: [
-				Fieldset.create({
-					flex: "1 2 auto",
+				comp({
+					tagName: "p",
+					html: t("Please enter your username and password")
+				}),
+				textfield({
+					label: t("Username"),
+					name: "username",
+					autocomplete: "username",
+					required: true
+				}),
+				textfield({
+					label: t("Password"),
+					type: "password",
+					name: "password",
+					autocomplete: "password",
+					required: true
+				}),
+				btn({
 					style: {
-						overflow: "auto"
+						width: "100%"
 					},
-					items: [
-						Component.create({
-							tagName: "p",
-							html: t("Please enter your username and password")
-						}),
-						TextField.create({
-							label: t("Username"),
-							name: "username",
-							autocomplete: "username",
-							required: true
-						}),
-						TextField.create({
-							label: t("Password"),
-							type: "password",
-							name: "password",
-							autocomplete: "password",
-							required: true
-						}),
-						Button.create({
-							style: {
-								width: "100%"
-							},
-							type: "submit",
-							text: t("Login")
-						}),
-
-						Component.create({
-							tagName:"hr"
-						}),
-
-						Button.create({
-							style: {
-								width: "100%"
-							},
-							cls: "raised",
-							type: "button",
-							text: t("Register"),
-							handler: () => {
-								this.showRegisterForm();
-							}
-						}),
-					]
+					type: "submit",
+					text: t("Login")
 				}),
 
+				comp({
+					tagName:"hr"
+				}),
 
-				// Toolbar.create({
-				// 	items: [
-				//
-				// 		Button.create({
-				// 			type: "button",
-				// 			text: t("Cancel"),
-				// 			handler: () => {
-				// 				this.close();
-				// 				this.fire("cancel");
-				// 			}
-				// 		}),
-				//
-				// 		Component.create({
-				// 			flex: 1
-				// 		}),
-				//
-				// 		Button.create({
-				// 			type: "submit",
-				// 			text: "Login"
-				// 		})
-				// 	]
-				// })
+				btn({
+					style: {
+						width: "100%"
+					},
+					cls: "raised",
+					type: "button",
+					text: t("Register"),
+					handler: () => {
+						this.showRegisterForm();
+					}
+				})
+			)
+		);
 
-			]
-		});
-
-		//this.addItem(this.loginForm);
-
-		this.otpForm = Form.create({
+		this.otpForm = form({
 			flex: 1,
 			hidden: true,
 			handler: (form: Form) => {
@@ -159,63 +130,53 @@ export class Login extends Window {
 							Notifier.error(response.statusText);
 					}
 				})
-			},
-
-			items: [
-
-				Fieldset.create({
-					items: [
-						Component.create({
-							tagName: "p",
-							html: t("Please provide the one time code from your device")
-						}),
-
-						TextField.create({
-							label: "Code",
-							name: "googleauthenticator_code",
-							required: true,
-							autocomplete: "one-time-code"
-						})
-					]
+			}
+		},
+			fieldset({},
+				comp({
+					tagName: "p",
+					html: t("Please provide the one time code from your device")
 				}),
 
-				Toolbar.create({
-					items: [
-						Button.create({
-							type: "button",
-							text: t("Cancel"),
-							handler: () => {
-								this.close();
-								this.fire("cancel");
-							}
-						}),
-						Component.create({
-							flex: 1
-						}),
-
-						Button.create({
-							type: "submit",
-							text: t("Login")
-						}),
-
-					]
+				textfield({
+					label: "Code",
+					name: "googleauthenticator_code",
+					required: true,
+					autocomplete: "one-time-code"
 				})
-			]
-		});
+			),
 
-		this.cardContainer = CardContainer.create({
-			items: [this.loginForm, this.otpForm]
-		})
+			tbar({},
+				btn({
+					type: "button",
+					text: t("Cancel"),
+					handler: () => {
+						this.close();
+						this.fire("cancel");
+					}
+				}),
+				comp({
+					flex: 1
+				}),
+
+				btn({
+					type: "submit",
+					text: t("Login")
+				})
+			)
+		);
+
+		this.cardContainer = cards({}, this.loginForm, this.otpForm);
 
 		this.getItems().add(this.cardContainer);
 	}
 
 	private showRegisterForm () {
 
-		this.registerForm = Form.create({
+		this.registerForm = form({
 			cls: "vbox",
 			handler: async (form: Form) => {
-				const data = {action: "register" as RegisterData['action'], user:  form.getValues()};
+				const data = {action: "register" as RegisterData['action'], user: form.getValues()};
 				data.user.mail_reminders = true;
 
 				const response = await client.auth(data);
@@ -233,90 +194,84 @@ export class Login extends Window {
 						Notifier.error(response.statusText);
 				}
 
-			},
+			}
+		},
+			fieldset({},
+				comp({
+					tagName: "p",
+					html: t("Please enter your e-mail address to register")
+				}),
 
-			items: [
-				Fieldset.create({
-					items: [
-						Component.create({
-							tagName: "p",
-							html: t("Please enter your e-mail address to register")
-						}),
+				textfield({
+					label: t("Name"),
+					name: "displayName",
+					required: true
+				}),
 
-						TextField.create({
-							label: t("Name"),
-							name: "displayName",
-							required: true
-						}),
-
-						TextField.create({
-							type: "email",
-							label: t("E-mail"),
-							name: "email",
-							required: true,
-							listeners: {
-								change: (field) => {
-									if(!field.isValid()) {
-										return;
-									}
-									const username = this.registerForm.findField("username")!;
-									if(username.isEmpty()) {
-										username.setValue(field.getValue());
-									}
-
-								}
+				textfield({
+					type: "email",
+					label: t("E-mail"),
+					name: "email",
+					required: true,
+					listeners: {
+						change: (field) => {
+							if(!field.isValid()) {
+								return;
 							}
-						}),
+							const username = this.registerForm.findField("username")!;
+							if(username.isEmpty()) {
+								username.setValue(field.getValue());
+							}
 
-						TextField.create({
-							type: "text",
-							label: t("Username"),
-							name: "username",
-							required: true
-						}),
+						}
+					}
+				}),
 
-						TextField.create({
-							required: true,
-							type: "password",
-							label: t("Password"),
-							name: "password"
-							
-						}),
+				textfield({
+					type: "text",
+					label: t("Username"),
+					name: "username",
+					required: true
+				}),
 
-						TextField.create({
-							itemId: "confirm",//item ID used instead of name so this field won't be submitted
-							type: "password",
-							label: t("Confirm password"),
-							required: true,
-							listeners: {
-								validate: (field) => {
-									const form = field.findAncestorByInstanceType(Form)!;
-									if(field.getValue() != form.findField("password")!.getValue()) {
-										field.setInvalid("The passwords don't match");
-									}
-								}
-							},
-						}),
+				textfield({
+					required: true,
+					type: "password",
+					label: t("Password"),
+					name: "password"
 
-						Button.create({
-							style: {
-								width: "100%"
-							},
-							type: "submit",
-							text: t("Register")
-						})
-					]
+				}),
+
+				textfield({
+					itemId: "confirm",//item ID used instead of name so this field won't be submitted
+					type: "password",
+					label: t("Confirm password"),
+					required: true,
+					listeners: {
+						validate: (field) => {
+							const form = field.findAncestorByType(Form)!;
+							if(field.getValue() != form.findField("password")!.getValue()) {
+								field.setInvalid("The passwords don't match");
+							}
+						}
+					},
+				}),
+
+				btn({
+					style: {
+						width: "100%"
+					},
+					type: "submit",
+					text: t("Register")
 				})
 
-			]
-		});
+			)
+		);
 
 		this.cardContainer.getItems().add(this.registerForm);
 		this.cardContainer.setActiveItem(this.cardContainer.getItems().count() - 1);
 
 		this.registerForm.findField("displayName")!.focus();
-
-	
 	}
 
 	focus(o?: FocusOptions) {
