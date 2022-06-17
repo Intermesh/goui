@@ -51,7 +51,7 @@ export interface ButtonConfig<T extends Observable> extends ComponentConfig<T> {
 	 * The handler only fires on the primary mouse button and when the button is duoble clicked it will
 	 * only fire once!
 	 */
-	handler?: (button: Button, ev: MouseEvent) => any,
+	handler?: (button: T, ev: MouseEvent) => any,
 
 	/**
 	 * Button type. "button" or "submit", defaults to "button".
