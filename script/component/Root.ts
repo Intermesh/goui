@@ -15,16 +15,19 @@ class Root extends Component {
 
 	protected init() {
 		super.init();
+
 		this.el = document.getElementById("goui") || document.body;
 		this.rendered = true;
 
 		this.getItems().on("beforeadd", () => {
 
-			const link = document.createElement('link');
-			link.setAttribute('rel', 'stylesheet');
-			link.type = 'text/css';
-			link.href = '/assets/account/vendor/goui/style/goui.css';
-			document.head.appendChild(link);
+
+
+			// const link = document.createElement('link');
+			// link.setAttribute('rel', 'stylesheet');
+			// link.type = 'text/css';
+			// link.href = '/assets/account/vendor/goui/style/goui.css';
+			// document.head.appendChild(link);
 
 				this.getEl().classList.add("goui");
 		}, {

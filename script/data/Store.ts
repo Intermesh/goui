@@ -28,7 +28,6 @@ export type StoreRecord = { [key: string]: any };
  * @inheritDoc
  */
 export interface StoreConfig<T extends Observable> extends ObservableConfig<T> {
-
 	/**
 	 * The store records
 	 */
@@ -69,8 +68,12 @@ export interface Store {
  */
 export class Store extends Observable {
 
+	private static stores:Record<string, Store> = {};
+
+	protected id?: string;
 	protected records: StoreRecord[] = [];
 	protected loading = false;
+
 
 	/**
 	 * Sort the data
