@@ -110,6 +110,20 @@ export class Window extends DraggableComponent {
 	 */
 	private focussedBeforeOpen?: Element;
 
+	/**
+	 * Focus first item if possible.
+	 * @param o
+	 */
+	public focus(o?: FocusOptions) {
+
+		const first = this.getItems().first();
+		if(first) {
+			return first.focus(o);
+		} else {
+			return super.focus(o);
+		}
+	}
+
 	protected init() {
 		super.init();
 
@@ -485,7 +499,7 @@ export class Window extends DraggableComponent {
 }
 
 /**
- * Shorthand function to create window
+ * Shorthand function to create {@see Window}
  *
  * @param config
  * @param items
