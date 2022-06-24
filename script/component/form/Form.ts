@@ -1,35 +1,27 @@
-import {ContainerField, ContainerFieldConfig, ContainerFieldEventMap} from "./ContainerField.js";
-import {Observable, ObservableListener, ObservableListenerOpts} from "../Observable.js";
+import {ContainerField} from "./ContainerField.js";
+import {Config, Observable, ObservableListener, ObservableListenerOpts} from "../Observable.js";
 import {Notifier} from "../../Notifier.js";
 import {Component} from "../Component.js";
-
-export interface FormConfig<T extends Observable> extends ContainerFieldConfig<T> {
-	/**
-	 * Executed when form is submitted
-	 *
-	 * @param form
-	 */
-	handler?: (this: this, form: Form) => void
-
-	/**
-	 * @inheritDoc
-	 */
-	listeners?: ObservableListener<FormEventMap<T>>
-}
+import {FieldEventMap} from "./Field.js";
 
 
-export interface FormEventMap<T extends Observable> extends ContainerFieldEventMap<T> {
+export interface FormEventMap<Sender extends Observable> extends FieldEventMap<Sender> {
 	/**
 	 * Fires before adding an item. Return false to abort.
 	 *
 	 * @param form
 	 */
-	submit?: (form: T) => any
+	submit: <T extends Sender>(form: T) => any
 }
 
 export interface Form {
-	on<K extends keyof FormEventMap<Form>>(eventName: K, listener: FormEventMap<Form>[K], options?: ObservableListenerOpts): void
-	fire<K extends keyof FormEventMap<Form>>(eventName: K, ...args: Parameters<NonNullable<FormEventMap<Form>[K]>>): boolean
+	on<K extends keyof FormEventMap<this>>(eventName: K, listener: Partial<FormEventMap<this>>[K], options?: ObservableListenerOpts): void
+
+	fire<K extends keyof FormEventMap<this>>(eventName: K, ...args: Parameters<FormEventMap<this>[K]>): boolean
+
+	set listeners(listeners: ObservableListener<FormEventMap<this>>)
+
+	get el(): HTMLFormElement
 }
 
 /**
@@ -116,16 +108,26 @@ export interface Form {
  */
 export class Form extends ContainerField {
 	protected baseCls = "form"
-	protected hideLabel = true;
-	protected tagName = "form" as keyof HTMLElementTagNameMap
+	public hideLabel = true;
 
-	protected handler: ((this: this, form: Form) => void) | undefined;
+	get tagName() {
+		return "form" as keyof HTMLElementTagNameMap
+	}
+
+
+	/**
+	 * Executed when form is submitted
+	 *
+	 * @param form
+	 */
+	public handler: ((this: this, form: Form) => void) | undefined;
+
 
 	protected internalRender() {
-		const el = <HTMLFormElement> super.internalRender();
+		const el = super.internalRender();
 
 		// disable browser validation
-		el.noValidate = true;
+		this.el.noValidate = true;
 
 		if (this.handler) {
 
@@ -142,9 +144,9 @@ export class Form extends ContainerField {
 
 		//Submit forms on CTRL + ENTER. (For html area or text area's)
 		el.addEventListener("keydown", (e) => {
-			if((e.ctrlKey || e.metaKey) && e.key == "Enter") {
+			if ((e.ctrlKey || e.metaKey) && e.key == "Enter") {
 				e.preventDefault();
-				if(document.activeElement && "blur" in document.activeElement) {
+				if (document.activeElement && "blur" in document.activeElement) {
 					(<HTMLElement>document.activeElement).blur();
 				}
 				this.submit();
@@ -159,7 +161,7 @@ export class Form extends ContainerField {
 	 * Get all form values
 	 */
 	getValues(): { [key: string]: any } {
-		return this.getValue();
+		return this.value;
 	}
 
 	/**
@@ -168,7 +170,7 @@ export class Form extends ContainerField {
 	 * @param v
 	 */
 	setValues(v: { [key: string]: any }) {
-		this.setValue(v);
+		this.value = v;
 	}
 
 	/**
@@ -192,7 +194,7 @@ export class Form extends ContainerField {
 		if (this.isValid()) {
 			el.classList.add('valid');
 			el.classList.remove('invalid');
-			if(this.handler) {
+			if (this.handler) {
 				this.handler!(this);
 			}
 
@@ -210,7 +212,7 @@ export class Form extends ContainerField {
 	 */
 	public focus(o?: FocusOptions) {
 		const fields = this.findFields();
-		if(fields.length) {
+		if (fields.length) {
 			fields[0].focus(o);
 		} else {
 			super.focus(o);
@@ -225,4 +227,4 @@ export class Form extends ContainerField {
  * @param config
  * @param items
  */
-export const form = (config?:FormConfig<Form>, ...items:Component[]) => Form.create(config, items);
+export const form = (config?: Config<Form>, ...items: Component[]) => Form.create(config, ...items);

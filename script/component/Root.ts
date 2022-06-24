@@ -10,18 +10,26 @@ class Root extends Component {
 
 	protected internalRender() {
 		this.renderItems();
-		return this.getEl();
+		return this.el;
 	}
 
-	protected init() {
-		super.init();
+	private _rootEl?:HTMLElement;
 
-		this.el = document.getElementById("goui") || document.body;
-		this.rendered = true;
+	get el() {
+		if(!this._rootEl) {
+			this._rootEl = document.getElementById("goui") || document.body;
+		}
 
-		this.getItems().on("beforeadd", () => {
+		return this._rootEl;
+	}
 
+	get rendered() {
+		return true;
+	}
 
+	constructor() {
+		super();
+		this.items.on("beforeadd", () => {
 
 			// const link = document.createElement('link');
 			// link.setAttribute('rel', 'stylesheet');
@@ -29,16 +37,11 @@ class Root extends Component {
 			// link.href = '/assets/account/vendor/goui/style/goui.css';
 			// document.head.appendChild(link);
 
-				this.getEl().classList.add("goui");
+			this.el.classList.add("goui");
 		}, {
 			once: true
 		})
 	}
-
-	public setEl(el: HTMLElement) {
-		this.el = el;
-	}
-
 }
 
 /**
@@ -50,7 +53,7 @@ class Root extends Component {
  *
  * @example
  * ```
- * root.getItems().add(cmp({html: "Hello world!"});
+ * root.items.add(cmp({html: "Hello world!"});
  * ```
  */
 export const root = Root.create();

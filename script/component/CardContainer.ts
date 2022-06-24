@@ -1,7 +1,8 @@
-import {Component, ComponentConfig, ComponentEventMap} from "./Component.js";
-import {Observable, ObservableListener, ObservableListenerOpts} from "./Observable.js";
+import {Component, ComponentEventMap} from "./Component.js";
+import {Config, Observable, ObservableListener, ObservableListenerOpts} from "./Observable.js";
 
-export interface CardContainerEventMap<T extends Observable> extends ComponentEventMap<T> {
+
+export interface CardContainerEventMap<Sender extends Observable> extends ComponentEventMap<Sender> {
 	/**
 	 * Fires before adding an item. Return false to abort.
 	 *
@@ -9,27 +10,17 @@ export interface CardContainerEventMap<T extends Observable> extends ComponentEv
 	 * @param item
 	 * @param index
 	 */
-	cardchange?: (container: CardContainer, index: number | undefined, oldIndex: number | undefined) => false | void
+	cardchange: <T extends Sender> (container: T, index: number | undefined, oldIndex: number | undefined) => false | void
 
 }
 
 export interface CardContainer {
-	on<K extends keyof CardContainerEventMap<CardContainer>>(eventName: K, listener: CardContainerEventMap<CardContainer>[K], options?: ObservableListenerOpts): void;
-	fire<K extends keyof CardContainerEventMap<CardContainer>>(eventName: K, ...args: Parameters<NonNullable<CardContainerEventMap<CardContainer>[K]>>): boolean;
+	on<K extends keyof CardContainerEventMap<this>>(eventName: K, listener: Partial<CardContainerEventMap<this>>[K], options?: ObservableListenerOpts): void;
+
+	fire<K extends keyof CardContainerEventMap<this>>(eventName: K, ...args: Parameters<CardContainerEventMap<this>[K]>): boolean;
+
+	set listeners(listeners: ObservableListener<CardContainerEventMap<this>>)
 }
-
-export interface CardContainerConfig<T extends Observable> extends ComponentConfig<T> {
-	/**
-	 * Active card item
-	 */
-	activeItem?: number,
-	/**
-	 * @inheritDoc
-	 */
-	listeners?: ObservableListener<CardContainerEventMap<T>>
-}
-
-
 
 
 /**
@@ -60,24 +51,16 @@ export interface CardContainerConfig<T extends Observable> extends ComponentConf
  */
 export class CardContainer extends Component {
 
-	protected activeItem?: number;
+	private _activeItem?: number;
 
-	protected baseCls = "cards"
-
-	protected init() {
-		super.init();
-
-		if(this.activeItem == undefined && this.getItems().count()) {
-			this.activeItem = 0;
-		}
-	}
+	protected baseCls = "cards";
 
 	protected internalRender() {
 		const el = super.internalRender();
 
 		this.setCardVisibilities();
 
-		this.getItems().on("beforeadd", (card, item) => {
+		this.items.on("beforeadd", (card, item) => {
 			item.hide();
 		})
 
@@ -90,24 +73,21 @@ export class CardContainer extends Component {
 
 		item.on('show', comp => {
 			const index = this.findItemIndex(comp);
-			this.setActiveItem(index);
+			this.activeItem = index;
 		});
 	}
 
 	private setCardVisibilities() {
 
-		this.getItems().forEach((item, index) => {
+		this.items.forEach((item, index) => {
 			if (index == this.activeItem) {
-				if (this.isRendered() && !item.isRendered()) {
+				if (this.rendered && !item.rendered) {
 					super.renderItem(item);
 				}
-				if(item.isHidden()) {
-					item.show();
-				}
+				item.show();
+
 			} else {
-				if(!item.isHidden()) {
-					item.hide();
-				}
+				item.hide();
 			}
 		});
 	}
@@ -116,22 +96,28 @@ export class CardContainer extends Component {
 	 * Change the active card item
 	 *
 	 */
-	setActiveItem(ref: number|Component) {
+	set activeItem(ref: number | Component) {
 
 		let index;
-		if(ref instanceof Component) {
+		if (ref instanceof Component) {
 			index = this.findItemIndex(ref);
-		} else
-		{
+		} else {
 			index = ref;
 		}
 
-		if (this.activeItem != index) {
-			this.fire("cardchange", this, index, this.activeItem);
+		if (this._activeItem != index) {
+			this.fire("cardchange", this, index, this._activeItem);
 		}
-		this.activeItem = index;
+		this._activeItem = index;
 
 		this.setCardVisibilities();
+	}
+
+	get activeItem(): number {
+		if (this._activeItem == undefined && this.items.count()) {
+			this._activeItem = 0;
+		}
+		return this._activeItem!;
 	}
 
 	/**
@@ -144,8 +130,9 @@ export class CardContainer extends Component {
 	}
 
 	focus(o?: FocusOptions) {
-		if(this.activeItem != undefined) {
-			const activeItem = this.getItems().get(this.activeItem);
+
+		if (this.activeItem) {
+			const activeItem = this.items.get(this.activeItem);
 			if (activeItem) {
 				activeItem.focus(o);
 				return;
@@ -153,25 +140,24 @@ export class CardContainer extends Component {
 		}
 
 		super.focus(o);
-
 	}
 
-	public async loadCard (cls:string, module:string = `../../../../script/${cls}.js`) {
+	// public async loadCard (cls:string, module:string = `../../../../script/${cls}.js`) {
 
-		let item = this.findItem(cls);
-		if(!item) {
+	// 	let item = this.findItem(cls);
+	// 	if(!item) {
 
-			const mods = await import(module);
-			item = mods[cls].create({
-				itemId: cls
-			}) as Component;
+	// 		const mods = await import(module);
+	// 		item = mods[cls].create({
+	// 			itemId: cls
+	// 		}) as Component;
 
-			this.getItems().add(item);
-		}
-		item.show();
+	// 		this.items.add(item);
+	// 	}
+	// 	item.show();
 
-		return item;
-	}
+	// 	return item;
+	// }
 
 }
 
@@ -181,4 +167,4 @@ export class CardContainer extends Component {
  * @param config
  * @param items
  */
-export const cards = (config?:CardContainerConfig<CardContainer>, ...items:Component[]) => CardContainer.create(config, items);
+export const cards = (config?: Config<CardContainer>, ...items: Component[]) => CardContainer.create(config, ...items);

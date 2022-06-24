@@ -6,6 +6,7 @@ import {
 	ObservableListenerOpts
 } from "../component/Observable.js";
 import {ArrayUtil} from "../util/ArrayUtil.js";
+import {ComponentConfig} from "../component/Component.js";
 
 /**
  * Comparator interface for sorting data
@@ -73,6 +74,12 @@ export class Store extends Observable {
 	protected id?: string;
 	protected records: StoreRecord[] = [];
 	protected loading = false;
+
+	constructor(config?:StoreConfig<Store>) {
+		super();
+		Object.assign(this, config);
+		this.init();
+	}
 
 
 	/**

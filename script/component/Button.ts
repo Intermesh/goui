@@ -1,7 +1,7 @@
-import {Component, ComponentConfig, ComponentEventMap} from "./Component.js";
+import {Component, ComponentEventMap} from "./Component.js";
 import {Menu} from "./menu/Menu.js";
 import {root} from "./Root.js";
-import {Observable, ObservableListener, ObservableListenerOpts} from "./Observable.js";
+import {Config, Observable, ObservableListener, ObservableListenerOpts} from "./Observable.js";
 import {MaterialIcon} from "./MaterialIcon.js";
 
 type ButtonType = "button" | "submit" | "reset";
@@ -9,7 +9,7 @@ type ButtonType = "button" | "submit" | "reset";
 /**
  * @inheritDoc
  */
-export interface ButtonEventMap<T extends Observable> extends ComponentEventMap<T> {
+export interface ButtonEventMap<Sender extends Observable> extends ComponentEventMap<Sender> {
 	/**
 	 * Fires before showing the button menu. Return false to abort.
 	 *
@@ -17,7 +17,7 @@ export interface ButtonEventMap<T extends Observable> extends ComponentEventMap<
 	 * @param item
 	 * @param index
 	 */
-	beforeshowmenu?: (button: Button, menu: Menu, ev:MouseEvent) => false | void
+	beforeshowmenu: <T extends Sender> (button: T, menu: Menu, ev: MouseEvent) => false | void
 
 	/**
 	 * Fires when the button menu is shown
@@ -26,7 +26,7 @@ export interface ButtonEventMap<T extends Observable> extends ComponentEventMap<
 	 * @param menu
 	 * @param ev
 	 */
-	showmenu?: (button: Button, menu: Menu, ev:MouseEvent) => false | void,
+	showmenu: <T extends Sender> (button: T, menu: Menu, ev: MouseEvent) => false | void,
 
 	/**
 	 * Fires when the button is clicked.
@@ -37,55 +37,17 @@ export interface ButtonEventMap<T extends Observable> extends ComponentEventMap<
 	 * @param button
 	 * @param ev
 	 */
-	click?: (button: Button, ev:MouseEvent) => void
+	click: <T extends Sender> (button: T, ev: MouseEvent) => void
 }
 
+export interface Button extends Component {
+	on<K extends keyof ButtonEventMap<this>>(eventName: K, listener: Partial<ButtonEventMap<this>>[K], options?: ObservableListenerOpts): void
 
-/**
- * @inheritDoc
- */
-export interface ButtonConfig<T extends Observable> extends ComponentConfig<T> {
-	/**
-	 * Function to be executed on click (added to el.onclick)
-	 *
-	 * The handler only fires on the primary mouse button and when the button is duoble clicked it will
-	 * only fire once!
-	 */
-	handler?: (button: T, ev: MouseEvent) => any,
+	fire<K extends keyof ButtonEventMap<this>>(eventName: K, ...args: Parameters<ButtonEventMap<this>[K]>): boolean
 
-	/**
-	 * Button type. "button" or "submit", defaults to "button".
-	 */
-	type?: ButtonType,
+	set listeners(listeners: ObservableListener<ButtonEventMap<this>>)
 
-	/**
-	 * Add menu to this button
-	 */
-	menu?: Menu,
-
-	/**
-	 * Set's the button icon and adds a "icon" css class
-	 */
-	icon?:MaterialIcon
-
-	/**
-	 * Button text
-	 *
-	 * Set's the button text and adds a "text" css class
-	 *
-	 * This overrides the "html" property. Use html if you want something custom.
-	 */
-	text?:string
-
-	/**
-	 * @inheritDoc
-	 */
-	listeners?: ObservableListener<ButtonEventMap<T>>
-}
-
-export interface Button {
-	on<K extends keyof ButtonEventMap<Button>>(eventName: K, listener: ButtonEventMap<Button>[K], options?: ObservableListenerOpts): void
-	fire<K extends keyof ButtonEventMap<Button>>(eventName: K, ...args: Parameters<NonNullable<ButtonEventMap<Button>[K]>>): boolean
+	get el(): HTMLButtonElement
 }
 
 /**
@@ -104,53 +66,72 @@ export interface Button {
  */
 export class Button extends Component {
 
-	protected tagName = "button" as keyof HTMLElementTagNameMap
+	constructor() {
+		super();
+		this.tagName = "button";
+	}
 
-	protected type:ButtonType = "button"
+	protected baseCls = "button"
 
-	baseCls = "button"
+	/**
+	 * Function to be executed on click (added to el.onclick)
+	 *
+	 * The handler only fires on the primary mouse button and when the button is duoble clicked it will
+	 * only fire once!
+	 */
+	public handler?: (button: this, ev?: MouseEvent) => any;
 
-	protected handler?: (button: this, ev?: MouseEvent) => any;
+	private _menu?: Menu;
 
-	protected menu!: Menu;
-
-	protected icon: MaterialIcon | undefined;
+	private _icon?: MaterialIcon;
 
 	private block = false;
+
+	private _text?: string;
+
 
 	/**
 	 * Find the first menu in the tree of submenu's
 	 */
-	private findTopMenu(): Menu|undefined {
-		if(this.parent instanceof Menu) {
-			if(this.parent.parentButton && this.parent.parentButton.parent instanceof Menu) {
+	private findTopMenu(): Menu | undefined {
+		if (this.parent instanceof Menu) {
+			if (this.parent.parentButton && this.parent.parentButton.parent instanceof Menu) {
 				return this.parent.parentButton.findTopMenu();
-			} else
-			{
-				return this.parent;
+			} else {
+				return this.parent as Menu;
 			}
-		} else
-		{
+		} else {
 			return undefined;
 		}
 	}
 
+	/**
+	 * Button type. "button" or "submit", defaults to "button".
+	 */
+	set type(type: ButtonType) {
+		this.el.type = type;
+	}
+
+	get type() {
+		return this.el.type as ButtonType;
+	}
+
+
 	protected internalRender() {
 
-		const el = super.internalRender() as HTMLButtonElement;
-		el.type = this.type;
+		const el = this.el;
 
 		el.addEventListener("click", (e) => {
 			// prevent double submissions for 1s
-			if(this.block) {
-				this.setDisabled(true);
+			if (this.block) {
+				this.disabled = true;
 				e.preventDefault();
 				return;
 			}
 			this.block = true;
 			setTimeout(() => {
 				this.block = false;
-				this.setDisabled(false);
+				this.disabled = false;
 			}, 1000);
 
 			// check detail for being the first click. We don't want double clicks to call the handler twice.
@@ -160,7 +141,7 @@ export class Button extends Component {
 
 				// close menu if handler is set
 				const topMenu = this.findTopMenu();
-				if(topMenu) {
+				if (topMenu) {
 					topMenu.close();
 				}
 
@@ -171,134 +152,154 @@ export class Button extends Component {
 
 		this.applyTextAndIcon();
 
-		if (this.menu) {
-			this.menu.parentButton = this;
-			this.menu.removeOnClose = false;
+		return el;
+	}
 
-			el.classList.add("has-menu");
+	private onMenuButtonClick(ev: MouseEvent) {
+		if (this.menu!.hidden) {
+			this.showMenu(this.el, ev);
+		} else {
+			this.menu!.hide();
+		}
+	}
+
+	private onMenuMouseEnter(ev: MouseEvent) {
+		if (Menu.openedMenu && Menu.openedMenu != this.menu) {
+			Menu.openedMenu.el.classList.remove("fade-out");
+			Menu.openedMenu.close();
+			this.showMenu(this.el, ev);
+		}
+	}
+
+	/**
+	 * Add menu to this button
+	 */
+	set menu(menu: Menu | undefined) {
+
+
+		if (menu) {
+			menu.parentButton = this;
+			menu.removeOnClose = false;
+
+			this.el.classList.add("has-menu");
 
 			// The first menu of a button will expand on click, sub menus will show on hover and are hidden with css.
 			// Before I made this without JS with the :focus-within selector but that didn't work in Safari because it
 			// doesn't focus buttons on click.
 			// First menu is rendered directly in body so it's positioned absolute on the page and there's no need for overflow
 			// visible in windows.
-			if(!(this.parent instanceof Menu)) {
-				this.menu.hide();
+			if (!(this.parent instanceof Menu)) {
+				menu.hide();
 
 				// When a menu is opened. other top level will open on mouse enter
-				el.addEventListener("mouseenter", (ev) => {
-					if(Menu.openedMenu && Menu.openedMenu != this.menu) {
-						Menu.openedMenu.getEl().classList.remove("fade-out");
-						Menu.openedMenu.close();
-						this.showMenu(el, ev);
-					}
-				});
-
-				el.addEventListener("click", ev => {
-					if (this.menu.isHidden()) {
-						this.showMenu(el, ev);
-					} else {
-						this.menu.hide();
-					}
-				});
+				this.el.addEventListener("mouseenter", this.onMenuMouseEnter);
+				this.el.addEventListener("click", this.onMenuButtonClick);
 			} else {
-				this.menu.render(el);
+				menu.render(this.el);
 			}
+		} else if (this._menu) {
+			this._menu.remove();
+			this.el.removeEventListener("mouseenter", this.onMenuMouseEnter);
+			this.el.removeEventListener("click", this.onMenuButtonClick);
 		}
-		return el;
+
+		this._menu = menu;
 	}
 
-	public getMenu() {
-		return this.menu;
+	public get menu() {
+		return this._menu;
 	}
 
-	private showMenu(el:HTMLButtonElement, ev:MouseEvent) {
+	private showMenu(el: HTMLButtonElement, ev: MouseEvent) {
+
 		// noinspection PointlessBooleanExpressionJS
-		if(this.fire("beforeshowmenu", this, this.menu, ev) === false) {
+		if (this.fire("beforeshowmenu", this, this.menu!, ev) === false) {
 			return;
 		}
 		const rect = el.getBoundingClientRect();
 
 		//must be rendered and visible to get width below
-		if(!this.menu.isRendered()) {
-			root.getItems().add(this.menu);
+		if (!this.menu!.rendered) {
+			root.items.add(this.menu!);
 		}
 
 		//show first for positioning correctly below
-		this.menu.show();
+		this.menu!.show();
 
-		this.menu.showAt({
-				x: this.menu.isLeftExpanding() ? rect.right - this.menu.getWidth()!  : rect.x,
-				y: rect.bottom
-			});
+		this.menu!.showAt({
+			x: this.menu!.expandLeft ? rect.right - this.menu!.width : rect.x,
+			y: rect.bottom
+		});
 
 		//put back fade out class removed in mouseenter listener above
-		this.menu.getEl().classList.add("fade-out");
+		this.menu!.el.classList.add("fade-out");
 
-		this.fire("showmenu", this, this.menu, ev);
+		this.fire("showmenu", this, this.menu!, ev);
 	}
 
 	protected internalRemove() {
-		if(this.menu) {
+		if (this.menu) {
 			this.menu.remove();
 		}
 		super.internalRemove();
 	}
 
 
-	setText(text:string) {
-		this.text = text;
+	/**
+	 * Button text
+	 *
+	 * Set's the button text and adds a "text" css class
+	 *
+	 * This overrides the "html" property. Use html if you want something custom.
+	 */
+	set text(text: string) {
 
-		if(this.rendered) {
-			this.applyTextAndIcon();
+		if (text) {
+			this._text = text;
+
+			this.el.classList.add("with-text");
+		} else {
+			this.el.classList.remove("with-text");
 		}
 	}
 
-	getText() {
-		return this.text;
+	get text() {
+		return this._text + "";
 	}
 
-	setIcon(icon:MaterialIcon|undefined) {
-		this.icon = icon;
-		if(this.rendered) {
-			this.applyTextAndIcon();
+	/**
+	 * Set's the button icon and adds a "icon" css class
+	 */
+	set icon(icon: MaterialIcon | undefined) {
+		this._icon = icon;
+
+		if (this._icon) {
+			this.el.classList.add("with-icon");
 		}
+
+		this.el.classList.remove("with-icon");
 	}
 
-	getIcon() {
-		return this.icon;
+	get icon() {
+		return this._icon;
 	}
 
 	private applyTextAndIcon() {
 
-		const el = this.getEl();
-
-		if(this.text) {
-			el.classList.add("with-text");
-		} else if(this.rendered) {
-			el.classList.remove("with-text");
-		}
-
-		if(this.icon) {
-			el.classList.add("with-icon");
-		} if(this.rendered) {
-			el.classList.remove("with-icon");
-		}
-
 		let html = "";
-		if(!this.text && !this.icon) {
+		if (!this.text && !this.icon) {
 			html = this.html + "";
 		} else {
-			if(this.icon) {
+			if (this.icon) {
 				html = `<i class="icon">${this.icon}</i>`;
 			}
 
-			if(this.text) {
+			if (this.text) {
 				html += `<span class="text">${this.text}</span>`;
 			}
 		}
 
-		el.innerHTML = html;
+		this.html = html;
 
 	}
 }
@@ -308,4 +309,4 @@ export class Button extends Component {
  *
  * @param config
  */
-export const btn = (config?:ButtonConfig<Button>) => Button.create(config);
+export const btn = (config?: Config<Button>) => Button.create(config);

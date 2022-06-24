@@ -8,9 +8,9 @@ describe('Component class', () => {
 		it('Create a component', function () {
 			const comp = Component.create();
 
-			root.getItems().add(comp);
+			root.items.add(comp);
 
-			expect(root.getEl().children.length).to.equal(1);
+			expect(root.el.children.length).to.equal(1);
 
 		});
 
@@ -21,7 +21,7 @@ describe('Component class', () => {
 		it('Fires an event once', function () {
 			const comp = Component.create();
 
-			root.getItems().add(comp);
+			root.items.add(comp);
 
 			let fired = false;
 			comp.on("show", () => {

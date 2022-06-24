@@ -13,26 +13,28 @@ interface JmapStoreConfig<T extends Observable> extends StoreConfig<T> {
 type Relation = Record<string, {
 	entity: string,
 	path: string,
-	properties?:string[]
+	properties?: string[]
 }>
 
 
 export class JmapStore extends Store {
 	private entityStore!: EntityStore;
 
-	protected entity!:string;
+	protected entity!: string;
 
 	public queryParams: QueryParams = {};
 
 	public hasMore = false;
 
-	protected relations?:Relation;
+	protected relations?: Relation;
 
 	protected properties?: string[] = []
 	private _hasNext = false;
 
-	public static create<T extends typeof Observable>(this: T, config?: JmapStoreConfig<InstanceType<T>>) {
-		return <InstanceType<T>> super.create(<any> config);
+	constructor(config?: JmapStoreConfig<JmapStore>) {
+		super();
+		Object.assign(this, config);
+		this.init();
 	}
 
 	protected init() {
@@ -50,7 +52,7 @@ export class JmapStore extends Store {
 		this.queryParams.sort = this.sort;
 		this.queryParams.calculateHasMore = true;
 
-		let records : StoreRecord[] = [];
+		let records: StoreRecord[] = [];
 
 		const promises = [
 			this.entityStore.query(this.queryParams).then((response) => {
@@ -67,21 +69,21 @@ export class JmapStore extends Store {
 
 		const mainCallId = this.entityStore.client.lastCallId;
 
-		for(let relationName in this.relations) {
+		for (let relationName in this.relations) {
 			const r = this.relations[relationName];
 			promises.push(client.store(r.entity).get({
 				resultOf: mainCallId,
 				path: "/list/*/" + r.path
 			}, r.properties || []).then((response) => {
 
-				for(let i = 0, l = records.length; i < l; i++) {
+				for (let i = 0, l = records.length; i < l; i++) {
 					const id = records[i][r.path];
-					if(id) {
+					if (id) {
 						const related = response.list.find((e) => {
 							return e.id == id;
 						});
 
-						if(related) {
+						if (related) {
 							records[i][relationName] = related;
 						}
 					}
@@ -139,4 +141,4 @@ export class JmapStore extends Store {
  *
  * @param config
  */
-export const jmapstore = (config?:JmapStoreConfig<Store>) => JmapStore.create(config);
+export const jmapstore = (config?: JmapStoreConfig<Store>) => JmapStore.create(config);

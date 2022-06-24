@@ -112,7 +112,7 @@ export const playgroundWin = () => {
 			}))
 	);
 
-	playgroundWin.getHeader().getItems().insert(
+	playgroundWin.getHeader().items.insert(
 		-2,
 
 		btn({

@@ -1,4 +1,5 @@
-import {Field, FieldConfig} from "./Field.js";
+import {Field} from "./Field.js";
+import {Config} from "../Observable.js";
 
 /**
  * Checkbox field
@@ -11,15 +12,14 @@ export class CheckboxField extends Field {
 
 	protected baseCls = 'form-field checkbox';
 
-
 	protected applyTitle() {
-		if(this.title) {
+		if (this.title) {
 			this.input!.title = this.title;
 		}
 	}
 
 	focus(o?: FocusOptions) {
-		if(!this.input) {
+		if (!this.input) {
 			super.focus(o);
 		}
 		this.input?.focus(o);
@@ -28,12 +28,12 @@ export class CheckboxField extends Field {
 	protected createLabel() {
 		const old = this.label;
 		this.label = "";
-		const span =  super.createLabel();
+		const span = super.createLabel();
 		this.label = old;
 		return span;
 	}
 
-	protected createControl() : undefined | HTMLElement {
+	protected createControl(): undefined | HTMLElement {
 
 		const control = document.createElement("div");
 
@@ -49,7 +49,7 @@ export class CheckboxField extends Field {
 			this.input.checked = this.value;
 		}
 
-		if(this.invalidMsg) {
+		if (this.invalidMsg) {
 			this.applyInvalidMsg();
 		}
 
@@ -73,7 +73,7 @@ export class CheckboxField extends Field {
 
 		super.setInvalid(msg);
 
-		if(this.isRendered()) {
+		if (this.rendered) {
 			this.applyInvalidMsg();
 		}
 	}
@@ -84,12 +84,12 @@ export class CheckboxField extends Field {
 		this.input!.setCustomValidity(this.invalidMsg);
 
 		//check if el is visible (https://stackoverflow.com/questions/19669786/check-if-element-is-visible-in-dom)
-		if(this.input!.offsetParent) {
+		if (this.input!.offsetParent) {
 			this.input!.reportValidity();
 		}
 
 
-		if(this.invalidMsg != "") {
+		if (this.invalidMsg != "") {
 			//clear the field on change
 			this.input!.addEventListener('input', () => {
 				this.clearInvalid();
@@ -106,29 +106,29 @@ export class CheckboxField extends Field {
 		return this.input;
 	}
 
-	setValue(v: boolean, useForReset = true) {
+	set value(v: boolean) {
 
 		if (this.input) {
 			this.input.checked = v;
 		}
 
-		super.setValue(v, useForReset);
+		super.value = v;
 	}
 
-	getValue() {
+	get value() {
 		if (!this.input) {
-			return super.getValue();
+			return super.value;
 		} else {
 			return this.input.checked;
 		}
 	}
 
 
-	setName(name: string) {
-		super.setName(name);
+	set name(name: string) {
+		super.name = name;
 
-		if (this.isRendered()) {
-			this.input!.name = this.name;
+		if (this.input) {
+			this.input.name = this.name;
 		}
 	}
 
@@ -136,7 +136,7 @@ export class CheckboxField extends Field {
 		super.validate();
 
 		//this implements the native browser validation
-		if(!this.input!.validity.valid) {
+		if (!this.input!.validity.valid) {
 			this.setInvalid(this.input!.validationMessage);
 		}
 	}
@@ -150,4 +150,4 @@ export class CheckboxField extends Field {
  *
  * @param config
  */
-export const checkbox = (config?:FieldConfig<CheckboxField>) => CheckboxField.create(config);
+export const checkbox = (config?: Config<CheckboxField>) => CheckboxField.create(config);

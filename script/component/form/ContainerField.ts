@@ -1,30 +1,17 @@
-import {Field, FieldConfig, FieldEventMap} from "./Field.js";
-import {Observable, ObservableListener, ObservableListenerOpts} from "../Observable.js";
+import {Field, FieldEventMap} from "./Field.js";
+import {Config, ObservableListener, ObservableListenerOpts} from "../Observable.js";
 import {Component} from "../Component.js";
-import {Menu, MenuConfig} from "../menu/Menu.js";
 
-
-/**
- * @inheritDoc
- */
-export interface ContainerFieldConfig<T extends Observable> extends FieldConfig<T> {
-	/**
-	 * @inheritDoc
-	 */
-	listeners?: ObservableListener<ContainerFieldEventMap<T>>
-}
 
 export type FieldComponentValue = Record<string, any>;
 
-/**
- * @inheritDoc
- */
-export interface ContainerFieldEventMap<T extends Observable> extends FieldEventMap<T> {
-}
 
 export interface ContainerField extends Field {
-	on<K extends keyof ContainerFieldEventMap<ContainerField>>(eventName: K, listener: ContainerFieldEventMap<ContainerField>[K], options?: ObservableListenerOpts): void;
-	fire<K extends keyof ContainerFieldEventMap<ContainerField>>(eventName: K, ...args: Parameters<NonNullable<ContainerFieldEventMap<ContainerField>[K]>>): boolean
+	on<K extends keyof FieldEventMap<this>>(eventName: K, listener: Partial<FieldEventMap<ContainerField>>[K], options?: ObservableListenerOpts): void;
+
+	fire<K extends keyof FieldEventMap<this>>(eventName: K, ...args: Parameters<FieldEventMap<ContainerField>[K]>): boolean
+
+	set listeners(listeners: ObservableListener<FieldEventMap<this>>)
 }
 
 /**
@@ -34,11 +21,14 @@ export interface ContainerField extends Field {
  */
 export class ContainerField extends Field {
 
-	protected tagName = "div" as keyof HTMLElementTagNameMap;
+	get tagName() {
+		return "div" as keyof HTMLElementTagNameMap;
+	}
 
 	protected baseCls = "";
 
-	protected hideLabel = true;
+	public hideLabel = true;
+
 
 	public findFields() {
 		const fields: Field[] = [];
@@ -86,23 +76,23 @@ export class ContainerField extends Field {
 	}
 
 
-	public setValue(v: FieldComponentValue, useForReset = true) {
+	set value(v: FieldComponentValue) {
 		for (let name in v) {
 			let field = <Field>this.findField(name);
 			if (field) {
-				field.setValue(v[name], useForReset);
+				field.value = v[name];
 			}
 		}
 
-		return super.setValue(v, useForReset);
+		super.value = v;
 	}
 
-	public getValue(): FieldComponentValue {
-		const formProps: FieldComponentValue = super.getValue() || {};
+	public get value(): FieldComponentValue {
+		const formProps: FieldComponentValue = super.value || {};
 
 		this.findFields().forEach((field) => {
-			if(field.getName()) {
-				formProps[field.getName()] = field.getValue();
+			if (field.name) {
+				formProps[field.name] = field.value;
 			}
 		});
 
@@ -117,12 +107,12 @@ export class ContainerField extends Field {
 
 		let invalid = false;
 		items.forEach((field) => {
-			if(!field.isValid()) {
+			if (!field.isValid()) {
 				invalid = true;
 			}
 		});
 
-		if(invalid) {
+		if (invalid) {
 			this.setInvalid("There's an invalid field");
 		}
 	}
@@ -142,11 +132,10 @@ export class ContainerField extends Field {
 	}
 
 	protected applyInvalidMsg() {
-		if(this.invalidMsg) {
-			this.getEl().classList.add("invalid");
-		}else
-		{
-			this.getEl().classList.remove("invalid");
+		if (this.invalidMsg) {
+			this.el.classList.add("invalid");
+		} else {
+			this.el.classList.remove("invalid");
 		}
 	}
 }
@@ -157,4 +146,4 @@ export class ContainerField extends Field {
  * @param config
  * @param items
  */
-export const containerfield = (config?:ContainerFieldConfig<ContainerField>, ...items:Component[]) => ContainerField.create(config, items);
+export const containerfield = (config?: Config<ContainerField>, ...items: Component[]) => ContainerField.create(config, ...items);

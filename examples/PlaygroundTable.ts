@@ -1,16 +1,12 @@
 import {column, DateColumn, Table} from "../script/component/Table.js";
-import {store, StoreRecord} from "../script/data/Store.js";
+import {Store, store, StoreRecord} from "../script/data/Store.js";
 import {DateTime} from "../script/util/DateTime.js";
 import {Window} from "../script/component/Window.js";
 
 export class PlaygroundTable extends Table {
 
-	title = "Table"
-	itemId = "table"
-	cls = "fit"
 
-	protected init() {
-
+	constructor() {
 		const records:StoreRecord[] = [];
 
 		for(let i = 1; i <= 20; i++) {
@@ -21,10 +17,14 @@ export class PlaygroundTable extends Table {
 			});
 		}
 
-		this.store = store({
+		super(store({
 			records: records,
 			sort: [{property: "number", isAscending: true}]
-		})
+		}));
+		this.title = "Table";
+		this.itemId = "table";
+		this.cls = "fit";
+
 
 		this.on("navigate",(table, rowIndex, record) => {
 			Window.alert("Selected", "You navigated to " + record.number + ". Press 'Escape' to close me and navigate the grid with the arrow keys.");

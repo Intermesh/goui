@@ -1,14 +1,20 @@
 import {FunctionUtil} from "../util/FunctionUtil.js";
 import {Component} from "./Component.js";
 
-type Func = ((...args:any[]) => any) ;
+type Func = (...args:any[]) => any ;
 
 /**
  * Component events
  *
  * @see ComponentEventMap
  */
-export interface ObservableEventMap<T extends Observable> {}
+export interface ObservableEventMap<Sender> {
+
+};
+
+interface Constructable<T> {
+	new(...args:any[]): T
+}
 
 
 /**
@@ -20,8 +26,10 @@ export interface ObservableEventMap<T extends Observable> {}
  * {@see ObservableConfig.listeners}
  */
 export type ObservableListener<Map extends ObservableEventMap<Observable>> =  {
-	[P in keyof Map]: ObservableListenerWithOpts<Map[P]> | Map[P]
+	[P in keyof Map]?: ObservableListenerWithOpts<Map[P]> | Map[P]
 };
+
+
 
 /**
  * Config object with properties to apply to the component
@@ -96,12 +104,15 @@ interface ObservableListenerWithOpts<fn> extends ObservableListenerOpts {
 }
 
 
+export type Config<Source> = Partial<Pick<Source, {[K in keyof Source]: Source[K] extends Function  ? never : K}[keyof Source]>>;
+
 /**
  * Observable
  *
  * Adds event listener functionality
  */
 export class Observable {
+
 
 	/**
 	 *
@@ -110,51 +121,72 @@ export class Observable {
 	 * It constructs and initializes the object.
 	 *
 	 * @param config
+	 * @param items Add child components
 	 */
-	public static create<T extends typeof Observable>(this: T, config?: any, items?: Component[]) : InstanceType<T> {
+	public static create<T extends new (...args: any) => any>(this: T, config?: Config<InstanceType<T>>, ...items: Component[]) : InstanceType<T> {
+
+
+
 		const c = new this() as InstanceType<T>;
 
-		c.applyConfig(config || {});
+		if(config) {
+			Object.assign(this, config);
+		}
 
-		if(items && items.length) {
-			(c as unknown as Component).getItems().replace(...items);
+		if(items.length) {
+			(c as unknown as Component).items.replace(...items);
 		}
 
 		c.init();
+
 		return c;
 	}
 
 	private lisnrs: { [key: string]: { listener: Function, unbindkey:Function, options?: ObservableListenerOpts }[] } | undefined;
-
-	protected listeners: ObservableEventMap<Observable> | undefined;
-
-	protected initCalled = false;
-
-
-	protected applyConfig(config: any) {
-		Object.assign(this, config);
-	}
-
-	/**
-	 * Initialise your object with this method. Call super.init() at the end of your override.
-	 * This method is called after construction by the create() function.
-	 */
 	protected init() {
 
-		this.initCalled = true;
-
-		if(this.listeners) {
-			for(let key in this.listeners) {
-				const eventName = key as keyof ObservableEventMap<Observable>;
-				if(typeof this.listeners[eventName] == 'function') {
-					this.on(eventName, this.listeners[eventName] as Func);
-				} else
-				{
-					const o = this.listeners[eventName] as Partial<ObservableListenerWithOpts<Func>>;
-					const fn = <Func> o.fn;
-					delete o.fn;
-					this.on(eventName, fn, o);
-				}
+	}
+	
+	/**
+	 * Add listeners
+	 *
+	 * You can pass them in two ways:
+	 *
+	 * @example
+	 * ```
+	 * Component.create({
+	 * 		listeners: {
+	 *
+	 * 			//simple syntax add the listener directly
+	 * 			additem:(container, item, index) => {
+	 * 				//do something when an item was added
+	 * 			},
+	 *
+	 * 	    // extended syntax to pass extra listener options
+	 * 			beforeadditem: {
+	 * 				//with this syntax you can pass extra options
+	 * 				fn:(container, item, index) => {
+	 * 					//do something before an item will be added but only once
+	 * 				},
+	 * 				once: true
+	 * 			}
+	 * 		}
+	 * 	})
+	 * 	```
+	 *
+	 * 	@see Observable.on()
+	 */
+	set listeners (listeners:ObservableListener<ObservableEventMap<this>>) {
+		for(let key in listeners) {
+			const eventName = key as keyof ObservableEventMap<Observable>;
+			if(typeof listeners[eventName] == 'function') {
+				this.on(eventName, listeners[eventName] as never);
+			} else
+			{
+				const o = listeners[eventName] as Partial<ObservableListenerWithOpts<Func>>;
+				const fn =  o.fn as never;
+				delete o.fn;
+				this.on(eventName, fn, o);
 			}
 		}
 	}
@@ -166,30 +198,32 @@ export class Observable {
 	 * @param listener
 	 * @param options
 	 */
-	on(eventName: keyof ObservableEventMap<Observable>, listener: Function, options?: ObservableListenerOpts) {
+	on<key extends keyof ObservableEventMap<this>>(eventName: keyof ObservableEventMap<this>, listener: ObservableEventMap<this>[key], options?: ObservableListenerOpts) {
 
 		//store original listener for the un() method. Because options may change the function
-		const unbindkey = listener;
+
+		
+		const unbindkey = listener!;
 		if (options) {
 			if(options.buffer) {
-				listener = FunctionUtil.buffer(options.buffer, listener);
+				listener = FunctionUtil.buffer(options.buffer, listener!) as never;
 			}
 
 			if(options.once) {
-				listener = this.once(eventName, listener);
+				listener = this.once(eventName, listener!) as never;
 			}
 
 			if(options.delay) {
-				listener = FunctionUtil.delay(options.delay, listener);
+				listener = FunctionUtil.delay(options.delay, listener!) as never;
 			}
 		}
 		this.lisnrs = this.lisnrs || {};
 		this.lisnrs[eventName] = this.lisnrs[eventName] || [];
 		if(options?.unshift) {
-			this.lisnrs[eventName].unshift({listener: listener, options: options, unbindkey: unbindkey});
+			this.lisnrs[eventName].unshift({listener: listener!, options: options, unbindkey: unbindkey});
 		} else
 		{
-			this.lisnrs[eventName].push({listener: listener, options: options, unbindkey: unbindkey});
+			this.lisnrs[eventName].push({listener: listener!, options: options, unbindkey: unbindkey});
 		}
 
 	}
@@ -209,7 +243,7 @@ export class Observable {
 	 * @param eventName
 	 * @param listener
 	 */
-	un(eventName: keyof ObservableEventMap<Observable>, listener: Function) {
+	un(eventName: keyof ObservableEventMap<this>, listener: Function) {
 		if (!this.lisnrs || !this.lisnrs[eventName]) {
 			return false;
 		}
@@ -231,7 +265,7 @@ export class Observable {
 	 * @param eventName
 	 * @param args
 	 */
-	fire<K extends keyof ObservableEventMap<Observable>>(eventName: K, ...args: Parameters<ObservableEventMap<Observable>[K]>) {
+	fire<K extends keyof ObservableEventMap<this>>(eventName: K, ...args: Parameters<ObservableEventMap<this>[K]>) {
 		if (!this.lisnrs || !this.lisnrs[eventName]) {
 			return true;
 		}

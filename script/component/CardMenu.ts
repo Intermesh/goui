@@ -1,11 +1,8 @@
-import {Component, ComponentConfig} from "./Component.js";
+import {Component} from "./Component.js";
 import {CardContainer} from "./CardContainer.js";
-import {btn, Button, ButtonConfig} from "./Button.js";
-import {Observable} from "./Observable.js";
+import {btn} from "./Button.js";
+import {Config} from "./Observable.js";
 
-export interface CardMenuConfig<T extends Observable> extends ComponentConfig<T> {
-	cardContainer?: CardContainer
-}
 
 /**
  * Menu for cards to create a tab panel
@@ -43,28 +40,35 @@ export interface CardMenuConfig<T extends Observable> extends ComponentConfig<T>
 
 export class CardMenu extends Component {
 
-	tagName = "menu" as keyof HTMLElementTagNameMap
-	cardContainer?: CardContainer
-	baseCls = "cardmenu"
+	/**
+	 * The card container this menu is for.
+	 * 
+	 * If not given it will be looked up in the parent of the menu.
+	 */
+	public cardContainer?: CardContainer
+	protected baseCls = "cardmenu";
+
+	get tagName () {
+		return "menu" as keyof HTMLElementTagNameMap;
+	}
 
 	protected init() {
 
-
 		this.on("beforerender", () => {
 			if (!this.cardContainer) {
-				this.cardContainer = this.parent!.findChildByType(CardContainer);
+				this.cardContainer = this.parent!.findChildByType(CardContainer)!;
 			}
 
 			this.cardContainer!.on("cardchange", (cardContainer, index) => {
 
-				const activeItem = index != undefined ? cardContainer.getItems().get(index)! : undefined;
+				const activeItem = index != undefined ? cardContainer.items.get(index)! : undefined;
 
-				this.getItems().forEach((item, menuIndex) => {
+				this.items.forEach((item, menuIndex) => {
 
-					if (activeItem && (item.itemId == activeItem.itemId || item.itemId == activeItem.getId())) {
-						item.getEl().classList.add("active");
+					if (activeItem && (item.itemId == activeItem.itemId || item.itemId == activeItem.id)) {
+						item.el.classList.add("active");
 					} else {
-						item.getEl().classList.remove("active");
+						item.el.classList.remove("active");
 					}
 				});
 			});
@@ -77,25 +81,24 @@ export class CardMenu extends Component {
 
 	private createMenu() {
 
-		this.cardContainer!.getItems().forEach((item, index) => {
+		this.cardContainer!.items.forEach((item, index) => {
 
 			if(!item.itemId) {
 				item.itemId = 'card-' + index;
 			}
 
-			this.getItems().insert(index,
+			this.items.insert(index,
 				btn({
 					itemId: item.itemId,
 					cls: index == this.cardContainer!.getActiveItem() ? "active" : "",
-					text: item.getTitle(),
+					text: item.title,
 					handler: () => {
-						this.cardContainer!.setActiveItem(item);
+						this.cardContainer!.activeItem = item;
 					}
 				})
 			);
 
-			item.setTitle("");
-
+			item.title = "";
 
 		});
 	}
@@ -109,4 +112,4 @@ export class CardMenu extends Component {
  * @param config
  * @param items
  */
-export const cardmenu = (config?:CardMenuConfig<CardMenu>, ...items:Component[]) => CardMenu.create(config, items);
+export const cardmenu = (config?:Config<CardMenu>, ...items:Component[]) => CardMenu.create(config, ...items);

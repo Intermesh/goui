@@ -1,39 +1,21 @@
-import {Observable} from "./Observable.js";
-import {comp, Component, ComponentConfig} from "./Component.js";
+import {Config} from "./Observable.js";
+import {comp, Component} from "./Component.js";
 
 type renderFunc = (dd: Component) => void;
 
-export type DLRecord = [string,string|renderFunc,...(string|renderFunc)[]][];
-/**
- * @inheritDoc
- */
-export interface DescriptionListConfig<T extends Observable> extends ComponentConfig<T> {
-
-
-	/**
-	 * The records to display
-	 *
-	 * @example
-	 * ```
-	 * 	const records: DLRecord = [
-	 * 			['Number', record.number],
-	 * 			['Description', record.description],
-	 * 			['Created At', Format.date(record.createdAt)]
-	 * 		];
-	 *```
-	 */
-	records?: DLRecord
-
-}
+export type DLRecord = [string, string | renderFunc, ...(string | renderFunc)[]][];
 
 export class DescriptionList extends Component {
 
-	protected tagName = "dl" as keyof HTMLElementTagNameMap
 
-	protected records?: DLRecord;
+	get tagName() {
+		return "dl" as keyof HTMLElementTagNameMap
+	}
+
+	private _records?: DLRecord;
 
 	protected internalRender(): HTMLElement {
-		const el =  super.internalRender();
+		const el = super.internalRender();
 
 		this.renderList();
 
@@ -54,34 +36,35 @@ export class DescriptionList extends Component {
 	 * ```
 	 * @param records
 	 */
-	public setRecords(records:DLRecord) {
-		this.records = records;
+	public set records(records: DLRecord) {
+		this._records = records;
 		this.renderList();
 	}
 
-	private renderList() {
-		this.getItems().clear();
-		this.records?.forEach((record) => {
+	public get records() {
+		return this._records || [];
+	}
 
-			this.getItems().add(comp({
-				tagName:"dt",
-				text: <string> record.shift()
+	private renderList() {
+		this.items.clear();
+		this.records.forEach((record) => {
+
+			this.items.add(comp({
+				tagName: "dt",
+				text: <string>record.shift()
 			}));
 
-
 			record.forEach((r) => {
-
 				const dd = comp({
-					tagName:"dd"
+					tagName: "dd"
 				});
 
-				if(typeof r == 'function')
+				if (typeof r == 'function')
 					r(dd);
-				else
-				{
-					dd.setText(r + "");
+				else {
+					dd.text = r + "";
 				}
-				this.getItems().add(dd);
+				this.items.add(dd);
 			});
 		});
 	}
@@ -93,4 +76,4 @@ export class DescriptionList extends Component {
  * @param config
  * @param items
  */
-export const dl = (config?:DescriptionListConfig<DescriptionList>, ...items:Component[]) => DescriptionList.create(config, items);
+export const dl = (config?: Config<DescriptionList>, ...items: Component[]) => DescriptionList.create(config, ...items);

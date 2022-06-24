@@ -1,6 +1,6 @@
-import {Observable, ObservableListener, ObservableListenerOpts} from "../Observable.js";
-import {Field, FieldConfig, FieldEventMap} from "./Field.js";
-import {ContainerField, ContainerFieldConfig} from "./ContainerField.js";
+import {Config, ObservableListenerOpts} from "../Observable.js";
+import {Field, FieldEventMap} from "./Field.js";
+import {ContainerField} from "./ContainerField.js";
 import {Collection} from "../../util/Collection.js";
 import {Component} from "../Component.js";
 
@@ -8,31 +8,23 @@ import {Component} from "../Component.js";
 /**
  * @inheritDoc
  */
-export interface ArrayFieldEventMap<T extends Observable> extends FieldEventMap<T> {
-
-}
-
-/**
- * @inheritDoc
- */
-interface ArrayFieldConfig<T extends Observable> extends FieldConfig<T> {
+type ArrayFieldConfig = {
 	/**
 	 * Function that returns a new form field for an array item
 	 */
 	itemComponent: ItemComponent
-	/**
-	 * @inheritDoc
-	 */
-	listeners?: ObservableListener<ArrayFieldEventMap<T>>
-}
 
-type ItemComponent = (value?:Record<string, any>) => Field;
+} & Config<ArrayField>
+
+type ItemComponent = (value?: Record<string, any>) => Field;
 type ArrayFieldValue = Record<string, any>[];
 
 export interface ArrayField {
-	getItems(): Collection<Field>;
-	on<K extends keyof ArrayFieldEventMap<ArrayField>>(eventName: K, listener: ArrayFieldEventMap<ArrayField>[K], options?: ObservableListenerOpts): void
-	fire<K extends keyof ArrayFieldEventMap<ArrayField>>(eventName: K, ...args: Parameters<NonNullable<ArrayFieldEventMap<ArrayField>[K]>>): boolean
+	get items(): Collection<Field>;
+
+	// on<K extends keyof FieldEventMap<this>>(eventName: K, listener: Partial<FieldEventMap<this>>[K], options?: ObservableListenerOpts): void
+	//
+	// fire<K extends keyof FieldEventMap<this>>(eventName: K, ...args: Parameters<FieldEventMap<this>[K]>): boolean
 }
 
 /**
@@ -42,30 +34,36 @@ export interface ArrayField {
  */
 export class ArrayField extends ContainerField {
 
-	protected tagName = "div" as keyof HTMLElementTagNameMap
+	get tagName() {
+		return "div" as keyof HTMLElementTagNameMap;
+	}
 
-	protected itemComponent!: ItemComponent;
+	/**
+	 *
+	 * @param itemComponent Function that returns a new form field for an array item
+	 */
+	constructor(public itemComponent: ItemComponent) {
+		super();
+	}
 
-	protected value = []
+	set value(v: ArrayFieldValue) {
+		super.value = v;
 
-	setValue(v: ArrayFieldValue, useForReset = true) {
-		super.setValue(v, useForReset);
-
-		this.getItems().clear();
+		this.items.clear();
 
 		v.forEach((item) => {
 			const field = this.itemComponent(item);
-			field.setValue(item);
-			this.getItems().add(field);
+			field.value = item;
+			this.items.add(field);
 		});
 	}
 
 	getValue(): ArrayFieldValue {
 
-		const v:ArrayFieldValue = [];
+		const v: ArrayFieldValue = [];
 
-		this.getItems().forEach((item) => {
-			v.push(item.getValue());
+		this.items.forEach((item) => {
+			v.push(item.value);
 		});
 
 		return v;
@@ -81,4 +79,9 @@ export class ArrayField extends ContainerField {
  * @param config
  * @param items
  */
-export const arrayfield = (config?:ArrayFieldConfig<ArrayField>, ...items:Component[]) => ArrayField.create(config, items);
+export const arrayfield = (config: ArrayFieldConfig, ...items: Field[]) => {
+	const f = new ArrayField(config.itemComponent);
+	Object.assign(f, config);
+	f.items.add(...items);
+	return f;
+}

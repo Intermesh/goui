@@ -1,78 +1,51 @@
-import {comp, Component, ComponentConfig, ComponentEventMap, ComponentState} from "./Component.js";
+import {comp, Component, ComponentEventMap, ComponentState} from "./Component.js";
 import {rowselect, TableRowSelect, TableRowSelectConfig} from "./TableRowSelect.js";
 import {Store, StoreRecord} from "../data/Store.js";
-import {Observable, ObservableConfig, ObservableListener, ObservableListenerOpts} from "./Observable.js";
+import {Config, Observable, ObservableListener, ObservableListenerOpts} from "./Observable.js";
 import {Format} from "../util/Format.js";
 import {ObjectUtil} from "../util/ObjectUtil.js";
-import {Menu} from "./menu/Menu.js";
-import {checkbox, CheckboxField} from "./form/CheckboxField.js";
+import {menu, Menu} from "./menu/Menu.js";
+import {checkbox} from "./form/CheckboxField.js";
 import {Notifier} from "../Notifier.js";
 import {draggable} from "./DraggableComponent.js";
 
 
-/**
- * @inheritDoc
- */
-export interface TableConfig<T extends Observable> extends ComponentConfig<T> {
+type TableColumnRenderer = (columnValue: any, record: StoreRecord, td: HTMLTableCellElement, table: Table) => string | Promise<string> | Component | Promise<Component>;
+
+
+type align = "left" | "right" | "center";
+
+export class TableColumn extends Observable {
 
 	/**
-	 * Columns of the table
+	 *
+	 * @param property Path to property
+	 * @see ObjectUtil.path()
 	 */
-	columns?: TableColumn[],
+	constructor(public property: string) {
+		super();
+	}
 
-	/**
-	 * Row selection object
-	 */
-	rowSelection?: boolean | Partial<TableRowSelectConfig<TableRowSelect>>
-
-	/**
-	 * Store to provide data
-	 */
-	store?: Store
-	/**
-	 * @inheritDoc
-	 */
-	listeners?: ObservableListener<TableEventMap<T>>
-
-	/**
-	 * Make the table fit it's container in width by setting min-width: 100%
-	 * Defaults to true
-	 */
-	fitComponent?: boolean
-}
-
-type TableColumnRenderer = (columnValue:any, record:StoreRecord, td:HTMLTableCellElement, table:Table) => string|Promise<string>|Component|Promise<Component>;
-
-/**
- * @inheritDoc
- */
-interface TableColumnConfig<T extends Observable> extends ObservableConfig<T>{
 	/**
 	 * Header in the table
 	 */
-	header?: string;
+	header: string = "";
 
-	/**
-	 * Path to property
-	 *
-	 * @see ObjectUtil.path()
-	 */
-	property: string
 
 	/**
 	 * Renderer function for the display
 	 */
-	renderer?: TableColumnRenderer,
+	renderer?: TableColumnRenderer
 
 	/**
-	 * Make the column resisable by the user
+	 * Make the column resizable by the user
 	 */
-	resizable?: boolean,
+	resizable = false
 
 	/**
 	 * Make it sortable by the user
 	 */
-	sortable?: boolean,
+	sortable = false
 
 	/**
 	 * Width in pixels
@@ -82,96 +55,82 @@ interface TableColumnConfig<T extends Observable> extends ObservableConfig<T>{
 	/**
 	 * Text alignment
 	 */
-	align?: align,
+	align: align = "left"
 
 	/**
 	 * Hide the column. It can be enabled by the user via the context menu.
 	 */
-	hidden?: boolean
+	hidden = false
 
+
+	headerEl?: HTMLTableCellElement;
 }
-type align = "left" | "right" | "center";
 
-export class TableColumn extends Observable {
-
-	/**
-	 * Header in the table
-	 */
-	header: string = "";
+type TableColumnConfig = Config<TableColumn> & {
 	/**
 	 * Path to property
 	 *
 	 * @see ObjectUtil.path()
 	 */
-	property!: string
-	renderer?: TableColumnRenderer
-	resizable = false
-	sortable = false
-	width?: number
-	align:align = "left"
-	hidden = false
+	property: string
+};
 
-	headerEl?:HTMLTableCellElement;
-}
-
-export const column = (config?: TableColumnConfig<TableColumn>) => TableColumn.create(config);
+export const column = (config: TableColumnConfig) => Object.assign(new TableColumn(config.property), config);
 
 export class DateTimeColumn extends TableColumn {
-	renderer = (date:string) => {
+	renderer = (date: string) => {
 		return Format.dateTime(date);
 	}
 
 	//argh!? https://stackoverflow.com/questions/43121661/typescript-type-inference-issue-with-string-literal
-	align = "right" as const
+	align = "right" as align
 	width = 192
 }
 
-export const datetimecolumn = (config?: TableColumnConfig<TableColumn>) => DateTimeColumn.create(config);
+export const datetimecolumn = (config: TableColumnConfig) => Object.assign(new DateTimeColumn(config.property), config);
 
 
 export class DateColumn extends TableColumn {
-	renderer = (date:string) => {
+	renderer = (date: string) => {
 		return Format.date(date);
 	}
 
 	//argh!? https://stackoverflow.com/questions/43121661/typescript-type-inference-issue-with-string-literal
-	align = "right" as const
+	align = "right" as align
 	width = 128
 }
 
-export const datecolumn = (config?: TableColumnConfig<DateColumn>) => DateColumn.create(config);
-
+export const datecolumn = (config: TableColumnConfig) => Object.assign(new DateColumn(config.property), config);
 
 
 export class CheckboxColumn extends TableColumn {
 	width = 40
-	renderer = (val:boolean) => {
-		return CheckboxField.create({
+	renderer = (val: boolean) => {
+		return checkbox({
 			value: val
 		});
 	}
 }
 
-export const checkboxcolumn = (config?: TableColumnConfig<CheckboxColumn>) => CheckboxColumn.create(config);
-
+export const checkboxcolumn = (config: TableColumnConfig) => Object.assign(new CheckboxColumn(config.property), config);
 
 /**
  * @inheritDoc
  */
-export interface TableEventMap<T extends Observable> extends ComponentEventMap<T> {
+export interface TableEventMap<Sender extends Observable> extends ComponentEventMap<Sender> {
 	/**
 	 * Fires when the user scrolled to the bottom
 	 *
 	 * @param table
 	 */
-	scrolleddown?: (table: Table) => void
+	scrolleddown: <T extends Sender> (table: T) => void
 	/**
 	 * Fires when the user sorts the table
 	 *
 	 * @param table
 	 * @param dataIndex
 	 */
-	sort?: (table: Table, dataIndex: string) => void
+	sort: <T extends Sender> (table: T, dataIndex: string) => void
 
 	/**
 	 * Fires when a row is clicked
@@ -180,7 +139,7 @@ export interface TableEventMap<T extends Observable> extends ComponentEventMap<T
 	 * @param rowIndex
 	 * @param ev
 	 */
-	rowclick?: (table: Table, rowIndex: number, ev: MouseEvent) => void
+	rowclick: <T extends Sender> (table: T, rowIndex: number, ev: MouseEvent) => void
 
 	/**
 	 * Fires when a row is double clicked
@@ -189,7 +148,7 @@ export interface TableEventMap<T extends Observable> extends ComponentEventMap<T
 	 * @param rowIndex
 	 * @param ev
 	 */
-	rowdblclick?: (table: Table, rowIndex: number, ev: MouseEvent) => void
+	rowdblclick: <T extends Sender> (table: T, rowIndex: number, ev: MouseEvent) => void
 
 	/**
 	 * Fires when records are rendered into rows.
@@ -197,7 +156,7 @@ export interface TableEventMap<T extends Observable> extends ComponentEventMap<T
 	 * @param table
 	 * @param records
 	 */
-	renderrows?: (table: Table, records: StoreRecord[]) => void;
+	renderrows: <T extends Sender> (table: T, records: StoreRecord[]) => void;
 
 	/**
 	 * Fires when a row is clicked or navigated with arrows
@@ -206,13 +165,16 @@ export interface TableEventMap<T extends Observable> extends ComponentEventMap<T
 	 * @param rowIndex
 	 * @param ev
 	 */
-	navigate?: (table: Table, rowIndex: number, record: StoreRecord) => void
+	navigate: <T extends Sender> (table: T, rowIndex: number, record: StoreRecord) => void
 
 }
 
 export interface Table {
-	on<K extends keyof TableEventMap<Table>>(eventName: K, listener: TableEventMap<Table>[K], options?: ObservableListenerOpts): void;
-	fire<K extends keyof TableEventMap<Table>>(eventName: K, ...args: Parameters<NonNullable<TableEventMap<Table>[K]>>): boolean
+	on<K extends keyof TableEventMap<this>>(eventName: K, listener: Partial<TableEventMap<this>>[K], options?: ObservableListenerOpts): void;
+
+	fire<K extends keyof TableEventMap<this>>(eventName: K, ...args: Parameters<TableEventMap<this>[K]>): boolean
+
+	set listeners(listeners: ObservableListener<TableEventMap<this>>)
 }
 
 /**
@@ -268,53 +230,74 @@ export interface Table {
  */
 export class Table extends Component {
 
+	/**
+	 *
+	 * @param store Store to provide data
+	 */
+	constructor(private store: Store) {
+		super();
+		this.tabIndex = 0;
+	}
+
 	protected emptyStateHtml = `<div class="empty-state"><i class="icon">article</i><p>Nothing to show</p></div>`
 
 	private minCellWidth = 30
 
 	protected baseCls = "table scroll"
 
-	protected columns: TableColumn[] = []
+	/**
+	 * Columns of the table
+	 */
+	public columns: TableColumn[] = []
 
-	protected store!: Store;
 
-	protected rowSelection: boolean | TableRowSelectConfig<TableRowSelect> = true
+	/**
+	 *
+	 * Row selection object
+	 *
+	 * @param rowSelection
+	 */
+	set rowSelection(rowSelection: boolean | TableRowSelectConfig) {
+		if (typeof this.rowSelection != "boolean") {
+			rowSelection = rowSelection as TableRowSelectConfig
+			rowSelection.table = this;
+			this.rowSelect = rowselect(rowSelection);
+		} else {
+			this.rowSelect = rowselect({table: this});
+		}
+	}
 
 	private tableEl?: HTMLTableElement;
 	private headersRow?: HTMLTableRowElement;
 	private rowSelect?: TableRowSelect;
 	private tbody?: HTMLTableSectionElement;
 
-	protected fitComponent = true;
+	/**
+	 * Make the table fit it's container in width by setting min-width: 100%
+	 * Defaults to true
+	 */
+	public fitComponent = true;
+
 	private loadOnScroll: boolean = false;
+
 	private emptyStateEl?: HTMLDivElement;
-
-	protected tabIndex = 0;
-
-	protected init() {
-		super.init();
-
-		this.initRowSelect();
-
-		this.initNavigateEvent();
-	}
 
 	private initNavigateEvent() {
 		this.on('rowclick', (table, rowIndex, ev) => {
-			if(!ev.shiftKey && !ev.ctrlKey) {
+			if (!ev.shiftKey && !ev.ctrlKey) {
 				const record = this.store.getRecordAt(rowIndex);
 
 				this.fire("navigate", this, rowIndex, record);
 			}
 		});
 
-		if(this.rowSelection) {
+		if (this.rowSelection) {
 			this.on("render", (comp) => {
-				this.getEl().addEventListener('keydown', (ev) => {
+				this.el.addEventListener('keydown', (ev) => {
 					if (!ev.shiftKey && !ev.ctrlKey && (ev.key == "ArrowDown" || ev.key == "ArrowUp")) {
 
 						const selected = this.rowSelect!.getSelected();
-						if(selected.length) {
+						if (selected.length) {
 							const rowIndex = selected[0];
 							const record = this.store.getRecordAt(rowIndex);
 
@@ -326,21 +309,9 @@ export class Table extends Component {
 		}
 	}
 
-	private initRowSelect() {
-		if (this.rowSelection) {
-
-			if (typeof this.rowSelection != "boolean") {
-				this.rowSelection.table = this;
-				this.rowSelect = rowselect(this.rowSelection);
-			} else
-			{
-				this.rowSelect = rowselect({table: this});
-			}
-		}
-	}
 
 	protected internalRemove() {
-		if(this.columnMenu) {
+		if (this.columnMenu) {
 			this.columnMenu.remove();
 		}
 		return super.internalRemove();
@@ -351,16 +322,6 @@ export class Table extends Component {
 	 */
 	public getRowSelection() {
 		return this.rowSelect;
-	}
-
-	public setColumns(cols:(TableColumnConfig<TableColumn>|TableColumn)[]) {
-		for(let i = 0, l = cols.length; i < l; i++) {
-			if(!(cols[i] instanceof TableColumn)) {
-				cols[i] = TableColumn.create(<TableColumnConfig<TableColumn>> <unknown> cols[i]);
-			}
-		}
-
-		this.columns = cols as TableColumn[];
 	}
 
 	protected restoreState(state: ComponentState) {
@@ -410,6 +371,8 @@ export class Table extends Component {
 	protected internalRender() {
 		const el = super.internalRender();
 
+		this.initNavigateEvent();
+
 		el.addEventListener("click", (e) => {
 			this.onClick(e);
 		});
@@ -424,18 +387,17 @@ export class Table extends Component {
 	}
 
 	protected renderEmptyState() {
-		const el = this.getEl();
+		const el = this.el;
 		this.emptyStateEl = document.createElement("div");
 		this.emptyStateEl.innerHTML = this.emptyStateHtml;
 		this.emptyStateEl.hidden = this.getStore().getRecords().length > 0;
 		el.appendChild(this.emptyStateEl);
 
 		this.getStore().on("load", (store, records, append) => {
-			if(!append && records.length == 0) {
+			if (!append && records.length == 0) {
 				this.tableEl!.hidden = true;
 				this.emptyStateEl!.hidden = false;
-			} else
-			{
+			} else {
 				this.tableEl!.hidden = false;
 				this.emptyStateEl!.hidden = true;
 			}
@@ -443,11 +405,11 @@ export class Table extends Component {
 	}
 
 	private renderTable() {
-		const el = this.getEl();
+		const el = this.el;
 		this.tableEl = document.createElement('table');
 		this.tableEl.hidden = this.getStore().getRecords().length == 0;
 
-		if(this.fitComponent) {
+		if (this.fitComponent) {
 			this.tableEl.style.minWidth = "100%";
 		}
 
@@ -457,7 +419,7 @@ export class Table extends Component {
 
 		el.appendChild(this.tableEl);
 
-		if(this.loadOnScroll) {
+		if (this.loadOnScroll) {
 			el.addEventListener("scroll", () => {
 				this.onScroll();
 			}, {passive: true});
@@ -471,7 +433,7 @@ export class Table extends Component {
 			}
 			this.renderRows(records);
 
-			if(this.loadOnScroll) {
+			if (this.loadOnScroll) {
 				setTimeout(() => {
 					this.onScroll();
 				});
@@ -479,10 +441,10 @@ export class Table extends Component {
 
 		}, {unshift: true});
 
-		if(this.rowSelect) {
+		if (this.rowSelect) {
 			this.rowSelect.on('rowselect', (tableRowSelect, rowIndex) => {
 				const tr = (<HTMLElement>this.tbody!.childNodes[rowIndex]);
-				if(!tr) {
+				if (!tr) {
 					console.error("No row found for selected index: " + rowIndex + ". Maybe it's not rendered yet?");
 					return;
 				}
@@ -492,7 +454,7 @@ export class Table extends Component {
 
 			this.rowSelect.on('rowdeselect', (tableRowSelect, rowIndex) => {
 				const tr = (<HTMLElement>this.tbody!.childNodes[rowIndex]);
-				if(!tr) {
+				if (!tr) {
 					console.error("No row found for selected index: " + rowIndex + ". Maybe it's not rendered yet?");
 					return;
 				}
@@ -502,7 +464,7 @@ export class Table extends Component {
 	}
 
 	private rerender() {
-		const el = this.getEl();
+		const el = this.el;
 		this.tbody = undefined;
 		el.innerHTML = "";
 		this.renderTable();
@@ -544,7 +506,7 @@ export class Table extends Component {
 	}
 
 	private onScroll() {
-		const el = this.getEl();
+		const el = this.el;
 		const pixelsLeft = el.scrollHeight - el.scrollTop - el.offsetHeight;
 
 		if (pixelsLeft < 100) {
@@ -556,24 +518,24 @@ export class Table extends Component {
 		}
 	}
 
-	private columnMenu:Menu|undefined;
+	private columnMenu: Menu | undefined;
 
-	private showColumnMenu(ev:MouseEvent) {
+	private showColumnMenu(ev: MouseEvent) {
 		ev.preventDefault();
 
-		if(!this.columnMenu) {
-			this.columnMenu = Menu.create({
+		if (!this.columnMenu) {
+			this.columnMenu = menu({
 				removeOnClose: false
 			});
 
 			this.columns.forEach((c) => {
-				this.columnMenu!.getItems().add(checkbox({
+				this.columnMenu!.items.add(checkbox({
 					label: c.header,
 					name: c.property,
 					value: !c.hidden,
 					listeners: {
 						change: (field) => {
-							c.hidden = !field.getValue();
+							c.hidden = !field.value;
 							this.saveState();
 							this.rerender();
 						}
@@ -585,7 +547,7 @@ export class Table extends Component {
 		this.columnMenu.showAt(ev);
 	}
 
-	private createColumnSplitter(h:TableColumn, header:HTMLTableCellElement, colIndex:number) {
+	private createColumnSplitter(h: TableColumn, header: HTMLTableCellElement, colIndex: number) {
 
 		if (h.resizable) {
 			const splitter = draggable({
@@ -594,13 +556,16 @@ export class Table extends Component {
 			});
 
 			splitter.on("dragstart", (cmp, dragData) => {
-				if(!this.colsAreFixed) {
+				if (!this.colsAreFixed) {
 					this.fixColumnWidths();
 				}
 
 				dragData.data.startWidth = header.offsetWidth;
 
-				splitter.dragConstrainTo(this.headersRow!, {left: this.calcTableWidth(colIndex) + this.minCellWidth, right: -10000});
+				splitter.dragConstrainTo(this.headersRow!, {
+					left: this.calcTableWidth(colIndex) + this.minCellWidth,
+					right: -10000
+				});
 			});
 
 			splitter.on("drag", (cmp, dragData) => {
@@ -628,14 +593,14 @@ export class Table extends Component {
 		const thead = document.createElement('thead');
 		this.headersRow = document.createElement("tr");
 
-		this.headersRow.addEventListener('contextmenu',ev => {
+		this.headersRow.addEventListener('contextmenu', ev => {
 			this.showColumnMenu(ev);
 		})
 
 		let index = -1;
 		for (let h of this.columns) {
 			index++;
-			if(h.hidden) {
+			if (h.hidden) {
 				continue;
 			}
 			const header = document.createElement("th");
@@ -644,7 +609,7 @@ export class Table extends Component {
 				header.style.width = h.width + "px";
 			}
 
-			if(h.align) {
+			if (h.align) {
 				header.style.textAlign = h.align;
 			}
 
@@ -653,7 +618,7 @@ export class Table extends Component {
 
 			h.headerEl = header;
 
-			if(h.resizable) {
+			if (h.resizable) {
 				const splitter = this.createColumnSplitter(h, header, index);
 				splitter.render(header);
 			}
@@ -735,7 +700,7 @@ export class Table extends Component {
 	private fixColumnWidths() {
 
 		this.columns.forEach(col => {
-			if(!col.hidden) {
+			if (!col.hidden) {
 				col.width = col.headerEl!.offsetWidth;
 				col.headerEl!.style.width = col.width + "px";
 			}
@@ -750,10 +715,10 @@ export class Table extends Component {
 	 *
 	 * @param untilColumnIndex Calc width until this column
 	 */
-	private calcTableWidth(untilColumnIndex:number = -1) {
+	private calcTableWidth(untilColumnIndex: number = -1) {
 
-		return this.columns.reduce((previousValue: number, nextValue: TableColumn, currentIndex:number) => {
-			if(nextValue.hidden || (untilColumnIndex > -1 && currentIndex >= untilColumnIndex)) {
+		return this.columns.reduce((previousValue: number, nextValue: TableColumn, currentIndex: number) => {
+			if (nextValue.hidden || (untilColumnIndex > -1 && currentIndex >= untilColumnIndex)) {
 				return previousValue;
 			}
 			return previousValue + nextValue.width!;
@@ -794,30 +759,28 @@ export class Table extends Component {
 
 		for (let c of this.columns) {
 
-			if(c.hidden) {
+			if (c.hidden) {
 				continue;
 			}
 			const td = document.createElement("td");
 
-			if(c.align) {
+			if (c.align) {
 				td.style.textAlign = c.align;
 			}
 
 			let value = ObjectUtil.path(record, c.property);
 
 			if (c.renderer) {
-				const r =  c.renderer(value, record, td, this);
-				if(typeof r === "string")
-				{
+				const r = c.renderer(value, record, td, this);
+				if (typeof r === "string") {
 					td.innerHTML = r;
-				}else if( r instanceof Component)
-				{
+				} else if (r instanceof Component) {
 					r.render(td);
-				}else {
+				} else {
 					r.then((s) => {
-						if( s instanceof Component) {
+						if (s instanceof Component) {
 							s.render(td);
-						}else {
+						} else {
 							td.innerHTML = s;
 						}
 					})
@@ -833,10 +796,16 @@ export class Table extends Component {
 	}
 }
 
+type TableConfig = Config<Table> & {
+	/**
+	 * Store that provides the data
+	 */
+	store: Store
+}
 
 /**
  * Shorthand function to create {@see Table}
  *
  * @param config
  */
-export const table = (config?:TableConfig<Table>) => Table.create(config);
+export const table = (config: TableConfig) => Object.assign(new Table(config.store), config);

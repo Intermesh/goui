@@ -1,7 +1,6 @@
-import {Component, ComponentConfig, ComponentEventMap} from "./Component.js";
-import {Observable, ObservableListener, ObservableListenerOpts} from "./Observable.js";
+import {Component, ComponentEventMap} from "./Component.js";
+import {Config, Observable, ObservableListener, ObservableListenerOpts} from "./Observable.js";
 import {FunctionUtil} from "../util/FunctionUtil.js";
-
 
 
 /**
@@ -12,7 +11,7 @@ interface DragData {
 	/**
 	 * x when dragging started
 	 */
-	startX:number,
+	startX: number,
 
 	/**
 	 * y when dragging started
@@ -22,32 +21,32 @@ interface DragData {
 	/**
 	 * Current x
 	 */
-	x:number,
+	x: number,
 
 	/**
 	 * Current y
 	 */
-	y:number
+	y: number
 
 	/**
 	 * offsetLeft of dragged element when dragging started
 	 */
-	startOffsetLeft:number,
+	startOffsetLeft: number,
 
 	/**
 	 * offsetTop of dragged element when dragging started
 	 */
-	startOffsetTop:number,
+	startOffsetTop: number,
 
 	/**
 	 * The left offset from the element offsetLeft where the user grabbed the element
 	 */
-	grabOffsetLeft:number,
+	grabOffsetLeft: number,
 
 	/**
 	 * The top offset from the element offsetLeft where the user grabbed the element
 	 */
-	grabOffsetTop:number
+	grabOffsetTop: number
 
 	data: any
 }
@@ -59,20 +58,16 @@ interface ConstrainBox {
 	top: number
 }
 
-
-
-
-
 /**
  * @inheritDoc
  */
-export interface DraggableComponentEventMap<T extends Observable> extends ComponentEventMap<T>{
+export interface DraggableComponentEventMap<Sender extends Observable> extends ComponentEventMap<Sender> {
 	/**
 	 * Fires when the component is dropped
 	 *
 	 * @param comp
 	 */
-	drop?: (comp: T, dragData: DragData, e: MouseEvent) => void
+	drop: <T extends Sender>(comp: T, dragData: DragData, e: MouseEvent) => void
 
 	/**
 	 * Fires contanty while the component is being dragged
@@ -80,7 +75,7 @@ export interface DraggableComponentEventMap<T extends Observable> extends Compon
 	 * @param dragData
 	 * @param e
 	 */
-	drag?: (comp: T, dragData: DragData, e: MouseEvent) => void;
+	drag: <T extends Sender>(comp: T, dragData: DragData, e: MouseEvent) => void;
 
 	/**
 	 * Return false to prevent drag
@@ -88,26 +83,15 @@ export interface DraggableComponentEventMap<T extends Observable> extends Compon
 	 * @param comp
 	 * @param e
 	 */
-	dragstart?: (comp: T, dragData: DragData, e: MouseEvent) => false | void;
+	dragstart: <T extends Sender>(comp: T, dragData: DragData, e: MouseEvent) => false | void;
 }
 
-/**
- * @inheritDoc
- */
-export interface DraggableComponentConfig<T extends Observable> extends ComponentConfig<T> {
-	/**
-	 * Update left and top css properties when dragging
-	 */
-	setPosition?: boolean
-	/**
-	 * @inheritDoc
-	 */
-	listeners?: ObservableListener<DraggableComponentEventMap<T>>
-}
 
 export interface DraggableComponent {
-	on<K extends keyof DraggableComponentEventMap<DraggableComponent>>(eventName: K, listener: DraggableComponentEventMap<DraggableComponent>[K], options?: ObservableListenerOpts): void;
-	fire<K extends keyof DraggableComponentEventMap<DraggableComponent>>(eventName: K, ...args: Parameters<NonNullable<DraggableComponentEventMap<DraggableComponent>[K]>>): boolean
+	on<K extends keyof DraggableComponentEventMap<this>>(eventName: K, listener: Partial<DraggableComponentEventMap<this>>[K], options?: ObservableListenerOpts): void;
+	fire<K extends keyof DraggableComponentEventMap<this>>(eventName: K, ...args: Parameters<DraggableComponentEventMap<this>[K]>): boolean
+
+	set listeners(listeners: ObservableListener<DraggableComponentEventMap<this>>)
 }
 
 export class DraggableComponent extends Component {
@@ -118,15 +102,18 @@ export class DraggableComponent extends Component {
 	private _dragConstrainTo: Window | HTMLElement = window
 	private _dragConstrainPad?: Partial<ConstrainBox>;
 
-	public setPosition?:boolean;
+	/**
+	 * Update left and top css properties when dragging
+	 */
+	public setPosition?: boolean;
 
-	protected init() {
-		this.baseCls += " draggable"
-		super.init();
+	constructor() {
+		super();
+		this.baseCls += " draggable";
 
 		this.on("render", () => {
 			this.initDragHandle();
-		})
+		});
 	}
 
 	private initDragHandle() {
@@ -141,7 +128,7 @@ export class DraggableComponent extends Component {
 
 			//stop if clicked on button inside drag handle. to prevent window dragging on buttons.
 			const target = e.target as HTMLElement;
-			if(target != this.getEl() && (target.tagName == "BUTTON" || target.closest("BUTTON"))) {
+			if (target != this.el && (target.tagName == "BUTTON" || target.closest("BUTTON"))) {
 				return;
 			}
 
@@ -154,9 +141,9 @@ export class DraggableComponent extends Component {
 
 			this.focus();
 
-			const el = this.getEl(), rect = el.getBoundingClientRect();
+			const el = this.el, rect = el.getBoundingClientRect();
 
-			if(this.setPosition === undefined) {
+			if (this.setPosition === undefined) {
 				const cmpStyle = getComputedStyle(el);
 				this.setPosition = cmpStyle.position == 'absolute' || cmpStyle.position == 'fixed';
 			}
@@ -188,7 +175,7 @@ export class DraggableComponent extends Component {
 	 * @protected
 	 */
 	protected getDragHandle(): HTMLElement {
-		return this.getEl();
+		return this.el;
 	}
 
 	/**
@@ -201,7 +188,7 @@ export class DraggableComponent extends Component {
 		this._dragConstrainPad = pad;
 	}
 
-	private calcConstrainBox(el: HTMLElement | Window, pad?: Partial<ConstrainBox>) : ConstrainBox {
+	private calcConstrainBox(el: HTMLElement | Window, pad?: Partial<ConstrainBox>): ConstrainBox {
 		let box = {
 			left: 0,
 			right: 0,
@@ -264,9 +251,9 @@ export class DraggableComponent extends Component {
 
 		this.constrainCoords();
 
-		if(this.setPosition) {
-			this.getEl().style.top = (d.startOffsetTop + d.y - d.startY) + "px";
-			this.getEl().style.left = (d.startOffsetLeft + d.x - d.startX) + "px";
+		if (this.setPosition) {
+			this.el.style.top = (d.startOffsetTop + d.y - d.startY) + "px";
+			this.el.style.left = (d.startOffsetLeft + d.x - d.startX) + "px";
 		}
 
 		this.fire("drag", this, this.dragData!, e);
@@ -275,11 +262,11 @@ export class DraggableComponent extends Component {
 	private constrainCoords() {
 
 		if (!this.constrainBox) {
-			return ;
+			return;
 		}
 
-		const maxTop = this.constrainBox.bottom - this.getEl().offsetHeight + this.dragData!.grabOffsetTop;
-		const maxLeft = this.constrainBox.right - this.getEl().offsetWidth + this.dragData!.grabOffsetLeft;
+		const maxTop = this.constrainBox.bottom - this.el.offsetHeight + this.dragData!.grabOffsetTop;
+		const maxLeft = this.constrainBox.right - this.el.offsetWidth + this.dragData!.grabOffsetLeft;
 
 		this.dragData!.y = Math.max(this.constrainBox.top + this.dragData!.grabOffsetTop, Math.min(this.dragData!.y, maxTop))
 		this.dragData!.x = Math.max(this.constrainBox.left + this.dragData!.grabOffsetLeft, Math.min(this.dragData!.x, maxLeft))
@@ -296,25 +283,25 @@ export class DraggableComponent extends Component {
 	public constrainTo(el: HTMLElement | Window, pad?: Partial<ConstrainBox>) {
 		const constraints = this.calcConstrainBox(el, pad);
 
-		let maxTop = constraints.bottom - this.getEl().offsetHeight,
-		 maxLeft = constraints.right - this.getEl().offsetWidth,
+		let maxTop = constraints.bottom - this.el.offsetHeight,
+			maxLeft = constraints.right - this.el.offsetWidth,
 			minTop = 0,
 			minLeft = 0;
 
-		if(this.getTop()! > maxTop) {
+		if (this.el.offsetTop > maxTop) {
 			console.warn("Contraining to top " + maxTop);
-			this.setTop(maxTop);
-		} else if(this.getTop()! < minTop) {
+			this.el.style.top = maxTop + "px";
+		} else if (this.el.offsetTop < minTop) {
 			console.warn("Contraining to top " + minTop);
-			this.setTop(minTop);
+			this.el.style.top = minTop + "px";
 		}
 
-		if(this.getLeft()! > maxLeft) {
+		if (this.el.offsetLeft > maxLeft) {
 			console.warn("Contraining to left " + maxLeft);
-			this.setLeft(maxLeft);
-		} else if(this.getLeft()! < minLeft) {
+			this.el.style.left = maxLeft + "px";
+		} else if (this.el.offsetLeft < minLeft) {
 			console.warn("Contraining to left " + minLeft);
-			this.setTop(minLeft);
+			this.el.style.left = minLeft + "px";
 		}
 	}
 }
@@ -325,4 +312,4 @@ export class DraggableComponent extends Component {
  * @param config
  * @param items
  */
-export const draggable = (config?:DraggableComponentConfig<DraggableComponent>, ...items:Component[]) => DraggableComponent.create(config, items);
+export const draggable = (config?: Config<DraggableComponent>, ...items: Component[]) => DraggableComponent.create(config, ...items);

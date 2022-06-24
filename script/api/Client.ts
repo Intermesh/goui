@@ -22,13 +22,14 @@ export interface RegisterData {
 	user: User
 }
 
-interface ClientEventMap<T extends Observable> extends ObservableEventMap<T>{
+interface ClientEventMap<T extends Observable> extends ObservableEventMap<T> {
 	login?: () => void
 	logout?: () => void
 }
 
 export interface Client {
 	on<K extends keyof ClientEventMap<Client>>(eventName: K, listener: ClientEventMap<Client>[K]): void
+
 	fire<K extends keyof ClientEventMap<Client>>(eventName: K, ...args: Parameters<NonNullable<ClientEventMap<Client>[K]>>): boolean
 }
 
@@ -56,10 +57,15 @@ export class Client extends Observable {
 
 	private static masked = false;
 
+	constructor() {
+		super();
+		this.init();
+	}
+
 	private static mask() {
 		this.masked = true;
 		setTimeout(() => {
-			if(this.masked) {
+			if (this.masked) {
 				root.mask();
 			}
 		}, 500);
@@ -87,14 +93,12 @@ export class Client extends Observable {
 		return "call-" + this._lastCallId;
 	}
 
-	public isLoggedIn(): Promise<User|false> {
-		if(!("accessToken" in this.session)) {
+	public isLoggedIn(): Promise<User | false> {
+		if (!("accessToken" in this.session)) {
 			return Promise.resolve(false);
-		} else if(this.user)
-		{
+		} else if (this.user) {
 			return Promise.resolve(this.user);
-		} else
-		{
+		} else {
 			return this.getUser();
 		}
 	}
@@ -112,7 +116,7 @@ export class Client extends Observable {
 			body: JSON.stringify(data)
 		})
 			.then((response) => {
-				if(response.status != 200) {
+				if (response.status != 200) {
 					throw response.statusText;
 				}
 				return response;
@@ -124,7 +128,7 @@ export class Client extends Observable {
 
 	public logout() {
 		Client.mask();
-		return fetch(this.uri + "auth.php"  + this.debugParam, {
+		return fetch(this.uri + "auth.php" + this.debugParam, {
 			method: "DELETE",
 			mode: "cors",
 			headers: {
@@ -141,7 +145,7 @@ export class Client extends Observable {
 
 	private static blobCache: Record<string, Promise<any>> = {};
 
-	public getBlobURL(blobId:string) {
+	public getBlobURL(blobId: string) {
 		let fetchOptions = {
 			method: 'GET',
 			headers: {
@@ -149,23 +153,23 @@ export class Client extends Observable {
 			}
 		};
 
-		if(!Client.blobCache[blobId]) {
-			let type:undefined|string;
+		if (!Client.blobCache[blobId]) {
+			let type: undefined | string;
 			Client.blobCache[blobId] = fetch(client.downloadUrl(blobId), fetchOptions)
-				.then( r => {
+				.then(r => {
 
 					type = r.headers.get("Content-Type") || undefined
 
 					return r.arrayBuffer()
 
 				})
-				.then( ab => URL.createObjectURL( new Blob( [ ab ], { type: type } ) ) );
+				.then(ab => URL.createObjectURL(new Blob([ab], {type: type})));
 		}
 
 		return Client.blobCache[blobId];
 	}
 
-	public downloadBlobId(blobId:string, filename:string) {
+	public downloadBlobId(blobId: string, filename: string) {
 		// Create a URL for the blob
 		return this.getBlobURL(blobId).then((url) => {
 			// Create an anchor element to "point" to it
@@ -183,14 +187,15 @@ export class Client extends Observable {
 
 	}
 
-	public requireLogin():Promise<User> {
+	public requireLogin(): Promise<User> {
 
-		if(!this.requireLoginPromise) {
+		if (!this.requireLoginPromise) {
 			this.requireLoginPromise = new Promise<void>((resolve, reject) => {
 				if ("accessToken" in this.session) {
 					resolve();
 				} else {
 					import("./Login.js").then((mods) => {
+
 						const login = mods.Login.create();
 						login.open();
 
@@ -209,11 +214,10 @@ export class Client extends Observable {
 
 		return this.requireLoginPromise.then(() => {
 			return this.isLoggedIn().then(user => {
-				if(!user) {
+				if (!user) {
 					this.session = {};
 					return this.requireLogin();
-				} else
-				{
+				} else {
 					return user;
 				}
 			}).catch(() => {
@@ -223,7 +227,7 @@ export class Client extends Observable {
 		})
 	}
 
-	public auth(data: LoginData|RegisterData) {
+	public auth(data: LoginData | RegisterData) {
 		Client.mask();
 		return fetch(this.uri + "auth.php" + this.debugParam, {
 			method: "POST",
@@ -238,13 +242,13 @@ export class Client extends Observable {
 
 	}
 
-	private _user: Promise<User> |undefined;
+	private _user: Promise<User> | undefined;
 
 	/**
 	 * Get the logged in user.
 	 */
-	public getUser()  {
-		if(!this._user) {
+	public getUser() {
+		if (!this._user) {
 			this._user = this.store('User').single(this.session.userId, [
 				'id', 'username', 'displayName', 'email', 'avatarId', 'dateFormat', 'timeFormat', 'timezone', 'thousandsSeparator', 'decimalSeparator', 'currency']).then((user) => {
 				this.user = <User>user;
@@ -273,7 +277,7 @@ export class Client extends Observable {
 	 * @param name
 	 */
 	public store(name: string) {
-		if(!this.stores[name]){
+		if (!this.stores[name]) {
 			this.stores[name] = EntityStore.create({name: name, client: this});
 		}
 		return this.stores[name]
@@ -288,8 +292,8 @@ export class Client extends Observable {
 	}
 
 	// This will upload the file after having read it
-	public upload(file:File) :Promise<UploadResponse> {
-		return fetch(this.uri + "upload.php"  + this.debugParam, { // Your POST endpoint
+	public upload(file: File): Promise<UploadResponse> {
+		return fetch(this.uri + "upload.php" + this.debugParam, { // Your POST endpoint
 			method: 'POST',
 			headers: {
 				'Authorization': 'Bearer ' + this.session.accessToken,
@@ -299,14 +303,14 @@ export class Client extends Observable {
 			},
 			body: file
 		}).then((response) => {
-			if(response.status > 201) {
+			if (response.status > 201) {
 				throw response.statusText;
 			}
 			return response;
 		})
 			.then(
-			response => response.json()
-		);
+				response => response.json()
+			);
 	};
 
 

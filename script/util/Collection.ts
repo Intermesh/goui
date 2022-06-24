@@ -3,55 +3,54 @@ import {Component} from "../component/Component.js";
 /**
  * @inheritDoc
  */
-export interface CollectionEventMap<T extends Observable, I> extends ObservableEventMap<T> {
+export interface CollectionEventMap<Sender extends Observable, CollectionItem> extends ObservableEventMap<Sender> {
 
 	/**
 	 * Fires before adding an item. Return false to abort.
 	 *
 	 * @param window
 	 */
-	beforeadd?: (collection: T, item:I, index:number) => void|false
+	beforeadd: (collection: Sender, item: CollectionItem, index:number) => void|false
 
 	/**
 	 * Fires after adding an item.
 	 *
 	 * @param window
 	 */
-	add?: (collection: T, item:I, index:number) => void
+	add: (collection: Sender, item:CollectionItem, index:number) => void
 
 	/**
 	 * Fires after removing an item.
 	 *
 	 * @param window
 	 */
-	remove?: (collection: T, item:I, index:number) => void
+	remove: (collection: Sender, item: CollectionItem, index:number) => void
 
 	/**
 	 * Fires before removing an item. Return false to abort.
 	 *
 	 * @param window
 	 */
-	beforeremove?: (collection: T, item:I, index:number) => void|false
+	beforeremove: (collection: Sender, item: CollectionItem, index:number) => void|false
 }
 
-export interface Collection<T> {
-	on<K extends keyof CollectionEventMap<Collection<T>, T>>(eventName: K, listener: CollectionEventMap<Collection<T>, T>[K], options?: ObservableListenerOpts): void;
-
-	fire<K extends keyof CollectionEventMap<Collection<T>, T>>(eventName: K, ...args: Parameters<NonNullable<CollectionEventMap<Collection<T>, T>[K]>>): boolean
+export interface Collection<CollectionItem> {
+	on<K extends keyof CollectionEventMap<Collection<CollectionItem>, CollectionItem>>(eventName: K, listener: CollectionEventMap<Collection<CollectionItem>, CollectionItem>[K], options?: ObservableListenerOpts): void;
+	fire<K extends keyof CollectionEventMap<Collection<CollectionItem>, CollectionItem>>(eventName: K, ...args: Parameters<NonNullable<CollectionEventMap<Collection<CollectionItem>, CollectionItem>[K]>>): boolean
 }
 
 /**
  * Collection of items
  */
-export class Collection<T> extends Observable implements Iterable<T>{
-	readonly items: T[];
+export class Collection<CollectionItem> extends Observable implements Iterable<CollectionItem>{
+	readonly items: CollectionItem[];
 
-	constructor(items:T[] = []) {
+	constructor(items:CollectionItem[] = []) {
 		super();
 		this.items = items;
 	}
 
-	[Symbol.iterator](): Iterator<T> {
+	[Symbol.iterator](): Iterator<CollectionItem> {
 		return this.items[Symbol.iterator]();
 	}
 
@@ -60,7 +59,7 @@ export class Collection<T> extends Observable implements Iterable<T>{
 	 *
 	 * @returns the index of the last added item
 	 */
-	public add(...items:T[]) : number {
+	public add(...items:CollectionItem[]) : number {
 		let index = -1;
 		items.forEach((item) => {
 			index = this.items.length;
@@ -81,7 +80,7 @@ export class Collection<T> extends Observable implements Iterable<T>{
 	 *
 	 * @param index Use negative indexes to insert from the end. For example -1 inserts before the last item.
 	 */
-	public insert(index:number, ...items:T[])  {
+	public insert(index:number, ...items:CollectionItem[])  {
 
 		if(index < 0) {
 			index = this.count() + index;
@@ -106,7 +105,7 @@ export class Collection<T> extends Observable implements Iterable<T>{
 	 * Get an item at the given index
 	 * @param index
 	 */
-	public get(index:number) : T {
+	public get(index:number) : CollectionItem {
 		return this.items[index];
 	}
 
@@ -128,14 +127,14 @@ export class Collection<T> extends Observable implements Iterable<T>{
 	 * Find the index of an item. Returns -1 if not found.
 	 * @param item
 	 */
-	public indexOf(item:T) {
+	public indexOf(item:CollectionItem) {
 		return this.items.indexOf(item)
 	}
 
 	/**
 	 * Remove items
 	 */
-	public remove(...items:T[]) {
+	public remove (...items:CollectionItem[]) {
 		items.forEach((item) => {
 			const index = this.indexOf(item);
 			if(index == -1) {
@@ -191,7 +190,7 @@ export class Collection<T> extends Observable implements Iterable<T>{
 	 *
 	 * @param items
 	 */
-	public replace(...items:T[]) {
+	public replace(...items:CollectionItem[]) {
 		return this.clear().add(...items);
 	}
 
@@ -200,7 +199,7 @@ export class Collection<T> extends Observable implements Iterable<T>{
 	 * @param callbackfn  A function that accepts up to three arguments. forEach calls the callbackfn function one time for each element in the array.
 	 * @param thisArg  An object to which the this keyword can refer in the callbackfn function. If thisArg is omitted, undefined is used as the this value.
 	 */
-	public forEach(callbackfn: (value: T, index: number, array: T[]) => void, thisArg?: any) {
+	public forEach(callbackfn: (value: CollectionItem, index: number, array: CollectionItem[]) => void, thisArg?: any) {
 		return this.items.forEach(callbackfn, thisArg);
 	}
 
@@ -217,8 +216,8 @@ export class Collection<T> extends Observable implements Iterable<T>{
 	 * immediately returns that element value. Otherwise, find returns undefined.
 	 *
 	 */
-	public find(predicate: (value: T, index: number, obj: T[]) => unknown): T|undefined {
-		return this.items.find(predicate) as T;
+	public find (predicate: (value: CollectionItem, index: number, obj: CollectionItem[]) => unknown): CollectionItem|undefined {
+		return this.items.find(predicate) as CollectionItem;
 	}
 
 	/**
@@ -228,7 +227,7 @@ export class Collection<T> extends Observable implements Iterable<T>{
 	 * order, until it finds one where predicate returns true. If such an element is found,
 	 * findIndex immediately returns that element index. Otherwise, findIndex returns -1.
 	 */
-	public findIndex(predicate: (value: T, index: number, obj: T[]) => unknown): number {
+	public findIndex(predicate: (value: CollectionItem, index: number, obj: CollectionItem[]) => unknown): number {
 		return this.items.findIndex(predicate);
 	}
 

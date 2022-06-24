@@ -1,9 +1,9 @@
 // noinspection JSDeprecatedSymbols
 
-import {Field, FieldConfig, FieldEventMap} from "./Field.js";
+import {Field, FieldEventMap} from "./Field.js";
 import {Toolbar} from "../Toolbar.js";
 import {btn, Button} from "../Button.js";
-import {Observable, ObservableListener, ObservableListenerOpts} from "../Observable.js";
+import {Config, Observable, ObservableListener, ObservableListenerOpts} from "../Observable.js";
 import {browserDetect} from "../../util/BrowserDetect.js";
 import {colormenu, ColorMenu} from "../menu/ColorMenu.js";
 import {Menu} from "../menu/Menu.js";
@@ -11,26 +11,12 @@ import {Component} from "../Component.js";
 import {FunctionUtil} from "../../util/FunctionUtil.js";
 import {root} from "../Root.js";
 import {MaterialIcon} from "../MaterialIcon.js";
-import {SelectField, SelectFieldConfig} from "./SelectField.js";
+
 
 /**
  * @inheritDoc
  */
-export interface HtmlFieldConfig<T extends Observable> extends FieldConfig<T> {
-	/**
-	 * When the field is empty this will be dispklayed inside the field
-	 */
-	placeholder?: string,
-	/**
-	 * @inheritDoc
-	 */
-	listeners?: ObservableListener<HtmlFieldEventMap<T>>
-}
-
-/**
- * @inheritDoc
- */
-export interface HtmlFieldEventMap<T extends Observable> extends FieldEventMap<T> {
+export interface HtmlFieldEventMap<Sender extends Observable> extends FieldEventMap<Sender> {
 	/**
 	 * Fires before adding an item. Return false to abort.
 	 *
@@ -38,7 +24,7 @@ export interface HtmlFieldEventMap<T extends Observable> extends FieldEventMap<T
 	 * @param item
 	 * @param index
 	 */
-	updatetoolbar?: (htmlfield: HtmlField) => void
+	updatetoolbar: <T extends Sender>(htmlfield: T) => void
 
 	/**
 	 * Fires when an image is selected, pasted or dropped into the field
@@ -47,7 +33,7 @@ export interface HtmlFieldEventMap<T extends Observable> extends FieldEventMap<T
 	 * @param file
 	 * @param img The img element in the editor
 	 */
-	insertimage?: (htmlfield: HtmlField, file: File, img: HTMLImageElement) => void
+	insertimage: <T extends Sender> (htmlfield: T, file: File, img: HTMLImageElement) => void
 
 	/**
 	 * Fires when a non image is pasted or dropped into the field
@@ -56,22 +42,24 @@ export interface HtmlFieldEventMap<T extends Observable> extends FieldEventMap<T
 	 * @param file
 	 * @param img
 	 */
-	attach?: (htmlfield: HtmlField, file: File) => void
+	attach: <T extends Sender> (htmlfield: T, file: File) => void
 }
 
 
 export interface HtmlField extends Field {
-	on<K extends keyof HtmlFieldEventMap<HtmlField>>(eventName: K, listener: HtmlFieldEventMap<HtmlField>[K], options?: ObservableListenerOpts): void
+	on<K extends keyof HtmlFieldEventMap<HtmlField>>(eventName: K, listener: Partial<HtmlFieldEventMap<HtmlField>>[K], options?: ObservableListenerOpts): void
 
-	fire<K extends keyof HtmlFieldEventMap<HtmlField>>(eventName: K, ...args: Parameters<NonNullable<HtmlFieldEventMap<HtmlField>[K]>>): boolean
+	fire<K extends keyof HtmlFieldEventMap<HtmlField>>(eventName: K, ...args: Parameters<HtmlFieldEventMap<HtmlField>[K]>): boolean
+
+	set listeners(listeners: ObservableListener<HtmlFieldEventMap<this>>)
 }
 
 interface CmdConfig {
 	icon: MaterialIcon,
-	applyFn?:(btn: Button) => void,
-	updateFn?:(btn: Button) => void,
+	applyFn?: (btn: Button) => void,
+	updateFn?: (btn: Button) => void,
 	title: string
-	menu?:Menu
+	menu?: Menu
 }
 
 document.execCommand("styleWithCSS", false, "true");
@@ -83,33 +71,43 @@ document.execCommand("styleWithCSS", false, "true");
  */
 export class HtmlField extends Field {
 
-	protected tagName = "div" as keyof HTMLElementTagNameMap;
+	get tagName() {
+		return "div" as keyof HTMLElementTagNameMap;
+	}
 
 	protected baseCls = 'form-field html-field'
 
-	private placeholder: string | undefined;
+	/**
+	 * When the field is empty this will be dispklayed inside the field
+	 */
+	public placeholder: string | undefined;
+
 	private editor: HTMLDivElement | undefined;
 
-	private valueOnFocus:string | undefined;
+	private valueOnFocus: string | undefined;
+
 	private toolbar?: Toolbar;
 
-	protected value = "";
+	constructor() {
+		super();
+		this.value = "";
+	}
 
 	// noinspection JSUnusedGlobalSymbols
 	public getEditor() {
-		if(!this.editor) {
+		if (!this.editor) {
 			throw new Error("Render first");
 		}
 		return this.editor;
 	}
 
 
-	private closestStyle(el:HTMLElement, styleProp: keyof CSSStyleDeclaration) {
-		while((el = el.parentElement!)) {
+	private closestStyle(el: HTMLElement, styleProp: keyof CSSStyleDeclaration) {
+		while ((el = el.parentElement!)) {
 			if (el == this.editor) return undefined;
 
-			if(el.style[styleProp]) {
-				return <string> el.style[styleProp];
+			if (el.style[styleProp]) {
+				return <string>el.style[styleProp];
 			}
 		}
 
@@ -132,10 +130,10 @@ export class HtmlField extends Field {
 		"image"
 	]
 
-	private commands:Record<string, CmdConfig> = {
-		bold : {icon: 'format_bold', title: "Bold"},
-		italic : {icon: 'format_italic', title: "Italic"},
-		underline : {icon: 'format_underlined', title: "Underline"},
+	private commands: Record<string, CmdConfig> = {
+		bold: {icon: 'format_bold', title: "Bold"},
+		italic: {icon: 'format_italic', title: "Italic"},
+		underline: {icon: 'format_underlined', title: "Underline"},
 		strikeThrough: {icon: 'format_strikethrough', title: "Strikethrough"},
 		foreColor: {
 			title: "Text color",
@@ -145,16 +143,17 @@ export class HtmlField extends Field {
 					select: (menu, color) => {
 						this.execCmd("foreColor", color || "#000000")
 					},
-					beforeshow: (menu) =>{
-						(<ColorMenu> menu).setValue(this.toolbar!.findItem("foreColor")!.getStyle().color || "");
+					beforeshow: (menu) => {
+						(<ColorMenu>menu).value = (this.toolbar!.findItem("foreColor")!.el.style.color || "");
 					}
 				}
 			}),
-			applyFn: () => {},
+			applyFn: () => {
+			},
 			updateFn: (btn) => {
 				const s = document.getSelection();
-				let color = s ? this.closestStyle(<HTMLElement> s.anchorNode!, "color") : undefined;
-				btn.getEl().style.color = color || "";
+				let color = s ? this.closestStyle(<HTMLElement>s.anchorNode!, "color") : undefined;
+				btn.el.style.color = color || "";
 
 			}
 		},
@@ -166,16 +165,17 @@ export class HtmlField extends Field {
 					select: (menu, color) => {
 						this.execCmd("backColor", color || "#ffffff")
 					},
-					beforeshow: (menu) =>{
-						(<ColorMenu> menu).setValue(this.toolbar!.findItem("backColor")!.getStyle().color || "");
+					beforeshow: (menu) => {
+						(<ColorMenu>menu).value = (this.toolbar!.findItem("backColor")!.el.style.color || "");
 					}
 				}
 			}),
-			applyFn: () => {},
+			applyFn: () => {
+			},
 			updateFn: (btn) => {
 				const s = document.getSelection();
-				let bgcolor = s ? this.closestStyle(<HTMLElement> s.anchorNode!, "backgroundColor") : undefined;
-				btn.getEl().style.color = bgcolor || "";
+				let bgcolor = s ? this.closestStyle(<HTMLElement>s.anchorNode!, "backgroundColor") : undefined;
+				btn.el.style.color = bgcolor || "";
 
 			}
 		},
@@ -194,8 +194,8 @@ export class HtmlField extends Field {
 				inp.setAttribute("type", "file");
 				inp.accept = "image/*";
 				inp.multiple = true;
-				inp.onchange =  () => {
-					if(!inp.files) {
+				inp.onchange = () => {
+					if (!inp.files) {
 						return;
 					}
 					Array.from(inp.files).forEach((file) => {
@@ -215,29 +215,29 @@ export class HtmlField extends Field {
 		const t = this.toolbar!;
 
 		for (const cmd of this.toolbarItems) {
-			if(cmd == "-") continue;
+			if (cmd == "-") continue;
 
 			const config = this.commands[cmd];
 
-			if(config.updateFn) {
-				config.updateFn.call(this, <Button> t.findItem(cmd)!);
+			if (config.updateFn) {
+				config.updateFn.call(this, <Button>t.findItem(cmd)!);
 			} else {
-				t.findItem(cmd)!.getEl().classList.toggle("pressed", document.queryCommandState(cmd));
+				t.findItem(cmd)!.el.classList.toggle("pressed", document.queryCommandState(cmd));
 			}
 		}
 
 		this.fire("updatetoolbar", this);
 	}
 
-	private execCmd(cmd:string, value?:string) {
+	private execCmd(cmd: string, value?: string) {
 		document.execCommand(cmd, false, value);
 
 		const t = this.toolbar!, config = this.commands[cmd];
-		if(config) {
+		if (config) {
 			if (config.updateFn) {
 				config.updateFn.call(this, <Button>t.findItem(cmd)!);
 			} else {
-				t.findItem(cmd)!.getEl().classList.toggle("pressed", document.queryCommandState(cmd));
+				t.findItem(cmd)!.el.classList.toggle("pressed", document.queryCommandState(cmd));
 			}
 		}
 
@@ -249,13 +249,13 @@ export class HtmlField extends Field {
 	 *
 	 * @param html
 	 */
-	public insertHtml(html:string) {
+	public insertHtml(html: string) {
 		document.execCommand("insertHTML", false, html);
 	}
 
 	// noinspection JSUnusedGlobalSymbols
 	protected internalRemove() {
-		if(this.toolbar) {
+		if (this.toolbar) {
 			this.toolbar.remove();
 		}
 		super.internalRemove();
@@ -263,7 +263,7 @@ export class HtmlField extends Field {
 
 	protected getToolbar() {
 
-		if(this.toolbar) {
+		if (this.toolbar) {
 			return this.toolbar;
 		}
 
@@ -272,13 +272,13 @@ export class HtmlField extends Field {
 		});
 
 		for (const cmd of this.toolbarItems) {
-			if(cmd == "-") {
-				this.toolbar.getItems().add(Component.create({tagName:"hr"}));
+			if (cmd == "-") {
+				this.toolbar.items.add(Component.create({tagName: "hr"}));
 			} else {
 
 				const config = this.commands[cmd];
 
-				this.toolbar.getItems().add(btn({
+				this.toolbar.items.add(btn({
 					itemId: cmd,
 					icon: config.icon,
 					menu: config.menu,
@@ -294,20 +294,20 @@ export class HtmlField extends Field {
 			}
 		}
 
-		root.getItems().add(this.toolbar);
+		root.items.add(this.toolbar);
 
 		return this.toolbar;
 	}
 
 	protected showToolbar() {
-		const rect = this.getEl().getBoundingClientRect();
+		const rect = this.el.getBoundingClientRect();
 
 		//must be rendered before we can calc height
 		this.getToolbar().show();
-		const h = this.getToolbar().getHeight()!
-		const style = this.getToolbar().getStyle();
+		const h = this.getToolbar().height;
+		const style = this.getToolbar().el.style;
 
-		const maxX = window.innerWidth - this.getToolbar().getWidth()!;
+		const maxX = window.innerWidth - this.getToolbar().width;
 		style.left = Math.min(maxX, rect.x + window.scrollX) + "px";
 		style.top = (window.scrollY + rect.top - h) + "px";
 	}
@@ -317,9 +317,9 @@ export class HtmlField extends Field {
 	}
 
 
-	protected createControl() : undefined | HTMLElement {
+	protected createControl(): undefined | HTMLElement {
 
-		const el = this.getEl();
+		const el = this.el;
 
 		el.addEventListener("click", () => {
 			this.editor!.focus();
@@ -330,7 +330,7 @@ export class HtmlField extends Field {
 		this.editor.classList.add("editor");
 		this.editor.classList.add("text");
 
-		if(this.placeholder) {
+		if (this.placeholder) {
 			this.editor.dataset.placeholder = this.placeholder;
 		}
 
@@ -340,18 +340,18 @@ export class HtmlField extends Field {
 		const selectionChangeFn = FunctionUtil.buffer(300, () => this.updateToolbar());
 
 		this.editor.addEventListener("focus", () => {
-			this.valueOnFocus = this.getValue();
+			this.valueOnFocus = this.value;
 			document.addEventListener("selectionchange", selectionChangeFn);
 
 			this.showToolbar();
 		});
 
 		this.editor.addEventListener("blur", (e) => {
-			if(this.valueOnFocus != this.getValue()) {
+			if (this.valueOnFocus != this.value) {
 				this.fire("change", this);
 			}
 			document.removeEventListener("selectionchange", selectionChangeFn);
-			if(!(e.relatedTarget instanceof HTMLElement) || !this.getToolbar().getEl().contains(e.relatedTarget)) {
+			if (!(e.relatedTarget instanceof HTMLElement) || !this.getToolbar().el.contains(e.relatedTarget)) {
 				this.hideToolbar();
 			}
 		});
@@ -391,18 +391,18 @@ export class HtmlField extends Field {
 	//
 	// }
 
-	setValue(v: string) {
+	set value(v: string) {
 
 		if (this.editor) {
 			this.editor.innerHTML = v;
 		}
 
-		super.setValue(v);
+		super.value = v;
 	}
 
-	public getValue() {
+	get value() {
 		if (!this.editor) {
-			return super.getValue();
+			return super.value;
 		} else {
 			return this.editor.innerHTML;
 		}
@@ -415,7 +415,7 @@ export class HtmlField extends Field {
 	private lineIndex = 0;
 	private lineSequence = "";
 
-	private static removeCharsFromCursorPos(count:number) {
+	private static removeCharsFromCursorPos(count: number) {
 		const sel = window.getSelection();
 		const range = sel!.getRangeAt(0);
 		const clone = range.cloneRange();
@@ -425,15 +425,15 @@ export class HtmlField extends Field {
 	}
 
 
-	private onKeyDown(ev:KeyboardEvent) {
+	private onKeyDown(ev: KeyboardEvent) {
 
 		this.clearInvalid();
 
 		//track first 3 chars of sentence for auto lists below
-		if(ev.key == "Enter") {
+		if (ev.key == "Enter") {
 			this.lineIndex = 0;
 			this.lineSequence = "";
-		} else if(this.lineIndex < 3) {
+		} else if (this.lineIndex < 3) {
 			this.lineIndex++;
 			this.lineSequence += ev.key;
 		}
@@ -454,24 +454,24 @@ export class HtmlField extends Field {
 				this.execCmd('InsertText', '\t');
 			}
 			this.focus();
-		} else if(ev.key == "Space") {
+		} else if (ev.key == "Space") {
 
 			// Auto lists
-			if(this.lineSequence == "1. ") {
+			if (this.lineSequence == "1. ") {
 				this.execCmd("insertOrderedList");
 				HtmlField.removeCharsFromCursorPos(2);
 				ev.preventDefault();
-			} else if(this.lineSequence == "- ") {
+			} else if (this.lineSequence == "- ") {
 				this.execCmd("insertUnorderedList");
 				HtmlField.removeCharsFromCursorPos(1);
 				ev.preventDefault();
 			}
 
-		} else if(browserDetect.isMac()) {
+		} else if (browserDetect.isMac()) {
 
-			if(ev.ctrlKey) {
+			if (ev.ctrlKey) {
 				let cmd;
-				switch(ev.key){
+				switch (ev.key) {
 					case "b":
 						cmd = 'bold';
 						break;
@@ -482,7 +482,7 @@ export class HtmlField extends Field {
 						cmd = 'underline';
 						break;
 				}
-				if(cmd){
+				if (cmd) {
 					// this.focus();
 					this.execCmd(cmd);
 					// this.focus();
@@ -492,8 +492,8 @@ export class HtmlField extends Field {
 		}
 	}
 
-	private onDrop(e:DragEvent) {
-		if(!e.dataTransfer || !e.dataTransfer.files) {
+	private onDrop(e: DragEvent) {
+		if (!e.dataTransfer || !e.dataTransfer.files) {
 			return;
 		}
 
@@ -506,8 +506,7 @@ export class HtmlField extends Field {
 		Array.from(e.dataTransfer.files).forEach((file) => {
 			if (file.type.match(/^image\//)) {
 				this.handleImage(file);
-			} else
-			{
+			} else {
 				this.fire("attach", this, file);
 			}
 		});
@@ -522,7 +521,7 @@ export class HtmlField extends Field {
 		return "img-" + (++HtmlField._uid);
 	}
 
-	private handleImage(file:File) {
+	private handleImage(file: File) {
 		let imgEl: HTMLImageElement;
 		if (file.type.match(/^image\//)) {
 			const objectURL = URL.createObjectURL(file), uid = HtmlField.imgUID();
@@ -537,20 +536,19 @@ export class HtmlField extends Field {
 		}
 	}
 
-	private onPaste (e:ClipboardEvent) {
+	private onPaste(e: ClipboardEvent) {
 
-		if(!e.clipboardData || !e.clipboardData.files) {
+		if (!e.clipboardData || !e.clipboardData.files) {
 			return;
 		}
 
-		const files = Array.from(e.clipboardData.files as FileList) ;
+		const files = Array.from(e.clipboardData.files as FileList);
 
 		//Chrome /safari has clibBoardData.commands
-		files.forEach((file ) => {
+		files.forEach((file) => {
 			if (file.type.match(/^image\//)) {
 				this.handleImage(file);
-			} else
-			{
+			} else {
 				this.fire("attach", this, file);
 			}
 			e.preventDefault();
@@ -567,4 +565,4 @@ export class HtmlField extends Field {
  *
  * @param config
  */
-export const htmlfield = (config?:HtmlFieldConfig<HtmlField>) => HtmlField.create(config);
+export const htmlfield = (config?: Config<HtmlField>) => HtmlField.create(config);

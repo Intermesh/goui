@@ -1,31 +1,8 @@
-import {Field, FieldConfig} from "./Field.js";
-import {Observable} from "../Observable.js";
-import {Component} from "../Component.js";
-import {Fieldset, FieldsetConfig} from "./Fieldset.js";
+import {Field} from "./Field.js";
+import {Config} from "../Observable.js";
+
 
 export type TextFieldType = ("text" | "password" | "email" | "url" | "tel" | "search");
-
-export interface TextFieldConfig<T extends Observable> extends FieldConfig<T> {
-	/**
-	 * input type. text, password, email etc.
-	 */
-	type?: TextFieldType
-
-	/**
-	 * Autocomplete value
-	 */
-	autocomplete?: string
-
-	/**
-	 * When the field is empty this will be dispklayed inside the field
-	 */
-	placeholder?: string
-
-	/**
-	 * Pattern regex for validation
-	 */
-	pattern?: HTMLInputElement["pattern"]
-}
 
 /**
  * TextField component
@@ -36,13 +13,29 @@ export class TextField extends Field {
 
 	protected input: HTMLInputElement | HTMLTextAreaElement | undefined;
 
-	protected type: TextFieldType = "text";
-	protected placeholder:string = " ";
-	protected autocomplete:string | undefined;
-	protected pattern:HTMLInputElement["pattern"] | undefined;
+	/**
+	 * input type. text, password, email etc.
+	 */
+	public type: TextFieldType = "text";
+	/**
+	 * When the field is empty this will be dispklayed inside the field
+	 */
+	public placeholder:string = " ";
 
-	protected applyTitle() {
-		if(this.title && this.input) {
+	/**
+	 * Autocomplete value
+	 */
+	public autocomplete:string | undefined;
+
+	/**
+	 * Pattern regex for validation
+	 */
+	public pattern:HTMLInputElement["pattern"] | undefined;
+
+	set title(title: string) {
+		super.title = title;
+
+		if(this.input) {
 			this.input.title = this.title;
 		}
 	}
@@ -53,15 +46,6 @@ export class TextField extends Field {
 		}
 		this.input?.focus(o);
 	}
-
-	// protected internalRender() {
-	// 	this.createControl();
-	//
-	// 	const el = super.internalRender();
-	//
-	// 	el.appendChild(this.input!);
-	// 	return el;
-	// }
 
 	protected createControl() : undefined | HTMLElement{
 		this.input = document.createElement("input");
@@ -111,61 +95,39 @@ export class TextField extends Field {
 
 		super.setInvalid(msg);
 
-		if(this.isRendered()) {
+		if(this.rendered) {
 			this.applyInvalidMsg();
 		}
 	}
-
-	// protected applyInvalidMsg() {
-	// 	super.applyInvalidMsg();
-	//
-	// 	this.input!.setCustomValidity(this.invalidMsg);
-	//
-	// 	//check if el is visible (https://stackoverflow.com/questions/19669786/check-if-element-is-visible-in-dom)
-	// 	if(this.input!.offsetParent) {
-	// 		this.input!.reportValidity();
-	// 	}
-	//
-	//
-	// 	if(this.invalidMsg != "") {
-	// 		//clear the field on change
-	// 		this.input!.addEventListener('input', () => {
-	// 			this.clearInvalid();
-	// 		}, {once: true});
-	// 	}
-	// }
 
 	clearInvalid() {
 		super.clearInvalid();
 		this.applyInvalidMsg();
 	}
 
-	getInput() {
-		return this.input;
-	}
 
-	setValue(v: string, useForReset = true) {
+	set value(v: string | undefined) {
 
 		if (this.input) {
-			this.input!.value = v;
+			this.input.value = v + "";
 		}
 
-		super.setValue(v, useForReset);
+		super.value = v;
 	}
 
-	getValue() {
+	get value() {
 		if (!this.input) {
-			return super.getValue();
+			return super.value;
 		} else {
 			return this.input.value;
 		}
 	}
 
 
-	setName(name: string) {
-		super.setName(name);
+	set name(name: string) {
+		super.name = name;
 
-		if (this.isRendered()) {
+		if (this.rendered) {
 			this.input!.name = this.name;
 		}
 	}
@@ -179,7 +141,6 @@ export class TextField extends Field {
 		}
 	}
 
-
 }
 
 /**
@@ -187,4 +148,4 @@ export class TextField extends Field {
  *
  * @param config
  */
-export const textfield = (config?:TextFieldConfig<TextField>) => TextField.create(config);
+export const textfield = (config?:Config<TextField>) => TextField.create(config);

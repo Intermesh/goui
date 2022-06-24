@@ -1,4 +1,5 @@
-import {TextField, TextFieldConfig} from "./TextField.js";
+import {TextField} from "./TextField.js";
+import {Config} from "../Observable.js";
 
 /**
  * Text Area component
@@ -7,13 +8,13 @@ import {TextField, TextFieldConfig} from "./TextField.js";
  */
 export class TextAreaField extends TextField {
 
-	protected createControl() : undefined | HTMLElement {
+	protected createControl(): undefined | HTMLElement {
 		this.input = document.createElement("textarea");
-		if( this.autocomplete) {
+		if (this.autocomplete) {
 			this.input.autocomplete = this.autocomplete;
 		}
 
-		if(this.placeholder) {
+		if (this.placeholder) {
 			this.input.placeholder = this.placeholder;
 		}
 
@@ -37,4 +38,4 @@ export class TextAreaField extends TextField {
  *
  * @param config
  */
-export const textarea = (config?:TextFieldConfig<TextAreaField>) => TextAreaField.create(config);
+export const textarea = (config?: Config<TextAreaField>) => TextAreaField.create(config);

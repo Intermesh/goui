@@ -1,16 +1,6 @@
-import {Component, ComponentConfig} from "../Component.js";
-import {Observable} from "../Observable.js";
-import {Form, FormConfig} from "./Form.js";
-
-/**
- * @inheritDoc
- */
-export interface FieldsetConfig<T extends Observable> extends ComponentConfig<T> {
-	/**
-	 * Active card item
-	 */
-	legend?: string
-}
+import {Component} from "../Component.js";
+import {Config} from "../Observable.js";
+import {Form} from "./Form.js";
 
 /**
  * Field set component
@@ -18,8 +8,15 @@ export interface FieldsetConfig<T extends Observable> extends ComponentConfig<T>
  * @see Form
  */
 export class Fieldset extends Component {
-	tagName = "fieldset" as keyof HTMLElementTagNameMap
-	protected legend?: string;
+	get tagName() {
+		return "fieldset" as keyof HTMLElementTagNameMap
+	}
+
+	/**
+	 * The legend to display
+	 */
+	public legend?: string;
+
 
 	internalRender() {
 		const el = super.internalRender();
@@ -43,4 +40,4 @@ export class Fieldset extends Component {
  * @param config
  * @param items
  */
-export const fieldset = (config?:FieldsetConfig<Fieldset>, ...items:Component[]) => Fieldset.create(config, items);
+export const fieldset = (config?: Config<Fieldset>, ...items: Component[]) => Fieldset.create(config, ...items);

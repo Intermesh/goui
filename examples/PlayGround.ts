@@ -14,10 +14,10 @@ import {colormenu} from "../script/component/menu/ColorMenu.js";
 export const PlayGround = comp({cls : "vbox"},
 
 			tbar({
-				style: {
-					backgroundColor: "#0277bd",
-					color: "white"
-				}
+				// style: {
+				// 	backgroundColor: "#0277bd",
+				// 	color: "white"
+				// }
 			},
 				btn({
 					text: "Menu",

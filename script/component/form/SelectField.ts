@@ -1,19 +1,11 @@
-import {Field, FieldConfig} from "./Field.js";
-import {Observable} from "../Observable.js";
-import {TextFieldConfig} from "./TextField.js";
-import {TextAreaField} from "./TextareaField.js";
+import {Field} from "./Field.js";
+import {Config} from "../Observable.js";
 
 interface SelectFieldOption {
 	value?: string
 	name: string
 }
 
-/**
- * @inheritDoc
- */
-export interface SelectFieldConfig<T extends Observable> extends FieldConfig<T> {
-	options?: SelectFieldOption[]
-}
 
 /**
  * Select field
@@ -26,9 +18,9 @@ export class SelectField extends Field {
 
 	protected input: HTMLSelectElement | undefined;
 
-	protected options: SelectFieldOption[] = []
+	public options: SelectFieldOption[] = [];
 
-	protected createControl() : undefined | HTMLElement {
+	protected createControl(): undefined | HTMLElement {
 		this.input = document.createElement("select");
 		this.input.name = this.name;
 		if (this.required) {
@@ -47,14 +39,14 @@ export class SelectField extends Field {
 
 		if (this.value) {
 			// for updating this.input.selectIndex
-			this.setValue(this.value, false);
+			this.value = this.value;
 		}
 
 		this.input.addEventListener("change", () => {
 			this.fire("change", this);
 		});
 
-		this.getEl().appendChild(this.input);
+		this.el.appendChild(this.input);
 
 		return this.input;
 	}
@@ -63,7 +55,7 @@ export class SelectField extends Field {
 		return this.input;
 	}
 
-	setValue(v: string, useForReset = true) {
+	set value(v: string) {
 
 		if (this.input) {
 			this.input.selectedIndex = this.options.findIndex((o) => {
@@ -71,23 +63,23 @@ export class SelectField extends Field {
 			});
 		}
 
-		super.setValue(v, useForReset);
+		super.value = v;
 	}
 
 
-	getValue() {
+	get value() {
 		if (!this.input) {
-			return super.getValue();
+			return super.value;
 		} else {
 			return this.input.value;
 		}
 	}
 
-	setName(name: string) {
-		super.setName(name);
+	set name(name: string) {
+		super.name = (name);
 
-		if (this.isRendered()) {
-			this.input!.name = this.name
+		if (this.input) {
+			this.input.name = this.name
 		}
 	}
 
@@ -95,7 +87,7 @@ export class SelectField extends Field {
 		super.validate();
 
 		//this implements the native browser validation
-		if(!this.input!.validity.valid) {
+		if (!this.input!.validity.valid) {
 			this.setInvalid(this.input!.validationMessage);
 		}
 	}
@@ -108,4 +100,4 @@ export class SelectField extends Field {
  *
  * @param config
  */
-export const select = (config?:SelectFieldConfig<SelectField>) => SelectField.create(config);
+export const select = (config?: Config<SelectField>) => SelectField.create(config);

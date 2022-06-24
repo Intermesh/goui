@@ -1,4 +1,4 @@
-import {Component} from "./component/Component.js";
+import {comp, Component} from "./component/Component.js";
 import {root} from "./component/Root.js";
 
 /**
@@ -40,17 +40,16 @@ class Message {
 
 	constructor(msg: string, type: string, timeout = 3000) {
 
-		const alert = Component.create({
-			cls: "alert " + type,
-			items: [
-				Component.create({
-					tagName:"span",
-					text: msg
-				})
-			]
-		});
+		const alert = comp({
+			cls: "alert " + type
+		},
+			comp({
+				tagName:"span",
+				text: msg
+			})
+		);
 
-		root.getItems().add(alert);
+		root.items.add(alert);
 
 		if(timeout) {
 			this.timeout = window.setTimeout(() => {
@@ -58,7 +57,7 @@ class Message {
 			}, timeout);
 		}
 
-		alert.getEl().addEventListener("click", () => {
+		alert.el.addEventListener("click", () => {
 			alert.remove();
 			if(this.timeout) {
 				clearTimeout(this.timeout);

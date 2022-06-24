@@ -1,8 +1,8 @@
-import {comp, Component, ComponentConfig, Mask} from "./Component.js";
+import {comp, Component} from "./Component.js";
 import {tbar, Toolbar} from "./Toolbar.js";
 import {btn, Button} from "./Button.js";
 import {DraggableComponent, DraggableComponentEventMap} from "./DraggableComponent.js";
-import {Observable, ObservableListener, ObservableListenerOpts} from "./Observable.js";
+import {Config, Observable, ObservableListener, ObservableListenerOpts} from "./Observable.js";
 import {root} from "./Root.js";
 import {FunctionUtil} from "../util/FunctionUtil.js";
 import {form, Form} from "./form/Form.js";
@@ -10,66 +10,39 @@ import {fieldset, Fieldset} from "./form/Fieldset.js";
 import {textfield, TextField} from "./form/TextField.js";
 import {t} from "../Translate.js";
 
-/**
- * @inheritDoc
- */
-export interface WindowConfig<T extends Observable> extends ComponentConfig<T> {
-
-	/**
-	 * Make the window modal so the user can only interact with this window.
-	 */
-	modal?: boolean,
-	/**
-	 * @inheritDoc
-	 */
-	listeners?: ObservableListener<WindowEventMap<T>>
-
-	/**
-	 * Maximize the window
-	 */
-	maximized?: boolean
-
-	/**
-	 * Enable tool to maximize window
-	 */
-	maximizable?: boolean
-
-	/**
-	 * Enable tool to close window
-	 */
-	closable?: boolean
-}
 
 /**
  * @inheritDoc
  */
-export interface WindowEventMap<T extends Observable> extends DraggableComponentEventMap<T> {
+export interface WindowEventMap<Sender extends Observable> extends DraggableComponentEventMap<Sender> {
 	/**
 	 * Fires when the window is closed
 	 *
 	 * @param window
 	 */
-	close?: (window: T) => void
+	close: <T extends Sender>(window: T) => void
 
 	/**
 	 * Fires when the window is maximized
 	 *
 	 * @param window
 	 */
-	maximize?: (window: T) => void
+	maximize: <T extends Sender>(window: T) => void
 
 	/**
 	 * Fires when the window is restored after being maximized
 	 *
 	 * @param window
 	 */
-	unmaximize?: (window: T) => void
+	unmaximize:<T extends Sender> (window: T) => void
 }
 
 export interface Window {
-	on<K extends keyof WindowEventMap<Window>>(eventName: K, listener: WindowEventMap<Window>[K], options?: ObservableListenerOpts): void;
+	on<K extends keyof WindowEventMap<this>>(eventName: K, listener: Partial<WindowEventMap<this>>[K], options?: ObservableListenerOpts): void;
 
-	fire<K extends keyof WindowEventMap<Window>>(eventName: K, ...args: Parameters<NonNullable<WindowEventMap<Window>[K]>>): boolean
+	fire<K extends keyof WindowEventMap<this>>(eventName: K, ...args: Parameters<WindowEventMap<this>[K]>): boolean
+
+	set listeners(listeners: ObservableListener<WindowEventMap<this>>)
 }
 
 /**
@@ -87,20 +60,37 @@ export interface Window {
  * ```
  */
 export class Window extends DraggableComponent {
+
+	constructor() {
+		super();
+		this.resizable = true;
+	}
 	protected baseCls = "window"
+
+	/**
+	 * Maximize the window
+	 */
+	public maximized = false
+
+	/**
+	 * Enable tool to maximize window
+	 */
+	public maximizable = false
+
+	/**
+	 * Enable tool to close window
+	 */
+	public closable = true
+
+	/**
+	 * Make the window modal so the user can only interact with this window.
+	 */
+	public modal = false
+
+
 
 	private titleCmp!: Component;
 	private header!: Toolbar;
-
-	protected resizable = true
-
-	protected maximized = false
-
-	protected maximizable = false
-
-	protected closable = true
-
-	protected modal = false
 	private modalOverlay: Component | undefined;
 	private resizeObserver?: ResizeObserver;
 
@@ -116,7 +106,7 @@ export class Window extends DraggableComponent {
 	 */
 	public focus(o?: FocusOptions) {
 
-		const first = this.getItems().first();
+		const first = this.items.first();
 		if(first) {
 			return first.focus(o);
 		} else {
@@ -124,40 +114,7 @@ export class Window extends DraggableComponent {
 		}
 	}
 
-	protected init() {
-		super.init();
 
-		this.header = Toolbar.create({
-			cls: "header",
-			items: [
-				this.titleCmp = Component.create({
-					tagName: "h3",
-					html: this.title
-				}),
-				Component.create({
-					flex: 1
-				})
-			]
-		});
-
-		if(this.maximizable) {
-			this.header.getItems().add(this.initMaximizeTool());
-		}
-
-		if(this.closable) {
-			this.header.getItems().add(Button.create({
-				icon: "close",
-				handler: () => {
-					this.close();
-				}
-			}));
-		}
-
-		this.on("drop", () => {
-			this.saveState();
-		});
-
-	}
 
 	private initMaximizeTool() {
 		const btn = Button.create({
@@ -170,13 +127,13 @@ export class Window extends DraggableComponent {
 
 
 		this.on('maximize', () => {
-			btn.setIcon("minimize");
-			btn.setTitle(t("Restore"));
+			btn.icon = "minimize";
+			btn.title = t("Restore");
 		});
 
 		this.on('unmaximize', () => {
-			btn.setIcon("maximize");
-			btn.setTitle(t("Maximize"));
+			btn.icon = "maximize";
+			btn.title = t("Maximize");
 		});
 
 		return btn;
@@ -193,12 +150,47 @@ export class Window extends DraggableComponent {
 	}
 
 	protected getDragHandle() {
-		return this.header.getEl();
+		return this.header.el;
+	}
+
+	private renderHeader() {
+		this.header = tbar({
+				cls: "header"
+			},
+
+			this.titleCmp = comp({
+				tagName: "h3",
+				html: this.title
+			}),
+
+			'->'
+		);
+
+		if(this.maximizable) {
+			this.header.items.add(this.initMaximizeTool());
+		}
+
+		if(this.closable) {
+			this.header.items.add(Button.create({
+				icon: "close",
+				handler: () => {
+					this.close();
+				}
+			}));
+		}
+
+
 	}
 
 	protected internalRender() {
 
 		const el = super.internalRender();
+
+		this.on("drop", () => {
+			this.saveState();
+		});
+
+		this.renderHeader();
 
 		if(this.maximized) {
 			this.maximize();
@@ -258,10 +250,10 @@ export class Window extends DraggableComponent {
 			return s;
 		} else {
 			return {
-				width: this.el!.offsetWidth,
-				height: this.el!.offsetHeight,
-				left: this.getLeft(),
-				top: this.getTop()
+				width: this.el.offsetWidth,
+				height: this.el.offsetHeight,
+				left: this.el.offsetLeft,
+				top: this.el.offsetTop
 			};
 		}
 	}
@@ -273,10 +265,10 @@ export class Window extends DraggableComponent {
 			this.height = s.height;
 
 		if(s.top != undefined) {
-			this.setTop(s.top);
+			this.el.style.top = s.top + "px";
 
 			if (s.left != undefined) {
-				this.setLeft(s.left);
+				this.el.style.left = s.left + "px";
 			}
 		} else
 		{
@@ -301,20 +293,21 @@ export class Window extends DraggableComponent {
 
 		this.focussedBeforeOpen = document.activeElement || undefined;
 
-		if(!this.isRendered()) {
+		if(!this.rendered) {
 
-			root.getItems().add(this);
+			root.items.add(this);
 
 			if (this.modal) {
 				this.modalOverlay = comp({
 					cls: "window-modal-overlay fade-in fade-out",
-					style: {zIndex: (parseInt(getComputedStyle(this.getEl()).zIndex)).toString()},
 					hidden: true
 				});
 
-				root.getItems().insert(-1, this.modalOverlay);
+				this.modalOverlay.el.style.zIndex = (parseInt(getComputedStyle(this.el).zIndex)).toString()
 
-				this.modalOverlay.getEl().addEventListener("click", (ev) => {
+				root.items.insert(-1, this.modalOverlay);
+
+				this.modalOverlay.el.addEventListener("click", (ev) => {
 					this.focus();
 				});
 
@@ -366,8 +359,8 @@ export class Window extends DraggableComponent {
 	 * Center the window in the screen
 	 */
 	public center() {
-		this.setTop(((window.innerHeight - this.getHeight())  / 2));
-		this.setLeft(((window.innerWidth - this.getWidth()) / 2));
+		this.el.style.top = (((window.innerHeight - this.height)  / 2)) + "px";
+		this.el.style.left = (((window.innerWidth - this.width) / 2)) + "px"
 
 		return this;
 	}
@@ -376,14 +369,14 @@ export class Window extends DraggableComponent {
 	 * Returns true if the window is maximized
 	 */
 	public isMaximized() {
-		return this.getEl().classList.contains("maximized");
+		return this.el.classList.contains("maximized");
 	}
 
 	/**
 	 * Grow window to the maximum of the viewport
 	 */
 	public maximize() {
-		this.getEl().classList.add('maximized');
+		this.el.classList.add('maximized');
 
 		this.fire("maximize", this);
 
@@ -394,7 +387,7 @@ export class Window extends DraggableComponent {
 	 * Make the window smaller than the viewport
 	 */
 	public unmaximize() {
-		this.getEl().classList.remove('maximized');
+		this.el.classList.remove('maximized');
 
 		this.fire("unmaximize", this);
 
@@ -410,21 +403,20 @@ export class Window extends DraggableComponent {
 	public static alert(title:string, text: string): Promise<void> {
 		return new Promise((resolve, reject) => {
 
-			Window.create({
+			win({
 				modal: true,
 				title: title,
 				listeners: {
 					close: () => {
 						resolve();
 					}
-				},
-				items:[
-					Component.create({
-						tagName: "p",
-						html: text
-					})
-				]
-			}).show();
+				}
+			},
+				comp({
+					tagName: "p",
+					html: text
+				})
+			).show();
 		});
 	}
 
@@ -447,50 +439,52 @@ export class Window extends DraggableComponent {
 				title: title,
 				listeners: {
 					focus: () => {
-						win.getItems().get(0)!.focus();
+						win.items.get(0)!.focus();
 					},
 					close: () => {
-						if(cancelled) {
+						if (cancelled) {
 							reject("cancelled");
 						}
 					}
+				}
+			},
+
+				form({
+
+					handler: (form) => {
+						resolve(form.getValues()['input']);
+						cancelled = false;
+						win.close();
+					}
 				},
-				items: [
-					form({
 
-						handler: (form) => {
-							resolve(form.getValues()['input']);
-							cancelled = false;
-							win.close();
-						}
-					},
+					fieldset({},
+						comp({
+							tagName: "p",
+							html: text
+						}),
 
-						fieldset({},
-							comp({
-								tagName: "p",
-								html: text
-							}),
-							textfield({
-								label: inputLabel,
-								name: "input",
-								required: true
-							})
-						),
+						textfield({
+							label: inputLabel,
+							name: "input",
+							required: true
+						})
+					),
 
-						tbar({},
-							comp({
-								flex: 1
-							}),
+					tbar({},
+						comp({
+							flex: 1
+						}),
 
-							btn({
-								type: "submit",
-								text: "Ok"
-							})
-						)
-
+						btn({
+							type: "submit",
+							text: "Ok"
+						})
 					)
-				]
-			});
+
+				)
+
+			);
 
 			win.show();
 		});
@@ -504,6 +498,6 @@ export class Window extends DraggableComponent {
  * @param config
  * @param items
  */
-export const win = (config?:WindowConfig<Window>, ...items:Component[]) => Window.create(config, items);
+export const win = (config?:Config<Window>, ...items:Component[]) => Window.create(config, ...items);
 
 

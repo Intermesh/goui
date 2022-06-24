@@ -23,21 +23,21 @@ function loadCard(cls: string, id: string, mod = `./${cls}.js` ) : Promise<Compo
 
 		return import(mod).then((mods:any) => {
 			mods[cls].setId(id);
-			index = main.getItems().add(mods[cls]);
-			main.setActiveItem(index);
+			index = main.items.add(mods[cls]);
+			main.activeItem = index;
 		}).then(() => {
-			return main.getItems().get(main.getActiveItem()!)!;
+			return main.items.get(main.getActiveItem()!)!;
 		})
 	} else {
-		main.setActiveItem(index);
-		return Promise.resolve(main.getItems().get(main.getActiveItem()!)!);
+		main.activeItem = index;
+		return Promise.resolve(main.items.get(main.getActiveItem()!)!);
 	}
 }
 
 
 // Create main card panel for displaying SPA pages
 const main = cards();
-root.getItems().add(main);
+root.items.add(main);
 
 
 router.on("change", () => {
@@ -61,7 +61,7 @@ router
 
 			let index = main.findItemIndex("notfound");
 			if(index == -1) {
-				main.getItems()
+				main.items
 					.add(
 
 						comp({
@@ -101,9 +101,9 @@ router
 
 					);
 
-				index = main.getItems().count() - 1;
+				index = main.items.count() - 1;
 			}
-			main.setActiveItem(index);
+			main.activeItem = index;
 		})
 
 		.start();

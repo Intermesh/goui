@@ -1,13 +1,7 @@
-import {Component, ComponentConfig} from "./Component.js";
-import {Observable} from "./Observable.js";
-
-export interface AvatarConfig<T extends Observable> extends ComponentConfig<T> {
-	displayName:string
-}
+import {Component} from "./Component.js";
+import {Config} from "./Observable.js";
 
 export class Avatar extends Component {
-
-	protected displayName = "";
 
 	protected baseCls = "avatar";
 
@@ -16,8 +10,7 @@ export class Avatar extends Component {
 		'00695C', '2E7D32', '558B2F', '9E9D24', 'F9A825', 'FF8F00', 'EF6C00', '424242'
 	];
 
-	protected init() {
-
+	set displayName(displayName: string) {
 		this.html = this.initials(this.displayName);
 		this.title = this.displayName;
 
@@ -25,11 +18,13 @@ export class Avatar extends Component {
 		for(let i = 0, l = this.displayName.length; i < l; i++) {
 			j += this.displayName.charCodeAt(i);
 		}
-// console.log(j, Avatar.colors[j % Avatar.colors.length]);
-		this.getStyle().backgroundColor = "#" + Avatar.colors[j % Avatar.colors.length];
-
-		super.init();
+		this.el.style.backgroundColor = "#" + Avatar.colors[j % Avatar.colors.length];
 	}
+
+	get displayName() {
+		return this.title;
+	}
+
 
 	/**
 	 * Grabs the first char of the first and last word.
@@ -55,4 +50,4 @@ export class Avatar extends Component {
  *
  * @param config
  */
-export const avatar = (config?:AvatarConfig<Avatar>) => Avatar.create(config);
+export const avatar = (config?:Config<Avatar>) => Avatar.create(config);

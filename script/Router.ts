@@ -1,4 +1,5 @@
-import {Observable, ObservableEventMap, ObservableListenerOpts} from "./component/Observable.js";
+import {Observable, ObservableConfig, ObservableEventMap, ObservableListenerOpts} from "./component/Observable.js";
+import {ComponentConfig} from "./component/Component.js";
 
 interface Route {
 	re: RegExp
@@ -40,8 +41,14 @@ class Router extends Observable {
 
 	private params:RegExpMatchArray = [];
 
-	constructor() {
+	constructor(config?:ObservableConfig<Router>) {
 		super();
+		Object.assign(this, config);
+		this.init();
+	}
+
+	protected init() {
+		super.init();
 
 		window.addEventListener('hashchange', () => {
 			this.start();

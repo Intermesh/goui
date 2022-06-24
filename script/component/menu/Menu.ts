@@ -1,16 +1,8 @@
-import {Component, ComponentConfig} from "../Component.js";
+import {Component} from "../Component.js";
 import {root} from "../Root.js";
 import {Button} from "../Button.js";
-import {Observable} from "../Observable.js";
+import {Config} from "../Observable.js";
 
-export interface MenuConfig<T extends Observable> extends ComponentConfig<T> {
-	/**
-	 * Expand menu's to the right
-	 */
-	expandLeft?: boolean
-
-	removeOnClose?:boolean
-}
 
 /**
  * Menu class
@@ -84,17 +76,20 @@ export interface MenuConfig<T extends Observable> extends ComponentConfig<T> {
  */
 export class Menu extends Component {
 
-	protected baseCls = "dropdown fade-out";
-	protected tagName = "menu" as keyof HTMLElementTagNameMap;
-	protected expandLeft = false;
+	constructor() {
+		super();
+		this.tagName = "menu";
+		this.baseCls = "dropdown fade-out";
+	}
+
 	public removeOnClose = true;
 
-	public parentButton: Button|undefined;
+	public parentButton: Button | undefined;
 
 	/**
 	 * Is true when any menu is visible
 	 */
-	public static openedMenu?:Menu;
+	public static openedMenu?: Menu;
 
 	protected internalRender() {
 		const el = super.internalRender()
@@ -106,17 +101,19 @@ export class Menu extends Component {
 		return el;
 	}
 
-	public isLeftExpanding() {
-		return this.expandLeft;
+	set expandLeft(expandLeft: boolean) {
+		this.el.classList.add("expand-left");
 	}
 
-
+	get expandLeft() {
+		return this.el.classList.contains("expand-left");
+	}
 
 	protected renderItem(item: Component, refItem?: Component) {
-		if(!refItem) {
-			this.getEl().appendChild(this.wrapLI(item));
+		if (!refItem) {
+			this.el.appendChild(this.wrapLI(item));
 		} else {
-			this.getEl().insertBefore(this.wrapLI(item), refItem.getEl());
+			this.el.insertBefore(this.wrapLI(item), refItem.el);
 		}
 	}
 
@@ -133,12 +130,12 @@ export class Menu extends Component {
 	 *
 	 * @param coords
 	 */
-	showAt(coords:{ x: number, y: number } | MouseEvent) {
-		this.getStyle().left = coords.x + "px";
-		this.getStyle().top = coords.y + "px";
+	showAt(coords: { x: number, y: number } | MouseEvent) {
+		this.el.style.left = coords.x + "px";
+		this.el.style.top = coords.y + "px";
 
-		if(!this.parent) {
-			root.getItems().add(this);
+		if (!this.parent) {
+			root.items.add(this);
 		}
 
 		this.show();
@@ -146,17 +143,17 @@ export class Menu extends Component {
 
 		//hide menu when clicked elsewhere
 		window.addEventListener("mousedown", (ev) => {
-				this.close();
-		}, {once:true});
+			this.close();
+		}, {once: true});
 
 		// stop clicks on menu from hiding menu
-		this.getEl().addEventListener("mousedown", (ev) => {
+		this.el.addEventListener("mousedown", (ev) => {
 			ev.stopPropagation();
 		});
 	}
 
-	public close()  {
-		if(Menu.openedMenu == this) {
+	public close() {
+		if (Menu.openedMenu == this) {
 			Menu.openedMenu = undefined;
 		}
 		return this.removeOnClose ? this.remove() : this.hide();
@@ -170,5 +167,5 @@ export class Menu extends Component {
  * @param config
  * @param items
  */
-export const menu = (config?:MenuConfig<Menu>, ...items:Component[]) => Menu.create(config, items);
+export const menu = (config?: Config<Menu>, ...items: Component[]) => Menu.create(config, ...items);
 

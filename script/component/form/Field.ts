@@ -1,57 +1,17 @@
-import {Component, ComponentConfig, ComponentEventMap} from "../Component.js";
+import {Component, ComponentEventMap} from "../Component.js";
 import {Observable, ObservableListener, ObservableListenerOpts} from "../Observable.js";
 
-export interface FieldConfig<T extends Observable> extends ComponentConfig<T>{
-	/**
-	 * Form element name which will be the key in values
-	 * If omitted the field won't be included in the form values.
-	 */
-	name?: string
-	/**
-	 * Field label
-	 */
-	label?: string
-
-	/**
-	 * A value is required before it will be submitted
-	 */
-	required?: boolean
-
-	/**
-	 * Readonly input
-	 */
-	readOnly? : boolean
-
-	/**
-	 * When field is invalid supply the message
-	 */
-	invalidMsg?: string
-
-	/**
-	 * field value
-	 */
-	value?: any
-
-	/**
-	 * Display hint underneath form field
-	 */
-	hint?:string,
-	/**
-	 * @inheritDoc
-	 */
-	listeners?: ObservableListener<FieldEventMap<T>>
-}
 
 /**
  * @inheritDoc
  */
-export interface FieldEventMap<T extends Observable> extends ComponentEventMap<T> {
+export interface FieldEventMap<Sender extends Observable> extends ComponentEventMap<Sender> {
 	/**
 	 * Fires when the field changes. It fires on blur.
 	 *
 	 * @param field
 	 */
-	change?: (field: T) => void
+	change: <T extends Sender> (field: T) => void
 
 	/**
 	 * Fires when setValue() is called
@@ -60,7 +20,7 @@ export interface FieldEventMap<T extends Observable> extends ComponentEventMap<T
 	 * @param newValue
 	 * @param oldValue
 	 */
-	setvalue?: (field: T, newValue:any, oldValue: any) => void
+	setvalue: <T extends Sender> (field: T, newValue: any, oldValue: any) => void
 
 
 	/**
@@ -70,7 +30,7 @@ export interface FieldEventMap<T extends Observable> extends ComponentEventMap<T
 	 * @param newValue
 	 * @param oldValue
 	 */
-	reset?:  (field: T, newValue:any, oldValue: any) => void
+	reset: <T extends Sender> (field: T, newValue: any, oldValue: any) => void
 
 	/**
 	 * Fires when validated
@@ -79,13 +39,16 @@ export interface FieldEventMap<T extends Observable> extends ComponentEventMap<T
 	 *
 	 * @param field
 	 */
-	validate?: (field: T) => void
+	validate: <T extends Sender> (field: T) => void
 }
 
 
 export interface Field extends Component {
-	on<K extends keyof FieldEventMap<Field>>(eventName: K, listener: FieldEventMap<Field>[K], options?: ObservableListenerOpts): void;
-	fire<K extends keyof FieldEventMap<Field>>(eventName: K, ...args: Parameters<NonNullable<FieldEventMap<Field>[K]>>): boolean
+	on<K extends keyof FieldEventMap<this>>(eventName: K, listener: Partial<FieldEventMap<this>>[K], options?: ObservableListenerOpts): void;
+
+	fire<K extends keyof FieldEventMap<this>>(eventName: K, ...args: Parameters<FieldEventMap<this>[K]>): boolean
+
+	set listeners(listeners: ObservableListener<FieldEventMap<this>>)
 }
 
 // /**
@@ -112,23 +75,25 @@ export abstract class Field extends Component {
 
 	protected baseCls = "form-field"
 
-	protected tagName = "label" as keyof HTMLElementTagNameMap
+	get tagName() {
+		return "label" as keyof HTMLElementTagNameMap;
+	}
 
-	protected name = ""
+	private _name?: string;
 
-	protected required = false
+	private _required = false
 
-	protected readOnly = false
+	private _readOnly = false
 
-	protected label = ""
+	private _label = ""
 
-	protected value: any;
+	protected _value: any;
 
-	protected resetValue: any;
+	private resetValue: any;
 
-	protected invalidMsg = "";
+	public invalidMsg = "";
 
-	protected hint = "";
+	private _hint = "";
 
 	private hintEl?: HTMLDivElement;
 
@@ -140,9 +105,9 @@ export abstract class Field extends Component {
 
 	protected validateOnBlur() {
 		// Validate field on blur
-		this.getEl().addEventListener("focusout", (e) => {
+		this.el.addEventListener("focusout", (e) => {
 			// When a user clicks a button, perhaps submit or navigates then don't validate
-			if(!e.relatedTarget || (<HTMLElement>e.relatedTarget).tagName != "BUTTON") {
+			if (!e.relatedTarget || (<HTMLElement>e.relatedTarget).tagName != "BUTTON") {
 				this.clearInvalid();
 				this.validate();
 			}
@@ -161,18 +126,18 @@ export abstract class Field extends Component {
 		this.validateOnBlur();
 
 		const control = this.createControl();
-		if(control) {
+		if (control) {
 			control.classList.add("control");
 			el.appendChild(control);
 		}
 
 		const label = this.createLabel();
-		if(label) {
+		if (label) {
 			el.appendChild(label);
 		}
 
 		const hint = this.createHint();
-		if(hint) {
+		if (hint) {
 			el.appendChild(hint);
 		}
 
@@ -188,7 +153,7 @@ export abstract class Field extends Component {
 		this.hintEl = document.createElement("div");
 		this.hintEl.classList.add("hint");
 
-		this.hintEl.innerText = this.hint;
+		this.hintEl.innerText = this._hint;
 		return this.hintEl;
 
 	}
@@ -197,24 +162,70 @@ export abstract class Field extends Component {
 		const label = document.createElement("div");
 		label.classList.add("label");
 
-		label.innerText = this.label;
+		label.innerText = this._label;
 		return label;
 	}
 
 	/**
-	 * Get the field's name
+	 * Form element name which will be the key in values
+	 * If omitted the field won't be included in the form values.
 	 */
-	public getName() {
-		return this.name;
+	public get name() {
+		return this._name + "";
 	}
 
 	/**
-	 * Set the field's name
-	 *
-	 * @param name
+	 * The field's name
 	 */
-	public setName(name:string) {
-		this.name = name;
+	public set name(name: string) {
+		this._name = name;
+	}
+
+	public get required() {
+		return this._required;
+	}
+
+	/**
+	 * Required or not
+	 */
+	public set required(required: boolean) {
+		this._required = required;
+	}
+
+
+
+	public get label() {
+		return this._label + "";
+	}
+
+	/**
+	 * The field's label
+	 */
+	public set label(label: string) {
+		this._label = label;
+	}
+
+	public get hint() {
+		return this._hint + "";
+	}
+
+	/**
+	 * The field's hint text
+	 */
+	public set hint(hint: string) {
+		this._hint = hint;
+	}
+
+
+	public get readOnly() {
+		return this._readOnly;
+	}
+
+	/**
+	 * Make the field read only
+	 */
+	public set readOnly(readOnly: boolean) {
+		this._readOnly = readOnly;
 	}
 
 	/**
@@ -223,19 +234,19 @@ export abstract class Field extends Component {
 	 * @param v
 	 * @param useForReset When true, this value is recorded for use when reset() is used.
 	 */
-	public setValue(v: any, useForReset = true) {
-		const old = this.value;
-		this.value = v;
+	public set value(v: any) {
+		const old = this._value;
+		this._value = v;
 
-		if(useForReset) {
-			this.resetValue = v;//ObjectUtil.clone(v);
-		}
+		// if (useForReset) {
+		// 	this.resetValue = v;//ObjectUtil.clone(v);
+		// }
 
-		this.fire("setvalue", this, this.value, old);
+		this.fire("setvalue", this, this._value, old);
 	}
 
-	public getValue() {
-		return this.value;
+	public get value() {
+		return this._value;
 	}
 
 	/**
@@ -245,7 +256,7 @@ export abstract class Field extends Component {
 	 */
 	public reset() {
 		const old = this.value;
-		this.setValue(this.resetValue, false);
+		this.value = this.resetValue;
 		this.clearInvalid();
 		this.fire("reset", this, this.resetValue, old);
 	}
@@ -257,7 +268,7 @@ export abstract class Field extends Component {
 	 */
 	public setInvalid(msg: string) {
 		this.invalidMsg = msg;
-		if(this.isRendered()) {
+		if (this.rendered) {
 			this.applyInvalidMsg();
 		}
 	}
@@ -266,13 +277,13 @@ export abstract class Field extends Component {
 	 * Check if the field is empty
 	 */
 	public isEmpty() {
-		const v = this.getValue();
+		const v = this.value;
 
 		return v == undefined || v == null || v == "";
 	}
 
 	protected validate() {
-		if(this.required && this.isEmpty()) {
+		if (this._required && this.isEmpty()) {
 			this.setInvalid("Please fill in this field");
 		}
 
@@ -280,15 +291,14 @@ export abstract class Field extends Component {
 	}
 
 	protected applyInvalidMsg() {
-		if(this.invalidMsg) {
-			this.getEl().classList.add("invalid");
-			if(this.hintEl)
+		if (this.invalidMsg) {
+			this.el.classList.add("invalid");
+			if (this.hintEl)
 				this.hintEl.innerHTML = this.invalidMsg;
-		}else
-		{
-			this.getEl().classList.remove("invalid");
-			if(this.hintEl)
-				this.hintEl.innerHTML = this.hint || "";
+		} else {
+			this.el.classList.remove("invalid");
+			if (this.hintEl)
+				this.hintEl.innerHTML = this._hint || "";
 		}
 	}
 
@@ -296,11 +306,11 @@ export abstract class Field extends Component {
 	 * Clears the invalid state
 	 */
 	public clearInvalid() {
-		if(!this.invalidMsg) {
+		if (!this.invalidMsg) {
 			return;
 		}
 		this.invalidMsg = "";
-		if(this.isRendered()) {
+		if (this.rendered) {
 			this.applyInvalidMsg();
 		}
 	}
@@ -309,12 +319,12 @@ export abstract class Field extends Component {
 	 * Checks if the field is valid
 	 */
 	public isValid() {
-		if(this.invalidMsg != "") {
+		if (this.invalidMsg != "") {
 			return false;
 		}
 		this.validate();
-		if(this.invalidMsg != "") {
-			console.warn("Field '" + this.name +"' is invalid: " + this.invalidMsg, this);
+		if (this.invalidMsg != "") {
+			console.warn("Field '" + this.name + "' is invalid: " + this.invalidMsg, this);
 		}
 		return this.invalidMsg == "";
 	}

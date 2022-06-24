@@ -1,26 +1,27 @@
 // noinspection JSUnusedGlobalSymbols
 
-import {
-	Observable,
-	ObservableConfig,
-	ObservableEventMap,
-	ObservableListener,
-	ObservableListenerOpts
-} from "./Observable.js";
+import {Config, Observable, ObservableEventMap, ObservableListener, ObservableListenerOpts} from "./Observable.js";
 import {State} from "../State.js";
 import {Collection} from "../util/Collection.js";
 
-export type FindComponentPredicate = string|Component|((comp: Component) => boolean | void);
+export type FindComponentPredicate = string | Component | ((comp: Component) => boolean | void);
 
 export type ComponentConstructor<T extends Component> = new (...args: any[]) => T;
-export interface ComponentEventMap<T extends Observable> extends ObservableEventMap<T> {
+
+
+interface Type<T> {
+	new(): T
+}
+
+
+export interface ComponentEventMap<Sender> extends ObservableEventMap<Sender> {
 	/**
 	 * Fires when the component renders and is added to the DOM
 	 *
 	 * @see Component.render()
 	 * @param comp
 	 */
-	render?: (comp: T) => void,
+	render: <T extends Sender>(sender: T) => void
 
 	/**
 	 * Fires after rendering but before adding the element to the dom
@@ -28,7 +29,7 @@ export interface ComponentEventMap<T extends Observable> extends ObservableEvent
 	 * @see Component.render()
 	 * @param comp
 	 */
-	beforedom?: (comp: T) => void,
+	beforedom: <T extends Sender>(sender: T) => void
 
 	/**
 	 * Fires just before rendering
@@ -36,7 +37,7 @@ export interface ComponentEventMap<T extends Observable> extends ObservableEvent
 	 * @see Component.render()
 	 * @param comp
 	 */
-	beforerender?: (comp: T) => void,
+	beforerender:<T extends Sender> (sender: T) => void
 
 	/**
 	 * Fires before the element is removed. You can cancel the remove by returning false
@@ -44,7 +45,7 @@ export interface ComponentEventMap<T extends Observable> extends ObservableEvent
 	 * @see Component.remove()
 	 * @param comp
 	 */
-	beforeremove?: (comp: T) => false | void,
+	beforeremove: <T extends Sender>(sender: T) => false | void
 
 	/**
 	 * Fires after the component has been removed
@@ -52,7 +53,7 @@ export interface ComponentEventMap<T extends Observable> extends ObservableEvent
 	 * @see Component.remove()
 	 * @param comp
 	 */
-	remove?: (comp: T) => void,
+	remove:<T extends Sender> (sender: T) => void
 
 	/**
 	 * Fires before show. You can cancel the show by returning false
@@ -60,7 +61,7 @@ export interface ComponentEventMap<T extends Observable> extends ObservableEvent
 	 * @see Component.show()
 	 * @param comp
 	 */
-	beforeshow?: (comp: T) => false |void,
+	beforeshow: <T extends Sender>(sender: T) => false | void
 
 	/**
 	 * Fires after showing the component
@@ -68,7 +69,7 @@ export interface ComponentEventMap<T extends Observable> extends ObservableEvent
 	 * @see Component.show()
 	 * @param comp
 	 */
-	show?: (comp: T) => void,
+	show: <T extends Sender>(sender: T) => void
 
 	/**
 	 * Fires before hide. You can cancel the hide by returning false
@@ -76,7 +77,7 @@ export interface ComponentEventMap<T extends Observable> extends ObservableEvent
 	 * @see Component.hide()
 	 * @param comp
 	 */
-	beforehide?: (comp: T) => false |void,
+	beforehide: <T extends Sender>(sender: T) => false | void
 
 	/**
 	 * Fires after hiding the component
@@ -84,159 +85,34 @@ export interface ComponentEventMap<T extends Observable> extends ObservableEvent
 	 * @see Component.show()
 	 * @param comp
 	 */
-	hide?: (comp: T) => void,
+	hide:<T extends Sender> (sender: T) => void,
 
 	/**
 	 * Fires on focus
 	 *
- 	 * @param comp
+	 * @param comp
 	 * @param o
 	 */
-	focus?: (comp: T, o?: FocusOptions) => void,
+	focus:<T extends Sender> (sender: T, o?: FocusOptions) => void
 
 	/**
 	 * Fires when this component is added to a parent
 	 *
-	 * @param comp
+	 * @param me
 	 * @param index the index in the parents' items
 	 */
-	added?: (comp: T, index: number) => void
-
-
-
+	added: <T extends Sender> (sender: T, index: number) => void
 }
 
 export interface Component {
-	on<K extends keyof ComponentEventMap<Component>>(eventName: K, listener: ComponentEventMap<Component>[K], options?: ObservableListenerOpts): void
-	fire<K extends keyof ComponentEventMap<Component>>(eventName: K, ...args: Parameters<NonNullable<ComponentEventMap<Component>[K]>>): boolean
-}
+	on<K extends keyof ComponentEventMap<this>>(eventName: K, listener: Partial<ComponentEventMap<this>>[K], options?: ObservableListenerOpts): void
 
-type CSSStyleConfig = Partial<CSSStyleDeclaration>;
+	fire<K extends keyof ComponentEventMap<this>>(eventName: K, ...args: Parameters<ComponentEventMap<this>[K]>): boolean
+
+	set listeners(listeners: ObservableListener<ComponentEventMap<this>>)
+}
 
 export type ComponentState = Record<string, any>;
-
-/**
- * @inheritDoc
- */
-export interface ComponentConfig<T extends Observable> extends ObservableConfig<T> {
-	/**
-	 * Element ID
-	 */
-	id?: string
-
-	/**
-	 * Component item ID that can be used to lookup the Component inside a Component with
-	 * Component.findItem() and Component.findItemIndex();
-	 *
-	 * if stateId is given it will also be used as itemId
-	 */
-	itemId?: string
-
-	/**
-	 * Element's tagname. Defaults to "div"
-	 */
-	tagName?: keyof HTMLElementTagNameMap
-
-	/**
-	 * Class name to add to element
-	 *
-	 * Some common classes to add for layout:
-	 *
-	 * - hbox: Set's flex layout to horizontal boxes. Use flex: n to stretch columns
-	 * - vbox: As above but vertical
-	 * - fit: Fit the parent's size
-	 * - scroll: Set's autoscroll: true
-	 * - pad: Set common padding on the element
-	 * - border-(top|bottom|left|right) to add a border
-	 *
-	 * Other:
-	 *
-	 * - fade-in: The component will fade in when show() is used.
-	 * - fade-out: The component will fade out when hide is used.
-	 *
-	 */
-	cls?: string
-
-	/**
-	 * Set the innerHTML
-	 */
-	html?: string
-
-	/**
-	 * Set the innerText
-	 */
-	text?: string
-
-	/**
-	 * Hide element
-	 */
-	hidden?: boolean,
-
-	/**
-	 * Disable element
-	 */
-	disabled?: boolean,
-
-	/**
-	 * Inline CSS Styles
-	 */
-	style?: CSSStyleConfig,
-
-	/**
-	 * Width in pixels
-	 */
-	width?: number,
-
-	/**
-	 * height in pixels
-	 */
-	height?: number
-
-	/**
-	 * Left offset in pixels
-	 */
-	left?: number,
-
-	/**
-	 * Top offset in pixels
-	 */
-	top?: number
-
-	/**
-	 * The tabindex attribute specifies the tab order of an element (when the "tab" button is used for navigating).
-	 */
-	tabIndex?: number
-
-	/**
-	 * Make it resizable
-	 */
-	resizable?: boolean
-
-	/**
-	 * CSS flex value
-	 */
-	flex?: string | number
-
-	/**
-	 * Title of the dom element
-	 */
-	title?: string
-
-	/**
-	 * ID used for storing state of the component in the State storage.
-	 *
-	 * If stateId is given it will also be used as itemId
-	 *
-	 * If not set then the component won't store it's state.
-	 */
-	stateId?: string
-	/**
-	 * @inheritDoc
-	 */
-	listeners?: ObservableListener<ComponentEventMap<T>>
-
-}
-
 
 /**
  * Component
@@ -254,36 +130,21 @@ export interface ComponentConfig<T extends Observable> extends ObservableConfig<
  */
 export class Component extends Observable {
 
-	protected tagName = "div" as keyof HTMLElementTagNameMap
-
-	protected cls?: string;
+	private _tagName?: keyof HTMLElementTagNameMap;
 
 	/**
 	 * A base class not configurable. cls can be used to add extra classes leaving this class alone
 	 *
 	 * @protected
 	 */
-	protected baseCls: string = "";
-
-	protected resizable = false
-
-	protected html? : string
-
-	protected text?: string
-
-	protected rendered = false
+	protected baseCls?: string;
 
 	/**
-	 * Keep boolean state so creating el is not needed to determine visibility
+	 * True when added to the DOM tree
+	 *
 	 * @private
 	 */
-	protected hidden = false
-
-	protected disabled = false
-
-	protected el?: HTMLElement
-
-	protected id : string = "";
+	private _rendered = false;
 
 	/**
 	 * Component item ID that can be used to lookup the Component inside a Component with Component.findItem() and
@@ -291,28 +152,25 @@ export class Component extends Observable {
 	 *
 	 * if stateId is given it will also be used as itemId
 	 */
-	public itemId : string = "";
 
-	protected style?: CSSStyleConfig;
+	public itemId: string = "";
 
-	protected width?: number;
-	protected height?: number;
-
-	protected tabIndex?: number;
-	protected flex?: string | number;
-
-	protected stateId?: string;
-
-	protected title?: string;
+	/**
+	 * ID used for storing state of the component in the State storage.
+	 *
+	 * If stateId is given it will also be used as itemId
+	 *
+	 * If not set then the component won't store it's state.
+	 */
+	public stateId?: string;
 
 	/**
 	 * When this item is added to a Component this is set to the parent Component
 	 */
 	public parent?: Component;
 
-	private items?: Collection<Component>;
-	protected top?: number;
-	protected left?: number;
+	private _items?: Collection<Component>;
+
 
 	private _mask: Mask | undefined;
 
@@ -324,7 +182,7 @@ export class Component extends Observable {
 		if (this.stateId) {
 			this.restoreState(this.getState());
 
-			if(!this.itemId) {
+			if (!this.itemId) {
 				this.itemId = this.stateId;
 			}
 		}
@@ -332,34 +190,28 @@ export class Component extends Observable {
 		super.init();
 	}
 
-	protected applyConfig(config: any) {
-		if(Array.isArray(config.items)) {
-			config.items = new Collection<Component>(config.items);
-		}
-		super.applyConfig(config);
-	}
 
-	private initItems()  {
+	private initItems() {
 
-		this.getItems().on("add", (collection, item, index) => {
+		this.items.on("add", (collection, item, index) => {
 			this.setupItem(item);
 
 			item.fire("added", item, index);
 
-			const refItem = index < collection.count() - 1 ? this.getItems().get(index - 1) : undefined;
+			const refItem = index < collection.count() - 1 ? this.items.get(index - 1) : undefined;
 
-			if (this.isRendered()) {
+			if (this.rendered) {
 				this.renderItem(item, refItem);
 			}
 
 		});
 
-		this.getItems().on("remove", (collection, item, index) => {
+		this.items.on("remove", (collection, item, index) => {
 			item.parent = undefined;
 			item.remove();
 		});
 
-		this.getItems().forEach(comp => {
+		this.items.forEach(comp => {
 			this.setupItem(comp);
 		});
 	}
@@ -409,119 +261,114 @@ export class Component extends Observable {
 	}
 
 	/**
-	 * Get the DOM element
+	 * Title of the dom element
 	 */
-	public getEl() {
-		if(!this.el) {
-			throw new Error("Render first");
-		}
-
-		return this.el;
+	set title(title: string) {
+		this.el.title = title;
 	}
 
-	protected applyTitle() {
-		this.el!.title = this.title!;
-	}
-
-	/**
-	 * Set the title
-	 *
-	 * @param title
-	 */
-	public setTitle(title:string) {
-		this.title = title;
-		if (this.rendered) {
-			this.applyTitle();
-		}
-	}
-
-	/**
-	 * Get the title of the compnent
-	 */
-	public getTitle() {
-		return this.title;
+	get title() {
+		return this.el.title;
 	}
 
 	/**
 	 * Check if the component has been rendered and added to the DOM tree
 	 */
-	public isRendered() {
-		return this.rendered;
+	public get rendered() {
+		return this._rendered;
+	}
+
+	private _el?: HTMLElement;
+
+	get el() {
+		if (!this._el) {
+			this._el = document.createElement(this.tagName);
+		}
+		return this._el;
 	}
 
 	/**
-	 * Creates the DOM element of this component
+	 * Element's tagname. Defaults to "div"
+	 */
+	set tagName(tagName: keyof HTMLElementTagNameMap) {
+		this._tagName = tagName;
+	}
+
+	get tagName() {
+		return this._tagName || "div";
+	}
+
+	/**
+	 * Class name to add to element
 	 *
-	 * @protected
+	 * Some common classes to add for layout:
+	 *
+	 * - hbox: Set's flex layout to horizontal boxes. Use flex: n to stretch columns
+	 * - vbox: As above but vertical
+	 * - fit: Fit the parent's size
+	 * - scroll: Set's autoscroll: true
+	 * - pad: Set common padding on the element
+	 * - border-(top|bottom|left|right) to add a border
+	 *
+	 * Other:
+	 *
+	 * - fade-in: The component will fade in when show() is used.
+	 * - fade-out: The component will fade out when hide is used.
+	 *
+	 */
+	set cls(cls: string) {
+		this.el.className += " " + cls;
+	}
+
+	/**
+	 * Renders the component and it's children
 	 */
 	protected internalRender() {
-		this.el = document.createElement(this.tagName);
-
 		if (this.baseCls) {
-			this.el.className += this.baseCls;
+			this.el.className += " " + this.baseCls;
 		}
-
-		if (this.cls) {
-			this.el.className += this.baseCls ? " " + this.cls : this.cls;
-		}
-
-		this.applyHidden();
-
-		if (this.disabled) {
-			this.applyDisabled();
-		}
-
-		if (this.html) {
-			this.applyHtml();
-		}
-
-		if (this.text) {
-			this.applyText();
-		}
-
-		if (this.id) {
-			this.applyId();
-		}
-
-		if (this.style) {
-			Object.assign(this.el.style, this.style);
-		}
-
-		if (this.width) {
-			this.el.style.width = this.width + "px";
-		}
-
-		if (this.height) {
-			this.el.style.height = this.height + "px";
-		}
-
-		if (this.top) {
-			this.el.style.top = this.top + "px";
-		}
-
-		if (this.left) {
-			this.el.style.left = this.left + "px";
-		}
-
-		if (this.resizable) {
-			this.el.classList.add("resizable");
-		}
-
-		if (this.flex) {
-			this.el.style.flex = this.flex + "";
-		}
-
-		if(this.title) {
-			this.applyTitle();
-		}
-
-		if(this.tabIndex != undefined) {
-			this.el.tabIndex = this.tabIndex;
-		}
-
 		this.renderItems();
-
 		return this.el;
+	}
+
+	/**
+	 * The tabindex attribute specifies the tab order of an element (when the "tab" button is used for navigating).
+	 */
+	set tabIndex(tabIndex: number) {
+		this.el.tabIndex = tabIndex;
+	}
+
+	get tabIndex() {
+		return this.el.tabIndex;
+	}
+
+	/**
+	 * CSS flex value
+	 */
+	set flex(flex: number | string) {
+		this.el.style.flex = flex + "";
+	}
+
+	/**
+	 * CSS flex value
+	 */
+	get flex() {
+		return this.el.style.flex;
+	}
+
+	/**
+	 * Make it resizable
+	 */
+	set resizable(resizable: boolean) {
+		if (resizable) {
+			this.el.classList.add("resizable");
+		} else {
+			this.el.classList.remove("resizable");
+		}
+	}
+
+	get resizable() {
+		return this.el.classList.contains("resizable");
 	}
 
 	/**
@@ -530,14 +377,10 @@ export class Component extends Observable {
 	 * @param Component Node
 	 * @param refChild Node
 	 */
-	public render(Component: Node, refChild?:Node|null ) {
+	public render(Component: Node, refChild?: Node | null) {
 
-		if(this.rendered) {
+		if (this._rendered) {
 			throw new Error("Already rendered");
-		}
-
-		if(!this.initCalled) {
-			throw new Error("Please don't construct a component with 'new Component' but use comp();");
 		}
 
 		this.fire("beforerender", this);
@@ -545,25 +388,24 @@ export class Component extends Observable {
 		this.internalRender();
 
 		this.fire("beforedom", this);
-		if(!refChild) {
-			Component.appendChild(this.getEl());
-		} else
-		{
-			Component.insertBefore(this.getEl(), refChild);
+		if (!refChild) {
+			Component.appendChild(this.el);
+		} else {
+			Component.insertBefore(this.el, refChild);
 		}
 
-		this.rendered = true;
+		this._rendered = true;
 
 		this.fire("render", this);
 
-		return this.getEl();
+		return this.el;
 	}
 
 	/**
 	 * Remove component from the component tree
 	 */
 	public remove() {
-		if(!this.fire("beforeremove", this)) {
+		if (!this.fire("beforeremove", this)) {
 			return false;
 		}
 
@@ -575,11 +417,11 @@ export class Component extends Observable {
 	}
 
 	protected internalRemove() {
-		this.getItems().clear();
+		this.items.clear();
 
 		// remove this item from the Component
-		if(this.parent) {
-			this.parent.getItems().remove(this);
+		if (this.parent) {
+			this.parent.items.remove(this);
 		}
 
 		//remove it from the DOM
@@ -588,22 +430,27 @@ export class Component extends Observable {
 		}
 	}
 
-	protected applyHidden() {
-		this.el!.hidden = this.hidden;
+	/**
+	 * Hide element
+	 */
+	set hidden(hidden: boolean) {
+
+		if (this.el.hidden == hidden) {
+			return;
+		}
+
+		const eventName = hidden ? "hide" : "show";
+
+		if (this.fire("before" + eventName as keyof ComponentEventMap<Component>, this) === false) {
+			return;
+		}
+		this.el.hidden = hidden;
+
+		this.fire(eventName, this);
 	}
 
-	/**
-	 * Set visibility state
-	 *
-	 * @param hidden
-	 */
-	public setHidden(hidden:boolean) {
-		if(hidden) {
-			this.hide();
-		} else
-		{
-			this.show();
-		}
+	get hidden() {
+		return this.el.hidden;
 	}
 
 	/**
@@ -613,240 +460,90 @@ export class Component extends Observable {
 	 * You can change this to fade with css class "fade-in" and "fade-out"
 	 */
 	public hide() {
-		// noinspection PointlessBooleanExpressionJS
-		if(this.fire("beforehide", this) === false) {
-			return false;
-		}
-		this.internalHide();
-
-		this.fire("hide", this);
-		return true;
-	}
-
-	protected internalHide() {
 		this.hidden = true;
-		if (this.rendered) {
-			this.applyHidden();
-		}
+
+		return this.hidden == true;
 	}
 
 	/**
-	 * Show the compenent
+	 * Show the component
 	 */
 	public show() {
-		// noinspection PointlessBooleanExpressionJS
-		if(this.fire("beforeshow", this) === false) {
-			return false;
-		}
-		this.internalShow();
-		this.fire("show", this);
-		return true;
-	}
-
-	protected internalShow() {
 		this.hidden = false;
-		if (this.rendered) {
-			this.applyHidden();
-		}
+
+		return this.hidden == false;
 	}
 
 	/**
-	 * Check if this component is hidden
+	 * Disable component
 	 */
-	public isHidden() {
-		return this.el ? this.el.hidden : this.hidden;
-	}
-
-	protected applyDisabled() {
-		if (!this.disabled) {
-			this.el!.removeAttribute("disabled");
+	set disabled(disabled: boolean) {
+		if (!disabled) {
+			this.el.removeAttribute("disabled");
 		} else {
-			this.el!.setAttribute("disabled", "");
+			this.el.setAttribute("disabled", "");
 		}
 	}
 
-	/**
-	 * Set disabled state
-	 *
-	 * Set's the "disabled" attribute on the DOM element
-	 */
-	public setDisabled(disabled:boolean) {
-		this.disabled = disabled;
-		if (this.rendered) {
-			this.applyDisabled();
-		}
+	get disabled() {
+		return this.el.hasAttribute('disabled');
 	}
 
 	/**
-	 * Check if the component is disabled
+	 * Set the HTML contents of the component (innerHTML)
 	 */
-	public isDisabled() {
-		return this.el ? this.el.hasAttribute('disabled') : this.disabled;
+	set html(html: string) {
+		this.el.innerHTML = html;
 	}
 
-	protected applyHtml() {
-		this.el!.innerHTML = this.html!;
+	get html() {
+		return this.el.innerHTML;
 	}
 
 	/**
-	 * Set the HTML contents
-	 *
-	 * @param html
+	 * Set the innerText
 	 */
-	public setHtml(html:string) {
-		this.html = html;
-		if (this.rendered) {
-			this.applyHtml()
-		}
+	set text(text: string) {
+		this.el.innerText = text;
+	}
+
+	get text() {
+		return this.el.innerText;
 	}
 
 	/**
-	 * Get the HTML contents
+	 * Width in pixels
 	 */
-	public getText() {
-		return this.el ? this.el.innerText : this.text;
+	set width(width: number) {
+		this.el.style.width = width + "px";
 	}
 
-
-	protected applyText() {
-		this.el!.innerText = this.text!;
+	get width() {
+		return this.el.offsetWidth;
 	}
 
 	/**
-	 * Set the HTML contents
-	 *
-	 * @param text
+	 * height in pixels
 	 */
-	public setText(text:string) {
-		this.text = text;
-		if (this.rendered) {
-			this.applyText()
-		}
+	set height(height: number) {
+		this.el.style.height = height + "px";
+	}
+
+	get height() {
+		return this.el.offsetHeight;
 	}
 
 	/**
-	 * Get the HTML contents
+	 * Element ID
 	 */
-	public getHtml() {
-		return this.el ? this.el.innerHTML : this.html;
+	set id(id: string) {
+		this.el.id = id;
 	}
 
-	/**
-	 * Set the width in pixels
-	 *
-	 * @param width
-	 */
-	public setWidth(width:number) {
-		this.width = width;
-		if (this.rendered) {
-			this.el!.style.width = width +"px";
-		}
+	get id() {
+		return this.el.id;
 	}
 
-	/**
-	 * Get width in pixels
-	 */
-	public getWidth() {
-		return this.el ? this.el.offsetWidth : (this.width || 0);
-	}
-
-	/**
-	 * Set height in pixels
-	 *
-	 * @param height
-	 */
-	public setHeight(height:number) {
-		this.height = height;
-		if (this.rendered) {
-			this.el!.style.height = height + "px";
-		}
-	}
-
-	/**
-	 * Get height in pixels
-	 */
-	public getHeight() {
-		return this.el ? this.el.offsetHeight : (this.height || 0);
-	}
-
-	/**
-	 * Set the top in pixels
-	 *
-	 * @param top
-	 */
-	public setTop(top:number) {
-		this.top = top;
-		if (this.rendered) {
-			this.el!.style.top = top +"px";
-		}
-	}
-
-	/**
-	 * Get top in pixels
-	 */
-	public getTop() {
-		return this.el ? this.el.offsetTop : this.top;
-	}
-
-
-	/**
-	 * Set the top in pixels
-	 *
-	 * @param left
-	 */
-	public setLeft(left:number) {
-		this.left = left;
-		if (this.rendered) {
-			this.el!.style.left = left +"px";
-		}
-	}
-
-	/**
-	 * Get left in pixels
-	 */
-	public getLeft() {
-		return this.el ? this.el.offsetLeft : this.left;
-	}
-
-
-
-	protected applyId() {
-		this.el!.id = this.id!;
-	}
-
-	/**
-	 * Set id of the DOM element
-	 *
-	 * @param id
-	 */
-	public setId(id: string) {
-		this.id = id;
-
-		if (this.rendered) {
-			this.applyId();
-		}
-	}
-
-	/**
-	 * Get DOM element ID
-	 */
-	public getId() {
-		return this.el ? this.el.id : this.id;
-	}
-
-	/**
-	 * Get the style object
-	 */
-	public getStyle(): CSSStyleDeclaration {
-		if (!this.el) {
-			if(!this.style) {
-				this.style = {};
-			}
-			return <CSSStyleDeclaration> this.style;
-		}
-		return this.el.style
-
-	}
 
 	/**
 	 * Focus the component
@@ -856,11 +553,7 @@ export class Component extends Observable {
 	public focus(o?: FocusOptions) {
 		// setTimeout needed for chrome :(
 		setTimeout(() => {
-			if (!this.el) {
-				return;
-			}
 			this.el.focus(o);
-
 			this.fire("focus", this, o);
 		});
 	}
@@ -873,13 +566,12 @@ export class Component extends Observable {
 	 *
 	 * @param fn When the function returns true the item will be returned. Otherwise it will move up to the next parent.
 	 */
-	public findAncestor(fn:(Component:Component) => void|boolean) : Component | undefined {
+	public findAncestor(fn: (Component: Component) => void | boolean): Component | undefined {
 		let p = this.parent;
-		while(p != undefined) {
+		while (p != undefined) {
 			if (fn(p)) {
 				return p;
-			} else
-			{
+			} else {
 				p = p.parent;
 			}
 		}
@@ -896,36 +588,33 @@ export class Component extends Observable {
 	 * ```
 	 * @param cls
 	 */
-	public findAncestorByType<T extends typeof Component>(cls: T) : InstanceType<T> | undefined {
+	public findAncestorByType<T extends typeof Component>(cls: T): InstanceType<T> | undefined {
 		const p = this.findAncestor(Component => Component instanceof cls);
-		if(p) {
-			return <InstanceType<T>> p;
-		} else
-		{
+		if (p) {
+			return <InstanceType<T>>p;
+		} else {
 			return undefined;
 		}
 	}
 
-	private setupItem(item:Component) {
+	private setupItem(item: Component) {
 		item.parent = this;
 	}
 
-
 	/**
-	 * Get all items
+	 * The child components of this component
 	 */
-	public getItems() {
-		if(!this.items) {
-			this.items = new Collection<Component>();
+	get items() {
+		if (!this._items) {
+			this._items = new Collection<Component>();
 			this.initItems();
 		}
-		return this.items;
+		return this._items;
 	}
 
-
 	protected renderItems() {
-		if(this.items) {
-			this.getItems().forEach((item) => {
+		if (this._items) {
+			this._items.forEach((item) => {
 				this.renderItem(item);
 			});
 		}
@@ -938,7 +627,7 @@ export class Component extends Observable {
 	 * @protected
 	 */
 	protected renderItem(item: Component, refItem?: Component) {
-		item.render(this.getEl(), refItem && refItem.isRendered() ? refItem.getEl() : undefined);
+		item.render(this.el, refItem && refItem.rendered ? refItem.el : undefined);
 	}
 
 	/**
@@ -946,7 +635,7 @@ export class Component extends Observable {
 	 */
 	public findItemIndex(predicate: FindComponentPredicate): number {
 		let fn = this.getFindPredicate(predicate);
-		return this.getItems().findIndex(fn);
+		return this.items.findIndex(fn);
 	}
 
 	/**
@@ -955,9 +644,9 @@ export class Component extends Observable {
 	 * If you want to search the component tree hierarchy use {@see findChild()}
 	 *
 	 */
-	public findItem(predicate: FindComponentPredicate) : Component | undefined{
+	public findItem(predicate: FindComponentPredicate): Component | undefined {
 		let fn = this.getFindPredicate(predicate);
-		return this.getItems().find(fn);
+		return this.items.find(fn);
 	}
 
 	/**
@@ -969,7 +658,7 @@ export class Component extends Observable {
 		if (fn(this) === false) {
 			return this;
 		}
-		if(this.items) {
+		if (this.items) {
 			for (let cmp of this.items) {
 				cmp.cascade(fn);
 			}
@@ -978,13 +667,12 @@ export class Component extends Observable {
 		return this;
 	}
 
-	private getFindPredicate(predicate: FindComponentPredicate) :  (comp: Component) => boolean | void {
-		if(predicate instanceof Function) {
+	private getFindPredicate(predicate: FindComponentPredicate): (comp: Component) => boolean | void {
+		if (predicate instanceof Function) {
 			return predicate;
-		} else
-		{
+		} else {
 			return (item: Component) => {
-				return item === predicate || item.itemId === predicate || item.getId() === predicate;
+				return item === predicate || item.itemId === predicate || item.id === predicate;
 			}
 		}
 	}
@@ -1000,7 +688,7 @@ export class Component extends Observable {
 
 		let child;
 		this.cascade((item: any) => {
-			if(fn(item)) {
+			if (fn(item)) {
 				child = item;
 				return false;
 			}
@@ -1018,12 +706,11 @@ export class Component extends Observable {
 	 * ```
 	 * @param cls
 	 */
-	public findChildByType<T extends typeof Component>(cls: T) : InstanceType<T> | undefined {
+	public findChildByType<T extends Component>(cls: Type<T>): T | undefined {
 		const p = this.findChild(Component => Component instanceof cls);
-		if(p) {
-			return <InstanceType<T>> p;
-		} else
-		{
+		if (p) {
+			return p as T;
+		} else {
 			return undefined;
 		}
 	}
@@ -1037,9 +724,8 @@ export class Component extends Observable {
 	public mask() {
 		if (!this._mask) {
 			this._mask = mask();
-			this.getItems().add(this._mask);
-		} else
-		{
+			this.items.add(this._mask);
+		} else {
 			this._mask.show();
 		}
 	}
@@ -1048,19 +734,12 @@ export class Component extends Observable {
 	 * Unmask the body
 	 */
 	public unmask() {
-		if(this._mask) {
+		if (this._mask) {
 			this._mask.hide();
 		}
 	}
 }
 
-
-export interface MaskConfig<T extends Observable> extends ComponentConfig<T> {
-	/**
-	 * Show loading spinner
-	 */
-	spinner?: boolean
-}
 
 /**
  * Mask element
@@ -1071,27 +750,53 @@ export interface MaskConfig<T extends Observable> extends ComponentConfig<T> {
  */
 export class Mask extends Component {
 
-	baseCls = "mask"
+	protected baseCls = "mask";
 
-	spinner = true
-
-	protected init() {
-		super.init();
-
-		if (this.spinner) {
+	/**
+	 * Show loading spinner
+	 */
+	set spinner(spinner: boolean) {
+		if (spinner) {
 			this.html = '<div class="spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>';
 		}
 	}
 }
 
-export const mask = (config?:MaskConfig<Mask>) => Mask.create(config);
-
+export const mask = (config?: Config<Mask>) => Mask.create(config);
 
 /**
  * Shorthand function to create {@see Component}
- *
- * @param config
- * @param items
  */
-export const comp = (config?:ComponentConfig<Component>, ...items:Component[]) => Component.create(config, items);
+export const comp = (config?: Config<Component>, ...items: Component[]) => Component.create(config, ...items);
+
+
+// function create<T extends typeof Observable>(cls: T, config:Config<InstanceType<T>>) : InstanceType<T> {
+// 	const i = new cls as InstanceType<T>;
+// 	Object.assign(i, config);
+// 	return i;
+// };
+
+// create(Component, {
+// 	flex: 1,
+// 	disabled: false,
+// 	listeners: {
+// 		added: (sender, number) => {
+
+// 		}
+// 	}
+// });
+
+
+// const c = new Component()
+// c.listeners = {
+// 	beforerender: sender => {
+
+// 	},
+// 	added(me, index) {
+
+// 	},
+// }
+// c.on("added", (sender, index) => {
+
+// })
 

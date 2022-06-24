@@ -9,7 +9,7 @@ export interface ResultReference {
 
 enum andOrNot {AND, OR, NOT}
 
-type Id = string|number;
+type Id = string | number;
 
 enum SetErrorType {
 	'forbidden',
@@ -26,7 +26,6 @@ enum SetErrorType {
 }
 
 
-
 export interface SetError {
 	type: SetErrorType
 	description?: string
@@ -34,6 +33,7 @@ export interface SetError {
 
 type SetEntity = Record<string, Entity>
 type SetResponseError = Record<string, SetError>
+
 interface SetResponse {
 	accountId: string
 	oldState: string | null
@@ -41,7 +41,7 @@ interface SetResponse {
 	created: SetEntity | null
 	updated: SetEntity | null
 	destroyed: string[] | null
-	notCreated: SetResponseError| null
+	notCreated: SetResponseError | null
 	notUpdated: SetResponseError | null
 	notDestroyed: SetResponseError | null
 }
@@ -77,7 +77,7 @@ export interface EntityStoreConfig<T extends Observable> extends ObservableConfi
 	 * Store name
 	 * eg. "Contact"
 	 */
-	name:string,
+	name: string,
 
 	/**
 	 * API client
@@ -97,7 +97,7 @@ export interface EntityStoreEventMap<T extends Observable> extends ObservableEve
 	 * @param records
 	 * @param append Wheter the records were added to the store.
 	 */
-	change?: (store: EntityStore, changes:SetResponse) => void
+	change?: (store: EntityStore, changes: SetResponse) => void
 }
 
 export interface EntityStore {
@@ -107,13 +107,16 @@ export interface EntityStore {
 }
 
 
-export class EntityStore extends Observable{
+export class EntityStore extends Observable {
 	name!: string
 	client!: Client
 
-	public static create<T extends typeof Observable>(this: T, config?: EntityStoreConfig<InstanceType<T>>) {
-		return <InstanceType<T>> super.create(<any> config);
+	constructor(config?: EntityStoreConfig<EntityStore>) {
+		super();
+		Object.assign(this, config);
+		this.init();
 	}
+
 
 	get(ids: Id[] | ResultReference = [], properties: string[] = []): Promise<GetResponse> {
 
@@ -145,8 +148,8 @@ export class EntityStore extends Observable{
 		})
 	}
 
-	set(params: { create?: SetEntity, update?: SetEntity, destroy?: string[], [key: string]: any  }): Promise<SetResponse> {
-		return this.client.jmap(this.name + "/set", params).then((response:SetResponse) => {
+	set(params: { create?: SetEntity, update?: SetEntity, destroy?: string[], [key: string]: any }): Promise<SetResponse> {
+		return this.client.jmap(this.name + "/set", params).then((response: SetResponse) => {
 
 			this.fire('change', this, response);
 
@@ -165,9 +168,9 @@ export class EntityStore extends Observable{
 	 * @param id The entity ID
 	 * @param setParams Additional paramaters for Foo/set
 	 */
-	save(data: Entity, id?:Id, setParams: {[key: string]: any} = {}): Promise<Entity> {
+	save(data: Entity, id?: Id, setParams: { [key: string]: any } = {}): Promise<Entity> {
 
-		if(!id) {
+		if (!id) {
 			id = "_new_"
 		}
 

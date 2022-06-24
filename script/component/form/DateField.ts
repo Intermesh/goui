@@ -1,13 +1,7 @@
-import {TextField, TextFieldConfig} from "./TextField.js";
+import {TextField} from "./TextField.js";
 import {DateTime} from "../../util/DateTime.js";
-import {Observable} from "../Observable.js";
+import {Config} from "../Observable.js";
 
-/**
- * @inheritDoc
- */
-export interface DateFieldConfig<T extends Observable> extends TextFieldConfig<T> {
-
-}
 
 /**
  * Date field
@@ -16,11 +10,12 @@ export interface DateFieldConfig<T extends Observable> extends TextFieldConfig<T
  */
 export class DateField extends TextField {
 
-	protected inputFormat = "d-m-Y"
-	protected outputFormat = "Y-m-d"
+	protected inputFormat = "d-m-Y";
+	protected outputFormat = "Y-m-d";
 
-	init() {
-		super.init();
+
+	constructor() {
+		super();
 
 		this.pattern = DateTime.createFormatRegex(this.inputFormat);
 		this.title = "Incorrect date format";
@@ -29,30 +24,29 @@ export class DateField extends TextField {
 	protected validate() {
 		super.validate();
 
-		const v = super.getValue();
-		if(v && !DateTime.createFromFormat(v, this.inputFormat)) {
+		const v = super.value;
+		if (v && !DateTime.createFromFormat(v, this.inputFormat)) {
 			this.setInvalid("Incorrect date format");
 		}
 
 	}
 
-	setValue(v: string, useForReset = true) {
+	set value(v: string | undefined) {
 
-		const d = DateTime.createFromFormat(v, this.outputFormat);
+		const d = DateTime.createFromFormat(v + "", this.outputFormat);
 
-		if(!d) {
+		if (!d) {
 			throw new Error("Invalid date format " + v);
-		}else
-		{
-			super.setValue(d.format(this.inputFormat), useForReset);
+		} else {
+			super.value = d.format(this.inputFormat);
 		}
 
 	}
 
-	getValue(): string | undefined {
-		const v = super.getValue();
+	get value(): string | undefined {
+		const v = super.value;
 		let date;
-		if(!v || !(date = DateTime.createFromFormat(v, this.inputFormat))) {
+		if (!v || !(date = DateTime.createFromFormat(v, this.inputFormat))) {
 			return undefined;
 		}
 
@@ -67,4 +61,4 @@ export class DateField extends TextField {
  *
  * @param config
  */
-export const datefield = (config?:DateFieldConfig<DateField>) => DateField.create(config);
+export const datefield = (config?: Config<DateField>) => DateField.create(config);

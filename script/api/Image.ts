@@ -1,11 +1,6 @@
-import {Component, ComponentConfig} from "../component/Component.js";
+import {Component} from "../component/Component.js";
 import {client} from "./Client.js";
-import {Observable} from "../component/Observable.js";
-import {Table, TableConfig} from "../component/Table.js";
-
-interface ImageConfig<T extends Observable> extends ComponentConfig<T> {
-	blobId:string
-}
+import {Config} from "../component/Observable.js";
 
 /**
  * Image component
@@ -14,13 +9,16 @@ interface ImageConfig<T extends Observable> extends ComponentConfig<T> {
  */
 export class Image extends Component {
 
-	protected blobId = "";
+	public blobId = "";
 
-	protected tagName = "img" as keyof HTMLElementTagNameMap;
+	get tagName() {
+		return  "img" as keyof HTMLElementTagNameMap;
+	}
 
 	private static cache: Record<string, Promise<any>> = {};
 
 	private static defaultSrc = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
+
 
 	protected internalRender(): HTMLElement {
 		const el = super.internalRender() as HTMLImageElement;
@@ -37,7 +35,7 @@ export class Image extends Component {
 	public setBlobId(blobId:string) {
 		this.blobId = blobId;
 		client.getBlobURL(this.blobId).then( src => {
-			(<HTMLImageElement> this.getEl()).src = src
+			(<HTMLImageElement> this.el).src = src
 		} )
 			.catch( console.error );
 	}
@@ -88,4 +86,4 @@ export class Image extends Component {
  *
  * @param config
  */
-export const img = (config?:ImageConfig<Image>) => Image.create(config);
+export const img = (config?:Config<Image>) => Image.create(config);

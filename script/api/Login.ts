@@ -1,10 +1,10 @@
 import {form, Form} from "../component/form/Form.js";
-import {btn, Button} from "../component/Button.js";
-import {textfield, TextField} from "../component/form/TextField.js";
-import {comp, Component} from "../component/Component.js";
-import {tbar, Toolbar} from "../component/Toolbar.js";
+import {btn} from "../component/Button.js";
+import {textfield} from "../component/form/TextField.js";
+import {comp} from "../component/Component.js";
+import {tbar} from "../component/Toolbar.js";
 import {Window, WindowEventMap} from "../component/Window.js";
-import {fieldset, Fieldset} from "../component/form/Fieldset.js";
+import {fieldset} from "../component/form/Fieldset.js";
 import {client, RegisterData} from "./Client.js";
 import {Notifier} from "../Notifier.js";
 import {t} from "../Translate.js";
@@ -13,40 +13,39 @@ import {Observable} from "../component/Observable.js";
 
 
 export interface LoginEventMap<T extends Observable> extends WindowEventMap<T> {
-	cancel?: () => void
-	login?: () => void
+	cancel: () => void
+	login: () => void
 }
 
 export interface Login {
-	on<K extends keyof LoginEventMap<Login>>(eventName: K, listener: LoginEventMap<Login>[K]): void;
+	on<K extends keyof LoginEventMap<Login>>(eventName: K, listener: Partial<LoginEventMap<Login>>[K]): void;
 
-	fire<K extends keyof LoginEventMap<Login>>(eventName: K, ...args: Parameters<NonNullable<LoginEventMap<Login>[K]>>): boolean;
+	fire<K extends keyof LoginEventMap<Login>>(eventName: K, ...args: Parameters<LoginEventMap<Login>[K]>): boolean;
 }
 
 
 export class Login extends Window {
 
-	protected width = 480;
-
 	private loginForm!: Form;
-
-	protected cls = "login";
 
 	private otpForm!: Form;
 
 	private loginToken = "";
 
-	protected title = t("Login")
-
-	protected modal = true
 	private cardContainer!: CardContainer;
 	private registerForm!: Form;
 
-	protected init() {
-		super.init();
+	constructor() {
+		super();
+
+		this.width = 480;
+		this.title = t("Login");
+		this.cls = "login";
+		this.modal = true;
+
 
 		this.on("close", async window => {
-			if(!await client.isLoggedIn()) {
+			if (!await client.isLoggedIn()) {
 				// closed without successful login
 				await Window.alert(t("Login required"), t("Login is required for this page. You will return to the previous page."));
 
@@ -55,18 +54,18 @@ export class Login extends Window {
 		})
 
 		this.loginForm = form({
-			flex: "1 2 auto",
-			cls: "vbox",
-			handler: (form: Form) => {
-				this.login(form);
-			}
-		},
-			fieldset({
 				flex: "1 2 auto",
-				style: {
-					overflow: "auto"
+				cls: "vbox",
+				handler: (form: Form) => {
+					this.login(form);
 				}
 			},
+			fieldset({
+					flex: "1 2 auto",
+					// style: {
+					// 	overflow: "auto"
+					// }
+				},
 				comp({
 					tagName: "p",
 					html: t("Please enter your username and password")
@@ -85,21 +84,21 @@ export class Login extends Window {
 					required: true
 				}),
 				btn({
-					style: {
-						width: "100%"
-					},
+					// style: {
+					// 	width: "100%"
+					// },
 					type: "submit",
 					text: t("Login")
 				}),
 
 				comp({
-					tagName:"hr"
+					tagName: "hr"
 				}),
 
 				btn({
-					style: {
-						width: "100%"
-					},
+					// style: {
+					// 	width: "100%"
+					// },
 					cls: "raised",
 					type: "button",
 					text: t("Register"),
@@ -111,27 +110,27 @@ export class Login extends Window {
 		);
 
 		this.otpForm = form({
-			flex: 1,
-			hidden: true,
-			handler: (form: Form) => {
-				client.auth({
-					loginToken: this.loginToken,
-					authenticators: {
-						googleauthenticator: <{ code: string }>form.getValues()
-					}
-				}).then(response => {
-					console.log(response);
+				flex: 1,
+				hidden: true,
+				handler: (form: Form) => {
+					client.auth({
+						loginToken: this.loginToken,
+						authenticators: {
+							googleauthenticator: <{ code: string }>form.getValues()
+						}
+					}).then(response => {
+						console.log(response);
 
-					switch (response.status) {
-						case 201:
-							return this.onLoginSuccess(response);
+						switch (response.status) {
+							case 201:
+								return this.onLoginSuccess(response);
 
-						default:
-							Notifier.error(response.statusText);
-					}
-				})
-			}
-		},
+							default:
+								Notifier.error(response.statusText);
+						}
+					})
+				}
+			},
 			fieldset({},
 				comp({
 					tagName: "p",
@@ -168,34 +167,34 @@ export class Login extends Window {
 
 		this.cardContainer = cards({}, this.loginForm, this.otpForm);
 
-		this.getItems().add(this.cardContainer);
+		this.items.add(this.cardContainer);
 	}
 
-	private showRegisterForm () {
+	private showRegisterForm() {
 
 		this.registerForm = form({
-			cls: "vbox",
-			handler: async (form: Form) => {
-				const data = {action: "register" as RegisterData['action'], user: form.getValues()};
-				data.user.mail_reminders = true;
+				cls: "vbox",
+				handler: async (form: Form) => {
+					const data = {action: "register" as RegisterData['action'], user: form.getValues()};
+					data.user.mail_reminders = true;
 
-				const response = await client.auth(data);
+					const response = await client.auth(data);
 
-				switch (response.status) {
-					case 201:
-						client.session = await response.json()
-						this.close();
-						Notifier.success(t("Registration and successful"));
-						this.fire("login");
-						break;
+					switch (response.status) {
+						case 201:
+							client.session = await response.json()
+							this.close();
+							Notifier.success(t("Registration and successful"));
+							this.fire("login");
+							break;
 
-					default:
+						default:
 
-						Notifier.error(response.statusText);
+							Notifier.error(response.statusText);
+					}
+
 				}
-
-			}
-		},
+			},
 			fieldset({},
 				comp({
 					tagName: "p",
@@ -215,12 +214,12 @@ export class Login extends Window {
 					required: true,
 					listeners: {
 						change: (field) => {
-							if(!field.isValid()) {
+							if (!field.isValid()) {
 								return;
 							}
 							const username = this.registerForm.findField("username")!;
-							if(username.isEmpty()) {
-								username.setValue(field.getValue());
+							if (username.isEmpty()) {
+								username.value = field.value;
 							}
 
 						}
@@ -250,7 +249,7 @@ export class Login extends Window {
 					listeners: {
 						validate: (field) => {
 							const form = field.findAncestorByType(Form)!;
-							if(field.getValue() != form.findField("password")!.getValue()) {
+							if (field.value != form.findField("password")!.value) {
 								field.setInvalid("The passwords don't match");
 							}
 						}
@@ -258,18 +257,17 @@ export class Login extends Window {
 				}),
 
 				btn({
-					style: {
-						width: "100%"
-					},
+					// style: {
+					// 	width: "100%"
+					// },
 					type: "submit",
 					text: t("Register")
 				})
-
 			)
 		);
 
-		this.cardContainer.getItems().add(this.registerForm);
-		this.cardContainer.setActiveItem(this.cardContainer.getItems().count() - 1);
+		this.cardContainer.items.add(this.registerForm);
+		this.cardContainer.activeItem = this.cardContainer.items.count() - 1;
 
 		this.registerForm.findField("displayName")!.focus();
 	}
@@ -302,16 +300,16 @@ export class Login extends Window {
 
 					Notifier.error(response.statusText);
 			}
-		}
-		catch(e) {
+		} catch (e) {
 			Notifier.error("Sorry, an unexpected error occurred: " + e);
 		}
 	}
 
 	private async onLoginSuccess(response: any) {
-		client.session =  await response.json();
+		client.session = await response.json();
 		Notifier.success(t("Logged in successfully"));
 		this.close();
 		this.fire("login");
+
 	}
 }

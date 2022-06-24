@@ -1,6 +1,8 @@
-import {Component, ComponentConfig} from "./Component.js";
-import {Table, TableConfig} from "./Table.js";
+import {Component} from "./Component.js";
 import {Splitter} from "./Splitter.js";
+import {Config} from "./Observable.js";
+import {Collection} from "../util/Collection.js";
+
 
 /**
  * Toolbar component
@@ -31,15 +33,20 @@ import {Splitter} from "./Splitter.js";
  *  ```
  */
 export class Toolbar extends Component {
+
 	protected baseCls = "toolbar"
-	protected tagName = "menu" as keyof HTMLElementTagNameMap
+
+	get tagName() {
+		return "menu" as keyof HTMLElementTagNameMap
+	}
+	
 }
 
-export const tbar = (config?:ComponentConfig<Toolbar>,...items: (Component|"->"|"-")[]) => {
-	if(items && items.length) {
+export const tbar = (config?: Config<Toolbar>, ...items: (Component | "->" | "-")[]) => {
+	if (items && items.length) {
 
-		for(let i = 0, l = items?.length; i < l; i++) {
-			switch(items[i]) {
+		for (let i = 0, l = items?.length; i < l; i++) {
+			switch (items[i]) {
 				case '->':
 					items[i] = Component.create({
 						flex: 1
@@ -53,7 +60,7 @@ export const tbar = (config?:ComponentConfig<Toolbar>,...items: (Component|"->"|
 
 	}
 
-	return Toolbar.create(config, items as Component[]);
+	return Toolbar.create(config, ...items as Component[]);
 }
 
 
