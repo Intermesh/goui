@@ -1,6 +1,6 @@
 import {expect} from "chai";
 import {Collection} from "../../../script/util/Collection.js";
-import {Component} from "../../../script/component/Component.js";
+import {comp, Component} from "../../../script/component/Component.js";
 
 describe('Collection class', () => {
 
@@ -9,7 +9,7 @@ describe('Collection class', () => {
 
 	it('Should add item', () => {
 
-		c.add(Component.create({
+		c.add(comp({
 			text: "test1"
 		}));
 
@@ -20,7 +20,7 @@ describe('Collection class', () => {
 
 		c.clear();
 
-		c.add(Component.create({
+		c.add(comp({
 			text: "test1"
 		}));
 
@@ -33,11 +33,11 @@ describe('Collection class', () => {
 
 		c.clear();
 
-		c.add(Component.create({
+		c.add(comp({
 			text: "test1"
 		}));
 
-		c.insert(0, Component.create({
+		c.insert(0, comp({
 			text: "test2"
 		}));
 

@@ -1,6 +1,7 @@
 import {TextField} from "./TextField.js";
 import {DateTime} from "../../util/DateTime.js";
 import {Config} from "../Observable.js";
+import {CheckboxField} from "./CheckboxField.js";
 
 
 /**
@@ -61,4 +62,4 @@ export class DateField extends TextField {
  *
  * @param config
  */
-export const datefield = (config?: Config<DateField>) => DateField.create(config);
+export const datefield = (config?: Config<DateField>) => Object.assign(new DateField(), config);

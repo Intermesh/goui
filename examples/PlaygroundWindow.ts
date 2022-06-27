@@ -88,7 +88,8 @@ export const playgroundWin = () => {
 					})
 				)
 			),
-			PlaygroundTable.create()
+
+			new PlaygroundTable()
 		),
 
 		tbar({cls: "bottom"},

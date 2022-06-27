@@ -19,21 +19,21 @@ describe('Component class', () => {
 	describe("Listener", () => {
 
 		it('Fires an event once', function () {
-			const comp = Component.create();
+			const c = comp();
 
-			root.items.add(comp);
+			root.items.add(c);
 
 			let fired = false;
-			comp.on("show", () => {
+			c.on("show", () => {
 				fired = true;
 			}, {once: true});
 
-			comp.show();
+			c.show();
 
 			expect(fired).to.equal(true);
 
 			fired = false;
-			comp.show();
+			c.show();
 			expect(fired).to.equal(false);
 
 		});

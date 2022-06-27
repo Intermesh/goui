@@ -108,8 +108,10 @@ export interface EntityStore {
 
 
 export class EntityStore extends Observable {
-	name!: string
-	client!: Client
+
+	constructor(public name:string, public client:Client) {
+		super();
+	}
 
 	get(ids: Id[] | ResultReference = [], properties: string[] = []): Promise<GetResponse> {
 

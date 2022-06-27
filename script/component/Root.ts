@@ -56,4 +56,4 @@ class Root extends Component {
  * root.items.add(cmp({html: "Hello world!"});
  * ```
  */
-export const root = Root.create();
+export const root = new Root();

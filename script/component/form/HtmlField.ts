@@ -1,16 +1,17 @@
 // noinspection JSDeprecatedSymbols
 
 import {Field, FieldEventMap} from "./Field.js";
-import {Toolbar} from "../Toolbar.js";
+import {tbar, Toolbar} from "../Toolbar.js";
 import {btn, Button} from "../Button.js";
 import {Config, Observable, ObservableListener, ObservableListenerOpts} from "../Observable.js";
 import {browserDetect} from "../../util/BrowserDetect.js";
 import {colormenu, ColorMenu} from "../menu/ColorMenu.js";
 import {Menu} from "../menu/Menu.js";
-import {Component} from "../Component.js";
+import {comp, Component} from "../Component.js";
 import {FunctionUtil} from "../../util/FunctionUtil.js";
 import {root} from "../Root.js";
 import {MaterialIcon} from "../MaterialIcon.js";
+import {CheckboxField} from "./CheckboxField.js";
 
 
 /**
@@ -267,13 +268,13 @@ export class HtmlField extends Field {
 			return this.toolbar;
 		}
 
-		this.toolbar = Toolbar.create({
+		this.toolbar = tbar({
 			cls: "frame html-field-toolbar"
 		});
 
 		for (const cmd of this.toolbarItems) {
 			if (cmd == "-") {
-				this.toolbar.items.add(Component.create({tagName: "hr"}));
+				this.toolbar.items.add(comp({tagName: "hr"}));
 			} else {
 
 				const config = this.commands[cmd];
@@ -572,4 +573,4 @@ export class HtmlField extends Field {
  *
  * @param config
  */
-export const htmlfield = (config?: Config<HtmlField>) => HtmlField.create(config);
+export const htmlfield = (config?: Config<HtmlField>) => Object.assign(new HtmlField(), config);

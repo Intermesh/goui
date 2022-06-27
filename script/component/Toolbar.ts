@@ -1,7 +1,5 @@
-import {Component} from "./Component.js";
-import {Splitter} from "./Splitter.js";
+import {comp, Component} from "./Component.js";
 import {Config} from "./Observable.js";
-import {Collection} from "../util/Collection.js";
 
 
 /**
@@ -39,28 +37,38 @@ export class Toolbar extends Component {
 	get tagName() {
 		return "menu" as keyof HTMLElementTagNameMap
 	}
-	
+
 }
 
 export const tbar = (config?: Config<Toolbar>, ...items: (Component | "->" | "-")[]) => {
+
+
+	const c = new Toolbar();
+	if (config) {
+		Object.assign(c, config);
+	}
+
 	if (items && items.length) {
 
 		for (let i = 0, l = items?.length; i < l; i++) {
 			switch (items[i]) {
 				case '->':
-					items[i] = Component.create({
+					items[i] = comp({
 						flex: 1
 					});
 					break;
 				case '-':
-					items[i] = Splitter.create();
+					items[i] = comp({tagName: "hr"})
 					break;
 			}
 		}
 
+		c.items.add(...items as Component[]);
+
 	}
 
-	return Toolbar.create(config, ...items as Component[]);
+	return c;
+
 }
 
 

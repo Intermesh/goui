@@ -1,5 +1,6 @@
 import {Component} from "./Component.js";
 import {Config} from "./Observable.js";
+import {Image} from "../api/Image.js";
 
 export class Avatar extends Component {
 
@@ -50,4 +51,4 @@ export class Avatar extends Component {
  *
  * @param config
  */
-export const avatar = (config?:Config<Avatar>) => Avatar.create(config);
+export const avatar = (config?:Config<Avatar>) => Object.assign(new Avatar(), config);

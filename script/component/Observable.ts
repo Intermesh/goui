@@ -114,29 +114,28 @@ export type Config<Source> = Partial<Pick<Source, {[K in keyof Source]: Source[K
 export class Observable {
 
 
-	/**
-	 *
-	 * Create the component with config object.
-	 *
-	 * It constructs and initializes the object.
-	 *
-	 * @param config
-	 * @param items Add child components
-	 */
-	public static create<T extends new (...args: any) => any>(this: T, config?: Config<InstanceType<T>>, ...items: Component[]) : InstanceType<T> {
-
-		const c = new this() as InstanceType<T>;
-
-		if(config) {
-			Object.assign(c, config);
-		}
-
-		if(items.length) {
-			(c as unknown as Component).items.replace(...items);
-		}
-
-		return c;
-	}
+	// /**
+	//  * Create the component with config object.
+	//  *
+	//  * It constructs and initializes the object.
+	//  *
+	//  * @param config
+	//  * @param items Add child components
+	//  */
+	// public static create<T extends new (...args: any) => any>(this: T, config?: Config<InstanceType<T>>, ...items: Component[]) : InstanceType<T> {
+	//
+	// 	const c = new this() as InstanceType<T>;
+	//
+	// 	if(config) {
+	// 		Object.assign(c, config);
+	// 	}
+	//
+	// 	if(items.length) {
+	// 		(c as unknown as Component).items.replace(...items);
+	// 	}
+	//
+	// 	return c;
+	// }
 
 	private lisnrs: { [key: string]: { listener: Function, unbindkey:Function, options?: ObservableListenerOpts }[] } | undefined;
 	
@@ -191,12 +190,11 @@ export class Observable {
 	 * @param listener
 	 * @param options
 	 */
-	on<key extends keyof ObservableEventMap<this>>(eventName: keyof ObservableEventMap<this>, listener: ObservableEventMap<this>[key], options?: ObservableListenerOpts) {
+	public on<key extends keyof ObservableEventMap<this>>(eventName: keyof ObservableEventMap<this>, listener: ObservableEventMap<this>[key], options?: ObservableListenerOpts) {
 
 		//store original listener for the un() method. Because options may change the function
-
-		
 		const unbindkey = listener!;
+
 		if (options) {
 			if(options.buffer) {
 				listener = FunctionUtil.buffer(options.buffer, listener!) as never;
@@ -236,7 +234,7 @@ export class Observable {
 	 * @param eventName
 	 * @param listener
 	 */
-	un(eventName: keyof ObservableEventMap<this>, listener: Function) {
+	public un(eventName: keyof ObservableEventMap<this>, listener: Function) {
 		if (!this.lisnrs || !this.lisnrs[eventName]) {
 			return false;
 		}
@@ -258,7 +256,7 @@ export class Observable {
 	 * @param eventName
 	 * @param args
 	 */
-	fire<K extends keyof ObservableEventMap<this>>(eventName: K, ...args: Parameters<ObservableEventMap<this>[K]>) {
+	public fire<K extends keyof ObservableEventMap<this>>(eventName: K, ...args: Parameters<ObservableEventMap<this>[K]>) {
 		if (!this.lisnrs || !this.lisnrs[eventName]) {
 			return true;
 		}

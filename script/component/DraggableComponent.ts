@@ -1,6 +1,7 @@
 import {Component, ComponentEventMap} from "./Component.js";
 import {Config, Observable, ObservableListener, ObservableListenerOpts} from "./Observable.js";
 import {FunctionUtil} from "../util/FunctionUtil.js";
+import {CardMenu} from "./CardMenu.js";
 
 
 /**
@@ -312,4 +313,13 @@ export class DraggableComponent extends Component {
  * @param config
  * @param items
  */
-export const draggable = (config?: Config<DraggableComponent>, ...items: Component[]) => DraggableComponent.create(config, ...items);
+export const draggable = (config?: Config<DraggableComponent>, ...items: Component[]) => {
+	const c = new DraggableComponent();
+	if(config) {
+		Object.assign(c, config);
+	}
+	if(items.length) {
+		c.items.add(...items);
+	}
+	return c;
+};

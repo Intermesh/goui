@@ -227,4 +227,13 @@ export class Form extends ContainerField {
  * @param config
  * @param items
  */
-export const form = (config?: Config<Form>, ...items: Component[]) => Form.create(config, ...items);
+export const form = (config?: Config<Form>, ...items: Component[]) => {
+	const c = new Form();
+	if(config) {
+		Object.assign(c, config);
+	}
+	if(items.length) {
+		c.items.add(...items);
+	}
+	return c;
+}

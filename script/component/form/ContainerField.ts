@@ -146,4 +146,13 @@ export class ContainerField extends Field {
  * @param config
  * @param items
  */
-export const containerfield = (config?: Config<ContainerField>, ...items: Component[]) => ContainerField.create(config, ...items);
+export const containerfield = (config?: Config<ContainerField>, ...items: Component[]) => {
+	const c = new ContainerField();
+	if(config) {
+		Object.assign(c, config);
+	}
+	if(items.length) {
+		c.items.add(...items);
+	}
+	return c;
+}

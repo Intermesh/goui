@@ -1,5 +1,6 @@
 import {Config} from "./Observable.js";
 import {comp, Component} from "./Component.js";
+import {CardMenu} from "./CardMenu.js";
 
 type renderFunc = (dd: Component) => void;
 
@@ -76,4 +77,13 @@ export class DescriptionList extends Component {
  * @param config
  * @param items
  */
-export const dl = (config?: Config<DescriptionList>, ...items: Component[]) => DescriptionList.create(config, ...items);
+export const dl = (config?: Config<DescriptionList>, ...items: Component[]) => {
+	const c = new DescriptionList();
+	if(config) {
+		Object.assign(c, config);
+	}
+	if(items.length) {
+		c.items.add(...items);
+	}
+	return c;
+}

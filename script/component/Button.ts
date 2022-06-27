@@ -3,6 +3,7 @@ import {Menu} from "./menu/Menu.js";
 import {root} from "./Root.js";
 import {Config, Observable, ObservableListener, ObservableListenerOpts} from "./Observable.js";
 import {MaterialIcon} from "./MaterialIcon.js";
+import {Image} from "../api/Image.js";
 
 type ButtonType = "button" | "submit" | "reset";
 
@@ -332,4 +333,4 @@ export class Button extends Component {
  *
  * @param config
  */
-export const btn = (config?: Config<Button>) => Button.create(config);
+export const btn = (config?: Config<Button>) => Object.assign(new Button, config);

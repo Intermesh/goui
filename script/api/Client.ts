@@ -191,7 +191,7 @@ export class Client extends Observable {
 				} else {
 					import("./Login.js").then((mods) => {
 
-						const login = mods.Login.create();
+						const login = new mods.Login();
 						login.open();
 
 						login.on('login', () => {
@@ -273,7 +273,7 @@ export class Client extends Observable {
 	 */
 	public store(name: string) {
 		if (!this.stores[name]) {
-			this.stores[name] = EntityStore.create({name: name, client: this});
+			this.stores[name] = new EntityStore(name, this);
 		}
 		return this.stores[name]
 	}

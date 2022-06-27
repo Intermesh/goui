@@ -1,10 +1,9 @@
-import {column, DateColumn, table, Table} from "../script/component/Table.js";
+import {column, datecolumn, DateColumn, table, Table} from "../script/component/Table.js";
 import {Store, store, StoreRecord} from "../script/data/Store.js";
 import {DateTime} from "../script/util/DateTime.js";
 import {Window} from "../script/component/Window.js";
 
 export class PlaygroundTable extends Table {
-
 
 	constructor() {
 		const records:StoreRecord[] = [];
@@ -48,7 +47,7 @@ export class PlaygroundTable extends Table {
 				width: 300
 			}),
 
-			DateColumn.create({
+			datecolumn({
 				header: "Created At",
 				property: "createdAt",
 				sortable: true

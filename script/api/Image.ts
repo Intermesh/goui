@@ -86,4 +86,4 @@ export class Image extends Component {
  *
  * @param config
  */
-export const img = (config?:Config<Image>) => Image.create(config);
+export const img = (config?:Config<Image>) => Object.assign(new Image, config);

@@ -82,7 +82,7 @@ export const PlayGround = comp({cls : "vbox", id: "playground"},
 									html: "Show",
 									handler: async () => {
 										const mods = await import("../script/api/Login.js");
-										const login = mods.Login.create();
+										const login = new mods.Login();
 										login.open();
 									}
 								}),
@@ -158,9 +158,7 @@ export const PlayGround = comp({cls : "vbox", id: "playground"},
 				})
 			),
 
-			PlaygroundTable.create({
-				cls: "fit"
-			})
+			new PlaygroundTable()
 );
 
 export const showWindow = () =>

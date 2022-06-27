@@ -153,4 +153,4 @@ export class CheckboxField extends Field {
  *
  * @param config
  */
-export const checkbox = (config?: Config<CheckboxField>) => CheckboxField.create(config);
+export const checkbox = (config?: Config<CheckboxField>) => Object.assign(new CheckboxField(), config);

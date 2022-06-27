@@ -1,5 +1,6 @@
 import {Field} from "./Field.js";
 import {Config} from "../Observable.js";
+import {CheckboxField} from "./CheckboxField.js";
 
 
 export type TextFieldType = ("text" | "password" | "email" | "url" | "tel" | "search");
@@ -152,4 +153,4 @@ export class TextField extends Field {
  *
  * @param config
  */
-export const textfield = (config?:Config<TextField>) => TextField.create(config);
+export const textfield = (config?:Config<TextField>) => Object.assign(new TextField(), config);

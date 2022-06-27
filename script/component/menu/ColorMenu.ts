@@ -150,4 +150,4 @@ export class ColorMenu extends Menu {
  *
  * @param config
  */
-export const colormenu = (config?: Config<ColorMenu>) => ColorMenu.create(config);
+export const colormenu = (config?: Config<ColorMenu>) => Object.assign(new ColorMenu(), config);

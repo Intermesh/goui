@@ -174,5 +174,14 @@ export class Menu extends Component {
  * @param config
  * @param items
  */
-export const menu = (config?: Config<Menu>, ...items: Component[]) => Menu.create(config, ...items);
+export const menu = (config?: Config<Menu>, ...items: Component[]) => {
+	const c = new Menu();
+	if(config) {
+		Object.assign(c, config);
+	}
+	if(items.length) {
+		c.items.add(...items);
+	}
+	return c;
+}
 

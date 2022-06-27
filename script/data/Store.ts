@@ -210,4 +210,4 @@ export class Store extends Observable {
  *
  * @param config
  */
-export const store = (config?: StoreConfig<Store>) => Store.create(config);
+export const store = (config?: StoreConfig<Store>) => Object.assign(new Store(), config);

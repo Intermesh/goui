@@ -111,4 +111,13 @@ export class CardMenu extends Component {
  * @param config
  * @param items
  */
-export const cardmenu = (config?:Config<CardMenu>, ...items:Component[]) => CardMenu.create(config, ...items);
+export const cardmenu = (config?:Config<CardMenu>, ...items:Component[]) => {
+	const c = new CardMenu();
+	if(config) {
+		Object.assign(c, config);
+	}
+	if(items.length) {
+		c.items.add(...items);
+	}
+	return c;
+}

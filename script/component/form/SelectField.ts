@@ -1,5 +1,6 @@
 import {Field} from "./Field.js";
 import {Config} from "../Observable.js";
+import {CheckboxField} from "./CheckboxField.js";
 
 interface SelectFieldOption {
 	value?: string
@@ -103,4 +104,4 @@ export class SelectField extends Field {
  *
  * @param config
  */
-export const select = (config?: Config<SelectField>) => SelectField.create(config);
+export const select = (config?: Config<SelectField>) => Object.assign(new SelectField(), config);

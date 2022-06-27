@@ -37,7 +37,7 @@ export interface ComponentEventMap<Sender> extends ObservableEventMap<Sender> {
 	 * @see Component.render()
 	 * @param comp
 	 */
-	beforerender:<T extends Sender> (sender: T) => void
+	beforerender: <T extends Sender> (sender: T) => void
 
 	/**
 	 * Fires before the element is removed. You can cancel the remove by returning false
@@ -53,7 +53,7 @@ export interface ComponentEventMap<Sender> extends ObservableEventMap<Sender> {
 	 * @see Component.remove()
 	 * @param comp
 	 */
-	remove:<T extends Sender> (sender: T) => void
+	remove: <T extends Sender> (sender: T) => void
 
 	/**
 	 * Fires before show. You can cancel the show by returning false
@@ -85,7 +85,7 @@ export interface ComponentEventMap<Sender> extends ObservableEventMap<Sender> {
 	 * @see Component.show()
 	 * @param comp
 	 */
-	hide:<T extends Sender> (sender: T) => void,
+	hide: <T extends Sender> (sender: T) => void,
 
 	/**
 	 * Fires on focus
@@ -93,7 +93,7 @@ export interface ComponentEventMap<Sender> extends ObservableEventMap<Sender> {
 	 * @param comp
 	 * @param o
 	 */
-	focus:<T extends Sender> (sender: T, o?: FocusOptions) => void
+	focus: <T extends Sender> (sender: T, o?: FocusOptions) => void
 
 	/**
 	 * Fires when this component is added to a parent
@@ -202,7 +202,7 @@ export class Component extends Observable {
 
 		});
 
-		this.items.on("remove", (collection, item, index) => {
+		this.items.on("remove", (collection, item) => {
 			item.parent = undefined;
 			item.remove();
 		});
@@ -374,9 +374,6 @@ export class Component extends Observable {
 
 	/**
 	 * Renders the component
-	 *
-	 * @param Component Node
-	 * @param refChild Node
 	 */
 	public render(parentEl: Node, refChild?: Node | null) {
 
@@ -442,6 +439,7 @@ export class Component extends Observable {
 
 		const eventName = hidden ? "hide" : "show";
 
+		// noinspection PointlessBooleanExpressionJS
 		if (this.fire("before" + eventName as keyof ComponentEventMap<Component>, this) === false) {
 			return;
 		}
@@ -463,7 +461,7 @@ export class Component extends Observable {
 	public hide() {
 		this.hidden = true;
 
-		return this.hidden == true;
+		return this.hidden;
 	}
 
 	/**
@@ -472,7 +470,7 @@ export class Component extends Observable {
 	public show() {
 		this.hidden = false;
 
-		return this.hidden == false;
+		return !this.hidden;
 	}
 
 	/**
@@ -763,41 +761,18 @@ export class Mask extends Component {
 	}
 }
 
-export const mask = (config?: Config<Mask>) => Mask.create(config);
+export const mask = (config?: Config<Mask>) => Object.assign(new Mask(), config);
 
 /**
  * Shorthand function to create {@see Component}
  */
-export const comp = (config?: Config<Component>, ...items: Component[]) => Component.create(config, ...items);
-
-
-// function create<T extends typeof Observable>(cls: T, config:Config<InstanceType<T>>) : InstanceType<T> {
-// 	const i = new cls as InstanceType<T>;
-// 	Object.assign(i, config);
-// 	return i;
-// };
-
-// create(Component, {
-// 	flex: 1,
-// 	disabled: false,
-// 	listeners: {
-// 		added: (sender, number) => {
-
-// 		}
-// 	}
-// });
-
-
-// const c = new Component()
-// c.listeners = {
-// 	beforerender: sender => {
-
-// 	},
-// 	added(me, index) {
-
-// 	},
-// }
-// c.on("added", (sender, index) => {
-
-// })
-
+export const comp = (config?: Config<Component>, ...items: Component[]) => {
+	const c = new Component();
+	if (config) {
+		Object.assign(c, config);
+	}
+	if (items.length) {
+		c.items.add(...items);
+	}
+	return c;
+}

@@ -114,10 +114,8 @@ export class Window extends DraggableComponent {
 		}
 	}
 
-
-
 	private initMaximizeTool() {
-		const btn = Button.create({
+		const maximizeBtn = btn({
 			icon: "maximize",
 			title: t("Maximize"),
 			handler: () => {
@@ -127,16 +125,16 @@ export class Window extends DraggableComponent {
 
 
 		this.on('maximize', () => {
-			btn.icon = "minimize";
-			btn.title = t("Restore");
+			maximizeBtn.icon = "minimize";
+			maximizeBtn.title = t("Restore");
 		});
 
 		this.on('unmaximize', () => {
-			btn.icon = "maximize";
-			btn.title = t("Maximize");
+			maximizeBtn.icon = "maximize";
+			maximizeBtn.title = t("Maximize");
 		});
 
-		return btn;
+		return maximizeBtn;
 
 	}
 
@@ -171,7 +169,7 @@ export class Window extends DraggableComponent {
 			}
 
 			if (this.closable) {
-				this.header.items.add(Button.create({
+				this.header.items.add(btn({
 					icon: "close",
 					handler: () => {
 						this.close();
@@ -437,12 +435,12 @@ export class Window extends DraggableComponent {
 
 			let cancelled = true;
 
-			const win = Window.create({
+			const w = win({
 				modal: true,
 				title: title,
 				listeners: {
 					focus: () => {
-						win.items.get(0)!.focus();
+						w.items.get(0)!.focus();
 					},
 					close: () => {
 						if (cancelled) {
@@ -457,7 +455,7 @@ export class Window extends DraggableComponent {
 					handler: (form) => {
 						resolve(form.getValues()['input']);
 						cancelled = false;
-						win.close();
+						w.close();
 					}
 				},
 
@@ -489,7 +487,7 @@ export class Window extends DraggableComponent {
 
 			);
 
-			win.show();
+			w.show();
 		});
 	}
 
@@ -501,6 +499,15 @@ export class Window extends DraggableComponent {
  * @param config
  * @param items
  */
-export const win = (config?:Config<Window>, ...items:Component[]) => Window.create(config, ...items);
+export const win = (config?:Config<Window>, ...items:Component[]) =>  {
+	const c = new Window();
+	if(config) {
+		Object.assign(c, config);
+	}
+	if(items.length) {
+		c.items.add(...items);
+	}
+	return c;
+};
 
 
