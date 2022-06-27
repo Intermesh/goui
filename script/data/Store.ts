@@ -6,7 +6,6 @@ import {
 	ObservableListenerOpts
 } from "../component/Observable.js";
 import {ArrayUtil} from "../util/ArrayUtil.js";
-import {ComponentConfig} from "../component/Component.js";
 
 /**
  * Comparator interface for sorting data
@@ -61,6 +60,7 @@ export interface StoreEventMap<T extends Observable> extends ObservableEventMap<
 
 export interface Store {
 	on<K extends keyof StoreEventMap<Store>>(eventName: K, listener: StoreEventMap<Store>[K], options?: ObservableListenerOpts): void
+
 	fire<K extends keyof StoreEventMap<Store>>(eventName: K, ...args: Parameters<NonNullable<StoreEventMap<Store>[K]>>): boolean
 }
 
@@ -69,13 +69,13 @@ export interface Store {
  */
 export class Store extends Observable {
 
-	private static stores:Record<string, Store> = {};
+	private static stores: Record<string, Store> = {};
 
 	protected id?: string;
 	protected records: StoreRecord[] = [];
 	protected loading = false;
 
-	constructor(config?:StoreConfig<Store>) {
+	constructor(config?: StoreConfig<Store>) {
 		super();
 		Object.assign(this, config);
 		this.init();
@@ -99,7 +99,7 @@ export class Store extends Observable {
 	 *
 	 * @param index
 	 */
-	getRecordAt(index:number) {
+	getRecordAt(index: number) {
 		return this.records[index]
 	}
 
@@ -114,7 +114,7 @@ export class Store extends Observable {
 	 * ```
 	 * @param fn
 	 */
-	findRecord(fn:(record:StoreRecord) => unknown) {
+	findRecord(fn: (record: StoreRecord) => unknown) {
 		return this.records.find(fn);
 	}
 
@@ -130,7 +130,7 @@ export class Store extends Observable {
 	 *
 	 * @param fn
 	 */
-	findRecordIndex(fn: (record:StoreRecord) => unknown) {
+	findRecordIndex(fn: (record: StoreRecord) => unknown) {
 		return this.records.findIndex(fn);
 	}
 
@@ -166,7 +166,7 @@ export class Store extends Observable {
 	 * @param append
 	 * @protected
 	 */
-	protected internalLoad(append:boolean): Promise<StoreRecord[]> {
+	protected internalLoad(append: boolean): Promise<StoreRecord[]> {
 		this.loadData(ArrayUtil.multiSort(this.records, this.sort), append);
 		return Promise.resolve(this.records)
 	}
@@ -189,7 +189,7 @@ export class Store extends Observable {
 	 * Load the next set of records when paging.
 	 * Doesn't do anything in the array store but can be implemented in async stores.
 	 */
-	public loadNext(append = false): Promise<StoreRecord[]>  {
+	public loadNext(append = false): Promise<StoreRecord[]> {
 		return Promise.resolve([]);
 	}
 
@@ -197,7 +197,7 @@ export class Store extends Observable {
 	 * Load the next set of records when paging.
 	 * Doesn't do anything in the array store but can be implemented in async stores.
 	 */
-	public loadPrevious(): Promise<StoreRecord[]>  {
+	public loadPrevious(): Promise<StoreRecord[]> {
 		return Promise.resolve([]);
 	}
 
@@ -217,4 +217,4 @@ export class Store extends Observable {
  *
  * @param config
  */
-export const store = (config?:StoreConfig<Store>) => Store.create(config);
+export const store = (config?: StoreConfig<Store>) => Store.create(config);

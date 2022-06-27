@@ -76,14 +76,20 @@ import {Config} from "../Observable.js";
  */
 export class Menu extends Component {
 
-	constructor() {
-		super();
-		this.tagName = "menu";
-		this.baseCls = "dropdown fade-out";
+	get tagName() {
+		return "menu" as keyof HTMLElementTagNameMap;
 	}
 
+	protected baseCls = "dropdown fade-out";
+
+	/**
+	 * Remove menu when closed
+	 */
 	public removeOnClose = true;
 
+	/**
+	 * The button this menu belongs to
+	 */
 	public parentButton: Button | undefined;
 
 	/**
@@ -139,6 +145,7 @@ export class Menu extends Component {
 		}
 
 		this.show();
+		console.log(this);
 		Menu.openedMenu = this;
 
 		//hide menu when clicked elsewhere

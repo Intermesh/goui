@@ -141,9 +141,7 @@ export class Window extends DraggableComponent {
 	}
 
 
-	public getHeader() {
-		return this.header;
-	}
+
 
 	protected applyTitle() {
 		// don't set title on el
@@ -153,31 +151,36 @@ export class Window extends DraggableComponent {
 		return this.header.el;
 	}
 
-	private renderHeader() {
-		this.header = tbar({
-				cls: "header"
-			},
+	public getHeader() {
 
-			this.titleCmp = comp({
-				tagName: "h3",
-				html: this.title
-			}),
+		if(!this.header) {
+			this.header = tbar({
+					cls: "header"
+				},
 
-			'->'
-		);
+				this.titleCmp = comp({
+					tagName: "h3",
+					html: this.title
+				}),
 
-		if(this.maximizable) {
-			this.header.items.add(this.initMaximizeTool());
+				'->'
+			);
+
+			if (this.maximizable) {
+				this.header.items.add(this.initMaximizeTool());
+			}
+
+			if (this.closable) {
+				this.header.items.add(Button.create({
+					icon: "close",
+					handler: () => {
+						this.close();
+					}
+				}));
+			}
 		}
 
-		if(this.closable) {
-			this.header.items.add(Button.create({
-				icon: "close",
-				handler: () => {
-					this.close();
-				}
-			}));
-		}
+		return this.header;
 
 
 	}
@@ -190,13 +193,13 @@ export class Window extends DraggableComponent {
 			this.saveState();
 		});
 
-		this.renderHeader();
+		const header = this.getHeader();
 
 		if(this.maximized) {
 			this.maximize();
 		}
 
-		this.header.render(el, el.firstChild);
+		header.render(el, el.firstChild);
 
 		el.setAttribute('tabindex', "-1");
 

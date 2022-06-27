@@ -65,6 +65,8 @@ export interface Button extends Component {
  *
  */
 export class Button extends Component {
+	private _iconEl?: HTMLElement;
+	private _textEl?: HTMLElement;
 
 	constructor() {
 		super();
@@ -119,7 +121,26 @@ export class Button extends Component {
 
 	protected internalRender() {
 
-		const el = this.el;
+		const el = super.internalRender();
+
+
+
+		// The first menu of a button will expand on click, sub menus will show on hover and are hidden with css.
+		// Before I made this without JS with the :focus-within selector but that didn't work in Safari because it
+		// doesn't focus buttons on click.
+		// First menu is rendered directly in body so it's positioned absolute on the page and there's no need for overflow
+		// visible in windows. Sub menu's are rendered inside the parent menu button.
+		if (this.menu) {
+			this.menu.hide();
+
+			if (!(this.parent instanceof Menu)){
+				// When a menu is opened. other top level will open on mouse enter
+				this.el.addEventListener("mouseenter", this.onMenuMouseEnter.bind(this));
+				this.el.addEventListener("click", this.onMenuButtonClick.bind(this));
+			} else {
+				this.menu.render(el);
+			}
+		}
 
 		el.addEventListener("click", (e) => {
 			// prevent double submissions for 1s
@@ -144,27 +165,25 @@ export class Button extends Component {
 				if (topMenu) {
 					topMenu.close();
 				}
-
 			}
+
 
 			this.fire("click", this, e);
 		});
-
-		this.applyTextAndIcon();
 
 		return el;
 	}
 
 	private onMenuButtonClick(ev: MouseEvent) {
-		if (this.menu!.hidden) {
+		if (this._menu!.hidden) {
 			this.showMenu(this.el, ev);
 		} else {
-			this.menu!.hide();
+			this._menu!.hide();
 		}
 	}
 
 	private onMenuMouseEnter(ev: MouseEvent) {
-		if (Menu.openedMenu && Menu.openedMenu != this.menu) {
+		if (Menu.openedMenu && Menu.openedMenu != this._menu) {
 			Menu.openedMenu.el.classList.remove("fade-out");
 			Menu.openedMenu.close();
 			this.showMenu(this.el, ev);
@@ -176,31 +195,21 @@ export class Button extends Component {
 	 */
 	set menu(menu: Menu | undefined) {
 
+		// if (this._menu) {
+		// 	this._menu.remove();
+		// 	this.el.removeEventListener("mouseenter", this.onMenuMouseEnter);
+		// 	this.el.removeEventListener("click", this.onMenuButtonClick);
+		// }else
+		// {
+		// 	this.onMenuMouseEnter = this.onMenuMouseEnter.bind(this);
+		// 	this.onMenuButtonClick = this.onMenuButtonClick.bind(this);
+		// }
 
 		if (menu) {
 			menu.parentButton = this;
 			menu.removeOnClose = false;
 
 			this.el.classList.add("has-menu");
-
-			// The first menu of a button will expand on click, sub menus will show on hover and are hidden with css.
-			// Before I made this without JS with the :focus-within selector but that didn't work in Safari because it
-			// doesn't focus buttons on click.
-			// First menu is rendered directly in body so it's positioned absolute on the page and there's no need for overflow
-			// visible in windows.
-			if (!(this.parent instanceof Menu)) {
-				menu.hide();
-
-				// When a menu is opened. other top level will open on mouse enter
-				this.el.addEventListener("mouseenter", this.onMenuMouseEnter);
-				this.el.addEventListener("click", this.onMenuButtonClick);
-			} else {
-				menu.render(this.el);
-			}
-		} else if (this._menu) {
-			this._menu.remove();
-			this.el.removeEventListener("mouseenter", this.onMenuMouseEnter);
-			this.el.removeEventListener("click", this.onMenuButtonClick);
 		}
 
 		this._menu = menu;
@@ -213,28 +222,28 @@ export class Button extends Component {
 	private showMenu(el: HTMLButtonElement, ev: MouseEvent) {
 
 		// noinspection PointlessBooleanExpressionJS
-		if (this.fire("beforeshowmenu", this, this.menu!, ev) === false) {
+		if (this.fire("beforeshowmenu", this, this._menu!, ev) === false) {
 			return;
 		}
 		const rect = el.getBoundingClientRect();
 
 		//must be rendered and visible to get width below
-		if (!this.menu!.rendered) {
-			root.items.add(this.menu!);
+		if (!this._menu!.rendered) {
+			root.items.add(this._menu!);
 		}
 
 		//show first for positioning correctly below
-		this.menu!.show();
+		this._menu!.show();
 
-		this.menu!.showAt({
-			x: this.menu!.expandLeft ? rect.right - this.menu!.width : rect.x,
+		this._menu!.showAt({
+			x: this._menu!.expandLeft ? rect.right - this._menu!.width : rect.x,
 			y: rect.bottom
 		});
 
 		//put back fade out class removed in mouseenter listener above
-		this.menu!.el.classList.add("fade-out");
+		this._menu!.el.classList.add("fade-out");
 
-		this.fire("showmenu", this, this.menu!, ev);
+		this.fire("showmenu", this, this._menu!, ev);
 	}
 
 	protected internalRemove() {
@@ -261,6 +270,8 @@ export class Button extends Component {
 		} else {
 			this.el.classList.remove("with-text");
 		}
+
+		this.textEl!.innerText = text +"";
 	}
 
 	get text() {
@@ -278,29 +289,41 @@ export class Button extends Component {
 		}
 
 		this.el.classList.remove("with-icon");
+
+		this.iconEl!.innerText = icon + "";
 	}
 
 	get icon() {
 		return this._icon;
 	}
 
-	private applyTextAndIcon() {
 
-		let html = "";
-		if (!this.text && !this.icon) {
-			html = this.html + "";
-		} else {
-			if (this.icon) {
-				html = `<i class="icon">${this.icon}</i>`;
-			}
+	private get iconEl() {
+		if(!this._iconEl) {
+			this.createIconAndTextEls();
+		}
+		return this._iconEl;
+	}
 
-			if (this.text) {
-				html += `<span class="text">${this.text}</span>`;
-			}
+	private get textEl() {
+		if(!this._textEl) {
+			this.createIconAndTextEls();
+		}
+		return this._textEl;
+	}
+
+	private createIconAndTextEls() {
+		if(this.icon && !this._iconEl) {
+			this._iconEl = document.createElement("i");
+			this._iconEl.classList.add("icon");
+			this.el.appendChild(this._iconEl);
 		}
 
-		this.html = html;
-
+		if(this._text && !this._textEl) {
+			this._textEl = document.createElement("span");
+			this._textEl.classList.add("text");
+			this.el.appendChild(this._textEl);
+		}
 	}
 }
 

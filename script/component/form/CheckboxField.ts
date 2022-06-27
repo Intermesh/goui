@@ -37,6 +37,9 @@ export class CheckboxField extends Field {
 
 		const control = document.createElement("div");
 
+		//grab value before creating this.input otherwise it will return the input value
+		const v = this.value;
+
 		this.input = document.createElement("input");
 		this.input.type = "checkbox";
 
@@ -45,8 +48,8 @@ export class CheckboxField extends Field {
 		this.input.readOnly = this.readOnly;
 		// this.input.hidden = true;
 
-		if (this.value) {
-			this.input.checked = this.value;
+		if (v) {
+			this.input.checked = v;
 		}
 
 		if (this.invalidMsg) {

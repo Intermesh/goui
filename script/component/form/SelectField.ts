@@ -21,6 +21,9 @@ export class SelectField extends Field {
 	public options: SelectFieldOption[] = [];
 
 	protected createControl(): undefined | HTMLElement {
+		//grab value before creating this.input otherwise it will return the input value
+		const v = this.value;
+
 		this.input = document.createElement("select");
 		this.input.name = this.name;
 		if (this.required) {
@@ -37,9 +40,9 @@ export class SelectField extends Field {
 			this.input?.appendChild(opt);
 		});
 
-		if (this.value) {
+		if (v) {
 			// for updating this.input.selectIndex
-			this.value = this.value;
+			this.value = v;
 		}
 
 		this.input.addEventListener("change", () => {

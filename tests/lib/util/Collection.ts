@@ -25,7 +25,7 @@ describe('Collection class', () => {
 		}));
 
 		for(let item of c) {
-			expect(item.getText()).to.equal("test1");
+			expect(item.text).to.equal("test1");
 		}
 	});
 
@@ -43,8 +43,8 @@ describe('Collection class', () => {
 
 		expect(c.count()).to.equal(2);
 
-		expect(c.get(0).getText()).to.equal("test2");
-		expect(c.get(1).getText()).to.equal("test1");
+		expect(c.get(0).text).to.equal("test2");
+		expect(c.get(1).text).to.equal("test1");
 
 	});
 

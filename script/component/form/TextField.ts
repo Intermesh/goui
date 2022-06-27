@@ -48,6 +48,10 @@ export class TextField extends Field {
 	}
 
 	protected createControl() : undefined | HTMLElement{
+
+		//grab value before creating this.input otherwise it will return the input value
+		const v = this.value;
+
 		this.input = document.createElement("input");
 		this.input.classList.add("text");
 		this.input.type = this.type;
@@ -67,8 +71,8 @@ export class TextField extends Field {
 		this.input.name = this.name;
 		this.input.readOnly = this.readOnly;
 
-		if (this.value) {
-			this.input.value = this.value;
+		if (v) {
+			this.input.value = v;
 		}
 
 		if(this.title) {

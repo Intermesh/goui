@@ -11,7 +11,7 @@ import {colormenu} from "../script/component/menu/ColorMenu.js";
 
 
 
-export const PlayGround = comp({cls : "vbox"},
+export const PlayGround = comp({cls : "vbox", id: "playground"},
 
 			tbar({
 				// style: {

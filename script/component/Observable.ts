@@ -125,12 +125,10 @@ export class Observable {
 	 */
 	public static create<T extends new (...args: any) => any>(this: T, config?: Config<InstanceType<T>>, ...items: Component[]) : InstanceType<T> {
 
-
-
 		const c = new this() as InstanceType<T>;
 
 		if(config) {
-			Object.assign(this, config);
+			Object.assign(c, config);
 		}
 
 		if(items.length) {

@@ -1,14 +1,14 @@
 import {expect} from "chai";
-import {Component} from "../../../script/component/Component.js";
+import {comp, Component} from "../../../script/component/Component.js";
 import {root} from "../../../script/component/Root.js";
 
 describe('Component class', () => {
 	describe("Create", () => {
 
 		it('Create a component', function () {
-			const comp = Component.create();
+			const c = comp();
 
-			root.items.add(comp);
+			root.items.add(c);
 
 			expect(root.el.children.length).to.equal(1);
 

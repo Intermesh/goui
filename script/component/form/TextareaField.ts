@@ -9,6 +9,10 @@ import {Config} from "../Observable.js";
 export class TextAreaField extends TextField {
 
 	protected createControl(): undefined | HTMLElement {
+
+		//grab value before creating this.input otherwise it will return the input value
+		const v = this.value;
+
 		this.input = document.createElement("textarea");
 		if (this.autocomplete) {
 			this.input.autocomplete = this.autocomplete;
@@ -21,8 +25,8 @@ export class TextAreaField extends TextField {
 		this.input.required = this.required;
 		this.input.name = this.name;
 
-		if (this.value) {
-			this.input.value = this.value;
+		if (v) {
+			this.input.value = v;
 		}
 
 		this.input.addEventListener("change", () => {

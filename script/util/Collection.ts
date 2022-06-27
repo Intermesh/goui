@@ -215,9 +215,19 @@ export class Collection<CollectionItem> extends Observable implements Iterable<C
 	 * order, until it finds one where predicate returns true. If such an element is found, find
 	 * immediately returns that element value. Otherwise, find returns undefined.
 	 *
+	 * @returns CollectionItem | undefined
 	 */
 	public find (predicate: (value: CollectionItem, index: number, obj: CollectionItem[]) => unknown): CollectionItem|undefined {
 		return this.items.find(predicate) as CollectionItem;
+	}
+
+	/**
+	 * Check if the given item is present
+	 *
+	 * @param item
+	 */
+	public has(item: CollectionItem): boolean {
+		return this.findIndex((v) => v == item) > -1;
 	}
 
 	/**

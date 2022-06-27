@@ -44,16 +44,23 @@ router.on("change", () => {
 	console.warn(`Missing translations`, Translate.missing);
 });
 
+const loadPlayground = async ()  => {
+	const mods = await import("./PlayGround.js");
+	if(!main.items.has(mods.PlayGround)) {
+		main.items.add(mods.PlayGround);
+	}
+	mods.PlayGround.show();
+
+	return mods;
+}
+
 // Setup router
 // Translate.load("nl").then(() => {
 router
-	.add(/^playground$/, () => {
-		return loadCard("PlayGround", "playground");
-	})
+	.add(/^playground$/, loadPlayground)
 
 	.add(/playground\/window/, async () => {
-		const playground = await loadCard("PlayGround", "playground");
-		const mods = await import("./PlayGround.js");
+		const mods = await loadPlayground();
 		mods.showWindow();
 	})
 

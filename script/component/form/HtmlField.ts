@@ -325,6 +325,9 @@ export class HtmlField extends Field {
 			this.editor!.focus();
 		});
 
+		//grab value before creating this.editor otherwise it will return the input value
+		const v = this.value;
+
 		this.editor = document.createElement("div");
 		this.editor.contentEditable = "true";
 		this.editor.classList.add("editor");
@@ -332,6 +335,10 @@ export class HtmlField extends Field {
 
 		if (this.placeholder) {
 			this.editor.dataset.placeholder = this.placeholder;
+		}
+
+		if(v) {
+			this.editor.innerHTML = v;
 		}
 
 		el.appendChild(this.editor);

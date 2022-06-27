@@ -377,7 +377,7 @@ export class Component extends Observable {
 	 * @param Component Node
 	 * @param refChild Node
 	 */
-	public render(Component: Node, refChild?: Node | null) {
+	public render(parentEl: Node, refChild?: Node | null) {
 
 		if (this._rendered) {
 			throw new Error("Already rendered");
@@ -389,9 +389,9 @@ export class Component extends Observable {
 
 		this.fire("beforedom", this);
 		if (!refChild) {
-			Component.appendChild(this.el);
+			parentEl.appendChild(this.el);
 		} else {
-			Component.insertBefore(this.el, refChild);
+			parentEl.insertBefore(this.el, refChild);
 		}
 
 		this._rendered = true;
@@ -723,7 +723,7 @@ export class Component extends Observable {
 	 */
 	public mask() {
 		if (!this._mask) {
-			this._mask = mask();
+			this._mask = mask({spinner: true});
 			this.items.add(this._mask);
 		} else {
 			this._mask.show();

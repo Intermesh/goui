@@ -1,5 +1,4 @@
 import {Observable, ObservableConfig, ObservableEventMap, ObservableListenerOpts} from "./component/Observable.js";
-import {ComponentConfig} from "./component/Component.js";
 
 interface Route {
 	re: RegExp
@@ -20,7 +19,7 @@ interface Router {
 	fire<K extends keyof RouterEventMap<Router>>(eventName: K, ...args: Parameters<NonNullable<RouterEventMap<Router>[K]>>): boolean
 }
 
-type RouterMethod = (...args:string[]) => Promise<any> | void;
+type RouterMethod = (...args: string[]) => Promise<any> | void;
 
 /**
  * Router class
@@ -39,9 +38,9 @@ class Router extends Observable {
 
 	private debug = false;
 
-	private params:RegExpMatchArray = [];
+	private params: RegExpMatchArray = [];
 
-	constructor(config?:ObservableConfig<Router>) {
+	constructor(config?: ObservableConfig<Router>) {
 		super();
 		Object.assign(this, config);
 		this.init();
@@ -102,7 +101,7 @@ class Router extends Observable {
 	 */
 	add(re: RegExp | RouterMethod, handler?: RouterMethod) {
 
-		if(this.debug) {
+		if (this.debug) {
 			console.debug("Router add: ", re);
 		}
 
@@ -141,7 +140,7 @@ class Router extends Observable {
 		for (let i = 0; i < this.routes.length; i++) {
 			const args = path.match(this.routes[i].re);
 			if (args) {
-				if(this.debug) {
+				if (this.debug) {
 					console.debug("Router match: ", this.routes[i].re);
 				}
 				args.shift();
@@ -155,7 +154,7 @@ class Router extends Observable {
 
 	}
 
-	private handleRoute(handler: Function, match: RegExpMatchArray, oldPath:string) {
+	private handleRoute(handler: Function, match: RegExpMatchArray, oldPath: string) {
 
 		for (let n = 0, l = match.length; n < l; n++) {
 			match[n] = decodeURIComponent(match[n]);
