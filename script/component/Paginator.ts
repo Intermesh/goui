@@ -9,14 +9,10 @@ export class Paginator extends Toolbar {
 	private prev: Button;
 	private next: Button;
 
-	/**
-	 * The store it will paginate
-	 */
-	public store!: Store;
 
 	protected baseCls = "toolbar paginator";
 
-	constructor() {
+	constructor(public store: Store) {
 		super();
 
 		this.items.add(
@@ -59,4 +55,4 @@ export class Paginator extends Toolbar {
  *
  * @param config
  */
-export const paginator = (config: Config<Paginator>) => Object.assign(new Paginator(), config);
+export const paginator = (config: Config<Paginator> & {store:Store}) => Object.assign(new Paginator(config.store), config);

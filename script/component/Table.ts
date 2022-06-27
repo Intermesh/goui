@@ -257,11 +257,10 @@ export class Table extends Component {
 	 *
 	 * @param rowSelection
 	 */
-	set rowSelection(rowSelection: boolean | TableRowSelectConfig) {
+	set rowSelection(rowSelection: boolean | Partial<TableRowSelectConfig>) {
 		if (typeof this.rowSelection != "boolean") {
-			rowSelection = rowSelection as TableRowSelectConfig
-			rowSelection.table = this;
-			this.rowSelect = rowselect(rowSelection);
+			(rowSelection as TableRowSelectConfig).table = this;
+			this.rowSelect = rowselect(rowSelection as TableRowSelectConfig);
 		} else {
 			this.rowSelect = rowselect({table: this});
 		}

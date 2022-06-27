@@ -133,7 +133,9 @@ export class JmapStore extends Store {
  *
  * @param config
  */
-export const jmapstore = (config: Config<Store> & {entity: string}) => {
+export const jmapstore = (config: Config<JmapStore> & {entity: string}) => {
 	const s = new JmapStore(config.entity)
 	Object.assign(s, config);
+
+	return s;
 };

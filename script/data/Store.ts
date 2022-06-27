@@ -47,21 +47,22 @@ export interface StoreConfig<T extends Observable> extends ObservableConfig<T> {
 /**
  * @inheritDoc
  */
-export interface StoreEventMap<T extends Observable> extends ObservableEventMap<T> {
+export interface StoreEventMap<Sender extends Observable> extends ObservableEventMap<Sender> {
 	/**
 	 * Fires when data is loaded into the store
 	 *
 	 * @param store
 	 * @param records
-	 * @param append Wheter the records were added to the store.
+	 * @param append Whether the records were added to the store.
 	 */
-	load?: (store: Store, records: StoreRecord[], append: boolean) => void
+	load?: <T extends Sender>(store: T, records: StoreRecord[], append: boolean) => void
 }
 
 export interface Store {
-	on<K extends keyof StoreEventMap<Store>>(eventName: K, listener: StoreEventMap<Store>[K], options?: ObservableListenerOpts): void
+	on<K extends keyof StoreEventMap<this>>(eventName: K, listener: StoreEventMap<this>[K], options?: ObservableListenerOpts): void
 
-	fire<K extends keyof StoreEventMap<Store>>(eventName: K, ...args: Parameters<NonNullable<StoreEventMap<Store>[K]>>): boolean
+	fire<K extends keyof StoreEventMap<this>>(eventName: K, ...args: Parameters<NonNullable<StoreEventMap<this>[K]>>): boolean
+	set listeners(listeners: StoreEventMap<this>)
 }
 
 /**

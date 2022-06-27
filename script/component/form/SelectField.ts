@@ -79,12 +79,17 @@ export class SelectField extends Field {
 		}
 	}
 
+
 	set name(name: string) {
 		super.name = (name);
 
 		if (this.input) {
 			this.input.name = this.name
 		}
+	}
+
+	get name() {
+		return super.name;
 	}
 
 	protected validate() {

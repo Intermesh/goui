@@ -135,6 +135,10 @@ export class CheckboxField extends Field {
 		}
 	}
 
+	get name() {
+		return super.name;
+	}
+
 	protected validate() {
 		super.validate();
 

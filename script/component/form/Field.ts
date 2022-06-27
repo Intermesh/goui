@@ -89,7 +89,7 @@ export abstract class Field extends Component {
 
 	protected _value: any;
 
-	private resetValue: any;
+	protected resetValue: any;
 
 	public invalidMsg = "";
 

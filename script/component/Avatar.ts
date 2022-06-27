@@ -12,7 +12,7 @@ export class Avatar extends Component {
 	];
 
 	set displayName(displayName: string) {
-		this.html = this.initials(this.displayName);
+		this.html = this.initials(displayName);
 		this.title = this.displayName;
 
 		let j = 0;

@@ -10,7 +10,7 @@ export type ComponentConstructor<T extends Component> = new (...args: any[]) => 
 
 
 interface Type<T> {
-	new(): T
+	new(...args:any[]): T
 }
 
 

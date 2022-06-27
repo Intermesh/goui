@@ -51,14 +51,16 @@ export class ArrayField extends ContainerField {
 
 		this.items.clear();
 
-		v.forEach((item) => {
-			const field = this.itemComponent(item);
-			field.value = item;
-			this.items.add(field);
-		});
+		if(v) {
+			v.forEach((item) => {
+				const field = this.itemComponent(item);
+				field.value = item;
+				this.items.add(field);
+			});
+		}
 	}
 
-	getValue(): ArrayFieldValue {
+	get value(): ArrayFieldValue {
 
 		const v: ArrayFieldValue = [];
 
