@@ -52,7 +52,8 @@ export class CardMenu extends Component {
 		return "menu" as keyof HTMLElementTagNameMap;
 	}
 
-	protected init() {
+	public constructor() {
+		super();
 
 		this.on("beforerender", () => {
 			if (!this.cardContainer) {
@@ -75,8 +76,6 @@ export class CardMenu extends Component {
 
 			this.createMenu();
 		});
-
-		super.init();
 	}
 
 	private createMenu() {

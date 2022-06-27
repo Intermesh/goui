@@ -66,7 +66,8 @@ export class Splitter extends DraggableComponent {
 		return this.resizeWidth ? {width: this._resizeComponent!.el.offsetWidth} : {height: this._resizeComponent!.el.offsetHeight};
 	}
 
-	protected init() {
+	protected internalRender(): HTMLElement {
+		const el = super.internalRender();
 
 		this.on("dragstart", (comp, dragData, e) => {
 			//resize width if this is a vertical splitter
@@ -114,7 +115,7 @@ export class Splitter extends DraggableComponent {
 			this.saveState();
 		});
 
-		super.init();
+		return el;
 	}
 }
 

@@ -97,12 +97,6 @@ export abstract class Field extends Component {
 
 	private hintEl?: HTMLDivElement;
 
-	protected init() {
-		super.init();
-
-		this.resetValue = this.value;
-	}
-
 	protected validateOnBlur() {
 		// Validate field on blur
 		this.el.addEventListener("focusout", (e) => {
@@ -241,6 +235,10 @@ export abstract class Field extends Component {
 		// if (useForReset) {
 		// 	this.resetValue = v;//ObjectUtil.clone(v);
 		// }
+
+		if(!this.resetValue) {
+			this.resetValue = v;
+		}
 
 		this.fire("setvalue", this, this._value, old);
 	}

@@ -75,13 +75,6 @@ export class Store extends Observable {
 	protected records: StoreRecord[] = [];
 	protected loading = false;
 
-	constructor(config?: StoreConfig<Store>) {
-		super();
-		Object.assign(this, config);
-		this.init();
-	}
-
-
 	/**
 	 * Sort the data
 	 */

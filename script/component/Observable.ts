@@ -135,15 +135,10 @@ export class Observable {
 			(c as unknown as Component).items.replace(...items);
 		}
 
-		c.init();
-
 		return c;
 	}
 
 	private lisnrs: { [key: string]: { listener: Function, unbindkey:Function, options?: ObservableListenerOpts }[] } | undefined;
-	protected init() {
-
-	}
 	
 	/**
 	 * Add listeners

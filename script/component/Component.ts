@@ -153,7 +153,7 @@ export class Component extends Observable {
 	 * if stateId is given it will also be used as itemId
 	 */
 
-	public itemId: string = "";
+	private _itemId: string = "";
 
 	/**
 	 * ID used for storing state of the component in the State storage.
@@ -171,25 +171,21 @@ export class Component extends Observable {
 
 	private _items?: Collection<Component>;
 
-
 	private _mask: Mask | undefined;
 
 	/**
-	 * @inheritDoc
+	 * Component item ID that can be used to lookup the Component inside a Component with Component.findItem() and
+	 * Component.findItemIndex();
+	 *
+	 * if stateId is given it will also be used as itemId
 	 */
-	protected init() {
-
-		if (this.stateId) {
-			this.restoreState(this.getState());
-
-			if (!this.itemId) {
-				this.itemId = this.stateId;
-			}
-		}
-
-		super.init();
+	get itemId() {
+		return this._itemId || this.stateId || "";
 	}
 
+	set itemId(itemId: string) {
+		this._itemId = itemId;
+	}
 
 	private initItems() {
 
@@ -328,6 +324,11 @@ export class Component extends Observable {
 			this.el.className += " " + this.baseCls;
 		}
 		this.renderItems();
+
+		if (this.stateId) {
+			this.restoreState(this.getState());
+		}
+
 		return this.el;
 	}
 

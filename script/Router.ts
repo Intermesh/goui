@@ -40,14 +40,8 @@ class Router extends Observable {
 
 	private params: RegExpMatchArray = [];
 
-	constructor(config?: ObservableConfig<Router>) {
+	constructor() {
 		super();
-		Object.assign(this, config);
-		this.init();
-	}
-
-	protected init() {
-		super.init();
 
 		window.addEventListener('hashchange', () => {
 			this.start();

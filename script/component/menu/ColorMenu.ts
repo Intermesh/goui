@@ -74,7 +74,8 @@ export class ColorMenu extends Menu {
 
 	]
 
-	protected init() {
+	constructor() {
+		super();
 		this.items.add(btn({
 			itemId: "auto",
 			text: "Auto",
@@ -97,8 +98,6 @@ export class ColorMenu extends Menu {
 				}
 			}))
 		});
-
-		super.init();
 	}
 
 	private static rgb2hex(str: string): string {

@@ -1,14 +1,8 @@
 import {EntityStore, QueryParams} from "./EntityStore.js";
 import {Store, StoreConfig, StoreRecord} from "../data/Store.js";
 import {client} from "./Client.js";
-import {Observable} from "../component/Observable.js";
+import {Config, Observable} from "../component/Observable.js";
 
-interface JmapStoreConfig<T extends Observable> extends StoreConfig<T> {
-	entity: string,
-	queryParams?: QueryParams,
-	relations?: Relation,
-	properties?: string[]
-}
 
 type Relation = Record<string, {
 	entity: string,
@@ -18,34 +12,32 @@ type Relation = Record<string, {
 
 
 export class JmapStore extends Store {
-	private entityStore!: EntityStore;
+	private entityStore: EntityStore;
 
-	protected entity!: string;
+	private entity: string;
 
 	public queryParams: QueryParams = {};
 
 	public hasMore = false;
 
-	protected relations?: Relation;
+	public relations?: Relation;
 
-	protected properties?: string[] = []
-	private _hasNext = false;
+	public properties?: string[] = []
 
-	constructor(config?: JmapStoreConfig<JmapStore>) {
+	constructor(entity:string) {
 		super();
-		Object.assign(this, config);
-		this.init();
-	}
 
-	protected init() {
-		super.init();
+		this.entity = entity;
+
 		this.entityStore = client.store(this.entity);
 
 		// very quick and dirty update on changes to the entity store.
-		this.entityStore.on('change', () => {
-			this.reload();
+		this.entityStore.on('change', async () => {
+			await this.reload();
 		});
+
 	}
+
 
 	protected internalLoad(append = false) {
 
@@ -141,4 +133,7 @@ export class JmapStore extends Store {
  *
  * @param config
  */
-export const jmapstore = (config?: JmapStoreConfig<Store>) => JmapStore.create(config);
+export const jmapstore = (config: Config<Store> & {entity: string}) => {
+	const s = new JmapStore(config.entity)
+	Object.assign(s, config);
+};

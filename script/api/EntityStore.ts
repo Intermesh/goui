@@ -111,13 +111,6 @@ export class EntityStore extends Observable {
 	name!: string
 	client!: Client
 
-	constructor(config?: EntityStoreConfig<EntityStore>) {
-		super();
-		Object.assign(this, config);
-		this.init();
-	}
-
-
 	get(ids: Id[] | ResultReference = [], properties: string[] = []): Promise<GetResponse> {
 
 		return this.client.jmap(this.name + '/get', {

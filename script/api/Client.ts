@@ -57,11 +57,6 @@ export class Client extends Observable {
 
 	private static masked = false;
 
-	constructor() {
-		super();
-		this.init();
-	}
-
 	private static mask() {
 		this.masked = true;
 		setTimeout(() => {
