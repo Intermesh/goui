@@ -34,8 +34,8 @@ export class Toolbar extends Component {
 
 	protected baseCls = "toolbar"
 
-	get tagName() {
-		return "menu" as keyof HTMLElementTagNameMap
+	constructor() {
+		super("menu");
 	}
 
 }

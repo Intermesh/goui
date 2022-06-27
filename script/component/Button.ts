@@ -70,8 +70,7 @@ export class Button extends Component {
 	private _textEl?: HTMLElement;
 
 	constructor() {
-		super();
-		this.tagName = "button";
+		super("button");
 	}
 
 	protected baseCls = "button"

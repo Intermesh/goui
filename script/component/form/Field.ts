@@ -71,13 +71,12 @@ export interface Field extends Component {
 
 export abstract class Field extends Component {
 
+	constructor(tagName:keyof HTMLElementTagNameMap = "label") {
+		super(tagName);
+	}
 	readonly isFormField = true
 
 	protected baseCls = "form-field"
-
-	get tagName() {
-		return "label" as keyof HTMLElementTagNameMap;
-	}
 
 	private _name?: string;
 

@@ -34,16 +34,14 @@ export interface ArrayField {
  */
 export class ArrayField extends ContainerField {
 
-	get tagName() {
-		return "div" as keyof HTMLElementTagNameMap;
-	}
+
 
 	/**
 	 *
 	 * @param itemComponent Function that returns a new form field for an array item
 	 */
 	constructor(public itemComponent: ItemComponent) {
-		super();
+		super("div");
 	}
 
 	set value(v: ArrayFieldValue) {

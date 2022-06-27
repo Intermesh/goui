@@ -62,9 +62,9 @@ export class Login extends Window {
 			},
 			fieldset({
 					flex: "1 2 auto",
-					// style: {
-					// 	overflow: "auto"
-					// }
+					style: {
+						overflow: "auto"
+					}
 				},
 				comp({
 					tagName: "p",
@@ -84,9 +84,9 @@ export class Login extends Window {
 					required: true
 				}),
 				btn({
-					// style: {
-					// 	width: "100%"
-					// },
+					style: {
+						width: "100%"
+					},
 					type: "submit",
 					text: t("Login")
 				}),
@@ -96,9 +96,9 @@ export class Login extends Window {
 				}),
 
 				btn({
-					// style: {
-					// 	width: "100%"
-					// },
+					style: {
+						width: "100%"
+					},
 					cls: "raised",
 					type: "button",
 					text: t("Register"),
@@ -257,9 +257,9 @@ export class Login extends Window {
 				}),
 
 				btn({
-					// style: {
-					// 	width: "100%"
-					// },
+					style: {
+						width: "100%"
+					},
 					type: "submit",
 					text: t("Register")
 				})

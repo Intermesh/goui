@@ -8,9 +8,8 @@ export type DLRecord = [string, string | renderFunc, ...(string | renderFunc)[]]
 
 export class DescriptionList extends Component {
 
-
-	get tagName() {
-		return "dl" as keyof HTMLElementTagNameMap
+	constructor() {
+		super("dl");
 	}
 
 	private _records?: DLRecord;

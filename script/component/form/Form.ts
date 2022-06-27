@@ -110,8 +110,8 @@ export class Form extends ContainerField {
 	protected baseCls = "form"
 	public hideLabel = true;
 
-	get tagName() {
-		return "form" as keyof HTMLElementTagNameMap
+	constructor() {
+		super("form");
 	}
 
 

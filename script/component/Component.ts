@@ -130,7 +130,10 @@ export type ComponentState = Record<string, any>;
  */
 export class Component extends Observable {
 
-	private _tagName?: keyof HTMLElementTagNameMap;
+	constructor(readonly tagName: keyof HTMLElementTagNameMap = "div") {
+		super();
+	}
+
 
 	/**
 	 * A base class not configurable. cls can be used to add extra classes leaving this class alone
@@ -281,17 +284,6 @@ export class Component extends Observable {
 			this._el = document.createElement(this.tagName);
 		}
 		return this._el;
-	}
-
-	/**
-	 * Element's tagname. Defaults to "div"
-	 */
-	set tagName(tagName: keyof HTMLElementTagNameMap) {
-		this._tagName = tagName;
-	}
-
-	get tagName() {
-		return this._tagName || "div";
 	}
 
 	/**
@@ -518,8 +510,16 @@ export class Component extends Observable {
 	}
 
 	get width() {
-		return this.el.offsetWidth;
+		return this.el.offsetWidth || parseFloat(this.el.style.width);
 	}
+
+	/**
+	 * Width in pixels
+	 */
+	set style(style: Partial<CSSStyleDeclaration>) {
+		Object.assign(this.el.style, style);
+	}
+
 
 	/**
 	 * height in pixels
@@ -529,7 +529,7 @@ export class Component extends Observable {
 	}
 
 	get height() {
-		return this.el.offsetHeight;
+		return this.el.offsetHeight || parseFloat(this.el.style.height);
 	}
 
 	/**

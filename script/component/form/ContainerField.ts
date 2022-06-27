@@ -21,8 +21,8 @@ export interface ContainerField extends Field {
  */
 export class ContainerField extends Field {
 
-	get tagName() {
-		return "div" as keyof HTMLElementTagNameMap;
+	constructor(tagName:keyof HTMLElementTagNameMap = "div") {
+		super(tagName);
 	}
 
 	protected baseCls = "";

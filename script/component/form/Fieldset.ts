@@ -8,8 +8,9 @@ import {Form} from "./Form.js";
  * @see Form
  */
 export class Fieldset extends Component {
-	get tagName() {
-		return "fieldset" as keyof HTMLElementTagNameMap
+
+	constructor() {
+		super("fieldset");
 	}
 
 	/**

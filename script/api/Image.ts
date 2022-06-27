@@ -11,8 +11,8 @@ export class Image extends Component {
 
 	public blobId = "";
 
-	get tagName() {
-		return  "img" as keyof HTMLElementTagNameMap;
+	constructor() {
+		super("img");
 	}
 
 	private static cache: Record<string, Promise<any>> = {};

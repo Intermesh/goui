@@ -48,12 +48,9 @@ export class CardMenu extends Component {
 	public cardContainer?: CardContainer
 	protected baseCls = "cardmenu";
 
-	get tagName () {
-		return "menu" as keyof HTMLElementTagNameMap;
-	}
 
 	public constructor() {
-		super();
+		super("menu");
 
 		this.on("beforerender", () => {
 			if (!this.cardContainer) {

@@ -71,11 +71,6 @@ document.execCommand("styleWithCSS", false, "true");
  * @see Form
  */
 export class HtmlField extends Field {
-
-	get tagName() {
-		return "div" as keyof HTMLElementTagNameMap;
-	}
-
 	protected baseCls = 'form-field html-field'
 
 	/**
@@ -90,7 +85,7 @@ export class HtmlField extends Field {
 	private toolbar?: Toolbar;
 
 	constructor() {
-		super();
+		super("div");
 		this.value = "";
 	}
 

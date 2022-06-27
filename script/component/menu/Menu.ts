@@ -76,8 +76,8 @@ import {Config} from "../Observable.js";
  */
 export class Menu extends Component {
 
-	get tagName() {
-		return "menu" as keyof HTMLElementTagNameMap;
+	constructor() {
+		super("menu");
 	}
 
 	protected baseCls = "dropdown fade-out";

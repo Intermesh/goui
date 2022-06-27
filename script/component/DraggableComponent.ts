@@ -108,8 +108,8 @@ export class DraggableComponent extends Component {
 	 */
 	public setPosition?: boolean;
 
-	constructor() {
-		super();
+	constructor(tagName:keyof HTMLElementTagNameMap = "div") {
+		super(tagName);
 		this.baseCls += " draggable";
 
 		this.on("render", () => {

@@ -9,14 +9,6 @@ import {Config, ObservableListener, ObservableListenerOpts} from "./Observable.j
  */
 export class Splitter extends DraggableComponent {
 
-	get tagName() {
-		return "hr" as keyof HTMLElementTagNameMap;
-	}
-
-
-
-
-
 	private _resizeComponent?: Component;
 
 	/**
@@ -43,7 +35,7 @@ export class Splitter extends DraggableComponent {
 	 *
 	 */
 	constructor(private resizeComponentPredicate: FindComponentPredicate) {
-		super();
+		super("hr");
 	}
 
 	protected restoreState(state: ComponentState) {
