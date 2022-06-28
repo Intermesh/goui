@@ -767,7 +767,7 @@ export const mask = (config?: Config<Mask>) => Object.assign(new Mask(), config)
  * Shorthand function to create {@see Component}
  */
 export const comp = (config?: Config<Component>, ...items: Component[]) => {
-	const c = new Component();
+	const c = new Component(config?.tagName);
 	if (config) {
 		Object.assign(c, config);
 	}
