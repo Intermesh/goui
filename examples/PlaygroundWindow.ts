@@ -12,8 +12,29 @@ import {datefield} from "../script/component/form/DateField.js";
 import {checkbox} from "../script/component/form/CheckboxField.js";
 import {PlaygroundTable} from "./PlaygroundTable.js";
 import {menu} from "../script/component/menu/Menu.js";
+import {autocomplete} from "../script/component/form/AutocompleteField.js";
+import {store, StoreRecord} from "../script/data/Store.js";
+import {DateTime} from "../script/util/DateTime.js";
+import {column, datecolumn, table} from "../script/component/Table.js";
 
 export const playgroundWin = () => {
+
+	const records:StoreRecord[] = [];
+
+	for(let i = 1; i <= 20; i++) {
+		records.push({
+			description: "Test " + i,
+			createdAt: (new DateTime()).addDays(Math.ceil(Math.random() * -365)).format("c")
+		});
+	}
+
+	const autoCompleteStore = store({
+		records: records,
+		sort: [{property: "description", isAscending: true}]
+	});
+
+
+
 	const playgroundWin = win({
 			stateId: "playground-window",
 			modal: false,
@@ -60,6 +81,29 @@ export const playgroundWin = () => {
 						label: "Date",
 						name: "date"
 
+					}),
+
+					autocomplete({
+						label: "Autocomplete",
+						name: "autocomplete",
+						table: table({
+							store: autoCompleteStore,
+							columns: [
+								column({
+									header: "Description",
+									property: "description",
+									sortable: true,
+									resizable: true,
+									width: 300
+								}),
+
+								datecolumn({
+									header: "Created At",
+									property: "createdAt",
+									sortable: true
+								})
+							]
+						})
 					}),
 
 					htmlfield({

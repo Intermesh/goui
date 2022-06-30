@@ -365,3 +365,15 @@ form {
 	//	margin: dp(12) 0 dp(36) 0;
 	//}
 }
+
+
+
+.autocomplete {
+
+}
+
+.autocomplete-suggestions {
+	box-shadow: 0 0px 20px 0 rgb(0 0 0 / 40%);
+	border: 2px solid $colorPrimary;
+	border-radius: dp(12);
+}

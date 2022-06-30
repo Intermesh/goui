@@ -61,26 +61,46 @@ export class TableRowSelect extends Observable {
 	public multiSelect = true;
 	private hasKeyUpListener: Boolean = false;
 
-	constructor(private table: Table) {
+	constructor(readonly table: Table) {
 		super();
+
+		this.table.on('render', () =>{
+			const tableEl = this.table.el;
+
+			tableEl.classList.add('rowSelect');
+			tableEl.addEventListener("keydown", (e) => {
+				this.onKeyDown(e);
+			})
+
+			this.table.on('rowclick', (table: Table, index: number, e: MouseEvent) => {
+				this.onRowClick(table, index, e);
+			});
+
+			tableEl.addEventListener("focus", (e) => {
+				// use set timeout so rowclick event will be handled first
+				setTimeout(() => {
+					if(!this.selected.length && this.table.store.getRecordAt(0)) {
+						this.setSelected([0]);
+					}
+				}, 300);
+			})
+		})
 	}
 
 	/**
 	 * Get selected indexes
 	 */
-	public getSelected() {
+	public get selected() {
 		return [...this._selected];
 	}
 
-	/**
-	 * Get the table this selection model belongs to
-	 */
-	public getTable() {
-		return this.table;
+	public set selected(newSelection) {
+		this.setSelected(newSelection);
 	}
 
+
 	private onRowClick(table: Table, index: number, e: MouseEvent) {
-		let selection = this.getSelected();
+		let selection = this.selected;
 
 		if (e.shiftKey && this.multiSelect) {
 
@@ -114,7 +134,7 @@ export class TableRowSelect extends Observable {
 	 * @param newSelection
 	 * @param silent Suspends 'selectionchange' event
 	 */
-	public setSelected(newSelection: number[], silent = false) {
+	private setSelected(newSelection: number[], silent = false) {
 
 		const old = this._selected;
 
@@ -155,7 +175,7 @@ export class TableRowSelect extends Observable {
 
 		let index = 0, change = false;
 		if (e.key == "ArrowDown") {
-			if (this.lastIndex == this.table.getStore().getRecords().length - 1) {
+			if (this.lastIndex == this.table.store.getRecords().length - 1) {
 				return;
 			}
 
@@ -169,7 +189,7 @@ export class TableRowSelect extends Observable {
 
 		if (e.shiftKey && this.multiSelect) {
 
-			const selected = this.getSelected();
+			const selected = this.selected;
 
 			if ((e.key == "ArrowDown" && index > this.shiftStartIndex!) || (e.key == "ArrowUp" && index < this.shiftStartIndex!)) {
 

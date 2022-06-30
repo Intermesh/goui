@@ -520,6 +520,19 @@ export class Component extends Observable {
 		Object.assign(this.el.style, style);
 	}
 
+	get style() {
+		return this.el.style;
+	}
+
+	public computeZIndex() : number {
+		const z = parseInt(window.getComputedStyle(this.el).getPropertyValue('z-index'));
+		if (!z) {
+			return this.parent ? this.parent.computeZIndex() : 0;
+		} else {
+			return z;
+		}
+	};
+
 
 	/**
 	 * height in pixels

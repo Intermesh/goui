@@ -234,7 +234,7 @@ export class Table extends Component {
 	 *
 	 * @param store Store to provide data
 	 */
-	constructor(private store: Store) {
+	constructor(readonly store: Store) {
 		super();
 		this.tabIndex = 0;
 	}
@@ -257,13 +257,18 @@ export class Table extends Component {
 	 *
 	 * @param rowSelection
 	 */
-	set rowSelection(rowSelection: boolean | Partial<TableRowSelectConfig>) {
-		if (typeof this.rowSelection != "boolean") {
+	set rowSelection(rowSelection: boolean | Partial<TableRowSelectConfig> | TableRowSelect | undefined) {
+		if (typeof rowSelection != "boolean") {
 			(rowSelection as TableRowSelectConfig).table = this;
 			this.rowSelect = rowselect(rowSelection as TableRowSelectConfig);
 		} else {
 			this.rowSelect = rowselect({table: this});
 		}
+		console.warn(this.rowSelect);
+	}
+
+	get rowSelection() : TableRowSelect | undefined {
+		return this.rowSelect;
 	}
 
 	private tableEl?: HTMLTableElement;
@@ -291,20 +296,20 @@ export class Table extends Component {
 		});
 
 		if (this.rowSelection) {
-			this.on("render", (comp) => {
+
 				this.el.addEventListener('keydown', (ev) => {
-					if (!ev.shiftKey && !ev.ctrlKey && (ev.key == "ArrowDown" || ev.key == "ArrowUp")) {
+				if (!ev.shiftKey && !ev.ctrlKey && (ev.key == "ArrowDown" || ev.key == "ArrowUp")) {
 
-						const selected = this.rowSelect!.getSelected();
-						if (selected.length) {
-							const rowIndex = selected[0];
-							const record = this.store.getRecordAt(rowIndex);
+					const selected = this.rowSelect!.selected;
+					if (selected.length) {
+						const rowIndex = selected[0];
+						const record = this.store.getRecordAt(rowIndex);
 
-							this.fire("navigate", this, rowIndex, record);
-						}
+						this.fire("navigate", this, rowIndex, record);
 					}
-				})
+				}
 			});
+
 		}
 	}
 
@@ -389,10 +394,10 @@ export class Table extends Component {
 		const el = this.el;
 		this.emptyStateEl = document.createElement("div");
 		this.emptyStateEl.innerHTML = this.emptyStateHtml;
-		this.emptyStateEl.hidden = this.getStore().getRecords().length > 0;
+		this.emptyStateEl.hidden = this.store.getRecords().length > 0;
 		el.appendChild(this.emptyStateEl);
 
-		this.getStore().on("load", (store, records, append) => {
+		this.store.on("load", (store, records, append) => {
 			if (!append && records.length == 0) {
 				this.tableEl!.hidden = true;
 				this.emptyStateEl!.hidden = false;
@@ -406,7 +411,7 @@ export class Table extends Component {
 	private renderTable() {
 		const el = this.el;
 		this.tableEl = document.createElement('table');
-		this.tableEl.hidden = this.getStore().getRecords().length == 0;
+		this.tableEl.hidden = this.store.getRecords().length == 0;
 
 		if (this.fitComponent) {
 			this.tableEl.style.minWidth = "100%";
@@ -741,13 +746,6 @@ export class Table extends Component {
 		this.tbody.appendChild(frag);
 
 		this.fire("renderrows", this, records);
-	}
-
-	/**
-	 * Get the data store
-	 */
-	public getStore() {
-		return this.store;
 	}
 
 	private renderRow(record: any, tbody: DocumentFragment) {

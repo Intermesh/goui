@@ -111,7 +111,7 @@ export class TextField extends Field {
 	}
 
 
-	set value(v: string | undefined) {
+	set value(v: any) {
 
 		if (this.input) {
 			this.input.value = v + "";

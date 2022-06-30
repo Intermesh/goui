@@ -20,14 +20,16 @@ export class PlaygroundTable extends Table {
 			records: records,
 			sort: [{property: "number", isAscending: true}]
 		}));
+
 		this.title = "Table";
 		this.itemId = "table";
 		this.cls = "fit";
 
+		this.rowSelection = true;
 
-		this.on("navigate",(table, rowIndex, record) => {
-			Window.alert("Selected", "You navigated to " + record.number + ". Press 'Escape' to close me and navigate the grid with the arrow keys.");
-		});
+		// this.on("navigate",(table, rowIndex, record) => {
+		// 	Window.alert("Selected", "You navigated to " + record.number + ". Press 'Escape' to close me and navigate the grid with the arrow keys.");
+		// });
 
 		this.columns = [
 
