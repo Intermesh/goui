@@ -289,7 +289,6 @@ export class Table extends Component {
 		} else {
 			this.rowSelect = rowselect({table: this});
 		}
-		console.warn(this.rowSelect);
 	}
 
 	get rowSelection() : TableRowSelect | undefined {
@@ -815,7 +814,7 @@ export class Table extends Component {
 	}
 }
 
-type TableConfig = Config<Table> & {
+type TableConfig = Omit<Config<Table>, "rowSelection"> & {
 	/**
 	 * Store that provides the data
 	 */
@@ -824,7 +823,9 @@ type TableConfig = Config<Table> & {
 	/**
 	 * The table columns
 	 */
-	columns: TableColumn[]
+	columns: TableColumn[],
+
+	rowSelection?: boolean | Partial<TableRowSelectConfig>
 }
 
 /**

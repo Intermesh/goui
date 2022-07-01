@@ -30,7 +30,7 @@ export type StoreRecord = { [key: string]: any };
 /**
  * @inheritDoc
  */
-export interface StoreEventMap<Sender extends Observable> extends CollectionEventMap<Sender, StoreRecord> {
+export interface StoreEventMap<T extends Observable> extends CollectionEventMap<T, StoreRecord> {
 	/**
 	 * Fires when data is loaded into the store
 	 *
@@ -38,14 +38,14 @@ export interface StoreEventMap<Sender extends Observable> extends CollectionEven
 	 * @param records
 	 * @param append Whether the records were added to the store.
 	 */
-	load?: <T extends Sender>(store: T, records: StoreRecord[], append: boolean) => void
+	load: <Sender extends T>(store: Sender, records: StoreRecord[], append: boolean) => void
 }
 
 export interface Store {
-	on<K extends keyof StoreEventMap<this>>(eventName: K, listener: StoreEventMap<this>[K], options?: ObservableListenerOpts): void
+	on<K extends keyof StoreEventMap<this>>(eventName: K, listener: Partial<StoreEventMap<this>>[K], options?: ObservableListenerOpts): void
 
-	fire<K extends keyof StoreEventMap<this>>(eventName: K, ...args: Parameters<NonNullable<StoreEventMap<this>[K]>>): boolean
-	set listeners(listeners: StoreEventMap<this>)
+	fire<K extends keyof StoreEventMap<this>>(eventName: K, ...args: Parameters<StoreEventMap<this>[K]>): boolean
+	set listeners(listeners: ObservableListener<StoreEventMap<this>>)
 }
 
 /**

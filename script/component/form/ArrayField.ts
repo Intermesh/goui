@@ -20,7 +20,6 @@ type ItemComponent = (value?: Record<string, any>) => Field;
 type ArrayFieldValue = Record<string, any>[];
 
 export interface ArrayField {
-	get items(): Collection<Field>;
 
 	// on<K extends keyof FieldEventMap<this>>(eventName: K, listener: Partial<FieldEventMap<this>>[K], options?: ObservableListenerOpts): void
 	//
@@ -63,7 +62,9 @@ export class ArrayField extends ContainerField {
 		const v: ArrayFieldValue = [];
 
 		this.items.forEach((item) => {
-			v.push(item.value);
+			if(item instanceof Field) {
+				v.push(item.value);
+			}
 		});
 
 		return v;
