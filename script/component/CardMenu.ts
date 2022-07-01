@@ -48,6 +48,14 @@ export class CardMenu extends Component {
 	public cardContainer?: CardContainer
 	protected baseCls = "cardmenu";
 
+	focus(o?: FocusOptions) {
+		const first = this.cardContainer?.items.first();
+		if(first) {
+			first.focus(o);
+		} else {
+			super.focus(o);
+		}
+	}
 
 	public constructor() {
 		super("menu");

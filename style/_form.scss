@@ -2,7 +2,7 @@
 	font: $fontBase;
 	min-width: dp(100); //for select element
 	margin: 0;
-	transition: border-color 100ms linear, box-shadow 225ms linear;
+	transition: border-color 100ms linear;
 	border-radius: dp(12);
 	background-color: $colorBackgroundInput;
 	border: 2px solid $colorBorder;
@@ -68,7 +68,7 @@ $formLabelWidth: dp(160);
 		}
 
 		.hint {
-			transition: border-color 100ms linear, box-shadow 225ms linear;
+			transition: border-color 100ms linear;
 			background-color: $colorBackgroundInput;
 			border: 2px solid $colorBorder;
 			border-radius: 0 0 dp(12) dp(12);
@@ -369,11 +369,24 @@ form {
 
 
 .autocomplete {
-
+	&.expanded {
+		.control {
+			border-color: $colorPrimary;
+			border-bottom-left-radius: 0;
+			border-bottom-right-radius: 0;
+			border-bottom: 0;
+			box-shadow: 0px 10px 20px 0 rgb(0 0 0 / 40%);
+		}
+	}
 }
 
 .autocomplete-suggestions {
-	box-shadow: 0 0px 20px 0 rgb(0 0 0 / 40%);
+	box-shadow: 0px 10px 20px 0 rgb(0 0 0 / 40%);
 	border: 2px solid $colorPrimary;
+	border-top: 0;
 	border-radius: dp(12);
+	border-top-left-radius: 0;
+	border-top-right-radius: 0;
+	background-color: white;
+
 }

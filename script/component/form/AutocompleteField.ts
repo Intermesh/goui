@@ -31,67 +31,36 @@ export class AutocompleteField extends TextField {
 			this.onInput(ev as KeyboardEvent);
 		})
 
-		this.table.cls = "autocomplete-suggestions";
-		this.table.hidden = true;
-		this.table.style.position = 'absolute';
-		this.table.style.width = '100%';
-		this.table.height = 300;
-		this.table.style.backgroundColor = "white";
-
-		this.table.rowSelection = true;
-
-		this.table.on("rowclick", (table, rowIndex, ev) => {
-			this.value = this.table.store.getRecordAt(rowIndex);
-			this.table.hide();
-			this.focus();
-		});
-
-		this.table.el.addEventListener('keypress', (ev) => {
-			const selected = this.table.rowSelection!.selected;
-			if(selected.length) {
-				this.value = this.table.store.getRecordAt(selected[0]);
-			}
-
-			this.table.hide();
-			this.focus();
-		})
+		this.setupTable();
 
 		this.input!.addEventListener('keydown', (ev ) => {
 
-			if((ev as KeyboardEvent).key == 'ArrowDown') {
-				this.table.focus();
+			switch((ev as KeyboardEvent).key) {
+				case 'ArrowDown':
+					this.table.show();
+					this.table.focus();
+					break;
+
+				case 'Escape':
+					if(!this.table.hidden) {
+						this.table.hide();
+						ev.stopPropagation();
+					}
+					break;
 			}
 		});
-
-
 
 		return el;
 	}
 
 
-	private onInput(ev: KeyboardEvent) {
-		this.showTable();
+	protected internalRemove() {
+		this.table.remove();
+		return super.internalRemove();
 	}
 
-	private showTable() {
-		const rect = this.input!.getBoundingClientRect();
-
-		this.table.el.style.left = rect.x + "px";
-		this.table.el.style.top =  rect.bottom + "px";
-		this.table.el.style.zIndex = (this.computeZIndex() + 1).toString();
-		this.table.width = this.width;
-
-		//must be rendered and visible to get width below
-		if (!this.table.rendered) {
-			root.items.add(this.table);
-		}
-
+	private onInput(ev: KeyboardEvent) {
 		this.table.show();
-
-		//hide menu when clicked elsewhere
-		// window.addEventListener("mousedown", (ev) => {
-		// 	this.table.hide();
-		// }, {once: true});
 	}
 
 	set value(v: StoreRecord) {
@@ -105,6 +74,81 @@ export class AutocompleteField extends TextField {
 
 	get value() {
 		return this._value;
+	}
+
+	private onTableShow() {
+		this.el.classList.add("expanded");
+
+		const rect = this.input!.getBoundingClientRect();
+
+		//Align table with input
+		this.table.el.style.left = rect.x + "px";
+		this.table.el.style.top = rect.bottom + -2 + "px";
+		this.table.width = this.width;
+		if(!this.table.el.style.zIndex) {
+			this.table.el.style.zIndex = (this.computeZIndex() + 1).toString();
+		}
+
+		//must be rendered and visible to get width below
+		if (!this.table.rendered) {
+			root.items.add(this.table);
+		}
+
+		//hide menu when clicked elsewhere
+		window.addEventListener("mousedown", (ev) => {
+			this.table.hide();
+		}, {once: true});
+	}
+
+	private onTableHide() {
+		this.el.classList.remove("expanded");
+		this.focus();
+	}
+
+	private setupTable() {
+
+		//setup for expanding under input
+		this.table.cls = "autocomplete-suggestions";
+		this.table.hidden = true;
+		this.table.style.position = 'absolute';
+
+		if(!this.table.height) {
+			this.table.height = 300;
+		}
+
+		this.table.rowSelection = true;
+
+		this.table.on("show",  () => {
+			this.onTableShow();
+		});
+
+		this.table.on("hide",  () => {
+			this.onTableHide();
+		});
+
+		// set value on click and enter
+		this.table.on("rowclick", (table, rowIndex, ev) => {
+			this.value = this.table.store.getRecordAt(rowIndex);
+			this.table.hide();
+		});
+
+		this.table.el.addEventListener('keydown', (ev) => {
+			switch(ev.key) {
+
+				case "Enter":
+					const selected = this.table.rowSelection!.selected;
+					if (selected.length) {
+						this.value = this.table.store.getRecordAt(selected[0]);
+					}
+
+					this.table.hide();
+				break;
+
+				case 'Escape':
+					this.table.hide();
+					break;
+			}
+		})
 	}
 }
 

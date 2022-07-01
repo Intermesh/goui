@@ -6,9 +6,9 @@ import {Window} from "../script/component/Window.js";
 export class PlaygroundTable extends Table {
 
 	constructor() {
-		const records:StoreRecord[] = [];
+		const records: StoreRecord[] = [];
 
-		for(let i = 1; i <= 20; i++) {
+		for (let i = 1; i <= 20; i++) {
 			records.push({
 				number: i,
 				description: "Test " + i,
@@ -16,10 +16,36 @@ export class PlaygroundTable extends Table {
 			});
 		}
 
-		super(store({
-			records: records,
-			sort: [{property: "number", isAscending: true}]
-		}));
+		super(
+			store({
+				records: records,
+				sort: [{property: "number", isAscending: true}]
+			}),
+
+			[
+				column({
+					header: "Number",
+					property: "number",
+					sortable: true,
+					resizable: true,
+					width: 200
+				}),
+
+				column({
+					header: "Description",
+					property: "description",
+					sortable: true,
+					resizable: true,
+					width: 300
+				}),
+
+				datecolumn({
+					header: "Created At",
+					property: "createdAt",
+					sortable: true
+				})
+			]
+		);
 
 		this.title = "Table";
 		this.itemId = "table";
@@ -31,29 +57,5 @@ export class PlaygroundTable extends Table {
 		// 	Window.alert("Selected", "You navigated to " + record.number + ". Press 'Escape' to close me and navigate the grid with the arrow keys.");
 		// });
 
-		this.columns = [
-
-			column({
-				header: "Number",
-				property: "number",
-				sortable: true,
-				resizable: true,
-				width: 200
-			}),
-
-			column({
-				header: "Description",
-				property: "description",
-				sortable: true,
-				resizable: true,
-				width: 300
-			}),
-
-			datecolumn({
-				header: "Created At",
-				property: "createdAt",
-				sortable: true
-			})
-		];
 	}
 }

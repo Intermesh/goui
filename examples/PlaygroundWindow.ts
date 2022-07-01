@@ -41,12 +41,7 @@ export const playgroundWin = () => {
 			title: "Window test",
 			width: 800,
 			height: 600,
-			maximizable: true,
-			listeners: {
-				focus: (win) => {
-					win.findChild("requiredField")!.focus();
-				}
-			}
+			maximizable: true
 		},
 
 		cardmenu(),
@@ -87,20 +82,14 @@ export const playgroundWin = () => {
 						label: "Autocomplete",
 						name: "autocomplete",
 						table: table({
+							headers: false,
 							store: autoCompleteStore,
 							columns: [
 								column({
-									header: "Description",
 									property: "description",
 									sortable: true,
 									resizable: true,
 									width: 300
-								}),
-
-								datecolumn({
-									header: "Created At",
-									property: "createdAt",
-									sortable: true
 								})
 							]
 						})

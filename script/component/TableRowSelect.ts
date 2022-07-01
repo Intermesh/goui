@@ -164,13 +164,13 @@ export class TableRowSelect extends Observable {
 	private onKeyDown(e: KeyboardEvent) {
 
 		if (e.key == "Shift") {
-
 			this.shiftStartIndex = this.lastIndex;
 		}
 
 		if (e.key != "ArrowDown" && e.key != "ArrowUp") {
 			return;
 		}
+
 		e.preventDefault();
 
 		let index = 0, change = false;

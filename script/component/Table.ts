@@ -8,6 +8,7 @@ import {menu, Menu} from "./menu/Menu.js";
 import {checkbox} from "./form/CheckboxField.js";
 import {Notifier} from "../Notifier.js";
 import {draggable} from "./DraggableComponent.js";
+import {t} from "../Translate.js";
 
 
 type TableColumnRenderer = (columnValue: any, record: StoreRecord, td: HTMLTableCellElement, table: Table) => string | Promise<string> | Component | Promise<Component>;
@@ -29,8 +30,7 @@ export class TableColumn extends Observable {
 	/**
 	 * Header in the table
 	 */
-	header: string = "";
-
+	header?: string;
 
 	/**
 	 * Renderer function for the display
@@ -62,7 +62,10 @@ export class TableColumn extends Observable {
 	 */
 	hidden = false
 
-
+	/**
+	 * When rendered this is set to the DOM element.
+	 * It's used to update the header width
+	 */
 	headerEl?: HTMLTableCellElement;
 }
 
@@ -75,6 +78,11 @@ type TableColumnConfig = Config<TableColumn> & {
 	property: string
 };
 
+/**
+ * Create a table column
+ *
+ * @param config
+ */
 export const column = (config: TableColumnConfig) => Object.assign(new TableColumn(config.property), config);
 
 export class DateTimeColumn extends TableColumn {
@@ -87,6 +95,10 @@ export class DateTimeColumn extends TableColumn {
 	width = 192
 }
 
+/**
+ * Create a column showing date and time
+ * @param config
+ */
 export const datetimecolumn = (config: TableColumnConfig) => Object.assign(new DateTimeColumn(config.property), config);
 
 
@@ -100,6 +112,11 @@ export class DateColumn extends TableColumn {
 	width = 128
 }
 
+/**
+ * Create a column showing just a date
+ *
+ * @param config
+ */
 export const datecolumn = (config: TableColumnConfig) => Object.assign(new DateColumn(config.property), config);
 
 
@@ -112,6 +129,11 @@ export class CheckboxColumn extends TableColumn {
 	}
 }
 
+/**
+ * Create a checkbox column
+ *
+ * @param config
+ */
 export const checkboxcolumn = (config: TableColumnConfig) => Object.assign(new CheckboxColumn(config.property), config);
 
 /**
@@ -234,21 +256,24 @@ export class Table extends Component {
 	 *
 	 * @param store Store to provide data
 	 */
-	constructor(readonly store: Store) {
+	constructor(readonly store: Store, public columns: TableColumn[]) {
 		super();
 		this.tabIndex = 0;
 	}
 
-	protected emptyStateHtml = `<div class="empty-state"><i class="icon">article</i><p>Nothing to show</p></div>`
+	/**
+	 * Show headers
+	 */
+	public headers = true;
+
+	/**
+	 * Shown when the table is empty.
+	 */
+	public emptyStateHtml = `<div class="empty-state"><i class="icon">article</i><p>${t("Nothing to show")}</p></div>`
 
 	private minCellWidth = 30
 
-	protected baseCls = "table scroll"
-
-	/**
-	 * Columns of the table
-	 */
-	public columns: TableColumn[] = []
+	protected baseCls = "table scroll";
 
 
 	/**
@@ -417,7 +442,9 @@ export class Table extends Component {
 			this.tableEl.style.minWidth = "100%";
 		}
 
-		this.renderHeaders();
+		if(this.headers) {
+			this.renderHeaders();
+		}
 
 		this.renderRows(this.store.getRecords());
 
@@ -618,7 +645,7 @@ export class Table extends Component {
 			}
 
 			//column resize splitter
-			header.innerHTML = h.header;
+			header.innerHTML = h.header + "";
 
 			h.headerEl = header;
 
@@ -687,12 +714,6 @@ export class Table extends Component {
 
 		this.saveState();
 	}
-
-	// public setColumnwidth(col:TableColumn, width:number) {
-	// 	col.width = width;
-	// 	this.tableEl!.style.width = this.calcTableWidth() + "px";
-	// 	col.headerEl!.style.width = width + "px"
-	// }
 
 	private colsAreFixed = false;
 
@@ -797,7 +818,12 @@ type TableConfig = Config<Table> & {
 	/**
 	 * Store that provides the data
 	 */
-	store: Store
+	store: Store,
+
+	/**
+	 * The table columns
+	 */
+	columns: TableColumn[]
 }
 
 /**
@@ -805,4 +831,4 @@ type TableConfig = Config<Table> & {
  *
  * @param config
  */
-export const table = (config: TableConfig) => Object.assign(new Table(config.store), config);
+export const table = (config: TableConfig) => Object.assign(new Table(config.store, config.columns), config);
