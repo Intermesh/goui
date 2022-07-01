@@ -9,6 +9,7 @@ import {Config, ObservableListener, ObservableListenerOpts} from "./Observable.j
  */
 export class Splitter extends DraggableComponent {
 
+
 	private _resizeComponent?: Component;
 
 	/**
@@ -36,22 +37,33 @@ export class Splitter extends DraggableComponent {
 	 */
 	constructor(private resizeComponentPredicate: FindComponentPredicate) {
 		super("hr");
-	}
-
-	protected restoreState(state: ComponentState) {
 
 		this.on("added", () => {
 			// find component to resize if it's an id string
 			if (!(this._resizeComponent instanceof Component)) {
 				this._resizeComponent = this.parent!.findChild(this.resizeComponentPredicate)!;
+
+				if(!this._resizeComponent) {
+					throw "Could not find component to resize!";
+				}
 			}
 
-			if (state.width)
-				this._resizeComponent.width = state.width;
+			if(this._state) {
+				if (this._state.width)
+					this._resizeComponent.width = this._state.width;
 
-			if (state.height)
-				this._resizeComponent.height = state.height;
+				if (this._state.height)
+					this._resizeComponent.height = this._state.height;
+			}
 		});
+	}
+
+	private _state?: ComponentState;
+
+	protected restoreState(state: ComponentState) {
+		// we don't know the component to resize yet so store the state until
+		// this component is added to a parent.
+		this._state = state;
 	}
 
 	protected buildState() {

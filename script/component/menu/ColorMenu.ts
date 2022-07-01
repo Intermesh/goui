@@ -91,7 +91,13 @@ export class ColorMenu extends Menu {
 			this.items.add(btn({
 				itemId: "#" + color,
 				cls: this.value == color ? 'with-icon pressed' : 'with-icon',
-				html: `<div style="background-color: #${color}"></div>`,
+				listeners: {
+					beforerender: (btn) => {
+						const colorDiv = document.createElement("div");
+						colorDiv.style.backgroundColor = "#" + color;
+						btn.el.appendChild(colorDiv)
+					}
+				},
 				handler: (btn) => {
 					this.value = btn.itemId;
 					this.fire("select", this, btn.itemId);
