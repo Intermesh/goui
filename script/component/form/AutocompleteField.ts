@@ -1,21 +1,20 @@
 import {TextField} from "./TextField.js";
 import {Config} from "../Observable.js";
-import {CheckboxField} from "./CheckboxField.js";
-import {Store, StoreRecord} from "../../data/Store.js";
-import {column, Table, table} from "../Table.js";
+import {StoreRecord} from "../../data/Store.js";
+import {Table} from "../Table.js";
 import {root} from "../Root.js";
-import {rowselect} from "../TableRowSelect.js";
 
 /**
- * Text Area component
- *
- * @see Form
+ * Autocomplete field
  */
 export class AutocompleteField extends TextField {
 
-	public displayProperty:string;
+	/**
+	 * The property of the selected {@see StoreRecord} to display in the input
+	 */
+	public displayProperty: string;
 
-	constructor(private table :Table) {
+	constructor(private table: Table) {
 		super();
 
 		this.displayProperty = this.table.columns[0].property;
@@ -33,16 +32,16 @@ export class AutocompleteField extends TextField {
 
 		this.setupTable();
 
-		this.input!.addEventListener('keydown', (ev ) => {
+		this.input!.addEventListener('keydown', (ev) => {
 
-			switch((ev as KeyboardEvent).key) {
+			switch ((ev as KeyboardEvent).key) {
 				case 'ArrowDown':
 					this.table.show();
 					this.table.focus();
 					break;
 
 				case 'Escape':
-					if(!this.table.hidden) {
+					if (!this.table.hidden) {
 						this.table.hide();
 						ev.stopPropagation();
 					}
@@ -85,7 +84,7 @@ export class AutocompleteField extends TextField {
 		this.table.el.style.left = rect.x + "px";
 		this.table.el.style.top = rect.bottom + -2 + "px";
 		this.table.width = this.width;
-		if(!this.table.el.style.zIndex) {
+		if (!this.table.el.style.zIndex) {
 			this.table.el.style.zIndex = (this.computeZIndex() + 1).toString();
 		}
 
@@ -112,17 +111,17 @@ export class AutocompleteField extends TextField {
 		this.table.hidden = true;
 		this.table.style.position = 'absolute';
 
-		if(!this.table.height) {
+		if (!this.table.height) {
 			this.table.height = 300;
 		}
 
-		this.table.rowSelection = true;
+		this.table.rowSelection = {multiSelect: false};
 
-		this.table.on("show",  () => {
+		this.table.on("show", () => {
 			this.onTableShow();
 		});
 
-		this.table.on("hide",  () => {
+		this.table.on("hide", () => {
 			this.onTableHide();
 		});
 
@@ -133,7 +132,7 @@ export class AutocompleteField extends TextField {
 		});
 
 		this.table.el.addEventListener('keydown', (ev) => {
-			switch(ev.key) {
+			switch (ev.key) {
 
 				case "Enter":
 					const selected = this.table.rowSelection!.selected;
@@ -142,7 +141,7 @@ export class AutocompleteField extends TextField {
 					}
 
 					this.table.hide();
-				break;
+					break;
 
 				case 'Escape':
 					this.table.hide();
@@ -157,4 +156,4 @@ export class AutocompleteField extends TextField {
  *
  * @param config
  */
-export const autocomplete = (config: Config<AutocompleteField> & {table:Table}) => Object.assign(new AutocompleteField(config.table), config);
+export const autocomplete = (config: Config<AutocompleteField> & { table: Table }) => Object.assign(new AutocompleteField(config.table), config);

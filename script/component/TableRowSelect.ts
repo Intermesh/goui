@@ -80,7 +80,7 @@ export class TableRowSelect extends Observable {
 				// use set timeout so rowclick event will be handled first
 				setTimeout(() => {
 					if(!this.selected.length && this.table.store.getRecordAt(0)) {
-						this.setSelected([0]);
+						this.selected = [0];
 					}
 				}, 300);
 			})
@@ -123,8 +123,8 @@ export class TableRowSelect extends Observable {
 			selection = [index];
 		}
 
-		this.setSelected(selection);
-		this.lastIndex = index;
+		this.selected = selection;
+
 	}
 
 
@@ -152,6 +152,10 @@ export class TableRowSelect extends Observable {
 			this.fire('rowselect', this, i);
 		})
 
+		if(newSelection.length) {
+			this.lastIndex = newSelection[0];
+		}
+
 		const change = (select.length > 0 || deselect.length > 0);
 
 		if (!silent && change) {
@@ -172,6 +176,7 @@ export class TableRowSelect extends Observable {
 		}
 
 		e.preventDefault();
+
 
 		let index = 0, change = false;
 		if (e.key == "ArrowDown") {
