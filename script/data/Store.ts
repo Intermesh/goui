@@ -1,4 +1,5 @@
 import {
+	Config,
 	Observable,
 	ObservableConfig,
 	ObservableEventMap,
@@ -6,6 +7,7 @@ import {
 	ObservableListenerOpts
 } from "../component/Observable.js";
 import {ArrayUtil} from "../util/ArrayUtil.js";
+import {Collection, CollectionEventMap} from "../util/Collection.js";
 
 /**
  * Comparator interface for sorting data
@@ -24,30 +26,11 @@ export interface Comparator {
 
 export type StoreRecord = { [key: string]: any };
 
-/**
- * @inheritDoc
- */
-export interface StoreConfig<T extends Observable> extends ObservableConfig<T> {
-	/**
-	 * The store records
-	 */
-	records?: StoreRecord[],
-
-	/**
-	 * Sort field and direction
-	 */
-	sort?: Comparator[],
-
-	/**
-	 * @inheritDoc
-	 */
-	listeners?: ObservableListener<StoreEventMap<T>>
-}
 
 /**
  * @inheritDoc
  */
-export interface StoreEventMap<Sender extends Observable> extends ObservableEventMap<Sender> {
+export interface StoreEventMap<Sender extends Observable> extends CollectionEventMap<Sender, StoreRecord> {
 	/**
 	 * Fires when data is loaded into the store
 	 *
@@ -68,71 +51,27 @@ export interface Store {
 /**
  * Data store
  */
-export class Store extends Observable {
+export class Store extends Collection<StoreRecord> {
 
-	private static stores: Record<string, Store> = {};
+	// private static stores: Record<string, Store> = {};
+	//
+	// /**
+	//  * If the ID is given the store can be fetched with
+	//  */
+	// public id?: string;
 
-	protected id?: string;
-	protected records: StoreRecord[] = [];
-	protected loading = false;
+	private _loading = false;
 
 	/**
-	 * Sort the data
+	 * Sort the data on field and direction
 	 */
 	public sort: Comparator[] = [];
 
 	/**
-	 * Get all records in this store
-	 */
-	getRecords() {
-		return this.records;
-	}
-
-	/**
-	 * Get record at index
-	 *
-	 * @param index
-	 */
-	getRecordAt(index: number) {
-		return this.records[index]
-	}
-
-	/**
-	 * Find a record by given function
-	 * When the function returns true it's returned as result
-	 *
-	 * @example Find by id property
-	 * ```
-	 * const id = 1;
-	 * store.findRecord( r => r.id == id);
-	 * ```
-	 * @param fn
-	 */
-	findRecord(fn: (record: StoreRecord) => unknown) {
-		return this.records.find(fn);
-	}
-
-	/**
-	 * Find a record index by given function
-	 * When the function returns true it's returned as result
-	 *
-	 * @example Find by id property
-	 * ```
-	 * const id = 1;
-	 * store.findRecordIndex( r => r.id == id);
-	 * ```
-	 *
-	 * @param fn
-	 */
-	findRecordIndex(fn: (record: StoreRecord) => unknown) {
-		return this.records.findIndex(fn);
-	}
-
-	/**
 	 * True when the store is loading
 	 */
-	isLoading() {
-		return this.loading;
+	get loading() {
+		return this._loading;
 	}
 
 	/**
@@ -142,7 +81,8 @@ export class Store extends Observable {
 	 * @param append
 	 */
 	public loadData(records: StoreRecord[], append = true) {
-		this.records = append ? this.records.concat(records) : records;
+
+		append ? this.add(...records) : this.replace(...records);
 		this.fire("load", this, records, append);
 	}
 
@@ -161,8 +101,8 @@ export class Store extends Observable {
 	 * @protected
 	 */
 	protected internalLoad(append: boolean): Promise<StoreRecord[]> {
-		this.loadData(ArrayUtil.multiSort(this.records, this.sort), append);
-		return Promise.resolve(this.records)
+		this.loadData(ArrayUtil.multiSort(this.items, this.sort), append);
+		return Promise.resolve(this.items)
 	}
 
 	/**
@@ -171,11 +111,11 @@ export class Store extends Observable {
 	 * @param append
 	 */
 	public load(append = false): Promise<StoreRecord[]> {
-		this.loading = true;
+		this._loading = true;
 
 		return this.internalLoad(append)
 			.finally(() => {
-				this.loading = false;
+				this._loading = false;
 			});
 	}
 
@@ -211,4 +151,4 @@ export class Store extends Observable {
  *
  * @param config
  */
-export const store = (config?: StoreConfig<Store>) => Object.assign(new Store(), config);
+export const store = (config?: Config<Store>) => Object.assign(new Store(), config);

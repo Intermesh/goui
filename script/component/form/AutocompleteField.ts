@@ -1,8 +1,28 @@
 import {TextField} from "./TextField.js";
-import {Config} from "../Observable.js";
+import {Config, Observable, ObservableListener, ObservableListenerOpts} from "../Observable.js";
 import {StoreRecord} from "../../data/Store.js";
 import {Table} from "../Table.js";
 import {root} from "../Root.js";
+import {FunctionUtil} from "../../util/FunctionUtil.js";
+import {FieldEventMap} from "./Field.js";
+
+export interface AutocompleteEventMap<T extends Observable> extends FieldEventMap<T> {
+	/**
+	 * Fires when suggestions need to load
+	 *
+	 * @param form
+	 */
+	autocomplete: <Sender extends T>(field: Sender, input: string) => any
+}
+
+export interface AutocompleteField {
+	on<K extends keyof AutocompleteEventMap<this>>(eventName: K, listener: Partial<AutocompleteEventMap<this>>[K], options?: ObservableListenerOpts): void
+
+	fire<K extends keyof AutocompleteEventMap<this>>(eventName: K, ...args: Parameters<AutocompleteEventMap<this>[K]>): boolean
+
+	set listeners(listeners: ObservableListener<AutocompleteEventMap<this>>)
+
+}
 
 /**
  * Autocomplete field
@@ -14,7 +34,12 @@ export class AutocompleteField extends TextField {
 	 */
 	public displayProperty: string;
 
-	constructor(private table: Table) {
+	/**
+	 *
+	 * @param table The table to use for suggestions
+	 * @param buffer Buffer typing in the input in ms
+	 */
+	constructor(readonly table: Table, private buffer = 300) {
 		super();
 
 		this.displayProperty = this.table.columns[0].property;
@@ -26,9 +51,7 @@ export class AutocompleteField extends TextField {
 	protected internalRender(): HTMLElement {
 		const el = super.internalRender();
 
-		this.input!.addEventListener('input', (ev) => {
-			this.onInput(ev as KeyboardEvent);
-		})
+		this.input!.addEventListener('input', FunctionUtil.buffer(this.buffer, this.onInput.bind(this)))
 
 		this.setupTable();
 
@@ -60,6 +83,7 @@ export class AutocompleteField extends TextField {
 
 	private onInput(ev: KeyboardEvent) {
 		this.table.show();
+		this.fire("autocomplete", this, this.input!.value);
 	}
 
 	set value(v: StoreRecord) {
@@ -127,7 +151,7 @@ export class AutocompleteField extends TextField {
 
 		// set value on click and enter
 		this.table.on("rowclick", (table, rowIndex, ev) => {
-			this.value = this.table.store.getRecordAt(rowIndex);
+			this.value = this.table.store.get(rowIndex);
 			this.table.hide();
 		});
 
@@ -137,7 +161,7 @@ export class AutocompleteField extends TextField {
 				case "Enter":
 					const selected = this.table.rowSelection!.selected;
 					if (selected.length) {
-						this.value = this.table.store.getRecordAt(selected[0]);
+						this.value = this.table.store.get(selected[0]);
 					}
 
 					this.table.hide();

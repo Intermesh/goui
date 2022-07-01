@@ -29,7 +29,6 @@ export const playgroundWin = () => {
 	}
 
 	const autoCompleteStore = store({
-		records: records,
 		sort: [{property: "description", isAscending: true}]
 	});
 
@@ -81,6 +80,19 @@ export const playgroundWin = () => {
 					autocomplete({
 						label: "Autocomplete",
 						name: "autocomplete",
+						listeners: {
+							autocomplete: (field, text) => {
+
+								//clone the array for filtering
+								const filtered = records.filter((r) => {
+									// console.warn(r.description, text, r.description.indexOf(text))
+									return !text || r.description.toLowerCase().indexOf(text.toLowerCase()) === 0;
+								});
+
+								//simple local filter on the store
+								field.table.store.loadData(filtered, false)
+							}
+						},
 						table: table({
 							headers: false,
 							store: autoCompleteStore,

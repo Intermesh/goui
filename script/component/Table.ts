@@ -314,7 +314,7 @@ export class Table extends Component {
 	private initNavigateEvent() {
 		this.on('rowclick', (table, rowIndex, ev) => {
 			if (!ev.shiftKey && !ev.ctrlKey) {
-				const record = this.store.getRecordAt(rowIndex);
+				const record = this.store.get(rowIndex);
 
 				this.fire("navigate", this, rowIndex, record);
 			}
@@ -328,7 +328,7 @@ export class Table extends Component {
 					const selected = this.rowSelect!.selected;
 					if (selected.length) {
 						const rowIndex = selected[0];
-						const record = this.store.getRecordAt(rowIndex);
+						const record = this.store.get(rowIndex);
 
 						this.fire("navigate", this, rowIndex, record);
 					}
@@ -419,10 +419,11 @@ export class Table extends Component {
 		const el = this.el;
 		this.emptyStateEl = document.createElement("div");
 		this.emptyStateEl.innerHTML = this.emptyStateHtml;
-		this.emptyStateEl.hidden = this.store.getRecords().length > 0;
+		this.emptyStateEl.hidden = this.store.count() > 0;
 		el.appendChild(this.emptyStateEl);
 
 		this.store.on("load", (store, records, append) => {
+
 			if (!append && records.length == 0) {
 				this.tableEl!.hidden = true;
 				this.emptyStateEl!.hidden = false;
@@ -436,7 +437,7 @@ export class Table extends Component {
 	private renderTable() {
 		const el = this.el;
 		this.tableEl = document.createElement('table');
-		this.tableEl.hidden = this.store.getRecords().length == 0;
+		this.tableEl.hidden = this.store.count() == 0;
 
 		if (this.fitComponent) {
 			this.tableEl.style.minWidth = "100%";
@@ -446,7 +447,7 @@ export class Table extends Component {
 			this.renderHeaders();
 		}
 
-		this.renderRows(this.store.getRecords());
+		this.renderRows(this.store.items);
 
 		el.appendChild(this.tableEl);
 
@@ -541,7 +542,7 @@ export class Table extends Component {
 		const pixelsLeft = el.scrollHeight - el.scrollTop - el.offsetHeight;
 
 		if (pixelsLeft < 100) {
-			if (!this.store.isLoading() && this.store.hasNext()) {
+			if (!this.store.loading && this.store.hasNext()) {
 				this.store.loadNext(true).finally(() => {
 					this.fire("scrolleddown", this);
 				});

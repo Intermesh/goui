@@ -1,5 +1,5 @@
 import {EntityStore, QueryParams} from "./EntityStore.js";
-import {Store, StoreConfig, StoreRecord} from "../data/Store.js";
+import {Store, StoreRecord} from "../data/Store.js";
 import {client} from "./Client.js";
 import {Config, Observable} from "../component/Observable.js";
 

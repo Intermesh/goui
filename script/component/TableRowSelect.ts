@@ -79,7 +79,7 @@ export class TableRowSelect extends Observable {
 			tableEl.addEventListener("focus", (e) => {
 				// use set timeout so rowclick event will be handled first
 				setTimeout(() => {
-					if(!this.selected.length && this.table.store.getRecordAt(0)) {
+					if(!this.selected.length && this.table.store.get(0)) {
 						this.selected = [0];
 					}
 				}, 300);
@@ -180,7 +180,7 @@ export class TableRowSelect extends Observable {
 
 		let index = 0, change = false;
 		if (e.key == "ArrowDown") {
-			if (this.lastIndex == this.table.store.getRecords().length - 1) {
+			if (this.lastIndex == this.table.store.count() - 1) {
 				return;
 			}
 

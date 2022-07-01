@@ -4,15 +4,13 @@
  */
 class BufferedFunction {
 	private id:number|undefined;
-	readonly delay:number;
-	readonly fn:Function;
 
 	/**
 	 * Constructor
 	 * @param delay Delay to execute function
 	 * @param fn Function to buffer
 	 */
-	constructor(delay:number, fn:Function) {
+	constructor(readonly delay:number, readonly fn:Function) {
 		this.delay = delay;
 		this.fn = fn;
 	}
