@@ -19,20 +19,15 @@ import {column, datecolumn, table} from "../script/component/Table.js";
 
 export const playgroundWin = () => {
 
-	const records:StoreRecord[] = [];
+	// Create some records to use for the autocomplete store below
+	const autocompleteRecords:StoreRecord[] = [];
 
 	for(let i = 1; i <= 20; i++) {
-		records.push({
+		autocompleteRecords.push({
 			description: "Test " + i,
 			createdAt: (new DateTime()).addDays(Math.ceil(Math.random() * -365)).format("c")
 		});
 	}
-
-	const autoCompleteStore = store({
-		sort: [{property: "description", isAscending: true}]
-	});
-
-
 
 	const playgroundWin = win({
 			stateId: "playground-window",
@@ -84,7 +79,7 @@ export const playgroundWin = () => {
 							autocomplete: (field, text) => {
 
 								//clone the array for filtering
-								const filtered = records.filter((r) => {
+								const filtered = autocompleteRecords.filter((r) => {
 									// console.warn(r.description, text, r.description.indexOf(text))
 									return !text || r.description.toLowerCase().indexOf(text.toLowerCase()) === 0;
 								});
@@ -95,7 +90,13 @@ export const playgroundWin = () => {
 						},
 						table: table({
 							headers: false,
-							store: autoCompleteStore,
+							store: store({
+								sort: [{
+									property: "description",
+									isAscending: true
+								}]
+							}),
+
 							columns: [
 								column({
 									property: "description",
