@@ -145,7 +145,6 @@ export class Menu extends Component {
 		}
 
 		this.show();
-		console.log(this);
 		Menu.openedMenu = this;
 
 		//hide menu when clicked elsewhere

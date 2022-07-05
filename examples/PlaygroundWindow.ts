@@ -16,6 +16,7 @@ import {autocomplete} from "../script/component/form/AutocompleteField.js";
 import {store, StoreRecord} from "../script/data/Store.js";
 import {DateTime} from "../script/util/DateTime.js";
 import {column, datecolumn, table} from "../script/component/Table.js";
+import {Field} from "../script/component/form/Field.js";
 
 export const playgroundWin = () => {
 
@@ -73,8 +74,15 @@ export const playgroundWin = () => {
 					}),
 
 					autocomplete({
+						hint: "Type 'test' to autocomplete",
+						required: true,
 						label: "Autocomplete",
 						name: "autocomplete",
+						buttons: [
+							btn({icon: "clear", handler: (btn) => {
+								(btn.parent!.parent! as Field).value = undefined;
+							}})
+						],
 						listeners: {
 							autocomplete: (field, text) => {
 

@@ -1,5 +1,7 @@
 import {Component, ComponentEventMap} from "../Component.js";
 import {Observable, ObservableListener, ObservableListenerOpts} from "../Observable.js";
+import {Button} from "../Button.js";
+import {tbar, Toolbar} from "../Toolbar.js";
 
 
 /**
@@ -70,6 +72,8 @@ export interface Field extends Component {
 // }
 
 export abstract class Field extends Component {
+	private _buttons?: Button[];
+	private toolbar?: Toolbar;
 
 	constructor(tagName:keyof HTMLElementTagNameMap = "label") {
 		super(tagName);
@@ -124,6 +128,14 @@ export abstract class Field extends Component {
 			el.appendChild(control);
 		}
 
+		if(this._buttons) {
+			this.toolbar = tbar({}, ...this._buttons);
+			this.toolbar.parent = this;
+			this.toolbar.render(el);
+
+			this.el.classList.add("with-toolbar");
+		}
+
 		const label = this.createLabel();
 		if (label) {
 			el.appendChild(label);
@@ -134,11 +146,21 @@ export abstract class Field extends Component {
 			el.appendChild(hint);
 		}
 
+
+
 		return el;
 	}
 
 	protected createControl(): HTMLElement | undefined {
 		return undefined;
+	}
+
+	public set buttons(buttons: Button[] | undefined) {
+		this._buttons = buttons;
+	}
+
+	public get buttons() {
+		return this._buttons;
 	}
 
 	protected createHint() {

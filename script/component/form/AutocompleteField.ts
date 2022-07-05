@@ -5,6 +5,7 @@ import {Table} from "../Table.js";
 import {root} from "../Root.js";
 import {FunctionUtil} from "../../util/FunctionUtil.js";
 import {FieldEventMap} from "./Field.js";
+import {btn} from "../Button.js";
 
 export interface AutocompleteEventMap<T extends Observable> extends FieldEventMap<T> {
 	/**
@@ -46,9 +47,24 @@ export class AutocompleteField extends TextField {
 
 		this.autocomplete = "off";
 		this.baseCls += " autocomplete";
+
+
 	}
 
 	protected internalRender(): HTMLElement {
+
+		this.buttons = this.buttons || [];
+		this.buttons.push(
+			btn({
+				icon: "expand_more",
+				type: "button",
+				handler: () => {
+					this.fire("autocomplete", this, "");
+					this.table.show();
+				}
+			})
+		);
+
 		const el = super.internalRender();
 
 		this.input!.addEventListener('input', FunctionUtil.buffer(this.buffer, this.onInput.bind(this)))
@@ -86,10 +102,10 @@ export class AutocompleteField extends TextField {
 		this.fire("autocomplete", this, this.input!.value);
 	}
 
-	set value(v: StoreRecord) {
+	set value(v: StoreRecord | undefined) {
 
 		if (this.input) {
-			this.input.value = v[this.displayProperty] + "";
+			this.input.value = v && v[this.displayProperty] ? v[this.displayProperty] + "" : "";
 		}
 
 		this._value = v;
@@ -105,6 +121,7 @@ export class AutocompleteField extends TextField {
 		const rect = this.input!.getBoundingClientRect();
 
 		//Align table with input
+		this.table.parent = this;
 		this.table.el.style.left = rect.x + "px";
 		this.table.el.style.top = rect.bottom + -2 + "px";
 		this.table.width = this.width;
@@ -153,6 +170,11 @@ export class AutocompleteField extends TextField {
 		this.table.on("rowclick", (table, rowIndex, ev) => {
 			this.value = this.table.store.get(rowIndex);
 			this.table.hide();
+		});
+
+		// stop clicks on menu from hiding menu
+		this.table.el.addEventListener("mousedown", (ev) => {
+			ev.stopPropagation();
 		});
 
 		this.table.el.addEventListener('keydown', (ev) => {
