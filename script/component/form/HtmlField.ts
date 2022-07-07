@@ -82,7 +82,7 @@ export class HtmlField extends Field {
 
 	private valueOnFocus: string | undefined;
 
-	private toolbar?: Toolbar;
+	private tbar?: Toolbar;
 
 	constructor() {
 		super("div");
@@ -140,7 +140,7 @@ export class HtmlField extends Field {
 						this.execCmd("foreColor", color || "#000000")
 					},
 					beforeshow: (menu) => {
-						(<ColorMenu>menu).value = (this.toolbar!.findItem("foreColor")!.el.style.color || "");
+						(<ColorMenu>menu).value = (this.tbar!.findItem("foreColor")!.el.style.color || "");
 					}
 				}
 			}),
@@ -162,7 +162,7 @@ export class HtmlField extends Field {
 						this.execCmd("backColor", color || "#ffffff")
 					},
 					beforeshow: (menu) => {
-						(<ColorMenu>menu).value = (this.toolbar!.findItem("backColor")!.el.style.color || "");
+						(<ColorMenu>menu).value = (this.tbar!.findItem("backColor")!.el.style.color || "");
 					}
 				}
 			}),
@@ -208,7 +208,7 @@ export class HtmlField extends Field {
 
 	private updateToolbar() {
 
-		const t = this.toolbar!;
+		const t = this.tbar!;
 
 		for (const cmd of this.toolbarItems) {
 			if (cmd == "-") continue;
@@ -228,7 +228,7 @@ export class HtmlField extends Field {
 	private execCmd(cmd: string, value?: string) {
 		document.execCommand(cmd, false, value);
 
-		const t = this.toolbar!, config = this.commands[cmd];
+		const t = this.tbar!, config = this.commands[cmd];
 		if (config) {
 			if (config.updateFn) {
 				config.updateFn.call(this, <Button>t.findItem(cmd)!);
@@ -251,30 +251,30 @@ export class HtmlField extends Field {
 
 	// noinspection JSUnusedGlobalSymbols
 	protected internalRemove() {
-		if (this.toolbar) {
-			this.toolbar.remove();
+		if (this.tbar) {
+			this.tbar.remove();
 		}
 		super.internalRemove();
 	}
 
 	protected getToolbar() {
 
-		if (this.toolbar) {
-			return this.toolbar;
+		if (this.tbar) {
+			return this.tbar;
 		}
 
-		this.toolbar = tbar({
+		this.tbar = tbar({
 			cls: "frame html-field-toolbar"
 		});
 
 		for (const cmd of this.toolbarItems) {
 			if (cmd == "-") {
-				this.toolbar.items.add(comp({tagName: "hr"}));
+				this.tbar.items.add(comp({tagName: "hr"}));
 			} else {
 
 				const config = this.commands[cmd];
 
-				this.toolbar.items.add(btn({
+				this.tbar.items.add(btn({
 					itemId: cmd,
 					icon: config.icon,
 					menu: config.menu,
@@ -290,9 +290,9 @@ export class HtmlField extends Field {
 			}
 		}
 
-		root.items.add(this.toolbar);
+		root.items.add(this.tbar);
 
-		return this.toolbar;
+		return this.tbar;
 	}
 
 	protected showToolbar() {

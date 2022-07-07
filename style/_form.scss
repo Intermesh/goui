@@ -46,6 +46,17 @@ $formLabelWidth: dp(160);
 		border: 2px solid $colorBorder;
 		border-radius: 0 dp(12) dp(12) 0;
 		border-left: 0;
+		> * {
+			margin: 0 dp(4) 0 0;
+			padding: dp(6);
+		}
+
+		.button {
+			color: $colorPrimary;
+			&:hover {
+				background-color: transparent;
+			}
+		}
 	}
 
 	position: relative;

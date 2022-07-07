@@ -36,6 +36,11 @@ export class AutocompleteField extends TextField {
 	public displayProperty: string;
 
 	/**
+	 * The property to use as value. If null then the whole store record is used.
+	 */
+	public valueProperty?: string;
+
+	/**
 	 *
 	 * @param table The table to use for suggestions
 	 * @param buffer Buffer typing in the input in ms
@@ -102,13 +107,27 @@ export class AutocompleteField extends TextField {
 		this.fire("autocomplete", this, this.input!.value);
 	}
 
-	set value(v: StoreRecord | undefined) {
+	set value(v: StoreRecord | string | undefined) {
 
 		if (this.input) {
-			this.input.value = v && v[this.displayProperty] ? v[this.displayProperty] + "" : "";
+			this.input.value = this.findDisplayValue(v);
 		}
 
 		this._value = v;
+	}
+
+	private findDisplayValue(v: StoreRecord | string | undefined) {
+		if(!v) {
+			return "";
+		}
+
+		if(this.valueProperty) {
+			const record = this.table.store.find((record, index, obj) => record[this.valueProperty!] == v);
+			return record ? record[this.displayProperty] : "";
+		} else
+		{
+			return (v as StoreRecord)[this.displayProperty];
+		}
 	}
 
 	get value() {
@@ -168,7 +187,7 @@ export class AutocompleteField extends TextField {
 
 		// set value on click and enter
 		this.table.on("rowclick", (table, rowIndex, ev) => {
-			this.value = this.table.store.get(rowIndex);
+			this.setRecordAsValue(this.table.store.get(rowIndex));
 			this.table.hide();
 		});
 
@@ -183,7 +202,7 @@ export class AutocompleteField extends TextField {
 				case "Enter":
 					const selected = this.table.rowSelection!.selected;
 					if (selected.length) {
-						this.value = this.table.store.get(selected[0]);
+						this.setRecordAsValue(this.table.store.get(selected[0]));
 					}
 
 					this.table.hide();
@@ -194,6 +213,10 @@ export class AutocompleteField extends TextField {
 					break;
 			}
 		})
+	}
+
+	private setRecordAsValue(r:StoreRecord) {
+		this.value = this.valueProperty ? r[this.valueProperty] : r;
 	}
 }
 

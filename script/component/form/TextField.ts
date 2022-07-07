@@ -128,7 +128,6 @@ export class TextField extends Field {
 		}
 	}
 
-
 	set name(name: string) {
 		super.name = name;
 

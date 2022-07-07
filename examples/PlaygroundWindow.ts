@@ -17,6 +17,7 @@ import {store, StoreRecord} from "../script/data/Store.js";
 import {DateTime} from "../script/util/DateTime.js";
 import {column, datecolumn, table} from "../script/component/Table.js";
 import {Field} from "../script/component/form/Field.js";
+import {select} from "../script/component/form/SelectField.js";
 
 export const playgroundWin = () => {
 
@@ -25,6 +26,7 @@ export const playgroundWin = () => {
 
 	for(let i = 1; i <= 20; i++) {
 		autocompleteRecords.push({
+			id: i,
 			description: "Test " + i,
 			createdAt: (new DateTime()).addDays(Math.ceil(Math.random() * -365)).format("c")
 		});
@@ -73,15 +75,35 @@ export const playgroundWin = () => {
 
 					}),
 
+					select({
+						label: "Select",
+						name: "select",
+						options: [
+							{
+								value: "1",
+								name: "Option 1"
+							},
+							{
+								value: "2",
+								name: "Option 2"
+							}
+						]
+					}),
+
 					autocomplete({
 						hint: "Type 'test' to autocomplete",
 						required: true,
 						label: "Autocomplete",
 						name: "autocomplete",
+						valueProperty: "id", // if omited the whole record will be the value.
 						buttons: [
-							btn({icon: "clear", handler: (btn) => {
-								(btn.parent!.parent! as Field).value = undefined;
-							}})
+							btn({
+								icon: "clear",
+								type: "button",
+								handler: (btn) => {
+									(btn.parent!.parent! as Field).value = undefined;
+								}
+							})
 						],
 						listeners: {
 							autocomplete: (field, text) => {
