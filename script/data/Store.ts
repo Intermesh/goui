@@ -21,7 +21,7 @@ export interface Comparator {
 	/**
 	 * Sort ascending or not
 	 */
-	isAscending: boolean
+	isAscending?: boolean
 }
 
 export type StoreRecord = { [key: string]: any };

@@ -560,18 +560,20 @@ export class Table extends Component {
 			});
 
 			this.columns.forEach((c) => {
-				this.columnMenu!.items.add(checkbox({
-					label: c.header,
-					name: c.property,
-					value: !c.hidden,
-					listeners: {
-						change: (field) => {
-							c.hidden = !field.value;
-							this.saveState();
-							this.rerender();
+				if(c.header) {
+					this.columnMenu!.items.add(checkbox({
+						label: c.header,
+						name: c.property,
+						value: !c.hidden,
+						listeners: {
+							change: (field) => {
+								c.hidden = !field.value;
+								this.saveState();
+								this.rerender();
+							}
 						}
-					}
-				}));
+					}));
+				}
 			});
 		}
 
@@ -645,7 +647,7 @@ export class Table extends Component {
 			}
 
 			//column resize splitter
-			header.innerHTML = h.header + "";
+			header.innerHTML = h.header || "";
 
 			h.headerEl = header;
 
@@ -662,7 +664,7 @@ export class Table extends Component {
 				if (sort.length) {
 					if (h.property == sort[0].property) {
 						header.classList.add("sorted");
-						header.classList.add(sort[0].isAscending ? "asc" : "desc");
+						header.classList.add(sort[0].isAscending || sort[0].isAscending === undefined ? "asc" : "desc");
 					}
 				}
 			}

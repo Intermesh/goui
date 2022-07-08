@@ -110,7 +110,13 @@ export class DraggableComponent extends Component {
 
 	constructor(tagName:keyof HTMLElementTagNameMap = "div") {
 		super(tagName);
-		this.baseCls += " draggable";
+
+		if(this.baseCls) {
+			this.baseCls += " draggable";
+		} else
+		{
+			this.baseCls = "draggable";
+		}
 
 		this.on("render", () => {
 			this.initDragHandle();

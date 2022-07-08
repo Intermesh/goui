@@ -1,9 +1,9 @@
-import {Config, Observable, ObservableEventMap, ObservableListenerOpts} from "./Observable.js";
+import {Config, Observable, ObservableEventMap, ObservableListener, ObservableListenerOpts} from "./Observable.js";
 import {Table} from "./Table.js";
 import {ArrayUtil} from "../util/ArrayUtil.js";
 
 
-export interface TableRowSelectEventMap<Sender extends Observable> extends ObservableEventMap<Sender> {
+export interface TableRowSelectEventMap<T extends Observable> extends ObservableEventMap<T> {
 	/**
 	 * Fires when selection changes. When holding arrow on keyboard it will only fire once at key up to prevent
 	 * flooding the server with requests
@@ -24,14 +24,14 @@ export interface TableRowSelectEventMap<Sender extends Observable> extends Obser
 	 * ```
 	 * @param tableRowSelect
 	 */
-	selectionchange:<T extends Sender> (tableRowSelect: T) => void
+	selectionchange:<Sender extends T> (tableRowSelect: Sender) => void
 
 	/**
 	 * Fires when a row is selected
 	 * @param tableRowSelect
 	 * @param rowIndex
 	 */
-	rowselect:<T extends Sender>  (tableRowSelect: T, rowIndex: number) => void
+	rowselect:<Sender extends T>  (tableRowSelect: Sender, rowIndex: number) => void
 
 	/**
 	 * Fires when a row is deselected
@@ -39,12 +39,13 @@ export interface TableRowSelectEventMap<Sender extends Observable> extends Obser
 	 * @param tableRowSelect
 	 * @param rowIndex
 	 */
-	rowdeselect:<T extends Sender>  (tableRowSelect: T, rowIndex: number) => void
+	rowdeselect:<Sender extends T>  (tableRowSelect: Sender, rowIndex: number) => void
 }
 
 export interface TableRowSelect {
 	on<K extends keyof TableRowSelectEventMap<this>>(eventName: K, listener: Partial<TableRowSelectEventMap<this>>[K], options?: ObservableListenerOpts): void
 	fire<K extends keyof TableRowSelectEventMap<this>>(eventName: K, ...args: Parameters<TableRowSelectEventMap<this>[K]>): boolean
+	set listeners (listeners: ObservableListener<TableRowSelectEventMap<this>>)
 }
 
 
