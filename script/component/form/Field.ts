@@ -7,13 +7,13 @@ import {tbar, Toolbar} from "../Toolbar.js";
 /**
  * @inheritDoc
  */
-export interface FieldEventMap<Sender extends Observable> extends ComponentEventMap<Sender> {
+export interface FieldEventMap<T extends Observable> extends ComponentEventMap<T> {
 	/**
 	 * Fires when the field changes. It fires on blur.
 	 *
 	 * @param field
 	 */
-	change: <T extends Sender> (field: T) => void
+	change: <Sender extends T> (field: Sender) => void
 
 	/**
 	 * Fires when setValue() is called
@@ -22,7 +22,7 @@ export interface FieldEventMap<Sender extends Observable> extends ComponentEvent
 	 * @param newValue
 	 * @param oldValue
 	 */
-	setvalue: <T extends Sender> (field: T, newValue: any, oldValue: any) => void
+	setvalue: <Sender extends T> (field: Sender, newValue: any, oldValue: any) => void
 
 
 	/**
@@ -32,7 +32,7 @@ export interface FieldEventMap<Sender extends Observable> extends ComponentEvent
 	 * @param newValue
 	 * @param oldValue
 	 */
-	reset: <T extends Sender> (field: T, newValue: any, oldValue: any) => void
+	reset: <Sender extends T> (field: Sender, newValue: any, oldValue: any) => void
 
 	/**
 	 * Fires when validated
@@ -41,7 +41,7 @@ export interface FieldEventMap<Sender extends Observable> extends ComponentEvent
 	 *
 	 * @param field
 	 */
-	validate: <T extends Sender> (field: T) => void
+	validate: <Sender extends T> (field: Sender) => void
 }
 
 
@@ -262,6 +262,10 @@ export abstract class Field extends Component {
 		}
 
 		this.fire("setvalue", this, this._value, old);
+	}
+
+	protected setValue(v:any) {
+
 	}
 
 	public get value() {

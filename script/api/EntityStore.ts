@@ -1,4 +1,4 @@
-import {Client} from "./Client.js";
+import {client, Client} from "./Client.js";
 import {Observable, ObservableConfig, ObservableEventMap, ObservableListener} from "../component/Observable.js";
 import {Comparator} from "../data/Store.js";
 
@@ -109,7 +109,7 @@ export interface EntityStore {
 
 export class EntityStore extends Observable {
 
-	constructor(public name:string, public client:Client) {
+	constructor(public name:string, public client:Client = client) {
 		super();
 	}
 

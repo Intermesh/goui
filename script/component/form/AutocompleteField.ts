@@ -16,7 +16,7 @@ export interface AutocompleteEventMap<T extends Observable> extends FieldEventMa
 	autocomplete: <Sender extends T>(field: Sender, input: string) => any
 }
 
-export interface AutocompleteField {
+export interface AutocompleteField<TableType extends Table = Table> {
 	on<K extends keyof AutocompleteEventMap<this>>(eventName: K, listener: Partial<AutocompleteEventMap<this>>[K], options?: ObservableListenerOpts): void
 
 	fire<K extends keyof AutocompleteEventMap<this>>(eventName: K, ...args: Parameters<AutocompleteEventMap<this>[K]>): boolean
@@ -28,7 +28,7 @@ export interface AutocompleteField {
 /**
  * Autocomplete field
  */
-export class AutocompleteField extends TextField {
+export class AutocompleteField<TableType extends Table = Table> extends TextField {
 
 	/**
 	 * The property of the selected {@see StoreRecord} to display in the input
@@ -45,7 +45,7 @@ export class AutocompleteField extends TextField {
 	 * @param table The table to use for suggestions
 	 * @param buffer Buffer typing in the input in ms
 	 */
-	constructor(readonly table: Table, private buffer = 300) {
+	constructor(readonly table: TableType, private buffer = 300) {
 		super();
 
 		this.displayProperty = this.table.columns[0].property;
@@ -107,13 +107,10 @@ export class AutocompleteField extends TextField {
 		this.fire("autocomplete", this, this.input!.value);
 	}
 
-	set value(v: StoreRecord | string | undefined) {
-
+	protected setInputValue(v: string) {
 		if (this.input) {
 			this.input.value = this.findDisplayValue(v);
 		}
-
-		this._value = v;
 	}
 
 	private findDisplayValue(v: StoreRecord | string | undefined) {
@@ -123,15 +120,11 @@ export class AutocompleteField extends TextField {
 
 		if(this.valueProperty) {
 			const record = this.table.store.find((record, index, obj) => record[this.valueProperty!] == v);
-			return record ? record[this.displayProperty] : "";
+			return record ? record[this.displayProperty] : v;
 		} else
 		{
 			return (v as StoreRecord)[this.displayProperty];
 		}
-	}
-
-	get value() {
-		return this._value;
 	}
 
 	private onTableShow() {
@@ -175,7 +168,7 @@ export class AutocompleteField extends TextField {
 			this.table.height = 300;
 		}
 
-		this.table.rowSelection = {multiSelect: false};
+		this.table.rowSelectionConfig = {multiSelect: false};
 
 		this.table.on("show", () => {
 			this.onTableShow();

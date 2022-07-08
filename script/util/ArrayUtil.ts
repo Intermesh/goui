@@ -59,7 +59,7 @@ export class ArrayUtil {
 				const key = comparators[index].property;
 
 				if (key) {
-					sorted = keySort(a[key], b[key], comparators[index].isAscending);
+					sorted = keySort(a[key], b[key], comparators[index].isAscending || comparators[index].isAscending === undefined);
 					index++;
 				}
 			}

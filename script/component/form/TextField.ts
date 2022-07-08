@@ -110,12 +110,15 @@ export class TextField extends Field {
 		this.applyInvalidMsg();
 	}
 
-
-	set value(v: any) {
-
+	protected setInputValue(v: string) {
 		if (this.input) {
 			this.input.value = v + "";
 		}
+	}
+
+	set value(v: any) {
+
+		this.setInputValue(v + "");
 
 		super.value = v;
 	}

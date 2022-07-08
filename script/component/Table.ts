@@ -250,13 +250,13 @@ export interface Table {
  * 	});
  *  ```
  */
-export class Table extends Component {
+export class Table<StoreType extends Store = Store> extends Component {
 
 	/**
 	 *
 	 * @param store Store to provide data
 	 */
-	constructor(readonly store: Store, public columns: TableColumn[]) {
+	constructor(readonly store: StoreType, public columns: TableColumn[]) {
 		super();
 		this.tabIndex = 0;
 	}
@@ -280,12 +280,12 @@ export class Table extends Component {
 	 *
 	 * Row selection object
 	 *
-	 * @param rowSelection
+	 * @param rowSelectionConfig
 	 */
-	set rowSelection(rowSelection: boolean | Partial<TableRowSelectConfig> | TableRowSelect | undefined) {
-		if (typeof rowSelection != "boolean") {
-			(rowSelection as TableRowSelectConfig).table = this;
-			this.rowSelect = rowselect(rowSelection as TableRowSelectConfig);
+	set rowSelectionConfig(rowSelectionConfig: boolean | Partial<TableRowSelectConfig> ) {
+		if (typeof rowSelectionConfig != "boolean") {
+			(rowSelectionConfig as TableRowSelectConfig).table = this;
+			this.rowSelect = rowselect(rowSelectionConfig as TableRowSelectConfig);
 		} else {
 			this.rowSelect = rowselect({table: this});
 		}
@@ -825,9 +825,7 @@ type TableConfig = Omit<Config<Table>, "rowSelection"> & {
 	/**
 	 * The table columns
 	 */
-	columns: TableColumn[],
-
-	rowSelection?: boolean | Partial<TableRowSelectConfig>
+	columns: TableColumn[]
 }
 
 /**
