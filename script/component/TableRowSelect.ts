@@ -1,6 +1,7 @@
-import {Config, Observable, ObservableEventMap, ObservableListener, ObservableListenerOpts} from "./Observable.js";
+import {Observable, ObservableEventMap, ObservableListener, ObservableListenerOpts} from "./Observable.js";
 import {Table} from "./Table.js";
 import {ArrayUtil} from "../util/ArrayUtil.js";
+import {Config} from "./Component.js";
 
 
 export interface TableRowSelectEventMap<T extends Observable> extends ObservableEventMap<T> {

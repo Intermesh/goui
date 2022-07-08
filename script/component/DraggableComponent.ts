@@ -1,5 +1,5 @@
-import {Component, ComponentEventMap} from "./Component.js";
-import {Config, Observable, ObservableListener, ObservableListenerOpts} from "./Observable.js";
+import {Component, ComponentEventMap, Config} from "./Component.js";
+import {Observable, ObservableListener, ObservableListenerOpts} from "./Observable.js";
 import {FunctionUtil} from "../util/FunctionUtil.js";
 import {CardMenu} from "./CardMenu.js";
 

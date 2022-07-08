@@ -1,5 +1,4 @@
 import {
-	Config,
 	Observable,
 	ObservableConfig,
 	ObservableEventMap,
@@ -8,6 +7,7 @@ import {
 } from "../component/Observable.js";
 import {ArrayUtil} from "../util/ArrayUtil.js";
 import {Collection, CollectionEventMap} from "../util/Collection.js";
+import {Config} from "../component/Component.js";
 
 /**
  * Comparator interface for sorting data

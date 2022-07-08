@@ -1,5 +1,4 @@
-import {comp, Component} from "./Component.js";
-import {Config} from "./Observable.js";
+import {comp, Component, Config} from "./Component.js";
 
 
 /**

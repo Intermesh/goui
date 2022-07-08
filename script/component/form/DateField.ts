@@ -1,7 +1,7 @@
 import {TextField} from "./TextField.js";
 import {DateTime} from "../../util/DateTime.js";
-import {Config} from "../Observable.js";
 import {CheckboxField} from "./CheckboxField.js";
+import {Config} from "../Component.js";
 
 
 /**

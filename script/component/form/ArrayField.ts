@@ -1,8 +1,8 @@
-import {Config, ObservableListenerOpts} from "../Observable.js";
+import {ObservableListenerOpts} from "../Observable.js";
 import {Field, FieldEventMap} from "./Field.js";
 import {ContainerField} from "./ContainerField.js";
 import {Collection} from "../../util/Collection.js";
-import {Component} from "../Component.js";
+import {Component, Config} from "../Component.js";
 
 
 /**

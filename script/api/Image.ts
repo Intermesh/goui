@@ -1,6 +1,5 @@
-import {comp, Component} from "../component/Component.js";
+import {comp, Component, Config} from "../component/Component.js";
 import {client} from "./Client.js";
-import {Config} from "../component/Observable.js";
 
 /**
  * Image component

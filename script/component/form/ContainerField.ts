@@ -1,6 +1,6 @@
 import {Field, FieldEventMap} from "./Field.js";
-import {Config, ObservableListener, ObservableListenerOpts} from "../Observable.js";
-import {Component} from "../Component.js";
+import {ObservableListener, ObservableListenerOpts} from "../Observable.js";
+import {Component, Config} from "../Component.js";
 
 
 export type FieldComponentValue = Record<string, any>;

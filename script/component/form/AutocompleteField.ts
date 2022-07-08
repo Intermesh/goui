@@ -1,11 +1,12 @@
 import {TextField} from "./TextField.js";
-import {Config, Observable, ObservableListener, ObservableListenerOpts} from "../Observable.js";
+import {Observable, ObservableListener, ObservableListenerOpts} from "../Observable.js";
 import {StoreRecord} from "../../data/Store.js";
 import {Table} from "../Table.js";
 import {root} from "../Root.js";
 import {FunctionUtil} from "../../util/FunctionUtil.js";
 import {FieldEventMap} from "./Field.js";
 import {btn} from "../Button.js";
+import {Config} from "../Component.js";
 
 export interface AutocompleteEventMap<T extends Observable> extends FieldEventMap<T> {
 	/**

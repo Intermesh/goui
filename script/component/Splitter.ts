@@ -1,6 +1,6 @@
-import {Component, ComponentState, FindComponentPredicate} from "./Component.js";
+import {Component, ComponentState, Config, FindComponentPredicate} from "./Component.js";
 import {DraggableComponent, DraggableComponentEventMap} from "./DraggableComponent.js";
-import {Config, ObservableListener, ObservableListenerOpts} from "./Observable.js";
+import {ObservableListener, ObservableListenerOpts} from "./Observable.js";
 
 /**
  * Splitter

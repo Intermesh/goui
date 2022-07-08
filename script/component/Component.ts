@@ -1,6 +1,6 @@
 // noinspection JSUnusedGlobalSymbols
 
-import {Config, Observable, ObservableEventMap, ObservableListener, ObservableListenerOpts} from "./Observable.js";
+import {Observable, ObservableEventMap, ObservableListener, ObservableListenerOpts} from "./Observable.js";
 import {State} from "../State.js";
 import {Collection} from "../util/Collection.js";
 
@@ -14,14 +14,14 @@ interface Type<T> {
 }
 
 
-export interface ComponentEventMap<Sender> extends ObservableEventMap<Sender> {
+export interface ComponentEventMap<Type> extends ObservableEventMap<Type> {
 	/**
 	 * Fires when the component renders and is added to the DOM
 	 *
 	 * @see Component.render()
 	 * @param comp
 	 */
-	render: <T extends Sender>(sender: T) => void
+	render: <Sender extends Type>(sender: Sender) => void
 
 	/**
 	 * Fires after rendering but before adding the element to the dom
@@ -29,7 +29,7 @@ export interface ComponentEventMap<Sender> extends ObservableEventMap<Sender> {
 	 * @see Component.render()
 	 * @param comp
 	 */
-	beforedom: <T extends Sender>(sender: T) => void
+	beforedom: <Sender extends Type>(sender: Sender) => void
 
 	/**
 	 * Fires just before rendering
@@ -37,7 +37,7 @@ export interface ComponentEventMap<Sender> extends ObservableEventMap<Sender> {
 	 * @see Component.render()
 	 * @param comp
 	 */
-	beforerender: <T extends Sender> (sender: T) => void
+	beforerender: <Sender extends Type> (sender: Sender) => void
 
 	/**
 	 * Fires before the element is removed. You can cancel the remove by returning false
@@ -45,7 +45,7 @@ export interface ComponentEventMap<Sender> extends ObservableEventMap<Sender> {
 	 * @see Component.remove()
 	 * @param comp
 	 */
-	beforeremove: <T extends Sender>(sender: T) => false | void
+	beforeremove: <Sender extends Type>(sender: Sender) => false | void
 
 	/**
 	 * Fires after the component has been removed
@@ -53,7 +53,7 @@ export interface ComponentEventMap<Sender> extends ObservableEventMap<Sender> {
 	 * @see Component.remove()
 	 * @param comp
 	 */
-	remove: <T extends Sender> (sender: T) => void
+	remove: <Sender extends Type> (sender: Sender) => void
 
 	/**
 	 * Fires before show. You can cancel the show by returning false
@@ -61,7 +61,7 @@ export interface ComponentEventMap<Sender> extends ObservableEventMap<Sender> {
 	 * @see Component.show()
 	 * @param comp
 	 */
-	beforeshow: <T extends Sender>(sender: T) => false | void
+	beforeshow: <Sender extends Type>(sender: Sender) => false | void
 
 	/**
 	 * Fires after showing the component
@@ -69,7 +69,7 @@ export interface ComponentEventMap<Sender> extends ObservableEventMap<Sender> {
 	 * @see Component.show()
 	 * @param comp
 	 */
-	show: <T extends Sender>(sender: T) => void
+	show: <Sender extends Type>(sender: Sender) => void
 
 	/**
 	 * Fires before hide. You can cancel the hide by returning false
@@ -77,7 +77,7 @@ export interface ComponentEventMap<Sender> extends ObservableEventMap<Sender> {
 	 * @see Component.hide()
 	 * @param comp
 	 */
-	beforehide: <T extends Sender>(sender: T) => false | void
+	beforehide: <Sender extends Type>(sender: Sender) => false | void
 
 	/**
 	 * Fires after hiding the component
@@ -85,7 +85,7 @@ export interface ComponentEventMap<Sender> extends ObservableEventMap<Sender> {
 	 * @see Component.show()
 	 * @param comp
 	 */
-	hide: <T extends Sender> (sender: T) => void,
+	hide: <Sender extends Type> (sender: Sender) => void,
 
 	/**
 	 * Fires on focus
@@ -93,7 +93,7 @@ export interface ComponentEventMap<Sender> extends ObservableEventMap<Sender> {
 	 * @param comp
 	 * @param o
 	 */
-	focus: <T extends Sender> (sender: T, o?: FocusOptions) => void
+	focus: <Sender extends Type> (sender: Sender, o?: FocusOptions) => void
 
 	/**
 	 * Fires when this component is added to a parent
@@ -101,7 +101,7 @@ export interface ComponentEventMap<Sender> extends ObservableEventMap<Sender> {
 	 * @param me
 	 * @param index the index in the parents' items
 	 */
-	added: <T extends Sender> (sender: T, index: number) => void
+	added: <Sender extends Type> (sender: Sender, index: number) => void
 }
 
 export interface Component {
@@ -130,10 +130,14 @@ export type ComponentState = Record<string, any>;
  */
 export class Component extends Observable {
 
+	/**
+	 * Component constructor
+	 *
+	 * @param tagName The tagname used for the root HTMLElement of this component
+	 */
 	constructor(readonly tagName: keyof HTMLElementTagNameMap = "div") {
 		super();
 	}
-
 
 	/**
 	 * A base class not configurable. cls can be used to add extra classes leaving this class alone
@@ -774,6 +778,16 @@ export class Mask extends Component {
 	}
 }
 
+/**
+ * Generic Config option that allows all public properties as options
+ */
+export type Config<Component> = Partial<Pick<Component, { [K in keyof Component]: Component[K] extends Function ? never : K }[keyof Component]>>;
+
+/**
+ * Short hand function to create a {@see Mask} component
+ *
+ * @param config
+ */
 export const mask = (config?: Config<Mask>) => Object.assign(new Mask(), config);
 
 /**

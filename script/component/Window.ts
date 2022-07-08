@@ -1,8 +1,8 @@
-import {comp, Component} from "./Component.js";
+import {comp, Component, Config} from "./Component.js";
 import {tbar, Toolbar} from "./Toolbar.js";
 import {btn, Button} from "./Button.js";
 import {DraggableComponent, DraggableComponentEventMap} from "./DraggableComponent.js";
-import {Config, Observable, ObservableListener, ObservableListenerOpts} from "./Observable.js";
+import {Observable, ObservableListener, ObservableListenerOpts} from "./Observable.js";
 import {root} from "./Root.js";
 import {FunctionUtil} from "../util/FunctionUtil.js";
 import {form, Form} from "./form/Form.js";

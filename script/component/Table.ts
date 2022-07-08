@@ -1,7 +1,7 @@
-import {comp, Component, ComponentEventMap, ComponentState} from "./Component.js";
+import {comp, Component, ComponentEventMap, ComponentState, Config} from "./Component.js";
 import {rowselect, TableRowSelect, TableRowSelectConfig} from "./TableRowSelect.js";
 import {Store, StoreRecord} from "../data/Store.js";
-import {Config, Observable, ObservableListener, ObservableListenerOpts} from "./Observable.js";
+import {Observable, ObservableListener, ObservableListenerOpts} from "./Observable.js";
 import {Format} from "../util/Format.js";
 import {ObjectUtil} from "../util/ObjectUtil.js";
 import {menu, Menu} from "./menu/Menu.js";

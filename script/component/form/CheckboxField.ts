@@ -1,5 +1,5 @@
 import {Field} from "./Field.js";
-import {Config} from "../Observable.js";
+import {Config} from "../Component.js";
 
 /**
  * Checkbox field

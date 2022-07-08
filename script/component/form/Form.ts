@@ -1,7 +1,7 @@
 import {ContainerField} from "./ContainerField.js";
-import {Config, Observable, ObservableListener, ObservableListenerOpts} from "../Observable.js";
+import {Observable, ObservableListener, ObservableListenerOpts} from "../Observable.js";
 import {Notifier} from "../../Notifier.js";
-import {Component} from "../Component.js";
+import {Component, Config} from "../Component.js";
 import {FieldEventMap} from "./Field.js";
 
 

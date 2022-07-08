@@ -1,7 +1,6 @@
-import {Component} from "./Component.js";
+import {Component, Config} from "./Component.js";
 import {CardContainer} from "./CardContainer.js";
 import {btn} from "./Button.js";
-import {Config} from "./Observable.js";
 
 
 /**

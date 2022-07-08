@@ -1,7 +1,7 @@
 import {Menu} from "./Menu.js";
 import {btn} from "../Button.js";
-import {Config, Observable, ObservableListener, ObservableListenerOpts} from "../Observable.js";
-import {ComponentEventMap} from "../Component.js";
+import {Observable, ObservableListener, ObservableListenerOpts} from "../Observable.js";
+import {ComponentEventMap, Config} from "../Component.js";
 
 /**
  * @inheritDoc

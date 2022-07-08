@@ -1,5 +1,4 @@
-import {Config} from "./Observable.js";
-import {comp, Component} from "./Component.js";
+import {comp, Component, Config} from "./Component.js";
 import {CardMenu} from "./CardMenu.js";
 
 type renderFunc = (dd: Component) => void;

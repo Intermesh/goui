@@ -1,7 +1,6 @@
-import {Component} from "../Component.js";
+import {Component, Config} from "../Component.js";
 import {root} from "../Root.js";
 import {Button} from "../Button.js";
-import {Config} from "../Observable.js";
 
 
 /**

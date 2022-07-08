@@ -1,7 +1,8 @@
 import {EntityStore, QueryParams} from "./EntityStore.js";
 import {Store, StoreRecord} from "../data/Store.js";
 import {client} from "./Client.js";
-import {Config, Observable} from "../component/Observable.js";
+import {Observable} from "../component/Observable.js";
+import {Config} from "../component/Component.js";
 
 
 type Relation = Record<string, {

@@ -1,7 +1,7 @@
-import {Component, ComponentEventMap} from "./Component.js";
+import {Component, ComponentEventMap, Config} from "./Component.js";
 import {Menu} from "./menu/Menu.js";
 import {root} from "./Root.js";
-import {Config, Observable, ObservableListener, ObservableListenerOpts} from "./Observable.js";
+import {Observable, ObservableListener, ObservableListenerOpts} from "./Observable.js";
 import {MaterialIcon} from "./MaterialIcon.js";
 import {Image} from "../api/Image.js";
 

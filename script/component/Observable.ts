@@ -29,6 +29,11 @@ export type ObservableListener<Map extends ObservableEventMap<Observable>> =  {
 	[P in keyof Map]?: ObservableListenerWithOpts<Map[P]> | Map[P]
 };
 
+// type Listener<Comp, EventParams extends any[]> = (sender: Comp, ...args: EventParams) => false|void
+//
+// export type ObservableListener2<Comp extends Observable<Map>, Map extends ObservableEventMap2> =  {
+// 	[P in keyof Map]?: Map[P] extends Func ? ObservableListenerWithOpts<Map[P]> | Listener<Comp, Parameters<Map[P]>> : never
+// };
 
 
 /**
