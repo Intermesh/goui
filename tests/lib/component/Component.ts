@@ -19,7 +19,9 @@ describe('Component class', () => {
 	describe("Listener", () => {
 
 		it('Fires an event once', function () {
-			const c = comp();
+			const c = comp({
+				hidden: true
+			});
 
 			root.items.add(c);
 
