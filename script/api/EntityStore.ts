@@ -69,25 +69,6 @@ export interface QueryParams {
 
 export type Entity = Record<string, any>;
 
-/**
- * @inheritDoc
- */
-export interface EntityStoreConfig<T extends Observable> extends ObservableConfig<T> {
-	/**
-	 * Store name
-	 * eg. "Contact"
-	 */
-	name: string,
-
-	/**
-	 * API client
-	 */
-	client: Client,
-	/**
-	 * @inheritDoc
-	 */
-	listeners?: ObservableListener<EntityStoreEventMap<T>>
-}
 
 export interface EntityStoreEventMap<T extends Observable> extends ObservableEventMap<T> {
 	/**
@@ -109,7 +90,7 @@ export interface EntityStore {
 
 export class EntityStore extends Observable {
 
-	constructor(public name:string, public client:Client = client) {
+	constructor(public name:string, public client:Client) {
 		super();
 	}
 

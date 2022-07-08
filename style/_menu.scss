@@ -1,9 +1,10 @@
 $menuWidth: dp(160);
 
 menu.dropdown {
+	@extend .z12;
+
 	display: block;
 	z-index: $zIndexMenu;
-	box-shadow: $windowShadow;
 	list-style: none;
 	position: fixed;
 	min-width: $menuWidth;

@@ -1,4 +1,4 @@
-import {Component} from "../component/Component.js";
+import {comp, Component} from "../component/Component.js";
 import {client} from "./Client.js";
 import {Config} from "../component/Observable.js";
 
@@ -40,6 +40,15 @@ export class Image extends Component {
 			.catch( console.error );
 	}
 
+	public static replace(html: string) {
+		const c = comp({
+			html: html
+		});
+
+		Image.replaceImages(c.el);
+
+		return c;
+	}
 
 	/**
 	 * Replaces all img tags with a blob ID source from group-office with an objectURL

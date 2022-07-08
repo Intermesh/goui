@@ -762,9 +762,12 @@ export class Table<StoreType extends Store = Store> extends Component {
 
 		const frag = document.createDocumentFragment();
 
-		for (let record of records) {
-			this.renderRow(record, frag);
-		}
+		records.forEach((record, index) => {
+			const row = this.renderRow(record, frag);
+			if(this.rowSelection && this.rowSelection.selected.indexOf(index) > -1) {
+				row.classList.add("selected");
+			}
+		})
 
 		this.tbody.appendChild(frag);
 
@@ -813,6 +816,8 @@ export class Table<StoreType extends Store = Store> extends Component {
 		}
 
 		tbody.appendChild(row);
+
+		return row;
 	}
 }
 

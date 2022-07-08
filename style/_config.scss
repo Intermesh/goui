@@ -6,7 +6,7 @@ $scale: 1;
 	@return $width * $scale * 1px;
 }
 
-$windowShadow: 0 0 dp(16) 0 rgba(0,0,0,20%);
+//$windowShadow: 0 0 dp(16) 0 rgba(0,0,0,20%);
 
 $colorLine: rgba(black, 0.04);
 $colorBorder: rgb(30 ,18, 70, 0.2); //#D3D3D3;
@@ -72,3 +72,9 @@ $breakpointXL: 1200px;
 $breakpointLarge: 992px;
 $breakpointMedium: 768px;
 $breakpointSmall: 576px;
+
+
+//shadows
+$umbra: rgba(black, .2)!default;
+$penumbra: rgba(black, .14)!default;
+$ambient: rgba(black, .12)!default;

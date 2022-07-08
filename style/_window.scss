@@ -11,7 +11,8 @@
 }
 .window {
 	&.modal {
-		box-shadow: 0 0px 20px 0 rgb(0 0 0 / 40%);
+		@extend .z24;
+		//box-shadow: 0 0px 20px 0 rgb(0 0 0 / 40%);
 		border: 2px solid rgba(30, 18, 70, 0.6);
 	}
 
@@ -42,7 +43,7 @@
 
 	@extend .vbox;
 
-	box-shadow: $windowShadow;
+	@extend .z12;
 
 	position: fixed;
 	border: 2px solid $colorBorderWindow;

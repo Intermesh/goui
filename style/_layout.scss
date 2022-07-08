@@ -169,3 +169,11 @@
 }
 
 
+.card {
+	border-radius: $borderRadius;
+	margin: dp(16);
+	background-color: white;
+	@extend .z2;
+}
+
+

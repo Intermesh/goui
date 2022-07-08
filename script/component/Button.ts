@@ -332,4 +332,4 @@ export class Button extends Component {
  *
  * @param config
  */
-export const btn = (config?: Config<Button>) => Object.assign(new Button, config);
+export const btn = (config?: Config<Button>): Button => Object.assign(new Button(), config) ;

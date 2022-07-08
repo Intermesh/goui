@@ -1,5 +1,6 @@
 @import 'config';
 @import 'icons';
+
 //@import 'lato';
 
 .goui {
@@ -40,6 +41,7 @@
 		user-select: none;
 	}
 
+	@import 'shadows';
 	@import 'general';
 	@import 'normalize';
 

@@ -116,7 +116,7 @@ export class Window extends DraggableComponent {
 
 	private initMaximizeTool() {
 		const maximizeBtn = btn({
-			icon: "maximize",
+			icon: "fullscreen",
 			title: t("Maximize"),
 			handler: () => {
 				this.isMaximized() ? this.unmaximize() : this.maximize();
@@ -125,12 +125,12 @@ export class Window extends DraggableComponent {
 
 
 		this.on('maximize', () => {
-			maximizeBtn.icon = "minimize";
+			maximizeBtn.icon = "fullscreen_exit";
 			maximizeBtn.title = t("Restore");
 		});
 
 		this.on('unmaximize', () => {
-			maximizeBtn.icon = "maximize";
+			maximizeBtn.icon = "fullscreen";
 			maximizeBtn.title = t("Maximize");
 		});
 

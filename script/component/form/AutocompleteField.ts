@@ -66,6 +66,7 @@ export class AutocompleteField<TableType extends Table = Table> extends TextFiel
 				handler: () => {
 					this.fire("autocomplete", this, "");
 					this.table.show();
+					this.focus();
 				}
 			})
 		);
@@ -113,6 +114,14 @@ export class AutocompleteField<TableType extends Table = Table> extends TextFiel
 		}
 	}
 
+	set value(v: any) {
+		super.value = v;
+	}
+
+	get value(): any {
+		return this._value;
+	}
+
 	private findDisplayValue(v: StoreRecord | string | undefined) {
 		if(!v) {
 			return "";
@@ -132,8 +141,7 @@ export class AutocompleteField<TableType extends Table = Table> extends TextFiel
 
 		const rect = this.input!.getBoundingClientRect();
 
-		//Align table with input
-		this.table.parent = this;
+
 		this.table.el.style.left = rect.x + "px";
 		this.table.el.style.top = rect.bottom + -2 + "px";
 		this.table.width = this.width;
@@ -146,10 +154,39 @@ export class AutocompleteField<TableType extends Table = Table> extends TextFiel
 			root.items.add(this.table);
 		}
 
+		this.selectValueInTable();
+
 		//hide menu when clicked elsewhere
 		window.addEventListener("mousedown", (ev) => {
 			this.table.hide();
 		}, {once: true});
+	}
+
+
+	private selectValueInTable() {
+		if(this.value) {
+			//Try to select record
+			if(this.table.store.loading) {
+				this.table.store.on("load", (store, records, append) => {
+					const index = this.findStoreIndexForValue();
+					console.warn("Selected index", index);
+					this.table.rowSelection!.selected = [index];
+				}, {once: true});
+			} else
+			{
+				const index = this.findStoreIndexForValue();
+				this.table.rowSelection!.selected = [index];
+			}
+		}
+	}
+
+	private findStoreIndexForValue() {
+		if(this.valueProperty) {
+			return this.table.store.findIndex((record) => record[this.valueProperty!] == this.value);
+		} else
+		{
+			return this.table.store.findIndex( this.value);
+		}
 	}
 
 	private onTableHide() {
@@ -169,6 +206,8 @@ export class AutocompleteField<TableType extends Table = Table> extends TextFiel
 		}
 
 		this.table.rowSelectionConfig = {multiSelect: false};
+
+		this.table.parent = this;
 
 		this.table.on("show", () => {
 			this.onTableShow();
@@ -199,10 +238,12 @@ export class AutocompleteField<TableType extends Table = Table> extends TextFiel
 					}
 
 					this.table.hide();
+					ev.preventDefault();
 					break;
 
 				case 'Escape':
 					this.table.hide();
+					ev.preventDefault();
 					break;
 			}
 		})

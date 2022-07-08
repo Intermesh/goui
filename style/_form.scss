@@ -36,6 +36,7 @@ $formLabelWidth: dp(160);
 .form-field {
 	display: flex;
 	flex-flow: row wrap;
+	border-radius: dp(12);
 
 	+ hr {
 		margin-top: 0;
@@ -44,6 +45,7 @@ $formLabelWidth: dp(160);
 	menu.toolbar {
 		padding: 0;
 		border: 2px solid $colorBorder;
+		transition: border-color 100ms linear;
 		border-radius: 0 dp(12) dp(12) 0;
 		border-left: 0;
 		> * {
@@ -412,6 +414,7 @@ form {
 		box-shadow: 0px 10px 20px 0 rgb(0 0 0 / 40%);
 
 		menu.toolbar {
+			border-color: $colorPrimary;
 			border-bottom-right-radius: 0;
 		}
 	}
