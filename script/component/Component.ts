@@ -781,7 +781,7 @@ export class Mask extends Component {
 /**
  * Generic Config option that allows all public properties as options
  */
-export type Config<Component> = Partial<Pick<Component, { [K in keyof Component]: Component[K] extends Function ? never : K }[keyof Component]>>;
+export type Config<Cmp> = Partial<Pick<Cmp, { [K in keyof Cmp]: Cmp[K] extends Function ? never : K }[keyof Cmp]>>;
 
 /**
  * Short hand function to create a {@see Mask} component

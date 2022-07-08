@@ -33,42 +33,6 @@ export type ObservableListener<Map extends ObservableEventMap<Observable>> =  {
 
 
 /**
- * Config object with properties to apply to the component
- */
-export interface ObservableConfig<T extends Observable> {
-	/**
-	 * Add listeners
-	 *
-	 * You can pass them in two ways:
-	 *
-	 * @example
-	 * ```
-	 * Component.create({
-	 * 		listeners: {
-	 *
-	 * 			//simple syntax add the listener directly
-	 * 			additem:(container, item, index) => {
-	 * 				//do something when an item was added
-	 * 			},
-	 *
-	 * 	    // extended syntax to pass extra listener options
-	 * 			beforeadditem: {
-	 * 				//with this syntax you can pass extra options
-	 * 				fn:(container, item, index) => {
-	 * 					//do something before an item will be added but only once
-	 * 				},
-	 * 				once: true
-	 * 			}
-	 * 		}
-	 * 	})
-	 * 	```
-	 *
-	 * 	@see Observable.on()
-	 */
-	listeners?: ObservableListener<ObservableEventMap<T>>
-}
-
-/**
  * Options for event listener functions
  */
 export interface ObservableListenerOpts {
@@ -105,40 +69,11 @@ interface ObservableListenerWithOpts<fn> extends ObservableListenerOpts {
 }
 
 /**
- * Generic Config type that accepts all public properties of a given component
- */
-export type Config<Cmp extends Component> = Partial<Pick<Cmp, {[K in keyof Cmp]: Cmp[K] extends Function  ? never : K}[keyof Cmp]>>;
-
-/**
  * Observable
  *
  * Adds event listener functionality
  */
 export class Observable {
-
-
-	// /**
-	//  * Create the component with config object.
-	//  *
-	//  * It constructs and initializes the object.
-	//  *
-	//  * @param config
-	//  * @param items Add child components
-	//  */
-	// public static create<T extends new (...args: any) => any>(this: T, config?: Config<InstanceType<T>>, ...items: Component[]) : InstanceType<T> {
-	//
-	// 	const c = new this() as InstanceType<T>;
-	//
-	// 	if(config) {
-	// 		Object.assign(c, config);
-	// 	}
-	//
-	// 	if(items.length) {
-	// 		(c as unknown as Component).items.replace(...items);
-	// 	}
-	//
-	// 	return c;
-	// }
 
 	private lisnrs: { [key: string]: { listener: Function, unbindkey:Function, options?: ObservableListenerOpts }[] } | undefined;
 	
