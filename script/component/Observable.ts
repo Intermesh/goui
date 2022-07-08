@@ -12,10 +12,6 @@ export interface ObservableEventMap<Sender> {
 
 };
 
-interface Constructable<T> {
-	new(...args:any[]): T
-}
-
 
 /**
  * Observable listener configuration.
@@ -108,8 +104,10 @@ interface ObservableListenerWithOpts<fn> extends ObservableListenerOpts {
 	fn: fn
 }
 
-
-export type Config<Source> = Partial<Pick<Source, {[K in keyof Source]: Source[K] extends Function  ? never : K}[keyof Source]>>;
+/**
+ * Generic Config type that accepts all public properties of a given component
+ */
+export type Config<Cmp extends Component> = Partial<Pick<Cmp, {[K in keyof Cmp]: Cmp[K] extends Function  ? never : K}[keyof Cmp]>>;
 
 /**
  * Observable
