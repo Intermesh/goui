@@ -30,21 +30,25 @@ button.button {
 	font-weight: 600;
 	line-height: dp(24); //match icon
 
+	&:hover {
+		background-color: $colorHover;
+		outline: none;
+	}
+
 	&.pressed {
 		box-shadow: inset -2px -2px -2 $colorBorder; // underline
 		background-color: $colorPrimary;
 		color: white;
+		&:hover {
+			filter: brightness(120%);
+		}
 	}
 
 	&:active {
 		filter: brightness(150%);
 	}
 
-	&:hover {
-		background-color: $colorPrimary;
-		color:white;
-		outline: none;
-	}
+
 
 	&.raised {
 		color: $colorAccent;
@@ -56,7 +60,7 @@ button.button {
 	}
 
 	&.primary, &[type=submit] {
-		background-color: $colorAccent;
+		background-color: $colorSecondary;
 		color:white;
 		&:hover {
 			filter: brightness(120%);
@@ -112,5 +116,13 @@ button.button {
 	> hr {
 		height: dp(24);
 		//margin: 0px dp(12) 0px 0;
+	}
+
+	.form-field {
+		.hint {
+			height: auto;
+			padding-bottom: 0;
+			padding-top:0;
+		}
 	}
 }

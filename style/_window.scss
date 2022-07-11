@@ -101,9 +101,16 @@
 			white-space: nowrap;
 		}
 
-		& + *:not(.cardmenu) {
+		& + *:not(.cardmenu):not(form) {
 			margin-top: 0;
 			border-top: 1px solid $colorBorderWindow;
+		}
+
+		& + form {
+			&:first-child:not(.cardmenu) {
+				margin-top: 0;
+				border-top: 1px solid $colorBorderWindow;
+			}
 		}
 	}
 

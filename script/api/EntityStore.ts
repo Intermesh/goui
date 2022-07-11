@@ -94,28 +94,11 @@ export class EntityStore extends Observable {
 		super();
 	}
 
-	get(ids: Id[] | ResultReference = [], properties: string[] = []): Promise<GetResponse> {
-
+	public get(ids: Id[] | ResultReference = [], properties: string[] = []): Promise<GetResponse> {
 		return this.client.jmap(this.name + '/get', {
 			[(ids as ResultReference).resultOf ? "#ids" : "ids"]: ids, //Support for {resultOf: "...} jmap spec
 			properties: properties
 		});
-		// 	.then((response:GetResponse) => {
-		//
-		// 	const order:{[key:string]:number} = {};
-		//
-		// 	ids.forEach((id, index) => {
-		// 		order[id] = index;
-		// 	});
-		//
-		// 	response.list.sort(function (a, b) {
-		// 		return order[a.id] - order[b.id];
-		// 	});
-		//
-		// 	return response;
-		//
-		//
-		// });
 	}
 
 	single(id: Id, properties: string[] = []): Promise<Entity> {

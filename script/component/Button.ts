@@ -284,9 +284,9 @@ export class Button extends Component {
 
 		if (this._icon) {
 			this.el.classList.add("with-icon");
+		}else {
+			this.el.classList.remove("with-icon");
 		}
-
-		this.el.classList.remove("with-icon");
 
 		this.iconEl!.innerText = icon + "";
 	}

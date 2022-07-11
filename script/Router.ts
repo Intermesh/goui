@@ -1,4 +1,4 @@
-import {Observable, ObservableConfig, ObservableEventMap, ObservableListenerOpts} from "./component/Observable.js";
+import {Observable, ObservableEventMap, ObservableListenerOpts} from "./component/Observable.js";
 
 interface Route {
 	re: RegExp
