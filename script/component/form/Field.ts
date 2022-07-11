@@ -264,10 +264,6 @@ export abstract class Field extends Component {
 		this.fire("setvalue", this, this._value, old);
 	}
 
-	protected setValue(v:any) {
-
-	}
-
 	public get value() {
 		return this._value;
 	}

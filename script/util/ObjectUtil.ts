@@ -1,3 +1,6 @@
+
+type KeyValue = Record<string, any>
+
 export class ObjectUtil
 {
 	public static isObject = (obj:any) => {
@@ -22,7 +25,7 @@ export class ObjectUtil
 	 * @param path
 	 * @return The value from the path or undefined if not found
 	 */
-	public static path (obj:any, path:string): any {
+	public static path (obj:KeyValue, path:string): any {
 
 		const dotPos = path.indexOf(".");
 
@@ -42,6 +45,29 @@ export class ObjectUtil
 		}
 
 		return this.path(next, path.substr(dotPos+1));
+	}
+
+	/**
+	 * Deep merge two key value objects
+	 * @param o1
+	 * @param o2
+	 */
+	public static merge(o1:Record<string, any>, o2:any) {
+
+		if(!this.isObject(o2)) {
+			return o2;
+		}
+
+		for(let key in o2) {
+			if(key in o1 && this.isObject(o1[key])) {
+				o1[key] = this.merge(o1[key], o2[key]);
+			} else
+			{
+				o1[key] = o2[key];
+			}
+		}
+
+		return o1;
 	}
 
 	// /**

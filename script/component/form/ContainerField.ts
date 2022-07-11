@@ -1,9 +1,10 @@
 import {Field, FieldEventMap} from "./Field.js";
 import {ObservableListener, ObservableListenerOpts} from "../Observable.js";
 import {Component, Config} from "../Component.js";
+import {ObjectUtil} from "../../util/ObjectUtil.js";
 
 
-export type FieldComponentValue = Record<string, any>;
+export type ContainerFieldValue = Record<string, any>;
 
 
 export interface ContainerField extends Field {
@@ -30,17 +31,24 @@ export class ContainerField extends Field {
 	public hideLabel = true;
 
 
-	public findFields() {
+	/**
+	 * Find all form fields
+	 *
+	 * @param nameOrItemId If given only items with matching name or itemId are returned
+	 */
+	public findFields(nameOrItemId: string | undefined = undefined) {
 		const fields: Field[] = [];
 
 		const fn = (item: any) => {
 
 			if (item == this) {
-				return true;
+				return;
 			}
 
 			if (item.isFormField) {
-				fields.push(item);
+				if(!nameOrItemId || (item.name == nameOrItemId || item.itemId == nameOrItemId)) {
+					fields.push(item);
+				}
 				return false;
 			}
 		};
@@ -75,24 +83,33 @@ export class ContainerField extends Field {
 		return field;
 	}
 
+	set value(v: ContainerFieldValue) {
 
-	set value(v: FieldComponentValue) {
 		for (let name in v) {
-			let field = <Field>this.findField(name);
-			if (field) {
-				field.value = v[name];
-			}
+			// We cast to any[] for Ext compatibility. We try setValue() for Ext if it exists
+			let fields = this.findFields(name) as any[];
+			fields.forEach(field =>	field.setValue ? field.setValue(v[name]) : field.value = v[name]);
 		}
 
 		super.value = v;
 	}
 
-	public get value(): FieldComponentValue {
-		const formProps: FieldComponentValue = super.value || {};
+	public get value(): ContainerFieldValue {
+
+		const formProps: ContainerFieldValue = super.value || {};
 
 		this.findFields().forEach((field) => {
-			if (field.name) {
-				formProps[field.name] = field.value;
+			//for Extjs compat try .getName();
+			const fieldName = field.name || (field as any).getName();
+			const fieldVal = field.value || (field as any).getValue();
+
+			if (fieldName) {
+				if(!formProps[fieldName]) {
+					formProps[fieldName] = fieldVal;
+				} else
+				{
+					formProps[fieldName] = ObjectUtil.merge(formProps[field.name], fieldVal);
+				}
 			}
 		});
 
@@ -117,7 +134,7 @@ export class ContainerField extends Field {
 		}
 	}
 
-	clearInvalid() {
+	public clearInvalid() {
 
 		super.clearInvalid();
 		const items = this.findFields();

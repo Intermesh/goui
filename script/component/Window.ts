@@ -401,7 +401,12 @@ export class Window extends DraggableComponent {
 	 * @param title
 	 * @param text
 	 */
-	public static alert(title:string, text: string): Promise<void> {
+	public static alert(title:string, text: any): Promise<void> {
+
+		if(text.message) {
+			console.error(text);
+			text = text.message;
+		}
 		return new Promise((resolve, reject) => {
 
 			win({

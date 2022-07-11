@@ -92,6 +92,7 @@ export class CardMenu extends Component {
 
 			this.items.insert(index,
 				btn({
+					type: "button",
 					itemId: item.itemId,
 					cls: index == this.cardContainer!.getActiveItem() ? "active" : "",
 					text: item.title,
