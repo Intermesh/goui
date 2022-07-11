@@ -12,6 +12,7 @@ import {FunctionUtil} from "../../util/FunctionUtil.js";
 import {root} from "../Root.js";
 import {MaterialIcon} from "../MaterialIcon.js";
 import {CheckboxField} from "./CheckboxField.js";
+import {Image} from "../../api/Image.js";
 
 
 /**
@@ -335,6 +336,7 @@ export class HtmlField extends Field {
 
 		if(v) {
 			this.editor.innerHTML = v;
+			Image.replaceImages(this.editor);
 		}
 
 		el.appendChild(this.editor);
@@ -398,6 +400,7 @@ export class HtmlField extends Field {
 
 		if (this.editor) {
 			this.editor.innerHTML = v;
+			Image.replaceImages(this.editor);
 		}
 
 		super.value = v;

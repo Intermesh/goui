@@ -3,7 +3,6 @@ import {Menu} from "./menu/Menu.js";
 import {root} from "./Root.js";
 import {Observable, ObservableListener, ObservableListenerOpts} from "./Observable.js";
 import {MaterialIcon} from "./MaterialIcon.js";
-import {Image} from "../api/Image.js";
 
 type ButtonType = "button" | "submit" | "reset";
 
@@ -124,7 +123,6 @@ export class Button extends Component {
 		const el = super.internalRender();
 
 
-
 		// The first menu of a button will expand on click, sub menus will show on hover and are hidden with css.
 		// Before I made this without JS with the :focus-within selector but that didn't work in Safari because it
 		// doesn't focus buttons on click.
@@ -133,7 +131,7 @@ export class Button extends Component {
 		if (this.menu) {
 			this.menu.hide();
 
-			if (!(this.parent instanceof Menu)){
+			if (!(this.parent instanceof Menu)) {
 				// When a menu is opened. other top level will open on mouse enter
 				this.el.addEventListener("mouseenter", this.onMenuMouseEnter.bind(this));
 				this.el.addEventListener("click", this.onMenuButtonClick.bind(this));
@@ -271,7 +269,7 @@ export class Button extends Component {
 			this.el.classList.remove("with-text");
 		}
 
-		this.textEl!.innerText = text +"";
+		this.textEl!.innerText = text + "";
 	}
 
 	get text() {
@@ -299,27 +297,27 @@ export class Button extends Component {
 
 
 	private get iconEl() {
-		if(!this._iconEl) {
+		if (!this._iconEl) {
 			this.createIconAndTextEls();
 		}
 		return this._iconEl;
 	}
 
 	private get textEl() {
-		if(!this._textEl) {
+		if (!this._textEl) {
 			this.createIconAndTextEls();
 		}
 		return this._textEl;
 	}
 
 	private createIconAndTextEls() {
-		if(this.icon && !this._iconEl) {
+		if (this.icon && !this._iconEl) {
 			this._iconEl = document.createElement("i");
 			this._iconEl.classList.add("icon");
 			this.el.appendChild(this._iconEl);
 		}
 
-		if(this._text && !this._textEl) {
+		if (this._text && !this._textEl) {
 			this._textEl = document.createElement("span");
 			this._textEl.classList.add("text");
 			this.el.appendChild(this._textEl);
@@ -332,4 +330,4 @@ export class Button extends Component {
  *
  * @param config
  */
-export const btn = (config?: Config<Button>): Button => Object.assign(new Button(), config) ;
+export const btn = (config?: Config<Button>): Button => Object.assign(new Button(), config);

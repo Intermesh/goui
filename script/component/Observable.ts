@@ -1,7 +1,11 @@
 import {FunctionUtil} from "../util/FunctionUtil.js";
-import {Component} from "./Component.js";
+import {ComponentEventMap} from "./Component.js";
 
-type Func = (...args:any[]) => any ;
+type Func = (...args: any[]) => any;
+
+type Funcs<Map> = {
+	[P in keyof Map]: Map[P] extends Func ? Map[P] : never
+};
 
 /**
  * Component events
@@ -10,7 +14,7 @@ type Func = (...args:any[]) => any ;
  */
 export interface ObservableEventMap<Sender> {
 
-};
+}
 
 
 /**
@@ -21,7 +25,7 @@ export interface ObservableEventMap<Sender> {
  * {@see ObservableListenerWithOpts}
  * {@see ObservableConfig.listeners}
  */
-export type ObservableListener<Map extends ObservableEventMap<Observable>> =  {
+export type ObservableListener<Map extends ObservableEventMap<Observable>> = {
 	[P in keyof Map]?: ObservableListenerWithOpts<Map[P]> | Map[P]
 };
 
@@ -45,17 +49,17 @@ export interface ObservableListenerOpts {
 	 * Buffer the listener with this number of milliseconds.
 	 * When an event is fired multiple times within the buffer period only the last event listener will be called
 	 */
-	buffer?:number,
+	buffer?: number,
 
 	/**
 	 * Delay the listener with this number of milliseconds.
 	 */
-	delay?:number,
+	delay?: number,
 
 	/**
 	 * Put this listener before existing listeners instead of after
 	 */
-	unshift?:boolean
+	unshift?: boolean
 }
 
 /**
@@ -75,8 +79,8 @@ interface ObservableListenerWithOpts<fn> extends ObservableListenerOpts {
  */
 export class Observable {
 
-	private lisnrs: { [key: string]: { listener: Function, unbindkey:Function, options?: ObservableListenerOpts }[] } | undefined;
-	
+	private lisnrs: { [key: string]: { listener: Function, unbindkey: Function, options?: ObservableListenerOpts }[] } | undefined;
+
 	/**
 	 * Add listeners
 	 *
@@ -106,15 +110,14 @@ export class Observable {
 	 *
 	 * 	@see Observable.on()
 	 */
-	set listeners (listeners:ObservableListener<ObservableEventMap<this>>) {
-		for(let key in listeners) {
+	set listeners(listeners: ObservableListener<ObservableEventMap<this>>) {
+		for (let key in listeners) {
 			const eventName = key as keyof ObservableEventMap<Observable>;
-			if(typeof listeners[eventName] == 'function') {
+			if (typeof listeners[eventName] == 'function') {
 				this.on(eventName, listeners[eventName] as never);
-			} else
-			{
+			} else {
 				const o = listeners[eventName] as Partial<ObservableListenerWithOpts<Func>>;
-				const fn =  o.fn as never;
+				const fn = o.fn as never;
 				delete o.fn;
 				this.on(eventName, fn, o);
 			}
@@ -134,24 +137,23 @@ export class Observable {
 		const unbindkey = listener!;
 
 		if (options) {
-			if(options.buffer) {
+			if (options.buffer) {
 				listener = FunctionUtil.buffer(options.buffer, listener!) as never;
 			}
 
-			if(options.once) {
+			if (options.once) {
 				listener = this.once(eventName, listener!) as never;
 			}
 
-			if(options.delay) {
+			if (options.delay) {
 				listener = FunctionUtil.delay(options.delay, listener!) as never;
 			}
 		}
 		this.lisnrs = this.lisnrs || {};
 		this.lisnrs[eventName] = this.lisnrs[eventName] || [];
-		if(options?.unshift) {
+		if (options?.unshift) {
 			this.lisnrs[eventName].unshift({listener: listener!, options: options, unbindkey: unbindkey});
-		} else
-		{
+		} else {
 			this.lisnrs[eventName].push({listener: listener!, options: options, unbindkey: unbindkey});
 		}
 
@@ -208,3 +210,36 @@ export class Observable {
 		return true;
 	}
 }
+
+
+// export function initComp<T extends Component>(comp: T, config?: any, items?: Component[]) {
+//
+// 	if(config.listeners) {
+//
+// 		for(let key in config.listeners) {
+// 			const eventName = key as keyof ObservableEventMap<Observable>;
+// 			if(typeof config.listeners[eventName] == 'function') {
+// 				comp.on(eventName, config.listeners[eventName] as never);
+// 			} else
+// 			{
+// 				const o = config.listeners[eventName] as Partial<ObservableListenerWithOpts<Func>>;
+// 				const fn =  o.fn as never;
+// 				delete o.fn;
+// 				comp.on(eventName, fn, o);
+// 			}
+// 		}
+//
+// 		delete config.listeners;
+// 	}
+//
+// 	if (config) {
+// 		Object.assign(comp, config);
+// 	}
+//
+// 	if (items && items.length) {
+// 		comp.items.add(...items);
+// 	}
+//
+// 	return comp;
+// }
+

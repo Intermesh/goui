@@ -1,10 +1,4 @@
-import {
-	Observable,
-	ObservableConfig,
-	ObservableEventMap,
-	ObservableListener,
-	ObservableListenerOpts
-} from "../component/Observable.js";
+import {Observable, ObservableListener, ObservableListenerOpts} from "../component/Observable.js";
 import {ArrayUtil} from "../util/ArrayUtil.js";
 import {Collection, CollectionEventMap} from "../util/Collection.js";
 import {Config} from "../component/Component.js";
@@ -45,6 +39,7 @@ export interface Store {
 	on<K extends keyof StoreEventMap<this>>(eventName: K, listener: Partial<StoreEventMap<this>>[K], options?: ObservableListenerOpts): void
 
 	fire<K extends keyof StoreEventMap<this>>(eventName: K, ...args: Parameters<StoreEventMap<this>[K]>): boolean
+
 	set listeners(listeners: ObservableListener<StoreEventMap<this>>)
 }
 

@@ -1,6 +1,6 @@
 // noinspection JSUnusedGlobalSymbols
 
-import {Observable, ObservableEventMap, ObservableListener, ObservableListenerOpts} from "./Observable.js";
+import {Observable, ObservableEventMap, ObservableListener, ObservableListenerOpts,} from "./Observable.js";
 import {State} from "../State.js";
 import {Collection} from "../util/Collection.js";
 
@@ -10,7 +10,7 @@ export type ComponentConstructor<T extends Component> = new (...args: any[]) => 
 
 
 interface Type<T> {
-	new(...args:any[]): T
+	new(...args: any[]): T
 }
 
 
@@ -379,14 +379,13 @@ export class Component extends Observable {
 
 		this.fire("beforerender", this);
 
-		this.internalRender();
-
-		this.fire("beforedom", this);
 		if (!refChild) {
 			parentEl.appendChild(this.el);
 		} else {
 			parentEl.insertBefore(this.el, refChild);
 		}
+
+		this.internalRender();
 
 		this._rendered = true;
 
@@ -528,7 +527,7 @@ export class Component extends Observable {
 		return this.el.style;
 	}
 
-	public computeZIndex() : number {
+	public computeZIndex(): number {
 		const z = parseInt(window.getComputedStyle(this.el).getPropertyValue('z-index'));
 		if (!z) {
 			return this.parent ? this.parent.computeZIndex() : 0;
