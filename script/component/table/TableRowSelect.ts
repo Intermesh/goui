@@ -150,8 +150,6 @@ export class TableRowSelect extends Observable {
 	 */
 	private setSelected(newSelection: number[], silent = false) {
 
-		console.warn(newSelection);
-
 		const old = this._selected;
 
 		this._selected = newSelection;
