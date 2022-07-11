@@ -1,7 +1,8 @@
-import {column, datecolumn, DateColumn, table, Table} from "../script/component/Table.js";
+import {table, Table} from "../script/component/table/Table.js";
 import {Store, store, StoreRecord} from "../script/data/Store.js";
 import {DateTime} from "../script/util/DateTime.js";
 import {Window} from "../script/component/Window.js";
+import {column, DateColumn, datecolumn} from "../script/component/table/TableColumns.js";
 
 export class PlaygroundTable extends Table {
 

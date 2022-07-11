@@ -33,6 +33,8 @@ export class TextField extends Field {
 	 */
 	public pattern:HTMLInputElement["pattern"] | undefined;
 
+
+
 	set title(title: string) {
 		super.title = title;
 
@@ -81,10 +83,7 @@ export class TextField extends Field {
 		}
 
 		this.input.addEventListener("change", () => {
-			//used set timeout so focusout event happens first and field validates before change event
-			setTimeout(() => {
-				this.fire("change", this);
-			})
+			this.fireChange();
 		});
 
 		if(this.invalidMsg) {

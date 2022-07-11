@@ -1,7 +1,7 @@
-import {Observable, ObservableEventMap, ObservableListener, ObservableListenerOpts} from "./Observable.js";
+import {Observable, ObservableEventMap, ObservableListener, ObservableListenerOpts} from "../Observable.js";
 import {Table} from "./Table.js";
-import {ArrayUtil} from "../util/ArrayUtil.js";
-import {Config} from "./Component.js";
+import {ArrayUtil} from "../../util/ArrayUtil.js";
+import {Config} from "../Component.js";
 
 
 export interface TableRowSelectEventMap<T extends Observable> extends ObservableEventMap<T> {
@@ -89,6 +89,18 @@ export class TableRowSelect extends Observable {
 		})
 	}
 
+	public clear() {
+		this.selected = [];
+	}
+
+	public selectAll() {
+		const selected = [];
+		for(let i = 0, c = this.table.store.count(); i < c; i ++) {
+			selected.push(i);
+		}
+		this.selected = selected;
+	}
+
 	/**
 	 * Get selected indexes
 	 */
@@ -137,6 +149,8 @@ export class TableRowSelect extends Observable {
 	 * @param silent Suspends 'selectionchange' event
 	 */
 	private setSelected(newSelection: number[], silent = false) {
+
+		console.warn(newSelection);
 
 		const old = this._selected;
 

@@ -13,7 +13,7 @@ export interface FieldEventMap<T extends Observable> extends ComponentEventMap<T
 	 *
 	 * @param field
 	 */
-	change: <Sender extends T> (field: Sender) => void
+	change: <Sender extends T> (field: Sender, newValue: any, oldValue: any) => void
 
 	/**
 	 * Fires when setValue() is called
@@ -99,6 +99,12 @@ export abstract class Field extends Component {
 	private _hint = "";
 
 	private hintEl?: HTMLDivElement;
+
+	/**
+	 * Used for "change" event
+	 * @protected
+	 */
+	protected oldValue?: string;
 
 	protected validateOnBlur() {
 		// Validate field on blur
@@ -261,7 +267,21 @@ export abstract class Field extends Component {
 			this.resetValue = v;
 		}
 
+		this.oldValue = v;
+
 		this.fire("setvalue", this, this._value, old);
+	}
+
+	/**
+	 * Helper to fire "change" event. Child classes must implement this.
+	 * @protected
+	 */
+	protected fireChange() {
+		//used set timeout so focusout event happens first and field validates before change event
+		setTimeout(() => {
+			this.fire("change", this, this.value, this.oldValue);
+			this.oldValue = this.value;
+		});
 	}
 
 	public get value() {

@@ -15,9 +15,10 @@ import {menu} from "../script/component/menu/Menu.js";
 import {autocomplete} from "../script/component/form/AutocompleteField.js";
 import {store, StoreRecord} from "../script/data/Store.js";
 import {DateTime} from "../script/util/DateTime.js";
-import {column, datecolumn, table} from "../script/component/Table.js";
+import {table} from "../script/component/table/Table.js";
 import {Field} from "../script/component/form/Field.js";
 import {select} from "../script/component/form/SelectField.js";
+import {column, datecolumn} from "../script/component/table/TableColumns.js";
 
 export const playgroundWin = () => {
 

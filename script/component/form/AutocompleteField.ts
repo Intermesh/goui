@@ -1,7 +1,7 @@
 import {TextField} from "./TextField.js";
 import {Observable, ObservableListener, ObservableListenerOpts} from "../Observable.js";
 import {StoreRecord} from "../../data/Store.js";
-import {Table} from "../Table.js";
+import {Table} from "../table/Table.js";
 import {root} from "../Root.js";
 import {FunctionUtil} from "../../util/FunctionUtil.js";
 import {FieldEventMap} from "./Field.js";

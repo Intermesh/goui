@@ -31,7 +31,7 @@ export class TextAreaField extends TextField {
 		}
 
 		this.input.addEventListener("change", () => {
-			this.fire("change", this);
+			this.fireChange();
 		});
 
 		return this.input;

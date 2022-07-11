@@ -57,7 +57,7 @@ export class CheckboxField extends Field {
 		}
 
 		this.input.addEventListener("change", () => {
-			this.fire("change", this);
+			this.fireChange();
 		});
 
 		control.appendChild(this.input);

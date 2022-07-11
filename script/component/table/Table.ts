@@ -1,140 +1,14 @@
-import {comp, Component, ComponentEventMap, ComponentState, Config} from "./Component.js";
+import {comp, Component, ComponentEventMap, ComponentState, Config} from "../Component.js";
 import {rowselect, TableRowSelect, TableRowSelectConfig} from "./TableRowSelect.js";
-import {Store, StoreRecord} from "../data/Store.js";
-import {Observable, ObservableListener, ObservableListenerOpts} from "./Observable.js";
-import {Format} from "../util/Format.js";
-import {ObjectUtil} from "../util/ObjectUtil.js";
-import {menu, Menu} from "./menu/Menu.js";
-import {checkbox} from "./form/CheckboxField.js";
-import {Notifier} from "../Notifier.js";
-import {draggable} from "./DraggableComponent.js";
-import {t} from "../Translate.js";
-
-
-type TableColumnRenderer = (columnValue: any, record: StoreRecord, td: HTMLTableCellElement, table: Table) => string | Promise<string> | Component | Promise<Component>;
-
-
-type align = "left" | "right" | "center";
-
-export class TableColumn extends Observable {
-
-	/**
-	 *
-	 * @param property Path to property
-	 * @see ObjectUtil.path()
-	 */
-	constructor(public property: string) {
-		super();
-	}
-
-	/**
-	 * Header in the table
-	 */
-	header?: string;
-
-	/**
-	 * Renderer function for the display
-	 */
-	renderer?: TableColumnRenderer
-
-	/**
-	 * Make the column resizable by the user
-	 */
-	resizable = false
-
-	/**
-	 * Make it sortable by the user
-	 */
-	sortable = false
-
-	/**
-	 * Width in pixels
-	 */
-	width?: number
-
-	/**
-	 * Text alignment
-	 */
-	align: align = "left"
-
-	/**
-	 * Hide the column. It can be enabled by the user via the context menu.
-	 */
-	hidden = false
-
-	/**
-	 * When rendered this is set to the DOM element.
-	 * It's used to update the header width
-	 */
-	headerEl?: HTMLTableCellElement;
-}
-
-type TableColumnConfig = Config<TableColumn> & {
-	/**
-	 * Path to property
-	 *
-	 * @see ObjectUtil.path()
-	 */
-	property: string
-};
-
-/**
- * Create a table column
- *
- * @param config
- */
-export const column = (config: TableColumnConfig) => Object.assign(new TableColumn(config.property), config);
-
-export class DateTimeColumn extends TableColumn {
-	renderer = (date: string) => {
-		return Format.dateTime(date);
-	}
-
-	//argh!? https://stackoverflow.com/questions/43121661/typescript-type-inference-issue-with-string-literal
-	align = "right" as align
-	width = 192
-}
-
-/**
- * Create a column showing date and time
- * @param config
- */
-export const datetimecolumn = (config: TableColumnConfig) => Object.assign(new DateTimeColumn(config.property), config);
-
-
-export class DateColumn extends TableColumn {
-	renderer = (date: string) => {
-		return Format.date(date);
-	}
-
-	//argh!? https://stackoverflow.com/questions/43121661/typescript-type-inference-issue-with-string-literal
-	align = "right" as align
-	width = 128
-}
-
-/**
- * Create a column showing just a date
- *
- * @param config
- */
-export const datecolumn = (config: TableColumnConfig) => Object.assign(new DateColumn(config.property), config);
-
-
-export class CheckboxColumn extends TableColumn {
-	width = 40
-	renderer = (val: boolean) => {
-		return checkbox({
-			value: val
-		});
-	}
-}
-
-/**
- * Create a checkbox column
- *
- * @param config
- */
-export const checkboxcolumn = (config: TableColumnConfig) => Object.assign(new CheckboxColumn(config.property), config);
+import {Store, StoreRecord} from "../../data/Store.js";
+import {Observable, ObservableListener, ObservableListenerOpts} from "../Observable.js";
+import {ObjectUtil} from "../../util/ObjectUtil.js";
+import {menu, Menu} from "../menu/Menu.js";
+import {checkbox} from "../form/CheckboxField.js";
+import {Notifier} from "../../Notifier.js";
+import {draggable} from "../DraggableComponent.js";
+import {t} from "../../Translate.js";
+import {TableColumn} from "./TableColumns.js";
 
 /**
  * @inheritDoc
@@ -255,6 +129,7 @@ export class Table<StoreType extends Store = Store> extends Component {
 	/**
 	 *
 	 * @param store Store to provide data
+	 * @param columns The table columns
 	 */
 	constructor(readonly store: StoreType, public columns: TableColumn[]) {
 		super();
@@ -345,12 +220,6 @@ export class Table<StoreType extends Store = Store> extends Component {
 		return super.internalRemove();
 	}
 
-	/**
-	 * Get row selection model
-	 */
-	public getRowSelection() {
-		return this.rowSelect;
-	}
 
 	protected restoreState(state: ComponentState) {
 		if (state.sort) {
@@ -560,7 +429,7 @@ export class Table<StoreType extends Store = Store> extends Component {
 			});
 
 			this.columns.forEach((c) => {
-				if(c.header) {
+				if(c.header && c.hidable) {
 					this.columnMenu!.items.add(checkbox({
 						label: c.header,
 						name: c.property,
@@ -646,8 +515,17 @@ export class Table<StoreType extends Store = Store> extends Component {
 				header.style.textAlign = h.align;
 			}
 
-			//column resize splitter
-			header.innerHTML = h.header || "";
+			if (h.headerRenderer) {
+				const r = h.headerRenderer(h, header, this);
+				if (typeof r === "string") {
+					header.innerHTML = r;
+				} else if (r instanceof Component) {
+					r.render(header);
+				}
+			} else
+			{
+				header.innerHTML = h.header || "";
+			}
 
 			h.headerEl = header;
 
@@ -763,7 +641,7 @@ export class Table<StoreType extends Store = Store> extends Component {
 		const frag = document.createDocumentFragment();
 
 		records.forEach((record, index) => {
-			const row = this.renderRow(record, frag);
+			const row = this.renderRow(record, frag, index);
 			if(this.rowSelection && this.rowSelection.selected.indexOf(index) > -1) {
 				row.classList.add("selected");
 			}
@@ -774,7 +652,7 @@ export class Table<StoreType extends Store = Store> extends Component {
 		this.fire("renderrows", this, records);
 	}
 
-	private renderRow(record: any, tbody: DocumentFragment) {
+	private renderRow(record: any, tbody: DocumentFragment, rowIndex: number) {
 		const row = document.createElement("tr");
 
 		// useful so it scrolls into view
@@ -794,7 +672,7 @@ export class Table<StoreType extends Store = Store> extends Component {
 			let value = ObjectUtil.path(record, c.property);
 
 			if (c.renderer) {
-				const r = c.renderer(value, record, td, this);
+				const r = c.renderer(value, record, td, this, rowIndex);
 				if (typeof r === "string") {
 					td.innerHTML = r;
 				} else if (r instanceof Component) {

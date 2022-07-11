@@ -47,7 +47,7 @@ export class SelectField extends Field {
 		}
 
 		this.input.addEventListener("change", () => {
-			this.fire("change", this);
+			this.fireChange();
 		});
 
 		this.el.appendChild(this.input);

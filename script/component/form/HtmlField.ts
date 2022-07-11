@@ -353,7 +353,7 @@ export class HtmlField extends Field {
 
 		this.editor.addEventListener("blur", (e) => {
 			if (this.valueOnFocus != this.value) {
-				this.fire("change", this);
+				this.fireChange();
 			}
 			document.removeEventListener("selectionchange", selectionChangeFn);
 			if (!(e.relatedTarget instanceof HTMLElement) || !this.getToolbar().el.contains(e.relatedTarget)) {
