@@ -24,14 +24,6 @@ export interface ComponentEventMap<Type> extends ObservableEventMap<Type> {
 	render: <Sender extends Type>(sender: Sender) => void
 
 	/**
-	 * Fires after rendering but before adding the element to the dom
-	 *
-	 * @see Component.render()
-	 * @param comp
-	 */
-	beforedom: <Sender extends Type>(sender: Sender) => void
-
-	/**
 	 * Fires just before rendering
 	 *
 	 * @see Component.render()

@@ -98,10 +98,10 @@ export class ContainerField extends Field {
 
 		const formProps: ContainerFieldValue = super.value || {};
 
-		this.findFields().forEach((field) => {
-			//for Extjs compat try .getName();
-			const fieldName = field.name || (field as any).getName();
-			const fieldVal = field.value || (field as any).getValue();
+		this.findFields().forEach((field: any) => {
+			//for Extjs compat try .getName() and .getValue()
+			const fieldName = field.getName ? field.getName() : field.name;
+			const fieldVal = field.getValue ? field.getValue() : field.value;
 
 			if (fieldName) {
 				if(!formProps[fieldName]) {

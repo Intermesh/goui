@@ -459,7 +459,7 @@ export class DateTime {
 
 	private static getFormatter(timezone:Timezone) {
 		if(!DateTime.cache[timezone]) {
-			DateTime.cache[timezone] = new Intl.DateTimeFormat('en-US', {timeZone: timezone});
+			DateTime.cache[timezone] = new Intl.DateTimeFormat('en-US', {timeZone: timezone, dateStyle: 'short', timeStyle: 'short'});
 		}
 
 		return DateTime.cache[timezone];
