@@ -58,17 +58,17 @@ export class Client extends Observable {
 	private static masked = false;
 
 	private static mask() {
-		this.masked = true;
-		setTimeout(() => {
-			if (this.masked) {
-				root.mask();
-			}
-		}, 500);
+		// this.masked = true;
+		// setTimeout(() => {
+		// 	if (this.masked) {
+		// 		root.mask();
+		// 	}
+		// }, 500);
 	}
 
 	private static unmask() {
-		this.masked = false;
-		root.unmask();
+		// this.masked = false;
+		// root.unmask();
 	}
 
 	set session(value) {

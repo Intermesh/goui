@@ -29,6 +29,13 @@ export interface StoreEventMap<T extends Observable> extends CollectionEventMap<
 	 * Fires when data is loaded into the store
 	 *
 	 * @param store
+	 * @param append Whether the records were added to the store.
+	 */
+	beforeload: <Sender extends T>(store: Sender,  append: boolean) => void
+	/**
+	 * Fires when data is loaded into the store
+	 *
+	 * @param store
 	 * @param records
 	 * @param append Whether the records were added to the store.
 	 */
@@ -107,7 +114,7 @@ export class Store extends Collection<StoreRecord> {
 	 */
 	public load(append = false): Promise<StoreRecord[]> {
 		this._loading = true;
-
+		this.fire("beforeload", this, append);
 		return this.internalLoad(append)
 			.finally(() => {
 				this._loading = false;

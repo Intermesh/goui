@@ -134,6 +134,13 @@ export class Table<StoreType extends Store = Store> extends Component {
 	constructor(readonly store: StoreType, public columns: TableColumn[]) {
 		super();
 		this.tabIndex = 0;
+
+		store.on("beforeload", () => {
+			this.mask();
+		})
+		store.on("load", () => {
+			this.unmask();
+		})
 	}
 
 	/**

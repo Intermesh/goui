@@ -732,9 +732,10 @@ export class Component extends Observable {
 		if (!this._mask) {
 			this._mask = mask({spinner: true});
 			this.items.add(this._mask);
-		} else {
-			this._mask.show();
+			this.el.style.position = "relative";
+			this.el.classList.add("masked");
 		}
+		this._mask.show();
 	}
 
 	/**
@@ -744,6 +745,7 @@ export class Component extends Observable {
 		if (this._mask) {
 			this._mask.hide();
 		}
+		this.el.classList.remove("masked");
 	}
 }
 

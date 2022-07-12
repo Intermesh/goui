@@ -430,3 +430,18 @@ form {
 	background-color: white;
 
 }
+
+
+.masked {
+	.form-field {
+		color: $colorBorder !important;
+		.control {
+			color: $colorBorder !important;
+			background-color: $colorBorder !important;
+		}
+
+		.label {
+			display: none;
+		}
+	}
+}
