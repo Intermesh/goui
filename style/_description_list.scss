@@ -1,5 +1,9 @@
 dl {
 	margin: 0;
+	margin-right: dp(16);
+	&:last-child {
+		margin-right: 0;
+	}
 	dt {
 		display: block;
 		font-size: dp(12);
@@ -13,8 +17,22 @@ dl {
 		margin: 0;
 		padding: 0;
 		display: block;
+		min-height: $baseLineHeight;
 		//text-overflow: ellipsis;
 		//overflow: hidden;
 		//white-space: nowrap;
+	}
+}
+
+.masked {
+	dl {
+		dd {
+			background-color: $colorMasked;
+			color: $colorMasked;
+			border-radius: dp(8);
+			> * {
+				visibility: hidden;
+			}
+		}
 	}
 }

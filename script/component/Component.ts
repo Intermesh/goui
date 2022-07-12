@@ -732,7 +732,6 @@ export class Component extends Observable {
 		if (!this._mask) {
 			this._mask = mask({spinner: true});
 			this.items.add(this._mask);
-			this.el.style.position = "relative";
 		}
 		this.el.classList.add("masked");
 		this._mask.show();

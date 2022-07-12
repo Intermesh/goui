@@ -26,7 +26,12 @@
 		color: $colorTextPlaceholder;
 	}
 	&+div.label, &+.toolbar+div.label {
-		transform: translateY(dp(-9)) scale(.7);
+		//below performs better but looks ugly on windows :(
+		//transform: translateY(dp(-9)) scale(.7);
+
+		// this behaves better
+		font-size: dp(12);
+		top: dp(5);
 	}
 	padding-top: dp(21); padding-bottom: dp(5);
 }
@@ -108,15 +113,18 @@ $formLabelWidth: dp(160);
 		white-space: nowrap;
 		color: $colorTextSecondary;
 		vertical-align: top;
-		transition: transform 200ms linear;
-		will-change: transform;
-		transform: none;
-		transform-origin: top left;
 		pointer-events: none;
 		position:absolute;
 		left: dp(20);
 		top: dp(14);
-		width: 100%;
+
+		transition: all 200ms linear;
+
+		//below performs better but looks ugly on windows :(
+		//transition: transform 200ms linear;
+		//will-change: transform;
+		//transform: none;
+		//transform-origin: top left;
 	}
 
 	>.control {
@@ -434,10 +442,14 @@ form {
 
 .masked {
 	.form-field {
-		color: $colorBorder !important;
+		color: $colorMasked !important;
 		.control {
-			color: $colorBorder !important;
-			background-color: $colorBorder !important;
+			border-color: $colorMasked !important;
+			color: $colorMasked !important;
+			background-color: $colorMasked !important;
+			> * {
+				visibility: hidden;
+			}
 		}
 
 		.label {

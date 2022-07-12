@@ -27,6 +27,7 @@ $colorText: rgb(1, 4, 10);
 $colorTextSecondary: rgba(1, 4, 10, 0.56);
 $colorTextPlaceholder: rgba(black, 0.5);
 
+
 $colorBackground: white;
 $colorBackgroundDarker: #f8f8f9;//rgb(30 ,18, 70, 0.03);
 $colorBackgroundWindow: $colorBackgroundDarker; //rgb(30 ,18, 70, 0.03);
@@ -60,7 +61,8 @@ $padding: dp(8);
 
 $curveStandard: cubic-bezier(0.4, 0.0, 0.2, 1);
 
-$fontBase: #{dp(18)}/#{dp(22)} Lato, Arial, Helvetica;
+$baseLineHeight: dp(22);
+$fontBase: #{dp(18)}/$baseLineHeight Lato, Arial, Helvetica;
 
 $zIndexTableHead: 2;
 $zIndexMask: 300;
@@ -72,6 +74,9 @@ $breakpointXL: 1200px;
 $breakpointLarge: 992px;
 $breakpointMedium: 768px;
 $breakpointSmall: 576px;
+
+
+$colorMasked: #f1f1f1;
 
 
 //shadows
