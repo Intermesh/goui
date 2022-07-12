@@ -26,6 +26,7 @@
 		border: 0 !important;
 		width: auto !important;
 		height: auto !important;
+		resize: none !important;
 	}
 
 	@media only screen and (max-width: $breakpointSmall) {
@@ -37,6 +38,7 @@
 		border: 0 !important;
 		width: auto !important;
 		height: auto !important;
+		resize: none !important;
 	}
 
 	background-color: white;
