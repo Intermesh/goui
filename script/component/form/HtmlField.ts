@@ -64,7 +64,18 @@ interface CmdConfig {
 	menu?: Menu
 }
 
-document.execCommand("styleWithCSS", false, "true");
+/**
+ * Available toolbar items
+ */
+type ToolbarItems = "-" |"bold" | "italic" | "underline" |
+	"foreColor" | "backColor" | "removeFormat" |
+	"justifyLeft" | "justifyCenter" | "justifyRight" |
+	"insertOrderedList" |
+	"insertUnorderedList" |
+	"indent" |
+	"outdent" |
+	"image"
+
 
 /**
  * A HTML editor field component
@@ -88,6 +99,11 @@ export class HtmlField extends Field {
 	constructor() {
 		super("div");
 		this.value = "";
+
+		// avoid inline css for Content-Security-Policys
+		document.execCommand("useCSS", false, "true");
+		document.execCommand("styleWithCSS", false, "false");
+
 	}
 
 	// noinspection JSUnusedGlobalSymbols
@@ -111,7 +127,28 @@ export class HtmlField extends Field {
 		return undefined;
 	}
 
-	protected toolbarItems = [
+	/**
+	 * Toolbar items to enable.
+	 *
+	 * If you can't use inline css then use:
+	 *
+	 * ```
+	 * [
+	 * 		"bold", "italic", "underline",
+	 * 		"-",
+	 * 		"foreColor", "removeFormat",
+	 * 		"-",
+	 * 		"insertOrderedList",
+	 * 		"insertUnorderedList",
+	 * 		"-",
+	 * 		"indent",
+	 * 		"outdent",
+	 * 		"-",
+	 * 		"image"
+	 * 	]
+	 * ```
+	 */
+	public toolbarItems: ToolbarItems[] = [
 		"bold", "italic", "underline",
 		"-",
 		"foreColor", "backColor", "removeFormat",
@@ -125,7 +162,7 @@ export class HtmlField extends Field {
 		"outdent",
 		"-",
 		"image"
-	]
+	];
 
 	private commands: Record<string, CmdConfig> = {
 		bold: {icon: 'format_bold', title: "Bold"},
@@ -226,7 +263,7 @@ export class HtmlField extends Field {
 		this.fire("updatetoolbar", this);
 	}
 
-	private execCmd(cmd: string, value?: string) {
+	private execCmd(cmd: string, value?: any) {
 		document.execCommand(cmd, false, value);
 
 		const t = this.tbar!, config = this.commands[cmd];
@@ -460,7 +497,7 @@ export class HtmlField extends Field {
 				this.execCmd('InsertText', '\t');
 			}
 			this.focus();
-		} else if (ev.key == "Space") {
+		} else if (ev.key == " ") {
 
 			// Auto lists
 			if (this.lineSequence == "1. ") {

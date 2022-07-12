@@ -29,7 +29,7 @@ export interface Form {
  *
  * @example
  * ```
- * const form = Form.create({
+ * const form = form({
  * 	cls: "scroll fit",
  * 	handler: () => {
  *
