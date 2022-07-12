@@ -298,30 +298,24 @@ export class Button extends Component {
 
 	private get iconEl() {
 		if (!this._iconEl) {
-			this.createIconAndTextEls();
+			this._iconEl = document.createElement("i");
+			this._iconEl.classList.add("icon");
+			if(this._textEl) {
+				this.el.insertBefore(this._iconEl, this._textEl);
+			} else {
+				this.el.appendChild(this._iconEl);
+			}
 		}
 		return this._iconEl;
 	}
 
 	private get textEl() {
 		if (!this._textEl) {
-			this.createIconAndTextEls();
-		}
-		return this._textEl;
-	}
-
-	private createIconAndTextEls() {
-		if (this.icon && !this._iconEl) {
-			this._iconEl = document.createElement("i");
-			this._iconEl.classList.add("icon");
-			this.el.appendChild(this._iconEl);
-		}
-
-		if (this._text && !this._textEl) {
 			this._textEl = document.createElement("span");
 			this._textEl.classList.add("text");
 			this.el.appendChild(this._textEl);
 		}
+		return this._textEl;
 	}
 }
 
