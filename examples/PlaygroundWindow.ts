@@ -107,6 +107,7 @@ export const playgroundWin = () => {
 							})
 						],
 						listeners: {
+							
 							autocomplete: (field, text) => {
 
 								//clone the array for filtering
