@@ -6,6 +6,8 @@ import {router} from "../script/Router.js";
 import {comp, Component} from "../script/component/Component.js";
 import {btn} from "../script/component/Button.js";
 import {Translate} from "../script/Translate.js";
+import {PluginManager} from "../build/component/PluginManager.js";
+import {PlaygroundTable} from "./PlaygroundTable.js";
 
 // Setup Group-Office connection
 client.uri = "http://host.docker.internal:6780/api/";
@@ -53,6 +55,11 @@ const loadPlayground = async ()  => {
 
 	return mods;
 }
+
+//register a plugin for Playground table
+PluginManager.register("PlaygroundTable", function(this:PlaygroundTable) {
+	this.el.classList.add("cls-added-by-plugin");
+});
 
 // Setup router
 // Translate.load("nl").then(() => {

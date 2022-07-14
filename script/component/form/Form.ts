@@ -185,7 +185,7 @@ export class Form extends ContainerField {
 	/**
 	 * Validates the form and submits it using the handler function passed with the config.
 	 */
-	public submit() {
+	public async submit() {
 
 		let el = <HTMLFormElement>this.el;
 
@@ -195,7 +195,7 @@ export class Form extends ContainerField {
 			el.classList.add('valid');
 			el.classList.remove('invalid');
 			if (this.handler) {
-				this.handler!(this);
+				await this.handler!(this);
 			}
 
 			this.fire("submit", this);

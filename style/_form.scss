@@ -26,12 +26,7 @@
 		color: $colorTextPlaceholder;
 	}
 	&+div.label, &+.toolbar+div.label {
-		//below performs better but looks ugly on windows :(
-		//transform: translateY(dp(-9)) scale(.7);
-
-		// this behaves better
-		font-size: dp(12);
-		top: dp(5);
+		transform: translateY(dp(-9)) scale(.7);
 	}
 	padding-top: dp(21); padding-bottom: dp(5);
 }
@@ -118,13 +113,14 @@ $formLabelWidth: dp(160);
 		left: dp(20);
 		top: dp(14);
 
-		transition: all 200ms linear;
+
+		transition: transform 200ms linear;
 
 		//below performs better but looks ugly on windows :(
-		//transition: transform 200ms linear;
-		//will-change: transform;
-		//transform: none;
-		//transform-origin: top left;
+		will-change: transform;
+
+		transform: none;
+		transform-origin: top left;
 	}
 
 	>.control {

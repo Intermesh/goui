@@ -12,13 +12,16 @@ import {root} from "./component/Root.js";
  */
 export class Notifier {
 
-	public static error(msg: string|Error, timeout = 3000) {
+	public static error(msg: string|unknown, timeout = 3000) {
 		console.error(msg);
-		if(typeof msg != "string") {
+		if (msg instanceof Error) {
 			msg = msg.message;
+		} else if (typeof msg != "string")
+		{
+			msg = msg + "";
 		}
 
-		return new Message(msg, "error", timeout);
+		return new Message(msg as string, "error", timeout);
 	}
 
 	public static success(msg: string, timeout = 3000) {

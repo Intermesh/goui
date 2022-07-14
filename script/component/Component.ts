@@ -3,6 +3,7 @@
 import {Observable, ObservableEventMap, ObservableListener, ObservableListenerOpts,} from "./Observable.js";
 import {State} from "../State.js";
 import {Collection} from "../util/Collection.js";
+import {PluginManager} from "./PluginManager.js";
 
 export type FindComponentPredicate = string | Component | ((comp: Component) => boolean | void);
 
@@ -106,6 +107,8 @@ export interface Component {
 
 export type ComponentState = Record<string, any>;
 
+
+
 /**
  * Component
  *
@@ -129,6 +132,26 @@ export class Component extends Observable {
 	 */
 	constructor(readonly tagName: keyof HTMLElementTagNameMap = "div") {
 		super();
+
+		this.init();
+
+		if(this.constructor.name == "PlaygroundTable") {
+
+		}
+		const plugins = PluginManager.get(this.constructor.name);
+		if(plugins) {
+			plugins.forEach(fn => fn.call(this));
+		}
+	}
+
+	/**
+	 * Method called from constructor to initialize object.
+	 * Plugins are executed after this method.
+	 *
+	 * @protected
+	 */
+	protected init() {
+
 	}
 
 	/**

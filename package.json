@@ -1,10 +1,15 @@
 {
   "type": "module",
+  "main": "build/goui.js",
+  "module": "build/goui.js",
+  "types": "build/goui.d.ts",
   "devDependencies": {
     "@types/chai": "^4.2.22",
     "@types/mocha": "^9.0.0",
     "@types/node": "^16.11.2",
+    "barrelsby": "^2.3.4",
     "chai": "^4.3.4",
+    "esbuild": "^0.14.49",
     "http-server": "^14.1.0",
     "jsdom": "^18.0.0",
     "jsdom-global": "^3.0.2",
@@ -22,6 +27,9 @@
     "http-server": "http-server",
     "build": "npm-run-all build:tsc build:sass --print-label",
     "build:tsc": "tsc --project tsconfig.production.json",
-    "build:sass": "sass --style=compressed style:style"
+    "build:sass": "sass --style=compressed style:style",
+    "barrel": "barrelsby --delete --config barrelsby.json",
+    "bundle": "esbuild script/goui.ts --bundle --minify --sourcemap --format=esm --target=esnext --outdir=build",
+    "ts-types": " tsc --project tsconfig.production.json"
   }
 }
