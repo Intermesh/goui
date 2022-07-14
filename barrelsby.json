@@ -1,4 +1,6 @@
 {
   "directory": ["./script"],
-  "name": "goui.ts"
+  "name": "goui.ts",
+  "delete": true,
+  "input-type": "module"
 }
