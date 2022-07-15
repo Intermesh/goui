@@ -24,7 +24,7 @@ import {
 	TextField,
 	win,
 	Window
-} from "../build/goui.js";
+} from "goui.js";
 import {PlaygroundTable} from "./PlaygroundTable.js";
 
 export const playgroundWin = () => {
