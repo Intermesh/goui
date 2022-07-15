@@ -34,6 +34,6 @@
     "build:types": " tsc --project tsconfig.types.json",
     "build:ts" : "esbuild script/goui.ts --bundle --minify --sourcemap --format=esm --target=esnext --outdir=build",
     "build:bundle-types": "rollup -c",
-    "barrel": "barrelsby --config barrelsby.json && sed -ie 's/\\\";/.js\\\";/' script/goui.ts"
+    "barrel": "barrelsby --config barrelsby.json && sed -i .bak 's/\\\";/.js\\\";/' script/goui.ts && rm script/goui.ts.bak"
   }
 }
