@@ -25,10 +25,10 @@
   "scripts": {
     "test": "mocha",
 
-    "start": "npm-run-all --parallel watch:tsc watch:sass --print-label ",
+    "start": "npm-run-all --parallel watch:tsc watch:tsc-examples watch:sass --print-label ",
     "watch:tsc": "esbuild script/goui.ts --bundle --serve=localhost:8081 --sourcemap --format=esm --target=esnext --outdir=build --servedir=.",
-    "watch:sass": "sass --watch style:style",
-    "http-server": "http-server",
+    "watch:tsc-examples": "esbuild examples/Index.ts --bundle --watch --external:../build/* --external:../script/*  --sourcemap --format=esm --target=esnext --outdir=examples",
+    "watch:sass": "sass --watch style:build",
 
     "build": "npm-run-all build:clean build:sass build:ts build:bundle-types --print-label",
     "build:clean": "rimraf build",

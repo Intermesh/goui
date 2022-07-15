@@ -6,3 +6,5 @@ dist
 *.css
 build
 types
+examples/Index.js
+examples/Index.js.map
