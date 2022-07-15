@@ -7,14 +7,14 @@ import {comp, Component, Config} from "./Component.js";
  * eg.
  *
  * ```
- * Toolbar.create({
- * 	items: [
- * 		Button.create({
+ * tbar({},
+ * 		btn({
  * 			text: "Menu",
  * 			menu: Menu.create({
  * 				// expandLeft: true,
- * 				items: [
- * 					Button.create({
+ * 				},
+ *
+ * 					btn({
  * 						text: "Hello World",
  * 						handler: () => {
  * 							Window.create({
@@ -22,11 +22,9 @@ import {comp, Component, Config} from "./Component.js";
  * 								items: [Component.create({tagName: "h1", cls: "pad", html: "Just saying hi!"})]
  * 							}).open();
  * 						}
- * 					})]
+ * 					})
  * 			})
- * 		})
- * 	]
- * });
+ * );
  *  ```
  */
 export class Toolbar extends Component {

@@ -5,7 +5,9 @@
     "sourceMap": true,
     "lib": ["es2018", "dom"],
     "moduleResolution": "node",
-    "module":"es2020"
+    "module":"es2020",
+    "esModuleInterop": true,
+    "isolatedModules": true
   },
   "include": [
     "./**/*.ts"

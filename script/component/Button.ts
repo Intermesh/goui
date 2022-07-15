@@ -70,6 +70,7 @@ export class Button extends Component {
 
 	constructor() {
 		super("button");
+
 	}
 
 	protected baseCls = "button"
@@ -121,8 +122,6 @@ export class Button extends Component {
 	protected internalRender() {
 
 		const el = super.internalRender();
-
-
 		// The first menu of a button will expand on click, sub menus will show on hover and are hidden with css.
 		// Before I made this without JS with the :focus-within selector but that didn't work in Safari because it
 		// doesn't focus buttons on click.
