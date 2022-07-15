@@ -1,31 +1,38 @@
-import {win, Window} from "../script/component/Window.js";
-import {form, Form} from "../script/component/form/Form.js";
-import {fieldset} from "../script/component/form/Fieldset.js";
-import {textfield, TextField} from "../script/component/form/TextField.js";
-import {htmlfield} from "../script/component/form/HtmlField.js";
-import {containerfield, ContainerField} from "../script/component/form/ContainerField.js";
-import {cards} from "../script/component/CardContainer.js";
-import {cardmenu} from "../script/component/CardMenu.js";
-import {tbar} from "../script/component/Toolbar.js";
-import {btn} from "../script/component/Button.js";
-import {datefield} from "../script/component/form/DateField.js";
-import {checkbox} from "../script/component/form/CheckboxField.js";
+import {
+	autocomplete,
+	btn,
+	cardmenu,
+	cards,
+	checkbox,
+	column,
+	containerfield,
+	ContainerField,
+	datefield,
+	DateTime,
+	Field,
+	fieldset,
+	form,
+	Form,
+	htmlfield,
+	menu,
+	select,
+	store,
+	StoreRecord,
+	table,
+	tbar,
+	textfield,
+	TextField,
+	win,
+	Window
+} from "../build/goui.js";
 import {PlaygroundTable} from "./PlaygroundTable.js";
-import {menu} from "../script/component/menu/Menu.js";
-import {autocomplete} from "../script/component/form/AutocompleteField.js";
-import {store, StoreRecord} from "../script/data/Store.js";
-import {DateTime} from "../script/util/DateTime.js";
-import {table} from "../script/component/table/Table.js";
-import {Field} from "../script/component/form/Field.js";
-import {select} from "../script/component/form/SelectField.js";
-import {column, datecolumn} from "../script/component/table/TableColumns.js";
 
 export const playgroundWin = () => {
 
 	// Create some records to use for the autocomplete store below
-	const autocompleteRecords:StoreRecord[] = [];
+	const autocompleteRecords: StoreRecord[] = [];
 
-	for(let i = 1; i <= 20; i++) {
+	for (let i = 1; i <= 20; i++) {
 		autocompleteRecords.push({
 			id: i,
 			description: "Test " + i,
@@ -107,7 +114,7 @@ export const playgroundWin = () => {
 							})
 						],
 						listeners: {
-							
+
 							autocomplete: (field, text) => {
 
 								//clone the array for filtering

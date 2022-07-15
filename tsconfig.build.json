@@ -4,7 +4,6 @@
     "./script/**/*.ts"
   ],
   "compilerOptions": {
-    "declaration": true,
-    "outDir": "./build/"
+    "sourceMap": false
   }
 }

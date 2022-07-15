@@ -1,0 +1,13 @@
+{
+  "extends": "./tsconfig-base.json",
+  "include": [
+    "./script/**/*.ts"
+  ],
+  "compilerOptions": {
+    "declaration": true,
+    "declarationDir": "./types",
+    "declarationMap": true,
+    "emitDeclarationOnly": true,
+    "outDir": "./build/"
+  }
+}

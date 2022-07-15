@@ -1,4 +1,4 @@
-import {btn, cards, client, comp, Component, PluginManager, root, router, Translate} from "../script/goui.js";
+import {btn, cards, client, comp, Component, PluginManager, root, router, Translate} from "../build/goui.js";
 import {PlaygroundTable} from "./PlaygroundTable.js";
 
 // Setup Group-Office connection
