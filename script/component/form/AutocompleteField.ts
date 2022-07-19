@@ -6,7 +6,7 @@ import {root} from "../Root.js";
 import {FunctionUtil} from "../../util/FunctionUtil.js";
 import {FieldEventMap} from "./Field.js";
 import {btn} from "../Button.js";
-import {Config} from "../Component.js";
+import {Config, createComponent} from "../Component.js";
 
 export interface AutocompleteEventMap<T extends Observable> extends FieldEventMap<T> {
 	/**
@@ -260,4 +260,4 @@ export class AutocompleteField<TableType extends Table = Table> extends TextFiel
  *
  * @param config
  */
-export const autocomplete = (config: Config<AutocompleteField> & { table: Table }) => Object.assign(new AutocompleteField(config.table), config);
+export const autocomplete = (config: Config<AutocompleteField> & { table: Table }) => createComponent(new AutocompleteField(config.table), config);

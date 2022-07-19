@@ -1,7 +1,7 @@
 import {Store, StoreRecord} from "../../data/Store.js";
 import {Observable} from "../Observable.js";
 import {Table} from "./Table.js";
-import {Component, Config} from "../Component.js";
+import {Component, Config, createComponent} from "../Component.js";
 import {Format} from "../../util/Format.js";
 import {checkbox} from "../form/CheckboxField.js";
 
@@ -87,7 +87,7 @@ type TableColumnConfig = Config<TableColumn> & {
  *
  * @param config
  */
-export const column = (config: TableColumnConfig) => Object.assign(new TableColumn(config.property), config);
+export const column = (config: TableColumnConfig) => createComponent(new TableColumn(config.property), config);
 
 export class DateTimeColumn extends TableColumn {
 	renderer = (date: string) => {
@@ -103,7 +103,7 @@ export class DateTimeColumn extends TableColumn {
  * Create a column showing date and time
  * @param config
  */
-export const datetimecolumn = (config: TableColumnConfig) => Object.assign(new DateTimeColumn(config.property), config);
+export const datetimecolumn = (config: TableColumnConfig) => createComponent(new DateTimeColumn(config.property), config);
 
 export class DateColumn extends TableColumn {
 	renderer = (date: string) => {
@@ -120,7 +120,7 @@ export class DateColumn extends TableColumn {
  *
  * @param config
  */
-export const datecolumn = (config: TableColumnConfig) => Object.assign(new DateColumn(config.property), config);
+export const datecolumn = (config: TableColumnConfig) => createComponent(new DateColumn(config.property), config);
 
 export class CheckboxColumn extends TableColumn {
 	width = 40
@@ -136,7 +136,7 @@ export class CheckboxColumn extends TableColumn {
  *
  * @param config
  */
-export const checkboxcolumn = (config: TableColumnConfig) => Object.assign(new CheckboxColumn(config.property), config);
+export const checkboxcolumn = (config: TableColumnConfig) => createComponent(new CheckboxColumn(config.property), config);
 
 
 export class CheckboxSelectColumn extends TableColumn {
@@ -196,4 +196,4 @@ export class CheckboxSelectColumn extends TableColumn {
 	}
 }
 
-export const checkboxselectcolumn = (config?: TableColumnConfig) => Object.assign(new CheckboxSelectColumn(), config);
+export const checkboxselectcolumn = (config?: TableColumnConfig) => createComponent(new CheckboxSelectColumn(), config);

@@ -1,4 +1,4 @@
-import {Component, ComponentEventMap, Config} from "./Component.js";
+import {Component, ComponentEventMap, Config, createComponent} from "./Component.js";
 import {Menu} from "./menu/Menu.js";
 import {root} from "./Root.js";
 import {Observable, ObservableListener, ObservableListenerOpts} from "./Observable.js";
@@ -323,4 +323,4 @@ export class Button extends Component {
  *
  * @param config
  */
-export const btn = (config?: Config<Button>): Button => Object.assign(new Button(), config);
+export const btn = (config?: Config<Button>) => createComponent(new Button(), config);

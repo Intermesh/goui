@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "strict" : true,
+    "target": "ES2017",
+    "lib": ["es2020", "dom"],
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "module":"es2020",
+    "sourceMap": true,
+    "outDir": ".",
+    "baseUrl": ".",
+    "paths": {
+      "@goui/*": ["../dist/*", "../script/*"]
+    }
+   
+  },
+  "include": [
+    "./*.ts"
+  ],
+  "exclude": [
+    "node_modules/*",
+    "../script/*",
+    "../dist/*"
+  ]
+}

@@ -1,4 +1,4 @@
-import {comp, Component, ComponentEventMap, ComponentState, Config} from "../Component.js";
+import {comp, Component, ComponentEventMap, ComponentState, Config, createComponent} from "../Component.js";
 import {rowselect, TableRowSelect, TableRowSelectConfig} from "./TableRowSelect.js";
 import {Store, StoreRecord} from "../../data/Store.js";
 import {Observable, ObservableListener, ObservableListenerOpts} from "../Observable.js";
@@ -723,4 +723,4 @@ type TableConfig = Omit<Config<Table>, "rowSelection"> & {
  *
  * @param config
  */
-export const table = (config: TableConfig) => Object.assign(new Table(config.store, config.columns), config);
+export const table = (config: TableConfig) => createComponent(new Table(config.store, config.columns), config);

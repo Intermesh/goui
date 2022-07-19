@@ -1,5 +1,13 @@
-import {btn, cards, client, comp, Component, PluginManager, root, router, Translate} from "goui.js";
+
 import {PlaygroundTable} from "./PlaygroundTable.js";
+import {PluginManager} from "@goui/component/PluginManager.js";
+import {comp, Component} from "@goui/component/Component.js";
+import {router} from "@goui/Router.js";
+import {cards} from "@goui/component/CardContainer.js";
+import {root} from "@goui/component/Root.js";
+import {client} from "@goui/api/Client.js";
+import {Translate} from "@goui/Translate.js";
+import {btn} from "@goui/component/Button.js";
 
 // Setup Group-Office connection
 client.uri = "http://host.docker.internal:6780/api/";

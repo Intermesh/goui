@@ -1,6 +1,6 @@
 import {Field} from "./Field.js";
 import {CheckboxField} from "./CheckboxField.js";
-import {Config} from "../Component.js";
+import {Config, createComponent} from "../Component.js";
 
 
 export type TextFieldType = ("text" | "password" | "email" | "url" | "tel" | "search");
@@ -158,4 +158,4 @@ export class TextField extends Field {
  *
  * @param config
  */
-export const textfield = (config?:Config<TextField>) => Object.assign(new TextField(), config);
+export const textfield = (config?:Config<TextField>) => createComponent(new TextField(), config);

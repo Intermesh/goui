@@ -1,5 +1,13 @@
 import {PlaygroundTable} from "./PlaygroundTable.js";
-import {btn, checkbox, colormenu, comp, htmlfield, menu, Notifier, root, router, tbar} from "goui.js";
+import {comp} from "@goui/component/Component.js";
+import {tbar} from "@goui/component/Toolbar.js";
+import {btn} from "@goui/component/Button.js";
+import {menu} from "@goui/component/menu/Menu.js";
+import {router} from "@goui/Router.js";
+import {root} from "@goui/component/Root.js";
+import {checkbox} from "@goui/component/form/CheckboxField.js";
+import {Notifier} from "@goui/Notifier.js";
+import {colormenu} from "@goui/component/menu/ColorMenu.js";
 
 
 export const PlayGround = comp({cls: "vbox", id: "playground"},

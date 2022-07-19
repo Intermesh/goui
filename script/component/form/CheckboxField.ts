@@ -1,5 +1,5 @@
 import {Field} from "./Field.js";
-import {Config} from "../Component.js";
+import {Config, createComponent} from "../Component.js";
 
 /**
  * Checkbox field
@@ -157,4 +157,4 @@ export class CheckboxField extends Field {
  *
  * @param config
  */
-export const checkbox = (config?: Config<CheckboxField>) => Object.assign(new CheckboxField(), config);
+export const checkbox = (config?: Config<CheckboxField>) => createComponent(new CheckboxField(), config);

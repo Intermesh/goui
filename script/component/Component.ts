@@ -135,9 +135,6 @@ export class Component extends Observable {
 
 		this.init();
 
-		if(this.constructor.name == "PlaygroundTable") {
-
-		}
 		const plugins = PluginManager.get(this.constructor.name);
 		if(plugins) {
 			plugins.forEach(fn => fn.call(this));
@@ -803,18 +800,21 @@ export type Config<Cmp> = Partial<Pick<Cmp, { [K in keyof Cmp]: Cmp[K] extends F
  *
  * @param config
  */
-export const mask = (config?: Config<Mask>) => Object.assign(new Mask(), config);
+export const mask = (config?: Config<Mask>) => createComponent(new Mask(), config);
 
 /**
  * Shorthand function to create {@see Component}
  */
-export const comp = (config?: Config<Component>, ...items: Component[]) => {
-	const c = new Component(config?.tagName);
+export const comp = (config?: Config<Component>, ...items: Component[]) => createComponent(new Component(config?.tagName), config, items);	
+
+
+export const createComponent = <T>(comp: T, config:any, items?:Component[]) : T => {
+
 	if (config) {
-		Object.assign(c, config);
+		Object.assign(comp, config);
 	}
-	if (items.length) {
-		c.items.add(...items);
+	if (items && items.length) {
+		(comp as any).items.add(...items);
 	}
-	return c;
+	return comp;
 }

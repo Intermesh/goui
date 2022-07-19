@@ -1,31 +1,25 @@
-import {
-	autocomplete,
-	btn,
-	cardmenu,
-	cards,
-	checkbox,
-	column,
-	containerfield,
-	ContainerField,
-	datefield,
-	DateTime,
-	Field,
-	fieldset,
-	form,
-	Form,
-	htmlfield,
-	menu,
-	select,
-	store,
-	StoreRecord,
-	table,
-	tbar,
-	textfield,
-	TextField,
-	win,
-	Window
-} from "goui.js";
+
 import {PlaygroundTable} from "./PlaygroundTable.js";
+import {cardmenu} from "@goui/component/CardMenu.js";
+import {cards} from "@goui/component/CardContainer.js";
+import {select} from "@goui/component/form/SelectField.js";
+import {datefield} from "@goui/component/form/DateField.js";
+import {ContainerField, containerfield} from "@goui/component/form/ContainerField.js";
+import {autocomplete} from "@goui/component/form/AutocompleteField.js";
+import {form, Form} from "@goui/component/form/Form.js";
+import {fieldset} from "@goui/component/form/Fieldset.js";
+import {TextField, textfield} from "@goui/component/form/TextField.js";
+import {column} from "@goui/component/table/TableColumns.js";
+import {tbar} from "@goui/component/Toolbar.js";
+import {store, StoreRecord} from "@goui/data/Store.js";
+import {menu} from "@goui/component/menu/Menu.js";
+import {DateTime} from "@goui/util/DateTime.js";
+import {Field} from "@goui/component/form/Field.js";
+import {checkbox} from "@goui/component/form/CheckboxField.js";
+import {htmlfield} from "@goui/component/form/HtmlField.js";
+import {win, Window} from "@goui/component/Window.js";
+import {btn} from "@goui/component/Button.js";
+import {table} from "@goui/component/table/Table.js";
 
 export const playgroundWin = () => {
 

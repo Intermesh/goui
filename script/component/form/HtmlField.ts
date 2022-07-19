@@ -7,7 +7,7 @@ import {Observable, ObservableListener, ObservableListenerOpts} from "../Observa
 import {browserDetect} from "../../util/BrowserDetect.js";
 import {colormenu, ColorMenu} from "../menu/ColorMenu.js";
 import {Menu} from "../menu/Menu.js";
-import {comp, Component, Config} from "../Component.js";
+import {comp, Component, Config, createComponent} from "../Component.js";
 import {FunctionUtil} from "../../util/FunctionUtil.js";
 import {root} from "../Root.js";
 import {MaterialIcon} from "../MaterialIcon.js";
@@ -608,4 +608,4 @@ export class HtmlField extends Field {
  *
  * @param config
  */
-export const htmlfield = (config?: Config<HtmlField>) => Object.assign(new HtmlField(), config);
+export const htmlfield = (config?: Config<HtmlField>) => createComponent(new HtmlField(), config);

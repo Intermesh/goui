@@ -1,4 +1,4 @@
-import {comp, Component, Config} from "../component/Component.js";
+import {comp, Component, Config, createComponent} from "../component/Component.js";
 import {client} from "./Client.js";
 
 /**
@@ -94,4 +94,4 @@ export class Image extends Component {
  *
  * @param config
  */
-export const img = (config?:Config<Image>) => Object.assign(new Image, config);
+export const img = (config?:Config<Image>) => createComponent(new Image, config);

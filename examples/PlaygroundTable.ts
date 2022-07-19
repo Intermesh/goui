@@ -1,4 +1,7 @@
-import {column, datecolumn, DateTime, store, StoreRecord, Table, table} from "goui.js";
+import {store, StoreRecord} from "@goui/data/Store.js";
+import {Table} from "@goui/component/table/Table.js";
+import {column, datecolumn} from "@goui/component/table/TableColumns.js";
+import {DateTime} from "@goui/util/DateTime.js";
 
 export class PlaygroundTable extends Table {
 

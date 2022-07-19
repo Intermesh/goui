@@ -7,7 +7,6 @@
     "@types/chai": "^4.2.22",
     "@types/mocha": "^9.0.0",
     "@types/node": "^16.11.2",
-    "barrelsby": "^2.3.4",
     "chai": "^4.3.4",
     "esbuild": "^0.14.49",
     "jsdom": "^18.0.0",
@@ -16,24 +15,19 @@
     "mocha": "^6.2.3",
     "npm-run-all": "^4.1.5",
     "rimraf": "^3.0.2",
-    "rollup": "^2.76.0",
-    "rollup-plugin-dts": "^4.2.2",
     "typescript": "^4.7.4"
   },
   "scripts": {
     "test": "mocha",
-    "start": "npm-run-all build start:watch start:tsc-examples start:sass --print-label ",
-    "start:watch": "esbuild script/goui.ts --bundle --watch --sourcemap --format=esm --target=esnext --outdir=build",
-    "start:serve": "esbuild script/goui.ts --bundle --serve=localhost:8081 --sourcemap --format=esm --target=esnext --outdir=build --servedir=.",
-    "start:tsc-examples": "esbuild examples/Index.ts --bundle --watch --external:../build/* --external:../script/*  --sourcemap --format=esm --target=esnext --outdir=examples",
-    "start:sass": "sass --watch style:build",
 
-    "build": "npm-run-all build:clean build:types build:sass build:ts build:bundle-types --print-label",
-    "build:clean": "rimraf build",
-    "build:sass": "sass --style=compressed style:build",
-    "build:types": " tsc --project tsconfig.types.json",
-    "build:ts": "esbuild script/goui.ts --bundle --minify --sourcemap --format=esm --target=esnext --outdir=build",
-    "build:bundle-types": "rollup -c",
-    "barrel": "barrelsby --config barrelsby.json && sed -i .bak 's/\\\";/.js\\\";/' script/goui.ts && rm script/goui.ts.bak"
+    "start": "npm-run-all start:watch start:serve-examples start:sass --print-label ",
+    "start:watch": "tsc --watch",
+    "start:serve-examples": "esbuild examples/Index.ts --bundle --serve=localhost:8081 --servedir=. --external:./dist/* --external:./script/*  --sourcemap --format=esm --target=esnext --outdir=examples",
+    "start:sass": "sass --watch style:dist",
+
+    "build": "npm-run-all build:clean build:sass build:ts --print-label",
+    "build:clean": "rimraf dist",
+    "build:sass": "sass --style=compressed style:dist",
+    "build:ts": "tsc"
   }
 }
