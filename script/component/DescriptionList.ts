@@ -1,4 +1,4 @@
-import {comp, Component, Config} from "./Component.js";
+import {comp, Component, Config, createComponent} from "./Component.js";
 import {CardMenu} from "./CardMenu.js";
 
 type renderFunc = (dd: Component) => void;
@@ -75,13 +75,4 @@ export class DescriptionList extends Component {
  * @param config
  * @param items
  */
-export const dl = (config?: Config<DescriptionList>, ...items: Component[]) => {
-	const c = new DescriptionList();
-	if(config) {
-		Object.assign(c, config);
-	}
-	if(items.length) {
-		c.items.add(...items);
-	}
-	return c;
-}
+export const dl = (config?: Config<DescriptionList>, ...items: Component[]) => createComponent(new DescriptionList(), config, items);

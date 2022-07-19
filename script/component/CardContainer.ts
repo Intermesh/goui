@@ -1,4 +1,4 @@
-import {Component, ComponentEventMap, Config} from "./Component.js";
+import {Component, ComponentEventMap, Config, createComponent} from "./Component.js";
 import {Observable, ObservableListener, ObservableListenerOpts} from "./Observable.js";
 
 
@@ -167,13 +167,4 @@ export class CardContainer extends Component {
  * @param config
  * @param items
  */
-export const cards = (config?: Config<CardContainer>, ...items: Component[]) =>  {
-	const c = new CardContainer();
-	if(config) {
-		Object.assign(c, config);
-	}
-	if(items.length) {
-		c.items.add(...items);
-	}
-	return c;
-}
+export const cards = (config?: Config<CardContainer>, ...items: Component[]) => createComponent(new CardContainer(), config, items);

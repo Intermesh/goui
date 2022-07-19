@@ -1,7 +1,7 @@
 import {Menu} from "./Menu.js";
 import {btn} from "../Button.js";
 import {Observable, ObservableListener, ObservableListenerOpts} from "../Observable.js";
-import {ComponentEventMap, Config} from "../Component.js";
+import {ComponentEventMap, Config, createComponent} from "../Component.js";
 
 /**
  * @inheritDoc
@@ -156,4 +156,4 @@ export class ColorMenu extends Menu {
  *
  * @param config
  */
-export const colormenu = (config?: Config<ColorMenu>) => Object.assign(new ColorMenu(), config);
+export const colormenu = (config?: Config<ColorMenu>) => createComponent(new ColorMenu(), config);

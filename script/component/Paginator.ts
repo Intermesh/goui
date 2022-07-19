@@ -1,7 +1,7 @@
 import {Toolbar} from "./Toolbar.js";
 import {Store} from "../data/Store.js";
 import {btn, Button} from "./Button.js";
-import {comp, Config} from "./Component.js";
+import {comp, Config, createComponent} from "./Component.js";
 
 export class Paginator extends Toolbar {
 
@@ -54,4 +54,4 @@ export class Paginator extends Toolbar {
  *
  * @param config
  */
-export const paginator = (config: Config<Paginator> & {store:Store}) => Object.assign(new Paginator(config.store), config);
+export const paginator = (config: Config<Paginator> & {store:Store}) => createComponent(new Paginator(config.store), config);

@@ -1,7 +1,7 @@
 import {ContainerField} from "./ContainerField.js";
 import {Observable, ObservableListener, ObservableListenerOpts} from "../Observable.js";
 import {Notifier} from "../../Notifier.js";
-import {Component, Config} from "../Component.js";
+import {Component, Config, createComponent} from "../Component.js";
 import {FieldEventMap} from "./Field.js";
 
 
@@ -227,13 +227,4 @@ export class Form extends ContainerField {
  * @param config
  * @param items
  */
-export const form = (config?: Config<Form>, ...items: Component[]) => {
-	const c = new Form();
-	if(config) {
-		Object.assign(c, config);
-	}
-	if(items.length) {
-		c.items.add(...items);
-	}
-	return c;
-}
+export const form = (config?: Config<Form>, ...items: Component[]) => createComponent(new Form, config, items);

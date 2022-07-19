@@ -1,4 +1,4 @@
-import {Component, Config} from "../Component.js";
+import {Component, Config, createComponent} from "../Component.js";
 import {root} from "../Root.js";
 import {Button} from "../Button.js";
 
@@ -172,14 +172,4 @@ export class Menu extends Component {
  * @param config
  * @param items
  */
-export const menu = (config?: Config<Menu>, ...items: Component[]) => {
-	const c = new Menu();
-	if(config) {
-		Object.assign(c, config);
-	}
-	if(items.length) {
-		c.items.add(...items);
-	}
-	return c;
-}
-
+export const menu = (config?: Config<Menu>, ...items: Component[]) => createComponent(new Menu(), config, items);

@@ -1,4 +1,4 @@
-import {comp, Component, Config} from "./Component.js";
+import {comp, Component, Config, createComponent} from "./Component.js";
 import {tbar, Toolbar} from "./Toolbar.js";
 import {btn, Button} from "./Button.js";
 import {DraggableComponent, DraggableComponentEventMap} from "./DraggableComponent.js";
@@ -504,15 +504,4 @@ export class Window extends DraggableComponent {
  * @param config
  * @param items
  */
-export const win = (config?:Config<Window>, ...items:Component[]) =>  {
-	const c = new Window();
-	if(config) {
-		Object.assign(c, config);
-	}
-	if(items.length) {
-		c.items.add(...items);
-	}
-	return c;
-};
-
-
+export const win = (config?:Config<Window>, ...items:Component[]) => createComponent(new Window(), config, items);

@@ -1,4 +1,4 @@
-import {Component, Config} from "./Component.js";
+import {Component, Config, createComponent} from "./Component.js";
 import {CardContainer} from "./CardContainer.js";
 import {btn} from "./Button.js";
 
@@ -116,13 +116,4 @@ export class CardMenu extends Component {
  * @param config
  * @param items
  */
-export const cardmenu = (config?:Config<CardMenu>, ...items:Component[]) => {
-	const c = new CardMenu();
-	if(config) {
-		Object.assign(c, config);
-	}
-	if(items.length) {
-		c.items.add(...items);
-	}
-	return c;
-}
+export const cardmenu = (config?:Config<CardMenu>, ...items:Component[]) => createComponent(new CardMenu(), config, items);

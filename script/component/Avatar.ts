@@ -1,5 +1,4 @@
-import {Component, Config} from "./Component.js";
-import {Image} from "../api/Image.js";
+import {Component, Config, createComponent} from "./Component.js";
 
 export class Avatar extends Component {
 
@@ -15,7 +14,7 @@ export class Avatar extends Component {
 		this.title = this.displayName;
 
 		let j = 0;
-		for(let i = 0, l = this.displayName.length; i < l; i++) {
+		for (let i = 0, l = this.displayName.length; i < l; i++) {
 			j += this.displayName.charCodeAt(i);
 		}
 		this.el.style.backgroundColor = "#" + Avatar.colors[j % Avatar.colors.length];
@@ -32,14 +31,14 @@ export class Avatar extends Component {
 	 * @param {string} name
 	 * @returns {string}
 	 */
-	private initials(name:string) {
+	private initials(name: string) {
 		const parts = name.split(" "), l = parts.length;
 
-		if(l > 2) {
+		if (l > 2) {
 			parts.splice(1, l - 2);
 		}
 
-		return parts.map((name) => name.substr(0,1).toUpperCase()).join("");
+		return parts.map((name) => name.substr(0, 1).toUpperCase()).join("");
 	}
 
 }
@@ -50,4 +49,4 @@ export class Avatar extends Component {
  *
  * @param config
  */
-export const avatar = (config?:Config<Avatar>) => Object.assign(new Avatar(), config);
+export const avatar = (config?: Config<Avatar>) => createComponent(new Avatar(), config);

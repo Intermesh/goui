@@ -1,6 +1,6 @@
 import {TextField} from "./TextField.js";
 import {CheckboxField} from "./CheckboxField.js";
-import {Config} from "../Component.js";
+import {Config, createComponent} from "../Component.js";
 
 /**
  * Text Area component
@@ -43,4 +43,4 @@ export class TextAreaField extends TextField {
  *
  * @param config
  */
-export const textarea = (config?: Config<TextAreaField>) => Object.assign(new TextAreaField(), config);
+export const textarea = (config?: Config<TextAreaField>) => createComponent(new TextAreaField(), config);

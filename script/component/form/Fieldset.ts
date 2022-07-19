@@ -1,4 +1,4 @@
-import {Component, Config} from "../Component.js";
+import {Component, Config, createComponent} from "../Component.js";
 import {Form} from "./Form.js";
 
 /**
@@ -40,13 +40,4 @@ export class Fieldset extends Component {
  * @param config
  * @param items
  */
-export const fieldset = (config?: Config<Fieldset>, ...items: Component[]) => {
-	const c = new Fieldset();
-	if(config) {
-		Object.assign(c, config);
-	}
-	if(items.length) {
-		c.items.add(...items);
-	}
-	return c;
-}
+export const fieldset = (config?: Config<Fieldset>, ...items: Component[]) => createComponent(new Fieldset(), config, items);

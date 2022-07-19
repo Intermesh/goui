@@ -2,7 +2,7 @@ import {ObservableListenerOpts} from "../Observable.js";
 import {Field, FieldEventMap} from "./Field.js";
 import {ContainerField} from "./ContainerField.js";
 import {Collection} from "../../util/Collection.js";
-import {Component, Config} from "../Component.js";
+import {Component, Config, createComponent} from "../Component.js";
 
 
 /**
@@ -80,9 +80,4 @@ export class ArrayField extends ContainerField {
  * @param config
  * @param items
  */
-export const arrayfield = (config: ArrayFieldConfig, ...items: Field[]) => {
-	const f = new ArrayField(config.itemComponent);
-	Object.assign(f, config);
-	f.items.add(...items);
-	return f;
-}
+export const arrayfield = (config: ArrayFieldConfig, ...items: Field[]) => createComponent(new ArrayField(config.itemComponent), config, items);

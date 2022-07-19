@@ -1,6 +1,6 @@
 import {Field, FieldEventMap} from "./Field.js";
 import {ObservableListener, ObservableListenerOpts} from "../Observable.js";
-import {Component, Config} from "../Component.js";
+import {Component, Config, createComponent} from "../Component.js";
 import {ObjectUtil} from "../../util/ObjectUtil.js";
 
 
@@ -163,13 +163,4 @@ export class ContainerField extends Field {
  * @param config
  * @param items
  */
-export const containerfield = (config?: Config<ContainerField>, ...items: Component[]) => {
-	const c = new ContainerField();
-	if(config) {
-		Object.assign(c, config);
-	}
-	if(items.length) {
-		c.items.add(...items);
-	}
-	return c;
-}
+export const containerfield = (config?: Config<ContainerField>, ...items: Component[]) =>createComponent(new ContainerField(), config, items);

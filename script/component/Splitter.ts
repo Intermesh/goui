@@ -1,4 +1,4 @@
-import {Component, ComponentState, Config, FindComponentPredicate} from "./Component.js";
+import {Component, ComponentState, Config, createComponent, FindComponentPredicate} from "./Component.js";
 import {DraggableComponent, DraggableComponentEventMap} from "./DraggableComponent.js";
 import {ObservableListener, ObservableListenerOpts} from "./Observable.js";
 
@@ -134,4 +134,4 @@ type SplitterConfig = Config<Splitter> & {
 /**
  * Shorthand function to create {@see Splitter}
  */
-export const splitter = (config: SplitterConfig) => Object.assign(new Splitter(config.resizeComponentPredicate), config);
+export const splitter = (config: SplitterConfig) => createComponent(new Splitter(config.resizeComponentPredicate), config);

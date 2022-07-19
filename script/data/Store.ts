@@ -1,7 +1,7 @@
 import {Observable, ObservableListener, ObservableListenerOpts} from "../component/Observable.js";
 import {ArrayUtil} from "../util/ArrayUtil.js";
 import {Collection, CollectionEventMap} from "../util/Collection.js";
-import {Config} from "../component/Component.js";
+import {Config, createComponent} from "../component/Component.js";
 
 /**
  * Comparator interface for sorting data
@@ -153,4 +153,4 @@ export class Store extends Collection<StoreRecord> {
  *
  * @param config
  */
-export const store = (config?: Config<Store>) => Object.assign(new Store(), config);
+export const store = (config?: Config<Store>) => createComponent(new Store(), config);
