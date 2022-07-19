@@ -4,6 +4,9 @@
     "./script/**/*.ts"
   ],
   "compilerOptions": {
-    "sourceMap": false
+    "sourceMap": true,
+    "declaration": true,
+    "declarationMap": true,
+    "outDir": "./dist"
   }
 }

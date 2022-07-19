@@ -5,9 +5,11 @@
   ],
   "compilerOptions": {
     "declaration": true,
-    "declarationDir": "./types",
+//    "declarationDir": "./types",
     "declarationMap": true,
     "emitDeclarationOnly": true,
-    "outDir": "./build/"
+    "outDir": "./build/",
+    "outFile": "./build/system.js",
+    "module": "system"
   }
 }
