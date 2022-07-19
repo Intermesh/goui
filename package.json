@@ -14,7 +14,7 @@
     "jsdom": "^18.0.0",
     "jsdom-global": "^3.0.2",
     "material-icons": "^1.10.11",
-    "mocha": "^9.1.3",
+    "mocha": "^6.2.3",
     "npm-run-all": "^4.1.5",
     "rimraf": "^3.0.2",
     "rollup": "^2.76.0",
@@ -24,19 +24,16 @@
   },
   "scripts": {
     "test": "mocha",
-
     "start": "npm-run-all --parallel watch:tsc watch:tsc-examples watch:sass --print-label ",
     "watch:tsc": "esbuild script/goui.ts --bundle --serve=localhost:8081 --sourcemap --format=esm --target=esnext --outdir=build --servedir=.",
     "watch:tsc-examples": "esbuild examples/Index.ts --bundle --watch --external:../build/* --external:../script/*  --sourcemap --format=esm --target=esnext --outdir=examples",
     "watch:sass": "sass --watch style:build",
-
     "build": "npm-run-all build:clean build:sass build:ts build:bundle-types --print-label",
     "build:clean": "rimraf build",
     "build:sass": "sass --style=compressed style:build",
     "build:types": " tsc --project tsconfig.types.json",
-    "build:ts" : "esbuild script/goui.ts --bundle --minify --sourcemap --format=esm --target=esnext --outdir=build",
+    "build:ts": "esbuild script/goui.ts --bundle --minify --sourcemap --format=esm --target=esnext --outdir=build",
     "build:bundle-types": "rollup -c",
-
     "barrel": "barrelsby --config barrelsby.json && sed -i .bak 's/\\\";/.js\\\";/' script/goui.ts && rm script/goui.ts.bak"
   }
 }
