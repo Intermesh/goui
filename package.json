@@ -24,10 +24,12 @@
   },
   "scripts": {
     "test": "mocha",
-    "start": "npm-run-all build watch:tsc watch:tsc-examples watch:sass --print-label ",
-    "watch:tsc": "esbuild script/goui.ts --bundle --serve=localhost:8081 --sourcemap --format=esm --target=esnext --outdir=build --servedir=.",
-    "watch:tsc-examples": "esbuild examples/Index.ts --bundle --watch --external:../build/* --external:../script/*  --sourcemap --format=esm --target=esnext --outdir=examples",
-    "watch:sass": "sass --watch style:build",
+    "start": "npm-run-all build start:watch start:tsc-examples start:sass --print-label ",
+    "start:watch": "esbuild script/goui.ts --bundle --watch --sourcemap --format=esm --target=esnext --outdir=build",
+    "start:serve": "esbuild script/goui.ts --bundle --serve=localhost:8081 --sourcemap --format=esm --target=esnext --outdir=build --servedir=.",
+    "start:tsc-examples": "esbuild examples/Index.ts --bundle --watch --external:../build/* --external:../script/*  --sourcemap --format=esm --target=esnext --outdir=examples",
+    "start:sass": "sass --watch style:build",
+
     "build": "npm-run-all build:clean build:types build:sass build:ts build:bundle-types --print-label",
     "build:clean": "rimraf build",
     "build:sass": "sass --style=compressed style:build",
