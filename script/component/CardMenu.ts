@@ -45,7 +45,7 @@ export class CardMenu extends Component {
 	 * If not given it will be looked up in the parent of the menu.
 	 */
 	public cardContainer?: CardContainer
-	protected baseCls = "cardmenu";
+	protected baseCls = "goui-cardmenu";
 
 	focus(o?: FocusOptions) {
 		const first = this.cardContainer?.items.first();

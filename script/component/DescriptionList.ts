@@ -11,6 +11,8 @@ export class DescriptionList extends Component {
 		super("dl");
 	}
 
+	protected baseCls = 'goui-dl';
+
 	private _records?: DLRecord;
 
 	protected internalRender(): HTMLElement {

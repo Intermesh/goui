@@ -1,118 +1,140 @@
 
-.mask {
+.goui-mask {
 	//backdrop-filter: blur(5px) brightness(40%) ;
 	//-webkit-backdrop-filter: blur(5px) brightness(40%);
 	opacity: .8;
 	background-color: #7b7a7a;
 	top: 0;
-	left:0;
-	bottom:0;
-	right:0;
+	left: 0;
+	bottom: 0;
+	right: 0;
 	width: 100%;
 	height: 100%;
 	position: absolute;
 	//z-index: $zIndexMask;
-	transform: translate(0,0);
-}
+	transform: translate(0, 0);
 
-//@supports (not (backdrop-filter:blur(5px))) and (not (-webkit-backdrop-filter:blur(5px))) {
-//	// firefox doesn't support backdrop-filter
-//	.mask {
-//		opacity: .8;
-//		background-color: black;
-//	}
-//}
 
-.spinner,
-.spinner div,
-.spinner div:after {
-	box-sizing: border-box;
-}
-.spinner {
-	color: white;
-	position: absolute;
-	width: dp(80);
-	height: dp(80);
-	top: 50%;
-	left: 50%;
-	margin-top: dp(-40);
-	margin-left: dp(-40);
-}
-.spinner div {
-	animation: go-spinner 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-	transform-origin: dp(40) dp(40);
-}
-.spinner div:after {
-	content: " ";
-	display: block;
-	position: absolute;
-	width: 7.2px;
-	height: 7.2px;
-	border-radius: 50%;
-	background: currentColor;
-	margin: -3.6px 0 0 -3.6px;
-}
-.spinner div:nth-child(1) {
-	animation-delay: -0.036s;
-}
-.spinner div:nth-child(1):after {
-	top: dp(62.62742);
-	left: dp(62.62742);
-}
-.spinner div:nth-child(2) {
-	animation-delay: -0.072s;
-}
-.spinner div:nth-child(2):after {
-	top: dp(67.71281);
-	left: dp(56);
-}
-.spinner div:nth-child(3) {
-	animation-delay: -0.108s;
-}
-.spinner div:nth-child(3):after {
-	top: dp(70.90963);
-	left: dp(48.28221);
-}
-.spinner div:nth-child(4) {
-	animation-delay: -0.144s;
-}
-.spinner div:nth-child(4):after {
-	top: dp(72);
-	left: dp(40);
-}
-.spinner div:nth-child(5) {
-	animation-delay: -0.18s;
-}
-.spinner div:nth-child(5):after {
-	top: dp(70.90963);
-	left: dp(31.71779);
-}
-.spinner div:nth-child(6) {
-	animation-delay: -0.216s;
-}
-.spinner div:nth-child(6):after {
-	top: dp(67.71281);
-	left: dp(24);
-}
-.spinner div:nth-child(7) {
-	animation-delay: -0.252s;
-}
-.spinner div:nth-child(7):after {
-	top: dp(62.62742);
-	left: dp(17.37258);
-}
-.spinner div:nth-child(8) {
-	animation-delay: -0.288s;
-}
-.spinner div:nth-child(8):after {
-	top: dp(56);
-	left: dp(12.28719);
-}
-@keyframes go-spinner {
-	0% {
-		transform: rotate(0deg);
+	//@supports (not (backdrop-filter:blur(5px))) and (not (-webkit-backdrop-filter:blur(5px))) {
+	//	// firefox doesn't support backdrop-filter
+	//	.mask {
+	//		opacity: .8;
+	//		background-color: black;
+	//	}
+	//}
+
+	.spinner,
+	.spinner div,
+	.spinner div:after {
+		box-sizing: border-box;
 	}
-	100% {
-		transform: rotate(360deg);
+
+	.spinner {
+		color: white;
+		position: absolute;
+		width: dp(80);
+		height: dp(80);
+		top: 50%;
+		left: 50%;
+		margin-top: dp(-40);
+		margin-left: dp(-40);
 	}
+
+	.spinner div {
+		animation: goui-spinner 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+		transform-origin: dp(40) dp(40);
+	}
+
+	.spinner div:after {
+		content: " ";
+		display: block;
+		position: absolute;
+		width: 7.2px;
+		height: 7.2px;
+		border-radius: 50%;
+		background: currentColor;
+		margin: -3.6px 0 0 -3.6px;
+	}
+
+	.spinner div:nth-child(1) {
+		animation-delay: -0.036s;
+	}
+
+	.spinner div:nth-child(1):after {
+		top: dp(62.62742);
+		left: dp(62.62742);
+	}
+
+	.spinner div:nth-child(2) {
+		animation-delay: -0.072s;
+	}
+
+	.spinner div:nth-child(2):after {
+		top: dp(67.71281);
+		left: dp(56);
+	}
+
+	.spinner div:nth-child(3) {
+		animation-delay: -0.108s;
+	}
+
+	.spinner div:nth-child(3):after {
+		top: dp(70.90963);
+		left: dp(48.28221);
+	}
+
+	.spinner div:nth-child(4) {
+		animation-delay: -0.144s;
+	}
+
+	.spinner div:nth-child(4):after {
+		top: dp(72);
+		left: dp(40);
+	}
+
+	.spinner div:nth-child(5) {
+		animation-delay: -0.18s;
+	}
+
+	.spinner div:nth-child(5):after {
+		top: dp(70.90963);
+		left: dp(31.71779);
+	}
+
+	.spinner div:nth-child(6) {
+		animation-delay: -0.216s;
+	}
+
+	.spinner div:nth-child(6):after {
+		top: dp(67.71281);
+		left: dp(24);
+	}
+
+	.spinner div:nth-child(7) {
+		animation-delay: -0.252s;
+	}
+
+	.spinner div:nth-child(7):after {
+		top: dp(62.62742);
+		left: dp(17.37258);
+	}
+
+	.spinner div:nth-child(8) {
+		animation-delay: -0.288s;
+	}
+
+	.spinner div:nth-child(8):after {
+		top: dp(56);
+		left: dp(12.28719);
+	}
+
+	@keyframes goui-spinner {
+		0% {
+			transform: rotate(0deg);
+		}
+		100% {
+			transform: rotate(360deg);
+		}
+	}
+
 }

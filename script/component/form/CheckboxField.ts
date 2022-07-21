@@ -10,7 +10,7 @@ export class CheckboxField extends Field {
 
 	protected input: HTMLInputElement | undefined;
 
-	protected baseCls = 'form-field checkbox';
+	protected baseCls = 'goui-form-field checkbox';
 
 	protected applyTitle() {
 		if (this.title) {

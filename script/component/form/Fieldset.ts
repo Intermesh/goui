@@ -12,6 +12,8 @@ export class Fieldset extends Component {
 		super("fieldset");
 	}
 
+	protected baseCls = "goui-fieldset";
+
 	/**
 	 * The legend to display
 	 */

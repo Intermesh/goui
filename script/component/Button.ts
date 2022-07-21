@@ -73,7 +73,7 @@ export class Button extends Component {
 
 	}
 
-	protected baseCls = "button"
+	protected baseCls = "goui-button";
 
 	/**
 	 * Function to be executed on click (added to el.onclick)
@@ -181,7 +181,7 @@ export class Button extends Component {
 
 	private onMenuMouseEnter(ev: MouseEvent) {
 		if (Menu.openedMenu && Menu.openedMenu != this._menu) {
-			Menu.openedMenu.el.classList.remove("fade-out");
+			Menu.openedMenu.el.classList.remove("goui-fade-out");
 			Menu.openedMenu.close();
 			this.showMenu(this.el, ev);
 		}
@@ -238,7 +238,7 @@ export class Button extends Component {
 		});
 
 		//put back fade out class removed in mouseenter listener above
-		this._menu!.el.classList.add("fade-out");
+		this._menu!.el.classList.add("goui-fade-out");
 
 		this.fire("showmenu", this, this._menu!, ev);
 	}

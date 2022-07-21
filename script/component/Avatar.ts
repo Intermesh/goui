@@ -2,7 +2,7 @@ import {Component, Config, createComponent} from "./Component.js";
 
 export class Avatar extends Component {
 
-	protected baseCls = "avatar";
+	protected baseCls = "goui-avatar";
 
 	static colors = [
 		'C62828', 'AD1457', '6A1B9A', '4527A0', '283593', '1565C0', '0277BD', '00838F',

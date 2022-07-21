@@ -15,7 +15,7 @@ interface SelectFieldOption {
  */
 export class SelectField extends Field {
 
-	baseCls = "form-field select"
+	baseCls = "goui-form-field select"
 
 	protected input: HTMLSelectElement | undefined;
 

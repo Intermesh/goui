@@ -1,5 +1,5 @@
 
-.alert {
+.goui-alert {
 	z-index: $zIndexAlert;
 	position: fixed;
 	top: dp(64);
@@ -10,7 +10,7 @@
 	margin:0 auto;
 	border-radius:dp(10);
 	padding:dp(24) dp(24) dp(24) dp(64);
-	animation: go-alert .5s ease-out;
+	animation: goui-alert .5s ease-out;
 	cursor: pointer;
 
 	&:before {
@@ -18,9 +18,48 @@
 		left: dp(24);
 		@extend %icon;
 	}
+
+
+	&.error {
+		background: $colorErrorBg;
+		border:2px solid $colorErrorBorder;
+		color: $colorError;
+		&:before {
+			color: $colorError;
+			content: "error";
+		}
+	}
+	&.success {
+		background: $colorSuccessBg;
+		border:2px solid $colorSuccessBorder;
+		color: $colorSuccess;
+		&:before {
+			color: $colorSuccess;
+			content: "check_circle";
+		}
+	}
+	&.warning {
+		background: $colorWarningBg;
+		border:2px solid $colorWarningBorder;
+		color: $colorWarning;
+		&:before {
+			color: $colorWarning;
+			content: "warning";
+		}
+	}
+	&.notice {
+		background:$colorNoticeBg;
+		border:2px solid $colorNoticeBorder;
+		color: $colorNotice;
+		&:before {
+			color: $colorNotice;
+			content: "info";
+		}
+	}
+
 }
 
-@keyframes go-alert {
+@keyframes goui-alert {
 	0%   {
 		transform: translateY(-200%);
 	}
@@ -34,39 +73,4 @@
 //	text-transform:uppercase;
 //}
 
-.error {
-	background: $colorErrorBg;
-	border:2px solid $colorErrorBorder;
-	color: $colorError;
-	&:before {
-		color: $colorError;
-		content: "error";
-	}
-}
-.success {
-	background: $colorSuccessBg;
-	border:2px solid $colorSuccessBorder;
-	color: $colorSuccess;
-	&:before {
-		color: $colorSuccess;
-		content: "check_circle";
-	}
-}
-.warning {
-	background: $colorWarningBg;
-	border:2px solid $colorWarningBorder;
-	color: $colorWarning;
-	&:before {
-		color: $colorWarning;
-		content: "warning";
-	}
-}
-.notice {
-	background:$colorNoticeBg;
-	border:2px solid $colorNoticeBorder;
-	color: $colorNotice;
-	&:before {
-		color: $colorNotice;
-		content: "info";
-	}
-}
+

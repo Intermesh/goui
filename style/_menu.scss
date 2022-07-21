@@ -1,6 +1,6 @@
 $menuWidth: dp(160);
 
-menu.dropdown {
+menu.goui-dropdown {
 	@extend .z12;
 
 	display: block;
@@ -40,14 +40,14 @@ menu.dropdown {
 
 		}
 
-		.form-field {
+		.goui-form-field {
 			.hint {
 				height: 0;
 				padding: 0;
 			}
 		}
 
-		label.form-field.checkbox {
+		label.goui-form-field.checkbox {
 			margin-bottom: 0;
 			.control {
 				.box-label {
@@ -76,7 +76,7 @@ menu.dropdown {
 	}
 
 	// First menu is always visible. button must be clicked to toggle hidden attribute.
-	button > menu.dropdown {
+	button > menu.goui-dropdown {
 		position: absolute;
 		&:not(:hover) {
 			//https://easings.net/#easeInCubic
@@ -90,7 +90,7 @@ menu.dropdown {
 
 	&.expand-left {
 
-		button > menu.dropdown {
+		button > menu.goui-dropdown {
 			left: -100%;
 			transform: translateX(dp(-24));
 		}
@@ -98,7 +98,7 @@ menu.dropdown {
 	}
 
 	//second expands on hover
-	button:hover > menu.dropdown, button:focus-within > menu {
+	button:hover > menu.goui-dropdown, button:focus-within > menu {
 		transition: 0s;
 		visibility: visible;
 		opacity: 1;
@@ -108,7 +108,7 @@ menu.dropdown {
 
 }
 
-button.button.with-text.has-menu {
+button.goui-button.with-text.has-menu {
 	padding-right: dp(36);
 
 	&:after {
@@ -125,7 +125,7 @@ button.button.with-text.has-menu {
 }
 
 
-menu.dropdown.menu-color {
+menu.goui-dropdown.goui-menu-color {
 	display:flex;
 	flex-direction: row;
 	flex-wrap: wrap;
@@ -151,7 +151,7 @@ menu.dropdown.menu-color {
 				width: dp(16);
 				height: dp(16);
 				border-radius: 50%;
-				border: 2px solid $colorBorder;
+				border: 1px solid $colorBorder;
 			}
 		}
 

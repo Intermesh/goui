@@ -79,7 +79,7 @@ export class Menu extends Component {
 		super("menu");
 	}
 
-	protected baseCls = "dropdown fade-out";
+	protected baseCls = "goui-dropdown goui-fade-out";
 
 	/**
 	 * Remove menu when closed

@@ -20,7 +20,7 @@
   "scripts": {
     "test": "mocha",
 
-    "start": "npm-run-all start:watch start:serve-examples start:sass --print-label ",
+    "start": "npm-run-all --parallel start:watch start:sass start:serve-examples --print-label ",
     "start:watch": "tsc --watch",
     "start:serve-examples": "esbuild examples/Index.ts --bundle --serve=localhost:8081 --servedir=. --external:./dist/* --external:./script/*  --sourcemap --format=esm --target=esnext --outdir=examples",
     "start:sass": "sass --watch style:dist",

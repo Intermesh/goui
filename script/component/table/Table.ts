@@ -151,11 +151,11 @@ export class Table<StoreType extends Store = Store> extends Component {
 	/**
 	 * Shown when the table is empty.
 	 */
-	public emptyStateHtml = `<div class="empty-state"><i class="icon">article</i><p>${t("Nothing to show")}</p></div>`
+	public emptyStateHtml = `<div class="goui-empty-state"><i class="icon">article</i><p>${t("Nothing to show")}</p></div>`
 
 	private minCellWidth = 30
 
-	protected baseCls = "table scroll";
+	protected baseCls = "goui-table scroll";
 
 
 	/**

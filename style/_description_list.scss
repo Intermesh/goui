@@ -1,4 +1,4 @@
-dl {
+dl.goui-dl {
 	margin: 0;
 	margin-right: dp(16);
 	&:last-child {
@@ -21,11 +21,22 @@ dl {
 		//text-overflow: ellipsis;
 		//overflow: hidden;
 		//white-space: nowrap;
+
+		code {
+			display: block;
+			word-break: break-all;
+			white-space: break-spaces;
+			background-color: #f1f1f1;
+			border: 2px solid $colorBorder;
+			border-radius: $borderRadius;
+			padding: dp(8);
+			line-height:normal;
+		}
 	}
 }
 
 .masked {
-	dl {
+	dl.goui-dl {
 		dd {
 			background-color: $colorMasked;
 			color: $colorMasked;

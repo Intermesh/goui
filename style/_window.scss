@@ -1,4 +1,4 @@
-.window-modal-overlay {
+.goui-window-modal-overlay {
 	opacity: .8;
 	background-color: #7b7a7a;
 	top: 0;
@@ -9,7 +9,7 @@
 	height: 100%;
 	position: fixed;
 }
-.window {
+.goui-window {
 	&.modal {
 		@extend .z24;
 		//box-shadow: 0 0px 20px 0 rgb(0 0 0 / 40%);
@@ -72,12 +72,12 @@
 	min-height: dp(160);
 	min-width: dp(160);
 
-	.toolbar {
+	.goui-toolbar {
 		padding: dp(12) dp(18);
 		background-color: $colorWindowHeader;
 	}
 
-	.cardmenu {
+	.goui-cardmenu {
 		background-color: $colorWindowHeader;
 		width: 100%;
 		padding-top:0;
@@ -92,10 +92,13 @@
 		//border-bottom: 1px solid $colorBorderWindow;
 		margin: 0;
 		h3 {
+			display: block;
+			margin: 0;
+
 			color: inherit;
 			font-size: dp(22);
 			font-weight: 600;
-			padding: 0;
+			padding: dp(12) 0;
 			margin-top: 0;
 			margin-bottom: 0;
 			overflow: hidden;
@@ -103,13 +106,13 @@
 			white-space: nowrap;
 		}
 
-		& + *:not(.cardmenu):not(form) {
+		& + *:not(.goui-cardmenu):not(form) {
 			margin-top: 0;
 			border-top: 1px solid $colorBorderWindow;
 		}
 
 		& + form {
-			&:first-child:not(.cardmenu) {
+			&:first-child:not(.goui-cardmenu) {
 				margin-top: 0;
 				border-top: 1px solid $colorBorderWindow;
 			}
@@ -124,7 +127,7 @@
 		text-align: left;
 	}
 
-	.toolbar:last-child:not(:only-child) {
+	.goui-toolbar:last-child:not(:only-child) {
 		padding-left: dp(18);
 		padding-right: dp(18);
 		//background: $colorBackgroundToolbar;
@@ -133,7 +136,7 @@
 }
 
 // login dialog must always be on top
-.login {
+.goui-login {
 	z-index: $zIndexWindow + 3;
 	&:focus-within {
 		z-index: $zIndexWindow + 3;

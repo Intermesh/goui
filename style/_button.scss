@@ -1,5 +1,5 @@
 
-button.button {
+button.goui-button  {
 	color: inherit;
 
 	background-color: transparent;
@@ -89,7 +89,7 @@ button.button {
 }
 
 
-.toolbar {
+.goui-toolbar {
 	@extend .hbox;
 	align-items: center;
 	user-select: none;

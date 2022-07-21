@@ -33,7 +33,7 @@
 
 $formLabelWidth: dp(160);
 
-.form-field {
+.goui-form-field {
 	display: flex;
 	flex-flow: row wrap;
 	border-radius: dp(12);
@@ -42,7 +42,7 @@ $formLabelWidth: dp(160);
 		margin-top: 0;
 	}
 
-	menu.toolbar {
+	menu.goui-toolbar {
 		padding: 0;
 		border: 2px solid $colorBorder;
 		transition: border-color 100ms linear;
@@ -291,13 +291,15 @@ $formLabelWidth: dp(160);
 //	}
 //}
 
-fieldset {
+.goui-fieldset {
 	border: 0;
 	min-width: 0;
 	padding: 0;
 	margin: 0;
 
 	.legend {
+		display: block;
+		line-height:normal;
 		font-size: dp(24);
 		font-weight: 500;
 		margin: dp(8) 0 dp(24) 0;
@@ -307,12 +309,8 @@ fieldset {
 }
 
 
-
-.html-field {
+.goui-html-field {
 	position: relative;
-
-
-
 
 	&.invalid {
 		div.editor{

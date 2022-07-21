@@ -44,7 +44,7 @@ class Message {
 	constructor(msg: string, type: string, timeout = 3000) {
 
 		const alert = comp({
-			cls: "alert " + type
+			cls: "goui-alert " + type
 		},
 			comp({
 				tagName:"span",

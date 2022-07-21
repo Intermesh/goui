@@ -83,7 +83,7 @@ type ToolbarItems = "-" |"bold" | "italic" | "underline" |
  * @see Form
  */
 export class HtmlField extends Field {
-	protected baseCls = 'form-field html-field'
+	protected baseCls = 'goui-form-field goui-html-field'
 
 	/**
 	 * When the field is empty this will be dispklayed inside the field

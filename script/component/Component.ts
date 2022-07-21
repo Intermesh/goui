@@ -316,8 +316,8 @@ export class Component extends Observable {
 	 *
 	 * Other:
 	 *
-	 * - fade-in: The component will fade in when show() is used.
-	 * - fade-out: The component will fade out when hide is used.
+	 * - goui-fade-in: The component will fade in when show() is used.
+	 * - goui-fade-out: The component will fade out when hide is used.
 	 *
 	 */
 	set cls(cls: string) {
@@ -329,7 +329,10 @@ export class Component extends Observable {
 	 */
 	protected internalRender() {
 		if (this.baseCls) {
-			this.el.className += " " + this.baseCls;
+			this.el.className += " goui " + this.baseCls;
+		} else
+		{
+			this.el.className += " goui ";
 		}
 		this.renderItems();
 
@@ -370,14 +373,14 @@ export class Component extends Observable {
 	 */
 	set resizable(resizable: boolean) {
 		if (resizable) {
-			this.el.classList.add("resizable");
+			this.el.classList.add(".goui-resizable");
 		} else {
-			this.el.classList.remove("resizable");
+			this.el.classList.remove(".goui-resizable");
 		}
 	}
 
 	get resizable() {
-		return this.el.classList.contains("resizable");
+		return this.el.classList.contains(".goui-resizable");
 	}
 
 	/**
@@ -463,7 +466,7 @@ export class Component extends Observable {
 	 * Hide this component
 	 *
 	 * This sets the "hidden" attribute on the DOM element which set's CSS display:none.
-	 * You can change this to fade with css class "fade-in" and "fade-out"
+	 * You can change this to fade with css class "goui-fade-in" and "goui-fade-out"
 	 */
 	public hide() {
 		this.hidden = true;
@@ -778,7 +781,7 @@ export class Component extends Observable {
  */
 export class Mask extends Component {
 
-	protected baseCls = "mask";
+	protected baseCls = "goui-mask";
 
 	/**
 	 * Show loading spinner

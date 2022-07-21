@@ -9,7 +9,7 @@ export class Paginator extends Toolbar {
 	private next: Button;
 
 
-	protected baseCls = "toolbar paginator";
+	protected baseCls = "goui-toolbar goui-paginator";
 
 	constructor(public store: Store) {
 		super();

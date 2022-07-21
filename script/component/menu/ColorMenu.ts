@@ -44,7 +44,7 @@ export class ColorMenu extends Menu {
 	 */
 	public updateButton = true;
 
-	protected baseCls = "dropdown menu-color"
+	protected baseCls = "goui-dropdown goui-menu-color"
 
 	protected colors = [
 		'000000', //Black

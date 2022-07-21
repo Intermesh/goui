@@ -65,7 +65,7 @@ export class Window extends DraggableComponent {
 		super();
 		this.resizable = true;
 	}
-	protected baseCls = "window"
+	protected baseCls = "goui-window"
 
 	/**
 	 * Maximize the window
@@ -300,7 +300,7 @@ export class Window extends DraggableComponent {
 
 			if (this.modal) {
 				this.modalOverlay = comp({
-					cls: "window-modal-overlay fade-in fade-out",
+					cls: "goui-window-modal-overlay goui-goui-fade-in goui-goui-fade-out",
 					hidden: true
 				});
 

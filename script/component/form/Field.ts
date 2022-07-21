@@ -80,7 +80,7 @@ export abstract class Field extends Component {
 	}
 	readonly isFormField = true
 
-	protected baseCls = "form-field"
+	protected baseCls = "goui-form-field"
 
 	private _name?: string;
 

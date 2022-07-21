@@ -29,7 +29,7 @@ import {comp, Component, Config} from "./Component.js";
  */
 export class Toolbar extends Component {
 
-	protected baseCls = "toolbar"
+	protected baseCls = "goui-toolbar"
 
 	constructor() {
 		super("menu");

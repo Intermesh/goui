@@ -1,7 +1,7 @@
 
 // Stack items horizontally
 // For border layout use width's on north and south and add class "go-scroll" on center
-.hbox {
+.goui.hbox {
 	display: flex;
 	flex-direction: row;
 	align-items: stretch;
@@ -33,7 +33,7 @@
 
 // Stack items vertically
 // For border layout use height's on east and west and add class "go-scroll" on center
-.vbox {
+.goui.vbox {
 	max-width: none;
 	max-height: none;
 	gap: 0;
@@ -49,7 +49,7 @@
 	}
 }
 
-.container {
+.goui.container {
 	display: flex;
 	flex-direction: row;
 	flex-wrap: wrap;
@@ -64,33 +64,33 @@
 
 
 // Make the element fit it's parent
-.fit {
+.goui.fit {
 	height: 100%;
 	width: 100%;
 }
 
 // padding for text contet
-.pad {
+.goui.pad {
 	padding: dp(24) dp(18) !important;
 }
 
-.border-bottom {
+.goui.border-bottom {
 	border-bottom: 2px solid $colorBorder;
 }
 
-.border-top {
+.goui.border-top {
 	border-top: 2px solid $colorBorder;
 }
 
-.border-left {
+.goui.border-left {
 	border-left: 2px solid $colorBorder;
 }
 
-.border-right {
+.goui.border-right {
 	border-bottom: 2px solid $colorBorder;
 }
 
-.frame {
+.goui.frame {
 	border: 2px solid $colorBorder;
 	border-radius: dp(12);
 	overflow:hidden;
@@ -112,7 +112,7 @@
 }
 
 // Scrolling panel
-.scroll {
+.goui.scroll {
 	overflow: auto;
 }
 
@@ -147,7 +147,7 @@
 
 
 @media only screen and (max-width: $breakpointSmall) {
-	.hbox.mobile-cards {
+	.goui.hbox.mobile-cards {
 		> * {
 			display: none;
 		}
@@ -163,13 +163,13 @@
 
 
 @media only screen and (min-width: $breakpointSmall) {
-	.for-small-device {
+	.goui.for-small-device {
 		display: none !important;
 	}
 }
 
 
-.card {
+.goui-card {
 	border-radius: $borderRadius;
 	margin: dp(16);
 	background-color: white;
