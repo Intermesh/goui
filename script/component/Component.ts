@@ -321,19 +321,25 @@ export class Component extends Observable {
 	 *
 	 */
 	set cls(cls: string) {
+		this.initClassName();
 		this.el.className += " " + cls;
+	}
+
+	private initClassName() {
+		if(this.el.classList.contains("goui")) {
+			return;
+		}
+		this.el.classList.add("goui");
+		if (this.baseCls) {
+			this.el.className += " " + this.baseCls;
+		}
 	}
 
 	/**
 	 * Renders the component and it's children
 	 */
 	protected internalRender() {
-		if (this.baseCls) {
-			this.el.className += " goui " + this.baseCls;
-		} else
-		{
-			this.el.className += " goui ";
-		}
+		this.initClassName();
 		this.renderItems();
 
 		if (this.stateId) {
