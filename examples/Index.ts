@@ -57,8 +57,8 @@ const loadPlayground = async () => {
 }
 
 //register a plugin for Playground table
-PluginManager.register("PlaygroundTable", function (this: PlaygroundTable) {
-	this.el.classList.add("cls-added-by-plugin");
+PluginManager.register("PlaygroundTable", function (table: PlaygroundTable) {
+	table.el.classList.add("cls-added-by-plugin");
 });
 
 // Setup router

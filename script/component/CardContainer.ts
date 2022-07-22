@@ -56,9 +56,9 @@ export class CardContainer extends Component {
 	protected baseCls = "cards";
 
 	protected internalRender() {
-		const el = super.internalRender();
-
 		this.setCardVisibilities();
+
+		const el = super.internalRender();
 
 		this.items.on("beforeadd", (card, item) => {
 			item.hide();
@@ -81,9 +81,9 @@ export class CardContainer extends Component {
 
 		this.items.forEach((item, index) => {
 			if (index == this.activeItem) {
-				if (this.rendered && !item.rendered) {
-					super.renderItem(item);
-				}
+				// if (this.rendered && !item.rendered) {
+				// 	super.renderItem(item);
+				// }
 				item.show();
 
 			} else {
