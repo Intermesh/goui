@@ -7,7 +7,9 @@ import {FieldEventMap} from "./Field.js";
 
 export interface FormEventMap<Sender extends Observable> extends FieldEventMap<Sender> {
 	/**
-	 * Fires before adding an item. Return false to abort.
+	 * Fires when the form is submitted. The event is fired after calling the handler.
+	 *
+	 * You can check if the form is valid after submitting with {@see form.isValid()}
 	 *
 	 * @param form
 	 */
@@ -107,7 +109,7 @@ export interface Form {
  *
  */
 export class Form extends ContainerField {
-	protected baseCls = "form"
+	protected baseCls = "goui-form"
 	public hideLabel = true;
 
 	constructor() {
@@ -116,11 +118,13 @@ export class Form extends ContainerField {
 
 
 	/**
-	 * Executed when form is submitted
+	 * Executed when form is submitted.
+	 *
+	 * If a promise is returned the "submit" event will fire after it has been resolved.
 	 *
 	 * @param form
 	 */
-	public handler: ((this: this, form: Form) => void) | undefined;
+	public handler: ((this: this, form: Form) => void|Promise<void>) | undefined;
 
 
 	protected internalRender() {
@@ -205,6 +209,11 @@ export class Form extends ContainerField {
 
 			Notifier.error("The form is invalid. Please check your input.");
 		}
+	}
+
+	setInvalid(msg: string) {
+		super.setInvalid(msg);
+		Notifier.error(msg);
 	}
 
 	/**

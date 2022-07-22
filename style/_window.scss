@@ -57,7 +57,7 @@
 		z-index: $zIndexWindow + 1;
 	}
 	overflow: hidden;
-	form.form {
+	form.goui-form {
 		fieldset {
 			@extend .pad;
 		}

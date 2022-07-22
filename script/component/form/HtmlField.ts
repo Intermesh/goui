@@ -12,7 +12,7 @@ import {FunctionUtil} from "../../util/FunctionUtil.js";
 import {root} from "../Root.js";
 import {MaterialIcon} from "../MaterialIcon.js";
 import {CheckboxField} from "./CheckboxField.js";
-import {Image} from "../../api/Image.js";
+import {Image} from "../../jmap/Image.js";
 
 
 /**

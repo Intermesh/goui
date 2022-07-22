@@ -75,15 +75,10 @@ export const PlayGround = comp({cls: "vbox", id: "playground"},
 				}),
 
 				btn({
-					text: "Login",
+					text: "Test",
 					menu: menu({},
 						btn({
-							html: "Show",
-							handler: async () => {
-								const mods = await import("../script/api/Login.js");
-								const login = new mods.Login();
-								login.open();
-							}
+							html: "Test 1.1"
 						}),
 
 						btn({

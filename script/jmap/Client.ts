@@ -1,7 +1,5 @@
 import {EntityStore} from "./EntityStore.js";
-import {User} from "../model/User.js";
 import {Observable, ObservableEventMap} from "../component/Observable.js";
-import {root} from "../component/Root.js";
 import {Format} from "../util/Format.js";
 import {Timezone} from "../util/DateTime.js";
 
@@ -16,6 +14,8 @@ export interface LoginData {
 		} | undefined
 	}
 }
+
+type User = Record<string, any>;
 
 export interface RegisterData {
 	action: "register",
@@ -41,7 +41,7 @@ type UploadResponse = {
 	name: string
 }
 
-export class Client extends Observable {
+export class Client<UserType = User> extends Observable {
 	private _lastCallId = 0;
 	private _requests: [method: string, params: any, callid: string][] = [];
 	private _requestData: any = {};
@@ -50,26 +50,10 @@ export class Client extends Observable {
 
 	private debugParam = "?XDEBUG_SESSION=1"
 
-	public user: User | undefined;
+	public user: UserType | undefined;
 
 	public uri = "";
-	private requireLoginPromise?: Promise<any>;
 
-	private static masked = false;
-
-	private static mask() {
-		// this.masked = true;
-		// setTimeout(() => {
-		// 	if (this.masked) {
-		// 		root.mask();
-		// 	}
-		// }, 500);
-	}
-
-	private static unmask() {
-		// this.masked = false;
-		// root.unmask();
-	}
 
 	set session(value) {
 		sessionStorage.jmapSession = JSON.stringify(value);
@@ -98,10 +82,9 @@ export class Client extends Observable {
 		}
 	}
 
-	private request(data: Object) {
-		Client.mask();
+	private async request(data: Object) {
 
-		return fetch(this.uri + "jmap.php" + this.debugParam, {
+		const response = await fetch(this.uri + "jmap.php" + this.debugParam, {
 			method: "POST",
 			mode: "cors",
 			headers: {
@@ -109,33 +92,26 @@ export class Client extends Observable {
 				'Authorization': 'Bearer ' + this.session.accessToken
 			},
 			body: JSON.stringify(data)
-		})
-			.then((response) => {
-				if (response.status != 200) {
-					throw response.statusText;
-				}
-				return response;
-			})
-			.finally(() => {
-				Client.unmask();
-			})
+		});
+
+		if (response.status != 200) {
+			throw response.statusText;
+		}
+		return response;
+
 	}
 
-	public logout() {
-		Client.mask();
-		return fetch(this.uri + "auth.php" + this.debugParam, {
+	public async logout() {
+		const response = await fetch(this.uri + "auth.php" + this.debugParam, {
 			method: "DELETE",
 			mode: "cors",
 			headers: {
 				'Authorization': 'Bearer ' + this.session.accessToken
 			},
-		}).then(() => {
-			this.session = {};
-			this.fire("logout");
-		}).finally(() => {
-			Client.unmask();
-		})
+		});
 
+		this.session = {};
+		this.fire("logout");
 	}
 
 	private static blobCache: Record<string, Promise<any>> = {};
@@ -164,66 +140,25 @@ export class Client extends Observable {
 		return Client.blobCache[blobId];
 	}
 
-	public downloadBlobId(blobId: string, filename: string) {
+	public async downloadBlobId(blobId: string, filename: string) {
 		// Create a URL for the blob
-		return this.getBlobURL(blobId).then((url) => {
-			// Create an anchor element to "point" to it
-			const anchor = document.createElement('a');
-			anchor.href = url;
+		const url = await this.getBlobURL(blobId)
+		// Create an anchor element to "point" to it
+		const anchor = document.createElement('a');
+		anchor.href = url;
 
-			anchor.download = filename;
+		anchor.download = filename;
 
-			// Simulate a click on our anchor element
-			anchor.click();
+		// Simulate a click on our anchor element
+		anchor.click();
 
-			// Discard the object data
-			URL.revokeObjectURL(url);
-		});
-
+		// Discard the object data
+		URL.revokeObjectURL(url);
 	}
 
-	public requireLogin(): Promise<User> {
-
-		if (!this.requireLoginPromise) {
-			this.requireLoginPromise = new Promise<void>((resolve, reject) => {
-				if ("accessToken" in this.session) {
-					resolve();
-				} else {
-					import("./Login.js").then((mods) => {
-
-						const login = new mods.Login();
-						login.open();
-
-						login.on('login', () => {
-							this.fire("login");
-							resolve();
-						});
-
-						login.on('cancel', () => {
-							reject();
-						})
-					})
-				}
-			});
-		}
-
-		return this.requireLoginPromise.then(() => {
-			return this.isLoggedIn().then(user => {
-				if (!user) {
-					this.session = {};
-					return this.requireLogin();
-				} else {
-					return user;
-				}
-			}).catch(() => {
-				this.session = {};
-				return this.requireLogin();
-			});
-		})
-	}
 
 	public auth(data: LoginData | RegisterData) {
-		Client.mask();
+
 		return fetch(this.uri + "auth.php" + this.debugParam, {
 			method: "POST",
 			mode: "cors",
@@ -231,10 +166,7 @@ export class Client extends Observable {
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify(data)
-		}).finally(() => {
-			Client.unmask();
-		})
-
+		});
 	}
 
 	private _user: Promise<User> | undefined;
@@ -246,7 +178,7 @@ export class Client extends Observable {
 		if (!this._user) {
 			this._user = this.store('User').single(this.session.userId, [
 				'id', 'username', 'displayName', 'email', 'avatarId', 'dateFormat', 'timeFormat', 'timezone', 'thousandsSeparator', 'decimalSeparator', 'currency']).then((user) => {
-				this.user = <User>user;
+				this.user = user as UserType;
 				Format.dateFormat = user.dateFormat;
 				Format.timeFormat = user.timeFormat;
 				Format.timezone = user.timezone as Timezone;
@@ -258,7 +190,7 @@ export class Client extends Observable {
 			}).catch((reason) => {
 				this._user = undefined;
 				return Promise.reject(reason);
-			}) as Promise<User>;
+			}) as Promise<UserType>;
 		}
 
 		return this._user;

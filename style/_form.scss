@@ -25,7 +25,7 @@
 	&::placeholder {
 		color: $colorTextPlaceholder;
 	}
-	&+div.label, &+.toolbar+div.label {
+	&+div.label, &+.goui-toolbar+div.label {
 		transform: translateY(dp(-9)) scale(.7);
 	}
 	padding-top: dp(21); padding-bottom: dp(5);
@@ -53,7 +53,7 @@ $formLabelWidth: dp(160);
 			padding: dp(6);
 		}
 
-		.button {
+		.goui-button {
 			color: $colorPrimary;
 			&:hover {
 				background-color: transparent;
@@ -64,7 +64,7 @@ $formLabelWidth: dp(160);
 	position: relative;
 
 	&:focus-within {
-		.text, select, textarea,menu.toolbar {
+		.text, select, textarea,menu.goui-toolbar {
 			border-color: $colorPrimary;
 		}
 
@@ -132,7 +132,7 @@ $formLabelWidth: dp(160);
 	}
 
 	&.invalid {
-		input.text, textarea, select, .hint, menu.toolbar {
+		input.text, textarea, select, .hint, menu.goui-toolbar {
 			border-color: $colorError;
 		}
 		.hint {
@@ -342,7 +342,7 @@ $formLabelWidth: dp(160);
 	}
 
 	&:focus-within {
-		menu.toolbar {
+		menu.goui-toolbar {
 			display:flex;
 		}
 	}
@@ -415,7 +415,7 @@ form {
 		}
 		box-shadow: 0px 10px 20px 0 rgb(0 0 0 / 40%);
 
-		menu.toolbar {
+		menu.goui-toolbar {
 			border-color: $colorPrimary;
 			border-bottom-right-radius: 0;
 		}

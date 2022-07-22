@@ -5,7 +5,7 @@ import {comp, Component} from "@goui/component/Component.js";
 import {router} from "@goui/Router.js";
 import {cards} from "@goui/component/CardContainer.js";
 import {root} from "@goui/component/Root.js";
-import {client} from "@goui/api/Client.js";
+import {client} from "@goui/jmap/Client.js";
 import {Translate} from "@goui/Translate.js";
 import {btn} from "@goui/component/Button.js";
 

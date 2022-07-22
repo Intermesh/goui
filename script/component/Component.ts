@@ -133,22 +133,10 @@ export class Component extends Observable {
 	constructor(readonly tagName: keyof HTMLElementTagNameMap = "div") {
 		super();
 
-		this.init();
-
 		const plugins = PluginManager.get(this.constructor.name);
 		if(plugins) {
-			plugins.forEach(fn => fn.call(this));
+			plugins.forEach(fn => fn(this));
 		}
-	}
-
-	/**
-	 * Method called from constructor to initialize object.
-	 * Plugins are executed after this method.
-	 *
-	 * @protected
-	 */
-	protected init() {
-
 	}
 
 	/**

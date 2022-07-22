@@ -71,7 +71,9 @@ export class TextField extends Field {
 			this.input.placeholder = this.placeholder;
 		}
 		this.input.required = this.required;
-		this.input.name = name;
+		if(name) {
+			this.input.name = name;
+		}
 		this.input.readOnly = this.readOnly;
 
 		if (v) {
@@ -117,7 +119,7 @@ export class TextField extends Field {
 
 	set value(v: any) {
 
-		this.setInputValue(v + "");
+		this.setInputValue(v || "");
 
 		super.value = v;
 	}

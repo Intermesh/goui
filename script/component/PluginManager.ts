@@ -1,5 +1,11 @@
-export type PluginFunction = () => void;
+import {Component} from "./Component.js";
 
+export type PluginFunction =  (comp:any) => void;
+
+/**
+ * Register plugins for components
+ *
+ */
 export class PluginManager {
 
 	private static plugins:Record<string, PluginFunction[]> = {};

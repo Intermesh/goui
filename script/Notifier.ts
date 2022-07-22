@@ -12,7 +12,7 @@ import {root} from "./component/Root.js";
  */
 export class Notifier {
 
-	public static error(msg: string|unknown, timeout = 3000) {
+	public static error(msg: string|unknown, timeout = 0) {
 		console.error(msg);
 		if (msg instanceof Error) {
 			msg = msg.message;

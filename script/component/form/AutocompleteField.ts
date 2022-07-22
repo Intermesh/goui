@@ -200,7 +200,9 @@ export class AutocompleteField<TableType extends Table = Table> extends TextFiel
 		//setup for expanding under input
 		this.table.cls = "autocomplete-suggestions";
 		this.table.hidden = true;
-		this.table.style.position = 'absolute';
+
+		//todo what if list goes off screen?
+		this.table.style.position = 'fixed';
 
 		if (!this.table.height) {
 			this.table.height = 300;

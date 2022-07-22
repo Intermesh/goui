@@ -1,8 +1,5 @@
 {
   "type": "module",
-  "main": "build/goui.js",
-  "module": "build/goui.js",
-  "types": "build/goui.d.ts",
   "devDependencies": {
     "@types/chai": "^4.2.22",
     "@types/mocha": "^9.0.0",
@@ -20,7 +17,8 @@
   "scripts": {
     "test": "mocha",
 
-    "start": "npm-run-all --parallel start:watch start:sass start:serve-examples --print-label ",
+    "start" : "npm-run-all build:clean start:parallel",
+    "start:parallel": "npm-run-all --parallel start:watch start:sass start:serve-examples --print-label ",
     "start:watch": "tsc --watch",
     "start:serve-examples": "esbuild examples/Index.ts --bundle --serve=localhost:8081 --servedir=. --external:./dist/* --external:./script/*  --sourcemap --format=esm --target=esnext --outdir=examples",
     "start:sass": "sass --watch style:dist",

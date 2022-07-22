@@ -192,7 +192,7 @@ export abstract class Field extends Component {
 	 * If omitted the field won't be included in the form values.
 	 */
 	public get name() {
-		return this._name + "";
+		return this._name || "";
 	}
 
 	/**
