@@ -461,7 +461,8 @@ export class Table<StoreType extends Store = Store> extends Component {
 		if (h.resizable) {
 			const splitter = draggable({
 				tagName: "hr",
-				setPosition: false
+				setPosition: false,
+				parent: this
 			});
 
 			splitter.on("dragstart", (cmp, dragData) => {

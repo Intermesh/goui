@@ -3,7 +3,6 @@
 import {Observable, ObservableEventMap, ObservableListener, ObservableListenerOpts,} from "./Observable.js";
 import {State} from "../State.js";
 import {Collection} from "../util/Collection.js";
-import {PluginManager} from "./PluginManager.js";
 
 export type FindComponentPredicate = string | Component | ((comp: Component) => boolean | void);
 
@@ -132,13 +131,6 @@ export class Component extends Observable {
 	 */
 	constructor(readonly tagName: keyof HTMLElementTagNameMap = "div") {
 		super();
-
-		const plugins = PluginManager.get(this.constructor.name);
-		if(plugins) {
-			plugins.forEach(fn => fn(this));
-		}
-
-		console.log("constuct ", this);
 	}
 
 	/**
@@ -199,14 +191,13 @@ export class Component extends Observable {
 	private initItems() {
 
 		this.items.on("add", (collection, item, index) => {
-			this.setupItem(item);
+
+			item.parent = this;
 
 			item.fire("added", item, index);
 
-			const refItem = index < collection.count() - 1 ? this.items.get(index - 1) : undefined;
-
 			if (this.rendered) {
-				this.renderItem(item, refItem);
+				item.render();
 			}
 
 		});
@@ -216,9 +207,6 @@ export class Component extends Observable {
 			item.remove();
 		});
 
-		this.items.forEach(comp => {
-			this.setupItem(comp);
-		});
 	}
 
 	protected getState() {
@@ -380,9 +368,16 @@ export class Component extends Observable {
 	}
 
 	/**
-	 * Renders the component
+	 * Render the component
+	 *
+	 * @param parentEl The element this componennt will render into
+	 * @param insertBefore If given, the element will be inserted before this child
 	 */
-	public render(parentEl: Node, refChild?: Node | null) {
+	public render(parentEl?: Node, insertBefore?: Node) {
+
+		if(!this.parent) {
+			throw new Error("No parent set for " + (typeof this));
+		}
 
 		if (this._rendered) {
 			throw new Error("Already rendered");
@@ -390,10 +385,17 @@ export class Component extends Observable {
 
 		this.fire("beforerender", this);
 
-		if (!refChild) {
+		// If parent is already rendered then we must determine the DOM index of this child item
+		// if parent is rendering then we can simply add it
+		if(!parentEl) {
+			parentEl = this.parent.el;
+			insertBefore = this.parent.rendered ? this.getInsertBefore() : undefined;
+		}
+
+		if (!insertBefore) {
 			parentEl.appendChild(this.el);
 		} else {
-			parentEl.insertBefore(this.el, refChild);
+			parentEl.insertBefore(this.el, insertBefore);
 		}
 
 		this.internalRender();
@@ -403,6 +405,21 @@ export class Component extends Observable {
 		this.fire("render", this);
 
 		return this.el;
+	}
+
+	private getInsertBefore() {
+		const index = this.parent!.items.indexOf(this);
+
+		let refItem: Node | undefined = undefined;
+		//find nearest rendered item
+		for (let i = index + 1, l = this.parent!.items.count(); i < l; i++) {
+			if (this.parent!.items.get(i).rendered) {
+				refItem = this.parent!.items.get(i).el;
+				break;
+			}
+		}
+
+		return refItem;
 	}
 
 	/**
@@ -623,9 +640,6 @@ export class Component extends Observable {
 		}
 	}
 
-	private setupItem(item: Component) {
-		item.parent = this;
-	}
 
 	/**
 	 * The child components of this component
@@ -641,28 +655,19 @@ export class Component extends Observable {
 	protected renderItems() {
 		if (this._items) {
 			this._items.forEach((item) => {
-
 				// if items are hidden then defer rendering until item is shown
 				if(item.hidden) {
 					item.on("show", (item) => {
-						this.renderItem(item);
+						item.render();
 					}, {once: true})
 				} else {
-					this.renderItem(item);
+					item.render();
 				}
 			});
 		}
 	}
 
-	/**
-	 * Renders a Component item
-	 * @param item
-	 * @param refItem
-	 * @protected
-	 */
-	protected renderItem(item: Component, refItem?: Component) {
-		item.render(this.el, refItem && refItem.rendered ? refItem.el : undefined);
-	}
+
 
 	/**
 	 * Find the item by element ID, itemId property, Component instance or custom function

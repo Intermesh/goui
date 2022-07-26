@@ -178,12 +178,16 @@ export class Window extends DraggableComponent {
 			}
 		}
 
+		this.header.parent = this;
+
 		return this.header;
-
-
 	}
 
 	protected internalRender() {
+
+		// header does not belong to the items and is rendered first.
+		const header = this.getHeader();
+		header.render();
 
 		const el = super.internalRender();
 
@@ -191,13 +195,10 @@ export class Window extends DraggableComponent {
 			this.saveState();
 		});
 
-		const header = this.getHeader();
 
 		if(this.maximized) {
 			this.maximize();
 		}
-
-		header.render(el, el.firstChild);
 
 		el.setAttribute('tabindex', "-1");
 
