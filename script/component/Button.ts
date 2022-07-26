@@ -128,6 +128,7 @@ export class Button extends Component {
 		// First menu is rendered directly in body so it's positioned absolute on the page and there's no need for overflow
 		// visible in windows. Sub menu's are rendered inside the parent menu button.
 		if (this.menu) {
+
 			this.menu.hide();
 
 			if (!(this.parent instanceof Menu)) {
@@ -135,6 +136,7 @@ export class Button extends Component {
 				this.el.addEventListener("mouseenter", this.onMenuMouseEnter.bind(this));
 				this.el.addEventListener("click", this.onMenuButtonClick.bind(this));
 			} else {
+				this.menu.parent = this;
 				this.menu.render(el);
 			}
 		}

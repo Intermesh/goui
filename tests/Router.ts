@@ -6,7 +6,7 @@ describe('Router class', () => {
 
 		it('Create and goto route', async() => {
 
-			let routeNo, subRouteNo;
+			let routeNo;
 
 			// create route with a param
 			router.add(/^test\/(\d+)$/, (no) => {

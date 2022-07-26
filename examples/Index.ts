@@ -1,6 +1,4 @@
 
-import {PlaygroundTable} from "./PlaygroundTable.js";
-import {PluginManager} from "@goui/component/PluginManager.js";
 import {comp, Component} from "@goui/component/Component.js";
 import {router} from "@goui/Router.js";
 import {cards} from "@goui/component/CardContainer.js";
@@ -8,6 +6,7 @@ import {root} from "@goui/component/Root.js";
 import {client} from "@goui/jmap/Client.js";
 import {Translate} from "@goui/Translate.js";
 import {btn} from "@goui/component/Button.js";
+import {playgroundTableOverride} from "./PlaygroundTableOverride.js";
 
 // Setup Group-Office connection
 client.uri = "http://host.docker.internal:6780/api/";
@@ -54,10 +53,8 @@ const loadPlayground = async () => {
 	return mods;
 }
 
-//register a plugin for Playground table
-PluginManager.register("PlaygroundTable", function (table: PlaygroundTable) {
-	table.el.classList.add("cls-added-by-plugin");
-});
+//Example for overriding another component Playground table
+playgroundTableOverride();
 
 // Setup router
 // Translate.load("nl").then(() => {

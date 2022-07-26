@@ -389,7 +389,7 @@ export class Component extends Observable {
 		// if parent is rendering then we can simply add it
 		if(!parentEl) {
 			parentEl = this.parent.el;
-			insertBefore = this.parent.rendered ? this.getInsertBefore() : undefined;
+			insertBefore = this.getInsertBefore();
 		}
 
 		if (!insertBefore) {
@@ -407,7 +407,16 @@ export class Component extends Observable {
 		return this.el;
 	}
 
-	private getInsertBefore() {
+	/**
+	 * Finds the DOM node in the parent's children to insert before when rendering a child component
+	 *
+	 * @protected
+	 */
+	protected getInsertBefore() {
+		if(!this.parent!.rendered) {
+			return undefined;
+		}
+
 		const index = this.parent!.items.indexOf(this);
 
 		let refItem: Node | undefined = undefined;
@@ -658,16 +667,24 @@ export class Component extends Observable {
 				// if items are hidden then defer rendering until item is shown
 				if(item.hidden) {
 					item.on("show", (item) => {
-						item.render();
+						this.renderItem(item);
 					}, {once: true})
 				} else {
-					item.render();
+					this.renderItem(item);
 				}
 			});
 		}
 	}
 
-
+	/**
+	 * Can be overriden to wrap the component
+	 *
+	 * @param item
+	 * @protected
+	 */
+	protected renderItem(item:Component) {
+		item.render();
+	}
 
 	/**
 	 * Find the item by element ID, itemId property, Component instance or custom function

@@ -114,11 +114,14 @@ export class Menu extends Component {
 		return this.el.classList.contains("expand-left");
 	}
 
-	protected renderItem(item: Component, refItem?: Component) {
-		if (!refItem) {
+	protected renderItem(item: Component) {
+
+		const insertBefore = this.getInsertBefore();
+
+		if (!insertBefore) {
 			this.el.appendChild(this.wrapLI(item));
 		} else {
-			this.el.insertBefore(this.wrapLI(item), refItem.el);
+			this.el.insertBefore(this.wrapLI(item), insertBefore);
 		}
 	}
 
