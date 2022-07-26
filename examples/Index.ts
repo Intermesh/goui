@@ -28,19 +28,17 @@ function loadCard(cls: string, id: string, mod = `./${cls}.js`): Promise<Compone
 			index = main.items.add(mods[cls]);
 			main.activeItem = index;
 		}).then(() => {
-			return main.items.get(main.getActiveItem()!)!;
+			return main.items.get(main.activeItem!)!;
 		})
 	} else {
 		main.activeItem = index;
-		return Promise.resolve(main.items.get(main.getActiveItem()!)!);
+		return Promise.resolve(main.items.get(main.activeItem!)!);
 	}
 }
 
 
 // Create main card panel for displaying SPA pages
 const main = cards();
-root.items.add(main);
-
 
 router.on("change", () => {
 	console.warn(`Missing translations`, Translate.missing);
@@ -116,7 +114,10 @@ router
 		main.activeItem = index;
 	})
 
-	.start();
+	.start()
+	.then(() => {
+		root.items.add(main);
+	})
 
 
 // });

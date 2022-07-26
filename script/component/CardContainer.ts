@@ -55,26 +55,24 @@ export class CardContainer extends Component {
 
 	protected baseCls = "cards";
 
+	constructor() {
+		super();
+
+		this.items.on("beforeadd", (card, item) => {
+			item.hide();
+			item.on('show', comp => {
+				const index = this.findItemIndex(comp);
+				this.activeItem = index;
+			});
+		});
+	}
+
 	protected internalRender() {
 		this.setCardVisibilities();
 
 		const el = super.internalRender();
 
-		this.items.on("beforeadd", (card, item) => {
-			item.hide();
-		})
-
 		return el;
-	}
-
-	protected renderItem(item: Component, refItem?: Component) {
-
-		super.renderItem(item, refItem);
-
-		item.on('show', comp => {
-			const index = this.findItemIndex(comp);
-			this.activeItem = index;
-		});
 	}
 
 	private setCardVisibilities() {
@@ -93,8 +91,7 @@ export class CardContainer extends Component {
 	}
 
 	/**
-	 * Change the active card item
-	 *
+	 * The active card index. Defaults to 0 if not given.
 	 */
 	set activeItem(ref: number | Component) {
 
@@ -105,29 +102,26 @@ export class CardContainer extends Component {
 			index = ref;
 		}
 
-		if (this._activeItem != index) {
-			this.fire("cardchange", this, index, this._activeItem);
-		}
+		const old = this._activeItem;
 		this._activeItem = index;
+		if (old !== index) {
+			this.fire("cardchange", this, index, old);
+		}
+
 
 		this.setCardVisibilities();
 	}
 
+	/**
+	 * The active card index. Defaults to 0 if not given.
+	 */
 	get activeItem(): number {
-		if (this._activeItem == undefined && this.items.count()) {
+		if ( this._activeItem == undefined && this.items.count()) {
 			this._activeItem = 0;
 		}
 		return this._activeItem!;
 	}
 
-	/**
-	 * Get the active card item
-	 *
-	 * @return Active item
-	 */
-	getActiveItem() {
-		return this.activeItem;
-	}
 
 	focus(o?: FocusOptions) {
 
@@ -141,23 +135,6 @@ export class CardContainer extends Component {
 
 		super.focus(o);
 	}
-
-	// public async loadCard (cls:string, module:string = `../../../../script/${cls}.js`) {
-
-	// 	let item = this.findItem(cls);
-	// 	if(!item) {
-
-	// 		const mods = await import(module);
-	// 		item = mods[cls].create({
-	// 			itemId: cls
-	// 		}) as Component;
-
-	// 		this.items.add(item);
-	// 	}
-	// 	item.show();
-
-	// 	return item;
-	// }
 
 }
 

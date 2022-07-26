@@ -19,7 +19,7 @@ interface Router {
 	fire<K extends keyof RouterEventMap<Router>>(eventName: K, ...args: Parameters<NonNullable<RouterEventMap<Router>[K]>>): boolean
 }
 
-type RouterMethod = (...args: string[]) => Promise<any> | void;
+type RouterMethod = (...args: string[]) => Promise<any> | any;
 
 /**
  * Router class
@@ -80,7 +80,7 @@ class Router extends Observable {
 	/**
 	 * Add a route
 	 *
-	 * The first mathing route will be executed
+	 * The first matching route will be executed
 	 *
 	 * @example
 	 * ```
@@ -115,7 +115,7 @@ class Router extends Observable {
 	/**
 	 * Start the router and run the matching route handlers
 	 */
-	public start() {
+	public start() : Promise<void> {
 		const path = this.getPath();
 
 		const oldPath = this.loadedPath;
@@ -125,7 +125,7 @@ class Router extends Observable {
 				this.suspendEvent = false;
 			});
 
-			return;
+			return Promise.resolve();
 		}
 
 
@@ -144,7 +144,7 @@ class Router extends Observable {
 
 		//nothing matched so we load the default
 
-		return this.defaultRoute ? this.handleRoute(this.defaultRoute, [], oldPath) : this;
+		return this.defaultRoute ? this.handleRoute(this.defaultRoute, [], oldPath) : Promise.resolve();
 
 	}
 

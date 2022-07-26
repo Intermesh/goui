@@ -65,20 +65,28 @@ export class CardMenu extends Component {
 			}
 
 			this.cardContainer!.on("cardchange", (cardContainer, index) => {
-
-				const activeItem = index != undefined ? cardContainer.items.get(index)! : undefined;
-
-				this.items.forEach((item, menuIndex) => {
-
-					if (activeItem && (item.itemId == activeItem.itemId || item.itemId == activeItem.id)) {
-						item.el.classList.add("active");
-					} else {
-						item.el.classList.remove("active");
-					}
-				});
+				this.updateActiveTab();
 			});
 
 			this.createMenu();
+
+			this.cardContainer!.on("beforerender", () => {
+				this.updateActiveTab();
+			});
+
+		});
+	}
+
+	private updateActiveTab() {
+		const activeItem = this.cardContainer!.items.get(this.cardContainer!.activeItem)!;
+
+		this.items.forEach((item, menuIndex) => {
+
+			if (activeItem && (item.itemId == activeItem.itemId || item.itemId == activeItem.id)) {
+				item.el.classList.add("active");
+			} else {
+				item.el.classList.remove("active");
+			}
 		});
 	}
 
@@ -90,11 +98,15 @@ export class CardMenu extends Component {
 				item.itemId = 'card-' + index;
 			}
 
+			if(this.findItem(item.itemId)) {
+				return;
+			}
+
 			this.items.insert(index,
 				btn({
 					type: "button",
 					itemId: item.itemId,
-					cls: index == this.cardContainer!.getActiveItem() ? "active" : "",
+					cls: index == this.cardContainer!.activeItem ? "active" : "",
 					text: item.title,
 					handler: () => {
 						this.cardContainer!.activeItem = item;

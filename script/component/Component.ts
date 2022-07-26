@@ -137,6 +137,8 @@ export class Component extends Observable {
 		if(plugins) {
 			plugins.forEach(fn => fn(this));
 		}
+
+		console.log("constuct ", this);
 	}
 
 	/**
