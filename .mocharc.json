@@ -3,6 +3,5 @@
   "extension": ["ts"],
   "loader": "ts-node/esm",
   "require": ["./node_modules/jsdom-global/register.js"],
-  "spec": ["tests/**/*.ts"],
-  "project" : "tests/tsconfig.json"
+  "spec": ["tests/**/*.ts"]
 }

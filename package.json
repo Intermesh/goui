@@ -19,13 +19,13 @@
 
     "start" : "npm-run-all build:clean start:parallel",
     "start:parallel": "npm-run-all --parallel start:watch start:sass start:serve-examples --print-label ",
-    "start:watch": "tsc --watch",
+    "start:watch": "tsc --watch -p tsconfig.build.json",
     "start:serve-examples": "esbuild examples/Index.ts --bundle --serve=localhost:8081 --servedir=. --external:./dist/* --external:./script/*  --sourcemap --format=esm --target=esnext --outdir=examples",
     "start:sass": "sass --watch style:dist",
 
     "build": "npm-run-all build:clean build:sass build:ts --print-label",
     "build:clean": "rimraf dist",
     "build:sass": "sass --style=compressed style:dist",
-    "build:ts": "tsc"
+    "build:ts": "tsc -p tsconfig.build.json"
   }
 }

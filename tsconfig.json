@@ -1,9 +1,17 @@
 {
-  "extends": "./tsconfig-base.json",
   "compilerOptions": {
+    "strict" : true,
+    "target": "ES2017",
     "sourceMap": true,
-    "declaration": true,
-    "declarationMap": true,
+    "lib": ["es2020", "dom"],
+    "moduleResolution": "node",
+    "module":"es2020",
+    "baseUrl": ".",
     "outDir": "./dist"
-  }
+  },
+
+  "exclude": [
+    "node_modules/*"
+  ]
+  
 }
