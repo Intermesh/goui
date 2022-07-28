@@ -220,10 +220,10 @@ $formLabelWidth: dp(160);
 				border-color: $colorPrimary;
 
 				&:before {
-					margin-top: -2px;
-					margin-left: -2px;
 					@extend %icon;
-					font-size: 22px;
+					font-size: dp(22) - 4; //substract border twice
+					width: dp(22) - 4;
+					height: dp(22) - 4;
 					content: "check";
 					color: white;
 

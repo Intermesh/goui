@@ -61,7 +61,6 @@
 
 			position: sticky;
 			top: 0;
-			z-index: $zIndexTableHead;
 
 			tr {
 				th {
@@ -121,7 +120,7 @@
 			overflow: hidden;
 			text-overflow: ellipsis;
 			padding: dp(8);
-			position: relative;
+			//position: relative;
 
 			&:first-child {
 				padding-left: dp(16);

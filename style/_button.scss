@@ -89,7 +89,7 @@ button.goui-button  {
 }
 
 
-.goui-toolbar {
+.goui.goui-toolbar {
 	@extend .hbox;
 	align-items: center;
 	user-select: none;
@@ -101,7 +101,15 @@ button.goui-button  {
 	//padding-bottom: dp(18);
 
 	> h3 {
+		display: block;
 		margin: 0;
+		color: inherit;
+		font-size: dp(22);
+		font-weight: 600;
+		padding: 0;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
 	}
 	>* {
 		margin: 0 dp(12) 0 0;
