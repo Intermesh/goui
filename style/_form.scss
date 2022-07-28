@@ -5,11 +5,8 @@
 	transition: border-color 100ms linear;
 	border-radius: dp(12);
 	background-color: $colorBackgroundInput;
-	border: 2px solid $colorBorder;
+	border: $borderWidth solid $colorBorder;
 	padding: dp(13) dp(18);
-
-
-
 	width: 100%;
 	outline: none;
 	color: $colorText;
@@ -44,7 +41,7 @@ $formLabelWidth: dp(160);
 
 	menu.goui-toolbar {
 		padding: 0;
-		border: 2px solid $colorBorder;
+		border: $borderWidth solid $colorBorder;
 		transition: border-color 100ms linear;
 		border-radius: 0 dp(12) dp(12) 0;
 		border-left: 0;
@@ -92,7 +89,7 @@ $formLabelWidth: dp(160);
 		.hint {
 			transition: border-color 100ms linear;
 			background-color: $colorBackgroundInput;
-			border: 2px solid $colorBorder;
+			border: $borderWidth solid $colorBorder;
 			border-radius: 0 0 dp(12) dp(12);
 			padding: dp(3) dp(18);
 		}
@@ -197,7 +194,7 @@ $formLabelWidth: dp(160);
 				min-width: dp(22);
 				height: dp(22);
 				width: dp(22);
-				border: 2px solid $colorBorder;
+				border: $borderWidth solid $colorBorder;
 				background-color: $colorBackgroundInput;
 
 				appearance: none;
@@ -349,7 +346,7 @@ $formLabelWidth: dp(160);
 
 	//menu.toolbar {
 	//	display:none;
-	//	border: 2px solid $colorBorder;
+	//	border: $borderWidth solid $colorBorder;
 	//	border-radius: dp(8);
 	//	background-color: $colorBackgroundWindow;
 	//
@@ -424,7 +421,7 @@ form {
 
 .autocomplete-suggestions {
 	box-shadow: 0px 10px 20px 0 rgb(0 0 0 / 40%);
-	border: 2px solid $colorPrimary;
+	border: $borderWidth solid $colorPrimary;
 	border-top: 0;
 	border-radius: dp(12);
 	border-top-left-radius: 0;

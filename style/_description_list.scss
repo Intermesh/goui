@@ -27,7 +27,7 @@ dl.goui-dl {
 			word-break: break-all;
 			white-space: break-spaces;
 			background-color: #f1f1f1;
-			border: 2px solid $colorBorder;
+			border: $borderWidth solid $colorBorder;
 			border-radius: $borderRadius;
 			padding: dp(8);
 			line-height:normal;

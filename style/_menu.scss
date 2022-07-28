@@ -8,7 +8,7 @@ menu.goui-dropdown {
 	list-style: none;
 	position: fixed;
 	min-width: $menuWidth;
-	border: 2px solid $colorBorderWindow;
+	border: $borderWidth solid $colorBorderWindow;
 	border-radius: dp(8);
 	background-color: $colorBackgroundDarker;//rgba(232,232,232,0.95);
 	backdrop-filter: blur(5px);

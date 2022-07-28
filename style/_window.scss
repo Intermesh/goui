@@ -13,7 +13,7 @@
 	&.modal {
 		@extend .z24;
 		//box-shadow: 0 0px 20px 0 rgb(0 0 0 / 40%);
-		border: 2px solid rgba(30, 18, 70, 0.6);
+		border: $borderWidth solid rgba(30, 18, 70, 0.6);
 	}
 
 	&.maximized
@@ -48,7 +48,7 @@
 	@extend .z12;
 
 	position: fixed;
-	border: 2px solid $colorBorderWindow;
+	border: $borderWidth solid $colorBorderWindow;
 	border-radius: dp(12);
 
 	z-index: $zIndexWindow;
@@ -80,9 +80,7 @@
 	.goui-cardmenu {
 		background-color: $colorWindowHeader;
 		width: 100%;
-		padding-top:0;
-		padding-bottom:0;
-		border-bottom: 2px solid $colorBorderWindow;
+		border-bottom: $borderWidth solid $colorBorderWindow;
 	}
 
 	.header {

@@ -38,7 +38,6 @@
 	}
 
 	table {
-		background-color: white;
 		border-collapse: collapse;
 		border-spacing: 0;
 		table-layout: fixed;
@@ -64,6 +63,7 @@
 
 			tr {
 				th {
+					position:relative;
 					background-color: $colorBackgroundDarker;
 					font-weight: 600; //semibold
 					padding: dp(14) dp(8);
@@ -103,7 +103,7 @@
 						left: 0;
 						bottom: 0;
 						width: 100%;
-						border-bottom: 2px solid $colorBorder;
+						border-bottom: $borderWidth solid $colorBorder;
 					}
 
 				}

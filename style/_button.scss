@@ -52,7 +52,7 @@ button.goui-button  {
 
 	&.raised {
 		color: $colorAccent;
-		border: 2px solid $colorAccent;
+		border: $borderWidth solid $colorAccent;
 		&:hover {
 			color: white;
 			background-color: $colorAccent;
@@ -105,7 +105,7 @@ button.goui-button  {
 		margin: 0;
 		color: inherit;
 		font-size: dp(22);
-		font-weight: 600;
+		font-weight: normal;
 		padding: 0;
 		overflow: hidden;
 		text-overflow: ellipsis;

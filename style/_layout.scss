@@ -1,4 +1,8 @@
 
+.goui.light-bg {
+	background-color: white;
+}
+
 // Stack items horizontally
 // For border layout use width's on north and south and add class "go-scroll" on center
 .goui.hbox {
@@ -75,23 +79,23 @@
 }
 
 .goui.border-bottom {
-	border-bottom: 2px solid $colorBorder;
+	border-bottom: $borderWidth solid $colorBorder;
 }
 
 .goui.border-top {
-	border-top: 2px solid $colorBorder;
+	border-top: $borderWidth solid $colorBorder;
 }
 
 .goui.border-left {
-	border-left: 2px solid $colorBorder;
+	border-left: $borderWidth solid $colorBorder;
 }
 
 .goui.border-right {
-	border-bottom: 2px solid $colorBorder;
+	border-bottom: $borderWidth solid $colorBorder;
 }
 
 .goui.frame {
-	border: 2px solid $colorBorder;
+	border: $borderWidth solid $colorBorder;
 	border-radius: dp(12);
 	overflow:hidden;
 	background-color: $colorBackground;
@@ -99,14 +103,14 @@
 	> .toolbar {
 		background-color: $colorBackgroundDarker;
 		padding: dp(18);
-		border-bottom: 2px solid $colorBorder;
+		border-bottom: $borderWidth solid $colorBorder;
 	}
 
 	> :first-child {
 		.toolbar:first-child {
 			background-color: $colorBackgroundDarker;
 			padding: dp(18);
-			border-bottom: 2px solid $colorBorder;
+			border-bottom: $borderWidth solid $colorBorder;
 		}
 	}
 }
@@ -122,17 +126,11 @@
 	&.draggable {
 		cursor: col-resize;
 	}
-
 	z-index: 1;
-
 	padding: 0;
-	//height: 100%;
-	width: 6px;
-
+	width: $borderWidth + 4;
 	display: block;
-
 	margin: 0 -2px;
-
 	background-color: transparent;
 
 	// make it easy to grab with 5px but only show 1px border
@@ -171,7 +169,7 @@
 
 .goui-card {
 	border-radius: $borderRadius;
-	margin: dp(16);
+	margin: dp(8);
 	background-color: white;
 	@extend .z2;
 }

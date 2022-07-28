@@ -70,7 +70,7 @@
 //	word-break: break-all;
 //	white-space: break-spaces;
 //	background-color: #f1f1f1;
-//	border: 2px solid $colorBorder;
+//	border: $borderWidth solid $colorBorder;
 //	border-radius: $borderRadius;
 //	padding: dp(8);
 //	line-height:normal;
@@ -130,7 +130,7 @@
 
 hr.goui {
 	border:0;
-	border-top: 2px solid $colorBorder;
+	border-top: $borderWidth solid $colorBorder;
 	margin: dp(24) 0;
 }
 
@@ -156,6 +156,7 @@ hr.goui {
 
 .goui-cardmenu {
 	margin: 0;
+	padding: 0;
 
 	//text-align: center;
 	button.goui-button {
@@ -212,6 +213,8 @@ hr.goui {
 	color: $colorTextSecondary;
 	.icon {
 		font-size: dp(48);
+		width: dp(48);
+		height: dp(48);
 	}
 	width: 100%;
 	padding: dp(20);

@@ -1,6 +1,6 @@
 $resourcePath: "../resources/";
 
-$scale: 1;
+$scale: 1 !default;
 
 @function dp($width) {
 	@return $width * $scale * 1px;
@@ -8,32 +8,33 @@ $scale: 1;
 
 //$windowShadow: 0 0 dp(16) 0 rgba(0,0,0,20%);
 
-$colorLine: rgba(black, 0.04);
+$colorLine: rgba(black, 0.04) !default;
+$borderWidth: 2px !default;
 $colorBorder: #D3D3D3;//rgb(30 ,18, 70, 0.2); //#D3D3D3;
-$colorBorderWindow: $colorBorder;
-$colorHover: rgb(1 ,4, 10, 0.06);//#f1f1f6;//rgba(black, 0.04);
+$colorBorderWindow: $colorBorder !default;
+$colorHover: rgb(1 ,4, 10, 0.06) !default;//#f1f1f6;//rgba(black, 0.04);
 
-$colorSelectedRow: #1e1246;
-$colorSelectedRowInactive: #f1f1f1;
+$colorSelectedRow: #1e1246  !default;
+$colorSelectedRowInactive: #f1f1f1 !default;
 
-$colorPrimary: #1652a1;
-$colorSecondary: #00b0ad;
-$colorAccent: #ff7200; //#f39345;
-$colorButton: #f1f1f1;
+$colorPrimary: #1652a1 !default;;
+$colorSecondary: #00b0ad !default;
+$colorAccent: #ff7200 !default; //#f39345;
+$colorButton: #f1f1f1 !default;
 
-$colorButtonTertiary: #00b0ad;
+$colorButtonTertiary: #00b0ad !default;
 
-$colorText: rgb(1, 4, 10);
-$colorTextSecondary: rgba(1, 4, 10, 0.56);
-$colorTextPlaceholder: rgba(black, 0.5);
+$colorText: rgb(1, 4, 10) !default;
+$colorTextSecondary: rgba(1, 4, 10, 0.56) !default;
+$colorTextPlaceholder: rgba(black, 0.5) !default;
 
 
-$colorBackground: white;
-$colorBackgroundDarker: #f8f8f9;//rgb(30 ,18, 70, 0.03);
-$colorBackgroundWindow: $colorBackgroundDarker; //rgb(30 ,18, 70, 0.03);
-$colorWindowHeader: $colorBackgroundWindow;//#f5f5f5;
+$colorBackground: white !default;
+$colorBackgroundDarker: #f8f8f9 !default;//rgb(30 ,18, 70, 0.03);
+$colorBackgroundWindow: $colorBackgroundDarker !default; //rgb(30 ,18, 70, 0.03);
+$colorWindowHeader: $colorBackgroundWindow !default;//#f5f5f5;
 
-$colorFocus: rgba(2, 119, 189, 0.16);
+$colorFocus: rgba(2, 119, 189, 0.16) !default;
 
 
 // Colors that have meaning (eg. success/failure)
@@ -53,30 +54,30 @@ $colorNotice: #004089 !default;
 $colorNoticeBorder: #b8daff !default;
 $colorNoticeBg: #cce5ff !default;
 
-$colorBorderSelectedInput: rgb(0,176,173);
-$colorBackgroundInput: #fafafb;
+$colorBorderSelectedInput: rgb(0,176,173) !default;
+$colorBackgroundInput: #fafafb !default;
 
-$borderRadius: dp(8);
-$padding: dp(8);
+$borderRadius: dp(8) !default;
+$padding: dp(8) !default;
 
-$curveStandard: cubic-bezier(0.4, 0.0, 0.2, 1);
+$curveStandard: cubic-bezier(0.4, 0.0, 0.2, 1) !default;
 
-$baseLineHeight: dp(22);
-$fontBase: #{dp(18)}/$baseLineHeight Lato, Arial, Helvetica;
+$baseLineHeight: dp(22) !default;
+$fontSize: dp(18) !default;
+$fontBase: #{$fontSize}/$baseLineHeight Lato, Arial, Helvetica !default;
 
-$zIndexTableHead: 2;
+$zIndexWindow: 200 !default;
+$zIndexAlert: 400 !default;
+$zIndexMenu: 500 !default;
 $zIndexMask: 300;
-$zIndexWindow: 200;
-$zIndexAlert: 400;
-$zIndexMenu: 500;
 
-$breakpointXL: 1200px;
-$breakpointLarge: 992px;
-$breakpointMedium: 768px;
-$breakpointSmall: 576px;
+$breakpointXL: 1200px !default;
+$breakpointLarge: 992px !default;
+$breakpointMedium: 768px !default;
+$breakpointSmall: 576px !default;
 
 
-$colorMasked: #f1f1f1;
+$colorMasked: #f1f1f1 !default;
 
 
 //shadows
