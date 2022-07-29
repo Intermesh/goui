@@ -3,6 +3,10 @@
 	background-color: white;
 }
 
+.goui.normal-bg {
+	background-color: $colorBackgroundDarker;
+}
+
 // Stack items horizontally
 // For border layout use width's on north and south and add class "go-scroll" on center
 .goui.hbox {

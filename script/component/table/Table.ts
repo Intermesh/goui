@@ -8,7 +8,7 @@ import {checkbox} from "../form/CheckboxField.js";
 import {Notifier} from "../../Notifier.js";
 import {draggable} from "../DraggableComponent.js";
 import {t} from "../../Translate.js";
-import {TableColumn} from "./TableColumns.js";
+import { TableColumn } from "./TableColumns.js";
 
 /**
  * @inheritDoc

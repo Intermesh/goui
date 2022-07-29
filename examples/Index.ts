@@ -1,56 +1,39 @@
 
-import {comp, Component} from "@goui/component/Component.js";
-import {router} from "@goui/Router.js";
-import {cards} from "@goui/component/CardContainer.js";
-import {root} from "@goui/component/Root.js";
-import {client} from "@goui/jmap/Client.js";
-import {Translate} from "@goui/Translate.js";
-import {btn} from "@goui/component/Button.js";
-import {playgroundTableOverride} from "./PlaygroundTableOverride.js";
+import { comp, Component } from "@goui/component/Component.js";
+import { router } from "@goui/Router.js";
+import { cards } from "@goui/component/CardContainer.js";
+import { root } from "@goui/component/Root.js";
+import { client } from "@goui/jmap/Client.js";
+import { Translate } from "@goui/Translate.js";
+import { btn } from "@goui/component/Button.js";
+import { playgroundTableOverride } from "./PlaygroundTableOverride.js";
+import { PlayGround } from "./PlayGround.js";
 
 // Setup Group-Office connection
 client.uri = "http://host.docker.internal:6780/api/";
 
-/**
- * Card loader that dynamically loads a module for the card
- *
- * @param cls
- * @param id
- * @param mod
- */
-function loadCard(cls: string, id: string, mod = `./${cls}.js`): Promise<Component> {
-	let index = main.findItemIndex(id);
-	if (index == -1) {
-
-		return import(mod).then((mods: any) => {
-			mods[cls].setId(id);
-			index = main.items.add(mods[cls]);
-			main.activeItem = index;
-		}).then(() => {
-			return main.items.get(main.activeItem!)!;
-		})
-	} else {
-		main.activeItem = index;
-		return Promise.resolve(main.items.get(main.activeItem!)!);
-	}
-}
-
-
 // Create main card panel for displaying SPA pages
 const main = cards();
 
+// log missing translations for developer
 router.on("change", () => {
 	console.warn(`Missing translations`, Translate.missing);
 });
 
-const loadPlayground = async () => {
-	const mods = await import("./PlayGround.js");
-	if (!main.items.has(mods.PlayGround)) {
-		main.items.add(mods.PlayGround);
+/**
+ * Check if playground is present in main cardcontainer and add if necessary
+ * 
+ * @returns 
+ */
+const loadPlayground = () => {
+	let playGround = main.findChild("playground") as PlayGround;
+	if (!playGround) {
+		playGround = new PlayGround();
+		main.items.add(playGround);
 	}
-	mods.PlayGround.show();
+	playGround.show();
 
-	return mods;
+	return playGround;
 }
 
 //Example for overriding another component Playground table
@@ -62,20 +45,22 @@ router
 	.add(/^playground$/, loadPlayground)
 
 	.add(/playground\/window/, async () => {
-		const mods = await loadPlayground();
-		mods.showWindow();
+		const playGround = loadPlayground();
+		playGround.showWindow();
 	})
 
 	.add(() => {
+
+		// default page
 
 		let index = main.findItemIndex("notfound");
 		if (index == -1) {
 			main.items
 				.add(
 					comp({
-							cls: "pad",
-							id: "notfound"
-						},
+						cls: "pad",
+						id: "notfound"
+					},
 						comp({
 							html: `
 									<h1>Heading 1</h1>
@@ -90,14 +75,14 @@ router
 								`,
 						}),
 
-						comp({cls: "pad"},
-							comp({tagName: "h1", text: "Heading 1"}),
-							comp({tagName: "h2", text: "Heading 2"})
+						comp({ cls: "pad" },
+							comp({ tagName: "h1", text: "Heading 1" }),
+							comp({ tagName: "h2", text: "Heading 2" })
 						),
 
-						comp({cls: "pad"},
-							comp({tagName: "h3", text: "Heading 3"}),
-							comp({tagName: "h4", text: "Heading 4"})
+						comp({ cls: "pad" },
+							comp({ tagName: "h3", text: "Heading 3" }),
+							comp({ tagName: "h4", text: "Heading 4" })
 						),
 
 						btn({
@@ -113,6 +98,8 @@ router
 
 	.start()
 	.then(() => {
+
+		// add main card layout after first route so we can render everything at once
 		root.items.add(main);
 	})
 
