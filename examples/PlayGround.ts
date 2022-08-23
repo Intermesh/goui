@@ -1,5 +1,3 @@
-import { PlaygroundTable } from "./PlaygroundTable.js";
-import { comp, Component } from "@goui/component/Component.js";
 import { tbar } from "@goui/component/Toolbar.js";
 import { btn } from "@goui/component/Button.js";
 import { menu } from "@goui/component/menu/Menu.js";
@@ -10,6 +8,7 @@ import { Notifier } from "@goui/Notifier.js";
 import { colormenu } from "@goui/component/menu/ColorMenu.js";
 import { PlaygroundTablePanel } from "./PlayGroundTablePanel.js";
 import { PlayGroundWindow } from "./PlaygroundWindow.js";
+import {comp, Component} from "@goui/component/Component.js";
 
 
 export class PlayGround extends Component {
@@ -17,7 +16,7 @@ export class PlayGround extends Component {
 	constructor() {
 		super();
 
-		this.cls = "vbox";
+		this.cls = "vbox light-bg";
 		this.id = "playground";
 
 		this.items.add(
@@ -131,9 +130,7 @@ export class PlayGround extends Component {
 					menu: colormenu()
 				}),
 
-				comp({
-					flex: 1
-				}),
+				"->",
 
 				btn({
 					icon: "menu",

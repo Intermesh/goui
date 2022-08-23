@@ -9,9 +9,6 @@ import { btn } from "@goui/component/Button.js";
 import { playgroundTableOverride } from "./PlaygroundTableOverride.js";
 import { PlayGround } from "./PlayGround.js";
 
-// Setup Group-Office connection
-client.uri = "http://host.docker.internal:6780/api/";
-
 // Create main card panel for displaying SPA pages
 const main = cards();
 
