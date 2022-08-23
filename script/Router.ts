@@ -1,6 +1,6 @@
 import {Observable, ObservableEventMap, ObservableListenerOpts} from "./component/Observable.js";
 
-interface Route {
+export interface Route {
 	re: RegExp
 	handler: Function
 }
@@ -9,24 +9,24 @@ interface Route {
 /**
  * @inheritDoc
  */
-interface RouterEventMap<T extends Observable> extends ObservableEventMap<T> {
+export interface RouterEventMap<T extends Observable> extends ObservableEventMap<T> {
 	change?: (path: string, oldPath: string) => void
 }
 
-interface Router {
+export interface Router {
 	on<K extends keyof RouterEventMap<Router>>(eventName: K, listener: RouterEventMap<Router>[K], options?: ObservableListenerOpts): void
 
 	fire<K extends keyof RouterEventMap<Router>>(eventName: K, ...args: Parameters<NonNullable<RouterEventMap<Router>[K]>>): boolean
 }
 
-type RouterMethod = (...args: string[]) => Promise<any> | any;
+export type RouterMethod = (...args: string[]) => Promise<any> | any;
 
 /**
  * Router class
  *
  * @see router
  */
-class Router extends Observable {
+export class Router extends Observable {
 
 	private routes: Route[] = [];
 
