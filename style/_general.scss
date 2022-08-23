@@ -1,17 +1,17 @@
-.goui {
-	font: $fontBase;
-	color: $colorText;
-	text-rendering: optimizeLegibility;
-	font-smoothing: antialiased;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
-
-	box-sizing: border-box;
-	text-align: left;
-	&:focus {
-		outline: none; //remove safari outline
-	}
-}
+//.goui {
+//	font: $fontBase;
+//	color: $colorText;
+//	text-rendering: optimizeLegibility;
+//	font-smoothing: antialiased;
+//	-webkit-font-smoothing: antialiased;
+//	-moz-osx-font-smoothing: grayscale;
+//
+//	box-sizing: border-box;
+//	text-align: left;
+//	&:focus {
+//		outline: none; //remove safari outline
+//	}
+//}
 
 //h1{
 //	font-weight: 500;
@@ -135,7 +135,7 @@ hr.goui {
 }
 
 
-.goui.draghandle {
+.goui-draghandle {
 	cursor: move;
 }
 
