@@ -473,10 +473,10 @@ export class HtmlField extends Field {
 		this.clearInvalid();
 
 		//track first 3 chars of sentence for auto lists below
-		if (ev.key == "Enter") {
+		if (ev.key == "Enter" || ev.key == "Backspace") {
 			this.lineIndex = 0;
 			this.lineSequence = "";
-		} else if (this.lineIndex < 3) {
+		} else if (this.lineIndex < 3 && ev.key.length == 1) {
 			this.lineIndex++;
 			this.lineSequence += ev.key;
 		}
