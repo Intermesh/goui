@@ -230,12 +230,19 @@ export class HtmlField extends Field {
 				inp.multiple = true;
 				inp.onchange = () => {
 					if (!inp.files) {
+						this.editor!.focus();
 						return;
 					}
 					Array.from(inp.files).forEach((file) => {
 						this.handleImage(file);
 					});
 				}
+
+				window.addEventListener("focus", () => {
+					// this puts focus back on editor if cancel was clicked when uploading files
+					this.editor!.focus();
+				}, {once: true});
+
 				inp.click();
 			}
 		},
