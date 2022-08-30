@@ -309,6 +309,8 @@ export class Window extends DraggableComponent {
 
 				root.items.insert(-1, this.modalOverlay);
 
+				this.disableBodyScroll();
+
 				this.modalOverlay.el.addEventListener("click", (ev) => {
 					this.focus();
 				});
@@ -327,6 +329,29 @@ export class Window extends DraggableComponent {
 		return super.show();
 	}
 
+	private disableBodyScroll() {
+		// When the modal is shown, we want a fixed body
+
+		document.body.style.top = `-${window.scrollY}px`;
+		document.body.style.position = 'fixed';
+	}
+
+	private enableBodyScroll() {
+		// When the modal is hidden...
+		const scrollY = document.body.style.top, scrollTo = parseInt(scrollY || '0') * -1;
+
+		document.body.style.position = '';
+		document.body.style.top = '';
+		document.documentElement.style.scrollBehavior = "auto";
+		window.scrollTo({
+			top: scrollTo,
+			behavior: "auto"
+		});
+		document.documentElement.style.scrollBehavior = "";
+	}
+
+
+
 	/**
 	 * @inheritDoc
 	 */
@@ -342,6 +367,7 @@ export class Window extends DraggableComponent {
 		}
 
 		if (this.modalOverlay) {
+			this.enableBodyScroll();
 			this.modalOverlay.remove();
 		}
 		this.header.remove();

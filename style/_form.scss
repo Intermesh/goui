@@ -274,19 +274,8 @@ $formLabelWidth: dp(160);
 
 
 
-
-
-
-
 }
 
-//&.invalid {
-//	label {
-//		input:invalid:not([type=checkbox]):not([type=radio]):not([type=button]):not([type=submit]), textarea:invalid, select:invalid {
-//			border-color: red;
-//		}
-//	}
-//}
 
 .goui-fieldset {
 	border: 0;
@@ -340,44 +329,17 @@ $formLabelWidth: dp(160);
 
 	&:focus-within {
 		menu.goui-toolbar {
-			display:flex;
+			display: flex;
 		}
 	}
-
-	//menu.toolbar {
-	//	display:none;
-	//	border: $borderWidth solid $colorBorder;
-	//	border-radius: dp(8);
-	//	background-color: $colorBackgroundWindow;
-	//
-	//	position: absolute;
-	//	left: 0;
-	//	top: dp(-64);
-	//
-	//	padding: dp(8) !important;
-	//
-	//	>*:not(hr) {
-	//		margin-right: 0;
-	//	}
-	//	hr {
-	//		margin-left: dp(8);
-	//	}
-	//}
-
-
-
-
 }
 
 .html-field-toolbar {
 	position: absolute;
 	z-index: $zIndexMenu;
-
 	flex-wrap: wrap;
 	max-width: 100%;
 }
-
-
 
 form {
 	// for loading mask
@@ -393,10 +355,6 @@ form {
 			flex: 1;
 		}
 	}
-
-	//hr {
-	//	margin: dp(12) 0 dp(36) 0;
-	//}
 }
 
 

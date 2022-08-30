@@ -203,8 +203,10 @@ export class Component extends Observable {
 		});
 
 		this.items.on("remove", (collection, item) => {
-			item.parent = undefined;
-			item.remove();
+			if(item.parent) {
+				item.parent = undefined;
+				item.remove();
+			}
 		});
 
 	}
@@ -430,6 +432,8 @@ export class Component extends Observable {
 		return refItem;
 	}
 
+	private isRemoving = false;
+
 	/**
 	 * Remove component from the component tree
 	 */
@@ -448,9 +452,14 @@ export class Component extends Observable {
 	protected internalRemove() {
 		this.items.clear();
 
-		// remove this item from the Component
+		// remove this item from parent the Component
 		if (this.parent) {
-			this.parent.items.remove(this);
+
+			// detach from parent here so parent won't call this.remove() again
+			const p = this.parent;
+			this.parent = undefined;
+
+			p.items.remove(this);
 		}
 
 		//remove it from the DOM
