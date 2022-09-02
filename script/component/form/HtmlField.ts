@@ -581,6 +581,11 @@ export class HtmlField extends Field {
 			this.insertHtml(img);
 			imgEl = document.getElementById(uid) as HTMLImageElement;
 			imgEl.removeAttribute("id");
+			imgEl.addEventListener("load", () => {
+
+				const width = imgEl.offsetWidth, height = imgEl.offsetHeight;
+				imgEl.setAttribute('style', `max-width: 100%;height:auto;aspect-ratio: ${width} / ${height};`);
+			})
 
 			this.fire("insertimage", this, file, imgEl);
 		}
