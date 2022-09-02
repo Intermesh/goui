@@ -144,14 +144,12 @@ export class Button extends Component {
 		el.addEventListener("click", (e) => {
 			// prevent double submissions for 1s
 			if (this.block) {
-				this.disabled = true;
 				e.preventDefault();
 				return;
 			}
 			this.block = true;
 			setTimeout(() => {
 				this.block = false;
-				this.disabled = false;
 			}, 1000);
 
 			// check detail for being the first click. We don't want double clicks to call the handler twice.

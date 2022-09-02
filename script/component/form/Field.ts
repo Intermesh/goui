@@ -161,6 +161,17 @@ export abstract class Field extends Component {
 		return undefined;
 	}
 
+	/**
+	 * Render buttons inside the text field
+	 *
+	 * @example
+	 * ```
+	 * buttons: [
+	 * 				 		btn({icon: "clear", handler:(btn) => (btn.parent!.parent! as Field).value = ""})
+	 * 					]
+	 * ```
+	 * @param buttons
+	 */
 	public set buttons(buttons: Button[] | undefined) {
 		this._buttons = buttons;
 	}

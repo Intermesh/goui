@@ -25,7 +25,8 @@
 	&+div.label, &+.goui-toolbar+div.label {
 		transform: translateY(dp(-9)) scale(.7);
 	}
-	padding-top: dp(21); padding-bottom: dp(5);
+	padding-top: dp(21);
+	padding-bottom: dp(5);
 }
 
 $formLabelWidth: dp(160);
@@ -40,17 +41,26 @@ $formLabelWidth: dp(160);
 	}
 
 	menu.goui-toolbar {
+		background-color: $colorBackgroundInput;
 		padding: 0;
 		border: $borderWidth solid $colorBorder;
 		transition: border-color 100ms linear;
 		border-radius: 0 dp(12) dp(12) 0;
 		border-left: 0;
+		min-height: auto;
+
 		> * {
 			margin: 0 dp(4) 0 0;
 			padding: dp(6);
 		}
 
+
 		.goui-button {
+
+			&.with-icon:not(.with-text) {
+				padding: dp(6);
+			}
+
 			color: $colorPrimary;
 			&:hover {
 				background-color: transparent;
@@ -110,7 +120,6 @@ $formLabelWidth: dp(160);
 		left: dp(20);
 		top: dp(14);
 
-
 		transition: transform 200ms linear;
 
 		//below performs better but looks ugly on windows :(
@@ -153,7 +162,7 @@ $formLabelWidth: dp(160);
 		line-height: dp(20); //match icon
 		padding: dp(2) dp(18) dp(10);
 		height: dp(30);
-		width: 100%;
+		flex: 1 1 100%;
 	}
 
 	/** start text and textarea **/

@@ -14,27 +14,27 @@ export class TextAreaField extends TextField {
 		//grab value before creating this.input otherwise it will return the input value
 		const v = this.value;
 
-		this.input = document.createElement("textarea");
+		this._input = document.createElement("textarea");
 		if (this.autocomplete) {
-			this.input.autocomplete = this.autocomplete;
+			this._input.autocomplete = this.autocomplete;
 		}
 
 		if (this.placeholder) {
-			this.input.placeholder = this.placeholder;
+			this._input.placeholder = this.placeholder;
 		}
 
-		this.input.required = this.required;
-		this.input.name = this.name;
+		this._input.required = this.required;
+		this._input.name = this.name;
 
 		if (v) {
-			this.input.value = v;
+			this._input.value = v;
 		}
 
-		this.input.addEventListener("change", () => {
+		this._input.addEventListener("change", () => {
 			this.fireChange();
 		});
 
-		return this.input;
+		return this._input;
 	}
 }
 

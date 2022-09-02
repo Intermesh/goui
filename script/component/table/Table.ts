@@ -87,7 +87,7 @@ export interface Table {
  * 	const table = Table.create({
  * 		store: Store.create({
  * 			records: records,
- * 		  sort: [{id: "number", isAscending: true}]
+ * 		  sort: [{property: "number", isAscending: true}]
  * 		}),
  * 		cls: "fit",
  * 		columns: [

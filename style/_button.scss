@@ -127,11 +127,27 @@
 		//margin: 0px dp(12) 0px 0;
 	}
 
-	.form-field {
+	.goui-form-field {
+		//adjust to match button height. Take off 3px of padding at top and bottom
 		.hint {
-			height: auto;
+			display: none;
 			padding-bottom: 0;
 			padding-top:0;
 		}
+
+		input.text {
+			padding-top: dp(10);
+			padding-bottom: dp(10);
+
+			&:focus, &:not(:placeholder-shown) {
+				padding-top: dp(18);
+				padding-bottom: dp(2);
+			}
+		}
+
+		div.label {
+			top: dp(11);
+		}
+
 	}
 }

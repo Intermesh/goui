@@ -74,11 +74,11 @@ export class AutocompleteField<TableType extends Table = Table> extends TextFiel
 
 		const el = super.internalRender();
 
-		this.input!.addEventListener('input', FunctionUtil.buffer(this.buffer, this.onInput.bind(this)))
+		this._input!.addEventListener('input', FunctionUtil.buffer(this.buffer, this.onInput.bind(this)))
 
 		this.setupTable();
 
-		this.input!.addEventListener('keydown', (ev) => {
+		this._input!.addEventListener('keydown', (ev) => {
 
 			switch ((ev as KeyboardEvent).key) {
 				case 'ArrowDown':
@@ -106,12 +106,12 @@ export class AutocompleteField<TableType extends Table = Table> extends TextFiel
 
 	private onInput(ev: KeyboardEvent) {
 		this.table.show();
-		this.fire("autocomplete", this, this.input!.value);
+		this.fire("autocomplete", this, this._input!.value);
 	}
 
 	protected setInputValue(v: string) {
-		if (this.input) {
-			this.input.value = this.findDisplayValue(v);
+		if (this._input) {
+			this._input.value = this.findDisplayValue(v);
 		}
 	}
 
@@ -140,7 +140,7 @@ export class AutocompleteField<TableType extends Table = Table> extends TextFiel
 	private onTableShow() {
 		this.el.classList.add("expanded");
 
-		const rect = this.input!.getBoundingClientRect();
+		const rect = this._input!.getBoundingClientRect();
 
 
 		this.table.el.style.left = rect.x + "px";

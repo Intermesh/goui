@@ -12,7 +12,7 @@ export type TextFieldType = ("text" | "password" | "email" | "url" | "tel" | "se
  */
 export class TextField extends Field {
 
-	protected input: HTMLInputElement | HTMLTextAreaElement | undefined;
+	protected _input: HTMLInputElement | HTMLTextAreaElement | undefined;
 
 	/**
 	 * input type. text, password, email etc.
@@ -34,20 +34,23 @@ export class TextField extends Field {
 	public pattern:HTMLInputElement["pattern"] | undefined;
 
 
+	get input() {
+		return this._input;
+	}
 
 	set title(title: string) {
 		super.title = title;
 
-		if(this.input) {
-			this.input.title = this.title;
+		if(this._input) {
+			this._input.title = this.title;
 		}
 	}
 
 	focus(o?: FocusOptions) {
-		if(!this.input) {
+		if(!this._input) {
 			super.focus(o);
 		}
-		this.input?.focus(o);
+		this._input?.focus(o);
 	}
 
 	protected createControl() : undefined | HTMLElement{
@@ -55,36 +58,36 @@ export class TextField extends Field {
 		//grab value before creating this.input otherwise it will return the input value
 		const v = this.value, name = this.name;
 
-		this.input = document.createElement("input");
-		this.input.classList.add("text");
-		this.input.type = this.type;
+		this._input = document.createElement("input");
+		this._input.classList.add("text");
+		this._input.type = this.type;
 
 		if(this.pattern) {
-			this.input.pattern = this.pattern;
+			this._input.pattern = this.pattern;
 		}
 
 		if(this.autocomplete) {
-			this.input.autocomplete = this.autocomplete;
+			this._input.autocomplete = this.autocomplete;
 		}
 
 		if(this.placeholder) {
-			this.input.placeholder = this.placeholder;
+			this._input.placeholder = this.placeholder;
 		}
-		this.input.required = this.required;
+		this._input.required = this.required;
 		if(name) {
-			this.input.name = name;
+			this._input.name = name;
 		}
-		this.input.readOnly = this.readOnly;
+		this._input.readOnly = this.readOnly;
 
 		if (v) {
-			this.input.value = v;
+			this._input.value = v;
 		}
 
 		if(this.title) {
-			this.input.title = this.title;
+			this._input.title = this.title;
 		}
 
-		this.input.addEventListener("change", () => {
+		this._input.addEventListener("change", () => {
 			this.fireChange();
 		});
 
@@ -92,7 +95,7 @@ export class TextField extends Field {
 			this.applyInvalidMsg();
 		}
 
-		return this.input;
+		return this._input;
 
 
 	}
@@ -112,8 +115,8 @@ export class TextField extends Field {
 	}
 
 	protected setInputValue(v: string) {
-		if (this.input) {
-			this.input.value = v + "";
+		if (this._input) {
+			this._input.value = v + "";
 		}
 	}
 
@@ -125,18 +128,18 @@ export class TextField extends Field {
 	}
 
 	get value() {
-		if (!this.input) {
+		if (!this._input) {
 			return super.value;
 		} else {
-			return this.input.value;
+			return this._input.value;
 		}
 	}
 
 	set name(name: string) {
 		super.name = name;
 
-		if (this.input) {
-			this.input.name = this.name;
+		if (this._input) {
+			this._input.name = this.name;
 		}
 	}
 
@@ -148,8 +151,8 @@ export class TextField extends Field {
 		super.validate();
 
 		//this implements the native browser validation
-		if(!this.input!.validity.valid) {
-			this.setInvalid(this.input!.validationMessage);
+		if(!this._input!.validity.valid) {
+			this.setInvalid(this._input!.validationMessage);
 		}
 	}
 
