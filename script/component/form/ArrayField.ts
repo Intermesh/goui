@@ -70,6 +70,11 @@ export class ArrayField extends ContainerField {
 		return v;
 	}
 
+	reset() {
+		super.reset();
+		this.items.clear();
+	}
+
 
 }
 
