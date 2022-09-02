@@ -359,14 +359,14 @@ export class Component extends Observable {
 	 */
 	set resizable(resizable: boolean) {
 		if (resizable) {
-			this.el.classList.add(".goui-resizable");
+			this.el.classList.add("goui-resizable");
 		} else {
-			this.el.classList.remove(".goui-resizable");
+			this.el.classList.remove("goui-resizable");
 		}
 	}
 
 	get resizable() {
-		return this.el.classList.contains(".goui-resizable");
+		return this.el.classList.contains("goui-resizable");
 	}
 
 	/**

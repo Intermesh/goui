@@ -14,12 +14,20 @@ export class TableColumn extends Observable {
 
 	/**
 	 *
-	 * @param property Path to property
+	 * The column ID. Also used for 'property'
+	 */
+	constructor(public id: string) {
+		super();
+
+		this.property = id;
+	}
+
+	/**
+	 * Path to property. If not given then 'id' is used
+	 *
 	 * @see ObjectUtil.path()
 	 */
-	constructor(public property: string) {
-		super();
-	}
+	public property: string
 
 	/**
 	 * Header in the table
@@ -76,18 +84,16 @@ export class TableColumn extends Observable {
 
 type TableColumnConfig = Config<TableColumn> & {
 	/**
-	 * Path to property
-	 *
-	 * @see ObjectUtil.path()
+	 * The ID of the column which is also the default for the column 'property'
 	 */
-	property: string
+	id: string
 };
 /**
  * Create a table column
  *
  * @param config
  */
-export const column = (config: TableColumnConfig) => createComponent(new TableColumn(config.property), config);
+export const column = (config: TableColumnConfig) => createComponent(new TableColumn(config.id), config);
 
 export class DateTimeColumn extends TableColumn {
 	renderer = (date: string) => {
@@ -103,7 +109,7 @@ export class DateTimeColumn extends TableColumn {
  * Create a column showing date and time
  * @param config
  */
-export const datetimecolumn = (config: TableColumnConfig) => createComponent(new DateTimeColumn(config.property), config);
+export const datetimecolumn = (config: TableColumnConfig) => createComponent(new DateTimeColumn(config.id), config);
 
 export class DateColumn extends TableColumn {
 	renderer = (date: string) => {
@@ -120,7 +126,7 @@ export class DateColumn extends TableColumn {
  *
  * @param config
  */
-export const datecolumn = (config: TableColumnConfig) => createComponent(new DateColumn(config.property), config);
+export const datecolumn = (config: TableColumnConfig) => createComponent(new DateColumn(config.id), config);
 
 export class CheckboxColumn extends TableColumn {
 	width = 40
@@ -136,7 +142,7 @@ export class CheckboxColumn extends TableColumn {
  *
  * @param config
  */
-export const checkboxcolumn = (config: TableColumnConfig) => createComponent(new CheckboxColumn(config.property), config);
+export const checkboxcolumn = (config: TableColumnConfig) => createComponent(new CheckboxColumn(config.id), config);
 
 
 export class CheckboxSelectColumn extends TableColumn {

@@ -9,9 +9,10 @@
 				tr.selected {
 					background-color: $colorSelectedRow;
 					color: white;
-					a {
+					a, i.icon {
 						color: white;
 					}
+
 				}
 			}
 		}

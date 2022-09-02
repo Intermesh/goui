@@ -102,7 +102,7 @@ export class PlayGroundWindow extends Window {
 							required: true,
 							label: "Autocomplete",
 							name: "autocomplete",
-							valueProperty: "id", // if omited the whole record will be the value.
+							valueid: "id", // if omited the whole record will be the value.
 							buttons: [
 								btn({
 									icon: "clear",
@@ -130,14 +130,14 @@ export class PlayGroundWindow extends Window {
 								headers: false,
 								store: store({
 									sort: [{
-										property: "description",
+										id: "description",
 										isAscending: true
 									}]
 								}),
 
 								columns: [
 									column({
-										property: "description",
+										id: "description",
 										sortable: true,
 										resizable: true,
 										width: 300

@@ -309,6 +309,10 @@ $formLabelWidth: dp(160);
 		@extend .normalize;
 		min-height: dp(50);
 
+		img {
+			max-width: 100%;
+		}
+
 		&:focus, &:not(:empty) {
 			@extend %float-label;
 

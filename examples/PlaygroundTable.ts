@@ -19,13 +19,13 @@ export class PlaygroundTable extends Table {
 		super(
 			store({
 				items: records,
-				sort: [{property: "number", isAscending: true}]
+				sort: [{id: "number", isAscending: true}]
 			}),
 
 			[
 				column({
 					header: "Number",
-					property: "number",
+					id: "number",
 					sortable: true,
 					resizable: true,
 					width: 200
@@ -33,7 +33,7 @@ export class PlaygroundTable extends Table {
 
 				column({
 					header: "Description",
-					property: "description",
+					id: "description",
 					sortable: true,
 					resizable: true,
 					width: 300
@@ -41,7 +41,7 @@ export class PlaygroundTable extends Table {
 
 				datecolumn({
 					header: "Created At",
-					property: "createdAt",
+					id: "createdAt",
 					sortable: true
 				})
 			]

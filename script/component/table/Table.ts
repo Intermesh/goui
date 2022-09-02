@@ -87,13 +87,13 @@ export interface Table {
  * 	const table = Table.create({
  * 		store: Store.create({
  * 			records: records,
- * 		  sort: [{property: "number", isAscending: true}]
+ * 		  sort: [{id: "number", isAscending: true}]
  * 		}),
  * 		cls: "fit",
  * 		columns: [
  * 			{
  * 				header: "Index",
- * 				property: "id",
+ * 				id: "id",
  * 				renderer: (value, record, td, table) => {
  * 					return table.getStore().findRecordIndex(r => record.number == r.number).toString();
  * 				},
@@ -103,21 +103,21 @@ export interface Table {
  * 			},
  * 			{
  * 				header: "Number",
- * 				property: "number",
+ * 				id: "number",
  * 				sortable: true,
  * 				resizable: true,
  * 				width: 200
  * 			},
  * 			{
  * 				header: "Description",
- * 				property: "description",
+ * 				id: "description",
  * 				sortable: true,
  * 				resizable: true,
  * 				width: 300
  * 			},
  * 			DateColumn.create({
  * 				header: "Created At",
- * 				property: "createdAt",
+ * 				id: "createdAt",
  * 				sortable: true
  * 			})
  * 			]
@@ -234,10 +234,10 @@ export class Table<StoreType extends Store = Store> extends Component {
 		}
 
 		if (state.columns) {
-			for (let dataIndex in state.columns) {
-				let col = this.findColumnByProperty(dataIndex);
+			for (let id in state.columns) {
+				let col = this.findColumnById(id);
 				if (col) {
-					Object.assign(col, state.columns[dataIndex]);
+					Object.assign(col, state.columns[id]);
 				}
 			}
 		}
@@ -248,11 +248,11 @@ export class Table<StoreType extends Store = Store> extends Component {
 	 *
 	 * It's the property path of the data linked to the column
 	 *
-	 * @param property
+	 * @param id
 	 */
-	public findColumnByProperty(property: string) {
+	public findColumnById(id: string) {
 		return this.columns.find((col) => {
-			return col.property == property;
+			return col.id == id;
 		});
 	}
 
@@ -260,7 +260,7 @@ export class Table<StoreType extends Store = Store> extends Component {
 		const cols: any = {};
 
 		this.columns.forEach((c) => {
-			cols[c.property] = {
+			cols[c.id] = {
 				width: c.width,
 				hidden: c.hidden
 			}
@@ -439,7 +439,7 @@ export class Table<StoreType extends Store = Store> extends Component {
 				if(c.header && c.hidable) {
 					this.columnMenu!.items.add(checkbox({
 						label: c.header,
-						name: c.property,
+						name: c.id,
 						value: !c.hidden,
 						listeners: {
 							change: (field) => {
@@ -540,11 +540,13 @@ export class Table<StoreType extends Store = Store> extends Component {
 			if (h.resizable) {
 				const splitter = this.createColumnSplitter(h, header, index);
 				splitter.render(header);
+			} else {
+				comp({tagName: "hr"}).render(header);
 			}
 
-			if (h.sortable) {
+			if (h.sortable && h.property) {
 				header.addEventListener("click", () => {
-					this.onSort(h.property, header);
+					this.onSort(h.property!, header);
 				});
 				const sort = this.store.sort;
 				if (sort.length) {
@@ -677,7 +679,7 @@ export class Table<StoreType extends Store = Store> extends Component {
 				td.style.textAlign = c.align;
 			}
 
-			let value = ObjectUtil.path(record, c.property);
+			let value = c.property ? ObjectUtil.path(record, c.property) : undefined;
 
 			if (c.renderer) {
 				const r = c.renderer(value, record, td, this, rowIndex);
