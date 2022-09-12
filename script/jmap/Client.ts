@@ -2,6 +2,7 @@ import {EntityStore} from "./EntityStore.js";
 import {Observable, ObservableEventMap} from "../component/Observable.js";
 import {Format} from "../util/Format.js";
 import {Timezone} from "../util/DateTime.js";
+import {cookies} from "../util/Cookies.js";
 
 export interface LoginData {
 	action?: "login"
@@ -56,13 +57,16 @@ export class Client<UserType = User> extends Observable {
 
 
 	set session(value) {
-		sessionStorage.jmapSession = JSON.stringify(value);
+
+		cookies.set("jmapSession", JSON.stringify(value));
+
 		this._session = value;
 	}
 
 	get session() {
 		if (!this._session) {
-			this._session = sessionStorage.jmapSession ? JSON.parse(sessionStorage.jmapSession) : {};
+			const cookie = cookies.get("jmapSession");
+			this._session = cookie ? JSON.parse(cookie) : {};
 		}
 
 		return this._session;
