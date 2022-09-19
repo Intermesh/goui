@@ -102,7 +102,7 @@ export class DateTimeColumn extends TableColumn {
 
 	//argh!? https://stackoverflow.com/questions/43121661/typescript-type-inference-issue-with-string-literal
 	align = "right" as align
-	width = 192
+	width = 190
 }
 
 /**
