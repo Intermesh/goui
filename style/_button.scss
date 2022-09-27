@@ -10,6 +10,7 @@
 	display: flex;
 	align-items: center;
 
+
 	&.with-icon:not(.with-text) {
 		//icon only
 		padding: dp(11);
@@ -29,6 +30,11 @@
 	font: $fontBase;
 	font-weight: 600;
 	line-height: dp(24); //match icon
+
+	&.small {
+		transform: scale(.8);
+	}
+
 
 	&:hover {
 		background-color: $colorHover;

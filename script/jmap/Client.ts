@@ -23,6 +23,11 @@ export interface RegisterData {
 	user: User
 }
 
+export interface ForgottenData {
+	action: "forgotten",
+	email: String
+}
+
 interface ClientEventMap<T extends Observable> extends ObservableEventMap<T> {
 	login?: () => void
 	logout?: () => void
@@ -161,7 +166,7 @@ export class Client<UserType = User> extends Observable {
 	}
 
 
-	public auth(data: LoginData | RegisterData) {
+	public auth(data: LoginData | RegisterData | ForgottenData) {
 
 		return fetch(this.uri + "auth.php" + this.debugParam, {
 			method: "POST",

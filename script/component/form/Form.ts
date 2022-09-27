@@ -13,7 +13,14 @@ export interface FormEventMap<Sender extends Observable> extends FieldEventMap<S
 	 *
 	 * @param form
 	 */
-	submit: <T extends Sender>(form: T) => any
+	submit: <T extends Sender>(form: T) => any,
+
+	/**
+	 * Not fired by the framework. But comes in handy when you extend this form and add a cancel button
+	 *
+	 * @param form
+	 */
+	cancel: <T extends Sender>(form: T) => any
 }
 
 export interface Form {
@@ -203,6 +210,8 @@ export class Form extends ContainerField {
 			}
 
 			this.fire("submit", this);
+
+			this.reset();
 		} else {
 			el.classList.add('invalid');
 			el.classList.remove('valid');

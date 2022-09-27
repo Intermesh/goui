@@ -180,7 +180,7 @@ export abstract class Field extends Component {
 		return this._buttons;
 	}
 
-	protected createHint() {
+	protected createHint(): HTMLDivElement | void {
 
 		this.hintEl = document.createElement("div");
 		this.hintEl.classList.add("hint");
@@ -190,7 +190,7 @@ export abstract class Field extends Component {
 
 	}
 
-	protected createLabel() {
+	protected createLabel() : HTMLDivElement | void {
 		const label = document.createElement("div");
 		label.classList.add("label");
 
