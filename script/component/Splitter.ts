@@ -25,9 +25,14 @@ export class Splitter extends DraggableComponent {
 	public invert?: boolean;
 
 	/**
-	 * The minimum size it will set
+	 * The minimum size it will set. Note that you can also put a min-width or min-height on the element with css.
 	 */
 	public minSize = 50;
+
+	/**
+	 * The maximim size it will set. Note that you can also put a max-width or max-height on the element with css.
+	 */
+	public maxSize?: number;
 
 	/**
 	 *
@@ -104,8 +109,14 @@ export class Splitter extends DraggableComponent {
 					offset *= -1;
 				}
 
-				this._resizeComponent!.width =
-					Math.max(this.minSize, dragData.data.startWidth + offset);
+				let width = Math.max(this.minSize, dragData.data.startWidth + offset);
+
+				if(this.maxSize) {
+					width = Math.min(this.maxSize, width);
+				}
+
+				this._resizeComponent!.width = width;
+
 			} else {
 				let offset = dragData.y - dragData.startY;
 
@@ -113,8 +124,12 @@ export class Splitter extends DraggableComponent {
 					offset *= -1;
 				}
 
-				this._resizeComponent!.height =
-					Math.max(this.minSize, dragData.data.startHeight + offset);
+				let height = Math.max(this.minSize, dragData.data.startHeight + offset);
+				if(this.maxSize) {
+					height = Math.min(this.maxSize, height);
+				}
+				this._resizeComponent!.height = height;
+
 			}
 		});
 
