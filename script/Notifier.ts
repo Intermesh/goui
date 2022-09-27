@@ -60,11 +60,11 @@ class Message {
 			}, timeout);
 		}
 
-		alert.el.addEventListener("click", () => {
+		document.body.addEventListener("click", () => {
 			alert.remove();
 			if(this.timeout) {
 				clearTimeout(this.timeout);
 			}
-		});
+		}, {once: true});
 	}
 }
