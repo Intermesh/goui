@@ -319,6 +319,7 @@ export class Window extends DraggableComponent {
 			}
 
 			if(!this.hasState()) {
+				this.shrinkToFit();
 				this.center();
 			} else {
 				this.constrainTo(window);
@@ -327,6 +328,16 @@ export class Window extends DraggableComponent {
 		}
 
 		return super.show();
+	}
+
+	private shrinkToFit() {
+		if(this.el.offsetHeight > window.innerHeight) {
+			this.el.style.height = window.innerHeight * .9 + "px";
+		}
+
+		if(this.el.offsetWidth > window.innerWidth) {
+			this.el.style.width = window.innerWidth * .9 + "px";
+		}
 	}
 
 	private disableBodyScroll() {
@@ -388,7 +399,7 @@ export class Window extends DraggableComponent {
 	 */
 	public center() {
 		this.el.style.top = (((window.innerHeight - this.height)  / 2)) + "px";
-		this.el.style.left = (((window.innerWidth - this.width) / 2)) + "px"
+		this.el.style.left = (((window.innerWidth - this.width) / 2)) + "px";
 
 		return this;
 	}
