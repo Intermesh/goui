@@ -342,9 +342,10 @@ export class Window extends DraggableComponent {
 
 	private disableBodyScroll() {
 		// When the modal is shown, we want a fixed body
-
-		document.body.style.top = `-${window.scrollY}px`;
-		document.body.style.position = 'fixed';
+		if(window.getComputedStyle(document.body).overflow != "hidden") {
+			document.body.style.top = `-${window.scrollY}px`;
+			document.body.style.position = 'fixed';
+		}
 	}
 
 	private enableBodyScroll() {
