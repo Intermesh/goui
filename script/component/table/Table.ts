@@ -13,20 +13,20 @@ import { TableColumn } from "./TableColumns.js";
 /**
  * @inheritDoc
  */
-export interface TableEventMap<Sender extends Observable> extends ComponentEventMap<Sender> {
+export interface TableEventMap<Type extends Observable> extends ComponentEventMap<Type> {
 	/**
 	 * Fires when the user scrolled to the bottom
 	 *
 	 * @param table
 	 */
-	scrolleddown: <T extends Sender> (table: T) => void
+	scrolleddown: <Sender extends Type> (table: Sender) => void
 	/**
 	 * Fires when the user sorts the table
 	 *
 	 * @param table
 	 * @param dataIndex
 	 */
-	sort: <T extends Sender> (table: T, dataIndex: string) => void
+	sort: <Sender extends Type> (table: Sender, dataIndex: string) => void
 
 	/**
 	 * Fires when a row is clicked
@@ -35,7 +35,7 @@ export interface TableEventMap<Sender extends Observable> extends ComponentEvent
 	 * @param rowIndex
 	 * @param ev
 	 */
-	rowclick: <T extends Sender> (table: T, rowIndex: number, ev: MouseEvent) => void
+	rowclick: <Sender extends Type> (table: Sender, rowIndex: number, ev: MouseEvent) => void
 
 	/**
 	 * Fires when a row is double clicked
@@ -44,7 +44,7 @@ export interface TableEventMap<Sender extends Observable> extends ComponentEvent
 	 * @param rowIndex
 	 * @param ev
 	 */
-	rowdblclick: <T extends Sender> (table: T, rowIndex: number, ev: MouseEvent) => void
+	rowdblclick: <Sender extends Type> (table: Sender, rowIndex: number, ev: MouseEvent) => void
 
 	/**
 	 * Fires when records are rendered into rows.
@@ -52,7 +52,7 @@ export interface TableEventMap<Sender extends Observable> extends ComponentEvent
 	 * @param table
 	 * @param records
 	 */
-	renderrows: <T extends Sender> (table: T, records: StoreRecord[]) => void;
+	renderrows: <Sender extends Type> (table: Sender, records: StoreRecord[]) => void;
 
 	/**
 	 * Fires when a row is clicked or navigated with arrows
@@ -61,7 +61,7 @@ export interface TableEventMap<Sender extends Observable> extends ComponentEvent
 	 * @param rowIndex
 	 * @param ev
 	 */
-	navigate: <T extends Sender> (table: T, rowIndex: number, record: StoreRecord) => void
+	navigate: <Sender extends Type> (table: Sender, rowIndex: number, record: StoreRecord) => void
 
 }
 
