@@ -150,14 +150,13 @@
 
 @media only screen and (max-width: $breakpointSmall) {
 	.goui.hbox.mobile-cards {
-		> * {
+		> *:not(.active) {
 			display: none;
 		}
 
-		>.active {
+		> * {
 			width: 100% !important; //important to override inline width applied by splitter state.
 			height: 100% !important;
-			display:block;
 		}
 	}
 }
