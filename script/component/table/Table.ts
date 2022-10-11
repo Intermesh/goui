@@ -679,6 +679,16 @@ export class Table<StoreType extends Store = Store> extends Component {
 				td.style.textAlign = c.align;
 			}
 
+			if(rowIndex == 0 && !this.headers) {
+				if (c.width) {
+					td.style.width = c.width + "px";
+				}
+
+				if (c.align) {
+					td.style.textAlign = c.align;
+				}
+			}
+
 			let value = c.property ? ObjectUtil.path(record, c.property) : undefined;
 
 			if (c.renderer) {

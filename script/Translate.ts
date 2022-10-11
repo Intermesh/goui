@@ -1,27 +1,75 @@
 // import {LanguageKeys} from "../locale/LanguageKeys";
 
-type lang = {[key: string]: string}
+import {ObjectUtil} from "./util/ObjectUtil.js";
+
+type lang = {[key: string]: {[key: string]: {[key: string]: string}}};
 
 export class Translate {
-	private static lang: lang;
+	private lang: lang = {};
+	public missing: any = {};
+	private defaultPkg = "core";
+	private defaultModule = "core";
 
-	public static missing: any = {};
-
-	public static load(lang:lang) {
-		this.lang = lang;
+	public setDefaultModule(pkg:string, module:string) {
+		this.defaultModule = module;
+		this.defaultPkg = pkg;
 	}
 
-	public static t(key:any | string) {
-		if(Translate.lang && Translate.lang[key]) {
-			return Translate.lang[key];
-		} else
+	public load(lang:lang, pkg = "core", module = "core") {
+
+		if(!this.lang[pkg]) {
+			this.lang[pkg] = {};
+		}
+
+		if(!this.lang[pkg][module]) {
+			this.lang[pkg][module] = {};
+		}
+
+		ObjectUtil.merge(this.lang[pkg][module], lang);
+
+		this.setDefaultModule(pkg, module);
+	}
+
+	/**
+	 * Translate a string
+	 *
+	 * @param key Translate key. Usually the english text.
+	 * @param pkg The module package
+	 * @param module The module name
+	 */
+	public static t(key:string, pkg?:string, module?:string) : any {
+
+
+		if(!pkg) {
+			pkg = translate.defaultPkg;
+		}
+
+		if(!module) {
+			module = translate.defaultModule;
+		}
+
+		if(translate.lang?.[pkg]?.[module]?.[key]) {
+			return translate.lang[pkg][module][key];
+		} else if(pkg == "core" && module == "core")
 		{
-			Translate.missing[key] = key;
+			if(!translate.missing[pkg]) {
+				translate.missing[pkg] = {};
+			}
+
+			if(!translate.missing[pkg][module]) {
+				translate.missing[pkg][module] = {};
+			}
+
+			translate.missing[pkg][module][key] = key;
 
 			return key;
+		} else {
+			return t(key, "core", "core");
 		}
 	}
 }
+
+export const translate = new Translate();
 
 export const t = Translate.t;
 

@@ -21,7 +21,7 @@
 	> * {
 		//setting flex none prevents squishing of elements with no flex setting.
 		flex:none;
-		min-width: 0;
+		//min-width: 0; ?? why?
 	}
 
 	> hr {
@@ -53,7 +53,7 @@
 	> * {
 		//setting flex none prevents squishing of elements with no flex setting.
 		flex:none;
-		min-height: 0;
+		//min-height: 0; ? messed with toolbar min height
 	}
 }
 

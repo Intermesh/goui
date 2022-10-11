@@ -66,9 +66,11 @@
 				th {
 					position:relative;
 					background-color: $colorBackgroundDarker;
-					font-weight: 600; //semibold
-					padding: dp(14) dp(8);
+					font-size: dp(16);
+					padding: dp(8) dp(8);
 					&.sorted {
+
+						font-weight: 600; //semibold
 
 						padding-right: dp(40);
 
@@ -76,8 +78,10 @@
 							//asc
 							content: "south";
 							@extend %icon;
+							font-size: dp(16);
 							position: absolute;
 							right: dp(8);
+							top: dp(12);
 							color: inherit;
 						}
 

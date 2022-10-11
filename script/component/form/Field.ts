@@ -2,6 +2,7 @@ import {Component, ComponentEventMap} from "../Component.js";
 import {Observable, ObservableListener, ObservableListenerOpts} from "../Observable.js";
 import {Button} from "../Button.js";
 import {tbar, Toolbar} from "../Toolbar.js";
+import {t} from "../../Translate.js";
 
 
 /**
@@ -334,7 +335,7 @@ export abstract class Field extends Component {
 
 	protected validate() {
 		if (this._required && this.isEmpty()) {
-			this.setInvalid("Please fill in this field");
+			this.setInvalid(t("This field is required"));
 		}
 
 		this.fire("validate", this);

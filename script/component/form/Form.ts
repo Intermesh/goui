@@ -3,6 +3,7 @@ import {Observable, ObservableListener, ObservableListenerOpts} from "../Observa
 import {Notifier} from "../../Notifier.js";
 import {Component, Config, createComponent} from "../Component.js";
 import {FieldEventMap} from "./Field.js";
+import {t} from "../../Translate.js";
 
 
 export interface FormEventMap<Sender extends Observable> extends FieldEventMap<Sender> {
@@ -218,7 +219,7 @@ export class Form extends ContainerField {
 			el.classList.add('invalid');
 			el.classList.remove('valid');
 
-			Notifier.error("The form is invalid. Please check your input.");
+			Notifier.error(t('You have errors in your form. The invalid fields are marked.'));
 		}
 	}
 
