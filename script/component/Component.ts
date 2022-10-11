@@ -745,7 +745,7 @@ export class Component extends Observable {
 	/**
 	 * Find a child by element ID, itemId property, Component instance or custom function.
 	 *
-	 * It cascades down the component hierarchy.
+	 * It cascades down the component hierarchy. See also {@see findChildByType}
 	 *
 	 */
 	public findChild(predicate: FindComponentPredicate): Component | undefined {

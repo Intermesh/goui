@@ -234,6 +234,7 @@ export class Form extends ContainerField {
 		const fields = this.findFields();
 		if (fields.length) {
 			fields[0].focus(o);
+			this.fire("focus", this, o);
 		} else {
 			super.focus(o);
 		}
