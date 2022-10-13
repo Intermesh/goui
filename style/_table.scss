@@ -9,10 +9,9 @@
 				tr.selected {
 					background-color: $colorSelectedRow;
 					color: white;
-					a, i.icon {
+					a, i.icon, .checkbox input:before {
 						color: white;
 					}
-
 				}
 			}
 		}
@@ -144,6 +143,7 @@
 
 			//checkboxes in table should be compact
 			.checkbox {
+				margin: 0;
 				.control {
 					padding: 0;
 

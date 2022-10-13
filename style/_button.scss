@@ -145,14 +145,21 @@
 			padding-top: dp(10);
 			padding-bottom: dp(10);
 
+			//&:focus, &:not(:placeholder-shown) {
+			//	padding-top: dp(18);
+			//	padding-bottom: dp(2);
+			//}
+
 			&:focus, &:not(:placeholder-shown) {
-				padding-top: dp(18);
-				padding-bottom: dp(2);
+				&+div.label, &+.goui-toolbar+div.label {
+					transform: translateY(dp(-21)) scale(.8);
+				}
 			}
 		}
 
 		div.label {
-			top: dp(11);
+			top: dp(21);
+
 		}
 
 	}

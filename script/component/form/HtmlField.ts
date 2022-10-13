@@ -350,7 +350,7 @@ export class HtmlField extends Field {
 
 		const maxX = window.innerWidth - this.getToolbar().width;
 		style.left = Math.min(maxX, rect.x + window.scrollX) + "px";
-		style.top = (window.scrollY + rect.top - h) + "px";
+		style.top = (window.scrollY + rect.top - h - 8) + "px";
 	}
 
 	protected hideToolbar() {

@@ -153,8 +153,6 @@ export abstract class Field extends Component {
 			el.appendChild(hint);
 		}
 
-
-
 		return el;
 	}
 

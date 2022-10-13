@@ -1,9 +1,11 @@
+$formFieldBorderRadius: dp(10);
+
 %input {
 	font: $fontBase;
 	min-width: dp(100); //for select element
 	margin: 0;
 	transition: border-color 100ms linear;
-	border-radius: dp(12);
+	border-radius: $formFieldBorderRadius;
 	background-color: $colorBackgroundInput;
 	border: $borderWidth solid $colorBorder;
 	padding: dp(13) dp(18);
@@ -23,18 +25,17 @@
 		color: $colorTextPlaceholder;
 	}
 	&+div.label, &+.goui-toolbar+div.label {
-		transform: translateY(dp(-9)) scale(.7);
+		transform: translateY(dp(-24) - 0.8) scale(.8);
 	}
-	padding-top: dp(21);
-	padding-bottom: dp(5);
 }
 
 $formLabelWidth: dp(160);
 
 .goui-form-field {
+	margin-bottom: dp(16);
 	display: flex;
 	flex-flow: row wrap;
-	border-radius: dp(12);
+	border-radius: $formFieldBorderRadius;
 
 	+ hr {
 		margin-top: 0;
@@ -45,7 +46,7 @@ $formLabelWidth: dp(160);
 		padding: 0;
 		border: $borderWidth solid $colorBorder;
 		transition: border-color 100ms linear;
-		border-radius: 0 dp(12) dp(12) 0;
+		border-radius: 0 $formFieldBorderRadius $formFieldBorderRadius 0;
 		border-left: 0;
 		min-height: auto;
 
@@ -58,6 +59,7 @@ $formLabelWidth: dp(160);
 		.goui-button {
 
 			&.with-icon:not(.with-text) {
+				padding: dp(6);
 				padding: dp(6);
 			}
 
@@ -100,7 +102,7 @@ $formLabelWidth: dp(160);
 			transition: border-color 100ms linear;
 			background-color: $colorBackgroundInput;
 			border: $borderWidth solid $colorBorder;
-			border-radius: 0 0 dp(12) dp(12);
+			border-radius: 0 0 $formFieldBorderRadius $formFieldBorderRadius;
 			padding: dp(3) dp(18);
 		}
 	}
@@ -109,16 +111,20 @@ $formLabelWidth: dp(160);
 
 
 	div.label {
-		display: block;
-		overflow: hidden;
+		display: flex;
+		align-items: center;
+		overflow: visible;
 		text-overflow: ellipsis;
 		white-space: nowrap;
 		color: $colorTextSecondary;
 		vertical-align: top;
 		pointer-events: none;
 		position:absolute;
-		left: dp(20);
-		top: dp(14);
+		left: dp(16);
+		padding: 0 dp(4);
+		top: dp(24);
+		height: 3px;
+		background-color: $colorBackgroundInput;
 
 		transition: transform 200ms linear;
 
@@ -141,13 +147,14 @@ $formLabelWidth: dp(160);
 		input.text, textarea, select, .hint, menu.goui-toolbar {
 			border-color: $colorError;
 		}
-		.hint {
+		.hint, .label {
 			color: $colorError;
 		}
+
 	}
 
 	.error {
-		font-size: dp(12);
+		font-size: dp(14);
 		color: $colorError;
 		line-height: dp(20); //match icon
 		padding: 2px dp(12);
@@ -157,12 +164,16 @@ $formLabelWidth: dp(160);
 
 	.hint {
 
-		font-size: dp(12);
+		font-size: dp(14);
 		color: $colorTextSecondary;
 		line-height: dp(20); //match icon
-		padding: dp(2) dp(18) dp(10);
-		height: dp(30);
+		padding: dp(8) dp(18);
+		//height: dp(30);
 		flex: 1 1 100%;
+
+		&:empty {
+			padding: 0;
+		}
 	}
 
 	/** start text and textarea **/
@@ -194,6 +205,10 @@ $formLabelWidth: dp(160);
 	/** start checkbox **/
 
 	&.checkbox{
+		.label {
+			display: none;
+		}
+
 		.control {
 			display: flex;
 			padding: dp(8) 0;
@@ -206,15 +221,13 @@ $formLabelWidth: dp(160);
 				border: none;
 				&:before {
 					@extend %icon;
-					content: "check_box";
-
+					content: "check_box_outline_blank";
 				}
 
 				appearance: none;
 				-webkit-appearance: none;
 				-moz-appearance: none;
 
-				border-radius: 4px;
 				display: inline-block;
 				position: relative;
 				margin: auto 0;
@@ -226,9 +239,10 @@ $formLabelWidth: dp(160);
 
 			input:checked {
 				&:before {
-					content: "check_box_outline_blank";
+					content: "check_box";
 				}
 			}
+
 
 			.box-label {
 				flex: 1;
@@ -392,7 +406,7 @@ form {
 	box-shadow: 0px 10px 20px 0 rgb(0 0 0 / 40%);
 	border: $borderWidth solid $colorPrimary;
 	border-top: 0;
-	border-radius: dp(12);
+	border-radius: $formFieldBorderRadius;
 	border-top-left-radius: 0;
 	border-top-right-radius: 0;
 	background-color: white;
