@@ -146,13 +146,19 @@
 			.checkbox {
 				.control {
 					padding: 0;
+
 					.box-label {
 						display: none;
 					}
 				}
-				.hint, .label{
+
+				.hint, .label {
 					display: none;
 				}
+			}
+
+			&.checkbox-select-column {
+				width: dp(48);
 			}
 		}
 

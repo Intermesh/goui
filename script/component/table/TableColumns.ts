@@ -80,6 +80,11 @@ export class TableColumn extends Observable {
 	 * It's used to update the header width
 	 */
 	headerEl?: HTMLTableCellElement;
+
+	/**
+	 * Add CSS classes
+	 */
+	cls?: string
 }
 
 type TableColumnConfig = Config<TableColumn> & {
@@ -150,8 +155,10 @@ export class CheckboxSelectColumn extends TableColumn {
 	constructor() {
 		super("checkboxselect");
 		this.hidable = false;
+
+		// this.cls = "checkboxselect";
 	}
-	width = 40
+
 	headerRenderer:HeaderRenderer = (col, headerEl,table) => {
 
 		return checkbox({
@@ -172,12 +179,13 @@ export class CheckboxSelectColumn extends TableColumn {
 
 	renderer:TableColumnRenderer = (val: boolean, record, td, table, rowIndex) => {
 
+		td.classList.add("checkbox-select-column");
 
 		return checkbox({
 			value: val,
 			listeners: {
 				render: (field) => {
-					field.el.addEventListener("click", (ev) => {
+					field.el.addEventListener("mousedown", (ev) => {
 						ev.stopPropagation()
 					});
 

@@ -523,6 +523,10 @@ export class Table<StoreType extends Store = Store> extends Component {
 				header.style.textAlign = h.align;
 			}
 
+			if(h.cls) {
+				header.classList.add(...h.cls.split(" "));
+			}
+
 			if (h.headerRenderer) {
 				const r = h.headerRenderer(h, header, this);
 				if (typeof r === "string") {
@@ -687,6 +691,10 @@ export class Table<StoreType extends Store = Store> extends Component {
 				if (c.align) {
 					td.style.textAlign = c.align;
 				}
+			}
+
+			if(c.cls) {
+				td.classList.add(...c.cls.split(" "));
 			}
 
 			let value = c.property ? ObjectUtil.path(record, c.property) : undefined;

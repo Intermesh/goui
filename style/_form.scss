@@ -199,12 +199,16 @@ $formLabelWidth: dp(160);
 			padding: dp(8) 0;
 
 			input  {
-				min-height: dp(22);
-				min-width: dp(22);
-				height: dp(22);
-				width: dp(22);
-				border: $borderWidth solid $colorBorder;
-				background-color: $colorBackgroundInput;
+				min-height: dp(24);
+				min-width: dp(24);
+				height: dp(24);
+				width: dp(24);
+				border: none;
+				&:before {
+					@extend %icon;
+					content: "check_box";
+
+				}
 
 				appearance: none;
 				-webkit-appearance: none;
@@ -221,18 +225,8 @@ $formLabelWidth: dp(160);
 			}
 
 			input:checked {
-
-				background-color: $colorPrimary;
-				border-color: $colorPrimary;
-
 				&:before {
-					@extend %icon;
-					font-size: dp(22) - 4; //substract border twice
-					width: dp(22) - 4;
-					height: dp(22) - 4;
-					content: "check";
-					color: white;
-
+					content: "check_box_outline_blank";
 				}
 			}
 
@@ -243,7 +237,7 @@ $formLabelWidth: dp(160);
 				text-overflow: ellipsis;
 				white-space: nowrap;
 
-				padding: 0 dp(8);
+				padding: 0 0 0 dp(12);
 				margin: auto 0;
 				user-select: none;
 				-webkit-user-select: none;
