@@ -221,7 +221,7 @@ export class AutocompleteField<TableType extends Table = Table> extends TextFiel
 		});
 
 		// set value on click and enter
-		this.table.on("rowclick", (table, rowIndex, ev) => {
+		this.table.on("rowmousedown", (table, rowIndex, ev) => {
 			this.setRecordAsValue(this.table.store.get(rowIndex));
 			this.table.hide();
 		});

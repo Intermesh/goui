@@ -35,7 +35,7 @@ export interface TableEventMap<Type extends Observable> extends ComponentEventMa
 	 * @param rowIndex
 	 * @param ev
 	 */
-	rowclick: <Sender extends Type> (table: Sender, rowIndex: number, ev: MouseEvent) => void
+	rowmousedown: <Sender extends Type> (table: Sender, rowIndex: number, ev: MouseEvent) => void
 
 	/**
 	 * Fires when a row is double clicked
@@ -193,7 +193,7 @@ export class Table<StoreType extends Store = Store> extends Component {
 	private emptyStateEl?: HTMLDivElement;
 
 	private initNavigateEvent() {
-		this.on('rowclick', (table, rowIndex, ev) => {
+		this.on('rowmousedown', (table, rowIndex, ev) => {
 			if (!ev.shiftKey && !ev.ctrlKey) {
 				const record = this.store.get(rowIndex);
 
@@ -277,8 +277,8 @@ export class Table<StoreType extends Store = Store> extends Component {
 
 		this.initNavigateEvent();
 
-		el.addEventListener("click", (e) => {
-			this.onClick(e);
+		el.addEventListener("mousedown", (e) => {
+			this.onMouseDown(e);
 		});
 
 		el.addEventListener("dblclick", (e) => {
@@ -378,7 +378,7 @@ export class Table<StoreType extends Store = Store> extends Component {
 	}
 
 
-	private onClick(e: MouseEvent) {
+	private onMouseDown(e: MouseEvent) {
 		const index = this.findRowByEvent(e);
 
 		if (index == -1) {
@@ -386,7 +386,7 @@ export class Table<StoreType extends Store = Store> extends Component {
 			return;
 		}
 
-		this.fire('rowclick', this, index, e);
+		this.fire('rowmousedown', this, index, e);
 	}
 
 	private onDblClick(e: MouseEvent) {

@@ -74,17 +74,14 @@ export class TableRowSelect extends Observable {
 				this.onKeyDown(e);
 			})
 
-			this.table.on('rowclick', (table: Table, index: number, e: MouseEvent) => {
-				this.onRowClick(table, index, e);
+			this.table.on('rowmousedown', (table: Table, index: number, e: MouseEvent) => {
+				this.onRowMouseDown(table, index, e);
 			});
 
 			tableEl.addEventListener("focus", (e) => {
-				// use set timeout so rowclick event will be handled first
-				setTimeout(() => {
-					if(!this.selected.length && this.table.store.get(0)) {
-						this.selected = [0];
-					}
-				}, 300);
+				if(!this.selected.length && this.table.store.get(0)) {
+					this.selected = [0];
+				}
 			})
 		})
 	}
@@ -113,7 +110,7 @@ export class TableRowSelect extends Observable {
 	}
 
 
-	private onRowClick(table: Table, index: number, e: MouseEvent) {
+	private onRowMouseDown(table: Table, index: number, e: MouseEvent) {
 		let selection = this.selected;
 
 		if (e.shiftKey && this.multiSelect) {
