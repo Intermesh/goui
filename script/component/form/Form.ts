@@ -209,7 +209,16 @@ export class Form extends ContainerField {
 
 			let handlerResponse = undefined;
 			if (this.handler) {
-				handlerResponse = await this.handler!(this);
+				try {
+					handlerResponse = await this.handler!(this);
+				}catch(e:any){
+					el.classList.add('invalid');
+					el.classList.remove('valid');
+
+ 					const msg = typeof(e) == "string" ? e : e.message;
+					Notifier.error(msg);
+					return;
+				}
 			}
 
 			this.fire("submit", this, handlerResponse);

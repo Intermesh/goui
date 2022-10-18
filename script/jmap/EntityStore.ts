@@ -107,13 +107,14 @@ export class EntityStore extends Observable {
 		})
 	}
 
-	set(params: { create?: SetEntity, update?: SetEntity, destroy?: string[], [key: string]: any }): Promise<SetResponse> {
-		return this.client.jmap(this.name + "/set", params).then((response: SetResponse) => {
-
-			this.fire('change', this, response);
-
-			return response;
-		})
+	/**
+	 * @throws Error
+	 * @param params
+	 */
+	async set(params: { create?: SetEntity, update?: SetEntity, destroy?: string[], [key: string]: any }): Promise<SetResponse> {
+		const response = await this.client.jmap(this.name + "/set", params);
+		this.fire('change', this, response);
+		return response;
 	}
 
 	query(params: QueryParams): Promise<{ ids: Id[], hasMore?: boolean, total?: number }> {
@@ -127,40 +128,31 @@ export class EntityStore extends Observable {
 	 * @param id The entity ID
 	 * @param setParams Additional paramaters for Foo/set
 	 */
-	save(data: Entity, id?: Id, setParams: { [key: string]: any } = {}): Promise<Entity> {
+	async save(data: Entity, id?: Id, setParams: { [key: string]: any } = {}): Promise<Entity> {
 
 		if (!id) {
 			id = "_new_"
 		}
 
-		// const p = {
-		// 	[id != "_new_" ? 'update' : 'create']: {
-		// 		[id]: data
-		// 	}
-		// }
-
 		setParams[id != "_new_" ? 'update' : 'create'] = {
 			[id]: data
 		};
 
-		return this.set(setParams).then((response) => {
-			let o = id != "_new_" ? response.updated : response.created;
+		const response =  await this.set(setParams);
 
-			if (o && id! in o) {
-				return o[id!];
-			} else {
-				let msg = "Failed to save";
+		let o = id != "_new_" ? response.updated : response.created;
+
+		if (o && id! in o) {
+			return o[id!];
+		} else {
+			let msg = "Failed to save";
 //
 // 				let not = id ? response.notUpdated : response.notCreated;
 // debugger;
 // 				if(not && id in not) {
 // 					msg = not[id].description;
 // 				}
-				throw new Error(msg);
-			}
-
-		});
-
+			throw new Error(msg);
+		}
 	}
-
 }

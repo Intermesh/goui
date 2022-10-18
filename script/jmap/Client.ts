@@ -255,7 +255,6 @@ export class Client<UserType = User> extends Observable {
 	 *
 	 * @param method
 	 * @param params
-	 * @return Promise<Object>
 	 */
 	public jmap(method: string, params: Object = {}): Promise<any> {
 		const callId = "call-" + (++this._lastCallId), promise: Promise<Object> = new Promise((resolve, reject) => {
