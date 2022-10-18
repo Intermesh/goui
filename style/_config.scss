@@ -1,10 +1,6 @@
 $resourcePath: "../resources/";
 
-$scale: 1 !default;
 
-@function dp($width) {
-	@return $width * $scale * 1px;
-}
 
 //$windowShadow: 0 0 dp(16) 0 rgba(0,0,0,20%);
 
@@ -62,8 +58,8 @@ $padding: dp(8) !default;
 
 $curveStandard: cubic-bezier(0.4, 0.0, 0.2, 1) !default;
 
-$baseLineHeight: dp(22) !default;
-$fontSize: dp(18) !default;
+$baseLineHeight: sp(22) !default;
+$fontSize: sp(18) !default;
 $fontBase: #{$fontSize}/$baseLineHeight Lato, Arial, Helvetica !default;
 
 $zIndexWindow: 200 !default;

@@ -25,7 +25,7 @@ $formFieldBorderRadius: dp(10);
 		color: $colorTextPlaceholder;
 	}
 	&+div.label, &+.goui-toolbar+div.label {
-		transform: translateY(dp(-24) - 0.8) scale(.8);
+		transform: translateY(calc(#{dp(-13)} - 0.62em)) scale(.8);
 	}
 }
 
@@ -59,7 +59,6 @@ $formLabelWidth: dp(160);
 		.goui-button {
 
 			&.with-icon:not(.with-text) {
-				padding: dp(6);
 				padding: dp(6);
 			}
 
@@ -122,7 +121,7 @@ $formLabelWidth: dp(160);
 		position:absolute;
 		left: dp(16);
 		padding: 0 dp(4);
-		top: dp(24);
+		top:calc(#{dp(13)} + 0.62em);
 		height: 3px;
 		background-color: $colorBackgroundInput;
 

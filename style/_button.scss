@@ -111,7 +111,8 @@
 		display: block;
 		margin: 0;
 		color: inherit;
-		font-size: dp(22);
+		font-size: sp(22);
+		line-height: normal;
 		font-weight: normal;
 		padding: 0;
 		overflow: hidden;
@@ -145,20 +146,15 @@
 			padding-top: dp(10);
 			padding-bottom: dp(10);
 
-			//&:focus, &:not(:placeholder-shown) {
-			//	padding-top: dp(18);
-			//	padding-bottom: dp(2);
-			//}
-
 			&:focus, &:not(:placeholder-shown) {
 				&+div.label, &+.goui-toolbar+div.label {
-					transform: translateY(dp(-21)) scale(.8);
+					transform: translateY(calc(#{dp(-10)} - 0.6111em)) scale(.8);
 				}
 			}
 		}
 
 		div.label {
-			top: dp(21);
+			top: calc(#{dp(10)} + 0.6111em);
 
 		}
 

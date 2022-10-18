@@ -1,0 +1,10 @@
+$scale: 1 !default;
+$font-scale: 1 !default;
+
+@function dp($width) {
+	@return $width * $scale * 1px;
+}
+
+@function sp($size) {
+	@return ceil(dp($size) * $font-scale);
+}

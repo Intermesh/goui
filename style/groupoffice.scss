@@ -1,7 +1,12 @@
-$scale: 1; //0.8
+$scale: 0.875;
+@import 'util';
+
 $borderWidth: 1px;
+$baseLineHeight: dp(20);
+$fontSize: sp(16);
 
 @import 'config';
+
 @import 'tooltip';
 @import 'icons';
 @import 'shadows';
