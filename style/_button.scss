@@ -135,6 +135,7 @@
 
 	.goui-form-field {
 		//adjust to match button height. Take off 3px of padding at top and bottom
+		align-self: center;
 		.hint {
 			display: none;
 			padding-bottom: 0;
