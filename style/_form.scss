@@ -31,6 +31,10 @@ $formFieldBorderRadius: dp(10);
 
 $formLabelWidth: dp(160);
 
+form.goui {
+	background-color: $colorBackgroundForm;
+}
+
 .goui-form-field {
 	margin-bottom: dp(16);
 	display: flex;
@@ -104,6 +108,13 @@ $formLabelWidth: dp(160);
 			border-radius: 0 0 $formFieldBorderRadius $formFieldBorderRadius;
 			padding: dp(3) dp(18);
 		}
+
+		&.invalid {
+			.hint {
+				background-color: $colorErrorBg;
+				border-color: $colorError;
+			}
+		}
 	}
 
 
@@ -143,8 +154,12 @@ $formLabelWidth: dp(160);
 	}
 
 	&.invalid {
-		input.text, textarea, select, .hint, menu.goui-toolbar {
+		input.text, textarea, select, menu.goui-toolbar {
 			border-color: $colorError;
+			background-color: $colorErrorBg;
+		}
+		.label {
+			background-color: $colorErrorBg;
 		}
 		.hint, .label {
 			color: $colorError;
@@ -316,6 +331,7 @@ $formLabelWidth: dp(160);
 
 	&.invalid {
 		div.editor{
+			background-color: $colorErrorBg;
 			border-color: $colorError;
 		}
 	}

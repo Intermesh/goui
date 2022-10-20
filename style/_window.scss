@@ -116,7 +116,7 @@
 		padding-left: dp(18);
 		padding-right: dp(18);
 		//background: $colorBackgroundToolbar;
-		border-top: 2px solid $colorBorderWindow;
+		border-top: $borderWidth solid $colorBorderWindow;
 	}
 }
 

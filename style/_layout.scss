@@ -148,7 +148,9 @@
 		background-color: $colorBorder;
 	}
 }
-
+.goui.hbox.mobile-cards {
+	height: 100%;
+}
 
 @media only screen and (max-width: $breakpointSmall) {
 	.goui.hbox.mobile-cards {
