@@ -21,7 +21,7 @@
 	justify-content: flex-start;
 	flex-wrap: nowrap;
 
-	> * {
+	> div {
 		flex:none; //setting flex none prevents squishing of elements with no flex setting.
 		overflow: hidden; // to prevent growing larger than container: https://stackoverflow.com/questions/36230944/prevent-flex-items-from-overflowing-a-container
 	}
@@ -56,7 +56,7 @@
 	flex-direction: column;
 	flex-wrap: nowrap;
 	overflow: hidden;
-	> * {
+	> div {
 		flex:none; //setting flex none prevents squishing of elements with no flex setting.
 		overflow: hidden; // to prevent growing larger than container: https://stackoverflow.com/questions/36230944/prevent-flex-items-from-overflowing-a-container
 
