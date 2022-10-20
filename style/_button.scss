@@ -148,13 +148,13 @@
 
 			&:focus, &:not(:placeholder-shown) {
 				&+div.label, &+.goui-toolbar+div.label {
-					transform: translateY(calc(#{dp(-10)} - 0.6111em)) scale(.8);
+					transform: translateY(calc(#{dp(-10)} - 0.63em)) scale(.8);
 				}
 			}
 		}
 
 		div.label {
-			top: calc(#{dp(10)} + 0.6111em);
+			top: calc(#{dp(10)} + 0.62em);
 
 		}
 
