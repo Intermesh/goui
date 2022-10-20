@@ -4,10 +4,8 @@ $formFieldBorderRadius: dp(10);
 	font: $fontBase;
 	min-width: dp(100); //for select element
 	margin: 0;
-	transition: border-color 100ms linear;
+	border: 0;
 	border-radius: $formFieldBorderRadius;
-	background-color: $colorBackgroundInput;
-	border: $borderWidth solid $colorBorder;
 	padding: dp(13) dp(18);
 	width: 100%;
 	outline: none;
@@ -36,47 +34,57 @@ form.goui {
 }
 
 .goui-form-field {
+	width: 100%;
+	display: block;
+	align-self: start;
 	margin-bottom: dp(16);
-	display: flex;
-	flex-flow: row wrap;
 	border-radius: $formFieldBorderRadius;
+	.wrap {
+		display: flex;
+		flex-flow: row nowrap;
+
+		transition: border-color 100ms linear;
+		border-radius: $formFieldBorderRadius;
+		background-color: $colorBackgroundInput;
+		border: $borderWidth solid $colorBorder;
+
+		menu.goui-toolbar {
+			background-color: $colorBackgroundInput;
+			padding: 0 !important;
+			border: 0 !important;
+			border-radius: 0 $formFieldBorderRadius $formFieldBorderRadius 0;
+			min-height: auto;
+
+			> * {
+				margin: 0 dp(4) 0 0;
+				padding: dp(6);
+			}
+
+
+			.goui-button {
+
+				&.with-icon:not(.with-text) {
+					padding: dp(6);
+				}
+
+				color: $colorPrimary;
+				&:hover {
+					background-color: transparent;
+				}
+			}
+		}
+	}
+
+
 
 	+ hr {
 		margin-top: 0;
 	}
 
-	menu.goui-toolbar {
-		background-color: $colorBackgroundInput;
-		padding: 0;
-		border: $borderWidth solid $colorBorder;
-		transition: border-color 100ms linear;
-		border-radius: 0 $formFieldBorderRadius $formFieldBorderRadius 0;
-		border-left: 0;
-		min-height: auto;
-
-		> * {
-			margin: 0 dp(4) 0 0;
-			padding: dp(6);
-		}
-
-
-		.goui-button {
-
-			&.with-icon:not(.with-text) {
-				padding: dp(6);
-			}
-
-			color: $colorPrimary;
-			&:hover {
-				background-color: transparent;
-			}
-		}
-	}
-
 	position: relative;
 
 	&:focus-within {
-		.text, select, textarea,menu.goui-toolbar {
+		.wrap {
 			border-color: $colorPrimary;
 		}
 
@@ -87,7 +95,7 @@ form.goui {
 
 
 	&.frame-hint {
-		.control.text {
+		.wrap {
 			border-bottom: 0;
 			border-bottom-left-radius: 0;
 			border-bottom-right-radius: 0;
@@ -143,10 +151,13 @@ form.goui {
 
 		transform: none;
 		transform-origin: top left;
+
+		&:empty {
+			display: none;
+		}
 	}
 
 	>.control {
-		flex: 1;
 		width: 100%;
 		appearance: none;
 		-webkit-appearance: none; /*Removes default chrome and safari style*/
@@ -154,7 +165,7 @@ form.goui {
 	}
 
 	&.invalid {
-		input.text, textarea, select, menu.goui-toolbar {
+		.wrap {
 			border-color: $colorError;
 			background-color: $colorErrorBg;
 		}
@@ -177,7 +188,6 @@ form.goui {
 	}
 
 	.hint {
-
 		font-size: dp(14);
 		color: $colorTextSecondary;
 		line-height: dp(20); //match icon
@@ -200,14 +210,6 @@ form.goui {
 
 		&:focus {
 			color: $colorPrimary;
-		}
-	}
-
-	&.with-toolbar  {
-		input.text, textarea, select {
-			border-right: 0;
-			border-top-right-radius: 0;
-			border-bottom-right-radius: 0;
 		}
 	}
 
@@ -329,6 +331,7 @@ form.goui {
 .goui-html-field {
 	position: relative;
 
+
 	&.invalid {
 		div.editor{
 			background-color: $colorErrorBg;
@@ -339,7 +342,7 @@ form.goui {
 	div.editor {
 		@extend %input;
 		@extend .normalize;
-		min-height: dp(50);
+		min-height: dp(100);
 
 		img {
 			max-width: 100%;

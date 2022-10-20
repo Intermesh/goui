@@ -132,21 +132,31 @@ export abstract class Field extends Component {
 		const control = this.createControl();
 		if (control) {
 			control.classList.add("control");
-			el.appendChild(control);
+		}
+
+		// wrap required to place buttons after element
+		const wrap = document.createElement("div");
+		wrap.classList.add("wrap");
+
+		this.el.appendChild(wrap);
+		if(control)
+			wrap.appendChild(control);
+
+		// label must follow input so we can make the transform transition with pure css with input::focus & input::placeholder-shown + label
+		const label = this.createLabel();
+		if (label) {
+			wrap.appendChild(label);
 		}
 
 		if(this._buttons) {
 			this.toolbar = tbar({}, ...this._buttons);
 			this.toolbar.parent = this;
-			this.toolbar.render(el);
+			this.toolbar.render(wrap);
 
-			this.el.classList.add("with-toolbar");
+			// this.el.classList.add("with-toolbar");
 		}
 
-		const label = this.createLabel();
-		if (label) {
-			el.appendChild(label);
-		}
+
 
 		const hint = this.createHint();
 		if (hint) {

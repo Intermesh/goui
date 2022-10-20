@@ -161,6 +161,8 @@ export class CheckboxSelectColumn extends TableColumn {
 
 	headerRenderer:HeaderRenderer = (col, headerEl,table) => {
 
+		headerEl.classList.add("checkbox-select-column");
+
 		return checkbox({
 			listeners: {
 				change: (field, newValue, oldValue) => {
