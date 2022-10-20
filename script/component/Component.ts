@@ -849,7 +849,7 @@ export const comp = (config?: Config<Component>, ...items: Component[]) => creat
 export const createComponent = <T>(comp: T, config:any, items?:Component[]) : T => {
 
 	if (config) {
-		Object.assign(comp, config);
+		Object.assign(comp as any, config);
 	}
 	if (items && items.length) {
 		(comp as any).items.add(...items);
