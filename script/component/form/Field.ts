@@ -75,6 +75,7 @@ export interface Field extends Component {
 export abstract class Field extends Component {
 	private _buttons?: Button[];
 	private toolbar?: Toolbar;
+	protected wrap?: HTMLDivElement;
 
 	constructor(tagName:keyof HTMLElementTagNameMap = "label") {
 		super(tagName);
@@ -135,28 +136,24 @@ export abstract class Field extends Component {
 		}
 
 		// wrap required to place buttons after element
-		const wrap = document.createElement("div");
-		wrap.classList.add("wrap");
+		this.wrap = document.createElement("div");
+		this.wrap.classList.add("wrap");
 
-		this.el.appendChild(wrap);
+		this.el.appendChild(this.wrap);
 		if(control)
-			wrap.appendChild(control);
+			this.wrap.appendChild(control);
 
 		// label must follow input so we can make the transform transition with pure css with input::focus & input::placeholder-shown + label
 		const label = this.createLabel();
 		if (label) {
-			wrap.appendChild(label);
+			this.wrap.appendChild(label);
 		}
 
 		if(this._buttons) {
 			this.toolbar = tbar({}, ...this._buttons);
 			this.toolbar.parent = this;
-			this.toolbar.render(wrap);
-
-			// this.el.classList.add("with-toolbar");
+			this.toolbar.render(this.wrap);
 		}
-
-
 
 		const hint = this.createHint();
 		if (hint) {

@@ -140,12 +140,11 @@ export class AutocompleteField<TableType extends Table = Table> extends TextFiel
 	private onTableShow() {
 		this.el.classList.add("expanded");
 
-		const rect = this._input!.getBoundingClientRect();
-
+		const rect = this.wrap!.getBoundingClientRect();
 
 		this.table.el.style.left = rect.x + "px";
-		this.table.el.style.top = rect.bottom + -2 + "px";
-		this.table.width = this.width;
+		this.table.el.style.top = (rect.bottom - 2) + "px";
+		this.table.width = rect.width;
 		if (!this.table.el.style.zIndex) {
 			this.table.el.style.zIndex = (this.computeZIndex() + 1).toString();
 		}

@@ -1,6 +1,7 @@
 $formFieldBorderRadius: dp(10);
 
 %input {
+	background-color: transparent;
 	font: $fontBase;
 	min-width: dp(100); //for select element
 	margin: 0;
@@ -220,7 +221,13 @@ form.goui {
 
 	/** start checkbox **/
 
-	&.checkbox{
+	&.checkbox {
+
+		.wrap {
+			background-color: transparent;
+			border: none;
+		}
+
 		.label {
 			display: none;
 		}
@@ -234,7 +241,7 @@ form.goui {
 				min-width: dp(24);
 				height: dp(24);
 				width: dp(24);
-				border: none;
+
 				&:before {
 					@extend %icon;
 					content: "check_box_outline_blank";
@@ -404,23 +411,23 @@ form {
 
 .autocomplete {
 	&.expanded {
-		.control {
+		.wrap {
 			border-color: $colorPrimary;
 			border-bottom-left-radius: 0;
-			//border-bottom-right-radius: 0;
-			border-bottom: 0;
-
-		}
-		box-shadow: 0px 10px 20px 0 rgb(0 0 0 / 40%);
-
-		menu.goui-toolbar {
-			border-color: $colorPrimary;
 			border-bottom-right-radius: 0;
+			border-bottom: 0;
 		}
+
+		.label, .control {
+			color: $colorPrimary;
+		}
+
+		box-shadow: 0px 10px 20px 0 rgb(0 0 0 / 40%);
 	}
 }
 
 .autocomplete-suggestions {
+
 	box-shadow: 0px 10px 20px 0 rgb(0 0 0 / 40%);
 	border: $borderWidth solid $colorPrimary;
 	border-top: 0;
