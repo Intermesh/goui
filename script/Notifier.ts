@@ -83,11 +83,13 @@ class Message {
 			}, timeout);
 		}
 
-		document.body.addEventListener("click", () => {
-			alert.remove();
-			if(this.timeout) {
-				clearTimeout(this.timeout);
-			}
-		}, {once: true});
+		setTimeout(() => {
+			document.body.addEventListener("click", () => {
+				alert.remove();
+				if(this.timeout) {
+					clearTimeout(this.timeout);
+				}
+			}, {once: true});
+		});
 	}
 }

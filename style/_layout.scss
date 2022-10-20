@@ -1,5 +1,6 @@
 .goui {
 	font: $fontBase;
+	box-sizing: border-box;
 }
 .goui.light-bg {
 	background-color: white;
@@ -19,10 +20,10 @@
 	gap: 0;
 	justify-content: flex-start;
 	flex-wrap: nowrap;
+
 	> * {
-		//setting flex none prevents squishing of elements with no flex setting.
-		flex:none;
-		//min-width: 0; ?? why?
+		flex:none; //setting flex none prevents squishing of elements with no flex setting.
+		overflow: hidden; // to prevent growing larger than container: https://stackoverflow.com/questions/36230944/prevent-flex-items-from-overflowing-a-container
 	}
 
 	> hr {
@@ -54,10 +55,11 @@
 	display: flex;
 	flex-direction: column;
 	flex-wrap: nowrap;
+	overflow: hidden;
 	> * {
-		//setting flex none prevents squishing of elements with no flex setting.
-		flex:none;
-		//min-height: 0; ? messed with toolbar min height
+		flex:none; //setting flex none prevents squishing of elements with no flex setting.
+		overflow: hidden; // to prevent growing larger than container: https://stackoverflow.com/questions/36230944/prevent-flex-items-from-overflowing-a-container
+
 	}
 }
 

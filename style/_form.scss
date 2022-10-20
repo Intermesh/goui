@@ -6,12 +6,15 @@ $formFieldBorderRadius: dp(10);
 	min-width: dp(100); //for select element
 	margin: 0;
 	border: 0;
-	border-radius: $formFieldBorderRadius;
 	padding: dp(13) dp(18);
 	width: 100%;
 	outline: none;
 	color: $colorText;
 	display: block;// for text area which has inline-block by default and gets some extra margin
+
+	&:read-only:not(select) {
+		background-color: $colorBackgroundReadOnly;
+	}
 
 	&::placeholder {
 		transition: all 200ms linear;
@@ -28,8 +31,6 @@ $formFieldBorderRadius: dp(10);
 	}
 }
 
-$formLabelWidth: dp(160);
-
 form.goui {
 	background-color: $colorBackgroundForm;
 }
@@ -43,6 +44,7 @@ form.goui {
 	.wrap {
 		display: flex;
 		flex-flow: row nowrap;
+		overflow: hidden;
 
 		transition: border-color 100ms linear;
 		border-radius: $formFieldBorderRadius;
@@ -50,7 +52,7 @@ form.goui {
 		border: $borderWidth solid $colorBorder;
 
 		menu.goui-toolbar {
-			background-color: $colorBackgroundInput;
+			background-color: transparent;
 			padding: 0 !important;
 			border: 0 !important;
 			border-radius: 0 $formFieldBorderRadius $formFieldBorderRadius 0;
@@ -295,6 +297,7 @@ form.goui {
 		select {
 			padding-right: dp(32);
 			background-image: none;
+			appearance: none;
 		}
 
 		&:after {

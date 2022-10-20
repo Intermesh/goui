@@ -4,7 +4,7 @@ import { router } from "@goui/Router.js";
 import { cards } from "@goui/component/CardContainer.js";
 import { root } from "@goui/component/Root.js";
 import { client } from "@goui/jmap/Client.js";
-import { Translate } from "@goui/Translate.js";
+import {translate, Translate} from "@goui/Translate.js";
 import { btn } from "@goui/component/Button.js";
 import { playgroundTableOverride } from "./PlaygroundTableOverride.js";
 import { PlayGround } from "./PlayGround.js";
@@ -14,7 +14,7 @@ const main = cards();
 
 // log missing translations for developer
 router.on("change", () => {
-	console.warn(`Missing translations`, Translate.missing);
+	console.warn(`Missing translations`, translate.missing);
 });
 
 /**
