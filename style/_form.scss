@@ -11,7 +11,7 @@ $formFieldBorderRadius: dp(10);
 	outline: none;
 	color: $colorText;
 	display: block;// for text area which has inline-block by default and gets some extra margin
-
+	border-radius: $formFieldBorderRadius;
 	&:read-only:not(select) {
 		background-color: $colorBackgroundReadOnly;
 	}
@@ -44,8 +44,6 @@ form.goui {
 	.wrap {
 		display: flex;
 		flex-flow: row nowrap;
-		overflow: hidden;
-
 		transition: border-color 100ms linear;
 		border-radius: $formFieldBorderRadius;
 		background-color: $colorBackgroundInput;
