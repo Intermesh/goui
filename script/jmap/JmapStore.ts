@@ -1,9 +1,7 @@
 import {EntityStore, QueryParams} from "./EntityStore.js";
 import {Store, StoreRecord} from "../data/Store.js";
 import {client} from "./Client.js";
-import {Observable} from "../component/Observable.js";
 import {Config} from "../component/Component.js";
-
 
 type Relation = Record<string, {
 	entity: string,
@@ -11,7 +9,25 @@ type Relation = Record<string, {
 	properties?: string[]
 }>
 
-
+/**
+ * Data store for loading data via a JMAP API
+ *
+ * @example
+ * ```
+ * const store = jmapstore({
+ * 		entity: "TaskList",
+ * 		properties: ['id', 'name', 'support'],
+ * 		queryParams: {
+ * 			limit: 20,
+ * 			filter: {
+ * 				forSupport: true,
+ * 				role: "support", //support tasklists
+ * 			}
+ * 		},
+ * 		sort: [{property: "name", isAscending: true}]
+ * 	});
+ * ```
+ */
 export class JmapStore extends Store {
 	private entityStore: EntityStore;
 

@@ -30,17 +30,17 @@ export interface TableRowSelectEventMap<T extends Observable> extends Observable
 	/**
 	 * Fires when a row is selected
 	 * @param tableRowSelect
-	 * @param rowIndex
+	 * @param storeIndex
 	 */
-	rowselect:<Sender extends T>  (tableRowSelect: Sender, rowIndex: number) => void
+	rowselect:<Sender extends T>  (tableRowSelect: Sender, storeIndex: number) => void
 
 	/**
 	 * Fires when a row is deselected
 	 *
 	 * @param tableRowSelect
-	 * @param rowIndex
+	 * @param storeIndex
 	 */
-	rowdeselect:<Sender extends T>  (tableRowSelect: Sender, rowIndex: number) => void
+	rowdeselect:<Sender extends T>  (tableRowSelect: Sender, storeIndex: number) => void
 }
 
 export interface TableRowSelect {
@@ -136,6 +136,8 @@ export class TableRowSelect extends Observable {
 
 		this.selected = selection;
 
+
+
 	}
 
 
@@ -146,7 +148,7 @@ export class TableRowSelect extends Observable {
 	 * @param silent Suspends 'selectionchange' event
 	 */
 	private setSelected(newSelection: number[], silent = false) {
-
+		console.warn(newSelection);
 		const old = this._selected;
 
 		this._selected = newSelection;

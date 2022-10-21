@@ -5,7 +5,7 @@ import {Component, Config, createComponent} from "../Component.js";
 import {Format} from "../../util/Format.js";
 import {checkbox} from "../form/CheckboxField.js";
 
-type TableColumnRenderer = (columnValue: any, record: StoreRecord, td: HTMLTableCellElement, table: Table, rowIndex: number) => string | Promise<string> | Component | Promise<Component>;
+type TableColumnRenderer = (columnValue: any, record: StoreRecord, td: HTMLTableCellElement, table: Table, storeIndex: number) => string | Promise<string> | Component | Promise<Component>;
 type HeaderRenderer = (col:TableColumn, headerEl: HTMLTableCellElement, table: Table) => string | Component;
 
 export type align = "left" | "right" | "center";
@@ -134,7 +134,12 @@ export class DateColumn extends TableColumn {
 export const datecolumn = (config: TableColumnConfig) => createComponent(new DateColumn(config.id), config);
 
 export class CheckboxColumn extends TableColumn {
-	width = 40
+	constructor(id:string) {
+		super(id);
+
+		this.cls = "checkbox-select-column";
+
+	}
 	renderer = (val: boolean) => {
 		return checkbox({
 			value: val
@@ -156,12 +161,10 @@ export class CheckboxSelectColumn extends TableColumn {
 		super("checkboxselect");
 		this.hidable = false;
 
-		// this.cls = "checkboxselect";
+		this.cls = "checkbox-select-column";
 	}
 
 	headerRenderer:HeaderRenderer = (col, headerEl,table) => {
-
-		headerEl.classList.add("checkbox-select-column");
 
 		return checkbox({
 			listeners: {
@@ -180,8 +183,6 @@ export class CheckboxSelectColumn extends TableColumn {
 	}
 
 	renderer:TableColumnRenderer = (val: boolean, record, td, table, rowIndex) => {
-
-		td.classList.add("checkbox-select-column");
 
 		return checkbox({
 			value: val,

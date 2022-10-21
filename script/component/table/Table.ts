@@ -10,6 +10,10 @@ import {draggable} from "../DraggableComponent.js";
 import {t} from "../../Translate.js";
 import { TableColumn } from "./TableColumns.js";
 
+
+type GroupByRenderer = (groupBy:string, record: StoreRecord, thEl: HTMLTableCellElement, table: Table) => string | Promise<string> | Component | Promise<Component>;
+
+
 /**
  * @inheritDoc
  */
@@ -32,19 +36,19 @@ export interface TableEventMap<Type extends Observable> extends ComponentEventMa
 	 * Fires when a row is clicked
 	 *
 	 * @param table
-	 * @param rowIndex
+	 * @param storeIndex
 	 * @param ev
 	 */
-	rowmousedown: <Sender extends Type> (table: Sender, rowIndex: number, ev: MouseEvent) => void
+	rowmousedown: <Sender extends Type> (table: Sender, storeIndex: number, ev: MouseEvent) => void
 
 	/**
 	 * Fires when a row is double clicked
 	 *
 	 * @param table
-	 * @param rowIndex
+	 * @param storeIndex
 	 * @param ev
 	 */
-	rowdblclick: <Sender extends Type> (table: Sender, rowIndex: number, ev: MouseEvent) => void
+	rowdblclick: <Sender extends Type> (table: Sender, storeIndex: number, ev: MouseEvent) => void
 
 	/**
 	 * Fires when records are rendered into rows.
@@ -58,10 +62,10 @@ export interface TableEventMap<Type extends Observable> extends ComponentEventMa
 	 * Fires when a row is clicked or navigated with arrows
 	 *
 	 * @param table
-	 * @param rowIndex
+	 * @param storeIndex
 	 * @param ev
 	 */
-	navigate: <Sender extends Type> (table: Sender, rowIndex: number, record: StoreRecord) => void
+	navigate: <Sender extends Type> (table: Sender, storeIndex: number, record: StoreRecord) => void
 
 }
 
@@ -84,10 +88,18 @@ export interface Table {
  * 		records.push({number: i, description: "Test " + i, createdAt: (new DateTime()).format("c")});
  * 	}
  *
- * 	const table = Table.create({
- * 		store: Store.create({
- * 			records: records,
- * 		  sort: [{property: "number", isAscending: true}]
+ * 	const table = table({
+ * 		store: const store = jmapstore({
+ * 			entity: "TaskList",
+ * 			properties: ['id', 'name', 'support'],
+ * 			queryParams: {
+ * 				limit: 20,
+ * 				filter: {
+ * 					forSupport: true,
+ * 					role: "support", //support tasklists
+ * 				}
+ * 			},
+ * 			sort: [{property: "name", isAscending: true}]
  * 		}),
  * 		cls: "fit",
  * 		columns: [
@@ -115,7 +127,7 @@ export interface Table {
  * 				resizable: true,
  * 				width: 300
  * 			},
- * 			DateColumn.create({
+ * 			datecolumn({
  * 				header: "Created At",
  * 				id: "createdAt",
  * 				sortable: true
@@ -144,9 +156,27 @@ export class Table<StoreType extends Store = Store> extends Component {
 	}
 
 	/**
+	 * Make the table fits its container in width by setting min-width: 100%
+	 * Defaults to true
+	 */
+	public fitComponent = true;
+
+	/**
 	 * Show headers
 	 */
 	public headers = true;
+
+	/**
+	 * Group the table by this property.
+	 */
+	public groupBy?:string;
+
+	/**
+	 * Group renderer function
+	 */
+	public groupByRenderer: GroupByRenderer = (groupBy, record, thEl, table1) => {
+		return groupBy;
+	}
 
 	/**
 	 * Shown when the table is empty.
@@ -182,22 +212,16 @@ export class Table<StoreType extends Store = Store> extends Component {
 	private rowSelect?: TableRowSelect;
 	private tbody?: HTMLTableSectionElement;
 
-	/**
-	 * Make the table fit it's container in width by setting min-width: 100%
-	 * Defaults to true
-	 */
-	public fitComponent = true;
-
 	private loadOnScroll: boolean = false;
 
 	private emptyStateEl?: HTMLDivElement;
 
 	private initNavigateEvent() {
-		this.on('rowmousedown', (table, rowIndex, ev) => {
+		this.on('rowmousedown', (table, storeIndex, ev) => {
 			if (!ev.shiftKey && !ev.ctrlKey) {
-				const record = this.store.get(rowIndex);
+				const record = this.store.get(storeIndex);
 
-				this.fire("navigate", this, rowIndex, record);
+				this.fire("navigate", this, storeIndex, record);
 			}
 		});
 
@@ -208,10 +232,10 @@ export class Table<StoreType extends Store = Store> extends Component {
 
 					const selected = this.rowSelect!.selected;
 					if (selected.length) {
-						const rowIndex = selected[0];
-						const record = this.store.get(rowIndex);
+						const storeIndex = selected[0];
+						const record = this.store.get(storeIndex);
 
-						this.fire("navigate", this, rowIndex, record);
+						this.fire("navigate", this, storeIndex, record);
 					}
 				}
 			});
@@ -320,6 +344,8 @@ export class Table<StoreType extends Store = Store> extends Component {
 
 		if(this.headers) {
 			this.renderHeaders();
+		} else {
+			this.renderColGroup();
 		}
 
 		this.renderRows(this.store.items);
@@ -335,7 +361,7 @@ export class Table<StoreType extends Store = Store> extends Component {
 		// Use unshift = true so that this listener executes first so that other load listners execute when the table is
 		// rendered and can select rows.
 		this.store.on("load", (store, records, append) => {
-			if (!append) {
+			if (!append && this.tbody) {
 				this.tbody!.innerHTML = "";
 			}
 			this.renderRows(records);
@@ -349,20 +375,21 @@ export class Table<StoreType extends Store = Store> extends Component {
 		}, {unshift: true});
 
 		if (this.rowSelect) {
-			this.rowSelect.on('rowselect', (tableRowSelect, rowIndex) => {
-				const tr = (<HTMLElement>this.tbody!.childNodes[rowIndex]);
+			this.rowSelect.on('rowselect', (tableRowSelect, storeIndex) => {
+				const tr = (<HTMLElement>this.tableEl!.querySelector("tr[data-store-index='" + storeIndex + "']"));
+
 				if (!tr) {
-					console.error("No row found for selected index: " + rowIndex + ". Maybe it's not rendered yet?");
+					console.error("No row found for selected index: " + storeIndex + ". Maybe it's not rendered yet?");
 					return;
 				}
 				tr.classList.add('selected');
 				tr.focus();
 			});
 
-			this.rowSelect.on('rowdeselect', (tableRowSelect, rowIndex) => {
-				const tr = (<HTMLElement>this.tbody!.childNodes[rowIndex]);
+			this.rowSelect.on('rowdeselect', (tableRowSelect, storeIndex) => {
+				const tr = (<HTMLElement>this.tableEl!.querySelector("tr[data-store-index='" + storeIndex + "']"));
 				if (!tr) {
-					console.error("No row found for selected index: " + rowIndex + ". Maybe it's not rendered yet?");
+					console.error("No row found for selected index: " + storeIndex + ". Maybe it's not rendered yet?");
 					return;
 				}
 				tr.classList.remove('selected');
@@ -404,12 +431,14 @@ export class Table<StoreType extends Store = Store> extends Component {
 		const target = <HTMLElement>e.target;
 		const tr = target.closest("tr")!;
 
-		if (!tr) {
+		if (!tr || tr.dataset.storeIndex === undefined) {
 			//clicked outside table
 			return -1;
+		} else
+		{
+			return parseInt(tr.dataset.storeIndex);
 		}
 
-		return Array.from(this.tbody!.children).indexOf(tr);
 	}
 
 	private onScroll() {
@@ -496,6 +525,39 @@ export class Table<StoreType extends Store = Store> extends Component {
 			return comp({tagName: "hr"});
 
 		}
+	}
+
+	private renderColGroup() {
+
+		const colGroup = document.createElement("colgroup");
+
+		let index = -1;
+		for (let h of this.columns) {
+			index++;
+			if (h.hidden) {
+				continue;
+			}
+			const col = document.createElement("col");
+
+			if (h.width) {
+				col.style.width = h.width + "px";
+			}
+
+			if (h.align) {
+				col.style.textAlign = h.align;
+			}
+
+			if(h.cls) {
+				col.classList.add(...h.cls.split(" "));
+			}
+
+			colGroup.appendChild(col);
+		}
+
+
+		this.tableEl!.appendChild(colGroup);
+
+		return colGroup;
 	}
 
 	private renderHeaders() {
@@ -647,30 +709,73 @@ export class Table<StoreType extends Store = Store> extends Component {
 
 	private renderRows(records: StoreRecord[]) {
 
-		if (!this.tbody) {
+		if (!this.tbody && !this.groupBy) {
 			this.tbody = document.createElement('tbody');
 			this.tableEl!.appendChild(this.tbody);
 		}
 
-		const frag = document.createDocumentFragment();
-
 		records.forEach((record, index) => {
-			const row = this.renderRow(record, frag, index);
+			this.renderGroup(record);
+			const row = this.renderRow(record, index);
 			if(this.rowSelection && this.rowSelection.selected.indexOf(index) > -1) {
 				row.classList.add("selected");
 			}
-		})
 
-		this.tbody.appendChild(frag);
+			this.tbody!.appendChild(row);
+		});
 
 		this.fire("renderrows", this, records);
 	}
 
-	private renderRow(record: any, tbody: DocumentFragment, rowIndex: number) {
+	private lastGroup?:string;
+
+	private renderGroup(record:StoreRecord) {
+		if(!this.groupBy) {
+			return;
+		}
+
+		if(!this.tbody || record[this.groupBy] != this.lastGroup) {
+			const tr = document.createElement("tr");
+			tr.classList.add("group");
+
+			const th = document.createElement("th");
+			th.colSpan = this.columns.length;
+
+			const r = this.groupByRenderer(record[this.groupBy], record, th, this);
+
+			if (typeof r === "string") {
+				th.innerHTML = r;
+			} else if (r instanceof Component) {
+				r.render(th);
+			} else {
+				r.then((s) => {
+					if (s instanceof Component) {
+						s.render(th);
+					} else {
+						th.innerHTML = s;
+					}
+				})
+			}
+
+			tr.appendChild(th);
+
+			this.tbody = document.createElement('tbody');
+			this.tbody!.appendChild(tr);
+
+			this.tableEl!.appendChild(this.tbody);
+
+
+			this.lastGroup = record[this.groupBy];
+		}
+	}
+
+	private renderRow(record: any, storeIndex: number) {
 		const row = document.createElement("tr");
 
 		// useful so it scrolls into view
 		row.setAttribute('tabindex', '0');
+		row.dataset.storeIndex = storeIndex + "";
+		row.classList.add("data");
 
 		for (let c of this.columns) {
 
@@ -683,16 +788,6 @@ export class Table<StoreType extends Store = Store> extends Component {
 				td.style.textAlign = c.align;
 			}
 
-			if(rowIndex == 0 && !this.headers) {
-				if (c.width) {
-					td.style.width = c.width + "px";
-				}
-
-				if (c.align) {
-					td.style.textAlign = c.align;
-				}
-			}
-
 			if(c.cls) {
 				td.classList.add(...c.cls.split(" "));
 			}
@@ -700,7 +795,7 @@ export class Table<StoreType extends Store = Store> extends Component {
 			let value = c.property ? ObjectUtil.path(record, c.property) : undefined;
 
 			if (c.renderer) {
-				const r = c.renderer(value, record, td, this, rowIndex);
+				const r = c.renderer(value, record, td, this, storeIndex);
 				if (typeof r === "string") {
 					td.innerHTML = r;
 				} else if (r instanceof Component) {
@@ -721,7 +816,6 @@ export class Table<StoreType extends Store = Store> extends Component {
 			row.appendChild(td);
 		}
 
-		tbody.appendChild(row);
 
 		return row;
 	}

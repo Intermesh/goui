@@ -6,7 +6,7 @@
 	&:focus-within {
 		table {
 			tbody {
-				tr.selected {
+				tr.data.selected {
 					background-color: $colorSelectedRow;
 					color: white;
 					a, i.icon, .checkbox input:before {
@@ -38,6 +38,12 @@
 	}
 
 	table {
+
+		//applies to th, td and col
+		.checkbox-select-column {
+			width: dp(48);
+		}
+
 		border-collapse: collapse;
 		border-spacing: 0;
 		table-layout: fixed;
@@ -46,12 +52,19 @@
 		tbody {
 			tr {
 				border-bottom: 1px solid $colorBorder;
-				&:hover {
-					background-color: $colorHover;
+
+				&.group {
+					color: $colorPrimary;
 				}
 
-				&.selected {
-					background-color: $colorSelectedRowInactive;
+				&.data {
+					&:hover {
+						background-color: $colorHover;
+					}
+
+					&.selected {
+						background-color: $colorSelectedRowInactive;
+					}
 				}
 			}
 		}
@@ -155,10 +168,6 @@
 				.hint, .label {
 					display: none;
 				}
-			}
-
-			&.checkbox-select-column {
-				width: dp(48);
 			}
 		}
 

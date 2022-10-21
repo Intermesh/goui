@@ -47,7 +47,7 @@ type UploadResponse = {
 	name: string
 }
 
-export class Client<UserType = User> extends Observable {
+export class Client<UserType extends User = User> extends Observable {
 	private _lastCallId = 0;
 	private _requests: [method: string, params: any, callid: string][] = [];
 	private _requestData: any = {};
@@ -87,7 +87,7 @@ export class Client<UserType = User> extends Observable {
 		} else if (this.user) {
 			return Promise.resolve(this.user);
 		} else {
-			return this.getUser();
+			return this.getUser().then(user => user || false);
 		}
 	}
 
@@ -111,7 +111,7 @@ export class Client<UserType = User> extends Observable {
 	}
 
 	public async logout() {
-		const response = await fetch(this.uri + "auth.php" + this.debugParam, {
+		await fetch(this.uri + "auth.php" + this.debugParam, {
 			method: "DELETE",
 			mode: "cors",
 			headers: {
@@ -178,10 +178,10 @@ export class Client<UserType = User> extends Observable {
 		});
 	}
 
-	private _user: Promise<User> | undefined;
+	private _user?: Promise<UserType | undefined>;
 
 	/**
-	 * Get the logged in user.
+	 * Get the logged-in user.
 	 */
 	public getUser() {
 		if (!this._user) {

@@ -103,7 +103,7 @@ export class EntityStore extends Observable {
 
 	single(id: Id, properties: string[] = []): Promise<Entity> {
 		return this.get([id], properties).then(response => {
-			return response.list[0];
+			return response.list[0] || undefined;
 		})
 	}
 
