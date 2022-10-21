@@ -386,6 +386,7 @@ form.goui {
 	z-index: $zIndexMenu;
 	flex-wrap: wrap;
 	max-width: 100%;
+	@extend .z8;
 }
 
 form {
@@ -423,18 +424,16 @@ form {
 			color: $colorPrimary;
 		}
 
-		box-shadow: 0px 10px 20px 0 rgb(0 0 0 / 40%);
+		box-shadow: 0 10px 20px 0 rgb(0 0 0 / 40%);
 	}
 }
 
 .autocomplete-suggestions {
 
-	box-shadow: 0px 10px 20px 0 rgb(0 0 0 / 40%);
+	@extend .z8;
 	border: $borderWidth solid $colorPrimary;
 	border-top: 0;
-	border-radius: $formFieldBorderRadius;
-	border-top-left-radius: 0;
-	border-top-right-radius: 0;
+	border-radius: 0 0 $formFieldBorderRadius $formFieldBorderRadius;
 	background-color: white;
 
 }

@@ -173,6 +173,7 @@ export class HtmlField extends Field {
 			title: "Text color",
 			icon: 'format_color_text',
 			menu: colormenu({
+				updateButton: false,
 				listeners: {
 					select: (menu, color) => {
 						this.execCmd("foreColor", color || "#000000")
@@ -186,8 +187,30 @@ export class HtmlField extends Field {
 			},
 			updateFn: (btn) => {
 				const s = document.getSelection();
-				let color = s ? this.closestStyle(<HTMLElement>s.anchorNode!, "color") : undefined;
-				btn.el.style.color = color || "";
+
+				if(!s || !s.anchorNode) {
+					btn.el.style.color = "";
+					return;
+				}
+				let el : Node|HTMLElement|null = s.anchorNode;
+
+				while(!(el instanceof HTMLElement) && el != null) {
+					el = el.parentElement;
+				}
+
+				if(!el) {
+					btn.el.style.color = "";
+					return;
+				}
+				// let color = s ? this.closestStyle(<HTMLElement>s.anchorNode!, "color") : undefined;
+				const closest = el.closest("[color]");
+
+				if(!closest) {
+					btn.el.style.color = "";
+					return;
+				}
+
+				btn.el.style.color = closest.getAttribute("color") + "";
 
 			}
 		},
@@ -195,6 +218,7 @@ export class HtmlField extends Field {
 			icon: 'format_color_fill',
 			title: "Background color",
 			menu: colormenu({
+				updateButton: false,
 				listeners: {
 					select: (menu, color) => {
 						this.execCmd("backColor", color || "#ffffff")
@@ -209,7 +233,8 @@ export class HtmlField extends Field {
 			updateFn: (btn) => {
 				const s = document.getSelection();
 				let bgcolor = s ? this.closestStyle(<HTMLElement>s.anchorNode!, "backgroundColor") : undefined;
-				btn.el.style.color = bgcolor || "";
+
+				btn.el.style.backgroundColor = bgcolor || "";
 
 			}
 		},

@@ -106,11 +106,24 @@
 	//removed for htmlfield toolbar inside menu
 	//padding-bottom: dp(18);
 
-	> h3 {
+	> h2 {
 		display: block;
 		margin: 0;
 		color: inherit;
 		font-size: sp(22);
+		line-height: normal;
+		font-weight: normal;
+		padding: 0;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	> h3 {
+		display: block;
+		margin: 0;
+		color: inherit;
+		font-size: sp(18);
 		line-height: normal;
 		font-weight: normal;
 		padding: 0;
