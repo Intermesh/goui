@@ -1,0 +1,163 @@
+html {
+	font-size:62.5%;
+}
+.datepicker {
+	width:226px;
+	position: relative;
+	dl {
+		width: 19.6rem;
+		margin: 0;
+		display: grid;
+		grid-template-columns: repeat(7, 1fr);
+		row-gap: 2px;
+	}
+
+	ul { // month / year picker
+		list-style-type: none;
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		align-items: center;
+		gap: 2px;
+		background-color: white;
+		overflow-y: scroll;
+		width: 100%;
+		top: 0;
+		bottom: 0;
+		margin: 0;
+		padding: 0;
+		&:first-child {
+			grid-template-columns: repeat(4, 1fr);
+		}
+		> li {
+			cursor: pointer;
+		}
+	}
+
+	ol { // weeknrs
+		list-style-type: none;
+		float: left;
+		border-right: 1px solid rgba(0, 0, 0, 0.16);
+		font-size: 1rem;
+		width: 2.8rem;
+		padding: 0;
+		margin: 3rem 0 0 0;
+		> li {
+			cursor: default;
+			user-select: none;
+			margin-bottom: 2px;
+		}
+	}
+	dd, dt, li {
+		text-align: center;
+		line-height: 2.8rem;
+		margin: 0;
+	}
+
+	dd { // dates
+		position: relative;
+		border-radius: 50%;
+		cursor: pointer;
+		user-select: none;
+		color: rgba(0, 0, 0, 0.87);
+		&.selected {
+			border-radius: 0;
+			&.head {
+				border-top-left-radius: 50%;
+				border-bottom-left-radius: 50%;
+			}
+			&.tail {
+				border-top-right-radius: 50%;
+				border-bottom-right-radius: 50%;
+			}
+		}
+		&.today:before {
+			content: '';
+			position: absolute;
+			left: 0;
+			right: 0;
+			top: 0;
+			bottom: 0;
+		}
+		&.off {
+			color: rgba(0, 0, 0, 0.38);
+		}
+	}
+
+	header > span:hover,
+	ul > li:hover,
+	dd:hover {
+		background-color: rgba(0, 0, 0, 0.08);
+	}
+
+	.selected, .selected:hover {
+		background-color: rgba(20, 115, 230, 0.1);
+	}
+
+	li {
+		border-radius: 1.2rem;
+	}
+
+	li.now,
+	dd.today:before {
+		color: #005fb8;
+		border: 1px solid #005fb8;
+		border-radius: 1.2rem;
+	}
+
+	dt {
+		font-size: 1rem;
+		cursor: default;
+		user-select: none;
+		text-transform: uppercase;
+	}
+
+	header {
+		display: flex;
+		> * {
+			flex: 1;
+			text-align: center;
+		}
+		> button {
+			width: 28px;
+			max-width: 28px;
+			padding: 0;
+			border: 0;
+		}
+		> span {
+			cursor: pointer;
+		}
+	}
+
+	.cards {
+		position: relative;
+		height: 20.8rem; /* 6x28 + 12m */
+		overflow: hidden;
+		&.top {
+			position: absolute;
+			top: 17px;
+			bottom: 0;
+			width: 100%;
+		}
+		> * {
+			position: absolute;
+			transition: transform 250ms ease-in;
+			z-index: 0;
+		}
+		> .active {
+			z-index: 1;
+			transform: translateY(0) !important;
+		}
+		&.top > * {
+			transform: translateY(-100%);
+		}
+		> *:last-child,,
+		&.reverse > * {
+			transform: translateY(-100%);
+		}
+		> *,
+		&.reverse > *:last-child {
+			transform: translateY(100%);
+		}
+	}
+
+}

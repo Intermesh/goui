@@ -364,6 +364,22 @@ export class DateTime {
 
 	readonly date: Date;
 
+	static dayNames: string[] = [];
+	static monthNames: string[] = []
+
+	static staticInit() {
+		let tmp = new Date('1970-01-01');
+		tmp.setDate(tmp.getDate() - tmp.getDay()); // to sunday
+		for (let i = 0; i < 7; i++) {
+			DateTime.dayNames.push(tmp.toLocaleString(navigator.language, {weekday: 'long'}));
+			tmp.setDate(tmp.getDate()+1);
+		}
+		for (let i = 0; i < 12; i++) {
+			tmp.setMonth(i);
+			DateTime.monthNames.push(tmp.toLocaleString(navigator.language, {month: 'long'})); // slow operation
+		}
+	}
+
 	/**
 	 * The timezone of the date
 	 */
@@ -606,13 +622,18 @@ export class DateTime {
 		return this;
 	}
 
+	setDay(day:number) {
+		this.date.setDate(this.date.getDate() - (this.date.getDay() || 7) + day + 1); // || 7 + 1 is for monday first dotw
+		return this;
+	}
+
 	addYears(years:number) {
 		this.date.setFullYear(this.date.getFullYear() + years);
 		return this;
 	}
 
 	addMonths(months:number) {
-		this.date.setDate(this.date.getMonth() + months);
+		this.date.setMonth(this.date.getMonth() + months);
 		return this;
 	}
 
@@ -986,5 +1007,6 @@ export class DateTime {
 
 
 }
+DateTime.staticInit();
 
 
