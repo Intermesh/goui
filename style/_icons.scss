@@ -29,7 +29,9 @@ $material-icons-font-path: '../node_modules/material-icons/iconfont/';
 	font-feature-settings: 'liga';
 }
 
-i.icon {
+.goui {
+	i.icon {
 
-	@extend %icon;
+		@extend %icon;
+	}
 }

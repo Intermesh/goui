@@ -20,10 +20,10 @@
 	gap: 0;
 	justify-content: flex-start;
 	flex-wrap: nowrap;
-
-	> div {
+	align-items: stretch;
+	> *:not(.goui-form-field) {
 		flex:none; //setting flex none prevents squishing of elements with no flex setting.
-		overflow: hidden; // to prevent growing larger than container: https://stackoverflow.com/questions/36230944/prevent-flex-items-from-overflowing-a-container
+		min-width: 0; // to prevent growing larger than container: https://stackoverflow.com/questions/36230944/prevent-flex-items-from-overflowing-a-container
 	}
 
 	> hr {
@@ -55,11 +55,11 @@
 	display: flex;
 	flex-direction: column;
 	flex-wrap: nowrap;
-	overflow: hidden;
-	> div {
+	align-items: stretch;
+	> *:not(.goui-form-field) {
 		flex:none; //setting flex none prevents squishing of elements with no flex setting.
 		overflow: hidden; // to prevent growing larger than container: https://stackoverflow.com/questions/36230944/prevent-flex-items-from-overflowing-a-container
-
+		min-height: 0;
 	}
 }
 
