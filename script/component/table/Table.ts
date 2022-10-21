@@ -11,7 +11,7 @@ import {t} from "../../Translate.js";
 import { TableColumn } from "./TableColumns.js";
 
 
-type GroupByRenderer = (groupBy:string, record: StoreRecord, thEl: HTMLTableCellElement, table: Table) => string | Promise<string> | Component | Promise<Component>;
+type GroupByRenderer = (groupBy:any, record: StoreRecord, thEl: HTMLTableCellElement, table: Table) => string | Promise<string> | Component | Promise<Component>;
 
 
 /**
@@ -747,7 +747,7 @@ export class Table<StoreType extends Store = Store> extends Component {
 				th.innerHTML = r;
 			} else if (r instanceof Component) {
 				r.render(th);
-			} else {
+			} else if(r instanceof Promise) {
 				r.then((s) => {
 					if (s instanceof Component) {
 						s.render(th);
@@ -755,6 +755,8 @@ export class Table<StoreType extends Store = Store> extends Component {
 						th.innerHTML = s;
 					}
 				})
+			} else {
+				console.warn("Renderer returned invalid value: ", r);
 			}
 
 			tr.appendChild(th);
