@@ -9,7 +9,12 @@
 		text-align: left;
 	}
 
-	word-break: break-word;
+	overflow-wrap: break-word;
+
+	pre {
+		white-space: pre-wrap;
+	}
+
 	font: $fontBase;
 	color: $colorText;
 
