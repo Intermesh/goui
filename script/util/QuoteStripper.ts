@@ -95,7 +95,7 @@ export class QuoteStripper {
 
 		for (let i = 0, c = lines.length; i < c; i++) {
 			const plain = lines[i].replace(/(<([^>]+)>)/ig, ""); //strip html tags
-			const pattern = /[a-z]+:.*[a-z0-9._\-+&]+@[a-z0-9.\-_]+/i;
+			const pattern = /[a-z]+:(\s|&nbsp;)+.*&lt;[a-z0-9._\-+&]+@[a-z0-9.\-_]+&gt;/i;
 
 			//Match:
 			//ABC: email@domain.com
