@@ -1,5 +1,8 @@
 import {Field} from "./Field.js";
 import {Config, createComponent} from "../Component.js";
+import {E} from "../../util/Element.js";
+
+type CheckBoxType = 'box' | 'switch' | 'button';
 
 /**
  * Checkbox field
@@ -8,9 +11,20 @@ import {Config, createComponent} from "../Component.js";
  */
 export class CheckboxField extends Field {
 
+	/**
+	 * render the checkbox as a checkbox, switch or toggle button
+	 */
+	readonly type : CheckBoxType;
+
+	constructor(type: CheckBoxType = 'box') {
+		super();
+		this.type = type;
+		this.el.cls(type,true);
+	}
+
 	protected input: HTMLInputElement | undefined;
 
-	protected baseCls = 'goui-form-field checkbox';
+	protected baseCls = 'goui-form-field check';
 
 	protected applyTitle() {
 		if (this.title) {
@@ -35,41 +49,23 @@ export class CheckboxField extends Field {
 
 	protected createControl(): undefined | HTMLElement {
 
-		const control = document.createElement("div");
+		const el = E('input').on("change", () => {this.fireChange();});
+		el.type = "checkbox";
+		el.required = this.required;
+		el.name = this.name;
+		el.readOnly = this.readOnly;
+		el.checked = !!this.value;
 
-		//grab value before creating this.input otherwise it will return the input value
-		const v = this.value;
-
-		this.input = document.createElement("input");
-		this.input.type = "checkbox";
-
-		this.input.required = this.required;
-		this.input.name = this.name;
-		this.input.readOnly = this.readOnly;
-		// this.input.hidden = true;
-
-		if (v) {
-			this.input.checked = v;
-		}
+		this.input = el;
 
 		if (this.invalidMsg) {
 			this.applyInvalidMsg();
 		}
 
-		this.input.addEventListener("change", () => {
-			this.fireChange();
-		});
-
-		control.appendChild(this.input);
-
-		const boxLabel = document.createElement("span");
-		boxLabel.classList.add('box-label');
-		boxLabel.innerHTML = this.label;
-		control.appendChild(boxLabel);
-
-
-		return control;
-
+		return E('div',
+			this.input,
+			E('span',this.label).cls('box-label')
+		);
 	}
 
 	setInvalid(msg: string) {
@@ -157,4 +153,4 @@ export class CheckboxField extends Field {
  *
  * @param config
  */
-export const checkbox = (config?: Config<CheckboxField>) => createComponent(new CheckboxField(), config);
+export const checkbox = (config?: Config<CheckboxField>) => createComponent(new CheckboxField(config?.type||'box'), config);

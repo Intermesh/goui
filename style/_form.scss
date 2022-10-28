@@ -220,8 +220,79 @@ form.goui {
 
 
 	/** start checkbox **/
-
-	&.checkbox {
+	&.check {
+		input {
+			-webkit-appearance: none;
+			-moz-appearance: none;
+			appearance: none;
+			cursor: pointer;
+		}
+		&.box input {
+			min-width: dp(24);
+			min-height:dp(24);
+			width: dp(24);
+			height:dp(24);
+			background-color: $colorBackgroundInput;
+			border: 2px solid $colorBorder;
+			border-radius: $borderRadius;
+			&:checked:before { // tick?
+				top: dp(-1);
+				left:dp(2);
+				float:left;
+				position: relative;
+				font-weight: 600;
+				font-size:1.2em;
+				width: dp(24);
+				height:dp(24);
+				content: '\2713';
+				text-shadow: 0 0 white;
+				color:$colorPrimary;
+			}
+			&:focus {
+				border-color: $colorPrimary;
+			}
+			&[style]:checked:before {
+				color:inherit;
+				text-shadow: 0 0 1px black;
+			}
+		}
+		&.switch input { // track
+			background-color: $colorBackgroundInput;
+			width: 44px;
+			height: 24px;
+			overflow:hidden;
+			border: 2px solid $colorLine;
+			border-radius:999px;
+			&::before {
+				content: '' !important;
+			}
+			&::after { // thumb
+				color:white;
+				font-size: .7em;
+				content: "";
+				transition: 100ms transform ease-out;
+				margin: 4px 0 0 4px;
+				display:block;
+				height: 12px;
+				width: 12px;
+				background-color:  rgba(0, 0, 0, 0.48);
+				border-radius:999px;
+			}
+			&:checked {
+				background-color: $colorPrimary;
+			}
+			&:checked::after  {
+				transform: scale(1.5) translateX(12px);
+				background-color:white;
+			}
+			&:active::after { // focus
+				transform: scale(1.75);
+			}
+			&:active:checked::after  {
+				transform:scale(1.75) translateX(12px);
+				background-color: $colorBackgroundInput;
+			}
+		}
 
 		.wrap {
 			background-color: transparent;
@@ -235,37 +306,7 @@ form.goui {
 		.control {
 			display: flex;
 			padding: dp(8) 0;
-
-			input  {
-				min-height: dp(24);
-				min-width: dp(24);
-				height: dp(24);
-				width: dp(24);
-
-				&:before {
-					@extend %icon;
-					content: "check_box_outline_blank";
-				}
-
-				appearance: none;
-				-webkit-appearance: none;
-				-moz-appearance: none;
-
-				display: inline-block;
-				position: relative;
-				margin: auto 0;
-				//color: $colorTextSecondary;
-				text-align: center;
-				line-height: dp(18);
-				font-size: dp(14);
-			}
-
-			input:checked {
-				&:before {
-					content: "check_box";
-				}
-			}
-
+			align-items: center;
 
 			.box-label {
 				flex: 1;
@@ -283,21 +324,16 @@ form.goui {
 
 		}
 	}
-
-
-
 	/** end checkbox **/
 
-	/** start select **/
+
 	&.select {
 		position: relative;
-
 		select {
 			padding-right: dp(32);
 			background-image: none;
 			appearance: none;
 		}
-
 		&:after {
 			color: $colorPrimary;
 			position: absolute;
@@ -309,11 +345,7 @@ form.goui {
 			content: "expand_more";
 			pointer-events: none;
 		}
-	}
-
-	/** end select **/
-
-
+	} // end select
 
 }
 
