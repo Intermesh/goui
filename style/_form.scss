@@ -39,7 +39,7 @@ $formFieldBorderRadius: dp(10);
 	width: 100%;
 	display: block;
 	align-self: start;
-	margin-bottom: dp(16);
+	margin-bottom: dp(20);
 	border-radius: $formFieldBorderRadius;
 	.wrap {
 		display: flex;
@@ -141,7 +141,7 @@ $formFieldBorderRadius: dp(10);
 		position:absolute;
 		left: dp(16);
 		padding: 0 dp(4);
-		top:calc(#{dp(13)} + .5em);
+		top: $baseLineHeight / 2 + dp(13);
 		height: 3px;
 		background-color: $colorBackgroundInput;
 
@@ -192,7 +192,7 @@ $formFieldBorderRadius: dp(10);
 		font-size: dp(14);
 		color: $colorTextSecondary;
 		line-height: dp(20); //match icon
-		padding: dp(8) dp(18);
+		padding: dp(8) dp(18) 0;
 		//height: dp(30);
 		flex: 1 1 100%;
 
@@ -233,7 +233,7 @@ $formFieldBorderRadius: dp(10);
 			width: $baseLineHeight;
 			height:$baseLineHeight;
 			background-color: $colorBackgroundInput;
-			border: $borderWidth solid $colorBorder;
+			border: $borderWidth solid $colorText;
 			border-radius: $borderRadius / 2;
 			&:checked:before { // tick?
 				top: dp(0.5) - $borderWidth;

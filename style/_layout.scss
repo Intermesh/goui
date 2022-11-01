@@ -1,7 +1,11 @@
 .goui {
 	font: $fontBase;
 	box-sizing: border-box;
+	> * {
+		box-sizing: border-box;
+	}
 }
+
 .goui.light-bg {
 	background-color: white;
 }
