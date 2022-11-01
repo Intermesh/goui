@@ -178,6 +178,12 @@ export class PlayGroundWindow extends Window {
 						checkbox({
 							label: "A checkbox label comes after",
 							name: "checkbox"
+						}),
+
+						checkbox({
+							label: "Checkbox type switch",
+							name: "checkbox",
+							type: "switch"
 						})
 					)
 				),
