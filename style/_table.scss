@@ -9,7 +9,7 @@
 				tr.data.selected {
 					background-color: $colorSelectedRow;
 					color: white;
-					a, i.icon, .check.box input:before {
+					a, i.icon {
 						color: white;
 					}
 				}
