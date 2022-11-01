@@ -6,7 +6,7 @@ $formFieldBorderRadius: dp(10);
 	min-width: dp(100); //for select element
 	margin: 0;
 	border: 0;
-	padding: dp(13) dp(18);
+	padding: dp(11) dp(18);
 	width: 100%;
 	outline: none;
 	color: $colorText;
@@ -39,7 +39,7 @@ $formFieldBorderRadius: dp(10);
 	width: 100%;
 	display: block;
 	align-self: start;
-	margin-bottom: dp(20);
+	margin-bottom: dp(16);
 	border-radius: $formFieldBorderRadius;
 	.wrap {
 		display: flex;
@@ -141,7 +141,7 @@ $formFieldBorderRadius: dp(10);
 		position:absolute;
 		left: dp(16);
 		padding: 0 dp(4);
-		top: $baseLineHeight / 2 + dp(13);
+		top: $baseLineHeight / 2 + dp(11);
 		height: 3px;
 		background-color: $colorBackgroundInput;
 
