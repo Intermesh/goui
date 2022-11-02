@@ -1,3 +1,6 @@
+@use 'sass:math';
+
+
 $formFieldBorderRadius: dp(10);
 
 %input {
@@ -6,7 +9,7 @@ $formFieldBorderRadius: dp(10);
 	min-width: dp(100); //for select element
 	margin: 0;
 	border: 0;
-	padding: dp(13) dp(18);
+	padding: dp(11) dp(18);
 	width: 100%;
 	outline: none;
 	color: $colorText;
@@ -27,13 +30,13 @@ $formFieldBorderRadius: dp(10);
 		color: $colorTextPlaceholder;
 	}
 	&+div.label, &+.goui-toolbar+div.label {
-		transform: translateY(calc(#{dp(-13)} - 0.62em)) scale(.8);
+		font-size: sp(13);
+		top: 0;
+		//transform: translateY(calc(#{dp(-13)} - 0.62em)) scale(.8);
 	}
 }
 
-form.goui {
-	background-color: $colorBackgroundForm;
-}
+
 
 .goui-form-field {
 	width: 100%;
@@ -141,17 +144,17 @@ form.goui {
 		position:absolute;
 		left: dp(16);
 		padding: 0 dp(4);
-		top:calc(#{dp(13)} + 0.62em);
+		top: math.div($baseLineHeight, 2) + dp(11);
 		height: 3px;
 		background-color: $colorBackgroundInput;
 
-		transition: transform 200ms linear;
+		transition: all 200ms linear;
 
 		//below performs better but looks ugly on windows :(
-		will-change: transform;
+		will-change: top, font-size;
 
-		transform: none;
-		transform-origin: top left;
+		//transform: none;
+		//transform-origin: top left;
 
 		&:empty {
 			display: none;
@@ -192,7 +195,7 @@ form.goui {
 		font-size: dp(14);
 		color: $colorTextSecondary;
 		line-height: dp(20); //match icon
-		padding: dp(8) dp(18);
+		padding: dp(8) dp(18) 0;
 		//height: dp(30);
 		flex: 1 1 100%;
 
@@ -228,22 +231,22 @@ form.goui {
 			cursor: pointer;
 		}
 		&.box input {
-			min-width: dp(24);
-			min-height:dp(24);
-			width: dp(24);
-			height:dp(24);
+			min-width: $baseLineHeight;
+			min-height: $baseLineHeight;
+			width: $baseLineHeight;
+			height:$baseLineHeight;
 			background-color: $colorBackgroundInput;
-			border: 2px solid $colorBorder;
-			border-radius: $borderRadius;
+			border: $borderWidth solid $colorText;
+			border-radius: math.div($borderRadius, 2);
 			&:checked:before { // tick?
-				top: dp(-1);
-				left:dp(2);
+				top: dp(0.5) - $borderWidth;
+				left: dp(3) - $borderWidth;
 				float:left;
 				position: relative;
 				font-weight: 600;
-				font-size:1.2em;
-				width: dp(24);
-				height:dp(24);
+				font-size: $baseLineHeight - dp(4);
+				width: $baseLineHeight;
+				height:$baseLineHeight;
 				content: '\2713';
 				text-shadow: 0 0 white;
 				color:$colorPrimary;
@@ -258,23 +261,27 @@ form.goui {
 		}
 		&.switch input { // track
 			background-color: $colorBackgroundInput;
-			width: 44px;
-			height: 24px;
+			width: dp(50);
+			height: dp(28);
 			overflow:hidden;
-			border: 2px solid $colorLine;
+			border: $borderWidth solid $colorBorder;
+			position:relative;
 			border-radius:999px;
 			&::before {
 				content: '' !important;
 			}
 			&::after { // thumb
+				position:absolute;
+				top: 0px - $borderWidth;
+				left: 0px - $borderWidth;
 				color:white;
 				font-size: .7em;
 				content: "";
 				transition: 100ms transform ease-out;
-				margin: 4px 0 0 4px;
+				margin: dp(7);
 				display:block;
-				height: 12px;
-				width: 12px;
+				height: dp(14);
+				width: dp(14);
 				background-color:  rgba(0, 0, 0, 0.48);
 				border-radius:999px;
 			}
@@ -282,14 +289,14 @@ form.goui {
 				background-color: $colorPrimary;
 			}
 			&:checked::after  {
-				transform: scale(1.5) translateX(12px);
+				transform: scale(1.5) translateX(dp(14));
 				background-color:white;
 			}
 			&:active::after { // focus
 				transform: scale(1.75);
 			}
 			&:active:checked::after  {
-				transform:scale(1.75) translateX(12px);
+				transform:scale(1.75) translateX(dp(14));
 				background-color: $colorBackgroundInput;
 			}
 		}
