@@ -354,6 +354,11 @@ export type Timezone =
 
 const SystemTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone.toLowerCase() as Timezone;
 
+function pad(n: string|number): string {
+	return (n < 10 ? '0':'') + n;
+}
+const durationRegex = /(-)?P(?:([.,\d]+)Y)?(?:([.,\d]+)M)?(?:([.,\d]+)W)?(?:([.,\d]+)D)?(?:T(?:([.,\d]+)H)?(?:([.,\d]+)M)?(?:([.,\d]+)S)?)?/;
+
 /**
  * DateTime object
  *
@@ -364,19 +369,27 @@ export class DateTime {
 
 	readonly date: Date;
 
+	static firstWeekDay = 1; // 1 = monday, 7 = sunday
 	static dayNames: string[] = [];
 	static monthNames: string[] = []
 
-	static staticInit() {
-		let tmp = new Date('1970-01-01');
-		tmp.setDate(tmp.getDate() - tmp.getDay()); // to sunday
-		for (let i = 0; i < 7; i++) {
-			DateTime.dayNames.push(tmp.toLocaleString(navigator.language, {weekday: 'long'}));
-			tmp.setDate(tmp.getDate()+1);
+	static staticInit(lang: string) {
+		const locale = new Intl.Locale(lang);
+		if('weekInfo' in locale) {
+			// @ts-ignore
+			DateTime.firstWeekDay = locale.weekInfo.firstDay; // weekInfo might not be supported in all browsers
 		}
+		let tmp = new Date('1970-01-01'),
+		   intlDays = new Intl.DateTimeFormat(lang, {weekday: 'long'});
+
+		for (let i = 0; i < 7; i++) {  // monday
+			tmp.setDate(i + 4 + DateTime.firstWeekDay);
+			DateTime.dayNames.push(intlDays.format(tmp));
+		}
+		let intlMonth = new Intl.DateTimeFormat(lang, {month: 'long'});
 		for (let i = 0; i < 12; i++) {
 			tmp.setMonth(i);
-			DateTime.monthNames.push(tmp.toLocaleString(navigator.language, {month: 'long'})); // slow operation
+			DateTime.monthNames.push(intlMonth.format(tmp));
 		}
 	}
 
@@ -393,7 +406,6 @@ export class DateTime {
 			this.date = new Date(date);
 		}
 	}
-
 
 	/**
 	 * User timezone offset in minutes
@@ -457,6 +469,33 @@ export class DateTime {
 		d.setMinutes(d.getMinutes() - newOffset + offset );
 
 		return d;
+	}
+
+	diff(end: DateTime) {
+		let monthDays = end.clone().setDate(0).getDate(),
+			sihdmy = [0,0,0,0,0, end.getYear() - this.getYear()],
+			it = 0,
+			map = {getSeconds: 60, getMinutes: 60, getHours: 24, getDate: monthDays, getMonth: 12};
+		for(let i in map) {
+			let fn = i as 'getSeconds' | 'getMinutes' | 'getHours' | 'getDate' | 'getMonth';
+			if(sihdmy[it]+end[fn]() < this[fn]()){
+				sihdmy[it+1]--;
+				sihdmy[it] += map[fn] - this[fn]() + end[fn]();
+			} else if(sihdmy[it]+end[fn]() > this[fn]()) {
+				sihdmy[it] += end[fn]() - this[fn]();
+			}
+			it++;
+		}
+		// sec, min, hour, day, month, year
+		const [s,i,h,d,m,y] = sihdmy;
+		return 'P'+(y>0 ? y+'Y':'')+
+			(m>0 ? m+'M':'')+
+			(d>0 ? d+'D':'')+
+			((h || i || s) ? 'T'+
+				(h>0 ? h+'H':'')+
+				(i>0 ? i+'M':'')+
+				(s>0 ? s+'S':''):'');
+
 	}
 
 	/**
@@ -554,11 +593,26 @@ export class DateTime {
 		return this.date.getMonth() + 1;
 	}
 
-	getMonthDay(): number {
+	getDate() : number {
 		return this.date.getDate();
 	}
+	getMonthDay(): number {
+		return this.getDate();
+	}
 
+	getDay() : number {
+		return this.date.getDay();
+	}
+
+	/**
+	 * Like getDay but take firstWeekDay of the week into account
+	 * 0 = first day of the week, 6 = last day
+	 */
 	getWeekDay() : number {
+		if (DateTime.firstWeekDay == 1) { // monday
+			return (this.date.getDay() || 7) - 1;
+		}
+		// sunday
 		return this.date.getDay();
 	}
 
@@ -586,9 +640,11 @@ export class DateTime {
 	/**
 	 * Sets the hour value in the Date object
 	 * @param hours A numeric value equal to the hours value.
+	 * @params min A numeric value equal to the minutes value.
+	 * @param sec A numeric value equal to the seconds value.
 	 */
-	setHours(hours: number) {
-		this.date.setHours(hours);
+	setHours(hours: number, min = this.date.getMinutes(), sec = this.date.getSeconds()) {
+		this.date.setHours(hours, min, sec);
 		return this;
 	}
 
@@ -617,13 +673,22 @@ export class DateTime {
 		return this;
 	}
 
-	setMonthDay(date:number) {
+	setDate(date:number) {
 		this.date.setDate(date);
 		return this;
 	}
+	setMonthDay(date:number) {
+		return this.setDate(date);
+	}
 
+	setWeekDay(day:number) {
+		this.date.setDate(this.date.getDate() - this.getWeekDay() + day);
+		return this;
+	}
+
+	/** Jump to day in current week */
 	setDay(day:number) {
-		this.date.setDate(this.date.getDate() - (this.date.getDay() || 7) + day + 1); // || 7 + 1 is for monday first dotw
+		this.date.setDate(this.date.getDate() - this.date.getDay() + day);
 		return this;
 	}
 
@@ -657,7 +722,22 @@ export class DateTime {
 		return this;
 	}
 
-
+	addDuration(iso8601: string) {
+		let p:any,
+			matches = iso8601.match(durationRegex)!;
+		matches.shift(); // full match
+		const sign = matches.shift() || '';
+		for(let o of ['FullYear', 'Month', 'Week', 'Date', 'Hours', 'Minutes', 'Seconds']) {
+			if(p = matches.shift()) { // p= amount to add
+				if(o === 'Week') {
+					p *= 7;
+					o = 'Date';
+				}
+				this.date['set'+o as 'setDate'](this.date['get'+o as 'getDate']() + parseInt(sign+p))
+			}
+		}
+		return this;
+	}
 
 	/**
 	 * Check if current date is in a leap year
@@ -677,169 +757,99 @@ export class DateTime {
 		return m == 1 && this.isLeapYear() ? 29 : daysInMonth[m];
 	}
 
+	getGMTOffset(colon: ":"|"" = ":") {
+		const tzo = this.getTimezoneOffset();
+		return (tzo > 0 ? "-" : "+") + pad(Math.floor(Math.abs(tzo) / 60)) + colon + pad(Math.abs(tzo % 60));
+	}
+
+	private static converters: {[key:string]:(date: DateTime) => string|number} = {
+		'd': date => pad(date.getMonthDay()),
+		'D': date => DateTime.dayNames[date.getWeekDay()].substring(0,3),
+		'j': date => date.getMonthDay(),
+		'l': date => DateTime.dayNames[date.getWeekDay()],
+
+		'w': date => date.getDay(),
+		'z': date => date.getDayOfYear(),
+		'W': date => date.getWeekOfYear(),
+		'F': date => DateTime.monthNames[date.getMonth()-1],
+		'm': date => pad(date.getMonth()),
+		'M': date => DateTime.monthNames[date.getMonth()-1].substring(0,3),
+		'n': date => date.getMonth(),
+
+		'Y': date => date.getYear(),
+		'y': date => (date.getYear()+"").substr(-2),
+		'a': date => date.getHours() > 12 ? 'pm' : 'am',
+		'A': date => date.getHours() > 12 ? 'PM' : 'AM',
+
+		'g': date => date.getHours() % 12,
+		'G': date => date.getHours(),
+		'h': date => pad(date.getHours() % 12),
+		'H': date => pad(date.getHours()),
+		'i': date => pad(date.getMinutes()),
+		's': date => pad(date.getSeconds()),
+
+		'O': date => date.getGMTOffset(""),
+		'P': date => date.getGMTOffset(),
+		'U': date => Math.floor(date.getTime() / 1000),
+		'c': date => date.format("Y-m-d\TH:i:sP")
+	};
+
 	/**
 	 * Format date similar to PHP's date function
 	 *
 	 * Note: indented options are NOT supported.
 	 *
 	 * d - The day of the month (from 01 to 31)
-	 *    D - A textual representation of a day (three letters)
+	 * D - A textual representation of a day (three letters)
 	 * j - The day of the month without leading zeros (1 to 31)
-	 *    l (lowercase 'L') - A full textual representation of a day
+	 * l (lowercase 'L') - A full textual representation of a day
 	 * N - The ISO-8601 numeric representation of a day (1 for Monday, 7 for Sunday)
-	 *    S - The English ordinal suffix for the day of the month (2 characters st, nd, rd or th. Works well with j)
+	 * S - The English ordinal suffix for the day of the month (2 characters st, nd, rd or th. Works well with j)
 	 * w - A numeric representation of the day (0 for Sunday, 6 for Saturday)
 	 * z - The day of the year (from 0 through 365)
 	 * W - The ISO-8601 week number of year (weeks starting on Monday)
-	 *    F - A full textual representation of a month (January through December)
+	 * F - A full textual representation of a month (January through December)
 	 * m - A numeric representation of a month (from 01 to 12)
-	 *    M - A short textual representation of a month (three letters)
+	 * M - A short textual representation of a month (three letters)
 	 * n - A numeric representation of a month, without leading zeros (1 to 12)
-	 *    t - The number of days in the given month
-	 *    L - Whether it's a leap year (1 if it is a leap year, 0 otherwise)
-	 *    o - The ISO-8601 year number
+	 * t - The number of days in the given month
+	 * L - Whether it's a leap year (1 if it is a leap year, 0 otherwise)
+	 * o - The ISO-8601 year number
 	 * Y - A four digit representation of a year
 	 * y - A two digit representation of a year
 	 * a - Lowercase am or pm
 	 * A - Uppercase AM or PM
-	 *      B - Swatch Internet time (000 to 999)
+	 * B - Swatch Internet time (000 to 999)
 	 * g - 12-hour format of an hour (1 to 12)
 	 * G - 24-hour format of an hour (0 to 23)
 	 * h - 12-hour format of an hour (01 to 12)
 	 * H - 24-hour format of an hour (00 to 23)
 	 * i - Minutes with leading zeros (00 to 59)
 	 * s - Seconds, with leading zeros (00 to 59)
-	 *      u - Microseconds (added in PHP 5.2.2)
-	 *      e - The timezone identifier (Examples: UTC, GMT, Atlantic/Azores)
-	 *    I  (capital i) - Whether the date is in daylights savings time (1 if Daylight Savings Time, 0 otherwise)
-	 *  O - Difference to Greenwich time (GMT) in hours (Example: +0100)
-	 *  P - Difference to Greenwich time (GMT) in hours:minutes (added in PHP 5.1.3)
-	 *    T - Timezone abbreviations (Examples: EST, MDT)
-	 *    Z - Timezone offset in seconds. The offset for timezones west of UTC is negative (-43200 to 50400)
+	 * u - Microseconds (added in PHP 5.2.2)
+	 * e - The timezone identifier (Examples: UTC, GMT, Atlantic/Azores)
+	 * I  (capital i) - Whether the date is in daylights savings time (1 if Daylight Savings Time, 0 otherwise)
+	 * O - Difference to Greenwich time (GMT) in hours (Example: +0100)
+	 * P - Difference to Greenwich time (GMT) in hours:minutes (added in PHP 5.1.3)
+	 * T - Timezone abbreviations (Examples: EST, MDT)
+	 * Z - Timezone offset in seconds. The offset for timezones west of UTC is negative (-43200 to 50400)
 	 * c - The ISO-8601 date (e.g. 2013-05-05T16:34:42+00:00)
-	 *    r - The RFC 2822 formatted date (e.g. Fri, 12 Apr 2013 12:01:05 +0200)
+	 * r - The RFC 2822 formatted date (e.g. Fri, 12 Apr 2013 12:01:05 +0200)
 	 * U - The seconds since the Unix Epoch (January 1 1970 00:00:00 GMT)
 	 */
 	format(format: string): string {
-
-		function twelvehr(d: Date) {
-			const hour = d.getHours();
-			if (hour > 12) {
-				return (hour - 12).toString();
-			} else {
-				return hour.toString();
-			}
-		}
-
-		function getGMTOffset(d:DateTime, colon = ":") {
-
-			const tzo = d.getTimezoneOffset();
-
-			return (tzo > 0 ? "-" : "+")
-				+ (Math.floor(Math.abs(tzo) / 60).toString().padStart(2, "0")
-					+ (colon ? ":" : "")
-					+ Math.abs(tzo % 60).toString().padStart(2, "0"));
-		}
 
 		const chars = format.split("");
 		let output = "";
 		for (let i = 0, l = chars.length; i < l; i++) {
 			let char = chars[i];
-			switch (char) {
-
-				case 'W':
-					char = this.getWeekOfYear().toString();
-					break;
-
-				case 'w':
-					char = this.getWeekDay().toString();
-					break;
-
-				case 'z':
-					char = this.getDayOfYear().toString();
-					break;
-
-				case 'Y':
-					char = this.getYear().toString();
-					break;
-
-				case 'y':
-					char = this.getYear().toString();
-					break;
-
-				case 'm':
-					char = this.getMonth().toString().padStart(2, "0");
-					break;
-
-				case 'n':
-					char = this.getMonth().toString();
-					break;
-
-				case 'd':
-					char = this.getMonthDay().toString().padStart(2, "0");
-					break;
-
-				case 'j':
-					char = this.getMonthDay().toString();
-					break;
-
-				case 'H':
-					char = this.getHours().toString().padStart(2, "0");
-					break;
-
-				case 'G':
-					char = this.getHours().toString();
-					break;
-
-				case 'h':
-					char = twelvehr(this.date).padStart(2, "0");
-					break;
-
-				case 'g':
-					char = twelvehr(this.date);
-					break;
-
-				case 'i':
-					char = this.getMinutes().toString().padStart(2, "0");
-					break;
-
-				case 's':
-					char = this.getSeconds().toString().padStart(2, "0");
-					break;
-
-				case 'a':
-					char = this.getHours() > 12 ? 'pm' : 'am';
-					break;
-
-				case 'A':
-					char = this.getHours() > 12 ? 'PM' : 'AM';
-					break;
-
-				case 'U':
-					char = (this.getTime() / 1000).toString();
-					break;
-
-				case 'O':
-					char = getGMTOffset(this, "");
-					break;
-
-				case 'P':
-					char = getGMTOffset(this);
-					break;
-				case 'c':
-					char = this.format("Y-m-d\TH:i:sP");
-					break;
-
-				case '\\':
-					i++;
-					if (chars.length > i + 1) {
-						char += chars[i];
-					}
-					break;
-
-				default:
-					//do nothing
-					break;
+			if(char == '\\') {
+				i++;
+				if (chars.length > i + 1) {
+					char += chars[i];
+				}
+			} else if (char in DateTime.converters) {
+				char = DateTime.converters[char](this)+"";
 			}
 			output += char;
 		}
@@ -1007,6 +1017,6 @@ export class DateTime {
 
 
 }
-DateTime.staticInit();
+DateTime.staticInit(navigator.language);
 
 

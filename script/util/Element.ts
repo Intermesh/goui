@@ -1,6 +1,6 @@
-export function E<K extends keyof HTMLElementTagNameMap>(tagName: K, ...items: (Node|string)[]): HTMLElementTagNameMap[K] {
-	const el = document.createElement(tagName) ;
-	el.append(...items);
+export function E<K extends keyof HTMLElementTagNameMap>(tag: K, ...items: (Node|string|number)[]): HTMLElementTagNameMap[K] {
+	const el = document.createElement(tag) ;
+	el.append(...items as (Node|string)[]);
 	return el;
 }
 declare global {
@@ -45,8 +45,17 @@ declare global {
 
 		/** Check if tagName matches case-insensitive */
 		isA(tagName: string): boolean
+
+		/**
+		 * Look up the dom tree for an element matchign the expression
+		 * If no selector is given, return the parent
+		 * @param selector , a valid CSS selector
+		 * @param until and the highest element to look bot. (dofault <body>)
+		 */
+		up(selector: string, until?: Element): HTMLElement | null
 	}
 }
+
 Object.assign(Element.prototype, {
 	on(event: string, listener: (e: Event) => void, useCapture?: boolean) {
 		this.addEventListener(event, listener, useCapture);
@@ -92,5 +101,16 @@ Object.assign(Element.prototype, {
 	},
 	isA(tagName: string) { /* Check element by tagname */
 		return this.tagName.toLowerCase() === tagName.toLowerCase();
-	}
+	},
+	up(expression?: string, until?: Element) {
+		if(!expression) return this.parentElement;
+		let curr = this;
+		do {
+			if (curr === until)
+				return null;
+			// Return any node that matches the expression, if there is one.
+			if (curr.matches(expression))
+				return curr;
+		} while (curr = curr.parentElement!)
+	},
 } as Element);
