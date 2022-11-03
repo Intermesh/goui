@@ -39,7 +39,12 @@ export class JmapStore extends Store {
 
 	public relations?: Relation;
 
-	public properties?: string[] = []
+	public properties?: string[] = [];
+
+	/**
+	 * True when loaded at least once.
+	 */
+	private loaded = false;
 
 	constructor(entity:string) {
 		super();
@@ -50,7 +55,9 @@ export class JmapStore extends Store {
 
 		// very quick and dirty update on changes to the entity store.
 		this.entityStore.on('change', async () => {
-			await this.reload();
+			if(this.loaded) {
+				await this.reload();
+			}
 		});
 
 	}
@@ -103,6 +110,7 @@ export class JmapStore extends Store {
 
 		return Promise.all(promises).then(() => {
 			this.loadData(records, append);
+			this.loaded = true;
 			return records;
 		});
 	}
