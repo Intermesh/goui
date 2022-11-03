@@ -61,12 +61,11 @@ export class Client<UserType extends User = User> extends Observable {
 
 
 	set session(value) {
-
-		this.fire("authenticated", this);
-
 		cookies.set("jmapSession", JSON.stringify(value));
 
 		this._session = value;
+
+		this.fire("authenticated", this);
 	}
 
 	get session() {
