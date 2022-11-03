@@ -28,14 +28,13 @@ export interface ForgottenData {
 	email: String
 }
 
-interface ClientEventMap<T extends Observable> extends ObservableEventMap<T> {
-	login?: () => void
-	logout?: () => void
+interface ClientEventMap<Type extends Observable>  extends ObservableEventMap<Type> {
+	authenticated?: <Sender extends Type>(client: Sender) => void
+	logout?: <Sender extends Type>(client: Sender) => void
 }
 
 export interface Client {
 	on<K extends keyof ClientEventMap<Client>>(eventName: K, listener: ClientEventMap<Client>[K]): void
-
 	fire<K extends keyof ClientEventMap<Client>>(eventName: K, ...args: Parameters<NonNullable<ClientEventMap<Client>[K]>>): boolean
 }
 
@@ -62,6 +61,8 @@ export class Client<UserType extends User = User> extends Observable {
 
 
 	set session(value) {
+
+		this.fire("authenticated", this);
 
 		cookies.set("jmapSession", JSON.stringify(value));
 
@@ -120,7 +121,7 @@ export class Client<UserType extends User = User> extends Observable {
 		});
 
 		this.session = {};
-		this.fire("logout");
+		this.fire("logout", this);
 	}
 
 	private static blobCache: Record<string, Promise<any>> = {};
