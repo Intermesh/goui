@@ -8,6 +8,7 @@
 			tbody {
 				tr.data.selected {
 					background-color: $colorSelectedRow;
+					outline: none;
 					color: white;
 					a, i.icon {
 						color: white;
