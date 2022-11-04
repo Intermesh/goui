@@ -17,7 +17,7 @@ export class PlaygroundTablePanel extends Component {
 
 		const table = new PlaygroundTable();
 
-
+		//clone the array for filtering
 		const records = ObjectUtil.clone(table.store.getArray());
 
 		this.items.add(
@@ -28,7 +28,7 @@ export class PlaygroundTablePanel extends Component {
 					listeners: {
 						input:(searchBtn, text) => {
 
-							//clone the array for filtering
+
 							const filtered = records.filter((r) => {
 								// console.warn(r.description, text, r.description.indexOf(text))
 								return !text || r.description.toLowerCase().indexOf(text.toLowerCase()) === 0;
