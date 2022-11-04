@@ -1,10 +1,11 @@
+@use 'sass:math';
 
 .goui-button  {
 	color: inherit;
 	background-color: transparent;
 	border: 0;
 	border-radius: dp(12);
-	padding: dp(11) dp(18); //padding 11 because line height is 24 instead of 22
+	padding: dp(10) dp(16); //padding 11 because line height is 24 instead of 22
 
 	display: flex;
 	align-items: center;
@@ -17,7 +18,7 @@
 
 	&.with-text {
 		i.icon {
-			margin-right: dp(12);
+			margin-right: dp(8);
 		}
 	}
 
@@ -155,21 +156,14 @@
 			padding-top:0;
 		}
 
-		input.text {
-			padding-top: dp(10);
-			padding-bottom: dp(10);
-
-			&:focus, &:not(:placeholder-shown) {
-				&+div.label, &+.goui-toolbar+div.label {
-					transform: translateY(calc(#{dp(-10)} - 0.63em)) scale(.8);
-				}
-			}
-		}
-
-		div.label {
-			top: calc(#{dp(10)} + 0.62em);
-
-		}
+		//input.text {
+		//	padding-top: dp(10);
+		//	padding-bottom: dp(10);
+		//}
+		//
+		//div.label {
+		//	top: math.div($baseLineHeight, 2) + dp(11);
+		//}
 
 	}
 }
