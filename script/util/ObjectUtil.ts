@@ -70,14 +70,14 @@ export class ObjectUtil
 		return o1;
 	}
 
-	// /**
-	//  * Clone an object
-	//  *
-	//  * @param source
-	//  */
-	// public static clone<T>(source: T): T {
-	// 	return this.deepClone(source);
-	// }
+	/**
+	 * Clone an object
+	 *
+	 * @param source
+	 */
+	public static clone<T>(source: T): T {
+		return JSON.parse(JSON.stringify(source));
+	}
 	//
 	// private static deepClone(source: any, hash = new WeakMap()): any {
 	// 	if(Array.isArray(source)) {

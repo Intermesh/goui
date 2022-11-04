@@ -9,7 +9,7 @@ type ButtonType = "button" | "submit" | "reset";
 /**
  * @inheritDoc
  */
-export interface ButtonEventMap<Sender extends Observable> extends ComponentEventMap<Sender> {
+export interface ButtonEventMap<Type extends Observable> extends ComponentEventMap<Type> {
 	/**
 	 * Fires before showing the button menu. Return false to abort.
 	 *
@@ -17,7 +17,7 @@ export interface ButtonEventMap<Sender extends Observable> extends ComponentEven
 	 * @param item
 	 * @param index
 	 */
-	beforeshowmenu: <T extends Sender> (button: T, menu: Menu, ev: MouseEvent) => false | void
+	beforeshowmenu: <Sender extends Type> (button: Sender, menu: Menu, ev: MouseEvent) => false | void
 
 	/**
 	 * Fires when the button menu is shown
@@ -26,7 +26,7 @@ export interface ButtonEventMap<Sender extends Observable> extends ComponentEven
 	 * @param menu
 	 * @param ev
 	 */
-	showmenu: <T extends Sender> (button: T, menu: Menu, ev: MouseEvent) => false | void,
+	showmenu: <Sender extends Type> (button: Sender, menu: Menu, ev: MouseEvent) => false | void,
 
 	/**
 	 * Fires when the button is clicked.
@@ -37,7 +37,7 @@ export interface ButtonEventMap<Sender extends Observable> extends ComponentEven
 	 * @param button
 	 * @param ev
 	 */
-	click: <T extends Sender> (button: T, ev: MouseEvent) => void
+	click: <Sender extends Type> (button: Sender, ev: MouseEvent) => void
 }
 
 export interface Button extends Component {

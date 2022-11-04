@@ -14,27 +14,27 @@ import {t} from "../Translate.js";
 /**
  * @inheritDoc
  */
-export interface WindowEventMap<Sender extends Observable> extends DraggableComponentEventMap<Sender> {
+export interface WindowEventMap<Type extends Observable> extends DraggableComponentEventMap<Type> {
 	/**
 	 * Fires when the window is closed
 	 *
 	 * @param window
 	 */
-	close: <T extends Sender>(window: T) => void
+	close: <Sender extends Type>(window: Sender) => void
 
 	/**
 	 * Fires when the window is maximized
 	 *
 	 * @param window
 	 */
-	maximize: <T extends Sender>(window: T) => void
+	maximize: <Sender extends Type>(window: Sender) => void
 
 	/**
 	 * Fires when the window is restored after being maximized
 	 *
 	 * @param window
 	 */
-	unmaximize:<T extends Sender> (window: T) => void
+	unmaximize:<Sender extends Type> (window: Sender) => void
 }
 
 export interface Window {
