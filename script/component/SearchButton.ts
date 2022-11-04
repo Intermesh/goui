@@ -39,6 +39,8 @@ export class SearchButton extends Button {
 
 		this.icon = "search";
 
+		this.title = t("Search");
+
 		this.searchField = textfield({
 			label: t("Search"),
 			flex: 1,
@@ -93,7 +95,8 @@ export class SearchButton extends Button {
 		if(!this.searchTBar) {
 			this.searchTBar = tbar({},
 				btn({
-					icon: "arrow_back",
+					icon: "chevron_left",
+					title: t("Back"),
 					handler: () => {
 						this.close();
 					}
