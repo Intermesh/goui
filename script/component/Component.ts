@@ -618,6 +618,41 @@ export class Component extends Observable {
 		});
 	}
 
+
+	/**
+	 * Get the component that's next to this one
+	 */
+	public nextItem() {
+
+		if(!this.parent) {
+			return undefined;
+		}
+		const index = this.parent.items.indexOf(this);
+
+		if(index == -1) {
+			return undefined;
+		}
+
+		return this.parent.items.get(index + 1);
+	}
+
+	/**
+	 * Get the component that's previous to this one
+	 */
+	public previousItem() {
+
+		if(!this.parent) {
+			return undefined;
+		}
+		const index = this.parent.items.indexOf(this);
+
+		if(index < 1) {
+			return undefined;
+		}
+
+		return this.parent.items.get(index - 1);
+	}
+
 	/**
 	 * Find ancestor
 	 *

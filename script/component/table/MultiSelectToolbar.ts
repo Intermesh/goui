@@ -1,42 +1,62 @@
 import {comp, Component, Config} from "../Component.js";
-import {Toolbar} from "../Toolbar.js";
-
+import {tbarItems, Toolbar} from "../Toolbar.js";
+import {Table} from "./Table.js";
+import {t} from "../../Translate.js";
+import {btn, Button} from "../Button.js";
 
 export class MultiSelectToolbar extends Toolbar {
+	private label: Component;
+	private backBtn: Button;
 
+	constructor(private table: Table) {
+		super();
 
+		this.table.rowSelection!.on("selectionchange", (tableRowSelect) => {
 
+			const l = tableRowSelect.selected.length;
+
+			this.hidden = l < 2;
+
+			if(!this.hidden) {
+				this.label.text = l + " " + t("selected");
+			}
+		});
+
+		this.label = comp({tagName: "h3"});
+
+		this.backBtn = btn({
+			title: t("Back"),
+			icon: "chevron_left",
+			handler: () => {
+				this.table.rowSelection!.clear();
+			}
+		})
+
+		this.items.add(this.backBtn, this.label);
+
+		this.hidden = true;
+
+		this.cls = "multiselect";
+	}
 }
 
-export const mstbar = (config?: Config<MultiSelectToolbar>, ...items: (Component | "->" | "-")[]) => {
 
+/**
+ * Create a {@see MultiSelectToolbar} component
+ *
+ * {@see Toolbar} for an example
+ *
+ * @param config
+ * @param items
+ */
+export const mstbar = (config: Config<MultiSelectToolbar> & {table: Table}, ...items: (Component | "->" | "-")[]) => {
 
-	const c = new MultiSelectToolbar();
+	const c = new MultiSelectToolbar(config.table);
 	if (config) {
 		Object.assign(c, config);
 	}
 
-	if (items && items.length) {
-
-		for (let i = 0, l = items?.length; i < l; i++) {
-			switch (items[i]) {
-				case '->':
-					items[i] = comp({
-						flex: 1
-					});
-					break;
-				case '-':
-					items[i] = comp({tagName: "hr"})
-					break;
-			}
-		}
-
-		c.items.add(...items as Component[]);
-
-	}
+	c.items.add(...tbarItems(items));
 
 	return c;
-
 }
-
-

@@ -97,6 +97,28 @@
 
 .goui.goui-toolbar {
 	@extend .hbox;
+
+	position: relative;// for absolute toolbars inside
+
+	// toolbar inside a toolbar will be an overlay
+	> .goui.goui-toolbar {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background-color: white;
+	}
+
+	&.search {
+		z-index: 1;
+	}
+
+	&.multiselect {
+		// should be higher than search toolbar
+		z-index: 2;
+	}
+
 	align-items: center;
 	user-select: none;
 	-moz-user-select: none;

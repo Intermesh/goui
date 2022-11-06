@@ -44,6 +44,7 @@ export class SearchButton extends Button {
 		this.searchField = textfield({
 			label: t("Search"),
 			flex: 1,
+
 			buttons: [
 				btn({
 					icon: "clear",
@@ -54,7 +55,6 @@ export class SearchButton extends Button {
 			]
 		});
 
-
 		this.searchField.on("render", () => {
 			this.searchField.input!.addEventListener('input', FunctionUtil.buffer(this.buffer, this.onInput.bind(this)))
 		})
@@ -63,8 +63,6 @@ export class SearchButton extends Button {
 		this.handler = (button, ev) => {
 
 			this.mainTbar = button.parent as Toolbar;
-			this.mainTbar.hide();
-
 			this.getSearchTBar().show();
 
 			this.searchField.focus();
@@ -93,7 +91,10 @@ export class SearchButton extends Button {
 	private getSearchTBar() {
 
 		if(!this.searchTBar) {
-			this.searchTBar = tbar({},
+				this.searchTBar = tbar({
+					cls: "search"
+					},
+
 				btn({
 					icon: "chevron_left",
 					title: t("Back"),
@@ -104,22 +105,32 @@ export class SearchButton extends Button {
 				this.searchField
 			);
 
-			const cmpWithToolBar = (this.mainTbar!.parent as Component);
-
-			const i = cmpWithToolBar.items.indexOf(this.mainTbar!);
-			cmpWithToolBar.items.insert(i, this.getSearchTBar());
+			this.mainTbar!.items.add(this.searchTBar);
 		}
 
 		return this.searchTBar;
 	}
-
-
 }
-
-
 
 /**
  * Shorthand function to create {@see SearchButton}
+ *
+ * @example
+ * ```
+ * searchbtn({
+ * 	listeners: {
+ * 		input:(searchBtn, text) => {
+ *
+ * 			const filtered = records.filter((r) => {
+ * 				return !text || r.description.toLowerCase().indexOf(text.toLowerCase()) === 0;
+ * 			});
+ *
+ * 			//simple local filter on the store
+ * 			table.store.loadData(filtered, false)
+ * 		}
+ * 	}
+ * })
+ * ```
  *
  * @param config
  * @param items

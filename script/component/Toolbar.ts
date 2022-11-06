@@ -37,17 +37,59 @@ export class Toolbar extends Component {
 
 }
 
+/**
+ * Create a {@see Toolbar} component
+ *
+ * @example
+ * ```
+ * tbar({},
+ * 	"->",
+ *
+ * 	searchbtn({
+ * 		listeners: {
+ * 			input:(searchBtn, text) => {
+ *
+ * 				const filtered = records.filter((r) => {
+ * 					return !text || r.description.toLowerCase().indexOf(text.toLowerCase()) === 0;
+ * 				});
+ *
+ * 				//simple local filter on the store
+ * 				table.store.loadData(filtered, false)
+ * 			}
+ * 		}
+ * 	}),
+ *
+ * 	btn({
+ * 		icon: "add",
+ * 		cls: "primary",
+ * 		text: "Add",
+ * 		handler: () => {
+ * 			router.goto("playground/window");
+ * 		}
+ * 	}),
+ *
+ * 	mstbar({table: table}, "->", btn({icon: "delete"})),
+ * ),
+ *
+ * 	```
+ * @param config
+ * @param items
+ */
 export const tbar = (config?: Config<Toolbar>, ...items: (Component | "->" | "-")[]) => {
-
-
 	const c = new Toolbar();
 	if (config) {
 		Object.assign(c, config);
 	}
 
-	if (items && items.length) {
+	c.items.add(...tbarItems(items));
+	return c;
+}
 
-		for (let i = 0, l = items?.length; i < l; i++) {
+export const tbarItems = (items: (Component | "->" | "-")[]) : Component[] => {
+	const l = items.length;
+	if (l) {
+
+		for (let i = 0; i < l; i++) {
 			switch (items[i]) {
 				case '->':
 					items[i] = comp({
@@ -59,13 +101,8 @@ export const tbar = (config?: Config<Toolbar>, ...items: (Component | "->" | "-"
 					break;
 			}
 		}
-
-		c.items.add(...items as Component[]);
-
 	}
-
-	return c;
-
+	return items as Component[];
 }
 
 

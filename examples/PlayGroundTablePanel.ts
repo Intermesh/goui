@@ -8,6 +8,7 @@ import {router} from "@goui/Router.js";
 import {searchbtn, SearchButton} from "@goui/component/SearchButton.js";
 import {ArrayUtil} from "@goui/util/ArrayUtil.js";
 import {ObjectUtil} from "@goui/util/ObjectUtil.js";
+import {mstbar} from "@goui/component/table/MultiSelectToolbar.js";
 
 
 export class PlaygroundTablePanel extends Component {
@@ -24,13 +25,12 @@ export class PlaygroundTablePanel extends Component {
 
 			tbar({},
 				"->",
+
 				searchbtn({
 					listeners: {
 						input:(searchBtn, text) => {
 
-
 							const filtered = records.filter((r) => {
-								// console.warn(r.description, text, r.description.indexOf(text))
 								return !text || r.description.toLowerCase().indexOf(text.toLowerCase()) === 0;
 							});
 
@@ -48,8 +48,11 @@ export class PlaygroundTablePanel extends Component {
 						router.goto("playground/window");
 					}
 				}),
+
+				mstbar({table: table}, "->", btn({icon: "delete"})),
 			),
-			table,
+
+			table
 		)
 	}
 }
