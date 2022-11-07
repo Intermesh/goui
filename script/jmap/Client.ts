@@ -29,7 +29,7 @@ export interface ForgottenData {
 }
 
 interface ClientEventMap<Type extends Observable>  extends ObservableEventMap<Type> {
-	authenticated?: <Sender extends Type>(client: Sender) => void
+	authenticated?: <Sender extends Type>(client: Sender, session: any) => void
 	logout?: <Sender extends Type>(client: Sender) => void
 }
 
@@ -64,8 +64,6 @@ export class Client<UserType extends User = User> extends Observable {
 
 		if(value) {
 			cookies.set("accessToken", value);
-
-			this.fire("authenticated", this);
 		} else
 		{
 			this._session = undefined;
@@ -81,6 +79,8 @@ export class Client<UserType extends User = User> extends Observable {
 
 	set session(session:any) {
 		sessionStorage.setItem("jmapSession", JSON.stringify(session));
+
+		this.fire("authenticated", this, session);
 
 		this._session = session;
 
