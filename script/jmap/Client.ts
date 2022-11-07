@@ -55,26 +55,57 @@ export class Client<UserType extends User = User> extends Observable {
 
 	private debugParam = "?XDEBUG_SESSION=1"
 
-	public user: UserType | undefined;
+	private user: UserType | undefined;
 
 	public uri = "";
 
 
-	set session(value) {
-		cookies.set("jmapSession", JSON.stringify(value));
+	set accessToken(value: string|undefined) {
 
-		this._session = value;
+		if(value) {
+			cookies.set("accessToken", value);
 
-		this.fire("authenticated", this);
+			this.fire("authenticated", this);
+		} else
+		{
+			this._session = undefined;
+			sessionStorage.removeItem("jmapSession");
+
+			cookies.unset("accessToken");
+		}
+	}
+
+	get accessToken() {
+		return cookies.get("accessToken");
+	}
+
+	set session(session:any) {
+		sessionStorage.setItem("jmapSession", JSON.stringify(session));
+
+		this._session = session;
+
+		this.accessToken = session.accessToken;
 	}
 
 	get session() {
-		if (!this._session) {
-			const cookie = cookies.get("jmapSession");
-			this._session = cookie ? JSON.parse(cookie) : {};
+		if(this._session) {
+			return Promise.resolve(this._session);
+		}
+		let session = sessionStorage.getItem("jmapSession");
+		if(session && (session = JSON.parse(session))) {
+			this._session = session;
+			return Promise.resolve(this._session);
 		}
 
-		return this._session;
+		return this.request().then(response => {
+
+			return  response.json();
+
+		}).then(session => {
+			this.session = session;
+
+			return this._session;
+		});
 	}
 
 	get lastCallId() {
@@ -82,7 +113,7 @@ export class Client<UserType extends User = User> extends Observable {
 	}
 
 	public isLoggedIn(): Promise<User | false> {
-		if (!("accessToken" in this.session)) {
+		if (!this.accessToken) {
 			return Promise.resolve(false);
 		} else if (this.user) {
 			return Promise.resolve(this.user);
@@ -91,16 +122,16 @@ export class Client<UserType extends User = User> extends Observable {
 		}
 	}
 
-	private async request(data: Object) {
+	private async request(data?: Object) {
 
 		const response = await fetch(this.uri + "jmap.php" + this.debugParam, {
-			method: "POST",
+			method: data ? "POST" : "GET",
 			mode: "cors",
 			headers: {
 				'Content-Type': 'application/json',
-				'Authorization': 'Bearer ' + this.session.accessToken
+				'Authorization': 'Bearer ' + this.accessToken
 			},
-			body: JSON.stringify(data)
+			body: data ? JSON.stringify(data) : undefined
 		});
 
 		if (response.status != 200) {
@@ -115,11 +146,11 @@ export class Client<UserType extends User = User> extends Observable {
 			method: "DELETE",
 			mode: "cors",
 			headers: {
-				'Authorization': 'Bearer ' + this.session.accessToken
-			},
+				'Authorization': 'Bearer ' + this.accessToken
+			}
 		});
 
-		this.session = {};
+		this.accessToken = "";
 		this.fire("logout", this);
 	}
 
@@ -129,7 +160,7 @@ export class Client<UserType extends User = User> extends Observable {
 		let fetchOptions = {
 			method: 'GET',
 			headers: {
-				'Authorization': 'Bearer ' + client.session.accessToken
+				'Authorization': 'Bearer ' + client.accessToken
 			}
 		};
 
@@ -178,31 +209,46 @@ export class Client<UserType extends User = User> extends Observable {
 		});
 	}
 
-	private _user?: Promise<UserType | undefined>;
-
 	/**
 	 * Get the logged-in user.
 	 */
-	public getUser() {
-		if (!this._user) {
-			this._user = this.store('User').single(this.session.userId, [
-				'id', 'username', 'displayName', 'email', 'avatarId', 'dateFormat', 'timeFormat', 'timezone', 'thousandsSeparator', 'decimalSeparator', 'currency']).then((user) => {
-				this.user = user as UserType;
-				Format.dateFormat = user.dateFormat;
-				Format.timeFormat = user.timeFormat;
-				Format.timezone = user.timezone as Timezone;
-				Format.currency = user.currency;
-				Format.thousandsSeparator = user.thousandsSeparator;
-				Format.decimalSeparator = user.decimalSeparator;
+	public async getUser() {
+		if (!this.user) {
 
-				return user;
-			}).catch((reason) => {
-				this._user = undefined;
+			const session = await this.session;
+			if(!session) {
+				this.accessToken = "";
+				return undefined;
+			}
+
+			try {
+				this.user = await this.store('User').single(session.userId, [
+						'id', 'username', 'displayName', 'email', 'avatarId', 'dateFormat', 'timeFormat', 'timezone', 'thousandsSeparator', 'decimalSeparator', 'currency']
+					) as UserType;
+
+				if(this.user) {
+
+					Format.dateFormat = this.user.dateFormat;
+					Format.timeFormat = this.user.timeFormat;
+					Format.timezone = this.user.timezone as Timezone;
+					Format.currency = this.user.currency;
+					Format.thousandsSeparator = this.user.thousandsSeparator;
+					Format.decimalSeparator = this.user.decimalSeparator;
+
+					return this.user;
+				} else
+				{
+					this.accessToken = "";
+					return undefined;
+				}
+			} catch(reason) {
+				this.user = undefined;
+				this.accessToken = "";
 				return Promise.reject(reason);
-			}) as Promise<UserType>;
+			}
 		}
 
-		return this._user;
+		return this.user;
 	}
 
 	private stores: Record<string, EntityStore> = {};
@@ -232,7 +278,7 @@ export class Client<UserType extends User = User> extends Observable {
 		return fetch(this.uri + "upload.php" + this.debugParam, { // Your POST endpoint
 			method: 'POST',
 			headers: {
-				'Authorization': 'Bearer ' + this.session.accessToken,
+				'Authorization': 'Bearer ' + this.accessToken,
 				'X-File-Name': "UTF-8''" + encodeURIComponent(file.name),
 				'Content-Type': file.type,
 				'X-File-LastModified': Math.round(file['lastModified'] / 1000).toString()
@@ -290,9 +336,6 @@ export class Client<UserType extends User = User> extends Observable {
 							console.debug("Aborted");
 							return true;
 						}
-						// if (response[0] == "error") {
-						// 	console.error('server-side JMAP failure', response);
-						// }
 
 						const success = response[0] !== "error";
 
