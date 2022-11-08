@@ -84,7 +84,9 @@ export class Client<UserType extends User = User> extends Observable {
 
 		this._session = session;
 
-		this.accessToken = session.accessToken;
+		if(session.accessToken) {
+			this.accessToken = session.accessToken;
+		}
 	}
 
 	get session() {
