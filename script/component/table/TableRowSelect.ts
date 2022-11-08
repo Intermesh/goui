@@ -148,7 +148,7 @@ export class TableRowSelect extends Observable {
 	 * @param silent Suspends 'selectionchange' event
 	 */
 	private setSelected(newSelection: number[], silent = false) {
-		console.warn(newSelection);
+
 		const old = this._selected;
 
 		this._selected = newSelection;
@@ -156,7 +156,6 @@ export class TableRowSelect extends Observable {
 		const deselect = ArrayUtil.diff(old, newSelection);
 		const select = ArrayUtil.diff(newSelection, old);
 
-		// console.log(this._selected,old, select, deselect);
 
 		deselect.forEach(i => {
 			this.fire('rowdeselect', this, i);
