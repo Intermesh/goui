@@ -222,8 +222,6 @@ export class Form extends ContainerField {
 			}
 
 			this.fire("submit", this, handlerResponse);
-
-			this.reset();
 		} else {
 			el.classList.add('invalid');
 			el.classList.remove('valid');
