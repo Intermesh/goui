@@ -55,8 +55,13 @@ $formFieldBorderRadius: dp(10);
 		menu.goui-toolbar {
 			background-color: transparent;
 			padding: 0 !important;
-			border: 0 !important;
 			border-radius: 0 $formFieldBorderRadius $formFieldBorderRadius 0;
+
+			border-left: $borderWidth solid $colorBorder !important; //importants for Window rule for border top
+			border-top: 0 !important;
+			border-right: 0 !important;
+			border-bottom: 0 !important;
+
 			min-height: auto;
 
 			> * {
@@ -215,6 +220,12 @@ $formFieldBorderRadius: dp(10);
 		&:focus {
 			color: $colorPrimary;
 		}
+	}
+
+	input.text {
+		text-overflow: ellipsis;
+		overflow: hidden;
+		white-space: nowrap;
 	}
 
 	/**  end text and textarea **/

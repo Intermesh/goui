@@ -124,12 +124,14 @@ export abstract class Field extends Component {
 
 		const el = super.internalRender();
 
-		// if(this.hideLabel) {
-		// 	el.classList.add('hide-label');
-		// }
-
 		this.validateOnBlur();
 
+		this.renderControl();
+
+		return el;
+	}
+
+	protected renderControl() {
 		const control = this.createControl();
 		if (control) {
 			control.classList.add("control");
@@ -154,13 +156,10 @@ export abstract class Field extends Component {
 			this.toolbar.parent = this;
 			this.toolbar.render(this.wrap);
 		}
-
 		const hint = this.createHint();
 		if (hint) {
-			el.appendChild(hint);
+			this.el.appendChild(hint);
 		}
-
-		return el;
 	}
 
 	protected createControl(): HTMLElement | undefined {

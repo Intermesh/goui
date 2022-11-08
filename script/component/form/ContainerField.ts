@@ -134,11 +134,7 @@ export class ContainerField extends Field {
 		}
 	}
 
-	protected createLabel(): HTMLDivElement | void {
-
-	}
-
-	protected createHint(): HTMLDivElement | void{
+	protected renderControl() {
 
 	}
 
