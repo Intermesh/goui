@@ -57,11 +57,7 @@ export class Splitter extends DraggableComponent {
 			}
 
 			if(this._state) {
-				if (this._state.width)
-					this._resizeComponent.width = this._state.width;
-
-				if (this._state.height)
-					this._resizeComponent.height = this._state.height;
+				this.restoreState(this._state);
 			}
 		});
 	}
@@ -72,6 +68,16 @@ export class Splitter extends DraggableComponent {
 		// we don't know the component to resize yet so store the state until
 		// this component is added to a parent.
 		this._state = state;
+
+		if(this._resizeComponent) {
+			if(this._state) {
+				if (this._state.width)
+					this._resizeComponent.width = this._state.width;
+
+				if (this._state.height)
+					this._resizeComponent.height = this._state.height;
+			}
+		}
 	}
 
 	protected buildState() {
