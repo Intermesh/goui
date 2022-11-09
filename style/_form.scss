@@ -249,22 +249,23 @@ $formFieldBorderRadius: dp(10);
 			background-color: $colorBackgroundInput;
 			border: $borderWidth solid $colorText;
 			border-radius: math.div($borderRadius, 2);
-			&:before {
+			&:before { // tick
 				content: '';
+				transform: scale(0);
 				display:inline-block;
 				margin: 0-$borderWidth;
 				width: $baseLineHeight;
 				height: $baseLineHeight;
-				transform: scale(0);
-				transition: 120ms transform ease-in-out;
-				box-shadow: inset 100px 100px $colorPrimary;
+				transition: 90ms transform ease-in-out;
+				background-color: $colorPrimary;
 				clip-path: polygon(39.375% 74.375%, 16% 51%, 20.48% 46.52%, 39.33% 65.37%, 79.33% 25.37%, 83.81% 29.85%)
 			}
-			&:checked:before { // tick?
+			&:checked:before { // tick-on
 				transform: scale(1);
 			}
 			&:focus {
 				border-color: $colorPrimary;
+				box-shadow: 0 0 0 1px $colorPrimary;
 			}
 			&[style]:checked:before {
 				color:inherit;
