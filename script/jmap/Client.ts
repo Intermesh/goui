@@ -216,14 +216,13 @@ export class Client<UserType extends User = User> extends Observable {
 	 */
 	public async getUser() {
 		if (!this.user) {
-
-			const session = await this.session;
-			if(!session) {
-				this.accessToken = "";
-				return undefined;
-			}
-
 			try {
+				const session = await this.session;
+				if(!session) {
+					this.accessToken = "";
+					return undefined;
+				}
+
 				this.user = await this.store('User').single(session.userId, [
 						'id', 'username', 'displayName', 'email', 'avatarId', 'dateFormat', 'timeFormat', 'timezone', 'thousandsSeparator', 'decimalSeparator', 'currency']
 					) as UserType;
