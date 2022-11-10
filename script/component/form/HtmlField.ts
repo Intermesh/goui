@@ -4,7 +4,7 @@ import {Field, FieldEventMap} from "./Field.js";
 import {tbar, Toolbar} from "../Toolbar.js";
 import {btn, Button} from "../Button.js";
 import {Observable, ObservableListener, ObservableListenerOpts} from "../Observable.js";
-import {browserDetect} from "../../util/BrowserDetect.js";
+import {browser} from "../../util/Browser.js";
 import {colormenu, ColorMenu} from "../menu/ColorMenu.js";
 import {Menu} from "../menu/Menu.js";
 import {comp, Component, Config, createComponent} from "../Component.js";
@@ -514,12 +514,12 @@ export class HtmlField extends Field {
 		}
 
 		if (
-			browserDetect.isWebkit() && ev.shiftKey && ev.key == "Enter" &&
+			browser.isWebkit() && ev.shiftKey && ev.key == "Enter" &&
 			(document.queryCommandState('insertorderedlist') || document.queryCommandState('insertunorderedlist'))
 		) {
 			ev.stopPropagation();
 			//Firefox wants two??
-			this.execCmd('InsertHtml', browserDetect.isFirefox() ? '<br />' : '<br /><br />');
+			this.execCmd('InsertHtml', browser.isFirefox() ? '<br />' : '<br /><br />');
 			this.focus();
 		} else if (ev.key == "Tab") {
 			ev.preventDefault();
@@ -542,7 +542,7 @@ export class HtmlField extends Field {
 				ev.preventDefault();
 			}
 
-		} else if (browserDetect.isMac()) {
+		} else if (browser.isMac()) {
 
 			if (ev.ctrlKey) {
 				let cmd;

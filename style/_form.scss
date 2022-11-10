@@ -110,7 +110,7 @@ $formFieldBorderRadius: dp(10);
 			border-bottom-right-radius: 0;
 		}
 
-		margin-bottom: dp(30); //matches hint size
+		//margin-bottom: dp(30); //matches hint size
 
 		&:focus-within:not(.invalid) {
 			.hint {
@@ -480,6 +480,11 @@ form {
 
 	.goui-button {
 		margin-bottom: dp(16);
+	}
+
+	.goui.goui-toolbar {
+		padding-left: 0;
+		padding-right: 0;
 	}
 }
 

@@ -40,10 +40,12 @@ export interface Client {
 
 
 type UploadResponse = {
-	blobId: string,
+	id: string,
 	size: number,
 	type: string,
-	name: string
+	name: string,
+	file: File,
+	subfolder: string | undefined
 }
 
 export class Client<UserType extends User = User> extends Observable {
@@ -58,7 +60,6 @@ export class Client<UserType extends User = User> extends Observable {
 	private user: UserType | undefined;
 
 	public uri = "";
-
 
 	set accessToken(value: string|undefined) {
 
@@ -274,8 +275,14 @@ export class Client<UserType extends User = User> extends Observable {
 		return `${this.uri}page.php/${path}`;
 	}
 
-	// This will upload the file after having read it
+	/**
+	 * Upload a file to the API
+	 *
+	 * @todo Progress. Not possible ATM with fetch() so we probably need XMLHttpRequest()
+	 * @param file
+	 */
 	public upload(file: File): Promise<UploadResponse> {
+
 		return fetch(this.uri + "upload.php" + this.debugParam, { // Your POST endpoint
 			method: 'POST',
 			headers: {
@@ -289,12 +296,19 @@ export class Client<UserType extends User = User> extends Observable {
 			if (response.status > 201) {
 				throw response.statusText;
 			}
+
 			return response;
-		})
-			.then(
-				response => response.json()
-			);
-	};
+		}).then(response => response.json())
+			.then(response => Object.assign(response, {file: file}))
+	}
+
+	public uploadMultiple(files: File[]) : Promise<UploadResponse[]> {
+		const p = [];
+		for(let f of files) {
+			p.push(this.upload(f));
+		}
+		return Promise.all(p);
+	}
 
 
 	/**
