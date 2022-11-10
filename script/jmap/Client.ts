@@ -302,6 +302,28 @@ export class Client<UserType extends User = User> extends Observable {
 			.then(response => Object.assign(response, {file: file}))
 	}
 
+	/**
+	 * Upload multiple files to the API
+	 *
+	 * @example
+	 * ```
+	 * btn({
+	 * 	type: "button",
+	 * 	text: t("Attach files"),
+	 * 	icon: "attach_file",
+	 * 	handler: async () => {
+	 *
+	 * 		const files = await browser.pickLocalFiles(true);
+	 * 		this.mask();
+	 * 		const blobs = await client.uploadMultiple(files);
+	 * 		this.unmask();
+	 * 	  console.warn(blobs);
+	 *
+	 * 	}
+	 * })
+	 * ```
+	 * @param files
+	 */
 	public uploadMultiple(files: File[]) : Promise<UploadResponse[]> {
 		const p = [];
 		for(let f of files) {

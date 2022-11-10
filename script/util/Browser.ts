@@ -45,7 +45,26 @@ class Browser {
 	}
 
 	/**
-	 * Open file upload dialog
+	 * Open file upload dialog to get local files
+	 *
+	 * @example
+	 *
+	 * ```
+	 * btn({
+	 * 	type: "button",
+	 * 	text: t("Attach files"),
+	 * 	icon: "attach_file",
+	 * 	handler: async () => {
+	 *
+	 * 		const files = await browser.pickLocalFiles(true);
+	 * 		this.mask();
+	 * 		const blobs = await client.uploadMultiple(files);
+	 * 		this.unmask();
+	 * 	  console.warn(blobs);
+	 *
+	 * 	}
+	 * })
+	 * ```
 	 *
 	 * @param accept eg. "image/*"
 	 * @param directory Allow directory upload
