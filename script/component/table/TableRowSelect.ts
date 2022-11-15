@@ -66,7 +66,8 @@ export class TableRowSelect extends Observable {
 	constructor(readonly table: Table) {
 		super();
 
-		this.table.on('render', () =>{
+		this.table.on('beforerender', () => {
+
 			const tableEl = this.table.el;
 
 			tableEl.classList.add('rowSelect');
@@ -179,6 +180,11 @@ export class TableRowSelect extends Observable {
 
 	private onKeyDown(e: KeyboardEvent) {
 
+		if(e.key == "Escape") {
+			this.clear();
+			return;
+		}
+
 		if (e.key == "Shift") {
 			this.shiftStartIndex = this.lastIndex;
 		}
@@ -188,7 +194,6 @@ export class TableRowSelect extends Observable {
 		}
 
 		e.preventDefault();
-
 
 		let index = 0, change = false;
 		if (e.key == "ArrowDown") {
@@ -203,6 +208,8 @@ export class TableRowSelect extends Observable {
 			}
 			index = this.lastIndex - 1
 		}
+
+		console.warn("rowselectkeydown",index);
 
 		if (e.shiftKey && this.multiSelect) {
 

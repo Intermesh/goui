@@ -227,7 +227,8 @@ export class Table<StoreType extends Store = Store> extends Component {
 
 		if (this.rowSelection) {
 
-				this.el.addEventListener('keydown', (ev) => {
+			this.el.addEventListener('keydown', (ev) => {
+
 				if (!ev.shiftKey && !ev.ctrlKey && (ev.key == "ArrowDown" || ev.key == "ArrowUp")) {
 
 					const selected = this.rowSelect!.selected;

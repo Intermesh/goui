@@ -110,7 +110,7 @@ $formFieldBorderRadius: dp(10);
 			border-bottom-right-radius: 0;
 		}
 
-		margin-bottom: dp(30); //matches hint size
+		//margin-bottom: dp(30); //matches hint size
 
 		&:focus-within:not(.invalid) {
 			.hint {
@@ -249,25 +249,38 @@ $formFieldBorderRadius: dp(10);
 			background-color: $colorBackgroundInput;
 			border: $borderWidth solid $colorText;
 			border-radius: math.div($borderRadius, 2);
-			&:checked:before { // tick?
-				top: dp(0.5) - $borderWidth;
-				left: dp(3) - $borderWidth;
-				float:left;
-				position: relative;
-				font-weight: 600;
-				font-size: $baseLineHeight - dp(4);
+			&:before { // tick
+				content: '';
+				transform: scale(0);
+				display:inline-block;
+				margin: 0-$borderWidth;
 				width: $baseLineHeight;
-				height:$baseLineHeight;
-				content: '\2713';
-				text-shadow: 0 0 white;
-				color:$colorPrimary;
+				height: $baseLineHeight;
+				transition: 90ms transform ease-in-out;
+				background-color: $colorPrimary;
+				clip-path: polygon(39.375% 74.375%, 16% 51%, 20.48% 46.52%, 39.33% 65.37%, 79.33% 25.37%, 83.81% 29.85%)
+			}
+			&:checked:before { // tick-on
+				transform: scale(1);
 			}
 			&:focus {
 				border-color: $colorPrimary;
+				box-shadow: 0 0 0 1px $colorPrimary;
 			}
 			&[style]:checked:before {
 				color:inherit;
 				text-shadow: 0 0 1px black;
+			}
+			&[type="radio"] {
+				border-radius: 50%;
+				&:checked:before {
+					content: '';
+					top: 0 - $borderWidth;
+					left: 0 - $borderWidth;
+					border-radius: 50%;
+					transform: scale(.4);
+					background-color: $colorPrimary;
+				}
 			}
 		}
 		&.switch input { // track
@@ -307,8 +320,19 @@ $formFieldBorderRadius: dp(10);
 				transform: scale(1.75);
 			}
 			&:active:checked::after  {
-				transform:scale(1.75) translateX(dp(14));
+				transform:scale(1.75) translateX(dp(12));
 				background-color: $colorBackgroundInput;
+			}
+			&:focus {
+				border-color: $colorPrimary;
+				&:checked:after {
+					transform:scale(1.75) translateX(dp(12));
+				}
+			}
+		}
+		&.button{ // check buttons should be in segment .group
+			input:checked + span {
+				background-color: green;
 			}
 		}
 
@@ -456,6 +480,11 @@ form {
 
 	.goui-button {
 		margin-bottom: dp(16);
+	}
+
+	.goui.goui-toolbar {
+		padding-left: 0;
+		padding-right: 0;
 	}
 }
 

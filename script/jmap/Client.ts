@@ -40,10 +40,12 @@ export interface Client {
 
 
 type UploadResponse = {
-	blobId: string,
+	id: string,
 	size: number,
 	type: string,
-	name: string
+	name: string,
+	file: File,
+	subfolder: string | undefined
 }
 
 export class Client<UserType extends User = User> extends Observable {
@@ -58,7 +60,6 @@ export class Client<UserType extends User = User> extends Observable {
 	private user: UserType | undefined;
 
 	public uri = "";
-
 
 	set accessToken(value: string|undefined) {
 
@@ -216,14 +217,13 @@ export class Client<UserType extends User = User> extends Observable {
 	 */
 	public async getUser() {
 		if (!this.user) {
-
-			const session = await this.session;
-			if(!session) {
-				this.accessToken = "";
-				return undefined;
-			}
-
 			try {
+				const session = await this.session;
+				if(!session) {
+					this.accessToken = "";
+					return undefined;
+				}
+
 				this.user = await this.store('User').single(session.userId, [
 						'id', 'username', 'displayName', 'email', 'avatarId', 'dateFormat', 'timeFormat', 'timezone', 'thousandsSeparator', 'decimalSeparator', 'currency']
 					) as UserType;
@@ -275,8 +275,14 @@ export class Client<UserType extends User = User> extends Observable {
 		return `${this.uri}page.php/${path}`;
 	}
 
-	// This will upload the file after having read it
+	/**
+	 * Upload a file to the API
+	 *
+	 * @todo Progress. Not possible ATM with fetch() so we probably need XMLHttpRequest()
+	 * @param file
+	 */
 	public upload(file: File): Promise<UploadResponse> {
+
 		return fetch(this.uri + "upload.php" + this.debugParam, { // Your POST endpoint
 			method: 'POST',
 			headers: {
@@ -290,12 +296,41 @@ export class Client<UserType extends User = User> extends Observable {
 			if (response.status > 201) {
 				throw response.statusText;
 			}
+
 			return response;
-		})
-			.then(
-				response => response.json()
-			);
-	};
+		}).then(response => response.json())
+			.then(response => Object.assign(response, {file: file}))
+	}
+
+	/**
+	 * Upload multiple files to the API
+	 *
+	 * @example
+	 * ```
+	 * btn({
+	 * 	type: "button",
+	 * 	text: t("Attach files"),
+	 * 	icon: "attach_file",
+	 * 	handler: async () => {
+	 *
+	 * 		const files = await browser.pickLocalFiles(true);
+	 * 		this.mask();
+	 * 		const blobs = await client.uploadMultiple(files);
+	 * 		this.unmask();
+	 * 	  console.warn(blobs);
+	 *
+	 * 	}
+	 * })
+	 * ```
+	 * @param files
+	 */
+	public uploadMultiple(files: File[]) : Promise<UploadResponse[]> {
+		const p = [];
+		for(let f of files) {
+			p.push(this.upload(f));
+		}
+		return Promise.all(p);
+	}
 
 
 	/**
