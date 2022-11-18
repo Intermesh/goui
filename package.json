@@ -18,12 +18,12 @@
     "test": "mocha",
     "start": "npm run build:clean && npm run start:parallel",
     "start:parallel": "npm run start:watch & npm run start:sass",
-    "start:watch": "npx tsc --watch -p tsconfig.build.json",
-    "start:sass": "npx sass --watch style:dist",
-    "serve": "npx esbuild examples/Index.ts --bundle --serve=localhost:8081 --servedir=. --external:./dist/* --external:./script/*  --sourcemap --format=esm --target=esnext --outdir=examples",
+    "start:watch": "npx tsc --watch -p ./tsconfig.build.json",
+    "start:sass": "npx sass --watch ./style:./dist",
+    "serve": "npx esbuild ./examples/Index.ts --bundle --serve=localhost:8081 --servedir=. --external:./dist/* --external:./script/*  --sourcemap --format=esm --target=esnext --outdir=examples",
     "build": "npm run build:clean && npm run build:sass && npm run build:ts",
-    "build:clean": "rm -rf dist/*",
-    "build:sass": "npx sass --style=compressed style:dist",
-    "build:ts": "tsc -p tsconfig.build.json"
+    "build:clean": "rm -rf ./dist/*",
+    "build:sass": "npx sass --style=compressed ./style:./dist",
+    "build:ts": "tsc -p ./tsconfig.build.json"
   }
 }
