@@ -10,7 +10,7 @@ export interface LoginData {
 	password?: string
 	loginToken?: string
 	authenticators?: {
-		googleauthenticator?: {
+		otpauthenticator?: {
 			code: string
 		} | undefined
 	}
