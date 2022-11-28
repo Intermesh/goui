@@ -61,21 +61,28 @@ export class Client<UserType extends User = User> extends Observable {
 
 	public uri = "";
 
+	private _accessToken? : string;
+
 	set accessToken(value: string|undefined) {
 
 		if(value) {
 			cookies.set("accessToken", value);
+			this._accessToken = value;
 		} else
 		{
 			this._session = undefined;
 			sessionStorage.removeItem("jmapSession");
 
 			cookies.unset("accessToken");
+			this._accessToken = "";
 		}
 	}
 
 	get accessToken() {
-		return cookies.get("accessToken");
+		if(this._accessToken === undefined) {
+			this._accessToken = cookies.get("accessToken");
+		}
+		return this._accessToken;
 	}
 
 	set session(session:any) {
