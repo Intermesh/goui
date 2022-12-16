@@ -45,7 +45,7 @@ export class QuoteStripper {
 	}
 
 	private findByGreaterThan() {
-		const pattern = /&gt;(\s|&nbsp;)/;
+		const pattern = /(^|>)&gt;(\s|&nbsp;)/;
 
 		const match = pattern.exec(this.body);
 
