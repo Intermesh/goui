@@ -13,7 +13,7 @@ export class QuoteStripper {
 			this.split();
 		}
 
-		return this.bodyWithoutQuote;
+		return this.bodyWithoutQuote!;
 	}
 
 	public getQuote() {
@@ -21,15 +21,11 @@ export class QuoteStripper {
 			this.split();
 		}
 
-		return this.quote;
+		return this.quote!;
 	}
 
 	private split() {
 		let quoteIndex = this.findByBlockQuote();
-
-		if (quoteIndex < 1) {
-			quoteIndex = this.findByGreaterThan();
-		}
 
 		if (quoteIndex < 1) {
 			quoteIndex = this.findQuoteByHeaderBlock();
@@ -44,17 +40,6 @@ export class QuoteStripper {
 		}
 	}
 
-	private findByGreaterThan() {
-		const pattern = /(^|>)&gt;(\s|&nbsp;)/;
-
-		const match = pattern.exec(this.body);
-
-		if (match) {
-			return match.index;
-		}
-
-		return -1;
-	};
 
 	private findByBlockQuote() {
 		this.quoteIndex = this.body.indexOf("<blockquote");
@@ -67,9 +52,8 @@ export class QuoteStripper {
 			const br = '|BR|';
 
 			const html = this.body
-				.replace(/<\/p>/ig, br + "$&")
-				.replace(/<\/div>/ig, br + "$&")
-				.replace(/<br[^>]*>/ig, br + "$&");
+				.replace(/<\/(p|div|ul|ol|table|dl)>/ig, "$&" + br)
+				.replace(/<br[^>]*>/ig, "$&" + br);
 
 			this.lines = html.split(br);
 		}
@@ -91,15 +75,31 @@ export class QuoteStripper {
 
 		const lines = this.splitLines();
 
-		let pos = 0;
+		const greaterThan = /^&gt;(\s|&nbsp;)/;
+		const header = /^[a-z]+:(\s|&nbsp;)+.*&lt;[a-z0-9._\-+&]+@[a-z0-9.\-_]+&gt;/i;
+
+		const maybeHeader = /^[a-z]+:(\s|&nbsp;)+.*/i;
+
+		let pos = 0, maybePos = 0;
 
 		for (let i = 0, c = lines.length; i < c; i++) {
 			const plain = lines[i].replace(/(<([^>]+)>)/ig, ""); //strip html tags
-			const pattern = /[a-z]+:(\s|&nbsp;)+.*&lt;[a-z0-9._\-+&]+@[a-z0-9.\-_]+&gt;/i;
+
+			if(plain.match(maybeHeader)) {
+				if(!maybePos) {
+					maybePos = pos;
+				}
+			} else {
+				maybePos = 0;
+			}
 
 			//Match:
 			//ABC: email@domain.com
-			if (plain.match(pattern)) {
+			if (plain.match(header)) {
+				return maybePos || pos;
+			}
+
+			if (plain.match(greaterThan)) {
 				return pos;
 			}
 
