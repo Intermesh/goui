@@ -61,40 +61,24 @@ export class Client<UserType extends User = User> extends Observable {
 
 	public uri = "";
 
-	private _accessToken? : string;
-
-	set accessToken(value: string|undefined) {
-
-		if(value) {
-			cookies.set("accessToken", value);
-			this._accessToken = value;
-		} else
-		{
-			this._session = undefined;
-			sessionStorage.removeItem("jmapSession");
-
-			cookies.unset("accessToken");
-			this._accessToken = "";
-		}
-	}
-
-	get accessToken() {
-		if(this._accessToken === undefined) {
-			this._accessToken = cookies.get("accessToken");
-		}
-		return this._accessToken;
-	}
+	private CSRFToken = "";
 
 	set session(session:any) {
-		sessionStorage.setItem("jmapSession", JSON.stringify(session));
 
-		this.fire("authenticated", this, session);
+		// Remove some extjs stuff that's not required
+		delete session.debug;
+		delete session.accounts;
+		delete session.state;
+
+		sessionStorage.setItem("jmapSession", JSON.stringify(session));
 
 		this._session = session;
 
-		if(session.accessToken) {
-			this.accessToken = session.accessToken;
+		if(session.CSRFToken) {
+			this.CSRFToken = session.CSRFToken;
 		}
+
+		this.fire("authenticated", this, session);
 	}
 
 	get session() {
@@ -123,9 +107,7 @@ export class Client<UserType extends User = User> extends Observable {
 	}
 
 	public isLoggedIn(): Promise<User | false> {
-		if (!this.accessToken) {
-			return Promise.resolve(false);
-		} else if (this.user) {
+		if (this.user) {
 			return Promise.resolve(this.user);
 		} else {
 			return this.getUser().then(user => user || false);
@@ -139,7 +121,7 @@ export class Client<UserType extends User = User> extends Observable {
 			mode: "cors",
 			headers: {
 				'Content-Type': 'application/json',
-				'Authorization': 'Bearer ' + this.accessToken
+				'X-CSRF-Token': this.CSRFToken
 			},
 			body: data ? JSON.stringify(data) : undefined
 		});
@@ -156,11 +138,11 @@ export class Client<UserType extends User = User> extends Observable {
 			method: "DELETE",
 			mode: "cors",
 			headers: {
-				'Authorization': 'Bearer ' + this.accessToken
+				'X-CSRF-Token': this.CSRFToken
 			}
 		});
 
-		this.accessToken = "";
+		this.CSRFToken = "";
 		this.fire("logout", this);
 	}
 
@@ -168,10 +150,7 @@ export class Client<UserType extends User = User> extends Observable {
 
 	public getBlobURL(blobId: string) {
 		let fetchOptions = {
-			method: 'GET',
-			headers: {
-				'Authorization': 'Bearer ' + client.accessToken
-			}
+			method: 'GET'
 		};
 
 		if (!Client.blobCache[blobId]) {
@@ -227,7 +206,6 @@ export class Client<UserType extends User = User> extends Observable {
 			try {
 				const session = await this.session;
 				if(!session) {
-					this.accessToken = "";
 					return undefined;
 				}
 
@@ -247,12 +225,10 @@ export class Client<UserType extends User = User> extends Observable {
 					return this.user;
 				} else
 				{
-					this.accessToken = "";
 					return undefined;
 				}
 			} catch(reason) {
 				this.user = undefined;
-				this.accessToken = "";
 				return Promise.reject(reason);
 			}
 		}
@@ -293,7 +269,7 @@ export class Client<UserType extends User = User> extends Observable {
 		return fetch(this.uri + "upload.php" + this.debugParam, { // Your POST endpoint
 			method: 'POST',
 			headers: {
-				'Authorization': 'Bearer ' + this.accessToken,
+				'X-CSRF-Token': this.CSRFToken,
 				'X-File-Name': "UTF-8''" + encodeURIComponent(file.name),
 				'Content-Type': file.type,
 				'X-File-LastModified': Math.round(file['lastModified'] / 1000).toString()
