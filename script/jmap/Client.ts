@@ -63,6 +63,13 @@ export class Client<UserType extends User = User> extends Observable {
 
 	private CSRFToken = "";
 
+	/**
+	 * Either a cookie + CSRFToken are used when the API is on the same site. If it's not then an access token can be used
+	 *
+	 * @private
+	 */
+	private accessToken = "";
+
 	set session(session:any) {
 
 		// Remove some extjs stuff that's not required
@@ -70,7 +77,12 @@ export class Client<UserType extends User = User> extends Observable {
 		delete session.accounts;
 		delete session.state;
 
-		sessionStorage.setItem("jmapSession", JSON.stringify(session));
+		if(session.accessToken) {
+			this.accessToken = session.accessToken;
+			sessionStorage.setItem("accessToken", this.accessToken);
+			// don't put this in the session to prevent token theft
+			delete session.accessToken;
+		}
 
 		this._session = session;
 
@@ -85,10 +97,9 @@ export class Client<UserType extends User = User> extends Observable {
 		if(this._session) {
 			return Promise.resolve(this._session);
 		}
-		let session = sessionStorage.getItem("jmapSession");
-		if(session && (session = JSON.parse(session))) {
-			this._session = session;
-			return Promise.resolve(this._session);
+
+		if(!this.accessToken) {
+			this.accessToken = sessionStorage.getItem("accessToken") || "";
 		}
 
 		return this.request().then(response => {
@@ -106,11 +117,16 @@ export class Client<UserType extends User = User> extends Observable {
 		return "call-" + this._lastCallId;
 	}
 
-	public isLoggedIn(): Promise<User | false> {
+	public async isLoggedIn(): Promise<User | false> {
 		if (this.user) {
-			return Promise.resolve(this.user);
+			return this.user;
 		} else {
-			return this.getUser().then(user => user || false);
+			try {
+				const user = await this.getUser();
+				return user || false;
+			} catch(e) {
+				return false;
+			}
 		}
 	}
 
@@ -119,10 +135,8 @@ export class Client<UserType extends User = User> extends Observable {
 		const response = await fetch(this.uri + "jmap.php" + this.debugParam, {
 			method: data ? "POST" : "GET",
 			mode: "cors",
-			headers: {
-				'Content-Type': 'application/json',
-				'X-CSRF-Token': this.CSRFToken
-			},
+			credentials: "include", // for cookie auth
+			headers: this.buildHeaders(),
 			body: data ? JSON.stringify(data) : undefined
 		});
 
@@ -137,25 +151,27 @@ export class Client<UserType extends User = User> extends Observable {
 		await fetch(this.uri + "auth.php" + this.debugParam, {
 			method: "DELETE",
 			mode: "cors",
-			headers: {
-				'X-CSRF-Token': this.CSRFToken
-			}
+			credentials: "include",
+			headers: this.buildHeaders()
 		});
 
 		this.CSRFToken = "";
+		this.accessToken = "";
+		sessionStorage.removeItem("accessToken");
 		this.fire("logout", this);
 	}
 
 	private static blobCache: Record<string, Promise<any>> = {};
 
 	public getBlobURL(blobId: string) {
-		let fetchOptions = {
-			method: 'GET'
-		};
 
 		if (!Client.blobCache[blobId]) {
 			let type: undefined | string;
-			Client.blobCache[blobId] = fetch(client.downloadUrl(blobId), fetchOptions)
+			Client.blobCache[blobId] = fetch(client.downloadUrl(blobId), {
+				method: 'GET',
+				credentials: "include",
+				headers: this.buildHeaders()
+			})
 				.then(r => {
 
 					type = r.headers.get("Content-Type") || undefined
@@ -191,9 +207,8 @@ export class Client<UserType extends User = User> extends Observable {
 		return fetch(this.uri + "auth.php" + this.debugParam, {
 			method: "POST",
 			mode: "cors",
-			headers: {
-				'Content-Type': 'application/json'
-			},
+			credentials: "include",
+			headers: this.buildHeaders(),
 			body: JSON.stringify(data)
 		});
 	}
@@ -258,6 +273,25 @@ export class Client<UserType extends User = User> extends Observable {
 		return `${this.uri}page.php/${path}`;
 	}
 
+	private getDefaultHeaders() {
+
+		const headers: Record<string, string> = {
+			'Content-Type': 'application/json'
+		};
+
+		if(this.accessToken) {
+			headers.Authorization =  "Bearer " + this.accessToken;
+		} else
+		{
+			headers['X-CSRF-Token'] = this.CSRFToken;
+		}
+		return headers;
+	}
+
+	private buildHeaders(headers:Record<string, string> = {}) {
+		return Object.assign(this.getDefaultHeaders(), headers);
+	}
+
 	/**
 	 * Upload a file to the API
 	 *
@@ -268,12 +302,12 @@ export class Client<UserType extends User = User> extends Observable {
 
 		return fetch(this.uri + "upload.php" + this.debugParam, { // Your POST endpoint
 			method: 'POST',
-			headers: {
-				'X-CSRF-Token': this.CSRFToken,
+			credentials: "include",
+			headers: this.buildHeaders({
 				'X-File-Name': "UTF-8''" + encodeURIComponent(file.name),
 				'Content-Type': file.type,
 				'X-File-LastModified': Math.round(file['lastModified'] / 1000).toString()
-			},
+			}),
 			body: file
 		}).then((response) => {
 			if (response.status > 201) {

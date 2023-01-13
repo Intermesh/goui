@@ -38,7 +38,7 @@ export class Router extends Observable {
 
 	private debug = false;
 
-	private params: RegExpMatchArray = [];
+	private params: string[] = [];
 
 	constructor() {
 		super();
@@ -144,11 +144,11 @@ export class Router extends Observable {
 
 		//nothing matched so we load the default
 
-		return this.defaultRoute ? this.handleRoute(this.defaultRoute, [], oldPath) : Promise.resolve();
+		return this.defaultRoute ? this.handleRoute(this.defaultRoute, [] , oldPath) : Promise.resolve();
 
 	}
 
-	private handleRoute(handler: Function, match: RegExpMatchArray, oldPath: string) {
+	private handleRoute(handler: Function, match: string[], oldPath: string) {
 
 		for (let n = 0, l = match.length; n < l; n++) {
 			match[n] = decodeURIComponent(match[n]);
