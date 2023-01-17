@@ -281,7 +281,9 @@ export class Client<UserType extends User = User> extends Observable {
 
 		if(this.accessToken) {
 			headers.Authorization =  "Bearer " + this.accessToken;
-		} else
+		}
+
+		if(this.CSRFToken)
 		{
 			headers['X-CSRF-Token'] = this.CSRFToken;
 		}
