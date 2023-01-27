@@ -3,6 +3,7 @@ import {Observable, ObservableListener, ObservableListenerOpts} from "../Observa
 import {Button} from "../Button.js";
 import {tbar, Toolbar} from "../Toolbar.js";
 import {t} from "../../Translate.js";
+import {E} from "../../util/Element.js";
 
 
 /**
@@ -132,23 +133,17 @@ export abstract class Field extends Component {
 	}
 
 	protected renderControl() {
-		const control = this.createControl();
-		if (control) {
-			control.classList.add("control");
-		}
-
 		// wrap required to place buttons after element
-		this.wrap = document.createElement("div");
-		this.wrap.classList.add("wrap");
+		this.el.append(this.wrap = E("div").cls('+wrap'));
 
-		this.el.appendChild(this.wrap);
-		if(control)
-			this.wrap.appendChild(control);
-
+		const control = this.createControl();
+		if(control) {
+			this.wrap.append(control.cls('+control'));
+		}
 		// label must follow input so we can make the transform transition with pure css with input::focus & input::placeholder-shown + label
 		const label = this.createLabel();
 		if (label) {
-			this.wrap.appendChild(label);
+			this.wrap.append(label);
 		}
 
 		if(this._buttons) {
@@ -186,21 +181,12 @@ export abstract class Field extends Component {
 	}
 
 	protected createHint(): HTMLDivElement | void {
-
-		this.hintEl = document.createElement("div");
-		this.hintEl.classList.add("hint");
-
-		this.hintEl.innerText = this._hint;
+		this.hintEl = E('div', this._hint).cls('hint');
 		return this.hintEl;
-
 	}
 
 	protected createLabel() : HTMLDivElement | void {
-		const label = document.createElement("div");
-		label.classList.add("label");
-
-		label.innerText = this._label;
-		return label;
+		return E('div', this._label).cls('label')
 	}
 
 	/**
@@ -292,11 +278,15 @@ export abstract class Field extends Component {
 	 * Helper to fire "change" event. Child classes must implement this.
 	 * @protected
 	 */
-	protected fireChange() {
+	protected fireChange(suppresSetValue = false) {
+		const v = this.value;
+		if(!suppresSetValue) {
+			this.fire('setvalue', this, v, this.oldValue);
+		}
 		//used set timeout so focusout event happens first and field validates before change event
 		setTimeout(() => {
-			this.fire("change", this, this.value, this.oldValue);
-			this.oldValue = this.value;
+			this.fire("change", this, v, this.oldValue);
+			this.oldValue = v;
 		});
 	}
 

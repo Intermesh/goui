@@ -57,12 +57,12 @@ declare global {
 }
 
 Object.assign(Element.prototype, {
-	on(event: string, listener: (e: Event) => void, useCapture?: boolean) {
-		this.addEventListener(event, listener, useCapture);
+	on<K extends keyof ElementEventMap>(event: K, listener: (ev: ElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions) {
+		this.addEventListener(event, listener, options);
 		return this
 	},
-	un(event: string, listener: (e: Event) => void, useCapture?: boolean) {
-		this.removeEventListener(event, listener, useCapture);
+	un<K extends keyof ElementEventMap>(event: K, listener: (ev: ElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions) {
+		this.removeEventListener(event, listener, options);
 		return this
 	},
 	cls(name: string|string[], enable?: boolean) {

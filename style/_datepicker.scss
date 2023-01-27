@@ -1,6 +1,9 @@
 html {
 	font-size:62.5%;
 }
+.preload * {
+	animation-duration: 0s !important;
+}
 .datepicker {
 	width:226px;
 	position: relative;
@@ -12,14 +15,14 @@ html {
 		row-gap: 2px;
 	}
 
-	ul { // month / year picker
+	ul { // month / year pickers
 		list-style-type: none;
 		display: grid;
 		grid-template-columns: repeat(2, 1fr);
 		align-items: center;
 		gap: 2px;
-		background-color: white;
-		overflow-y: scroll;
+		background-color: $colorBackgroundDarker;
+		overflow-y: auto;
 		width: 100%;
 		top: 0;
 		bottom: 0;
@@ -33,7 +36,7 @@ html {
 		}
 	}
 
-	ol { // weeknrs
+	ol { // week nbs
 		list-style-type: none;
 		float: left;
 		border-right: 1px solid rgba(0, 0, 0, 0.16);
@@ -58,6 +61,7 @@ html {
 		border-radius: 50%;
 		cursor: pointer;
 		user-select: none;
+		-webkit-user-select: none;
 		color: rgba(0, 0, 0, 0.87);
 		&.selected {
 			border-radius: 0;
@@ -90,7 +94,8 @@ html {
 	}
 
 	.selected, .selected:hover {
-		background-color: rgba(20, 115, 230, 0.1);
+		background-color: $colorPrimary;
+		color:white;
 	}
 
 	li {
@@ -128,35 +133,46 @@ html {
 		}
 	}
 
+	@keyframes go-top {
+		from {transform: translateY(0);}
+		to {	transform: translateY(-100%);}
+	}
+	@keyframes go-bottom {
+		from {transform: translateY(0);}
+		to {	transform: translateY(100%);}
+	}
+
+	$duration: 250ms;
 	.cards {
 		position: relative;
 		height: 20.8rem; /* 6x28 + 12m */
 		overflow: hidden;
+		user-select:none;
 		&.top {
 			position: absolute;
 			top: 17px;
 			bottom: 0;
 			width: 100%;
+			> * { // todo
+				transform: translateY(-100%);
+				z-index: 1;
+			}
 		}
+
 		> * {
-			position: absolute;
-			transition: transform 250ms ease-in;
 			z-index: 0;
+			position: absolute;
+			animation: $duration ease-out forwards go-bottom; // go out to bottom
 		}
 		> .active {
 			z-index: 1;
-			transform: translateY(0) !important;
+			animation: $duration ease-in reverse forwards go-top; // come in from top
 		}
-		&.top > * {
-			transform: translateY(-100%);
-		}
-		> *:last-child,,
 		&.reverse > * {
-			transform: translateY(-100%);
+			animation: $duration ease-out forwards go-top; // go out to top
 		}
-		> *,
-		&.reverse > *:last-child {
-			transform: translateY(100%);
+		&.reverse > .active {
+			animation: $duration ease-in reverse forwards go-bottom; // come in from bottom
 		}
 	}
 

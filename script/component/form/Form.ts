@@ -4,6 +4,7 @@ import {Notifier} from "../../Notifier.js";
 import {Component, Config, createComponent} from "../Component.js";
 import {FieldEventMap} from "./Field.js";
 import {t} from "../../Translate.js";
+import {EntityStore} from "../../jmap/EntityStore.js";
 
 
 export interface FormEventMap<Sender extends Observable> extends FieldEventMap<Sender> {
@@ -22,6 +23,22 @@ export interface FormEventMap<Sender extends Observable> extends FieldEventMap<S
 	 * @param form
 	 */
 	cancel: <T extends Sender>(form: T) => any
+
+	saved: <T extends Sender>(form:T, response:any) => any
+
+	/**
+	 * When the data is fetched from the store. but before it is put into the fields
+	 * @param form
+	 * @param data the entity from the store
+	 */
+	load: <T extends Sender>(form: T, data: any) => any,
+
+	/**
+	 * When the data in the fields is serialized to a single json object to be posted to the server.
+	 * @param form
+	 * @param data
+	 */
+	serialize: <T extends Sender>(form: T, data: any) => void,
 }
 
 export interface Form {
@@ -134,6 +151,34 @@ export class Form extends ContainerField {
 	 */
 	public handler: ((this: this, form: Form) => any|Promise<any>) | undefined;
 
+	store?: EntityStore
+
+	protected currentId?: string | number
+
+	public create(data: any) {
+		this.reset();
+		this.currentId = '_new_';
+		this.fire('load', this, data);
+		if(data){
+			this.setValues(data);
+		}
+	}
+
+	public async load(id: number) {
+
+		this.mask();
+
+		try {
+			this.currentId = id;
+			let entity = await this.store!.single(id);
+			this.fire('load', this, entity);
+			this.value = entity;
+		} catch (e) {
+			alert(t("Error")+ ' '+ e);
+		} finally {
+			this.unmask();
+		}
+	}
 
 	protected internalRender() {
 		const el = super.internalRender();
@@ -159,7 +204,7 @@ export class Form extends ContainerField {
 			if ((e.ctrlKey || e.metaKey) && e.key == "Enter") {
 				e.preventDefault();
 				if (document.activeElement && "blur" in document.activeElement) {
-					(<HTMLElement>document.activeElement).blur();
+					(document.activeElement as HTMLElement).blur();
 				}
 				this.submit();
 			}
@@ -192,6 +237,7 @@ export class Form extends ContainerField {
 		this.findFields().forEach((field) => {
 			field.reset();
 		})
+		delete this.currentId;
 	}
 
 	/**
@@ -199,32 +245,47 @@ export class Form extends ContainerField {
 	 */
 	public async submit() {
 
-		let el = <HTMLFormElement>this.el;
+		const el = this.el as HTMLFormElement;
 
 		this.clearInvalid();
 
 		if (this.isValid()) {
-			el.classList.add('valid');
-			el.classList.remove('invalid');
+			el.cls(['+valid','-invalid']);
 
 			let handlerResponse = undefined;
 			if (this.handler) {
 				try {
 					handlerResponse = await this.handler!(this);
 				}catch(e:any){
-					el.classList.add('invalid');
-					el.classList.remove('valid');
+					el.cls(['-valid','+invalid']);
 
  					const msg = typeof(e) == "string" ? e : e.message;
 					Notifier.error(msg);
 					return;
 				}
+			} else if(this.store) {
+				try {
+					this._value = {};
+					let v = this.value;
+					debugger;
+					this.fire('serialize', this, v);
+					let response = await this.store.save(v, this.currentId);
+					if(response) {
+						this.fire('saved', this, response);
+					}
+
+				} catch (e) {
+					console.log(t("Error"), e);
+				} finally {
+					this.unmask();
+				}
 			}
 
 			this.fire("submit", this, handlerResponse);
+
+			//this.reset();
 		} else {
-			el.classList.add('invalid');
-			el.classList.remove('valid');
+			el.cls(['-valid','+invalid']);
 
 			Notifier.error(t('You have errors in your form. The invalid fields are marked.'));
 		}

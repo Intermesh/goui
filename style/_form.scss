@@ -9,7 +9,7 @@ $formFieldBorderRadius: dp(10);
 	min-width: dp(100); //for select element
 	margin: 0;
 	border: 0;
-	padding: dp(11) dp(18);
+	padding: dp(11) dp(16);
 	width: 100%;
 	outline: none;
 	color: $colorText;
@@ -36,13 +36,14 @@ $formFieldBorderRadius: dp(10);
 	}
 }
 
-
-
-.goui-form-field {
+form .goui-form-field {
 	width: 100%;
-	display: block;
 	align-self: start;
 	margin-bottom: dp(16);
+}
+
+.goui-form-field {
+	display: block;
 	border-radius: $formFieldBorderRadius;
 	.wrap {
 		display: flex;
@@ -222,6 +223,11 @@ $formFieldBorderRadius: dp(10);
 		}
 	}
 
+	input.number {
+		padding-right: 0;
+		min-width: dp(54);
+	}
+
 	input.text {
 		text-overflow: ellipsis;
 		overflow: hidden;
@@ -235,11 +241,20 @@ $formFieldBorderRadius: dp(10);
 
 	/** start checkbox **/
 	&.check {
+		.radio.control {
+			padding:1px; // for box-shadow border + overflow hidden
+			overflow:hidden;
+		}
 		input {
 			-webkit-appearance: none;
 			-moz-appearance: none;
 			appearance: none;
 			cursor: pointer;
+		}
+		&.box {
+			.radio > label + label {
+				padding-left: dp(8);
+			}
 		}
 		&.box input {
 			min-width: $baseLineHeight;
@@ -258,7 +273,7 @@ $formFieldBorderRadius: dp(10);
 				height: $baseLineHeight;
 				transition: 90ms transform ease-in-out;
 				background-color: $colorPrimary;
-				clip-path: polygon(39.375% 74.375%, 16% 51%, 20.48% 46.52%, 39.33% 65.37%, 79.33% 25.37%, 83.81% 29.85%)
+
 			}
 			&:checked:before { // tick-on
 				transform: scale(1);
@@ -271,15 +286,17 @@ $formFieldBorderRadius: dp(10);
 				color:inherit;
 				text-shadow: 0 0 1px black;
 			}
+			&[type="checkbox"] {
+				&:before {
+					clip-path: polygon(39.375% 74.375%, 16% 51%, 20.48% 46.52%, 39.33% 65.37%, 79.33% 25.37%, 83.81% 29.85%)
+				}
+			}
 			&[type="radio"] {
 				border-radius: 50%;
 				&:checked:before {
 					content: '';
-					top: 0 - $borderWidth;
-					left: 0 - $borderWidth;
 					border-radius: 50%;
 					transform: scale(.4);
-					background-color: $colorPrimary;
 				}
 			}
 		}
@@ -331,8 +348,33 @@ $formFieldBorderRadius: dp(10);
 			}
 		}
 		&.button{ // check buttons should be in segment .group
+			.radio {
+				background-color: $colorBackgroundInput;
+				border: $borderWidth solid $colorBorder;
+				border-radius: $borderRadius;
+				&:focus-within {
+					border-color: $colorPrimary;
+				}
+				> label {
+					padding:0;
+					overflow:hidden;
+					+ label {
+						border-left: 1px solid $colorBorder;
+					}
+				}
+			}
+			.box-label {
+				@extend .goui-button;
+				padding: dp(9) dp(18) !important;
+				border-radius: 0 !important;
+				font-weight:normal !important;
+				margin:0 !important;
+			}
+			input {
+				position:absolute;
+			}
 			input:checked + span {
-				background-color: green;
+				background-color: $colorFocus;
 			}
 		}
 
@@ -534,4 +576,8 @@ form {
 			display: none;
 		}
 	}
+}
+
+div.color-dot {
+	@extend %input;
 }

@@ -1,59 +1,59 @@
 import {Observable, ObservableEventMap, ObservableListener, ObservableListenerOpts} from "../Observable.js";
-import {Table} from "./Table.js";
+import {List} from "../List.js";
 import {ArrayUtil} from "../../util/ArrayUtil.js";
 import {Config} from "../Component.js";
 
 
-export interface TableRowSelectEventMap<T extends Observable> extends ObservableEventMap<T> {
+export interface RowSelectEventMap<T extends Observable> extends ObservableEventMap<T> {
 	/**
 	 * Fires when selection changes. When holding arrow on keyboard it will only fire once at key up to prevent
 	 * flooding the server with requests
 	 *
-	 * @example get store record in table config
+	 * @example get store record in list config
 	 * ```
 	 * rowSelection: {
 	 * 				multiSelect: true,
 	 * 				listeners: {
-	 * 					selectionchange: (tableRowSelect) => {
-	 * 						if(tableRowSelect.getSelected().length == 1) {
-	 * 							const table = tableRowSelect.getTable();
-	 * 							const record = table.getStore().getRecordAt(tableRowSelect.getSelected()[0]);
+	 * 					selectionchange: (rowSelect) => {
+	 * 						if(rowSelect.getSelected().length == 1) {
+	 * 							const table = rowSelect.getTable();
+	 * 							const record = table.getStore().getRecordAt(rowSelect.getSelected()[0]);
 	 * 						}
 	 * 					}
 	 * 				}
 	 * 			}
 	 * ```
-	 * @param tableRowSelect
+	 * @param rowSelect
 	 */
-	selectionchange:<Sender extends T> (tableRowSelect: Sender) => void
+	selectionchange:<Sender extends T> (rowSelect: Sender) => void
 
 	/**
 	 * Fires when a row is selected
-	 * @param tableRowSelect
+	 * @param rowSelect
 	 * @param storeIndex
 	 */
-	rowselect:<Sender extends T>  (tableRowSelect: Sender, storeIndex: number) => void
+	rowselect:<Sender extends T>  (rowSelect: Sender, storeIndex: number) => void
 
 	/**
 	 * Fires when a row is deselected
 	 *
-	 * @param tableRowSelect
+	 * @param rowSelect
 	 * @param storeIndex
 	 */
-	rowdeselect:<Sender extends T>  (tableRowSelect: Sender, storeIndex: number) => void
+	rowdeselect:<Sender extends T>  (rowSelect: Sender, storeIndex: number) => void
 }
 
-export interface TableRowSelect {
-	on<K extends keyof TableRowSelectEventMap<this>>(eventName: K, listener: Partial<TableRowSelectEventMap<this>>[K], options?: ObservableListenerOpts): void
-	fire<K extends keyof TableRowSelectEventMap<this>>(eventName: K, ...args: Parameters<TableRowSelectEventMap<this>[K]>): boolean
-	set listeners (listeners: ObservableListener<TableRowSelectEventMap<this>>)
+export interface RowSelect {
+	on<K extends keyof RowSelectEventMap<this>>(eventName: K, listener: Partial<RowSelectEventMap<this>>[K], options?: ObservableListenerOpts): void
+	fire<K extends keyof RowSelectEventMap<this>>(eventName: K, ...args: Parameters<RowSelectEventMap<this>[K]>): boolean
+	set listeners (listeners: ObservableListener<RowSelectEventMap<this>>)
 }
 
 
 /**
- * Table row selection model
+ * Row selection model
  */
-export class TableRowSelect extends Observable {
+export class RowSelect extends Observable {
 
 	private _selected: number[] = [];
 
@@ -63,19 +63,19 @@ export class TableRowSelect extends Observable {
 	public multiSelect = true;
 	private hasKeyUpListener: Boolean = false;
 
-	constructor(readonly table: Table) {
+	constructor(readonly table: List) {
 		super();
 
-		this.table.on('beforerender', () => {
+		this.table.on('beforerender', (me: List) => {
 
-			const tableEl = this.table.el;
+			const tableEl = me.el;
 
-			tableEl.classList.add('rowSelect');
+			tableEl.cls('+rowselect');
 			tableEl.addEventListener("keydown", (e) => {
 				this.onKeyDown(e);
 			})
 
-			this.table.on('rowmousedown', (table: Table, index: number, e: MouseEvent) => {
+			me.on('rowmousedown', (table: List, index: number, e: MouseEvent) => {
 				this.onRowMouseDown(table, index, e);
 			});
 
@@ -111,7 +111,7 @@ export class TableRowSelect extends Observable {
 	}
 
 
-	private onRowMouseDown(table: Table, index: number, e: MouseEvent) {
+	private onRowMouseDown(_list: List, index: number, e: MouseEvent) {
 		let selection = this.selected;
 
 		if (e.shiftKey && this.multiSelect) {
@@ -245,18 +245,18 @@ export class TableRowSelect extends Observable {
 
 }
 
-export type TableRowSelectConfig = {
+export type RowSelectConfig = {
 
 	/**
-	 * The table component
+	 * The list component
 	 */
-	table: Table,
+	list: List,
 
-} & Config<TableRowSelect>
+} & Config<RowSelect>
 
 /**
- * Shorthand function to create {@see TableRowSelect}
+ * Shorthand function to create {@see RowSelect}
  *
  * @param config
  */
-export const rowselect = (config: TableRowSelectConfig) => Object.assign(new TableRowSelect(config.table), config);
+export const rowselect = (config: RowSelectConfig) => Object.assign(new RowSelect(config.list), config);

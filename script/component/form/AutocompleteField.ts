@@ -190,7 +190,7 @@ export class AutocompleteField<TableType extends Table = Table> extends TextFiel
 	}
 
 	private onTableHide() {
-		this.el.classList.remove("expanded");
+		this.el.cls("-expanded");
 		this.focus();
 	}
 
@@ -253,6 +253,7 @@ export class AutocompleteField<TableType extends Table = Table> extends TextFiel
 
 	private setRecordAsValue(r:StoreRecord) {
 		this.value = this.valueProperty ? r[this.valueProperty] : r;
+		this.fireChange(true);
 	}
 }
 

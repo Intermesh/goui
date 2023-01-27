@@ -1,12 +1,6 @@
 import {Field} from "./Field.js";
-import {CheckboxField} from "./CheckboxField.js";
 import {Config, createComponent} from "../Component.js";
-
-interface SelectFieldOption {
-	value?: string
-	name: string
-}
-
+import {JmapStore} from "../../jmap/JmapStore.js";
 
 /**
  * Select field
@@ -15,11 +9,15 @@ interface SelectFieldOption {
  */
 export class SelectField extends Field {
 
-	baseCls = "goui-form-field select"
+	public baseCls = "goui-form-field select"
 
 	protected input: HTMLSelectElement | undefined;
 
-	public options: SelectFieldOption[] = [];
+	public options: {[key:string]: any}[] = [];
+	public store?: JmapStore
+
+	public valueField = 'value';
+	public textRenderer?: (record: {[key:string]: any})=> string = (record: {[key:string]: any}) => record.name;
 
 	protected createControl(): undefined | HTMLElement {
 		//grab value before creating this.input otherwise it will return the input value
@@ -31,20 +29,7 @@ export class SelectField extends Field {
 			this.input.setAttribute("required", "");
 		}
 
-		this.options.forEach((o) => {
-			const opt = new Option();
-			if (o.value) {
-				opt.value = o.value;
-			}
-			opt.innerHTML = o.name;
-
-			this.input?.appendChild(opt);
-		});
-
-		if (v) {
-			// for updating this.input.selectIndex
-			this.value = v;
-		}
+		this.drawOptions();
 
 		this.input.addEventListener("change", () => {
 			this.fireChange();
@@ -59,12 +44,28 @@ export class SelectField extends Field {
 		return this.input;
 	}
 
+	drawOptions() {
+		if(!this.input) return;
+		this.input.innerHTML = ''; // redraw
+		(this.store ? this.store.items : this.options).forEach((o: any) => {
+			const opt = new Option();
+			if (o[this.valueField]) {
+				opt.value = o[this.valueField];
+			}
+			opt.innerHTML = this.textRenderer!(o);
+
+			this.input?.appendChild(opt);
+		});
+		if (this._value) {
+			// for updating this.input.selectIndex
+			this.value = this._value;
+		}
+	}
+
 	set value(v: string) {
 
 		if (this.input) {
-			this.input.selectedIndex = this.options.findIndex((o) => {
-				return o.value == v;
-			});
+			this.input.value = v;
 		}
 
 		super.value = v;

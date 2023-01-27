@@ -87,8 +87,6 @@ export class Button extends Component {
 
 	private _icon?: MaterialIcon;
 
-	private block = false;
-
 	private _text?: string;
 
 
@@ -122,6 +120,7 @@ export class Button extends Component {
 	protected internalRender() {
 
 		const el = super.internalRender();
+		this.type = 'button';
 		// The first menu of a button will expand on click, sub menus will show on hover and are hidden with css.
 		// Before I made this without JS with the :focus-within selector but that didn't work in Safari because it
 		// doesn't focus buttons on click.
@@ -142,19 +141,11 @@ export class Button extends Component {
 		}
 
 		el.addEventListener("click", (e) => {
-			// prevent double submissions for 1s
-			if (this.block) {
-				e.preventDefault();
-				return;
-			}
-			this.block = true;
-			setTimeout(() => {
-				this.block = false;
-			}, 1000);
+			e.preventDefault(); // prevent submitting form
 
 			// check detail for being the first click. We don't want double clicks to call the handler twice.
 			// the detail property contains the click count. When spacebar is used it will be 0
-			if (this.handler && e.button == 0 && e.detail < 2) {
+			if (this.handler && e.button == 0 ) {
 				this.handler.call(this, this, e);
 
 				// close menu if handler is set
@@ -163,7 +154,6 @@ export class Button extends Component {
 					topMenu.close();
 				}
 			}
-
 
 			this.fire("click", this, e);
 		});
@@ -180,7 +170,7 @@ export class Button extends Component {
 	}
 
 	private onMenuMouseEnter(ev: MouseEvent) {
-		if (Menu.openedMenu && Menu.openedMenu != this._menu) {
+		if (Menu.openedMenu && Menu.openedMenu != this._menu && Menu.openedMenu.parentButton!.parent === this._menu!.parentButton!.parent) {
 			Menu.openedMenu.el.classList.remove("goui-fade-out");
 			Menu.openedMenu.close();
 			this.showMenu(this.el, ev);

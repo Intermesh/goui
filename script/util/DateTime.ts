@@ -370,11 +370,13 @@ export class DateTime {
 	readonly date: Date;
 
 	static firstWeekDay = 1; // 1 = monday, 7 = sunday
-	static dayNames: string[] = [];
+	static dayNames: Record<string,string> = {}; // {mo: t('Monday'), tu: t('Tuesday'), ...}
+	static dayMap: string[] = [] // ['mo','tu',...] if week starts on monday else index 0 = 'su'
 	static monthNames: string[] = []
 
 	static staticInit(lang: string) {
-		const locale = new Intl.Locale(lang);
+		const locale = new Intl.Locale(lang),
+			dayList = ['su','mo','tu','we','th','fr','sa'];
 		if('weekInfo' in locale) {
 			// @ts-ignore
 			DateTime.firstWeekDay = locale.weekInfo.firstDay; // weekInfo might not be supported in all browsers
@@ -384,7 +386,9 @@ export class DateTime {
 
 		for (let i = 0; i < 7; i++) {  // monday
 			tmp.setDate(i + 4 + DateTime.firstWeekDay);
-			DateTime.dayNames.push(intlDays.format(tmp));
+			const d = dayList[tmp.getDay()];
+			DateTime.dayMap.push(d);
+			DateTime.dayNames[d] = intlDays.format(tmp);
 		}
 		let intlMonth = new Intl.DateTimeFormat(lang, {month: 'long'});
 		for (let i = 0; i < 12; i++) {
@@ -399,12 +403,9 @@ export class DateTime {
 	public timezone:Timezone = SystemTimeZone;
 
 	constructor(date:Date| number | string = new Date()) {
-		if(date instanceof Date) {
-			this.date = date;
-		}else
-		{
-			this.date = new Date(date);
-		}
+		this.date = (date instanceof Date) ?
+			date :
+			new Date(date);
 	}
 
 	/**
@@ -497,6 +498,14 @@ export class DateTime {
 				(s>0 ? s+'S':''):'');
 
 	}
+
+	diffInDays(other: DateTime) {
+		return Math.floor((
+			Date.UTC(other.getYear(), other.date.getMonth(), other.getDate()) -
+			Date.UTC(this.getYear(), this.date.getMonth(), this.getDate())
+		) /	86400000);
+	}
+
 
 	/**
 	 * Create a copy of this object without reference
@@ -600,6 +609,7 @@ export class DateTime {
 		return this.getDate();
 	}
 
+	/** 0 for sunday, 1 for monday, 2 for tuesday */
 	getDay() : number {
 		return this.date.getDay();
 	}
@@ -637,14 +647,18 @@ export class DateTime {
 		return this.date.getTime();
 	}
 
+	getMinuteOfDay(): number {
+		return this.date.getHours()*60 + this.date.getMinutes();
+	}
+
 	/**
 	 * Sets the hour value in the Date object
 	 * @param hours A numeric value equal to the hours value.
 	 * @params min A numeric value equal to the minutes value.
 	 * @param sec A numeric value equal to the seconds value.
 	 */
-	setHours(hours: number, min = this.date.getMinutes(), sec = this.date.getSeconds()) {
-		this.date.setHours(hours, min, sec);
+	setHours(hours: number, min = this.date.getMinutes(), sec = this.date.getSeconds(), ms = this.date.getMilliseconds()) {
+		this.date.setHours(hours, min, sec, ms);
 		return this;
 	}
 
@@ -764,9 +778,10 @@ export class DateTime {
 
 	private static converters: {[key:string]:(date: DateTime) => string|number} = {
 		'd': date => pad(date.getMonthDay()),
-		'D': date => DateTime.dayNames[date.getWeekDay()].substring(0,3),
+		'D': date => DateTime.dayNames[DateTime.dayMap[date.getWeekDay()]].substring(0,3),
 		'j': date => date.getMonthDay(),
-		'l': date => DateTime.dayNames[date.getWeekDay()],
+		'l': date => DateTime.dayNames[DateTime.dayMap[date.getWeekDay()]],
+		'S': date => ["st","nd","rd"][((date.getMonthDay()+90)%100-10)%10-1]||"th",
 
 		'w': date => date.getDay(),
 		'z': date => date.getDayOfYear(),
@@ -944,10 +959,7 @@ export class DateTime {
 		}
 
 		const date = new DateTime();
-		date.setHours(0)
-			.setMinutes(0)
-			.setSeconds(0)
-			.setMilliseconds(0);
+		date.setHours(0,0,0,0);
 
 		if(timezone) {
 			date.timezone = timezone;

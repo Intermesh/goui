@@ -760,7 +760,7 @@ export class Component extends Observable {
 		}
 		if (this.items) {
 			for (let cmp of this.items) {
-				cmp.cascade(fn);
+				cmp.cascade && cmp.cascade(fn);
 			}
 		}
 

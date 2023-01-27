@@ -1,81 +1,16 @@
-import {comp, Component, ComponentEventMap, ComponentState, Config, createComponent} from "../Component.js";
-import {rowselect, TableRowSelect, TableRowSelectConfig} from "./TableRowSelect.js";
+import {comp, Component, ComponentState, Config, createComponent} from "../Component.js";
 import {Store, StoreRecord} from "../../data/Store.js";
-import {Observable, ObservableListener, ObservableListenerOpts} from "../Observable.js";
 import {ObjectUtil} from "../../util/ObjectUtil.js";
 import {menu, Menu} from "../menu/Menu.js";
 import {checkbox} from "../form/CheckboxField.js";
 import {Notifier} from "../../Notifier.js";
 import {draggable} from "../DraggableComponent.js";
-import {t} from "../../Translate.js";
-import { TableColumn } from "./TableColumns.js";
+import {TableColumn } from "./TableColumns.js";
+import {List} from "../List.js";
 
 
 type GroupByRenderer = (groupBy:any, record: StoreRecord, thEl: HTMLTableCellElement, table: Table) => string | Promise<string> | Component | Promise<Component>;
 
-
-/**
- * @inheritDoc
- */
-export interface TableEventMap<Type extends Observable> extends ComponentEventMap<Type> {
-	/**
-	 * Fires when the user scrolled to the bottom
-	 *
-	 * @param table
-	 */
-	scrolleddown: <Sender extends Type> (table: Sender) => void
-	/**
-	 * Fires when the user sorts the table
-	 *
-	 * @param table
-	 * @param dataIndex
-	 */
-	sort: <Sender extends Type> (table: Sender, dataIndex: string) => void
-
-	/**
-	 * Fires when a row is clicked
-	 *
-	 * @param table
-	 * @param storeIndex
-	 * @param ev
-	 */
-	rowmousedown: <Sender extends Type> (table: Sender, storeIndex: number, ev: MouseEvent) => void
-
-	/**
-	 * Fires when a row is double clicked
-	 *
-	 * @param table
-	 * @param storeIndex
-	 * @param ev
-	 */
-	rowdblclick: <Sender extends Type> (table: Sender, storeIndex: number, ev: MouseEvent) => void
-
-	/**
-	 * Fires when records are rendered into rows.
-	 *
-	 * @param table
-	 * @param records
-	 */
-	renderrows: <Sender extends Type> (table: Sender, records: StoreRecord[]) => void;
-
-	/**
-	 * Fires when a row is clicked or navigated with arrows
-	 *
-	 * @param table
-	 * @param storeIndex
-	 * @param ev
-	 */
-	navigate: <Sender extends Type> (table: Sender, storeIndex: number, record: StoreRecord) => void
-
-}
-
-export interface Table {
-	on<K extends keyof TableEventMap<this>>(eventName: K, listener: Partial<TableEventMap<this>>[K], options?: ObservableListenerOpts): void;
-
-	fire<K extends keyof TableEventMap<this>>(eventName: K, ...args: Parameters<TableEventMap<this>[K]>): boolean
-
-	set listeners(listeners: ObservableListener<TableEventMap<this>>)
-}
 
 /**
  * Table component
@@ -136,7 +71,7 @@ export interface Table {
  * 	});
  *  ```
  */
-export class Table<StoreType extends Store = Store> extends Component {
+export class Table<StoreType extends Store = Store> extends List {
 
 	/**
 	 *
@@ -144,15 +79,47 @@ export class Table<StoreType extends Store = Store> extends Component {
 	 * @param columns The table columns
 	 */
 	constructor(readonly store: StoreType, public columns: TableColumn[]) {
-		super();
-		this.tabIndex = 0;
+		super(store, (record: any, row: HTMLElement, me: List, storeIndex: number) => {
+			for (let c of this.columns) {
 
-		store.on("beforeload", () => {
-			this.mask();
-		})
-		store.on("load", () => {
-			this.unmask();
-		})
+				if (c.hidden) {
+					continue;
+				}
+				const td = document.createElement("td");
+
+				if (c.align) {
+					td.style.textAlign = c.align;
+				}
+
+				if(c.cls) {
+					td.classList.add(...c.cls.split(" "));
+				}
+
+				let value = c.property ? ObjectUtil.path(record, c.property) : undefined;
+
+				if (c.renderer) {
+					const r = c.renderer(value, record, td, this, storeIndex);
+					if (typeof r === "string") {
+						td.innerHTML = r;
+					} else if (r instanceof Component) {
+						r.render(td);
+					} else {
+						r.then((s) => {
+							if (s instanceof Component) {
+								s.render(td);
+							} else {
+								td.innerHTML = s;
+							}
+						})
+					}
+				} else {
+					td.innerText = value ? value : "";
+				}
+
+				row.append(td);
+			}
+
+		});
 	}
 
 	/**
@@ -174,76 +141,17 @@ export class Table<StoreType extends Store = Store> extends Component {
 	/**
 	 * Group renderer function
 	 */
-	public groupByRenderer: GroupByRenderer = (groupBy, record, thEl, table1) => {
-		return groupBy;
-	}
-
-	/**
-	 * Shown when the table is empty.
-	 */
-	public emptyStateHtml = `<div class="goui-empty-state"><i class="icon">article</i><p>${t("Nothing to show")}</p></div>`
+	public groupByRenderer: GroupByRenderer = groupBy => groupBy
 
 	private minCellWidth = 30
 
 	protected baseCls = "goui-table scroll";
 
 
-	/**
-	 *
-	 * Row selection object
-	 *
-	 * @param rowSelectionConfig
-	 */
-	set rowSelectionConfig(rowSelectionConfig: boolean | Partial<TableRowSelectConfig> ) {
-		if (typeof rowSelectionConfig != "boolean") {
-			(rowSelectionConfig as TableRowSelectConfig).table = this;
-			this.rowSelect = rowselect(rowSelectionConfig as TableRowSelectConfig);
-		} else {
-			this.rowSelect = rowselect({table: this});
-		}
-	}
-
-	get rowSelection() : TableRowSelect | undefined {
-		return this.rowSelect;
-	}
-
-	private tableEl?: HTMLTableElement;
+	protected bodyEl?: HTMLTableElement;
 	private headersRow?: HTMLTableRowElement;
-	private rowSelect?: TableRowSelect;
-	private tbody?: HTMLTableSectionElement;
 
-	private loadOnScroll: boolean = false;
-
-	private emptyStateEl?: HTMLDivElement;
-
-	private initNavigateEvent() {
-		this.on('rowmousedown', (table, storeIndex, ev) => {
-			if (!ev.shiftKey && !ev.ctrlKey) {
-				const record = this.store.get(storeIndex);
-
-				this.fire("navigate", this, storeIndex, record);
-			}
-		});
-
-		if (this.rowSelection) {
-
-			this.el.addEventListener('keydown', (ev) => {
-
-				if (!ev.shiftKey && !ev.ctrlKey && (ev.key == "ArrowDown" || ev.key == "ArrowUp")) {
-
-					const selected = this.rowSelect!.selected;
-					if (selected.length) {
-						const storeIndex = selected[0];
-						const record = this.store.get(storeIndex);
-
-						this.fire("navigate", this, storeIndex, record);
-					}
-				}
-			});
-
-		}
-	}
-
+	protected itemTag: keyof HTMLElementTagNameMap = 'tr'
 
 	protected internalRemove() {
 		if (this.columnMenu) {
@@ -297,50 +205,11 @@ export class Table<StoreType extends Store = Store> extends Component {
 		}
 	}
 
-	protected internalRender() {
-		const el = super.internalRender();
-
-		this.initNavigateEvent();
-
-		el.addEventListener("mousedown", (e) => {
-			this.onMouseDown(e);
-		});
-
-		el.addEventListener("dblclick", (e) => {
-			this.onDblClick(e);
-		});
-
-		this.renderEmptyState()
-		this.renderTable();
-		return el;
-	}
-
-	protected renderEmptyState() {
-		const el = this.el;
-		this.emptyStateEl = document.createElement("div");
-		this.emptyStateEl.innerHTML = this.emptyStateHtml;
-		this.emptyStateEl.hidden = this.store.count() > 0;
-		el.appendChild(this.emptyStateEl);
-
-		this.store.on("load", (store, records, append) => {
-
-			if (!append && records.length == 0) {
-				this.tableEl!.hidden = true;
-				this.emptyStateEl!.hidden = false;
-			} else {
-				this.tableEl!.hidden = false;
-				this.emptyStateEl!.hidden = true;
-			}
-		});
-	}
-
-	private renderTable() {
-		const el = this.el;
-		this.tableEl = document.createElement('table');
-		this.tableEl.hidden = this.store.count() == 0;
+	protected renderBody() {
+		this.bodyEl = document.createElement('table');
 
 		if (this.fitComponent) {
-			this.tableEl.style.minWidth = "100%";
+			this.bodyEl.style.minWidth = "100%";
 		}
 
 		if(this.headers) {
@@ -349,110 +218,14 @@ export class Table<StoreType extends Store = Store> extends Component {
 			this.renderColGroup();
 		}
 
-		this.renderRows(this.store.items);
-
-		el.appendChild(this.tableEl);
-
-		if (this.loadOnScroll) {
-			el.addEventListener("scroll", () => {
-				this.onScroll();
-			}, {passive: true});
-		}
-
-		// Use unshift = true so that this listener executes first so that other load listners execute when the table is
-		// rendered and can select rows.
-		this.store.on("load", (store, records, append) => {
-			if (!append && this.tbody) {
-				this.tbody!.innerHTML = "";
-			}
-			this.renderRows(records);
-
-			if (this.loadOnScroll) {
-				setTimeout(() => {
-					this.onScroll();
-				});
-			}
-
-		}, {unshift: true});
-
-		if (this.rowSelect) {
-			this.rowSelect.on('rowselect', (tableRowSelect, storeIndex) => {
-				const tr = (<HTMLElement>this.tableEl!.querySelector("tr[data-store-index='" + storeIndex + "']"));
-
-				if (!tr) {
-					console.error("No row found for selected index: " + storeIndex + ". Maybe it's not rendered yet?");
-					return;
-				}
-				tr.classList.add('selected');
-				tr.focus();
-			});
-
-			this.rowSelect.on('rowdeselect', (tableRowSelect, storeIndex) => {
-				const tr = (<HTMLElement>this.tableEl!.querySelector("tr[data-store-index='" + storeIndex + "']"));
-				if (!tr) {
-					console.error("No row found for selected index: " + storeIndex + ". Maybe it's not rendered yet?");
-					return;
-				}
-				tr.classList.remove('selected');
-			});
-		}
+		super.renderBody();
 	}
 
 	private rerender() {
 		const el = this.el;
-		this.tbody = undefined;
+		this.groupEl = undefined;
 		el.innerHTML = "";
-		this.renderTable();
-	}
-
-
-	private onMouseDown(e: MouseEvent) {
-		const index = this.findRowByEvent(e);
-
-		if (index == -1) {
-			//clicked on header row
-			return;
-		}
-
-		this.fire('rowmousedown', this, index, e);
-	}
-
-	private onDblClick(e: MouseEvent) {
-		const index = this.findRowByEvent(e);
-
-		if (index == -1) {
-			//clicked on header row
-			return;
-		}
-
-		this.fire('rowdblclick', this, index, e);
-	}
-
-	private findRowByEvent(e: MouseEvent) {
-		const target = <HTMLElement>e.target;
-		const tr = target.closest("tr")!;
-
-		if (!tr || tr.dataset.storeIndex === undefined) {
-			//clicked outside table
-			return -1;
-		} else
-		{
-			return parseInt(tr.dataset.storeIndex);
-		}
-
-	}
-
-	private onScroll() {
-		const el = this.el;
-		const pixelsLeft = el.scrollHeight - el.scrollTop - el.offsetHeight;
-
-		if (pixelsLeft < 100) {
-			if (!this.store.loading && this.store.hasNext()) {
-				this.store.loadNext(true).finally(() => {
-					this.fire("scrolleddown", this);
-				});
-			}
-		}
+		this.renderBody();
 	}
 
 	private columnMenu: Menu | undefined;
@@ -512,7 +285,7 @@ export class Table<StoreType extends Store = Store> extends Component {
 				const w = dragData.data.startWidth + dragData.x - dragData.startX;
 				header.style.width = w + "px"
 				h.width = w;
-				this.tableEl!.style.width = this.calcTableWidth() + "px";
+				this.bodyEl!.style.width = this.calcTableWidth() + "px";
 			});
 
 			splitter.on("drop", () => {
@@ -556,7 +329,7 @@ export class Table<StoreType extends Store = Store> extends Component {
 		}
 
 
-		this.tableEl!.appendChild(colGroup);
+		this.bodyEl!.appendChild(colGroup);
 
 		return colGroup;
 	}
@@ -629,7 +402,7 @@ export class Table<StoreType extends Store = Store> extends Component {
 		}
 
 		thead.appendChild(this.headersRow);
-		this.tableEl!.appendChild(thead);
+		this.bodyEl!.appendChild(thead);
 
 		return this.headersRow
 	}
@@ -688,8 +461,8 @@ export class Table<StoreType extends Store = Store> extends Component {
 			}
 		});
 
-		this.tableEl!.style.minWidth = "";
-		this.tableEl!.style.width = this.calcTableWidth() + "px";
+		this.bodyEl!.style.minWidth = "";
+		this.bodyEl!.style.width = this.calcTableWidth() + "px";
 	}
 
 	/**
@@ -708,34 +481,19 @@ export class Table<StoreType extends Store = Store> extends Component {
 		}, 0);
 	}
 
-	private renderRows(records: StoreRecord[]) {
-
-		if (!this.tbody && !this.groupBy) {
-			this.tbody = document.createElement('tbody');
-			this.tableEl!.appendChild(this.tbody);
-		}
-
-		records.forEach((record, index) => {
-			this.renderGroup(record);
-			const row = this.renderRow(record, index);
-			if(this.rowSelection && this.rowSelection.selected.indexOf(index) > -1) {
-				row.classList.add("selected");
-			}
-
-			this.tbody!.appendChild(row);
-		});
-
-		this.fire("renderrows", this, records);
-	}
-
 	private lastGroup?:string;
+	private groupEl?: HTMLTableSectionElement;
 
-	private renderGroup(record:StoreRecord) {
+	protected renderGroup(record:StoreRecord): HTMLElement {
 		if(!this.groupBy) {
-			return;
+			if (!this.groupEl) {
+				this.groupEl = document.createElement('tbody');
+				this.bodyEl!.append(this.groupEl);
+			}
+			return this.groupEl;
 		}
 
-		if(!this.tbody || record[this.groupBy] != this.lastGroup) {
+		if(!this.groupEl || record[this.groupBy] != this.lastGroup) {
 			const tr = document.createElement("tr");
 			tr.classList.add("group");
 
@@ -760,67 +518,17 @@ export class Table<StoreType extends Store = Store> extends Component {
 				console.warn("Renderer returned invalid value: ", r);
 			}
 
-			tr.appendChild(th);
+			tr.append(th);
 
-			this.tbody = document.createElement('tbody');
-			this.tbody!.appendChild(tr);
+			this.groupEl = document.createElement('tbody');
+			this.groupEl!.append(tr);
 
-			this.tableEl!.appendChild(this.tbody);
+			this.bodyEl!.append(this.groupEl);
 
 
 			this.lastGroup = record[this.groupBy];
 		}
-	}
-
-	private renderRow(record: any, storeIndex: number) {
-		const row = document.createElement("tr");
-
-		// useful so it scrolls into view
-		row.setAttribute('tabindex', '0');
-		row.dataset.storeIndex = storeIndex + "";
-		row.classList.add("data");
-
-		for (let c of this.columns) {
-
-			if (c.hidden) {
-				continue;
-			}
-			const td = document.createElement("td");
-
-			if (c.align) {
-				td.style.textAlign = c.align;
-			}
-
-			if(c.cls) {
-				td.classList.add(...c.cls.split(" "));
-			}
-
-			let value = c.property ? ObjectUtil.path(record, c.property) : undefined;
-
-			if (c.renderer) {
-				const r = c.renderer(value, record, td, this, storeIndex);
-				if (typeof r === "string") {
-					td.innerHTML = r;
-				} else if (r instanceof Component) {
-					r.render(td);
-				} else {
-					r.then((s) => {
-						if (s instanceof Component) {
-							s.render(td);
-						} else {
-							td.innerHTML = s;
-						}
-					})
-				}
-			} else {
-				td.innerText = value ? value : "";
-			}
-
-			row.appendChild(td);
-		}
-
-
-		return row;
+		return this.groupEl;
 	}
 }
 
