@@ -50,7 +50,7 @@ export class PickerButton extends Button {
 			//.on('blur', _ => {this.collapse()});
 
 		this.field = this.parent!.parent as Field;
-		this.picker.on("select", () => {setTimeout(() => { this.collapse(); }, 20)});
+		// this.picker.on("select", () => {setTimeout(() => { this.collapse(); }, 20)});
 
 		return el;
 	}
