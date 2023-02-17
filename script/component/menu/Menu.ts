@@ -133,6 +133,45 @@ export class Menu extends Component {
 		return li;
 	}
 
+
+	// private getOutOfBounds() {
+	// 	const rect = this.el.getBoundingClientRect();
+	//
+	// 	return {
+	// 		x:0,
+	// 		y:0
+	// 	}
+	// }
+
+
+	/**
+	 * Show aligned to the given component.
+	 *
+	 * It will align the top left of the menu top the bottom left of the component.
+	 *
+	 * @todo avoid going out of the viewport
+	 * @param cmp
+	 */
+	showFor(cmp:Component) {
+		const rect = cmp.el.getBoundingClientRect();
+
+		//must be rendered and visible to get width below
+		if (!this.rendered) {
+			root.items.add(this);
+		}
+
+		//show first for positioning correctly below
+		this.show();
+
+		this.showAt({
+			x: this.expandLeft ? rect.right - this.width : rect.x,
+			y: rect.bottom
+		});
+
+		//put back fade out class removed in mouseenter listener above
+		this.el.classList.add("goui-fade-out");
+	}
+
 	/**
 	 * Show menu at coordinates on the page
 	 *

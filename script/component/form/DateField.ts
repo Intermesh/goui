@@ -1,9 +1,9 @@
 import {TextField} from "./TextField.js";
 import {DateTime} from "../../util/DateTime.js";
 import {Config, createComponent} from "../Component.js";
-import {pickerbutton} from "../picker/PickerButton.js";
 import {datepicker, DatePicker} from "../picker/DatePicker.js";
-import {E} from "../../util/Element.js";
+import {btn} from "../Button.js";
+import {menu} from "../menu/Menu.js";
 
 
 /**
@@ -22,10 +22,21 @@ export class DateField extends TextField {
 
 	picker: DatePicker
 
+	private pickerButton;
+
 	constructor() {
 		super();
 		this.picker = datepicker({showWeekNbs:false});
-		this.buttons = [pickerbutton({picker:this.picker})]
+		this.buttons = [
+			this.pickerButton = btn({
+				icon: "expand_more",
+				menuAlignTo: this,
+				menu:
+					menu({},
+						this.picker
+					)
+			})
+		];
 		this.pattern = DateTime.createFormatRegex(this.inputFormat);
 		this.title = "Incorrect date format";
 	}
@@ -35,10 +46,13 @@ export class DateField extends TextField {
 		this.picker.on('select', (_,val) => {
 			this.date = val;
 			super.value = val.format(this.inputFormat);
+			this.pickerButton.menu!.hide();
 		});
-		// this.on('setvalue', (_,val) => {
-		// 	this.picker.setValue(val);
-		// })
+
+		this.pickerButton.menu!.on("show", () => {
+			this.picker.setValue(this.getValueAsDateTime() || new DateTime());
+		})
+
 		return input;
 	}
 
@@ -77,6 +91,18 @@ export class DateField extends TextField {
 	}
 
 	get value(): string | undefined {
+		const date = this.getValueAsDateTime();
+
+		if(!date) {
+			return undefined;
+		}
+
+		const timeFormat = this.timefield ? 'TH:i' : '';
+
+		return date.format(this.outputFormat+timeFormat);
+	}
+
+	private getValueAsDateTime() {
 		let v = super.value,
 			timeFormat ='';
 		if(this.timefield) {
@@ -87,8 +113,7 @@ export class DateField extends TextField {
 		if (!v || !(date = DateTime.createFromFormat(v, this.inputFormat+timeFormat))) {
 			return undefined;
 		}
-
-		return date.format(this.outputFormat+timeFormat);
+		return date;
 	}
 
 

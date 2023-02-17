@@ -1,6 +1,6 @@
 import { tbar } from "@goui/component/Toolbar.js";
 import { btn } from "@goui/component/Button.js";
-import { menu } from "@goui/component/menu/Menu.js";
+import {Menu, menu} from "@goui/component/menu/Menu.js";
 import { router } from "@goui/Router.js";
 import { root } from "@goui/component/Root.js";
 import { checkbox } from "@goui/component/form/CheckboxField.js";
@@ -9,6 +9,7 @@ import { colormenu } from "@goui/component/menu/ColorMenu.js";
 import { PlaygroundTablePanel } from "./PlayGroundTablePanel.js";
 import { PlayGroundWindow } from "./PlaygroundWindow.js";
 import {comp, Component} from "@goui/component/Component.js";
+import {colorpicker} from "@goui/component/picker/ColorPicker.js";
 
 
 export class PlayGround extends Component {
@@ -127,7 +128,15 @@ export class PlayGround extends Component {
 
 				btn({
 					text: "Color",
-					menu: colormenu()
+					menu: menu({}, colorpicker({
+						listeners: {
+							select:(colorPicker, color) => {
+								const menu = (colorPicker.parent as Menu);
+								menu.parentButton!.el.style.color = "#" + color;
+								menu.hide();
+							}
+						}
+					}))
 				}),
 
 				"->",

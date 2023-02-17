@@ -21,6 +21,7 @@
     "start:watch": "npx tsc --watch -p ./tsconfig.build.json",
     "start:sass": "npx sass --watch ./style:./dist",
     "serve": "npx esbuild ./examples/Index.ts --bundle --serve=localhost:8081 --servedir=. --external:./dist/* --external:./script/*  --sourcemap --format=esm --target=esnext --outdir=examples",
+    "buildexamples": "npx esbuild ./examples/Index.ts --bundle --external:./dist/* --external:./script/*  --sourcemap --format=esm --target=esnext --outdir=examples/dist",
     "build": "npm run build:clean && npm run build:sass && npm run build:ts",
     "build:clean": "rm -rf ./dist/*",
     "build:sass": "npx sass --style=compressed ./style:./dist",

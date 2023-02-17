@@ -32,7 +32,6 @@ $formFieldBorderRadius: dp(10);
 	&+div.label, &+.goui-toolbar+div.label {
 		font-size: sp(13);
 		top: 0;
-		//transform: translateY(calc(#{dp(-13)} - 0.62em)) scale(.8);
 	}
 }
 
@@ -70,7 +69,6 @@ form .goui-form-field {
 				padding: dp(6);
 			}
 
-
 			.goui-button {
 
 				&.with-icon:not(.with-text) {
@@ -84,8 +82,6 @@ form .goui-form-field {
 			}
 		}
 	}
-
-
 
 	+ hr {
 		margin-top: 0;
@@ -159,11 +155,15 @@ form .goui-form-field {
 		//below performs better but looks ugly on windows :(
 		will-change: top, font-size;
 
-		//transform: none;
-		//transform-origin: top left;
-
 		&:empty {
 			display: none;
+		}
+	}
+
+	&.no-floating-label {
+		div.label {
+			top: 0;
+			font-size: sp(13);
 		}
 	}
 
@@ -579,5 +579,8 @@ form {
 }
 
 div.color-dot {
-	@extend %input;
+	border-radius: $formFieldBorderRadius;
+	margin: dp(10);
+	height: dp(24);
+	flex: 1;
 }

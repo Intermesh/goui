@@ -20,6 +20,7 @@ import { htmlfield } from "@goui/component/form/HtmlField.js";
 import { Window } from "@goui/component/Window.js";
 import { btn } from "@goui/component/Button.js";
 import { table } from "@goui/component/table/Table.js";
+import {colorfield} from "@goui/component/form/ColorField.js";
 
 export class PlayGroundWindow extends Window {
 
@@ -80,6 +81,11 @@ export class PlayGroundWindow extends Window {
 							label: "Date",
 							name: "date"
 
+						}),
+
+						colorfield({
+							label: "Color",
+							name: "color"
 						}),
 
 						select({

@@ -177,21 +177,16 @@ export class Button extends Component {
 		}
 	}
 
+
+	/**
+	 * Align menu to this component when it's shown. If not set it will align to the button.
+	 */
+	public menuAlignTo: Component|undefined;
+
 	/**
 	 * Add menu to this button
 	 */
 	set menu(menu: Menu | undefined) {
-
-		// if (this._menu) {
-		// 	this._menu.remove();
-		// 	this.el.removeEventListener("mouseenter", this.onMenuMouseEnter);
-		// 	this.el.removeEventListener("click", this.onMenuButtonClick);
-		// }else
-		// {
-		// 	this.onMenuMouseEnter = this.onMenuMouseEnter.bind(this);
-		// 	this.onMenuButtonClick = this.onMenuButtonClick.bind(this);
-		// }
-
 		if (menu) {
 			menu.parentButton = this;
 			menu.removeOnClose = false;
@@ -212,23 +207,7 @@ export class Button extends Component {
 		if (this.fire("beforeshowmenu", this, this._menu!, ev) === false) {
 			return;
 		}
-		const rect = el.getBoundingClientRect();
-
-		//must be rendered and visible to get width below
-		if (!this._menu!.rendered) {
-			root.items.add(this._menu!);
-		}
-
-		//show first for positioning correctly below
-		this._menu!.show();
-
-		this._menu!.showAt({
-			x: this._menu!.expandLeft ? rect.right - this._menu!.width : rect.x,
-			y: rect.bottom
-		});
-
-		//put back fade out class removed in mouseenter listener above
-		this._menu!.el.classList.add("goui-fade-out");
+		this._menu!.showFor(this.menuAlignTo || this);
 
 		this.fire("showmenu", this, this._menu!, ev);
 	}

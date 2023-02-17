@@ -3,6 +3,8 @@ import {E} from "../../util/Element.js";
 import {ColorPicker} from "../picker/ColorPicker.js";
 import {Field} from "./Field.js";
 import {PickerButton} from "../picker/PickerButton.js";
+import {btn} from "../Button.js";
+import {menu} from "../menu/Menu.js";
 
 /**
  * ColorField component
@@ -12,15 +14,31 @@ import {PickerButton} from "../picker/PickerButton.js";
 export class ColorField extends Field {
 
 	protected colorDot: HTMLElement | undefined;
-	private static picker = new ColorPicker();
+	private picker;
 
 	constructor() {
 		super();
-		this.buttons = [new PickerButton(ColorField.picker)];
+		this.picker = new ColorPicker();
+		this.buttons = [btn({
+			icon: "expand_more",
+			menuAlignTo: this,
+			menu:
+				menu({},
+					this.picker
+				)
+		})];
 	}
 
 	protected createControl() : undefined | HTMLElement{
-		return this.colorDot = E('div', '&nbsp;').cls('+color-dot');
+		this.colorDot = E('div').cls('+color-dot');
+		this.el.cls("+no-floating-label");
+
+		this.picker.on('select', (_,val) => {
+
+			this.value = val;
+		});
+
+		return this.colorDot;
 	}
 
 	setInvalid(msg: string) {

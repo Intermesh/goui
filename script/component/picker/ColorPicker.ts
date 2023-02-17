@@ -5,14 +5,14 @@ import {comp, Component, ComponentEventMap, Config, createComponent} from "../Co
 /**
  * @inheritDoc
  */
-export interface ColorPickerEventMap<T extends Observable> extends ComponentEventMap<T> {
+export interface ColorPickerEventMap<Type extends Observable> extends ComponentEventMap<Type> {
 	/**
 	 * Fires when color is selected
 	 *
-	 * @param menu
+	 * @param colorPicker
 	 * @param color Hexadecimal color. eg. "000000"
 	 */
-	select: (menu: T, color: string) => void
+	select: <Sender extends Type> (colorPicker: Sender, color: string) => void
 }
 
 export interface ColorPicker {
