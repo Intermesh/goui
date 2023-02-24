@@ -171,6 +171,12 @@ export class List<StoreType extends Store = Store> extends Component {
 		this.el.appendChild(this.emptyStateEl);
 	}
 
+	protected clearRows() {
+		if(this.bodyEl) {
+			this.bodyEl.innerHTML = "";
+		}
+	}
+
 	protected renderBody() {
 		this.bodyEl = this.bodyEl || E('ul');
 		this.bodyEl.hidden = this.store.count() == 0;
@@ -188,8 +194,8 @@ export class List<StoreType extends Store = Store> extends Component {
 		// Use unshift = true so that this listener executes first so that other load listners execute when the list is
 		// rendered and can select rows.
 		this.store.on("load", (store, records, append) => {
-			if (!append && this.bodyEl) {
-				this.bodyEl.innerHTML = "";
+			if (!append) {
+				this.clearRows();
 			}
 			this.renderRows(records);
 

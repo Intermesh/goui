@@ -530,6 +530,14 @@ export class Table<StoreType extends Store = Store> extends List {
 		}
 		return this.groupEl;
 	}
+
+	protected clearRows() {
+		if(!this.bodyEl) {
+			return;
+		}
+		this.groupEl = undefined;
+		this.bodyEl.querySelectorAll('tbody').forEach(tbody => tbody.remove());
+	}
 }
 
 type TableConfig = Omit<Config<Table>, "rowSelection"> & {
