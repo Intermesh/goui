@@ -62,7 +62,8 @@ $curveStandard: cubic-bezier(0.4, 0.0, 0.2, 1) !default;
 
 $baseLineHeight: sp(22) !default;
 $fontSize: sp(18) !default;
-$fontBase: #{$fontSize}/$baseLineHeight Lato, Arial, Helvetica !default;
+$fontFamily: Lato, Arial, Helvetica;
+$fontBase: #{$fontSize}/$baseLineHeight $fontFamily !default;
 
 $zIndexWindow: 200 !default;
 $zIndexAlert: 400 !default;

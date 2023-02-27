@@ -1,5 +1,8 @@
-.goui {
+body {
 	font: $fontBase;
+}
+
+.goui {
 	box-sizing: border-box;
 	> * {
 		box-sizing: border-box;

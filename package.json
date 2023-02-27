@@ -26,5 +26,28 @@
     "build:clean": "rm -rf ./dist/*",
     "build:sass": "npx sass --style=compressed ./style:./dist",
     "build:ts": "tsc -p ./tsconfig.build.json"
-  }
+  },
+  "name": "@intermesh/goui",
+  "description": "Group-Office User Interface",
+  "version": "1.0.0",
+  "directories": {
+    "example": "examples",
+    "test": "tests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Intermesh/goui.git"
+  },
+  "keywords": [
+    "Typescript",
+    "Framework",
+    "UI",
+    "Components"
+  ],
+  "author": "Intermesh",
+  "license": "LGPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/Intermesh/goui/issues"
+  },
+  "homepage": "https://github.com/Intermesh/goui#readme"
 }
