@@ -5,6 +5,7 @@
     "@types/mocha": "^10.0.1",
     "@types/node": "^18.11.18",
     "chai": "^4.3.7",
+    "create-ts-index": "^1.14.0",
     "esbuild": "^0.16.17",
     "jsdom": "^21.0.0",
     "jsdom-global": "^3.0.2",
@@ -29,7 +30,7 @@
   },
   "name": "@intermesh/goui",
   "description": "Group-Office User Interface",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "directories": {
     "example": "examples",
     "test": "tests"
@@ -49,5 +50,12 @@
   "bugs": {
     "url": "https://github.com/Intermesh/goui/issues"
   },
-  "homepage": "https://github.com/Intermesh/goui#readme"
+  "homepage": "https://github.com/Intermesh/goui#readme",
+  "module": "./dist/index.js",
+  "typings": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js"
+    }
+  }
 }
