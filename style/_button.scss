@@ -54,38 +54,43 @@
 		filter: brightness(150%);
 	}
 
+	&.primary {
+		color: $colorSecondary;
+	}
+
+	&.accent {
+		color: $colorAccent;
+	}
 
 
 	&.raised {
 		color: $colorAccent;
 		border: $borderWidth solid $colorAccent;
+
 		&:hover {
 			color: white;
 			background-color: $colorAccent;
 		}
-	}
 
-	&.primary, &[type=submit] {
-		background-color: $colorSecondary;
-		color:white;
-		&:hover {
-			filter: brightness(120%);
+
+		&.primary, &[type=submit] {
+			background-color: $colorSecondary;
+			border: none;
+			color: white;
+
+			&:hover {
+				filter: brightness(120%);
+			}
 		}
-	}
 
-	&.secondary {
-		background-color: $colorButtonTertiary;
-		color:white;
-		&:hover {
-			filter: brightness(120%);
-		}
-	}
+		&.accent {
+			background-color: $colorAccent;
+			border: none;
+			color: white;
 
-	&.accent {
-		background-color: $colorPrimary;
-		color:white;
-		&:hover {
-			filter: brightness(120%);
+			&:hover {
+				filter: brightness(120%);
+			}
 		}
 	}
 
