@@ -108,6 +108,12 @@ export class DraggableComponent extends Component {
 	 */
 	public setPosition?: boolean;
 
+
+	/**
+	 * Enable dragging
+	 */
+	private _draggable:boolean = true;
+
 	constructor(tagName:keyof HTMLElementTagNameMap = "div") {
 		super(tagName);
 
@@ -119,62 +125,87 @@ export class DraggableComponent extends Component {
 		}
 
 		this.on("render", () => {
-			this.initDragHandle();
+			// invoke draggable setter once
+			if(this._draggable) {
+				this.draggable = this._draggable;
+			}
 		});
 	}
 
-	private initDragHandle() {
-		this.getDragHandle().classList.add("goui-draghandle")
-		this.getDragHandle().addEventListener('click', (e) => {
-			//prevent click events under draggable items
-			//needed for table header resize that triggered a sort on click too
-			e.stopPropagation();
-		});
+	/**
+	 * Enable or disable dragging
+	 */
+	public set draggable(draggable:boolean) {
+		this._draggable = draggable;
 
-		this.getDragHandle().addEventListener('mousedown', (e: MouseEvent) => {
+		const dragHandle = this.getDragHandle();
 
-			//stop if clicked on button inside drag handle. to prevent window dragging on buttons.
-			const target = e.target as HTMLElement;
-			if (target != this.el && (target.tagName == "BUTTON" || target.closest("BUTTON"))) {
-				return;
-			}
+		if(!dragHandle) {
+			return;
+		}
 
-			if (e.button != 0) {
-				//only drag with left click
-				return;
-			}
-			e.preventDefault();
-			//e.stopPropagation();
-
-			this.focus();
-
-			const el = this.el, rect = el.getBoundingClientRect();
-
-			if (this.setPosition === undefined) {
-				const cmpStyle = getComputedStyle(el);
-				this.setPosition = cmpStyle.position == 'absolute' || cmpStyle.position == 'fixed';
-			}
-
-			this.dragData = {
-				startOffsetLeft: el.offsetLeft,
-				startOffsetTop: el.offsetTop,
-				grabOffsetLeft: e.clientX - rect.x,
-				grabOffsetTop: e.clientY - rect.y,
-				x: e.clientX,
-				y: e.clientY,
-				startX: e.clientX,
-				startY: e.clientY,
-				data: {}
-			};
-
-
-			if (this.fire('dragstart', this, this.dragData, e) !== false) {
-				this.onDragStart(e);
-			}
-		});
-
-
+		if(draggable) {
+			dragHandle.classList.add("goui-draghandle")
+			this.getDragHandle().addEventListener('click', this.onDragHandleClick);
+			this.getDragHandle().addEventListener('mousedown', this.onDragHandleMouseDown);
+		} else {
+			dragHandle.classList.remove("goui-draghandle")
+			this.getDragHandle().removeEventListener('click', this.onDragHandleClick);
+			this.getDragHandle().removeEventListener('mousedown', this.onDragHandleMouseDown);
+		}
 	}
+
+	public get draggable() {
+		return this._draggable;
+	}
+
+	private onDragHandleClick = (e: MouseEvent) => {
+		//prevent click events under draggable items
+		//needed for table header resize that triggered a sort on click too
+		e.stopPropagation();
+	}
+
+	private onDragHandleMouseDown = (e: MouseEvent) => {
+
+		//stop if clicked on button inside drag handle. to prevent window dragging on buttons.
+		const target = e.target as HTMLElement;
+		if (target != this.el && (target.tagName == "BUTTON" || target.closest("BUTTON"))) {
+			return;
+		}
+
+		if (e.button != 0) {
+			//only drag with left click
+			return;
+		}
+		e.preventDefault();
+		//e.stopPropagation();
+
+		this.focus();
+
+		const el = this.el, rect = el.getBoundingClientRect();
+
+		if (this.setPosition === undefined) {
+			const cmpStyle = getComputedStyle(el);
+			this.setPosition = cmpStyle.position == 'absolute' || cmpStyle.position == 'fixed';
+		}
+
+		this.dragData = {
+			startOffsetLeft: el.offsetLeft,
+			startOffsetTop: el.offsetTop,
+			grabOffsetLeft: e.clientX - rect.x,
+			grabOffsetTop: e.clientY - rect.y,
+			x: e.clientX,
+			y: e.clientY,
+			startX: e.clientX,
+			startY: e.clientY,
+			data: {}
+		};
+
+
+		if (this.fire('dragstart', this, this.dragData, e) !== false) {
+			this.onDragStart(e);
+		}
+	};
 
 
 	/**

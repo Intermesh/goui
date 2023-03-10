@@ -2,8 +2,7 @@ import {Config, createComponent} from "../Component.js";
 import {E} from "../../util/Element.js";
 import {ColorPicker} from "../picker/ColorPicker.js";
 import {Field} from "./Field.js";
-import {PickerButton} from "../picker/PickerButton.js";
-import {btn} from "../Button.js";
+import {btn, Button} from "../Button.js";
 import {menu} from "../menu/Menu.js";
 
 /**
@@ -14,12 +13,14 @@ import {menu} from "../menu/Menu.js";
 export class ColorField extends Field {
 
 	protected colorDot: HTMLElement | undefined;
-	private picker;
+	private readonly picker;
+	private readonly pickerButton: Button;
 
 	constructor() {
 		super();
 		this.picker = new ColorPicker();
-		this.buttons = [btn({
+		this.buttons = [
+			this.pickerButton = btn({
 			icon: "expand_more",
 			menuAlignTo: this,
 			menu:
@@ -33,9 +34,9 @@ export class ColorField extends Field {
 		this.colorDot = E('div').cls('+color-dot');
 		this.el.cls("+no-floating-label");
 
-		this.picker.on('select', (_,val) => {
-
+		this.picker.on('select', (colorPicker, val) => {
 			this.value = val;
+			this.pickerButton.menu!.hide();
 		});
 
 		return this.colorDot;

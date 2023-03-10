@@ -20,9 +20,9 @@ export class DateField extends TextField {
 
 	timefield?: TextField
 
-	picker: DatePicker
+	private readonly picker: DatePicker
 
-	private pickerButton;
+	private readonly pickerButton;
 
 	constructor() {
 		super();

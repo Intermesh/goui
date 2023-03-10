@@ -6,71 +6,72 @@ import {Button} from "../Button.js";
 /**
  * Menu class
  *
- * @example
+ * Can be used as drop down menu or navigation menu.
+ *
+ * @example Navigation menu
  * ```typescript
- * Button.create({
- *    html: "Menu",
- *    menu: Menu.create({
- *        expandLeft: true,
- *        items: [
- *            Button.create({
- *                text: "Test 1"
- *            }),
- *            Component.create({
- *                tagName: "hr"
- *            }),
+ * const mainMenu = menu({cls: "main"},
+ *   btn({
+ *     text: "Home",
+ *     route: ""
+ *   }),
+ *   btn({
+ *     text: "Buttons",
+ *     route:"buttons"
+ *   }),
+ *   btn({
+ *     text: "Form",
+ *     route:"form"
+ *   }),
+ *   btn({
+ *     text: "Table",
+ *     route:"table"
+ *   }),
+ *   btn({
+ *     text: "Window",
+ *     route:"window"
+ *   })
+ * );
+ * ```
  *
- *            CheckboxField.create({
- * 							label: "Checkbox menu item 1",
- * 							name: "checkbox1",
- * 							value: true,
- * 							hideLabel: true
- * 						}),
+ * @example Drop down menu inside a button
+ * ```typescript
+ * btn({
+ * text: "Menu",
+ * menu: menu({},
  *
- * 						CheckboxField.create({
- * 							label: "Checkbox menu item 2",
- * 							name: "checkbox2",
- * 							value: true,
- * 							hideLabel: true
- * 						}),
+ * 	btn({
+ * 		text: "Alerts",
+ * 		menu: menu({},
+ * 			btn({
+ * 				text: "Success",
+ * 				handler: () => {
+ * 					Notifier.success("That went super!")
+ * 				}
+ * 			}),
  *
- * 				    Component.create({
- *                tagName: "hr"
- *            }),
+ * 			btn({
+ * 				text: "Error",
+ * 				handler: () => {
+ * 					Notifier.error("That went wrong!")
+ * 				}
+ * 			}),
  *
- *            Button.create({
- *                text: "Test 2",
- *                menu: Menu.create({
+ * 			btn({
+ * 				text: "Warning",
+ * 				handler: () => {
+ * 					Notifier.warning("Look out!")
+ * 				}
+ * 			}),
  *
- *                    items: [
- *                        Button.create({
- *                            html: "Test 2.1"
- *                        }),
- *                        Button.create({
- *                            html: "Test 2.2",
- *                            menu: Menu.create({
- *
- *                                items: [
- *                                    Button.create({
- *                                        html: "Test 2.2.1"
- *                                    }),
- *                                    Button.create({
- *                                        html: "Test 2.2.2"
- *                                    }),
- *                                ]
- *                            })
- *                        }),
- *                        Button.create({
- *                            html: "Test 2.3"
- *                        }),
- *                    ]
- *                })
- *            }),
- *
- *
- *        ]
- *    })
- * })
+ * 			btn({
+ * 				text: "Notice",
+ * 				handler: () => {
+ * 					Notifier.notice("Heads up.")
+ * 				}
+ * 			})
+ * 		)
+ * 	});
  * ```
  */
 export class Menu extends Component {
@@ -78,8 +79,6 @@ export class Menu extends Component {
 	constructor() {
 		super("menu");
 	}
-
-	protected baseCls = "goui-dropdown goui-fade-out";
 
 	/**
 	 * Remove menu when closed
@@ -97,10 +96,15 @@ export class Menu extends Component {
 	public static openedMenu?: Menu;
 
 	protected internalRender() {
-		const el = super.internalRender()
+		const el = super.internalRender();
 
 		if (this.expandLeft) {
 			el.classList.add("expand-left");
+		}
+
+		if(this.parentButton) {
+			el.classList.add("goui-dropdown");
+			el.classList.add("goui-fade-out");
 		}
 
 		return el;

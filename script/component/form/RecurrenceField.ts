@@ -1,20 +1,31 @@
-import {pickerbutton} from "../picker/PickerButton.js";
 import {RecurrencePicker} from "../picker/RecurrencePicker.js";
 import {t} from "../../Translate.js";
 import {E} from "../../util/Element.js";
 import {DateTime} from "../../util/DateTime.js";
 import {RecurrenceRule} from "../../util/Recurrence.js";
-import {Component, Config, createComponent} from "../Component.js";
+import {Config, createComponent} from "../Component.js";
 import {Field} from "./Field.js";
+import {btn, Button} from "../Button.js";
+import {menu} from "../menu/index.js";
 
 export class RecurrenceField extends Field {
 
-	picker: RecurrencePicker
+	private readonly picker: RecurrencePicker
+	private readonly pickerButton: Button;
 
 	constructor() {
 		super();
 		this.picker = new RecurrencePicker(new DateTime());
-		this.buttons = [pickerbutton({picker:this.picker})]
+		this.buttons = [
+			this.pickerButton = btn({
+				icon: "expand_more",
+				menuAlignTo: this,
+				menu:
+					menu({},
+						this.picker
+					)
+			})
+		]
 	}
 
 	protected createControl() {
@@ -22,6 +33,7 @@ export class RecurrenceField extends Field {
 		this.picker.on('select', (_,val) => {
 			this.value = val;
 			input.value = this.toText(val!);
+			this.pickerButton.menu!.hide();
 		});
 		return input;
 	}
@@ -39,12 +51,12 @@ export class RecurrenceField extends Field {
 		if(!record) {
 			return "Unsupported frequency: " + rr.frequency;
 		}
-		var str = record[4];
+		let str = record[4];
 		if(rr.interval) {
 			str = t('Every') + ' '+ rr.interval + ' '+ record[rr.interval > 1 ? 1 : 0];
 		}
 		if(rr.byDay) {
-			var
+			let
 				days = [],
 				workdays = (rr.byDay.length === 5);
 			for(var i = 0; i < rr.byDay.length; i++) {
@@ -86,4 +98,9 @@ export class RecurrenceField extends Field {
 	}
 }
 
-export const recurrencefield = (config: Config<RecurrenceField>) => createComponent(new RecurrenceField(), config);
+/**
+ * Shorthand function to create {@see RecurrenceField}
+ *
+ * @param config
+ */
+export const recurrencefield = (config?: Config<RecurrenceField>) => createComponent(new RecurrenceField(), config);

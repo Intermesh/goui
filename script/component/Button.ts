@@ -3,6 +3,7 @@ import {Menu} from "./menu/Menu.js";
 import {root} from "./Root.js";
 import {Observable, ObservableListener, ObservableListenerOpts} from "./Observable.js";
 import {MaterialIcon} from "./MaterialIcon.js";
+import {router} from "../Router.js";
 
 type ButtonType = "button" | "submit" | "reset";
 
@@ -68,12 +69,12 @@ export class Button extends Component {
 	private _iconEl?: HTMLElement;
 	private _textEl?: HTMLElement;
 
-	constructor() {
-		super("button");
-
-	}
-
 	protected baseCls = "goui-button";
+
+	/**
+	 * If set a handler will be generated with router.goto(this.route);
+	 */
+	public route?: string;
 
 	/**
 	 * Function to be executed on click (added to el.onclick)
@@ -89,13 +90,18 @@ export class Button extends Component {
 
 	private _text?: string;
 
-
+	constructor() {
+		super("button");
+	}
 	/**
 	 * Find the first menu in the tree of submenu's
 	 */
 	private findTopMenu(): Menu | undefined {
 		if (this.parent instanceof Menu) {
-			if (this.parent.parentButton && this.parent.parentButton.parent instanceof Menu) {
+			if(!this.parent.parentButton) {
+				return undefined;
+			}
+			if (this.parent.parentButton.parent instanceof Menu) {
 				return this.parent.parentButton.findTopMenu();
 			} else {
 				return this.parent as Menu;
@@ -120,7 +126,17 @@ export class Button extends Component {
 	protected internalRender() {
 
 		const el = super.internalRender();
-		this.type = 'button';
+
+		if(this.route != undefined) {
+			if(this.handler) {
+				throw "You can't set both handler and route on a button";
+			}
+
+			this.handler = () => {
+				router.goto(this.route!);
+			}
+		}
+
 		// The first menu of a button will expand on click, sub menus will show on hover and are hidden with css.
 		// Before I made this without JS with the :focus-within selector but that didn't work in Safari because it
 		// doesn't focus buttons on click.

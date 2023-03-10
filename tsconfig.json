@@ -12,8 +12,8 @@
     "outDir": "./dist"
   },
 
-  "exclude": [
-    "node_modules/*"
+  "include": [
+    "./script"
   ]
   
 }

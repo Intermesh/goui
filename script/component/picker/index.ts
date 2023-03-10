@@ -2,5 +2,4 @@
 
 export * from './ColorPicker';
 export * from './DatePicker';
-export * from './PickerButton';
 export * from './RecurrencePicker';

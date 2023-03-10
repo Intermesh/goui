@@ -11,9 +11,21 @@ interface RadioOption {
 type RadioType = 'box' | 'button';
 
 /**
- * Checkbox field
+ * Radio field
  *
- * @see Form
+ * @example
+ * ```
+ * radio({
+ * 		type: "button",
+ * 		value: "option1",
+ * 	  name: "radio",
+ * 		options: [
+ * 			{text: "Option 1", value: "option1"},
+ * 			{text: "Option 2", value: "option2"},
+ * 			{text: "Option 3", value: "option3"}
+ * 		]}
+ * 	)
+ * ```
  */
 export class RadioField extends Field {
 
@@ -76,4 +88,9 @@ export class RadioField extends Field {
 
 }
 
+/**
+ * Shorthand function to create {@see RadioField}
+ *
+ * @param config
+ */
 export const radio = (config?: Config<RadioField>) => createComponent(new RadioField(config?.type||'box'), config);

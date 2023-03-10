@@ -146,7 +146,7 @@ export class Window extends DraggableComponent {
 	}
 
 	protected getDragHandle() {
-		return this.header.el;
+		return this.getHeader().el;
 	}
 
 	public getHeader() {

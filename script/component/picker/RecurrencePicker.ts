@@ -1,13 +1,12 @@
-import {comp, Component, ComponentEventMap} from "../Component.js";
+import {comp, Component} from "../Component.js";
 import {DateTime} from "../../util/DateTime.js";
 import {t} from "../../Translate.js";
-import {btn, Button} from "../Button.js";
+import {btn} from "../Button.js";
 import {select, SelectField} from "../form/SelectField.js";
 import {textfield} from "../form/TextField.js";
 import {datefield} from "../form/DateField.js";
 import {Form, form} from "../form/Form.js";
 import {tbar} from "../Toolbar.js";
-import {radio} from "../form/RadioField.js";
 import {checkbox, CheckboxField} from "../form/CheckboxField.js";
 import {RecurrenceRule, Frequency} from "../../util/Recurrence.js";
 import {Observable, ObservableListener, ObservableListenerOpts} from "../Observable.js";
@@ -15,7 +14,6 @@ import {numberfield} from "../form/NumberField.js";
 import {Field} from "../form/Field.js";
 import {CardContainer, CardContainerEventMap} from "../CardContainer.js";
 import {Menu} from "../menu/Menu.js";
-import {Picker} from "./PickerButton.js";
 
 export interface RecurrencePickerEventMap<Sender extends Observable> extends CardContainerEventMap<Sender> {
 
@@ -30,7 +28,7 @@ export interface RecurrencePicker {
 
 type FrequencyDefaults = [text: string, plural: string, repeatDefault: number, untilDefault: string, frequencyText: string]
 
-export class RecurrencePicker extends CardContainer implements Picker {
+export class RecurrencePicker extends CardContainer {
 
 	protected baseCls = "recurrencepicker";
 
@@ -66,38 +64,8 @@ export class RecurrencePicker extends CardContainer implements Picker {
 						cb.value = val.indexOf(cb.name) !== -1;
 					}
 				}
-			}}),
-
-			// on: {'change': (btn, pressed) => {
-			// 	if(!pressed && btn.ownerCt.getValue().length === 0){
-			// 		btn.ownerCt.setValue([{day:this._day()}]);
-			//   	}
-			// }},
-			// getValue: () => {
-			// 	if(!this.rendered) {
-			// 		return this.value;
-			//   }
-			//   var value = [];
-			//   for(var i = 0; i < 7; i++) {
-			// 		if(this.items.items[i].pressed) {
-			// 			 value.push({day: this.items.items[i].day});
-			// 		}
-			//   }
-			//   return value;
-			// }
-			// initValue : function(){
-			// 		if(this.value !== undefined){
-			// 			this.setValue(this.value);
-			// 		}else if(!$.isEmpty(this.dom.value)){
-			// 			this.setValue(this.dom.value);
-			// 		}
-			// 		this.origValue = this.getValue();
-			// }
+			}})
 		);
-
-		//dayOptions.initValue();
-
-		//var me = this;
 
 		this.menu = comp({}, ...this.quickMenuItems());
 
@@ -179,9 +147,7 @@ export class RecurrencePicker extends CardContainer implements Picker {
 						name : 'until',
 						width : 160,
 						hidden : true,
-						//value: (new DateTime()).addMonths(3),
 						required : false
-						//minValue: this.startDate.clone().addDays(1)
 					})
 				)
 			),
@@ -240,9 +206,6 @@ export class RecurrencePicker extends CardContainer implements Picker {
 				// collapse menu, open form
 				this.changeFrequency(this.rule?.frequency || 'yearly');
 				this.activeItem = 1;
-				// const dlg = this.customRuleDialog();
-				// dlg.show();
-				// dlg.load(this.rule || {frequency:'weekly'});
 			}})
 		];
 	}
@@ -275,9 +238,6 @@ export class RecurrencePicker extends CardContainer implements Picker {
 		}
 		this.weekOfMonth = i;
 		this.menu.items.clear().add(...this.quickMenuItems());
-		// this.weekday = [{
-		// 	day: this._day()
-		// }];
 	}
 
 	changeFrequency(f: Frequency){
