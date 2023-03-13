@@ -181,7 +181,7 @@ export class Component extends Observable {
 	 * if stateId is given it will also be used as itemId
 	 */
 	get itemId() {
-		return this._itemId || this.stateId || "";
+		return this._itemId || this.stateId || this.el.id || "";
 	}
 
 	set itemId(itemId: string) {

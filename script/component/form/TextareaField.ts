@@ -1,5 +1,4 @@
 import {TextField} from "./TextField.js";
-import {CheckboxField} from "./CheckboxField.js";
 import {Config, createComponent} from "../Component.js";
 
 /**
@@ -8,6 +7,8 @@ import {Config, createComponent} from "../Component.js";
  * @see Form
  */
 export class TextAreaField extends TextField {
+
+	protected baseCls = 'goui-form-field textarea'
 
 	protected createControl(): undefined | HTMLElement {
 

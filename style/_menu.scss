@@ -1,5 +1,14 @@
 $menuWidth: dp(160);
 
+menu.goui {
+	margin-block-start: 0;
+	margin-block-end: 0;
+	margin-inline-start: 0;
+	margin-inline-end: 0;
+	padding-inline-start: 0;
+
+}
+
 menu.goui-dropdown {
 	@extend .z12;
 
@@ -14,11 +23,6 @@ menu.goui-dropdown {
 	backdrop-filter: blur(5px);
 	-webkit-backdrop-filter: blur(5px);
 
-	margin-block-start: 0;
-	margin-block-end: 0;
-	margin-inline-start: 0;
-	margin-inline-end: 0;
-	padding-inline-start: 0;
 	padding: dp(12);
 
 	li {

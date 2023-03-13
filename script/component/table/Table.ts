@@ -235,6 +235,7 @@ export class Table<StoreType extends Store = Store> extends List {
 
 		if (!this.columnMenu) {
 			this.columnMenu = menu({
+				cls: "goui-dropdown goui-fade-out",
 				removeOnClose: false
 			});
 

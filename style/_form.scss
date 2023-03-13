@@ -35,8 +35,8 @@ $formFieldBorderRadius: dp(10);
 	}
 }
 
-form .goui-form-field {
-	width: 100%;
+.goui-form-field {
+ 	width: dp(300);
 	align-self: start;
 	margin-bottom: dp(12);
 	margin-top: dp(4);
@@ -214,7 +214,6 @@ form .goui-form-field {
 	/** start text and textarea **/
 	input.text, textarea, select {
 		@extend %input;
-
 		&:focus, &:not(:placeholder-shown) {
 			@extend %float-label;
 		}
@@ -242,6 +241,7 @@ form .goui-form-field {
 
 	/** start checkbox **/
 	&.check {
+		width: auto;
 		.radio.control {
 			padding:1px; // for box-shadow border + overflow hidden
 			overflow:hidden;
@@ -452,10 +452,18 @@ form .goui-form-field {
 	}
 }
 
+.textarea {
+	width: dp(400);
+	textarea
+	{
+		min-height: dp(100);
+	}
+}
+
 
 .goui-html-field {
 	position: relative;
-
+	width: dp(400);
 
 	&.invalid {
 		div.editor{

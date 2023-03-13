@@ -135,7 +135,32 @@ export class List<StoreType extends Store = Store> extends Component {
 
 		this.renderEmptyState();
 		this.renderBody();
+		this.initStore();
 		return el;
+	}
+
+	private initStore() {
+		if (this.loadOnScroll) {
+			this.el.on('scroll', () => {
+				this.onScroll();
+			}, {passive: true});
+		}
+
+		// Use unshift = true so that this listener executes first so that other load listeners execute when the list is
+		// rendered and can select rows.
+		this.store.on("load", (store, records, append) => {
+			if (!append) {
+				this.clearRows();
+			}
+			this.renderRows(records);
+
+			if (this.loadOnScroll) {
+				setTimeout(() => {
+					this.onScroll();
+				});
+			}
+
+		}, {unshift: true});
 	}
 
 	private initNavigateEvent() {
@@ -185,27 +210,7 @@ export class List<StoreType extends Store = Store> extends Component {
 
 		this.el.append(this.bodyEl);
 
-		if (this.loadOnScroll) {
-			this.el.on('scroll', () => {
-				this.onScroll();
-			}, {passive: true});
-		}
 
-		// Use unshift = true so that this listener executes first so that other load listners execute when the list is
-		// rendered and can select rows.
-		this.store.on("load", (store, records, append) => {
-			if (!append) {
-				this.clearRows();
-			}
-			this.renderRows(records);
-
-			if (this.loadOnScroll) {
-				setTimeout(() => {
-					this.onScroll();
-				});
-			}
-
-		}, {unshift: true});
 
 		if (this.rowSelect) {
 			this.rowSelect.on('rowselect', (rowSelect, storeIndex) => {
