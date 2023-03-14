@@ -64,6 +64,7 @@ export class Window extends DraggableComponent {
 	constructor() {
 		super();
 		this.resizable = true;
+		this.width = 400;
 	}
 	protected baseCls = "goui-window"
 
@@ -458,7 +459,8 @@ export class Window extends DraggableComponent {
 				}
 			},
 				comp({
-					tagName: "p",
+					flex: 1,
+					cls: "scroll pad",
 					html: text
 				})
 			).show();

@@ -59,7 +59,7 @@
 	overflow: hidden;
 	form.goui-form {
 		fieldset {
-			@extend .pad;
+			padding: dp(18);
 		}
 	}
 

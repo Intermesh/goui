@@ -247,7 +247,6 @@ $formFieldBorderRadius: dp(10);
 		width: auto;
 		.radio.control {
 			padding: 0;
-			overflow:hidden;
 		}
 		input {
 			-webkit-appearance: none;
@@ -256,8 +255,8 @@ $formFieldBorderRadius: dp(10);
 			cursor: pointer;
 		}
 		&.box {
-			.radio > label + label {
-				padding-left: dp(8);
+			.radio > label {
+				padding-right: dp(8);
 			}
 		}
 		&.box input {
@@ -352,6 +351,10 @@ $formFieldBorderRadius: dp(10);
 			}
 		}
 		&.button{ // check buttons should be in segment .group
+
+			.control {
+				flex-wrap: nowrap;
+			}
 			.radio {
 				background-color: $colorBackgroundInput;
 				border: $borderWidth solid $colorBorder;
@@ -395,6 +398,7 @@ $formFieldBorderRadius: dp(10);
 			display: flex;
 			padding: dp(8) 0;
 			align-items: center;
+			flex-wrap: wrap;
 
 			.box-label {
 				flex: 1;
