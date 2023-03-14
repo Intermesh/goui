@@ -14,9 +14,12 @@ $formFieldBorderRadius: dp(10);
 	outline: none;
 	color: $colorText;
 	display: block;// for text area which has inline-block by default and gets some extra margin
-	border-radius: $formFieldBorderRadius;
+	border-radius: $formFieldBorderRadius - $borderWidth;
 	&:read-only:not(select) {
 		background-color: $colorBackgroundReadOnly;
+		&+.label {
+			background-color: $colorBackgroundReadOnly;
+		}
 	}
 
 	&::placeholder {
@@ -148,7 +151,7 @@ $formFieldBorderRadius: dp(10);
 		left: dp(16);
 		padding: 0 dp(4);
 		top: math.div($baseLineHeight, 2) + dp(11);
-		height: 3px;
+		height: $borderWidth;
 		background-color: $colorBackgroundInput;
 
 		transition: all 200ms linear;
@@ -202,7 +205,7 @@ $formFieldBorderRadius: dp(10);
 		font-size: dp(14);
 		color: $colorTextSecondary;
 		line-height: dp(20); //match icon
-		padding: dp(8) dp(18) 0;
+		padding: dp(4) dp(18) dp(4);
 		//height: dp(30);
 		flex: 1 1 100%;
 
@@ -243,7 +246,7 @@ $formFieldBorderRadius: dp(10);
 	&.check {
 		width: auto;
 		.radio.control {
-			padding:1px; // for box-shadow border + overflow hidden
+			padding: 0;
 			overflow:hidden;
 		}
 		input {
@@ -400,7 +403,7 @@ $formFieldBorderRadius: dp(10);
 				text-overflow: ellipsis;
 				white-space: nowrap;
 
-				padding: 0 0 0 dp(12);
+				padding: 0 dp(12);
 				margin: auto 0;
 				user-select: none;
 				-webkit-user-select: none;
