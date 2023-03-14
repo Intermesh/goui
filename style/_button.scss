@@ -63,7 +63,7 @@
 	}
 
 
-	&.raised {
+	&.raised, &[type=submit] {
 		color: $colorAccent;
 		border: $borderWidth solid $colorAccent;
 

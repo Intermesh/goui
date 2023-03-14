@@ -39,7 +39,7 @@ $formFieldBorderRadius: dp(10);
 }
 
 .goui-form-field {
- 	width: dp(300);
+	width: 100%;
 	align-self: start;
 	margin-bottom: dp(12);
 	margin-top: dp(4);
@@ -456,7 +456,6 @@ $formFieldBorderRadius: dp(10);
 }
 
 .textarea {
-	width: dp(400);
 	textarea
 	{
 		min-height: dp(100);
@@ -466,7 +465,6 @@ $formFieldBorderRadius: dp(10);
 
 .goui-html-field {
 	position: relative;
-	width: dp(400);
 
 	&.invalid {
 		div.editor{
