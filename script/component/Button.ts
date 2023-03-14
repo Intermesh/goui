@@ -92,6 +92,7 @@ export class Button extends Component {
 
 	constructor() {
 		super("button");
+		this.type = "button";
 	}
 	/**
 	 * Find the first menu in the tree of submenu's
@@ -157,11 +158,15 @@ export class Button extends Component {
 		}
 
 		el.addEventListener("click", (e) => {
-			e.preventDefault(); // prevent submitting form
+
 
 			// check detail for being the first click. We don't want double clicks to call the handler twice.
 			// the detail property contains the click count. When spacebar is used it will be 0
-			if (this.handler && e.button == 0 ) {
+			// Michael had problems with e.detail < 2 but we don't remember why. Discuss when we run into this.
+			if (this.handler && e.button == 0 && e.detail < 2) {
+
+				e.preventDefault(); // prevent submitting form
+
 				this.handler.call(this, this, e);
 
 				// close menu if handler is set
