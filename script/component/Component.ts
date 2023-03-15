@@ -880,14 +880,14 @@ export const mask = (config?: Config<Mask>) => createComponent(new Mask(), confi
  */
 export const comp = (config?: Config<Component>, ...items: Component[]) => createComponent(new Component(config?.tagName), config, items);	
 
-export const p = (config?: Config<Component>, ...items: Component[]) => createComponent(new Component("p"), config, items);
-export const h1 = (config?: Config<Component>, ...items: Component[]) => createComponent(new Component("h1"), config, items);
-export const h2 = (config?: Config<Component>, ...items: Component[]) => createComponent(new Component("h2"), config, items);
-export const h3 = (config?: Config<Component>, ...items: Component[]) => createComponent(new Component("h3"), config, items);
-export const h4 = (config?: Config<Component>, ...items: Component[]) => createComponent(new Component("h4"), config, items);
+export const p = (config?: Config<Component>|string, ...items: Component[]) => createComponent(new Component("p"), typeof config == 'string' ? {html: config} : config, items);
+export const h1 = (config?: Config<Component>|string, ...items: Component[]) => createComponent(new Component("h1"), typeof config == 'string' ? {html: config} : config, items);
+export const h2 = (config?: Config<Component>|string, ...items: Component[]) => createComponent(new Component("h2"), typeof config == 'string' ? {html: config} : config, items);
+export const h3 = (config?: Config<Component>|string, ...items: Component[]) => createComponent(new Component("h3"), typeof config == 'string' ? {html: config} : config, items);
+export const h4 = (config?: Config<Component>|string, ...items: Component[]) => createComponent(new Component("h4"), typeof config == 'string' ? {html: config} : config, items);
 
-export const code = (config?: Config<Component>, ...items: Component[]) => createComponent(new Component("code"), config, items);
-export const section = (config?: Config<Component>, ...items: Component[]) => createComponent(new Component("section"), config, items);
+export const code = (config?: Config<Component>|string, ...items: Component[]) => createComponent(new Component("code"), typeof config == 'string' ? {html: config} : config, items);
+export const section = (config?: Config<Component>|string, ...items: Component[]) => createComponent(new Component("section"), typeof config == 'string' ? {html: config} : config, items);
 export const createComponent = <T>(comp: T, config:any, items?:Component[]) : T => {
 
 	if (config) {
