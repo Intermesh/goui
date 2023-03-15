@@ -101,19 +101,19 @@ export class Window extends DraggableComponent {
 	 */
 	private focussedBeforeOpen?: Element;
 
-	/**
-	 * Focus first item if possible.
-	 * @param o
-	 */
-	public focus(o?: FocusOptions) {
-
-		const first = this.items.first();
-		if(first) {
-			return first.focus(o);
-		} else {
-			return super.focus(o);
-		}
-	}
+	// /**
+	//  * Focus first item if possible.
+	//  * @param o
+	//  */
+	// public focus(o?: FocusOptions) {
+	//
+	// 	const first = this.items.first();
+	// 	if(first) {
+	// 		return first.focus(o);
+	// 	} else {
+	// 		return super.focus(o);
+	// 	}
+	// }
 
 	private initMaximizeTool() {
 		const maximizeBtn = btn({
@@ -325,10 +325,11 @@ export class Window extends DraggableComponent {
 			} else {
 				this.constrainTo(window);
 			}
-			this.focus();
 		}
 
-		return super.show();
+		const ret = super.show();
+		this.focus();
+		return ret;
 	}
 
 	private shrinkToFit() {
@@ -438,10 +439,8 @@ export class Window extends DraggableComponent {
 	/**
 	 * Show modal alert window
 	 *
-	 * @param title
-	 * @param text
 	 */
-	public static alert(title:string, text: any): Promise<void> {
+	public static alert(text: any, title:string = t("Alert")): Promise<void> {
 
 		if(text.message) {
 			console.error(text);
@@ -469,13 +468,12 @@ export class Window extends DraggableComponent {
 
 
 	/**
-	 * Prompt the user for a text input value
+	 * Prompt the user for a text input value.
 	 *
-	 * @param title
-	 * @param text
-	 * @param inputLabel
+	 * Returns a promise with the input or undefined if the user cancelled
+	 *
 	 */
-	public static prompt(title:string, text: string, inputLabel:string): Promise<string> {
+	public static prompt(text: string, inputLabel:string, defaultValue = "", title:string = t("Please enter")): Promise<string|undefined> {
 
 		return new Promise((resolve, reject) => {
 
@@ -490,7 +488,7 @@ export class Window extends DraggableComponent {
 					},
 					close: () => {
 						if (cancelled) {
-							reject("cancelled");
+							resolve(undefined);
 						}
 					}
 				}
@@ -514,7 +512,8 @@ export class Window extends DraggableComponent {
 						textfield({
 							label: inputLabel,
 							name: "input",
-							required: true
+							required: true,
+							value: defaultValue
 						})
 					),
 
@@ -531,6 +530,56 @@ export class Window extends DraggableComponent {
 
 				)
 
+			);
+
+			w.show();
+		});
+	}
+
+	/**
+	* Ask the user for confirmation
+	*/
+	public static confirm(text: string, title: string = t("Please confirm")): Promise<boolean> {
+
+		return new Promise((resolve, reject) => {
+
+			const yesBtn = btn({
+				text: t("Yes"),
+				cls: "raised primary",
+				handler: () => {
+					resolve(true);
+					w.close();
+				}
+			}),
+				w = win({
+					modal: true,
+					title: title,
+					closable: false,
+					listeners: {
+						focus: () => {
+							yesBtn.focus();
+						}
+					}
+				},
+
+				comp({
+					tagName: "p",
+					cls: "pad",
+					html: text
+				}),
+
+				tbar({},
+					'->',
+					btn({
+						text: t("No"),
+						handler: () => {
+							resolve(false);
+							w.close();
+						}
+					}),
+
+					yesBtn
+				)
 			);
 
 			w.show();
