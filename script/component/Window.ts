@@ -563,7 +563,6 @@ export class Window extends DraggableComponent {
 				},
 
 				comp({
-					tagName: "p",
 					cls: "pad",
 					html: text
 				}),

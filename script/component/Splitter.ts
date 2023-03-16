@@ -43,12 +43,13 @@ export class Splitter extends DraggableComponent {
 	constructor(private resizeComponentPredicate: FindComponentPredicate) {
 		super("hr");
 
-		this.on("added", () => {
+		this.on("beforerender", () => {
 			// find component to resize if it's an id string
 			if (!(resizeComponentPredicate instanceof Component)) {
 				this._resizeComponent = this.parent!.findChild(this.resizeComponentPredicate)!;
 
 				if(!this._resizeComponent) {
+					console.warn(this.resizeComponentPredicate);
 					throw "Could not find component to resize!";
 				}
 			} else

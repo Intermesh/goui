@@ -59,7 +59,7 @@ $padding: dp(8) !default;
 
 $curveStandard: cubic-bezier(0.4, 0.0, 0.2, 1) !default;
 
-$baseLineHeight: sp(22) !default;
+$baseLineHeight: sp(25) !default;
 $fontSize: sp(18) !default;
 $fontFamily: Lato, Arial, Helvetica;
 $fontBase: #{$fontSize}/$baseLineHeight $fontFamily !default;

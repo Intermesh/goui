@@ -84,6 +84,7 @@
 	}
 
 	.header {
+		height: dp(74);
 		color: #313131;
 		background: $colorWindowHeader;
 		position: relative;
@@ -93,13 +94,13 @@
 
 		& + *:not(.goui-cardmenu):not(form) {
 			margin-top: 0;
-			border-top: 1px solid $colorBorderWindow;
+			//border-top: $borderWidth solid $colorBorderWindow;
 		}
 
 		& + form {
 			&:first-child:not(.goui-cardmenu) {
 				margin-top: 0;
-				border-top: 1px solid $colorBorderWindow;
+				//border-top: $borderWidth solid $colorBorderWindow;
 			}
 		}
 	}
@@ -116,7 +117,7 @@
 		padding-left: dp(18);
 		padding-right: dp(18);
 		//background: $colorBackgroundToolbar;
-		border-top: $borderWidth solid $colorBorderWindow;
+		//border-top: $borderWidth solid $colorBorderWindow;
 	}
 }
 
