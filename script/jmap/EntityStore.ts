@@ -76,7 +76,7 @@ export interface EntityStoreEventMap<T extends Observable> extends ObservableEve
 	 *
 	 * @param store
 	 * @param records
-	 * @param append Wheter the records were added to the store.
+	 * @param append Whether the records were added to the store.
 	 */
 	change?: (store: EntityStore, changes: SetResponse) => void
 }

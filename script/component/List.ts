@@ -120,13 +120,6 @@ export class List<StoreType extends Store = Store> extends Component {
 
 		this.initNavigateEvent();
 
-		this.store.on("load", (store, records, append) => {
-			const isEmpty = (!append && records.length == 0);
-
-			this.bodyEl!.hidden = isEmpty;
-			this.emptyStateEl!.hidden = !isEmpty;
-		});
-
 		el.on("mousedown", (e) => {
 			this.onMouseDown(e);
 		}).on("dblclick", (e) => {
@@ -149,6 +142,11 @@ export class List<StoreType extends Store = Store> extends Component {
 		// Use unshift = true so that this listener executes first so that other load listeners execute when the list is
 		// rendered and can select rows.
 		this.store.on("load", (store, records, append) => {
+			const isEmpty = (!append && records.length == 0);
+
+			this.bodyEl!.hidden = isEmpty;
+			this.emptyStateEl!.hidden = !isEmpty;
+
 			if (!append) {
 				this.clearRows();
 			}

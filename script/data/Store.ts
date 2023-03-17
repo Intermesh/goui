@@ -18,13 +18,13 @@ export interface Comparator {
 	isAscending?: boolean
 }
 
-export type StoreRecord = { [key: string]: any };
+export type StoreRecord = Record<string, any>
 
 
 /**
  * @inheritDoc
  */
-export interface StoreEventMap<T extends Observable> extends CollectionEventMap<T, StoreRecord> {
+export interface StoreEventMap<T extends Observable, RecordType extends StoreRecord> extends CollectionEventMap<T, RecordType> {
 	/**
 	 * Fires when data is loaded into the store
 	 *
@@ -39,21 +39,21 @@ export interface StoreEventMap<T extends Observable> extends CollectionEventMap<
 	 * @param records
 	 * @param append Whether the records were added to the store.
 	 */
-	load: <Sender extends T>(store: Sender, records: StoreRecord[], append: boolean) => void
+	load: <Sender extends T, SenderRecordType extends RecordType>(store: Sender, records: SenderRecordType[], append: boolean) => void
 }
 
-export interface Store {
-	on<K extends keyof StoreEventMap<this>>(eventName: K, listener: Partial<StoreEventMap<this>>[K], options?: ObservableListenerOpts): void
+export interface Store<RecordType extends StoreRecord = StoreRecord> {
+	on<K extends keyof StoreEventMap<this, RecordType>>(eventName: K, listener: Partial<StoreEventMap<this, RecordType>>[K], options?: ObservableListenerOpts): void
 
-	fire<K extends keyof StoreEventMap<this>>(eventName: K, ...args: Parameters<StoreEventMap<this>[K]>): boolean
+	fire<K extends keyof StoreEventMap<this, RecordType>>(eventName: K, ...args: Parameters<StoreEventMap<this, RecordType>[K]>): boolean
 
-	set listeners(listeners: ObservableListener<StoreEventMap<this>>)
+	set listeners(listeners: ObservableListener<StoreEventMap<this, RecordType>>)
 }
 
 /**
- * Data store
+ * Generic data store used by components
  */
-export class Store extends Collection<StoreRecord> {
+export class Store<RecordType extends StoreRecord>  extends Collection<RecordType> {
 
 	// private static stores: Record<string, Store> = {};
 	//
@@ -82,7 +82,7 @@ export class Store extends Collection<StoreRecord> {
 	 * @param records
 	 * @param append
 	 */
-	public loadData(records: StoreRecord[], append = true) {
+	public loadData(records: RecordType[], append = true) {
 
 		append ? this.add(...records) : this.replace(...records);
 		this.fire("load", this, records, append);
@@ -91,7 +91,7 @@ export class Store extends Collection<StoreRecord> {
 	/**
 	 * Reload the data from the source
 	 */
-	public reload() {
+	public async reload() {
 		return this.load();
 	}
 
@@ -102,7 +102,7 @@ export class Store extends Collection<StoreRecord> {
 	 * @param append
 	 * @protected
 	 */
-	protected internalLoad(append: boolean): Promise<StoreRecord[]> {
+	protected internalLoad(append: boolean): Promise<RecordType[]> {
 		this.loadData(ArrayUtil.multiSort(this.items, this.sort), append);
 		return Promise.resolve(this.items)
 	}
@@ -112,7 +112,7 @@ export class Store extends Collection<StoreRecord> {
 	 *
 	 * @param append
 	 */
-	public load(append = false): Promise<StoreRecord[]> {
+	public load(append = false): Promise<RecordType[]> {
 		this._loading = true;
 		this.fire("beforeload", this, append);
 		return this.internalLoad(append)
@@ -125,7 +125,7 @@ export class Store extends Collection<StoreRecord> {
 	 * Load the next set of records when paging.
 	 * Doesn't do anything in the array store but can be implemented in async stores.
 	 */
-	public loadNext(append = false): Promise<StoreRecord[]> {
+	public loadNext(append = false): Promise<RecordType[]> {
 		return Promise.resolve([]);
 	}
 
@@ -133,7 +133,7 @@ export class Store extends Collection<StoreRecord> {
 	 * Load the next set of records when paging.
 	 * Doesn't do anything in the array store but can be implemented in async stores.
 	 */
-	public loadPrevious(): Promise<StoreRecord[]> {
+	public loadPrevious(): Promise<RecordType[]> {
 		return Promise.resolve([]);
 	}
 

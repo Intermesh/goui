@@ -558,4 +558,4 @@ type TableConfig = Omit<Config<Table>, "rowSelection"> & {
  *
  * @param config
  */
-export const table = (config: TableConfig) => createComponent(new Table(config.store, config.columns), config);
+export const table = <StoreType = Store>(config: TableConfig) => createComponent(new Table<StoreType>(config.store, config.columns), config);
