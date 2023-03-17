@@ -117,21 +117,27 @@ export class ContainerField extends Field {
 	}
 
 	protected validate() {
-
 		super.validate();
-
-		const items = this.findFields();
-
-		let invalid = false;
-		items.forEach((field) => {
-			if (!field.isValid()) {
-				invalid = true;
-			}
-		});
-
+		let invalid = this.findFirstInvalid();
 		if (invalid) {
 			this.setInvalid("There's an invalid field");
 		}
+	}
+
+	/**
+	 * Find the first invalid field
+	 */
+	public findFirstInvalid() : Field | undefined{
+		const items = this.findFields();
+
+		let invalid = undefined;
+		items.forEach((field) => {
+			if (!field.isValid()) {
+				invalid = field;
+			}
+		});
+
+		return invalid;
 	}
 
 	protected renderControl() {
@@ -157,6 +163,19 @@ export class ContainerField extends Field {
 			this.el.classList.add("invalid");
 		} else {
 			this.el.classList.remove("invalid");
+		}
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public focus(o?: FocusOptions) {
+		const fields = this.findFields();
+		if (fields.length) {
+			fields[0].focus(o);
+			this.fire("focus", this, o);
+		} else {
+			super.focus(o);
 		}
 	}
 }

@@ -3,7 +3,7 @@
 .goui-button  {
 	color: inherit;
 	background-color: transparent;
-	border: 0;
+	border: $borderWidth solid transparent;
 	border-radius: dp(12);
 	padding: dp(12) dp(18); //padding 11 because line height is 24 instead of 22
 
@@ -75,7 +75,7 @@
 
 		&.primary, &[type=submit] {
 			background-color: $colorSecondary;
-			border: none;
+			border-color: $colorSecondary;
 			color: white;
 
 			&:hover {
@@ -85,7 +85,7 @@
 
 		&.accent {
 			background-color: $colorAccent;
-			border: none;
+			border-color: $colorAccent;
 			color: white;
 
 			&:hover {
@@ -95,7 +95,8 @@
 	}
 
 	&:focus-visible {
-		background-color: $colorFocus;
+		border: $borderWidth solid $colorPrimary !important;
+		@extend .z4;
 	}
 }
 .goui.group {
@@ -142,7 +143,7 @@
 	user-select: none;
 	-moz-user-select: none;
 	-webkit-user-select: none;
-	padding: dp(8) dp(16);
+	padding: dp(8) 0;
 	min-height: dp(62);
 	margin: 0;
 	//removed for htmlfield toolbar inside menu

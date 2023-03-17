@@ -288,25 +288,17 @@ export class Form extends ContainerField {
 			el.cls(['-valid','+invalid']);
 
 			Notifier.error(t('You have errors in your form. The invalid fields are marked.'));
+
+			const invalid = this.findFirstInvalid();
+			if(invalid) {
+				invalid.focus();
+			}
 		}
 	}
 
 	setInvalid(msg: string) {
 		super.setInvalid(msg);
 		Notifier.error(msg);
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public focus(o?: FocusOptions) {
-		const fields = this.findFields();
-		if (fields.length) {
-			fields[0].focus(o);
-			this.fire("focus", this, o);
-		} else {
-			super.focus(o);
-		}
 	}
 
 }

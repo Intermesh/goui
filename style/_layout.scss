@@ -62,11 +62,6 @@ body {
 	}
 }
 
-.goui.gap {
-	gap: dp(8);
-}
-
-
 // Stack items vertically
 // For border layout use height's on east and west and add class "go-scroll" on center
 .goui.vbox {
@@ -83,6 +78,12 @@ body {
 		min-height: 0;
 	}
 }
+
+
+.goui.gap {
+	gap: dp(8);
+}
+
 
 .goui.container {
 	display: flex;

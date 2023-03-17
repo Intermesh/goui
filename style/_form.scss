@@ -11,7 +11,7 @@ $formFieldBorderRadius: dp(10);
 	border: 0;
 	padding: dp(11) dp(16);
 	width: 100%;
-	outline: none;
+	//outline: none;
 	color: $colorText;
 	display: block;// for text area which has inline-block by default and gets some extra margin
 	border-radius: $formFieldBorderRadius - $borderWidth;
@@ -534,8 +534,10 @@ form {
 		}
 	}
 
+	// to make button align with form field
 	.goui-button {
 		margin-bottom: dp(16);
+		margin-top: dp(4);
 	}
 
 	.goui.goui-toolbar {
