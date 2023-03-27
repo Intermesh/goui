@@ -2,7 +2,7 @@ import {JmapDataSource} from "./JmapDataSource.js";
 import {Observable, ObservableEventMap} from "../component/Observable.js";
 import {Format} from "../util/Format.js";
 import {Timezone} from "../util/DateTime.js";
-import {dataSources} from "../data/index.js";
+import {dataSources} from "../data/DataSourceManager.js";
 
 export interface LoginData {
 	action?: "login"

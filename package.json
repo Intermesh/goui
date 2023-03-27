@@ -19,13 +19,13 @@
     "test": "mocha",
     "start": "npm run build:clean && npm run start:parallel",
     "start:parallel": "npm run start:watch & npm run start:sass",
-    "start:watch": "npx tsc --watch -p ./tsconfig.build.json",
+    "start:watch": "npx tsc --watch",
     "start:sass": "npx sass --watch ./style:./dist",
 
     "build": "npm run build:clean && npm run build:sass && npm run build:ts",
     "build:clean": "rm -rf ./dist/*",
     "build:sass": "npx sass --style=compressed ./style:./dist",
-    "build:ts": "tsc -p ./tsconfig.build.json",
+    "build:ts": "tsc",
 
     "prepublishOnly": "npm run build"
   },

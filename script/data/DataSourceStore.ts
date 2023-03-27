@@ -1,6 +1,7 @@
 import {Store, StoreRecord} from "../data/Store.js";
 import {AbstractDataSource, QueryParams} from "./AbstractDataSource.js";
 import {ObjectUtil} from "../util/index.js";
+import {Config, createComponent, Table, TableColumn} from "../component/index.js";
 
 type Relation<RecordType> = Record<keyof RecordType, {
 	dataSource: AbstractDataSource,
@@ -8,7 +9,7 @@ type Relation<RecordType> = Record<keyof RecordType, {
 }>
 
 
-export class DataSourceStore<RecordType extends StoreRecord> extends Store<RecordType> {
+export class DataSourceStore<RecordType extends StoreRecord = StoreRecord> extends Store<RecordType> {
 
 	public queryParams: QueryParams = {};
 
@@ -107,3 +108,19 @@ export class DataSourceStore<RecordType extends StoreRecord> extends Store<Recor
 		return this.queryParams.position! > 0;
 	}
 }
+
+
+type DataSourceStoreConfig<RecordType extends StoreRecord = StoreRecord> = Config<DataSourceStore<RecordType>> & {
+	/**
+	 * Store that provides the data
+	 */
+	dataSource: AbstractDataSource
+}
+
+
+/**
+ * Shorthand function to create a {@see DataSourceStore}
+ *
+ * @param config
+ */
+export const datasourcestore = <RecordType extends StoreRecord = StoreRecord>(config: DataSourceStoreConfig<RecordType>) => createComponent(new DataSourceStore<RecordType>(config.dataSource), config);

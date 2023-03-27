@@ -1,5 +1,5 @@
 import {client} from "./Client.js";
-import {AbstractDataSource, QueryParams} from "../data/index.js";
+import {AbstractDataSource, DefaultEntity, QueryParams} from "../data/AbstractDataSource.js";
 
 export interface ResultReference {
 	resultOf: string
@@ -34,9 +34,24 @@ export interface JmapQueryParams extends QueryParams {
 }
 
 
-export class JmapDataSource<EntityType> extends AbstractDataSource<EntityType> {
+export class JmapDataSource<EntityType extends DefaultEntity = DefaultEntity> extends AbstractDataSource<EntityType> {
+
+	private static stores: Record<string, any> = {};
+
+	public static store<EntityType extends DefaultEntity = DefaultEntity>(storeId:string) : JmapDataSource<EntityType> {
+		if(!JmapDataSource.stores[storeId]) {
+			// @ts-ignore
+			JmapDataSource.stores[storeId] = new this(storeId);
+		}
+		return JmapDataSource.stores[storeId];
+	}
 
 
+	/**
+	 * Query entity ID's
+	 *
+	 * @param params
+	 */
 	query(params: JmapQueryParams) {
 		return client.jmap(this.id + "/query", params);
 	}

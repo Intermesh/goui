@@ -149,7 +149,7 @@ export class Store<RecordType extends StoreRecord>  extends Collection<RecordTyp
 
 
 /**
- * Shorthand function to create store
+ * Shorthand function to create a {@see Store}
  *
  * @param config
  */

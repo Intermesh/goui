@@ -51,7 +51,9 @@ export interface QueryParams {
 	limit?: number,
 	position?: number,
 	calculateTotal?: boolean,
-	sort?: Comparator[]
+	sort?: Comparator[],
+
+	[key:string]: any
 }
 
 
@@ -73,23 +75,8 @@ export interface AbstractDataSource<EntityType = Record<string, any>> {
 	fire<K extends keyof DataSourceEventMap<AbstractDataSource<EntityType>, EntityType>>(eventName: K, ...args: Parameters<NonNullable<DataSourceEventMap<AbstractDataSource<EntityType>, EntityType>[K]>>): boolean
 }
 
-
-class DataSourceManager {
-	private stores:Record<string, any> = {};
-
-	public get<DataSourceType extends AbstractDataSource>(id:string, dataSourceType: {new (id:string): DataSourceType}): DataSourceType {
-
-		if(!this.stores[id]) {
-			this.stores[id] = new dataSourceType(id);
-		}
-		return this.stores[id];
-	}
-}
-
-export const dataSources = new DataSourceManager();
-
-
 export abstract class AbstractDataSource<EntityType = DefaultEntity> extends Observable {
+
 
 	constructor(public readonly id:string) {
 		super();
@@ -151,6 +138,8 @@ export abstract class AbstractDataSource<EntityType = DefaultEntity> extends Obs
 		{
 			this.updates[id] = data;
 		}
+
+		return this;
 	}
 
 	/**

@@ -9,7 +9,9 @@
     "isolatedModules": true, // important for tree shaking in esbuild
     "module":"es2020",
     "baseUrl": ".",
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "declaration": true,
+    "declarationMap": true
   },
 
   "include": [
