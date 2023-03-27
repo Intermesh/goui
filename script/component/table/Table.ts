@@ -541,11 +541,11 @@ export class Table<StoreType extends Store = Store> extends List {
 	}
 }
 
-type TableConfig = Omit<Config<Table>, "rowSelection"> & {
+type TableConfig<StoreType extends Store = Store> = Omit<Config<Table>, "rowSelection"> & {
 	/**
 	 * Store that provides the data
 	 */
-	store: Store,
+	store: StoreType,
 
 	/**
 	 * The table columns
@@ -558,4 +558,4 @@ type TableConfig = Omit<Config<Table>, "rowSelection"> & {
  *
  * @param config
  */
-export const table = <StoreType = Store>(config: TableConfig) => createComponent(new Table<StoreType>(config.store, config.columns), config);
+export const table = <StoreType extends Store = Store>(config: TableConfig<StoreType>) => createComponent(new Table<StoreType>(config.store, config.columns), config);

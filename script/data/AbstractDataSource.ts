@@ -43,7 +43,7 @@ export interface CommitResponse<EntityType> extends Changes<EntityType> {
 	notDestroyed?: CommitEntityError
 }
 
-export type EntityID = string;
+export type EntityID = string|number;
 
 export interface QueryParams {
 	limit?: number,
@@ -103,9 +103,9 @@ export abstract class AbstractDataSource<EntityType = Record<string, any>> exten
 	 *
 	 * @param ids
 	 */
-	public async get(ids:string[]): Promise<GetResponse<EntityType>> {
+	public async get(ids:EntityID[]): Promise<GetResponse<EntityType>> {
 
-		const list = [], unknown = [];
+		const list = [], unknown:EntityID[] = [];
 		for(let id of ids) {
 			if(this.data[id]) {
 				list.push(this.data[id]);
@@ -120,11 +120,21 @@ export abstract class AbstractDataSource<EntityType = Record<string, any>> exten
 	}
 
 	/**
+	 * Get a single entity
+	 *
+	 * @param id
+	 */
+	public async single(id: EntityID): Promise<EntityType|undefined> {
+		const response = await this.get([id]);
+		return response.list[0] || undefined;
+	}
+
+	/**
 	 * Implements getting entities from a remote source
 	 * @param ids
 	 * @protected
 	 */
-	protected abstract internalGet(ids:string[]) : Promise<GetResponse<EntityType>>;
+	protected abstract internalGet(ids:EntityID[]) : Promise<GetResponse<EntityType>>;
 
 	/**
 	 * Save data to the store

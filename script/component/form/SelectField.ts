@@ -1,6 +1,6 @@
 import {Field} from "./Field.js";
 import {Config, createComponent} from "../Component.js";
-import {JmapStore} from "../../jmap/JmapStore.js";
+import {Store} from "../../data/index.js";
 
 /**
  * Select field
@@ -14,7 +14,7 @@ export class SelectField extends Field {
 	protected input: HTMLSelectElement | undefined;
 
 	public options: {[key:string]: any}[] = [];
-	public store?: JmapStore
+	public store?: Store
 
 	public valueField = 'value';
 	public textRenderer?: (record: {[key:string]: any})=> string = (record: {[key:string]: any}) => record.name;

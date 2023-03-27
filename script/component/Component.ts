@@ -869,7 +869,7 @@ export class Mask extends Component {
 export type Config<Cmp> = Partial<Pick<Cmp, { [K in keyof Cmp]: Cmp[K] extends Function ? never : K }[keyof Cmp]>>;
 
 /**
- * Short hand function to create a {@see Mask} component
+ * Shorthand function to create a {@see Mask} component
  *
  * @param config
  */

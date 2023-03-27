@@ -1,8 +1,8 @@
-import {EntityStore} from "./EntityStore.js";
+import {JmapDataSource} from "./JmapDataSource.js";
 import {Observable, ObservableEventMap} from "../component/Observable.js";
 import {Format} from "../util/Format.js";
 import {Timezone} from "../util/DateTime.js";
-import {cookies} from "../util/Cookies.js";
+import {dataSources} from "../data/index.js";
 
 export interface LoginData {
 	action?: "login"
@@ -224,9 +224,9 @@ export class Client<UserType extends User = User> extends Observable {
 					return undefined;
 				}
 
-				this.user = await this.store('User').single(session.userId, [
-						'id', 'username', 'displayName', 'email', 'avatarId', 'dateFormat', 'timeFormat', 'timezone', 'thousandsSeparator', 'decimalSeparator', 'currency']
-					) as UserType;
+				const ds = dataSources.get("User", JmapDataSource<UserType>);
+
+				this.user = await ds.single(session.userId);
 
 				if(this.user) {
 
@@ -249,20 +249,6 @@ export class Client<UserType extends User = User> extends Observable {
 		}
 
 		return this.user;
-	}
-
-	private stores: Record<string, EntityStore> = {};
-
-	/**
-	 * Get entity store
-	 *
-	 * @param name
-	 */
-	public store(name: string) {
-		if (!this.stores[name]) {
-			this.stores[name] = new EntityStore(name, this);
-		}
-		return this.stores[name]
 	}
 
 	public downloadUrl(blobId: string) {

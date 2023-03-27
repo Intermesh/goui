@@ -4,7 +4,7 @@ import {Notifier} from "../../Notifier.js";
 import {Component, Config, createComponent} from "../Component.js";
 import {FieldEventMap} from "./Field.js";
 import {t} from "../../Translate.js";
-import {EntityStore} from "../../jmap/EntityStore.js";
+import {AbstractDataSource} from "../../data/index.js";
 
 
 export interface FormEventMap<Sender extends Observable> extends FieldEventMap<Sender> {
@@ -151,7 +151,7 @@ export class Form extends ContainerField {
 	 */
 	public handler: ((this: this, form: Form) => any|Promise<any>) | undefined;
 
-	store?: EntityStore
+	store?: AbstractDataSource
 
 	protected currentId?: string | number
 
@@ -171,6 +171,9 @@ export class Form extends ContainerField {
 		try {
 			this.currentId = id;
 			let entity = await this.store!.single(id);
+			if(!entity) {
+				throw "Failed to load entity with id " + id;
+			}
 			this.fire('load', this, entity);
 			this.value = entity;
 		} catch (e) {
@@ -269,7 +272,8 @@ export class Form extends ContainerField {
 					let v = this.value;
 					debugger;
 					this.fire('serialize', this, v);
-					let response = await this.store.save(v, this.currentId);
+					this.store.save(v, this.currentId);
+					let response = await this.store.commit();
 					if(response) {
 						this.fire('saved', this, response);
 					}
