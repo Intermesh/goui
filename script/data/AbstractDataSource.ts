@@ -24,6 +24,8 @@ export enum CommitErrorType {
 
 export type CommitEntityError = Record<EntityID, CommitError>
 
+export type DefaultEntity = Record<string, any>;
+
 
 export interface CommitError {
 	type: CommitErrorType
@@ -87,7 +89,7 @@ class DataSourceManager {
 export const dataSources = new DataSourceManager();
 
 
-export abstract class AbstractDataSource<EntityType = Record<string, any>> extends Observable {
+export abstract class AbstractDataSource<EntityType = DefaultEntity> extends Observable {
 
 	constructor(public readonly id:string) {
 		super();
