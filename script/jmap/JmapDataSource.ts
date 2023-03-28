@@ -52,13 +52,33 @@ export class JmapDataSource<EntityType extends DefaultEntity = DefaultEntity> ex
 	 * @param params
 	 */
 	query(params: JmapQueryParams) {
-		return client.jmap(this.id + "/query", params);
+		return client.jmap(this.id + "/query", params, this.useCallId());
 	}
 
 	/**
 	 * Extra parameters to send to the Foo/set
 	 */
 	public commitBaseParams = {};
+
+	/**
+	 * The ID to use when committing
+	 */
+	protected _nextCallId = 1;
+
+	/**
+	 * The call ID of the next JMAP method call. Useful for result references.
+	 */
+	get nextCallId() {
+		return this.id + "_" + this._nextCallId;
+	}
+
+	private useCallId() {
+		const callId  = this.nextCallId;
+		this._nextCallId++;
+
+		return callId;
+	}
+
 
 	protected async internalCommit() {
 
@@ -86,7 +106,7 @@ export class JmapDataSource<EntityType extends DefaultEntity = DefaultEntity> ex
 			params.destroy.push(id);
 		}
 
-		const response = await client.jmap(this.id + "/set", params) as CommitResponse<EntityType>;
+		const response = await client.jmap(this.id + "/set", params, this.useCallId()) as CommitResponse<EntityType>;
 
 		if(response.created) {
 			for(let clientId in response.created) {
@@ -94,7 +114,6 @@ export class JmapDataSource<EntityType extends DefaultEntity = DefaultEntity> ex
 				let data = Object.assign(params.create ? (params.create[clientId] || {}) : {}, response.created[clientId] || {});
 				this.add(data);
 				this.creates[clientId].resolve(data);
-				delete this.creates[clientId];
 			}
 		}
 
@@ -102,7 +121,6 @@ export class JmapDataSource<EntityType extends DefaultEntity = DefaultEntity> ex
 			for(let clientId in response.notCreated) {
 				//merge client data with server defaults.
 				this.creates[clientId].reject(response.notCreated[clientId]);
-				delete this.creates[clientId];
 			}
 		}
 
@@ -118,7 +136,6 @@ export class JmapDataSource<EntityType extends DefaultEntity = DefaultEntity> ex
 				data = Object.assign(data, response.updated[serverId] || {});
 				this.add(data);
 				this.updates[serverId].resolve(data);
-				delete this.updates[serverId];
 			}
 		}
 
@@ -126,7 +143,6 @@ export class JmapDataSource<EntityType extends DefaultEntity = DefaultEntity> ex
 			for(let serverId in response.notUpdated) {
 				//merge client data with server defaults.
 				this.updates[serverId].reject(response.notUpdated[serverId]);
-				delete this.updates[serverId];
 			}
 		}
 
@@ -139,7 +155,6 @@ export class JmapDataSource<EntityType extends DefaultEntity = DefaultEntity> ex
 		if(response.notDestroyed) {
 			for(let serverId in response.notDestroyed) {
 				this.destroys[serverId].reject(response.notDestroyed[serverId]);
-				delete this.destroys[serverId];
 			}
 		}
 
@@ -151,7 +166,7 @@ export class JmapDataSource<EntityType extends DefaultEntity = DefaultEntity> ex
 	protected internalGet(ids: string[]){
 		return client.jmap(this.id + '/get', {
 			ids: ids
-		});
+		}, this.useCallId());
 	}
 
 	protected internalUpdate(){

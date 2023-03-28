@@ -6,6 +6,7 @@
 
 import {Observable, ObservableEventMap} from "../component/index.js";
 import {Comparator} from "./Store.js";
+import {dataSources} from "./DataSourceManager.js";
 
 export interface GetResponse<EntityType> {
 	list: EntityType[],
@@ -136,7 +137,12 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	public async get(ids:EntityID[]): Promise<GetResponse<EntityType>> {
 
 		const list = [], unknown:EntityID[] = [];
+		let index = 0, order:Record<EntityID, number> = {};
+
+		//first see if we have it in our data property
 		for(let id of ids) {
+			//keep order for sorting the result
+			order[id] = index++;
 			if(this.data[id]) {
 				list.push(this.data[id]);
 			} else {
@@ -144,8 +150,13 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 			}
 		}
 
+		// Call class method to fetch additional
 		const response = await this.internalGet(unknown);
-		response.list = response.list.concat(list);
+
+		// make sure the result is sorted in the way the ids were passed.
+		response.list = response.list.concat(list).sort(function (a, b) {
+			return order[a.id] - order[b.id];
+		});
 		return response;
 	}
 
@@ -178,23 +189,22 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	 * Save data to the store
 	 *
 	 * @param data
+	 * @param createId The create ID to use when committing this entity to the server
 	 */
-	public save(data:Partial<EntityType>): Promise<EntityType> {
+	public create(data:Partial<EntityType>, createId?: EntityID): Promise<EntityType> {
+
+		if(createId === undefined) {
+			createId = this.createID()
+		}
+
 		const p = new Promise((resolve, reject) => {
-			if(data.id === undefined) {
-				this.creates[this.createID()] ={
-					data: data,
-					resolve: resolve,
-					reject: reject
-				}
-			} else
-			{
-				this.updates[data.id] = {
-					data: data,
-					resolve: resolve,
-					reject: reject
-				};
+			this.creates[createId!] ={
+				data: data,
+				resolve: resolve,
+				reject: reject
 			}
+		}).finally(() => {
+				delete this.creates[createId!];
 		}) as Promise<EntityType>;
 
 		this.delayedCommit();
@@ -202,17 +212,32 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 		return p;
 	}
 
+	/**
+	 * Save data to the store
+	 *
+	 * @param data
+	 */
+	public update(data:Partial<EntityType> & BaseEntity): Promise<EntityType> {
+		const p = new Promise((resolve, reject) => {
+				this.updates[data.id!] = {
+					data: data,
+					resolve: resolve,
+					reject: reject
+				}
+		}).finally(() => {
+			delete this.updates[data.id!];
+		}) as Promise<EntityType>;
+
+		this.delayedCommit();
+
+		return p;
+	}
+
+
 	private _createId = 0;
 
 	private createID() {
 		return "_new_" + (++this._createId);
-	}
-
-	/**
-	 * The last ID used for creating a new entity
-	 */
-	get lastCreateID() {
-		return "_new_" + this._createId;
 	}
 
 	/**
@@ -225,7 +250,9 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 				resolve: resolve,
 				reject: reject
 			}
-		});
+		}). finally(() => {
+			delete this.destroys[id];
+		})
 
 		this.delayedCommit();
 
@@ -235,7 +262,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	/**
 	 * Fetch updates from remote
 	 */
-	public async update() {
+	public async updateFromServer() {
 		const changes = await this.internalUpdate();
 		if(changes.created) {
 			for (let id in changes.created) {
@@ -267,22 +294,24 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	/**
 	 * Commit pending changes to remote
 	 */
-	public async commit() {
-		const response = await this.internalCommit();
-		this.fire("change", this, response);
-		return response;
+	private commit() {
+		const p =  this.internalCommit().then((response) => {
+			this.fire("change", this, response);
+		});
+		return p;
 	}
 
-	protected delayedCommit() {
+	private delayedCommit() {
 		if (this.timeout) {
 			clearTimeout(this.timeout);
 		}
 
 		this.timeout = window.setTimeout(() => {
-			this.timeout = undefined;
+			delete this.timeout;
 			this.commit();
 		});
 	}
+
 
 	/**
 	 * Implements commit (save and destroy) to the remote source

@@ -40,7 +40,7 @@ export class DataSourceStore<EntityType extends BaseEntity = DefaultEntity> exte
 		// very quick and dirty update on changes to the entity store.
 		this.dataSource.on('change', async () => {
 			if(this.loaded) {
-				await this.reload();
+				this.reload();
 			}
 		});
 	}

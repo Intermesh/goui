@@ -78,7 +78,9 @@ export interface ResultReference  {
 }
 
 export class Client<UserType extends User = User> extends Observable {
-	private _lastCallId = 0;
+	private _lastCallCounter = 0;
+
+	private _lastCallId?:string;
 	private _requests: [method: string, params: any, callid: string][] = [];
 	private _requestData: any = {};
 	private _session: any;
@@ -146,7 +148,7 @@ export class Client<UserType extends User = User> extends Observable {
 	 * The ID of the last JMAP method call
 	 */
 	get lastCallId() {
-		return "call-" + this._lastCallId;
+		return this._lastCallId;
 	}
 
 	public async isLoggedIn(): Promise<User | false> {
@@ -376,10 +378,14 @@ export class Client<UserType extends User = User> extends Observable {
 	 * @param method
 	 * @param params
 	 */
-	public jmap(method: string, params: Object = {}): Promise<any> {
-		const callId = "call-" + (++this._lastCallId), promise: Promise<Object> = new Promise((resolve, reject) => {
+	public jmap(method: string, params: Object = {}, callId: string|undefined = undefined): Promise<any> {
+		if(callId === undefined) {
+			callId = "call-" + (++this._lastCallCounter)
+		}
+		this._lastCallId = callId;
+		const promise: Promise<Object> = new Promise((resolve, reject) => {
 
-			this._requestData[callId] = {
+			this._requestData[callId!] = {
 				reject: reject,
 				resolve: resolve,
 				params: params,
