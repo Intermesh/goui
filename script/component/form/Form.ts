@@ -10,7 +10,7 @@ import {Notifier} from "../../Notifier.js";
 import {Component, Config, createComponent} from "../Component.js";
 import {FieldEventMap} from "./Field.js";
 import {t} from "../../Translate.js";
-import {AbstractDataSource, BaseEntity} from "../../data/index.js";
+import {AbstractDataSource, BaseEntity, EntityID} from "../../data/index.js";
 
 
 export interface FormEventMap<Sender extends Observable> extends FieldEventMap<Sender> {
@@ -159,7 +159,7 @@ export class Form extends ContainerField {
 
 	store?: AbstractDataSource
 
-	protected currentId?: string | number
+	protected currentId?: EntityID
 
 	public create(data: any) {
 		this.reset();
@@ -275,10 +275,10 @@ export class Form extends ContainerField {
 			} else if(this.store) {
 				try {
 					this._value = {};
-					let v = this.value as BaseEntity;
-					debugger;
+					let v = this.value as Partial<BaseEntity>;
+					v.id = this.currentId;
 					this.fire('serialize', this, v);
-					this.store.save(v, this.currentId);
+					this.store.save(v);
 					let response = await this.store.commit();
 					if(response) {
 						this.fire('saved', this, response);

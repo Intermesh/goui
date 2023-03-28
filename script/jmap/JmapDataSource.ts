@@ -70,8 +70,8 @@ export class JmapDataSource<EntityType extends DefaultEntity = DefaultEntity> ex
 	protected async internalCommit() {
 
 		interface SetRequest<EntityType> {
-			create: Record<EntityID, EntityType>
-			update: Record<EntityID, EntityType>
+			create: Record<EntityID, Partial<EntityType>>
+			update: Record<EntityID, Partial<EntityType>>
 			destroy: EntityID[]
 		}
 
