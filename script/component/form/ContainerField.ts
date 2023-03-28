@@ -1,3 +1,9 @@
+/**
+ * @license https://github.com/Intermesh/goui/blob/main/LICENSE MIT License
+ * @copyright Copyright 2023 Intermesh BV
+ * @author Merijn Schering <mschering@intermesh.nl>
+ */
+
 import {Field, FieldEventMap} from "./Field.js";
 import {ObservableListener, ObservableListenerOpts} from "../Observable.js";
 import {Component, Config, createComponent} from "../Component.js";

@@ -1,3 +1,9 @@
+/**
+ * @license https://github.com/Intermesh/goui/blob/main/LICENSE MIT License
+ * @copyright Copyright 2023 Intermesh BV
+ * @author Merijn Schering <mschering@intermesh.nl>
+ */
+
 import {TextField} from "./TextField.js";
 import {DateTime} from "../../util/DateTime.js";
 import {Config, createComponent} from "../Component.js";

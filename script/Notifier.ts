@@ -1,3 +1,9 @@
+/**
+ * @license https://github.com/Intermesh/goui/blob/main/LICENSE MIT License
+ * @copyright Copyright 2023 Intermesh BV
+ * @author Merijn Schering <mschering@intermesh.nl>
+ */
+
 import {comp, Component} from "./component/Component.js";
 import {root} from "./component/Root.js";
 

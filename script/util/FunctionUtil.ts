@@ -1,4 +1,8 @@
-
+/**
+ * @license https://github.com/Intermesh/goui/blob/main/LICENSE MIT License
+ * @copyright Copyright 2023 Intermesh BV
+ * @author Merijn Schering <mschering@intermesh.nl>
+ */
 type Func = ((...args: any[]) => any);
 /**
  * Buffer or delay a function

@@ -1,3 +1,9 @@
+/**
+ * @license https://github.com/Intermesh/goui/blob/main/LICENSE MIT License
+ * @copyright Copyright 2023 Intermesh BV
+ * @author Michael de Hart <mdhart@intermesh.nl>
+ */
+
 import {E} from "../../util/Element.js";
 import {Config, createComponent} from "../Component.js";
 import {Field} from "./Field.js";

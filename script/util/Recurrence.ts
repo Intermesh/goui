@@ -1,3 +1,8 @@
+/**
+ * @license https://github.com/Intermesh/goui/blob/main/LICENSE MIT License
+ * @copyright Copyright 2023 Intermesh BV
+ * @author Michael de Hart <mdhart@intermesh.nl>
+ */
 import {DateTime} from "./DateTime.js";
 
 interface RecurrenceConfig {

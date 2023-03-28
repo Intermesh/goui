@@ -1,3 +1,8 @@
+/**
+ * @license https://github.com/Intermesh/goui/blob/main/LICENSE MIT License
+ * @copyright Copyright 2023 Intermesh BV
+ * @author Merijn Schering <mschering@intermesh.nl>
+ */
 import {Observable, ObservableEventMap, ObservableListenerOpts} from "./component/Observable.js";
 
 export interface Route {
@@ -15,7 +20,6 @@ export interface RouterEventMap<T extends Observable> extends ObservableEventMap
 
 export interface Router {
 	on<K extends keyof RouterEventMap<Router>>(eventName: K, listener: RouterEventMap<Router>[K], options?: ObservableListenerOpts): void
-
 	fire<K extends keyof RouterEventMap<Router>>(eventName: K, ...args: Parameters<NonNullable<RouterEventMap<Router>[K]>>): boolean
 }
 

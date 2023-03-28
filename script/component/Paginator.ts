@@ -1,3 +1,9 @@
+/**
+ * @license https://github.com/Intermesh/goui/blob/main/LICENSE MIT License
+ * @copyright Copyright 2023 Intermesh BV
+ * @author Merijn Schering <mschering@intermesh.nl>
+ */
+
 import {Toolbar} from "./Toolbar.js";
 import {Store} from "../data/Store.js";
 import {btn, Button} from "./Button.js";

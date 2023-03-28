@@ -1,3 +1,9 @@
+/**
+ * @license https://github.com/Intermesh/goui/blob/main/LICENSE MIT License
+ * @copyright Copyright 2023 Intermesh BV
+ * @author Merijn Schering <mschering@intermesh.nl>
+ */
+
 import {Config, createComponent} from "../Component.js";
 import {E} from "../../util/Element.js";
 import {ColorPicker} from "../picker/ColorPicker.js";

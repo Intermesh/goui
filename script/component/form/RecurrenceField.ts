@@ -1,3 +1,9 @@
+/**
+ * @license https://github.com/Intermesh/goui/blob/main/LICENSE MIT License
+ * @copyright Copyright 2023 Intermesh BV
+ * @author Michael de Hart <mdhart@intermesh.nl>
+ */
+
 import {RecurrencePicker} from "../picker/RecurrencePicker.js";
 import {t} from "../../Translate.js";
 import {E} from "../../util/Element.js";

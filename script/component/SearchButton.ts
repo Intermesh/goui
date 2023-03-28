@@ -1,12 +1,16 @@
+/**
+ * @license https://github.com/Intermesh/goui/blob/main/LICENSE MIT License
+ * @copyright Copyright 2023 Intermesh BV
+ * @author Merijn Schering <mschering@intermesh.nl>
+ */
+
 import {btn, Button, ButtonEventMap} from "./Button.js";
 import {tbar, Toolbar} from "./Toolbar.js";
 import {t} from "../Translate.js";
 import {TextField, textfield} from "./form/TextField.js";
-import {Component, Config, createComponent} from "./Component.js";
+import {Config, createComponent} from "./Component.js";
 import {FunctionUtil} from "../util/FunctionUtil.js";
 import {Observable, ObservableListener, ObservableListenerOpts} from "./Observable.js";
-import {DraggableComponentEventMap} from "./DraggableComponent.js";
-import {Window} from "./Window.js";
 
 
 /**

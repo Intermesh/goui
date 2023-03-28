@@ -1,6 +1,11 @@
+/**
+ * @license https://github.com/Intermesh/goui/blob/main/LICENSE MIT License
+ * @copyright Copyright 2023 Intermesh BV
+ * @author Merijn Schering <mschering@intermesh.nl>
+ */
 import {Component, ComponentState, Config, createComponent, FindComponentPredicate} from "./Component.js";
-import {DraggableComponent, DraggableComponentEventMap} from "./DraggableComponent.js";
-import {ObservableListener, ObservableListenerOpts} from "./Observable.js";
+import {DraggableComponent} from "./DraggableComponent.js";
+
 
 /**
  * Splitter

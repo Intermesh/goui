@@ -1,3 +1,8 @@
+/**
+ * @license https://github.com/Intermesh/goui/blob/main/LICENSE MIT License
+ * @copyright Copyright 2023 Intermesh BV
+ * @author Michael de Hart <mdhart@intermesh.nl>
+ */
 export function E<K extends keyof HTMLElementTagNameMap>(tag: K, ...items: (Node|string|number)[]): HTMLElementTagNameMap[K] {
 	const el = document.createElement(tag) ;
 	el.append(...items as (Node|string)[]);

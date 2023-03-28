@@ -1,3 +1,9 @@
+/**
+ * @license https://github.com/Intermesh/goui/blob/main/LICENSE MIT License
+ * @copyright Copyright 2023 Intermesh BV
+ * @author Merijn Schering <mschering@intermesh.nl>
+ */
+
 import {comp, Component, ComponentState, Config, createComponent} from "../Component.js";
 import {Store, StoreRecord} from "../../data/Store.js";
 import {ObjectUtil} from "../../util/ObjectUtil.js";

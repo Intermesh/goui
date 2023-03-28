@@ -1,3 +1,10 @@
+/**
+ * @license https://github.com/Intermesh/goui/blob/main/LICENSE MIT License
+ * @copyright Copyright 2023 Intermesh BV
+ * @author Michael de Hart <mdhart@intermesh.nl>
+ */
+
+
 import {comp, Component} from "../Component.js";
 import {DateTime} from "../../util/DateTime.js";
 import {t} from "../../Translate.js";

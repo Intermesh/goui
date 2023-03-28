@@ -1,11 +1,13 @@
+/**
+ * @license https://github.com/Intermesh/goui/blob/main/LICENSE MIT License
+ * @copyright Copyright 2023 Intermesh BV
+ * @author Merijn Schering <mschering@intermesh.nl>
+ */
+
 import {FunctionUtil} from "../util/FunctionUtil.js";
 import {ComponentEventMap} from "./Component.js";
 
 type Func = (...args: any[]) => any;
-
-type Funcs<Map> = {
-	[P in keyof Map]: Map[P] extends Func ? Map[P] : never
-};
 
 /**
  * Component events

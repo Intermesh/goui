@@ -1,9 +1,13 @@
+/**
+ * @license https://github.com/Intermesh/goui/blob/main/LICENSE MIT License
+ * @copyright Copyright 2023 Intermesh BV
+ * @author Merijn Schering <mschering@intermesh.nl>
+ */
+
 import {Observable, ObservableEventMap, ObservableListener, ObservableListenerOpts} from "../Observable.js";
 import {List} from "../List.js";
 import {ArrayUtil} from "../../util/ArrayUtil.js";
 import {Config} from "../Component.js";
-
-
 export interface RowSelectEventMap<T extends Observable> extends ObservableEventMap<T> {
 	/**
 	 * Fires when selection changes. When holding arrow on keyboard it will only fire once at key up to prevent

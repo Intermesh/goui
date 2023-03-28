@@ -1,8 +1,15 @@
+/**
+ * @license https://github.com/Intermesh/goui/blob/main/LICENSE MIT License
+ * @copyright Copyright 2023 Intermesh BV
+ * @author Merijn Schering <mschering@intermesh.nl>
+ */
+
 import {JmapDataSource} from "./JmapDataSource.js";
 import {Observable, ObservableEventMap} from "../component/Observable.js";
 import {Format} from "../util/Format.js";
 import {Timezone} from "../util/DateTime.js";
 import {dataSources} from "../data/DataSourceManager.js";
+
 
 export interface LoginData {
 	action?: "login"

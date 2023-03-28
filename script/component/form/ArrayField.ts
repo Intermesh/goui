@@ -1,8 +1,11 @@
-import {ObservableListenerOpts} from "../Observable.js";
-import {Field, FieldEventMap} from "./Field.js";
+/**
+ * @license https://github.com/Intermesh/goui/blob/main/LICENSE MIT License
+ * @copyright Copyright 2023 Intermesh BV
+ * @author Merijn Schering <mschering@intermesh.nl>
+ */
+import {Field} from "./Field.js";
 import {ContainerField} from "./ContainerField.js";
-import {Collection} from "../../util/Collection.js";
-import {Component, Config, createComponent} from "../Component.js";
+import {Config, createComponent} from "../Component.js";
 
 
 /**
