@@ -14,6 +14,11 @@ type Relation<EntityType extends BaseEntity> = Record<keyof EntityType, {
 }>
 
 
+/**
+ * DataSourceStore class
+ *
+ * Uses an {@see AbstractDataSource} to present data in the view.
+ */
 export class DataSourceStore<EntityType extends BaseEntity = DefaultEntity> extends Store<EntityType> {
 
 	public queryParams: QueryParams = {};
@@ -38,7 +43,6 @@ export class DataSourceStore<EntityType extends BaseEntity = DefaultEntity> exte
 				await this.reload();
 			}
 		});
-
 	}
 
 

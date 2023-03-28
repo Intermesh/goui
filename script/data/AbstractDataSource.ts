@@ -98,8 +98,18 @@ interface Destroyedata  {
 	reject: (reason?: any) => void
 }
 
+/**
+ * Abstract DataSource class
+ *
+ * A DataSource collection is a single source of truth for all types of data.
+ * When the DataSource changes it fires an event. All components and stores listen to the
+ * 'change' event to update themselves. This approach reduces the amount of code that has
+ * to be written and maintained.
+ *
+ * Use a {@see DataSourceStore} in components to list data from datasources.
+ * The {@see Form} component can also load from a datasource.
+ */
 export abstract class AbstractDataSource<EntityType extends BaseEntity = DefaultEntity> extends Observable {
-
 
 	constructor(public readonly id:string) {
 		super();
