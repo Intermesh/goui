@@ -88,7 +88,7 @@ export interface AbstractDataSource<EntityType extends BaseEntity = DefaultEntit
 }
 
 interface SaveData <EntityType extends BaseEntity> {
-	data: EntityType,
+	data: Partial<EntityType>,
 	resolve: (value: EntityType) => void,
 	reject: (reason?: any) => void
 }
@@ -170,11 +170,10 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	 * Save data to the store
 	 *
 	 * @param data
-	 * @param id
 	 */
-	public save(data:EntityType, id?:EntityID): Promise<EntityType|CommitError> {
+	public save(data:Partial<EntityType>): Promise<EntityType|CommitError> {
 		return new Promise((resolve, reject) => {
-			if(id === undefined) {
+			if(data.id === undefined) {
 				this.creates[this.createID()] ={
 					data: data,
 					resolve: resolve,
@@ -182,7 +181,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 				}
 			} else
 			{
-				this.updates[id] = {
+				this.updates[data.id] = {
 					data: data,
 					resolve: resolve,
 					reject: reject
