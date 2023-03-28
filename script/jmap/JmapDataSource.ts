@@ -62,6 +62,11 @@ export class JmapDataSource<EntityType extends DefaultEntity = DefaultEntity> ex
 		return client.jmap(this.id + "/query", params);
 	}
 
+	/**
+	 * Extra parameters to send to the Foo/set
+	 */
+	public commitBaseParams = {};
+
 	protected async internalCommit() {
 
 		interface SetRequest<EntityType> {
@@ -70,11 +75,11 @@ export class JmapDataSource<EntityType extends DefaultEntity = DefaultEntity> ex
 			destroy: EntityID[]
 		}
 
-		const params: SetRequest<EntityType> = {
+		const params: SetRequest<EntityType> =  Object.assign({
 			create: {},
 			update: {},
 			destroy: []
-		}
+		}, this.commitBaseParams);
 
 		for(let id in this.creates) {
 			params.create[id] = this.creates[id].data;
