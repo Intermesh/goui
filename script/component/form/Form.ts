@@ -10,7 +10,7 @@ import {Notifier} from "../../Notifier.js";
 import {Component, Config, createComponent} from "../Component.js";
 import {FieldEventMap} from "./Field.js";
 import {t} from "../../Translate.js";
-import {AbstractDataSource} from "../../data/index.js";
+import {AbstractDataSource, BaseEntity} from "../../data/index.js";
 
 
 export interface FormEventMap<Sender extends Observable> extends FieldEventMap<Sender> {
@@ -275,7 +275,7 @@ export class Form extends ContainerField {
 			} else if(this.store) {
 				try {
 					this._value = {};
-					let v = this.value;
+					let v = this.value as BaseEntity;
 					debugger;
 					this.fire('serialize', this, v);
 					this.store.save(v, this.currentId);

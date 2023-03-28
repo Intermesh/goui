@@ -6,6 +6,7 @@
 
 import {Observable, ObservableEventMap} from "../component/index.js";
 import {Comparator} from "./Store.js";
+import Base = Mocha.reporters.Base;
 
 
 export interface GetResponse<EntityType> {
@@ -30,7 +31,12 @@ export enum CommitErrorType {
 
 export type CommitEntityError = Record<EntityID, CommitError>
 
-export type DefaultEntity = Record<string, any>;
+export interface BaseEntity  {
+	id: EntityID
+}
+export interface DefaultEntity extends BaseEntity{
+	[key:string]: any
+}
 
 
 export interface CommitError {
@@ -41,7 +47,7 @@ export interface CommitError {
 export interface Changes<EntityType> {
 	created?: Record<EntityID, EntityType>
 	updated?: Record<EntityID, EntityType>
-	deleted?: EntityID[]
+	destroyed?: EntityID[]
 }
 
 export interface CommitResponse<EntityType> extends Changes<EntityType> {
@@ -75,23 +81,34 @@ export interface DataSourceEventMap<T extends Observable, EntityType> extends Ob
 	change: <Sender extends T>(DataSource: Sender, changes: CommitResponse<EntityType>) => void
 }
 
-export interface AbstractDataSource<EntityType = Record<string, any>> {
+export interface AbstractDataSource<EntityType extends BaseEntity = DefaultEntity> {
 	on<K extends keyof DataSourceEventMap<AbstractDataSource<EntityType>, EntityType>>(eventName: K, listener: DataSourceEventMap<AbstractDataSource<EntityType>, EntityType>[K]): void
 
 	fire<K extends keyof DataSourceEventMap<AbstractDataSource<EntityType>, EntityType>>(eventName: K, ...args: Parameters<NonNullable<DataSourceEventMap<AbstractDataSource<EntityType>, EntityType>[K]>>): boolean
 }
 
-export abstract class AbstractDataSource<EntityType = DefaultEntity> extends Observable {
+interface SaveData <EntityType extends BaseEntity> {
+	data: EntityType,
+	resolve: (value: EntityType) => void,
+	reject: (reason?: any) => void
+}
+
+interface Destroyedata  {
+	resolve: (value: EntityID) => void,
+	reject: (reason?: any) => void
+}
+
+export abstract class AbstractDataSource<EntityType extends BaseEntity = DefaultEntity> extends Observable {
 
 
 	constructor(public readonly id:string) {
 		super();
 	}
 
-	protected data: Record<string, EntityType> = {};
-	protected creates: EntityType[] = [];
-	protected updates: Record<EntityID, EntityType> = {};
-	protected deletes: EntityID[] = [];
+	protected data: Record<EntityID, EntityType> = {};
+	protected creates: Record<EntityID, SaveData<EntityType>> = {}
+	protected updates: Record<EntityID, SaveData<EntityType>> = {};
+	protected destroys: Record<EntityID, Destroyedata> = {};
 
 	/**
 	 * Get entities from the store
@@ -112,6 +129,14 @@ export abstract class AbstractDataSource<EntityType = DefaultEntity> extends Obs
 		const response = await this.internalGet(unknown);
 		response.list = response.list.concat(list);
 		return response;
+	}
+
+	protected add(data:EntityType) {
+		this.data[data.id] = data;
+	}
+
+	protected remove(id:EntityID) {
+		delete this.data[id];
 	}
 
 	/**
@@ -137,23 +162,42 @@ export abstract class AbstractDataSource<EntityType = DefaultEntity> extends Obs
 	 * @param data
 	 * @param id
 	 */
-	public save(data:EntityType, id?:EntityID) {
-		if(id === undefined) {
-			this.creates.push(data);
-		} else
-		{
-			this.updates[id] = data;
-		}
+	public save(data:EntityType, id?:EntityID): Promise<EntityType|CommitError> {
+		return new Promise((resolve, reject) => {
+			if(id === undefined) {
+				this.creates[this.createID()] ={
+					data: data,
+					resolve: resolve,
+					reject: reject
+				}
+			} else
+			{
+				this.updates[id] = {
+					data: data,
+					resolve: resolve,
+					reject: reject
+				};
+			}
+		})
+	}
 
-		return this;
+	private _createId = 1;
+
+	private createID() {
+		return "_new_" + this._createId++;
 	}
 
 	/**
-	 * Delete data from the store
+	 * Destroy data from the store
 	 * @param id
 	 */
-	public delete(id:EntityID) {
-		this.deletes.push(id);
+	public destroy(id:EntityID) {
+		return new Promise((resolve, reject) => {
+			this.destroys[id] = {
+				resolve: resolve,
+				reject: reject
+			}
+		})
 	}
 
 	/**
@@ -173,8 +217,8 @@ export abstract class AbstractDataSource<EntityType = DefaultEntity> extends Obs
 			}
 		}
 
-		if(changes.deleted) {
-			for (let id of changes.deleted) {
+		if(changes.destroyed) {
+			for (let id of changes.destroyed) {
 				delete this.data[id];
 			}
 		}
@@ -198,7 +242,7 @@ export abstract class AbstractDataSource<EntityType = DefaultEntity> extends Obs
 	}
 
 	/**
-	 * Implements commit (save and delete) to the remote source
+	 * Implements commit (save and destroy) to the remote source
 	 * @protected
 	 */
 	protected abstract internalCommit() : Promise<CommitResponse<EntityType>>

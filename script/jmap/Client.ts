@@ -9,6 +9,7 @@ import {Observable, ObservableEventMap} from "../component/Observable.js";
 import {Format} from "../util/Format.js";
 import {Timezone} from "../util/DateTime.js";
 import {dataSources} from "../data/DataSourceManager.js";
+import {DefaultEntity} from "../data/index.js";
 
 
 export interface LoginData {
@@ -23,7 +24,7 @@ export interface LoginData {
 	}
 }
 
-type User = Record<string, any>;
+type User = DefaultEntity;
 
 export interface RegisterData {
 	action: "register",
@@ -231,7 +232,7 @@ export class Client<UserType extends User = User> extends Observable {
 					return undefined;
 				}
 
-				const ds = dataSources.get("User", JmapDataSource<UserType>);
+				const ds = JmapDataSource.store<UserType>("User");
 
 				this.user = await ds.single(session.userId);
 

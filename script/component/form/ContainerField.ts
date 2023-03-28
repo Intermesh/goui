@@ -8,6 +8,7 @@ import {Field, FieldEventMap} from "./Field.js";
 import {ObservableListener, ObservableListenerOpts} from "../Observable.js";
 import {Component, Config, createComponent} from "../Component.js";
 import {ObjectUtil} from "../../util/ObjectUtil.js";
+import {Value} from "sass";
 
 
 export type ContainerFieldValue = Record<string, any>;
@@ -26,7 +27,7 @@ export interface ContainerField extends Field {
  *
  * The value that it returns is an object with the field names as keys.
  */
-export class ContainerField extends Field {
+export class ContainerField<ValueType extends ContainerFieldValue = ContainerFieldValue> extends Field {
 
 	constructor(tagName:keyof HTMLElementTagNameMap = "div") {
 		super(tagName);
@@ -89,7 +90,7 @@ export class ContainerField extends Field {
 		return field;
 	}
 
-	set value(v: ContainerFieldValue) {
+	set value(v: ValueType) {
 
 		for (let name in v) {
 			// We cast to any[] for Ext compatibility. We try setValue() for Ext if it exists
@@ -100,13 +101,13 @@ export class ContainerField extends Field {
 		super.value = v;
 	}
 
-	public get value(): ContainerFieldValue {
+	public get value(): ValueType {
 
-		const formProps: ContainerFieldValue = super.value || {};
+		const formProps: ValueType = super.value || {};
 
 		this.findFields().forEach((field: any) => {
 			//for Extjs compat try .getName() and .getValue()
-			const fieldName = field.getName ? field.getName() : field.name;
+			const fieldName = (field.getName ? field.getName() : field.name) as keyof ValueType
 			const fieldVal = field.getValue ? field.getValue() : field.value;
 
 			if (fieldName && !field.disabled && !field.hidden) {

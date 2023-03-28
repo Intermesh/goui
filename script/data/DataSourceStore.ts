@@ -4,23 +4,23 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 import {Store, StoreRecord} from "../data/Store.js";
-import {AbstractDataSource, QueryParams} from "./AbstractDataSource.js";
+import {AbstractDataSource, BaseEntity, DefaultEntity, QueryParams} from "./AbstractDataSource.js";
 import {ObjectUtil} from "../util/index.js";
 import {Config, createComponent, Table, TableColumn} from "../component/index.js";
 
-type Relation<RecordType> = Record<keyof RecordType, {
+type Relation<EntityType extends BaseEntity> = Record<keyof EntityType, {
 	dataSource: AbstractDataSource,
 	path: string
 }>
 
 
-export class DataSourceStore<RecordType extends StoreRecord = StoreRecord> extends Store<RecordType> {
+export class DataSourceStore<EntityType extends BaseEntity = DefaultEntity> extends Store<EntityType> {
 
 	public queryParams: QueryParams = {};
 
 	public hasMore = false;
 
-	public relations?: Relation<RecordType>;
+	public relations?: Relation<EntityType>;
 
 	public properties?: string[] = [];
 
@@ -29,7 +29,7 @@ export class DataSourceStore<RecordType extends StoreRecord = StoreRecord> exten
 	 */
 	private loaded = false;
 
-	constructor(private dataSource:AbstractDataSource) {
+	constructor(private dataSource:AbstractDataSource<EntityType>) {
 		super();
 
 		// very quick and dirty update on changes to the entity store.
@@ -49,7 +49,7 @@ export class DataSourceStore<RecordType extends StoreRecord = StoreRecord> exten
 		const queryResponse = await this.dataSource.query(this.queryParams);
 		const getResponse = await this.dataSource.get(queryResponse.ids);
 
-		const records = await this.fetchRelations(getResponse.list as RecordType[]);
+		const records = await this.fetchRelations(getResponse.list);
 
 		this.loadData(records, append);
 		this.loaded = true;
@@ -57,11 +57,11 @@ export class DataSourceStore<RecordType extends StoreRecord = StoreRecord> exten
 		return records;
 	}
 
-	private async fetchRelations(records: RecordType[]) {
+	private async fetchRelations(records: EntityType[]) {
 		if(!this.relations) {
 			return records;
 		}
-		let relationName: (keyof RecordType);
+		let relationName: (keyof EntityType);
 
 		for (relationName in this.relations) {
 			const rel = this.relations[relationName]!
@@ -78,7 +78,7 @@ export class DataSourceStore<RecordType extends StoreRecord = StoreRecord> exten
 		return records;
 	}
 
-	reload(): Promise<RecordType[]> {
+	reload(): Promise<EntityType[]> {
 		this.queryParams.position = 0;
 		return super.reload();
 	}
@@ -94,7 +94,7 @@ export class DataSourceStore<RecordType extends StoreRecord = StoreRecord> exten
 		return this.load(append);
 	}
 
-	loadPrevious(): Promise<RecordType[]> {
+	loadPrevious(): Promise<EntityType[]> {
 		if (!this.queryParams.limit) {
 			throw new Error("Limit and position must be set!");
 		}
@@ -115,11 +115,11 @@ export class DataSourceStore<RecordType extends StoreRecord = StoreRecord> exten
 }
 
 
-type DataSourceStoreConfig<RecordType extends StoreRecord = StoreRecord> = Config<DataSourceStore<RecordType>> & {
+type DataSourceStoreConfig<EntityType extends BaseEntity = DefaultEntity> = Config<DataSourceStore<EntityType>> & {
 	/**
 	 * Store that provides the data
 	 */
-	dataSource: AbstractDataSource
+	dataSource: AbstractDataSource<EntityType>
 }
 
 
@@ -128,4 +128,5 @@ type DataSourceStoreConfig<RecordType extends StoreRecord = StoreRecord> = Confi
  *
  * @param config
  */
-export const datasourcestore = <RecordType extends StoreRecord = StoreRecord>(config: DataSourceStoreConfig<RecordType>) => createComponent(new DataSourceStore<RecordType>(config.dataSource), config);
+export const datasourcestore =
+	<EntityType extends BaseEntity = DefaultEntity>(config: DataSourceStoreConfig<EntityType>) => createComponent(new DataSourceStore<EntityType>(config.dataSource), config);
