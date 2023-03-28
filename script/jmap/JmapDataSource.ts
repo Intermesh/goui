@@ -7,26 +7,21 @@
 import {client} from "./Client.js";
 import {AbstractDataSource, CommitResponse, DefaultEntity, EntityID, QueryParams} from "../data/AbstractDataSource.js";
 
-export interface ResultReference {
-	resultOf: string
-	path: string
-}
-
 enum andOrNot {AND, OR, NOT}
 
-enum SetErrorType {
-	'forbidden',
-	'overQuota',
-	'tooLarge',
-	'rateLimit',
-	'notFound',
-	'invalidPatch',
-	'willDestroy',
-	'invalidProperties',
-	'singleton',
-	'requestTooLarge',
-	'stateMismatch'
-}
+// enum SetErrorType {
+// 	'forbidden',
+// 	'overQuota',
+// 	'tooLarge',
+// 	'rateLimit',
+// 	'notFound',
+// 	'invalidPatch',
+// 	'willDestroy',
+// 	'invalidProperties',
+// 	'singleton',
+// 	'requestTooLarge',
+// 	'stateMismatch'
+// }
 
 export interface FilterOperator {
 	operator: andOrNot
@@ -46,12 +41,10 @@ export class JmapDataSource<EntityType extends DefaultEntity = DefaultEntity> ex
 
 	public static store<EntityType extends DefaultEntity = DefaultEntity>(storeId:string) : JmapDataSource<EntityType> {
 		if(!JmapDataSource.stores[storeId]) {
-			// @ts-ignore
 			JmapDataSource.stores[storeId] = new this(storeId);
 		}
 		return JmapDataSource.stores[storeId];
 	}
-
 
 	/**
 	 * Query entity ID's

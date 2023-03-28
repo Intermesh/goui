@@ -8,7 +8,6 @@ import {JmapDataSource} from "./JmapDataSource.js";
 import {Observable, ObservableEventMap} from "../component/Observable.js";
 import {Format} from "../util/Format.js";
 import {Timezone} from "../util/DateTime.js";
-import {dataSources} from "../data/DataSourceManager.js";
 import {DefaultEntity} from "../data/index.js";
 
 
@@ -54,6 +53,28 @@ type UploadResponse = {
 	name: string,
 	file: File,
 	subfolder: string | undefined
+}
+
+/**
+ * Result reference
+ *
+ * @link https://jmap.io/spec-core.html#references-to-previous-method-results
+ */
+export interface ResultReference  {
+	/**
+	 * The method call id (see Section 3.1.1) of a previous method call in the current request.
+	 */
+	resultOf: string,
+	/**
+	 * The required name of a response to that method call.
+	 */
+	name: string,
+	/**
+	 * A pointer into the arguments of the response selected via the name and resultOf properties. This is a JSON
+	 * Pointer [@!RFC6901], except it also allows the use of * to map through an array (see the description below).
+	 *
+	 */
+	path: string
 }
 
 export class Client<UserType extends User = User> extends Observable {
@@ -121,6 +142,9 @@ export class Client<UserType extends User = User> extends Observable {
 		});
 	}
 
+	/**
+	 * The ID of the last JMAP method call
+	 */
 	get lastCallId() {
 		return "call-" + this._lastCallId;
 	}

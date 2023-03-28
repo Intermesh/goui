@@ -6,8 +6,6 @@
 
 import {Observable, ObservableEventMap} from "../component/index.js";
 import {Comparator} from "./Store.js";
-import Base = Mocha.reporters.Base;
-
 
 export interface GetResponse<EntityType> {
 	list: EntityType[],
@@ -31,9 +29,18 @@ export enum CommitErrorType {
 
 export type CommitEntityError = Record<EntityID, CommitError>
 
+/**
+ * The base of an entity. It should at lease have an "id" property.
+ */
 export interface BaseEntity  {
 	id: EntityID
 }
+
+/**
+ * Default entity
+ *
+ * Allows any property.
+ */
 export interface DefaultEntity extends BaseEntity{
 	[key:string]: any
 }
@@ -110,6 +117,7 @@ interface Destroyedata  {
  * The {@see Form} component can also load from a datasource.
  */
 export abstract class AbstractDataSource<EntityType extends BaseEntity = DefaultEntity> extends Observable {
+	private timeout?: number;
 
 	constructor(public readonly id:string) {
 		super();
@@ -171,8 +179,8 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	 *
 	 * @param data
 	 */
-	public save(data:Partial<EntityType>): Promise<EntityType|CommitError> {
-		return new Promise((resolve, reject) => {
+	public save(data:Partial<EntityType>): Promise<EntityType> {
+		const p = new Promise((resolve, reject) => {
 			if(data.id === undefined) {
 				this.creates[this.createID()] ={
 					data: data,
@@ -187,13 +195,24 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 					reject: reject
 				};
 			}
-		})
+		}) as Promise<EntityType>;
+
+		this.delayedCommit();
+
+		return p;
 	}
 
-	private _createId = 1;
+	private _createId = 0;
 
 	private createID() {
-		return "_new_" + this._createId++;
+		return "_new_" + (++this._createId);
+	}
+
+	/**
+	 * The last ID used for creating a new entity
+	 */
+	get lastCreateID() {
+		return "_new_" + this._createId;
 	}
 
 	/**
@@ -201,12 +220,16 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	 * @param id
 	 */
 	public destroy(id:EntityID) {
-		return new Promise((resolve, reject) => {
+		const p = new Promise((resolve, reject) => {
 			this.destroys[id] = {
 				resolve: resolve,
 				reject: reject
 			}
-		})
+		});
+
+		this.delayedCommit();
+
+		return p;
 	}
 
 	/**
@@ -248,6 +271,17 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 		const response = await this.internalCommit();
 		this.fire("change", this, response);
 		return response;
+	}
+
+	protected delayedCommit() {
+		if (this.timeout) {
+			clearTimeout(this.timeout);
+		}
+
+		this.timeout = window.setTimeout(() => {
+			this.timeout = undefined;
+			this.commit();
+		});
 	}
 
 	/**
