@@ -5,7 +5,14 @@
  */
 
 import {client} from "./Client.js";
-import {AbstractDataSource, CommitResponse, DefaultEntity, EntityID, QueryParams} from "../data/AbstractDataSource.js";
+import {
+	AbstractDataSource,
+	CommitResponse,
+	DefaultEntity,
+	EntityID,
+	QueryParams,
+	QueryResponse
+} from "../data/AbstractDataSource.js";
 
 enum andOrNot {AND, OR, NOT}
 
@@ -51,7 +58,7 @@ export class JmapDataSource<EntityType extends DefaultEntity = DefaultEntity> ex
 	 *
 	 * @param params
 	 */
-	query(params: JmapQueryParams) {
+	query(params: JmapQueryParams) : Promise<QueryResponse> {
 		return client.jmap(this.id + "/query", params, this.useCallId());
 	}
 

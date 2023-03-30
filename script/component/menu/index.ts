@@ -1,4 +1,4 @@
 // created from 'create-ts-index'
 
-export * from './ColorMenu';
-export * from './Menu';
+export * from './ColorMenu.js';
+export * from './Menu.js';

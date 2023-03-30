@@ -7,6 +7,7 @@
 import {Observable, ObservableEventMap} from "../component/index.js";
 import {Comparator} from "./Store.js";
 import {dataSources} from "./DataSourceManager.js";
+import {ResultReference} from "../jmap/index.js";
 
 export interface GetResponse<EntityType> {
 	list: EntityType[],

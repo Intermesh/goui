@@ -27,7 +27,7 @@ type User = DefaultEntity;
 
 export interface RegisterData {
 	action: "register",
-	user: User
+	user: Partial<User>
 }
 
 export interface ForgottenData {
