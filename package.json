@@ -10,11 +10,9 @@
     "jsdom": "^21.0.0",
     "jsdom-global": "^3.0.2",
     "mocha": "^10.2.0",
-    "sass": "^1.57.1",
+    "sass": "latest",
     "ts-node": "^10.9.1",
-    "typescript": "^4.9.4"
-  },
-  "dependencies": {
+    "typescript": "^4.9.4",
     "material-icons": "^1.13.1"
   },
   "scripts": {
@@ -23,17 +21,15 @@
     "start:parallel": "npm run start:watch & npm run start:sass",
     "start:watch": "npx tsc --watch",
     "start:sass": "npx sass --watch ./style:./dist",
-
     "build": "npm run build:clean && npm run build:sass && npm run build:ts",
     "build:clean": "rm -rf ./dist/*",
     "build:sass": "npx sass --style=compressed ./style:./dist",
     "build:ts": "tsc",
-
     "prepublishOnly": "npm run build"
   },
   "name": "@intermesh/goui",
   "description": "Group-Office User Interface",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "directories": {
     "example": "examples",
     "test": "tests"
