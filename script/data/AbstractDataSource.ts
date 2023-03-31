@@ -8,8 +8,19 @@ import {Observable, ObservableEventMap} from "../component/index.js";
 import {Comparator} from "./Store.js";
 import {FunctionUtil} from "../util/index.js";
 
+/**
+ * The response of the {@see AbstractDataSource.get()} method
+ */
 export interface GetResponse<EntityType> {
+
+	/**
+	 * The list of entities in the order they were requested
+	 */
 	list: EntityType[],
+
+	/**
+	 * If an ID is not found on the server it will be in this list
+	 */
 	notFound?: EntityID[]
 }
 
@@ -68,9 +79,25 @@ export interface CommitResponse<EntityType> extends Changes<EntityType> {
 export type EntityID = string|number;
 
 export interface QueryParams {
+
+	/**
+	 * The maximum number of ID's to return
+	 */
 	limit?: number,
+
+	/**
+	 * Start at this position
+	 */
 	position?: number,
+
+	/**
+	 * Return a "total" number of entities in the response.
+	 */
 	calculateTotal?: boolean,
+
+	/**
+	 * Sort the results
+	 */
 	sort?: Comparator[],
 
 	[key:string]: any
@@ -78,7 +105,14 @@ export interface QueryParams {
 
 
 export interface QueryResponse  {
+	/**
+	 * The entity ID's in the correct order
+	 */
 	ids:EntityID[],
+
+	/**
+	 * If calculateTotal was set to true this will show the total number of results
+	 */
 	total?:number
 }
 
@@ -149,6 +183,8 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	/**
 	 * Get entities from the store
 	 *
+	 * It will return a list of entities ordered by the requested ID's
+	 *
 	 * @param ids
 	 */
 	public async get(ids:EntityID[]): Promise<GetResponse<EntityType>> {
@@ -194,7 +230,10 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	}
 
 	/**
-	 * Get a single entity
+	 * Get a single entity.
+	 *
+	 * Multiple calls will be buffered and returned together on the next event loop. This way multiple calls can
+	 * be joined together in a single HTTP request to the server.
 	 *
 	 * @param id
 	 */
@@ -218,7 +257,13 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 		return p;
 	}
 
-	protected async doGet() {
+	/**
+	 * Does the actual getting of entities. First checks if present in this onbject, otherwise it will be requested
+	 * from the remote source.
+	 *
+	 * @protected
+	 */
+	protected doGet() {
 		const unknownIds: EntityID[] = [];
 		for(let id in this.getIds) {
 			if(this.data[id]) {
@@ -236,34 +281,37 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 		}
 
 		// Call class method to fetch additional
-		const response = await this.internalGet(unknownIds);
-
-		response.list.forEach((e) => {
-			this.add(e);
-			this.getIds[e.id].resolves.forEach(r => {
-				r.call(this, this.data[e.id]);
+		this.internalGet(unknownIds).then(response => {
+			response.list.forEach((e) => {
+				this.add(e);
+				this.getIds[e.id].resolves.forEach(r => {
+					r.call(this, this.data[e.id]);
+				});
+				delete this.getIds[e.id];
 			});
-			delete this.getIds[e.id];
-		});
 
-		response.notFound?.forEach((id) => {
-			this.getIds[id].resolves.forEach(r => {
-				r.call(this, undefined);
+			response.notFound?.forEach((id) => {
+				this.getIds[id].resolves.forEach(r => {
+					r.call(this, undefined);
+				});
+				delete this.getIds[id];
 			});
-			delete this.getIds[id];
 		})
 
 	}
 
 	/**
 	 * Implements getting entities from a remote source
+	 *
 	 * @param ids
 	 * @protected
 	 */
 	protected abstract internalGet(ids:EntityID[]) : Promise<GetResponse<EntityType>>;
 
 	/**
-	 * Save data to the store
+	 * Create entity
+	 *
+	 * Multiple calls will be joined together in a single call on the next event loop
 	 *
 	 * @param data
 	 * @param createId The create ID to use when committing this entity to the server
@@ -290,7 +338,9 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	}
 
 	/**
-	 * Save data to the store
+	 * Update an entity
+	 *
+	 * Multiple calls will be joined together in a single call on the next event loop
 	 *
 	 * @param data
 	 */
@@ -318,7 +368,10 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	}
 
 	/**
-	 * Destroy data from the store
+	 * Destroy an entity
+	 *
+	 * Multiple calls will be joined together in a single call on the next event loop
+	 *
 	 * @param id
 	 */
 	public destroy(id:EntityID) {
@@ -372,10 +425,9 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	 * Commit pending changes to remote
 	 */
 	private commit() {
-		const p =  this.internalCommit().then((response) => {
+		this.internalCommit().then((response) => {
 			this.fire("change", this, response);
 		});
-		return p;
 	}
 
 
