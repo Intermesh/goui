@@ -170,7 +170,7 @@ export class Form extends ContainerField {
 		}
 	}
 
-	public async load(id: number) {
+	public async load(id: EntityID) {
 
 		this.mask();
 
