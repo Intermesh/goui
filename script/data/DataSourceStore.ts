@@ -71,10 +71,12 @@ export class DataSourceStore<EntityType extends BaseEntity = DefaultEntity> exte
 			const rel = this.relations[relationName]!
 
 			let id;
-			for(let i = 0, l = records.length; i > l; i++) {
+			for(let i = 0, l = records.length; i < l; i++) {
 				id = ObjectUtil.path(records[i], rel.path);
-				const getResponse = await rel.dataSource.get([id]);
-				records[i][relationName] = getResponse.list[0] as never || undefined;
+				if(id) {
+					const getResponse = await rel.dataSource.get([id]);
+					records[i][relationName] = getResponse.list[0] as never || undefined;
+				}
 			}
 
 		}
