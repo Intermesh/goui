@@ -9,7 +9,6 @@
     "esbuild": "^0.16.17",
     "jsdom": "^21.0.0",
     "jsdom-global": "^3.0.2",
-    "material-icons": "^1.13.1",
     "mocha": "^10.2.0",
     "sass": "^1.57.1",
     "ts-node": "^10.9.1",
@@ -31,7 +30,7 @@
   },
   "name": "@intermesh/goui",
   "description": "Group-Office User Interface",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "directories": {
     "example": "examples",
     "test": "tests"
@@ -47,7 +46,10 @@
     "Components"
   ],
   "author": "Intermesh",
-  "license": "LGPL-3.0-or-later",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
   "bugs": {
     "url": "https://github.com/Intermesh/goui/issues"
   },
