@@ -66,6 +66,7 @@ export class DataSourceStore<EntityType extends BaseEntity = DefaultEntity> exte
 			return records;
 		}
 		let relationName: (keyof EntityType);
+		const promises = [];
 
 		for (relationName in this.relations) {
 			const rel = this.relations[relationName]!
@@ -74,14 +75,16 @@ export class DataSourceStore<EntityType extends BaseEntity = DefaultEntity> exte
 			for(let i = 0, l = records.length; i < l; i++) {
 				id = ObjectUtil.path(records[i], rel.path);
 				if(id) {
-					const getResponse = await rel.dataSource.get([id]);
-					records[i][relationName] = getResponse.list[0] as never || undefined;
+					promises.push(rel.dataSource.single(id).then((e) => {
+						if(e) {
+							records[i][relationName] = e as never;
+						}
+					}));
 				}
 			}
-
 		}
 
-		return records;
+		return Promise.all(promises).then(() => records);
 	}
 
 	reload(): Promise<EntityType[]> {

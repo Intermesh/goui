@@ -6,12 +6,11 @@
 
 import {Observable, ObservableEventMap} from "../component/index.js";
 import {Comparator} from "./Store.js";
-import {dataSources} from "./DataSourceManager.js";
-import {ResultReference} from "../jmap/index.js";
+import {FunctionUtil} from "../util/index.js";
 
 export interface GetResponse<EntityType> {
 	list: EntityType[],
-	notFound?: string[]
+	notFound?: EntityID[]
 }
 
 
@@ -102,9 +101,14 @@ interface SaveData <EntityType extends BaseEntity> {
 	reject: (reason?: any) => void
 }
 
-interface Destroyedata  {
+interface DestroyData  {
 	resolve: (value: EntityID) => void,
 	reject: (reason?: any) => void
+}
+
+interface GetData<EntityType extends BaseEntity>  {
+	resolves: ((value: EntityType|undefined) => void)[],
+	rejects: ((reason?: any) => void)[]
 }
 
 /**
@@ -120,15 +124,27 @@ interface Destroyedata  {
  */
 export abstract class AbstractDataSource<EntityType extends BaseEntity = DefaultEntity> extends Observable {
 	private timeout?: number;
+	private delayedCommit: (...args: any[]) => void;
+	private delayedGet: (...args: any[]) => void;
 
 	constructor(public readonly id:string) {
 		super();
+
+		this.delayedCommit = FunctionUtil.buffer(0, () => {
+			this.commit();
+		});
+
+		this.delayedGet = FunctionUtil.buffer(0, () => {
+			this.doGet();
+		})
 	}
 
 	protected data: Record<EntityID, EntityType> = {};
 	protected creates: Record<EntityID, SaveData<EntityType>> = {}
 	protected updates: Record<EntityID, SaveData<EntityType>> = {};
-	protected destroys: Record<EntityID, Destroyedata> = {};
+	protected destroys: Record<EntityID, DestroyData> = {};
+
+	protected getIds: Record<EntityID, GetData<EntityType>> = {};
 
 	/**
 	 * Get entities from the store
@@ -137,27 +153,35 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	 */
 	public async get(ids:EntityID[]): Promise<GetResponse<EntityType>> {
 
-		const list = [], unknown:EntityID[] = [];
-		let index = 0, order:Record<EntityID, number> = {};
+		const promises: Promise<EntityType|undefined>[] = [],  order:Record<EntityID, number> = {};
 
 		//first see if we have it in our data property
-		for(let id of ids) {
+		ids.forEach((id, index) => {
 			//keep order for sorting the result
 			order[id] = index++;
-			if(this.data[id]) {
-				list.push(this.data[id]);
-			} else {
-				unknown.push(id);
-			}
-		}
+			promises.push(this.single(id));
+		})
 
 		// Call class method to fetch additional
-		const response = await this.internalGet(unknown);
+		let entities = await Promise.all(promises);
 
-		// make sure the result is sorted in the way the ids were passed.
-		response.list = response.list.concat(list).sort(function (a, b) {
-			return order[a.id] - order[b.id];
-		});
+		const response: GetResponse<EntityType> = {
+			list:[],
+			notFound: []
+		};
+
+		entities.forEach((e, index) => {
+			if(e === undefined) {
+				response.notFound!.push(ids[index]);
+			} else {
+				response.list.push(e);
+			}
+		})
+
+		response.list = response.list.sort(function (a, b) {
+				return order[a.id] - order[b.id];
+			});
+
 		return response;
 	}
 
@@ -175,8 +199,60 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	 * @param id
 	 */
 	public async single(id: EntityID): Promise<EntityType|undefined> {
-		const response = await this.get([id]);
-		return response.list[0] || undefined;
+
+		const p = new Promise((resolve, reject) => {
+			if(!this.getIds[id]) {
+				this.getIds[id] = {
+					resolves: [resolve],
+					rejects: [reject]
+				}
+			} else {
+				this.getIds[id].resolves.push(resolve);
+				this.getIds[id].rejects.push(reject);
+			}
+		}). finally(() => {
+			delete this.getIds[id];
+		})  as Promise<EntityType>;
+
+		this.delayedGet();
+		return p;
+	}
+
+	protected async doGet() {
+		const unknownIds: EntityID[] = [];
+		for(let id in this.getIds) {
+			if(this.data[id]) {
+				this.getIds[id].resolves.forEach(r => {
+					r.call(this, this.data[id]);
+				});
+				delete this.getIds[id];
+			} else {
+				unknownIds.push(id);
+			}
+		}
+
+		if(!unknownIds.length) {
+			return;
+		}
+
+		// Call class method to fetch additional
+		const response = await this.internalGet(unknownIds);
+
+		response.list.forEach((e) => {
+			this.add(e);
+			this.getIds[e.id].resolves.forEach(r => {
+				r.call(this, this.data[e.id]);
+			});
+			delete this.getIds[e.id];
+		});
+
+		response.notFound?.forEach((id) => {
+			this.getIds[id].resolves.forEach(r => {
+				r.call(this, undefined);
+			});
+			delete this.getIds[id];
+		})
+
 	}
 
 	/**
@@ -300,17 +376,6 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 			this.fire("change", this, response);
 		});
 		return p;
-	}
-
-	private delayedCommit() {
-		if (this.timeout) {
-			clearTimeout(this.timeout);
-		}
-
-		this.timeout = window.setTimeout(() => {
-			delete this.timeout;
-			this.commit();
-		});
 	}
 
 

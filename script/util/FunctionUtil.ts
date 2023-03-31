@@ -20,6 +20,11 @@ class BufferedFunction {
 		this.fn = fn;
 	}
 
+	/**
+	 * Bugger the function with the delay set on this class
+	 *
+	 * @param args
+	 */
 	buffer(args:any[] = []) {
 		this.cancel();
 		this.id = window.setTimeout(() => {
@@ -28,6 +33,9 @@ class BufferedFunction {
 		}, this.delay);
 	}
 
+	/**
+	 * Cancel the function call
+	 */
 	cancel() {
 		if(this.id) {
 			clearTimeout(this.id);
@@ -36,6 +44,9 @@ class BufferedFunction {
 	}
 }
 
+/**
+ * Function utilities
+ */
 export class FunctionUtil {
 
 	/**
@@ -66,6 +77,15 @@ export class FunctionUtil {
 		};
 	}
 
+	/**
+	 * Execute on the next repaint
+	 *
+	 * The onRepaint method tells the browser that you wish to perform an animation and requests
+	 * that the browser calls a specified function to update an animation before the next repaint.
+	 *
+	 * @link https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame
+	 * @param fn
+	 */
 	public static onRepaint(fn: Function) {
 
 		let frame = -1;
