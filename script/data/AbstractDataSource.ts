@@ -7,6 +7,7 @@
 import {Observable, ObservableEventMap} from "../component/index.js";
 import {Comparator} from "./Store.js";
 import {FunctionUtil} from "../util/index.js";
+import {JmapQueryParams} from "../jmap/index.js";
 
 /**
  * The response of the {@see AbstractDataSource.get()} method
@@ -21,7 +22,12 @@ export interface GetResponse<EntityType> {
 	/**
 	 * If an ID is not found on the server it will be in this list
 	 */
-	notFound?: EntityID[]
+	notFound?: EntityID[],
+
+	/**
+	 * The state of the server
+	 */
+	state: string
 }
 
 
@@ -66,14 +72,23 @@ export interface CommitError {
 export interface Changes<EntityType> {
 	created?: Record<EntityID, EntityType>
 	updated?: Record<EntityID, EntityType>
-	destroyed?: EntityID[]
+	destroyed?: EntityID[],
+	state: string|undefined
 }
 
-export interface CommitResponse<EntityType> extends Changes<EntityType> {
+export interface CommitResponse<EntityType> {
+
+	created?: Record<EntityID, EntityType>
+	updated?: Record<EntityID, EntityType>
+	destroyed?: EntityID[],
 
 	notCreated?: CommitEntityError
 	notUpdated?: CommitEntityError
-	notDestroyed?: CommitEntityError
+	notDestroyed?: CommitEntityError,
+
+	newState: string
+
+	oldState: string
 }
 
 export type EntityID = string|number;
@@ -113,14 +128,19 @@ export interface QueryResponse  {
 	/**
 	 * If calculateTotal was set to true this will show the total number of results
 	 */
-	total?:number
+	total?:number,
+
+	/**
+	 * The state of the query on the server
+	 */
+	queryState: string
 }
 
 export interface DataSourceEventMap<T extends Observable, EntityType> extends ObservableEventMap<T> {
 	/**
 	 * Fires when data changed in the store
 	 */
-	change: <Sender extends T>(DataSource: Sender, changes: CommitResponse<EntityType>) => void
+	change: <Sender extends T>(DataSource: Sender, changes: Changes<EntityType>) => void
 }
 
 export interface AbstractDataSource<EntityType extends BaseEntity = DefaultEntity> {
@@ -157,9 +177,18 @@ interface GetData<EntityType extends BaseEntity>  {
  * The {@see Form} component can also load from a datasource.
  */
 export abstract class AbstractDataSource<EntityType extends BaseEntity = DefaultEntity> extends Observable {
-	private timeout?: number;
-	private delayedCommit: (...args: any[]) => void;
-	private delayedGet: (...args: any[]) => void;
+	/**
+	 * JMAP state
+	 *
+	 * @private
+	 */
+	private _state?:string;
+	private readonly delayedCommit: (...args: any[]) => void;
+	private readonly delayedGet: (...args: any[]) => void;
+
+	get state() {
+		return this._state;
+	}
 
 	constructor(public readonly id:string) {
 		super();
@@ -203,7 +232,8 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 
 		const response: GetResponse<EntityType> = {
 			list:[],
-			notFound: []
+			notFound: [],
+			state: this.state!
 		};
 
 		entities.forEach((e, index) => {
@@ -249,10 +279,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 				this.getIds[id].resolves.push(resolve);
 				this.getIds[id].rejects.push(reject);
 			}
-		}). finally(() => {
-			delete this.getIds[id];
-		})  as Promise<EntityType>;
-
+		}) as Promise<EntityType|undefined> ;
 		this.delayedGet();
 		return p;
 	}
@@ -263,7 +290,12 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	 *
 	 * @protected
 	 */
-	protected doGet() {
+	protected async doGet() {
+
+		if(!this.restored) {
+			await this.restore();
+		}
+
 		const unknownIds: EntityID[] = [];
 		for(let id in this.getIds) {
 			if(this.data[id]) {
@@ -276,27 +308,28 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 			}
 		}
 
-		if(!unknownIds.length) {
-			return;
-		}
-
-		// Call class method to fetch additional
-		this.internalGet(unknownIds).then(response => {
-			response.list.forEach((e) => {
-				this.add(e);
-				this.getIds[e.id].resolves.forEach(r => {
-					r.call(this, this.data[e.id]);
+		// Call class method to fetch additional. Even with an empty list we must check the server state,
+		this.internalGet(unknownIds)
+			.then(response => this.checkState(response.state, response))
+			.then(response => {
+				response.list.forEach((e) => {
+					this.add(e);
+					let r;
+					while (r = this.getIds[e.id].resolves.shift()) {
+						r.call(this, this.data[e.id]);
+					}
 				});
-				delete this.getIds[e.id];
-			});
 
-			response.notFound?.forEach((id) => {
-				this.getIds[id].resolves.forEach(r => {
-					r.call(this, undefined);
+				response.notFound?.forEach((id) => {
+					let r;
+					while (r = this.getIds[id].resolves.shift()) {
+						r.call(this, undefined);
+					};
 				});
-				delete this.getIds[id];
-			});
-		})
+
+				this.save();
+
+			})
 
 	}
 
@@ -360,7 +393,6 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 		return p;
 	}
 
-
 	private _createId = 0;
 
 	private createID() {
@@ -393,7 +425,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	 * Fetch updates from remote
 	 */
 	public async updateFromServer() {
-		const changes = await this.internalUpdate();
+		const changes = await this.internalRemoteChanges();
 		if(changes.created) {
 			for (let id in changes.created) {
 				this.data[id] = changes.created[id];
@@ -412,24 +444,66 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 			}
 		}
 
+		//Set the new server state
+		this._state = changes.state;
+
 		this.fire("change", this, changes);
+	}
+
+	private async save() {
+		localStorage.setItem("ds-" + this.id, JSON.stringify({
+			state: this.state,
+			data: this.data
+		}))
+	}
+
+	private restored = false;
+
+	private async restore() {
+		const saved = localStorage.getItem("ds-" + this.id);
+		if(!saved) {
+			return;
+		}
+
+		const decoded = JSON.parse(saved);
+
+		this.data = decoded.data;
+		this._state = decoded.state;
+		this.restored = true;
 	}
 
 	/**
 	 * Implements fetching updates from remote
+	 *
 	 * @protected
 	 */
-	protected abstract internalUpdate() : Promise<Changes<EntityType>>
+	protected abstract internalRemoteChanges() : Promise<Changes<EntityType>>
 
 	/**
 	 * Commit pending changes to remote
 	 */
-	private commit() {
-		this.internalCommit().then((response) => {
-			this.fire("change", this, response);
-		});
-	}
+	private async commit() {
 
+		if(!this.restored) {
+			await this.restore();
+		}
+
+		this.internalCommit().then((response) => {
+			this._state = response.newState;
+			this.save();
+
+			this.fire("change", this, {
+				created: response.created,
+				updated: response.updated,
+				destroyed: response.destroyed,
+				state: response.newState
+			});
+		}).finally(() => {
+			this.creates = {};
+			this.updates = {};
+			this.destroys = {};
+		})
+	}
 
 	/**
 	 * Implements commit (save and destroy) to the remote source
@@ -437,5 +511,43 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	 */
 	protected abstract internalCommit() : Promise<CommitResponse<EntityType>>
 
-	public abstract query(params:QueryParams): Promise<QueryResponse>;
+	/**
+	 * Query the server for a list of entity ID's
+	 *
+	 * It takes filters and sort parameters.
+	 *
+	 * @link https://jmap.io/spec-core.html#query
+	 */
+	public query(params: JmapQueryParams) : Promise<QueryResponse> {
+		return this.internalQuery(params).then(r => {
+			return this.checkState(r.queryState, r);
+		});
+	}
+
+	/**
+	 * Check's if we are up-to-date with the server and fetches updates if needed
+	 *
+	 * @param serverState
+	 * @param retVal
+	 * @private
+	 */
+	private checkState<T>(serverState:string, retVal: T) : Promise<T> {
+		if(!this._state) {
+			// We are empty!
+			this._state = serverState;
+			this.data = {};
+		}
+		// Check if our data is up-to-date
+		if(serverState != this._state) {
+			return this.updateFromServer().then(() => retVal);
+		} else {
+			return Promise.resolve(retVal);
+		}
+	}
+
+	/**
+	 * Handle the query to the remote
+	 * @param params
+	 */
+	protected abstract internalQuery(params:QueryParams): Promise<QueryResponse>;
 }

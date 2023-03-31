@@ -9,6 +9,7 @@ import {Observable, ObservableEventMap} from "../component/Observable.js";
 import {Format} from "../util/Format.js";
 import {Timezone} from "../util/DateTime.js";
 import {DefaultEntity} from "../data/index.js";
+import {FunctionUtil} from "../util/index.js";
 
 
 export interface LoginData {
@@ -86,7 +87,7 @@ export class Client<UserType extends User = User> extends Observable {
 	private _session: any;
 	private timeout?: number;
 
-	private debugParam = "?XDEBUG_SESSION=1"
+	private debugParam = "";//"?XDEBUG_SESSION=1"
 
 	private user: UserType | undefined;
 
@@ -100,6 +101,15 @@ export class Client<UserType extends User = User> extends Observable {
 	 * @private
 	 */
 	private accessToken = "";
+	private delayedJmap: (...args: any[]) => void;
+
+	constructor() {
+		super();
+
+		this.delayedJmap = FunctionUtil.buffer(0, () => {
+			this.doJmap();
+		})
+	}
 
 	set session(session:any) {
 
@@ -375,6 +385,8 @@ export class Client<UserType extends User = User> extends Observable {
 	/**
 	 * Execute JMAP method
 	 *
+	 * Multiple calls will be joined together in a single call on the next event loop
+	 *
 	 * @param method
 	 * @param params
 	 */
@@ -394,45 +406,48 @@ export class Client<UserType extends User = User> extends Observable {
 		})
 
 		this._requests.push([method, params, callId]);
-		if (this.timeout) {
-			clearTimeout(this.timeout);
-		}
 
-		this.timeout = window.setTimeout(() => {
-			this.timeout = undefined;
-
-			this.request(this._requests)
-				.then((response) => {
-					return response.json();
-				})
-				.then((responseData) => {
-
-					responseData.forEach((response: [method: string, response: Object, callId: string]) => {
-
-						const callId = response[2];
-
-						if (!this._requestData[callId]) {
-							//aborted
-							console.debug("Aborted");
-							return true;
-						}
-
-						const success = response[0] !== "error";
-
-						if (success) {
-							this._requestData[callId].resolve(response[1]);
-						} else {
-							this._requestData[callId].reject(response[1]);
-						}
-
-						delete this._requestData[callId];
-					});
-				});
-
-			this._requests = [];
-		});
+		this.delayedJmap();
 
 		return promise;
+	}
+
+
+	/**
+	 * Performs the requests queued in the jmap() method
+	 *
+	 * @private
+	 */
+	private doJmap() {
+		this.request(this._requests)
+			.then((response) => {
+				return response.json();
+			})
+			.then((responseData) => {
+
+				responseData.forEach((response: [method: string, response: Object, callId: string]) => {
+
+					const callId = response[2];
+
+					if (!this._requestData[callId]) {
+						//aborted
+						console.debug("Aborted");
+						return true;
+					}
+
+					const success = response[0] !== "error";
+
+					if (success) {
+						this._requestData[callId].resolve(response[1]);
+					} else {
+						this._requestData[callId].reject(response[1]);
+					}
+
+					delete this._requestData[callId];
+				});
+			});
+
+		this._requests = [];
 	}
 }
 
