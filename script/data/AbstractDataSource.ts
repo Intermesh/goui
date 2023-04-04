@@ -8,6 +8,7 @@ import {Observable, ObservableEventMap} from "../component/index.js";
 import {Comparator} from "./Store.js";
 import {FunctionUtil} from "../util/index.js";
 import {JmapQueryParams} from "../jmap/index.js";
+import {BrowserStore} from "../util/BrowserStorage.js";
 
 /**
  * The response of the {@see AbstractDataSource.get()} method
@@ -27,9 +28,15 @@ export interface GetResponse<EntityType> {
 	/**
 	 * The state of the server
 	 */
-	state: string
+	state?: string
 }
 
+export interface SetRequest<EntityType> {
+	create: Record<EntityID, Partial<EntityType>>
+	update: Record<EntityID, Partial<EntityType>>
+	destroy: EntityID[],
+	ifInstate?: string
+}
 
 export enum CommitErrorType {
 	'forbidden',
@@ -185,9 +192,34 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	private _state?:string;
 	private readonly delayedCommit: (...args: any[]) => void;
 	private readonly delayedGet: (...args: any[]) => void;
+	private _browserStore?: BrowserStore;
 
-	get state() {
+	/**
+	 * Extra parameters to send to the Foo/set
+	 */
+
+	public commitBaseParams = {};
+
+	public async getState() {
+		if(!this._state) {
+			this._state = await this.browserStore.getItem("state");
+		}
+
 		return this._state;
+	}
+
+	public async setState(state:string) {
+		this._state = state;
+
+		return this.browserStore.setItem("state", state);
+	}
+
+	private get browserStore() {
+		if(!this._browserStore) {
+			this._browserStore = new BrowserStore("ds-" + this.id);
+		}
+
+		return this._browserStore;
 	}
 
 	constructor(public readonly id:string) {
@@ -233,7 +265,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 		const response: GetResponse<EntityType> = {
 			list:[],
 			notFound: [],
-			state: this.state!
+			state: await this.getState()
 		};
 
 		entities.forEach((e, index) => {
@@ -253,10 +285,14 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 
 	protected add(data:EntityType) {
 		this.data[data.id] = data;
+
+		return this.browserStore.setItem(data.id, data).then(() => data);
 	}
 
 	protected remove(id:EntityID) {
 		delete this.data[id];
+
+		return this.browserStore.removeItem(id).then(() => id);
 	}
 
 	/**
@@ -292,10 +328,6 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	 */
 	protected async doGet() {
 
-		if(!this.restored) {
-			await this.restore();
-		}
-
 		const unknownIds: EntityID[] = [];
 		for(let id in this.getIds) {
 			if(this.data[id]) {
@@ -324,10 +356,8 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 					let r;
 					while (r = this.getIds[id].resolves.shift()) {
 						r.call(this, undefined);
-					};
+					}
 				});
-
-				this.save();
 
 			})
 
@@ -450,27 +480,6 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 		this.fire("change", this, changes);
 	}
 
-	private async save() {
-		localStorage.setItem("ds-" + this.id, JSON.stringify({
-			state: this.state,
-			data: this.data
-		}))
-	}
-
-	private restored = false;
-
-	private async restore() {
-		const saved = localStorage.getItem("ds-" + this.id);
-		if(!saved) {
-			return;
-		}
-
-		const decoded = JSON.parse(saved);
-
-		this.data = decoded.data;
-		this._state = decoded.state;
-		this.restored = true;
-	}
 
 	/**
 	 * Implements fetching updates from remote
@@ -484,13 +493,76 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	 */
 	private async commit() {
 
-		if(!this.restored) {
-			await this.restore();
+
+		const params: SetRequest<EntityType> =  Object.assign({
+			create: {},
+			update: {},
+			destroy: [],
+			ifInState: await this.getState(),
+		}, this.commitBaseParams);
+
+		for(let id in this.creates) {
+			params.create[id] = this.creates[id].data;
 		}
 
-		this.internalCommit().then((response) => {
-			this._state = response.newState;
-			this.save();
+		for(let id in this.updates) {
+			params.update[id] = this.updates[id].data;
+		}
+
+		for(let id in this.destroys) {
+			params.destroy.push(id);
+		}
+
+		this.internalCommit(params).then(async (response) => {
+
+			if (response.created) {
+				for (let clientId in response.created) {
+					//merge client data with server defaults.
+					let data = Object.assign(params.create ? (params.create[clientId] || {}) : {}, response.created[clientId] || {});
+					this.add(data).then(() =>	this.creates[clientId].resolve(data));
+				}
+			}
+
+			if (response.notCreated) {
+				for (let clientId in response.notCreated) {
+					//merge client data with server defaults.
+					this.creates[clientId].reject(response.notCreated[clientId]);
+				}
+			}
+
+			if (response.updated) {
+				for (let serverId in response.updated) {
+					//server updated something we don't have
+					if (!this.data[serverId]) {
+						continue;
+					}
+
+					//merge existing data, with updates from client and server
+					let data = params.update && params.update[serverId] ? Object.assign(this.data[serverId], params.update[serverId]) : this.data[serverId];
+					data = Object.assign(data, response.updated[serverId] || {});
+					this.add(data).then((data) =>	this.updates[serverId].resolve(data) );
+				}
+			}
+
+			if (response.notUpdated) {
+				for (let serverId in response.notUpdated) {
+					//merge client data with server defaults.
+					this.updates[serverId].reject(response.notUpdated[serverId]);
+				}
+			}
+
+			if (response.destroyed) {
+				for (let i = 0, l = response.destroyed.length; i < l; i++) {
+					this.remove(response.destroyed[i]).then((id) => this.destroys[id].resolve(id));
+				}
+			}
+			if (response.notDestroyed) {
+				for (let serverId in response.notDestroyed) {
+					this.destroys[serverId].reject(response.notDestroyed[serverId]);
+				}
+			}
+
+			await this.setState(response.newState);
 
 			this.fire("change", this, {
 				created: response.created,
@@ -509,7 +581,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	 * Implements commit (save and destroy) to the remote source
 	 * @protected
 	 */
-	protected abstract internalCommit() : Promise<CommitResponse<EntityType>>
+	protected abstract internalCommit(params: SetRequest<EntityType>) : Promise<CommitResponse<EntityType>>
 
 	/**
 	 * Query the server for a list of entity ID's
@@ -531,14 +603,17 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	 * @param retVal
 	 * @private
 	 */
-	private checkState<T>(serverState:string, retVal: T) : Promise<T> {
-		if(!this._state) {
+	private async checkState<T>(serverState:string|undefined, retVal: T) : Promise<T> {
+		let state = await this.getState()
+		if(!state) {
 			// We are empty!
-			this._state = serverState;
 			this.data = {};
+			await this.browserStore.clear();
+			await this.setState(serverState!);
+			state = serverState;
 		}
 		// Check if our data is up-to-date
-		if(serverState != this._state) {
+		if(serverState != state) {
 			return this.updateFromServer().then(() => retVal);
 		} else {
 			return Promise.resolve(retVal);
