@@ -50,27 +50,9 @@ export interface JmapQueryParams extends QueryParams {
  */
 export class JmapDataSource<EntityType extends DefaultEntity = DefaultEntity> extends AbstractDataSource<EntityType> {
 
-	private static stores: Record<string, any> = {};
-
-	/**
-	 * Get a single instance of a store by ID
-	 *
-	 * @param storeId
-	 */
-	public static store<EntityType extends DefaultEntity = DefaultEntity>(storeId:string) : JmapDataSource<EntityType> {
-		if(!JmapDataSource.stores[storeId]) {
-			JmapDataSource.stores[storeId] = new this(storeId);
-		}
-		return JmapDataSource.stores[storeId];
-	}
-
-
-
 	protected internalQuery(params: JmapQueryParams) : Promise<QueryResponse> {
 		return client.jmap(this.id + "/query", params, this.useCallId());
 	}
-
-
 
 	/**
 	 * The ID to use when committing
@@ -123,4 +105,19 @@ export class JmapDataSource<EntityType extends DefaultEntity = DefaultEntity> ex
 			state: undefined
 		});
 	}
+}
+
+
+const stores: Record<string, any> = {};
+
+/**
+ * Get a single instance of a store by ID
+ *
+ * @param storeId
+ */
+export const jmapds = <EntityType extends DefaultEntity = DefaultEntity>(storeId:string) : JmapDataSource<EntityType> => {
+	if(!stores[storeId]) {
+		stores[storeId] = new JmapDataSource(storeId);
+	}
+	return stores[storeId];
 }
