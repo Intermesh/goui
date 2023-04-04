@@ -9,9 +9,9 @@ import {
 	AbstractDataSource,
 	CommitResponse,
 	DefaultEntity,
-	EntityID,
 	QueryParams,
-	QueryResponse, SetRequest
+	QueryResponse,
+	SetRequest
 } from "../data/AbstractDataSource.js";
 
 enum andOrNot {AND, OR, NOT}
