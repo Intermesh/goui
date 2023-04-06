@@ -98,12 +98,12 @@ export class JmapDataSource<EntityType extends DefaultEntity = DefaultEntity> ex
 	protected internalRemoteChanges() {
 
 		console.warn("Out of state! Clearing all data for now.");
-		//TODO
-		this.data = {};
 
-		return Promise.resolve({
-			state: undefined
-		});
+		return this.setState(undefined).then(() => {
+			return {
+				state: undefined
+			};
+		})
 	}
 }
 

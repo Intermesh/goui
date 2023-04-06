@@ -10,6 +10,7 @@ import {Format} from "../util/Format.js";
 import {Timezone} from "../util/DateTime.js";
 import {DefaultEntity} from "../data/index.js";
 import {FunctionUtil} from "../util/index.js";
+import {jmapds} from "../jmap/JmapDataSource.js";
 
 
 export interface LoginData {
@@ -268,7 +269,7 @@ export class Client<UserType extends User = User> extends Observable {
 					return undefined;
 				}
 
-				const ds = JmapDataSource.store<UserType>("User");
+				const ds = jmapds<UserType>("User");
 
 				this.user = await ds.single(session.userId);
 

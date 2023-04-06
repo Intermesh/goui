@@ -200,20 +200,41 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 
 	public commitBaseParams = {};
 
-	public async getState() {
+	/**
+	 * Get the local server state ID of the store
+	 * @protected
+	 */
+	protected async getState() {
 		if(!this._state) {
-			this._state = await this.browserStore.getItem("state");
+			this._state = await this.browserStore.getItem("__state__");
 		}
 
 		return this._state;
 	}
 
-	public async setState(state:string) {
+	/**
+	 * Set's the local server state ID
+	 *
+	 * Setting it to undefined will reset the store.
+	 *
+	 * @param state
+	 * @protected
+	 */
+	protected async setState(state:string|undefined) {
 		this._state = state;
 
-		return this.browserStore.setItem("state", state);
+		if(state === undefined) {
+			this.data = {};
+			return this.browserStore.clear();
+		} else {
+			return this.browserStore.setItem("__state__", state);
+		}
 	}
 
+	/**
+	 * Get the browser storage object to save state to the browser
+	 * @private
+	 */
 	private get browserStore() {
 		if(!this._browserStore) {
 			this._browserStore = new BrowserStore("ds-" + this.id);
@@ -398,6 +419,12 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 		this.delayedCommit();
 
 		return p;
+	}
+
+	public async reset() {
+		this.data = {}
+		return this.setState(undefined);
+
 	}
 
 	/**
