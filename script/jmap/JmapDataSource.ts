@@ -13,6 +13,7 @@ import {
 	QueryResponse,
 	SetRequest
 } from "../data/AbstractDataSource.js";
+import {Config, createComponent} from "../component/Component.js";
 
 enum andOrNot {AND, OR, NOT}
 
@@ -50,8 +51,17 @@ export interface JmapQueryParams extends QueryParams {
  */
 export class JmapDataSource<EntityType extends DefaultEntity = DefaultEntity> extends AbstractDataSource<EntityType> {
 
+	/**
+	 * The controller route
+	 *
+	 * By default, the store ID is used as route. Eg. id = "Contact" then get request will be Contact/get
+	 *
+	 * If you set this to "SpecialContact" it will be "SpecialContact/get"
+	 */
+	public controllerRoute:string|undefined;
+
 	protected internalQuery(params: JmapQueryParams) : Promise<QueryResponse> {
-		return client.jmap(this.id + "/query", params, this.useCallId());
+		return client.jmap((this.controllerRoute ?? this.id) + "/query", params, this.useCallId());
 	}
 
 	/**
@@ -77,7 +87,7 @@ export class JmapDataSource<EntityType extends DefaultEntity = DefaultEntity> ex
 	protected async internalCommit(params: SetRequest<EntityType>) : Promise<CommitResponse<EntityType>> {
 
 		try {
-			return client.jmap(this.id + "/set", params, this.useCallId());
+			return client.jmap((this.controllerRoute ?? this.id) + "/set", params, this.useCallId());
 		} catch(error:any) {
 			if(error.type && error.type == 'stateMismatch') {
 				await this.updateFromServer();
@@ -90,20 +100,17 @@ export class JmapDataSource<EntityType extends DefaultEntity = DefaultEntity> ex
 	}
 
 	protected internalGet(ids: string[]){
-		return client.jmap(this.id + '/get', {
+		return client.jmap((this.controllerRoute ?? this.id) + '/get', {
 			ids: ids
 		}, this.useCallId());
 	}
 
-	protected internalRemoteChanges() {
+	protected async internalRemoteChanges(state: string|undefined) {
 
-		console.warn("Out of state! Clearing all data for now.");
+			return client.jmap((this.controllerRoute ?? this.id) + "/changes", {
+				sinceState: state
+			}, this.useCallId());
 
-		return this.setState(undefined).then(() => {
-			return {
-				state: undefined
-			};
-		})
 	}
 }
 
@@ -115,9 +122,10 @@ const stores: Record<string, any> = {};
  *
  * @param storeId
  */
-export const jmapds = <EntityType extends DefaultEntity = DefaultEntity>(storeId:string) : JmapDataSource<EntityType> => {
+export const jmapds = <EntityType extends DefaultEntity = DefaultEntity>(storeId:string, config?: Config<JmapDataSource>) : JmapDataSource<EntityType> => {
 	if(!stores[storeId]) {
-		stores[storeId] = new JmapDataSource(storeId);
+		stores[storeId] = createComponent(new JmapDataSource(storeId), config);
+
 	}
 	return stores[storeId];
 }

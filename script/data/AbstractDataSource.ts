@@ -77,10 +77,12 @@ export interface CommitError {
 }
 
 export interface Changes<EntityType> {
-	created?: Record<EntityID, EntityType>
-	updated?: Record<EntityID, EntityType>
+	created?: EntityID[]
+	updated?: EntityID[]
 	destroyed?: EntityID[],
-	state: string|undefined
+	newState: string,
+	oldState: string,
+	hasMoreChanges?:boolean
 }
 
 export interface CommitResponse<EntityType> {
@@ -204,7 +206,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	 * Get the local server state ID of the store
 	 * @protected
 	 */
-	protected async getState() {
+	public async getState() {
 		if(!this._state) {
 			this._state = await this.browserStore.getItem("__state__");
 		}
@@ -222,6 +224,8 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	 */
 	protected async setState(state:string|undefined) {
 		this._state = state;
+
+		console.warn("set state " + this.id +  ": " + state);
 
 		if(state === undefined) {
 			this.data = {};
@@ -305,12 +309,17 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	}
 
 	protected add(data:EntityType) {
+
+		console.debug("Adding " + this.id + ": " + data.id);
+
 		this.data[data.id] = data;
 
 		return this.browserStore.setItem(data.id, data).then(() => data);
 	}
 
 	protected remove(id:EntityID) {
+
+		console.debug("Removing " + this.id + ": " + id);
 		delete this.data[id];
 
 		return this.browserStore.removeItem(id).then(() => id);
@@ -421,10 +430,13 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 		return p;
 	}
 
+	/**
+	 * Reset the data source.
+	 *
+	 * Clears all data and will resync
+	 */
 	public async reset() {
-		this.data = {}
 		return this.setState(undefined);
-
 	}
 
 	/**
@@ -482,29 +494,61 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	 * Fetch updates from remote
 	 */
 	public async updateFromServer() {
-		const changes = await this.internalRemoteChanges();
-		if(changes.created) {
-			for (let id in changes.created) {
-				this.data[id] = changes.created[id];
+
+		let hasMoreChanges = true;
+
+		const allChanges : Changes<EntityType> = {
+			created: [],
+			updated: [],
+			destroyed: [],
+			oldState: "",
+			newState: "",
+		}, promises = [];
+
+		try {
+			while (hasMoreChanges) {
+				const state = await this.getState();
+				if (!allChanges.oldState) {
+					allChanges.oldState = state!;
+				}
+				const changes = await this.internalRemoteChanges(state);
+
+				if (changes.created) {
+					for (let id of changes.created) {
+						promises.push(this.remove(id));
+						allChanges.created!.push(id);
+					}
+				}
+
+				if (changes.updated) {
+					for (let id of changes.updated) {
+						promises.push(this.remove(id));
+						allChanges.updated!.push(id);
+					}
+				}
+
+				if (changes.destroyed) {
+					for (let id of changes.destroyed) {
+						promises.push(this.remove(id));
+						allChanges.destroyed!.push(id);
+					}
+				}
+
+				//Set the new server state
+				await Promise.all(promises);
+				await this.setState(changes.newState);
+
+				allChanges.newState = changes.newState;
+
+				hasMoreChanges = !!changes.hasMoreChanges;
 			}
+		} catch(e) {
+			console.error(this.id + " Error while updating from server. Resetting data source.");
+			console.error(e);
+			await this.reset();
 		}
+		this.fire("change", this, allChanges);
 
-		if(changes.updated) {
-			for (let id in changes.updated) {
-				this.data[id] = changes.updated[id];
-			}
-		}
-
-		if(changes.destroyed) {
-			for (let id of changes.destroyed) {
-				delete this.data[id];
-			}
-		}
-
-		//Set the new server state
-		this._state = changes.state;
-
-		this.fire("change", this, changes);
 	}
 
 
@@ -513,7 +557,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	 *
 	 * @protected
 	 */
-	protected abstract internalRemoteChanges() : Promise<Changes<EntityType>>
+	protected abstract internalRemoteChanges(state: string|undefined) : Promise<Changes<EntityType>>
 
 	/**
 	 * Commit pending changes to remote
@@ -592,12 +636,26 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 			await this.setState(response.newState);
 
 			this.fire("change", this, {
-				created: response.created,
-				updated: response.updated,
-				destroyed: response.destroyed,
-				state: response.newState
+				created:  response.created ? Object.keys(response.created) : [],
+				updated: response.updated ? Object.keys(response.updated) : [],
+				destroyed: response.destroyed || [],
+				oldState: response.oldState,
+				newState: response.newState
 			});
-		}).finally(() => {
+		})
+			.catch(e => {
+				for (let clientId in this.creates) {
+					this.creates[clientId].reject(e);
+				}
+				for (let clientId in this.updates) {
+					this.updates[clientId].reject(e);
+				}
+				for (let clientId in this.destroys) {
+					this.destroys[clientId].reject(e);
+				}
+			})
+
+			.finally(() => {
 			this.creates = {};
 			this.updates = {};
 			this.destroys = {};

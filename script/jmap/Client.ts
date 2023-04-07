@@ -11,6 +11,8 @@ import {Timezone} from "../util/DateTime.js";
 import {DefaultEntity} from "../data/index.js";
 import {FunctionUtil} from "../util/index.js";
 import {jmapds} from "../jmap/JmapDataSource.js";
+import {Notifier} from "../Notifier.js";
+import {fetchEventSource} from "@microsoft/fetch-event-source";
 
 
 export interface LoginData {
@@ -38,8 +40,8 @@ export interface ForgottenData {
 }
 
 interface ClientEventMap<Type extends Observable>  extends ObservableEventMap<Type> {
-	authenticated?: <Sender extends Type>(client: Sender, session: any) => void
-	logout?: <Sender extends Type>(client: Sender) => void
+	authenticated: <Sender extends Type>(client: Sender, session: any) => void
+	logout: <Sender extends Type>(client: Sender) => void
 }
 
 export interface Client {
@@ -88,7 +90,7 @@ export class Client<UserType extends User = User> extends Observable {
 	private _session: any;
 	private timeout?: number;
 
-	private debugParam = "";//"?XDEBUG_SESSION=1"
+	private debugParam = "XDEBUG_SESSION=1"
 
 	private user: UserType | undefined;
 
@@ -177,7 +179,7 @@ export class Client<UserType extends User = User> extends Observable {
 
 	private async request(data?: Object) {
 
-		const response = await fetch(this.uri + "jmap.php" + this.debugParam, {
+		const response = await fetch(this.uri + "jmap.php" + (this.debugParam ? '?'+this.debugParam : ''), {
 			method: data ? "POST" : "GET",
 			mode: "cors",
 			credentials: "include", // for cookie auth
@@ -193,7 +195,7 @@ export class Client<UserType extends User = User> extends Observable {
 	}
 
 	public async logout() {
-		await fetch(this.uri + "auth.php" + this.debugParam, {
+		await fetch(this.uri + "auth.php" + (this.debugParam ? '?'+this.debugParam : ''), {
 			method: "DELETE",
 			mode: "cors",
 			credentials: "include",
@@ -249,7 +251,7 @@ export class Client<UserType extends User = User> extends Observable {
 
 	public auth(data: LoginData | RegisterData | ForgottenData) {
 
-		return fetch(this.uri + "auth.php" + this.debugParam, {
+		return fetch(this.uri + "auth.php" + (this.debugParam ? '?'+this.debugParam : ''), {
 			method: "POST",
 			mode: "cors",
 			credentials: "include",
@@ -333,7 +335,7 @@ export class Client<UserType extends User = User> extends Observable {
 	 */
 	public upload(file: File): Promise<UploadResponse> {
 
-		return fetch(this.uri + "upload.php" + this.debugParam, { // Your POST endpoint
+		return fetch(this.uri + "upload.php" + (this.debugParam ? '?'+this.debugParam : ''), { // Your POST endpoint
 			method: 'POST',
 			credentials: "include",
 			headers: this.buildHeaders({
@@ -449,6 +451,92 @@ export class Client<UserType extends User = User> extends Observable {
 			});
 
 		this._requests = [];
+	}
+
+	/**
+	 * When SSE is disabled we'll poll the server for changes every 2 minutes.
+	 * This also keeps the token alive. Which expires in 30M.
+	 */
+	poll(entities:string[]) {
+		const checkFn = () => {
+			entities.forEach(function(entity) {
+
+				const ds = jmapds(entity);
+				ds.getState().then((state) => {
+					if (state)
+						ds.updateFromServer();
+				});
+			})
+
+		};
+		checkFn();
+		setInterval(checkFn, 60000);
+
+	}
+
+
+	/**
+	 * Initializes Server Sent Events via EventSource. This function is called in MainLayout.onAuthenticated()
+	 *
+	 * Note: disable this if you want to use xdebug because it will crash if you use SSE.
+	 *
+	 * @returns {Boolean}
+	 */
+	public async sse (entities:string[]) {
+		try {
+
+			const session = await this.session;
+
+			if (!session.eventSourceUrl) {
+				console.debug("Server Sent Events (EventSource) is disabled on the server.");
+				this.poll(entities);
+				return false;
+			}
+
+			console.debug("Starting SSE");
+
+			const url = this.uri + 'sse.php?accessToken=' + this.accessToken + '&types=' +		entities.join(',') + (this.debugParam ? '&'+this.debugParam : '');
+
+			await fetchEventSource(url,{
+				headers: {
+					Authorization: "Bearer " + this.accessToken
+				},
+				onmessage: (msg) => {
+
+					const data = JSON.parse(msg.data);
+
+					console.warn(data);
+
+					for (let entity in data) {
+						let ds = jmapds(entity);
+
+						ds.getState().then(state => {
+							console.warn(entity, state, data[entity]);
+							if (!state || state == data[entity]) {
+								//don't fetch updates if there's no state yet because it never was used in that case.
+								return;
+							}
+
+							ds.updateFromServer();
+						})
+					}
+				},
+				onerror: (err) => {
+					console.error(err);
+					//this.poll(entities);
+				},
+				onclose() {
+					// if the server closes the connection unexpectedly, retry:
+
+				},
+
+			})
+
+
+
+		} catch (e) {
+			console.error("Failed to start Server Sent Events. Perhaps the API URL in the system settings is invalid?", e);
+		}
 	}
 }
 
