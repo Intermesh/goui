@@ -129,6 +129,7 @@ export type ComponentState = Record<string, any>;
  * ```
  */
 export class Component extends Observable {
+	protected _cls?: string;
 
 	/**
 	 * Component constructor
@@ -307,6 +308,7 @@ export class Component extends Observable {
 	 *
 	 */
 	set cls(cls: string) {
+		this._cls = cls;
 		this.initClassName();
 		this.el.className += " " + cls;
 	}
@@ -725,6 +727,10 @@ export class Component extends Observable {
 		}
 	}
 
+	protected get itemContainerEl() {
+		return this.el;
+	}
+
 	/**
 	 * Can be overriden to wrap the component
 	 *
@@ -733,7 +739,7 @@ export class Component extends Observable {
 	 */
 	protected renderItem(item:Component) {
 		// getInsertBefore check for ext components. They don't have it.
-		item.render(this.el, item.getInsertBefore ? item.getInsertBefore() : undefined);
+		item.render(this.itemContainerEl, item.getInsertBefore ? item.getInsertBefore() : undefined);
 	}
 
 	/**

@@ -102,6 +102,7 @@
 .goui.group {
 	position: relative;
 	display:flex;
+	overflow: hidden;
 //	> button {box-shadow: none; border: 1px solid $colorBorder;}
 	> * {
 		box-shadow: none; border: 1px solid $colorBorder;
@@ -111,8 +112,8 @@
 			border-bottom-color:rgba(black, .08);
 		}
 	}
-	&>:not(:first-child) { border-top-left-radius:0px; border-bottom-left-radius:0px; border-left:0;  }
-	&>:not(:last-child) { border-top-right-radius:0px; border-bottom-right-radius:0px;  }
+	&>:not(:first-child) { border-top-left-radius:0; border-bottom-left-radius:0; border-left:0;  }
+	&>:not(:last-child) { border-top-right-radius:0; border-bottom-right-radius:0;  }
 }
 
 .goui.goui-toolbar {

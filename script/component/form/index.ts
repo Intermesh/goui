@@ -1,5 +1,3 @@
-// created from 'create-ts-index'
-
 export * from './ArrayField.js';
 export * from './AutocompleteField.js';
 export * from './CheckboxField.js';
@@ -18,3 +16,4 @@ export * from './RecurrenceField.js';
 export * from './SelectField.js';
 export * from './TextField.js';
 export * from './TextareaField.js';
+export * from './CheckboxGroup.js';

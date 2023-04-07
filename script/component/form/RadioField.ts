@@ -39,7 +39,7 @@ export class RadioField extends Field {
 	inputs: {[key:string]:HTMLInputElement} = {};
 
 	readonly type : RadioType;
-	protected baseCls = 'goui-form-field check';
+	protected baseCls = 'goui-form-field radiogroup';
 
 	constructor(type: RadioType = 'box') {
 		super('fieldset');

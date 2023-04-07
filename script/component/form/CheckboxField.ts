@@ -16,13 +16,11 @@ type CheckBoxType = 'box' | 'switch' | 'button';
  * @see Form
  */
 export class CheckboxField extends Field {
-
 	/**
-	 * render the checkbox as a checkbox, switch or toggle button
+	 *
+	 * @param type Render the checkbox as a checkbox, switch or toggle button
 	 */
-	readonly type : CheckBoxType;
-
-	constructor(type: CheckBoxType = 'box') {
+	constructor(public readonly type: CheckBoxType = 'box') {
 		super();
 		this.type = type;
 		this.el.cls(type,true);
@@ -67,10 +65,15 @@ export class CheckboxField extends Field {
 		if (this.invalidMsg) {
 			this.applyInvalidMsg();
 		}
+		const lbl = E('span',this.label).cls('box-label');
+
+		if(this._cls) {
+			lbl.cls("+" + this._cls);
+		}
 
 		return E('div',
 			this.input,
-			E('span',this.label).cls('box-label')
+			lbl
 		);
 	}
 
@@ -153,6 +156,9 @@ export class CheckboxField extends Field {
 
 }
 
+export type CheckboxFieldConfig = Omit<Config<CheckboxField>, "type"> & {
+	type?: CheckBoxType
+};
 
 /**
  * Shorthand function to create {@see CheckboxField}
