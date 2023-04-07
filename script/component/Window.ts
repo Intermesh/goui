@@ -551,7 +551,7 @@ export class Window extends DraggableComponent {
 
 			const yesBtn = btn({
 				text: t("Yes"),
-				cls: "raised primary",
+				cls: "filled primary",
 				handler: () => {
 					resolve(true);
 					w.close();

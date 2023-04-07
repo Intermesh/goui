@@ -63,33 +63,60 @@
 	}
 
 
-	&.raised, &[type=submit] {
-		color: $colorAccent;
-		border: $borderWidth solid $colorAccent;
+	&.filled, &[type=submit] {
+		background-color: $colorHover;
 
 		&:hover {
-			color: white;
 			background-color: $colorAccent;
+			color: white;
 		}
 
-
 		&.primary, &[type=submit] {
+			color: white;
 			background-color: $colorSecondary;
 			border-color: $colorSecondary;
-			color: white;
-
 			&:hover {
 				filter: brightness(120%);
 			}
 		}
 
 		&.accent {
+			color: white;
 			background-color: $colorAccent;
 			border-color: $colorAccent;
-			color: white;
 
 			&:hover {
 				filter: brightness(120%);
+			}
+		}
+	}
+
+	&.outlined {
+		border: $borderWidth solid $colorTextSecondary;
+
+		&:hover {
+			color: white;
+			background-color: $colorTextSecondary;
+		}
+
+
+		&.primary, &[type=submit] {
+			border-color: $colorSecondary;
+			color: $colorSecondary;
+
+			&:hover {
+				color: white;
+				background-color: $colorSecondary;
+			}
+		}
+
+		&.accent {
+			color: $colorAccent;
+			border-color: $colorAccent;
+
+			&:hover {
+				color: white;
+				background-color: $colorAccent;
 			}
 		}
 	}
