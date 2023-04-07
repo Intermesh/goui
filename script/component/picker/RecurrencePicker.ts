@@ -21,6 +21,7 @@ import {numberfield} from "../form/NumberField.js";
 import {Field} from "../form/Field.js";
 import {CardContainer, CardContainerEventMap} from "../CardContainer.js";
 import {Menu} from "../menu/Menu.js";
+import {checkboxgroup} from "../form/index.js";
 
 export interface RecurrencePickerEventMap<Sender extends Observable> extends CardContainerEventMap<Sender> {
 
@@ -58,21 +59,16 @@ export class RecurrencePicker extends CardContainer {
 	constructor(startDate: DateTime) {
 		super();
 		this.startDate = startDate;
-		this.width = 376;
+		this.width = 450;
 		// value = current weekday?
-		const weeklyOptions = comp({cls:'group', itemId: 'weeklyOptions'},
-			...[0,1,2,3,4,5,6].map(i =>
-				checkbox({type:'button', text: DateTime.dayNames[DateTime.dayMap[i]].substring(0,2), name: DateTime.dayMap[i]})
-			),
-			textfield({hidden:true, name: 'byDay', listeners: {
-				'change': (fld,val) => {
-					for(let j = 0; j < 7; j++) {
-						const cb = weeklyOptions.items.get(j) as CheckboxField;
-						cb.value = val.indexOf(cb.name) !== -1;
-					}
-				}
-			}})
-		);
+
+		const weeklyOptions = checkboxgroup({
+			itemId: 'weeklyOptions',
+			label: "Weekdays",
+			options: [0,1,2,3,4,5,6].map(i => {
+				return {label: DateTime.dayNames[DateTime.dayMap[i]].substring(0, 2), name: DateTime.dayMap[i]}
+			})
+		})
 
 		this.menu = comp({}, ...this.quickMenuItems());
 
@@ -117,6 +113,14 @@ export class RecurrencePicker extends CardContainer {
 					]
 				}),
 				weeklyOptions,
+				textfield({hidden:true, name: 'byDay', listeners: {
+						'change': (fld,val) => {
+							for(let j = 0; j < 7; j++) {
+								const cb = weeklyOptions.items.get(j) as CheckboxField;
+								cb.value = val.indexOf(cb.name) !== -1;
+							}
+						}
+					}}),
 				comp({cls:'flow'},
 					comp({html: t("Ends")}),
 					select({
