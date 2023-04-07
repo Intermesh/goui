@@ -457,21 +457,24 @@ export class Client<UserType extends User = User> extends Observable {
 	 * When SSE is disabled we'll poll the server for changes every 2 minutes.
 	 * This also keeps the token alive. Which expires in 30M.
 	 */
-	poll(entities:string[]) {
-		const checkFn = () => {
-			entities.forEach(function(entity) {
+	public updateAllDataSources(entities:string[]) {
+		entities.forEach(function(entity) {
 
-				const ds = jmapds(entity);
-				ds.getState().then((state) => {
-					if (state)
-						ds.updateFromServer();
-				});
-			})
+			const ds = jmapds(entity);
+			ds.getState().then((state) => {
+				console.warn(state, entity);
+				if (state)
+					ds.updateFromServer();
+			});
+		});
+	}
 
-		};
-		checkFn();
-		setInterval(checkFn, 60000);
 
+	public startPolling(entities:string[]) {
+		this.updateAllDataSources(entities);
+		setInterval(() => {
+			this.updateAllDataSources(entities);
+		}, 60000);
 	}
 
 
@@ -489,7 +492,7 @@ export class Client<UserType extends User = User> extends Observable {
 
 			if (!session.eventSourceUrl) {
 				console.debug("Server Sent Events (EventSource) is disabled on the server.");
-				this.poll(entities);
+				this.startPolling(entities);
 				return false;
 			}
 
@@ -497,15 +500,23 @@ export class Client<UserType extends User = User> extends Observable {
 
 			const url = this.uri + 'sse.php?accessToken=' + this.accessToken + '&types=' +		entities.join(',') + (this.debugParam ? '&'+this.debugParam : '');
 
+			let retry = 0;
 			await fetchEventSource(url,{
 				headers: {
 					Authorization: "Bearer " + this.accessToken
 				},
+				onopen: async (response) => {
+
+					if(retry > 0) {
+						//SSE will restart but we might be out of date
+						this.updateAllDataSources(entities);
+					}
+					retry++;
+
+				},
 				onmessage: (msg) => {
 
 					const data = JSON.parse(msg.data);
-
-					console.warn(data);
 
 					for (let entity in data) {
 						let ds = jmapds(entity);
@@ -523,7 +534,7 @@ export class Client<UserType extends User = User> extends Observable {
 				},
 				onerror: (err) => {
 					console.error(err);
-					//this.poll(entities);
+
 				},
 				onclose() {
 					// if the server closes the connection unexpectedly, retry:

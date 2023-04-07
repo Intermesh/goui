@@ -495,7 +495,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	 */
 	public async updateFromServer() {
 
-		let hasMoreChanges = true;
+		let hasMoreChanges = true, hasAChange = false;
 
 		const allChanges : Changes<EntityType> = {
 			created: [],
@@ -517,6 +517,8 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 					for (let id of changes.created) {
 						promises.push(this.remove(id));
 						allChanges.created!.push(id);
+
+						hasAChange = true;
 					}
 				}
 
@@ -524,6 +526,8 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 					for (let id of changes.updated) {
 						promises.push(this.remove(id));
 						allChanges.updated!.push(id);
+
+						hasAChange = true;
 					}
 				}
 
@@ -531,6 +535,8 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 					for (let id of changes.destroyed) {
 						promises.push(this.remove(id));
 						allChanges.destroyed!.push(id);
+
+						hasAChange = true;
 					}
 				}
 
@@ -547,7 +553,9 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 			console.error(e);
 			await this.reset();
 		}
-		this.fire("change", this, allChanges);
+		if(hasAChange) {
+			this.fire("change", this, allChanges);
+		}
 
 	}
 
