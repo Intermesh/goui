@@ -244,6 +244,22 @@ $formFieldBorderRadius: dp(10);
 
 	/** start checkbox **/
 	&.check {
+		//reset fieldset defaults
+		border: 0;
+		margin-inline-start: 0;
+		margin-inline-end: 0;
+		padding-block-start: 0;
+		padding-inline-start: 0;
+		padding-inline-end: 0;
+		padding-block-end: 0;
+
+		h3.legend {
+			color: $colorTextSecondary;
+			font: $fontBase;
+			margin: dp(24) 0 dp(8) 0;
+		}
+
+
 		width: auto;
 		.radio.control {
 			padding: 0;

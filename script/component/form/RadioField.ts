@@ -42,12 +42,21 @@ export class RadioField extends Field {
 	protected baseCls = 'goui-form-field check';
 
 	constructor(type: RadioType = 'box') {
-		super('div');
+		super('fieldset');
 		this.type = type;
 		this.el.cls(type,true);
 	}
 
+	protected createLabel(): HTMLDivElement | void {
+		return;
+	}
+
 	protected createControl(): undefined | HTMLElement {
+
+
+		const label = E("h3").cls("legend");
+		label.innerText = this.label;
+		this.el.insertBefore(label, this.wrap!);
 
 		const radio = E('div').cls('radio');
 
