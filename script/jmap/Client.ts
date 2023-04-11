@@ -4,14 +4,12 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {JmapDataSource} from "./JmapDataSource.js";
 import {Observable, ObservableEventMap} from "../component/Observable.js";
 import {Format} from "../util/Format.js";
 import {Timezone} from "../util/DateTime.js";
 import {DefaultEntity} from "../data/index.js";
 import {FunctionUtil} from "../util/index.js";
 import {jmapds} from "../jmap/JmapDataSource.js";
-import {Notifier} from "../Notifier.js";
 import {fetchEventSource} from "@microsoft/fetch-event-source";
 
 
