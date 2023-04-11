@@ -7,6 +7,8 @@
 import {Component, Config, createComponent} from "../Component.js";
 import {root} from "../Root.js";
 import {Button} from "../Button.js";
+import {CheckboxField} from "../form/index.js";
+import {Toolbar} from "../Toolbar.js";
 
 
 /**
@@ -80,10 +82,12 @@ import {Button} from "../Button.js";
  * 	});
  * ```
  */
-export class Menu extends Component {
+export class Menu extends Toolbar {
 
 	constructor() {
-		super("menu");
+		super();
+		this.baseCls = "";
+		this.orientation = "vertical";
 	}
 
 	/**
@@ -113,8 +117,21 @@ export class Menu extends Component {
 			el.classList.add("goui-fade-out");
 		}
 
+
+		this.el.addEventListener('keydown', (ev) => {
+			switch ((ev as KeyboardEvent).key) {
+
+				case 'Escape':
+					this.close();
+					ev.stopPropagation();
+					ev.preventDefault();
+					break;
+			}
+		});
+
 		return el;
 	}
+
 
 	set expandLeft(expandLeft: boolean) {
 		this.el.classList.add("expand-left");
@@ -167,6 +184,7 @@ export class Menu extends Component {
 
 		//must be rendered and visible to get width below
 		if (!this.rendered) {
+			this.hidden = true;
 			root.items.add(this);
 		}
 
@@ -192,10 +210,17 @@ export class Menu extends Component {
 		this.el.style.top = coords.y + "px";
 
 		if (!this.parent) {
+			this.hidden = true;
 			root.items.add(this);
 		}
 
 		this.show();
+
+		if(Menu.openedMenu) {
+			Menu.openedMenu.el.classList.remove("goui-fade-out");
+			Menu.openedMenu.close();
+		}
+
 		Menu.openedMenu = this;
 
 		//hide menu when clicked elsewhere

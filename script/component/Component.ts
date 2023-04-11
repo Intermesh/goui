@@ -627,6 +627,17 @@ export class Component extends Observable {
 	}
 
 
+	public isFocusable() {
+		return this.el && !this.hidden && (this.el.tagName == "BUTTON" ||
+			this.el.tagName == "INPUT" ||
+			this.el.tagName == "A" ||
+			this.el.tagName == "AREA" ||
+			this.el.tabIndex > -1);
+	}
+
+
+
+
 	/**
 	 * Get the component that's next to this one
 	 */

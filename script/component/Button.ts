@@ -10,6 +10,7 @@ import {root} from "./Root.js";
 import {Observable, ObservableListener, ObservableListenerOpts} from "./Observable.js";
 import {MaterialIcon} from "./MaterialIcon.js";
 import {router} from "../Router.js";
+import {Toolbar} from "./Toolbar.js";
 
 type ButtonType = "button" | "submit" | "reset";
 
@@ -164,8 +165,6 @@ export class Button extends Component {
 		}
 
 		el.addEventListener("click", (e) => {
-
-
 			// check detail for being the first click. We don't want double clicks to call the handler twice.
 			// the detail property contains the click count. When spacebar is used it will be 0
 			// Michael had problems with e.detail < 2 but we don't remember why. Discuss when we run into this.
@@ -198,8 +197,7 @@ export class Button extends Component {
 
 	private onMenuMouseEnter(ev: MouseEvent) {
 		if (Menu.openedMenu && Menu.openedMenu != this._menu && Menu.openedMenu.parentButton!.parent === this._menu!.parentButton!.parent) {
-			Menu.openedMenu.el.classList.remove("goui-fade-out");
-			Menu.openedMenu.close();
+
 			this.showMenu(this.el, ev);
 		}
 	}

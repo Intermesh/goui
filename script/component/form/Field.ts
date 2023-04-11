@@ -138,6 +138,10 @@ export abstract class Field extends Component {
 		return el;
 	}
 
+	isFocusable(): boolean {
+		return !this.hidden;
+	}
+
 	protected renderControl() {
 		// wrap required to place buttons after element
 		this.el.append(this.wrap = E("div").cls('+wrap'));

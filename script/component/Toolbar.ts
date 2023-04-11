@@ -5,10 +5,12 @@
  */
 
 import {comp, Component, Config} from "./Component.js";
+import {Button} from "./Button.js";
+import type {Menu} from "./menu/index.js";
 
 
 /**
- * Toolbar component
+ * Toolbar Component
  *
  * eg.
  *
@@ -37,14 +39,164 @@ export class Toolbar extends Component {
 
 	protected baseCls = "goui-toolbar"
 
+	/**
+	 * Used by keyboard nav
+	 * @protected
+	 */
+	protected orientation = "horizontal";
+
 	constructor() {
 		super("menu");
+		this.setupKeyboardNav();
+	}
+
+	private focusedItemIndex = -1;
+
+
+	/**
+	 * Find the first menu in the tree of submenu's
+	 */
+	private findToolbar(): Toolbar | undefined {
+
+		let parent;
+		if((this as unknown as Menu).parentButton) {
+			parent = (this as unknown as Menu).parentButton!.parent;
+		} else
+		{
+			parent = this.parent;
+		}
+
+		if(!parent || !(parent instanceof Toolbar)) {
+			return undefined;
+		}
+
+		if(parent.orientation == "horizontal") {
+			return parent;
+		} else {
+			return parent.findToolbar();
+		}
+
+	}
+	
+	private setupKeyboardNav() {
+
+		this.on("focus", () => {
+			if(this.focusedItemIndex > -1) {
+				this.items.get(this.focusedItemIndex).focus();
+			}
+		});
+
+		this.on("hide", () => {
+			this.focusedItemIndex = -1;
+		})
+
+		this.el.addEventListener('keydown', (ev) => {
+
+			switch ((ev as KeyboardEvent).key) {
+				case 'ArrowRight':
+					if (this.orientation == "vertical") {
+						if(!this.focusChild()) {
+							const tb = this.findToolbar();
+							if(tb) {
+								tb.focusNext();
+							}
+						}
+					} else {
+						this.focusNext();
+					}
+					ev.stopPropagation();
+					ev.preventDefault();
+					break;
+				case 'ArrowDown':
+					if (this.orientation == "vertical") {
+						this.focusNext();
+					} else {
+						this.focusChild();
+
+					}
+					ev.stopPropagation();
+					ev.preventDefault();
+					break;
+
+				case 'ArrowLeft':
+					if (this.orientation == "vertical") {
+
+						if(!this.focusParent()) {
+							const tb = this.findToolbar();
+							if(tb) {
+								tb.focusNext(-1);
+							}
+						}
+					} else {
+						this.focusNext(-1);
+
+					}
+					ev.stopPropagation();
+					ev.preventDefault();
+				break;
+
+				case 'ArrowUp':
+					if (this.orientation == "vertical") {
+						this.focusNext(-1);
+					} else {
+						this.focusParent();
+
+					}
+					ev.stopPropagation();
+					ev.preventDefault();
+					break;
+			}
+		});
+	}
+
+	public focusNext(inc = 1) : boolean {
+
+		const nextIndex = this.focusedItemIndex + inc;
+
+		this.focusedItemIndex = Math.min(Math.max(nextIndex, 0), this.items.count() - 1);
+
+		if(nextIndex != this.focusedItemIndex) {
+			return false;
+		}
+
+		const cmp = this.items.get(this.focusedItemIndex)!;
+		if(!cmp.isFocusable()) {
+			return this.focusNext(inc);
+		} else {
+			cmp.focus();
+			if(this.orientation == 'horizontal') {
+				cmp.el.click();
+			}
+			return true;
+		}
+	}
+
+	private focusChild() {
+		const child = this.items.get(this.focusedItemIndex) as Button;
+		if(!child || !child.menu) {
+			return false;
+		}
+
+		child.menu.focusNext();
+		return true;
+	}
+
+	private focusParent() {
+		const child = this.items.get(this.focusedItemIndex) as Button;
+
+		const parentButton = (child.parent! as Menu).parentButton! as Button;
+		if(!parentButton) {
+			return false;
+		}
+		parentButton.focus();
+
+		return true;
 	}
 
 }
 
 /**
- * Create a {@see Toolbar} component
+ * Create a {@see Toolbar} Component
  *
  * @example
  * ```

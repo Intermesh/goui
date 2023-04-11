@@ -30,7 +30,7 @@ menu.goui-dropdown {
 		padding: 0;
 		margin: 0;
 
-		> button {
+		> button.goui-button {
 
 			border: 0;
 			width: 100%;
@@ -40,6 +40,16 @@ menu.goui-dropdown {
 			&:hover {
 				color: $colorText;
 				background-color: $colorHover;
+			}
+
+			&:focus, &:focus-visible {
+				box-shadow: none;
+				border: 0;
+				background-color: $colorHover;
+				color: $colorText;
+				input:not(:checked) {
+					border-color: white;
+				}
 			}
 
 		}

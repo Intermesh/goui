@@ -122,7 +122,7 @@
 	}
 
 	&:focus-visible {
-		border: $borderWidth solid $colorPrimary !important;
+		border: $borderWidth solid $colorPrimary;
 		@extend .z4;
 	}
 }
