@@ -7,7 +7,6 @@
 import {Observable, ObservableEventMap} from "../component/index.js";
 import {Comparator} from "./Store.js";
 import {FunctionUtil} from "../util/index.js";
-import {JmapQueryParams} from "../jmap/index.js";
 import {BrowserStore} from "../util/BrowserStorage.js";
 
 /**
@@ -683,7 +682,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	 *
 	 * @link https://jmap.io/spec-core.html#query
 	 */
-	public query(params: JmapQueryParams) : Promise<QueryResponse> {
+	public query(params: QueryParams) : Promise<QueryResponse> {
 		return this.internalQuery(params).then(r => {
 			return this.checkState(r.queryState, r);
 		});

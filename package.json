@@ -60,8 +60,5 @@
     ".": {
       "import": "./dist/index.js"
     }
-  },
-  "dependencies": {
-    "@microsoft/fetch-event-source": "^2.0.1"
   }
 }

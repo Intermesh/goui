@@ -2,7 +2,6 @@
 
 export * from './component/index.js';
 export * from './data/index.js';
-export * from './jmap/index.js';
 export * from './util/index.js';
 export * from './Notifier.js';
 export * from './Router.js';

@@ -13,12 +13,10 @@ import {Observable, ObservableListener, ObservableListenerOpts} from "../Observa
 import {browser} from "../../util/Browser.js";
 import {colormenu, ColorMenu} from "../menu/ColorMenu.js";
 import {Menu} from "../menu/Menu.js";
-import {comp, Component, Config, createComponent} from "../Component.js";
+import {comp, Config, createComponent} from "../Component.js";
 import {FunctionUtil} from "../../util/FunctionUtil.js";
 import {root} from "../Root.js";
 import {MaterialIcon} from "../MaterialIcon.js";
-import {CheckboxField} from "./CheckboxField.js";
-import {Image} from "../../jmap/Image.js";
 
 
 /**
@@ -411,7 +409,7 @@ export class HtmlField extends Field {
 
 		if(v) {
 			this.editor.innerHTML = v;
-			Image.replaceImages(this.editor);
+			// Image.replaceImages(this.editor);
 		}
 
 		el.appendChild(this.editor);
@@ -475,7 +473,7 @@ export class HtmlField extends Field {
 
 		if (this.editor) {
 			this.editor.innerHTML = v;
-			Image.replaceImages(this.editor);
+			//Image.replaceImages(this.editor);
 		}
 
 		super.value = v;
