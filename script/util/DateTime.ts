@@ -360,7 +360,7 @@ export type Timezone =
 
 const SystemTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone.toLowerCase() as Timezone;
 
-function pad(n: string|number): string {
+function pad(n: any): string {
 	return (n < 10 ? '0':'') + n;
 }
 const durationRegex = /(-)?P(?:([.,\d]+)Y)?(?:([.,\d]+)M)?(?:([.,\d]+)W)?(?:([.,\d]+)D)?(?:T(?:([.,\d]+)H)?(?:([.,\d]+)M)?(?:([.,\d]+)S)?)?/;
