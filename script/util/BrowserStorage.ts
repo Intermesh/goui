@@ -41,6 +41,9 @@ class Connection {
 		}).finally(() => clearInterval(intervalId)) as Promise<Connection>
 	}
 
+	/**
+	 * If upgrade is pending this promise resolves when done.
+	 */
 	public upgradeReady() {
 		let intervalId:any;
 		return new Promise((resolve) => {
@@ -54,6 +57,10 @@ class Connection {
 			checkUpgrading();
 		}).finally(() => clearInterval(intervalId));
 	}
+
+	/**
+	 * Connect to the database
+	 */
 	public async connect (): Promise<IDBDatabase> {
 
 		if(this.upgrading) {
@@ -95,6 +102,11 @@ class Connection {
 
 	}
 
+	/**
+	 * Prepare database for upgrade.
+	 *
+	 * When resolved it MUST set conn.upgrading to false.
+	 */
 	public async upgrade() : Promise<IDBVersionChangeEvent> {
 
 		this.upgrading = true;
@@ -131,6 +143,9 @@ class Connection {
 		});
 	}
 
+	/**
+	 * Disconnect from the database
+	 */
 	public disconnect() {
 		if(this.conn) {
 			this.conn.close();
@@ -138,6 +153,9 @@ class Connection {
 		}
 	}
 
+	/**
+	 * Delete the entire database
+	 */
 	public async deleteDatabase() {
 		if(!this.enabled) {
 			return Promise.resolve(null);
@@ -151,7 +169,10 @@ class Connection {
 	}
 }
 
-const conn = new Connection();
+/**
+ * Singleton connection object
+ */
+export const browserStoreConnection = new Connection();
 
 /**
  * Browser Store
@@ -166,7 +187,7 @@ export class BrowserStore {
 
 	private async getStore(mode:IDBTransactionMode) {
 		// console.log("getStore " + this.storeName);
-		let db = await conn.connect();
+		let db = await browserStoreConnection.connect();
 
 		if(!db.objectStoreNames.contains(this.storeName)) {
 			db = await this.createStore();
@@ -177,11 +198,11 @@ export class BrowserStore {
 	}
 
 	private async createStore() : Promise<IDBDatabase> {
-		if(conn.upgrading) {
+		if(browserStoreConnection.upgrading) {
 			// it might be created concurrenty
-			await conn.upgradeReady();
+			await browserStoreConnection.upgradeReady();
 
-			let db = await conn.connect();
+			let db = await browserStoreConnection.connect();
 
 			if(db.objectStoreNames.contains(this.storeName)) {
 				return db;
@@ -190,19 +211,19 @@ export class BrowserStore {
 
 		return new Promise(async (resolve, reject) => {
 			// Somehow TS doens't know about the target :(
-			const e = await conn.upgrade(),
+			const e = await browserStoreConnection.upgrade(),
 				db = (e.target as any).result as IDBDatabase,
 				t= (e.target as any).transaction as IDBTransaction;
 
 			db.createObjectStore(this.storeName);
 
 			t.oncomplete = () => {
-				conn.upgrading = false;
+				browserStoreConnection.upgrading = false;
 				resolve(db);
 			}
 
 			t.onerror = (e) => {
-				conn.upgrading = false;
+				browserStoreConnection.upgrading = false;
 				reject(e)
 			}
 		});
@@ -220,10 +241,16 @@ export class BrowserStore {
 		});
 	}
 
+	/**
+	 * Get an item from the store
+	 * returns undefined if not found.
+	 *
+	 * @param key
+	 */
   public async getItem (key:IDBValidKey) : Promise<any> {
 	  // console.log("getItem " + this.storeName);
-		if(!conn.enabled) {
-			return Promise.resolve(null);
+		if(!browserStoreConnection.enabled) {
+			return Promise.resolve(undefined);
 		}
 
 		const store = await this.getStore("readonly"),
@@ -233,9 +260,15 @@ export class BrowserStore {
 
 	}
 
+	/**
+	 * Set an item
+	 *
+	 * @param key
+	 * @param value
+	 */
 	public async setItem(key:IDBValidKey, value:any) {
 		// console.log("setItem " + this.storeName);
-		if(!conn.enabled) {
+		if(!browserStoreConnection.enabled) {
 			return Promise.resolve(key);
 		}
 
@@ -245,8 +278,14 @@ export class BrowserStore {
 		return this.requestPromise<void>(req).then(() => key + "");
 	}
 
+	/**
+	 * Remove an item
+	 *
+	 * @param key
+	 */
+
 	public async removeItem(key:IDBValidKey) {
-		if(!conn.enabled) {
+		if(!browserStoreConnection.enabled) {
 			return Promise.resolve(key);
 		}
 
@@ -256,8 +295,11 @@ export class BrowserStore {
 		return this.requestPromise<void>(req).then(() => key);
 	}
 
+	/**
+	 * Clear all data from this store
+	 */
 	public async clear() {
-		if(!conn.enabled) {
+		if(!browserStoreConnection.enabled) {
 			return Promise.resolve(null);
 		}
 
