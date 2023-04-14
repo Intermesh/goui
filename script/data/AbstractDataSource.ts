@@ -310,8 +310,6 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	protected add(data:EntityType) {
 
 		console.debug("Adding " + this.id + ": " + data.id);
-
-		Object.freeze(data);
 		this.data[data.id] = data;
 
 		return this.browserStore.setItem(data.id, data).then(() => data);
@@ -380,7 +378,13 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 			}
 		}
 
-		// Call class method to fetch additional. Even with an empty list we must check the server state,
+		if(!unknownIds.length) {
+			// Can we return without a server call? State won't be checked.
+			// In the detail view we call an additional validateState() function to do this to
+			// save a lot of empty calls.
+			return;
+		}
+
 		this.internalGet(unknownIds)
 			.then(response => this.checkState(response.state, response))
 			.then(response => {
@@ -708,7 +712,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	 * @param retVal
 	 * @private
 	 */
-	private async checkState<T>(serverState:string|undefined, retVal: T) : Promise<T> {
+	protected async checkState<T>(serverState:string|undefined, retVal: T) : Promise<T> {
 		let state = await this.getState()
 		if(!state) {
 			// We are empty!

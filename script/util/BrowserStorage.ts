@@ -194,12 +194,10 @@ export class BrowserStore {
 				db = (e.target as any).result as IDBDatabase,
 				t= (e.target as any).transaction as IDBTransaction;
 
-			console.log("got upgrade connection " + this.storeName);
 			db.createObjectStore(this.storeName);
 
 			t.oncomplete = () => {
 				conn.upgrading = false;
-				console.log("upgrading finish");
 				resolve(db);
 			}
 
