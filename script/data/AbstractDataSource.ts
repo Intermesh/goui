@@ -311,6 +311,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 
 		console.debug("Adding " + this.id + ": " + data.id);
 
+		Object.freeze(data);
 		this.data[data.id] = data;
 
 		return this.browserStore.setItem(data.id, data).then(() => data);
@@ -349,6 +350,13 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 		return p;
 	}
 
+	private returnGet(id:EntityID) {
+		let r;
+		while (r = this.getIds[id].resolves.shift()) {
+			r.call(this, structuredClone(this.data[id]));
+		}
+	}
+
 	/**
 	 * Does the actual getting of entities. First checks if present in this onbject, otherwise it will be requested
 	 * from the remote source.
@@ -360,12 +368,15 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 		const unknownIds: EntityID[] = [];
 		for(let id in this.getIds) {
 			if(this.data[id]) {
-				this.getIds[id].resolves.forEach(r => {
-					r.call(this, this.data[id]);
-				});
-				delete this.getIds[id];
+				this.returnGet(id);
 			} else {
-				unknownIds.push(id);
+				const data = await this.browserStore.getItem(id);
+				if(data) {
+					this.data[id] = data;
+					this.returnGet(id);
+				} else {
+					unknownIds.push(id);
+				}
 			}
 		}
 
@@ -375,10 +386,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 			.then(response => {
 				response.list.forEach((e) => {
 					this.add(e);
-					let r;
-					while (r = this.getIds[e.id].resolves.shift()) {
-						r.call(this, this.data[e.id]);
-					}
+					this.returnGet(e.id);
 				});
 
 				response.notFound?.forEach((id) => {
@@ -507,6 +515,11 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 		try {
 			while (hasMoreChanges) {
 				const state = await this.getState();
+				if(state === undefined) {
+					// no state so nothing to update
+					return;
+				}
+
 				if (!allChanges.oldState) {
 					allChanges.oldState = state!;
 				}
