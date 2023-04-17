@@ -50,7 +50,22 @@ export class DataSourceStore<EntityType extends BaseEntity = DefaultEntity> exte
 
 		this.queryParams.sort = this.sort;
 
+		if(this.queryParams.limit) {
+			//too see if the remote has more data we query one ID more.
+			this.queryParams.limit++;
+		}
+
 		const queryResponse = await this.dataSource.query(this.queryParams);
+
+		if(this.queryParams.limit) {
+			// check if the server has more data.
+			this.queryParams.limit--;
+			this.hasMore = queryResponse.ids.length > this.queryParams.limit;
+			if(this.hasMore) {
+				queryResponse.ids.pop();
+			}
+		}
+
 		const getResponse = await this.dataSource.get(queryResponse.ids);
 
 		const records = await this.fetchRelations(getResponse.list);
