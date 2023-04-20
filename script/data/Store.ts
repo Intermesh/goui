@@ -58,7 +58,7 @@ export interface Store<RecordType extends StoreRecord = StoreRecord> {
 /**
  * Generic data store used by components
  */
-export class Store<RecordType extends StoreRecord>  extends Collection<RecordType> {
+export class Store<RecordType extends StoreRecord> extends Collection<RecordType> {
 
 	// private static stores: Record<string, Store> = {};
 	//
