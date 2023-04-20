@@ -269,13 +269,13 @@ export class BrowserStore {
 	public async setItem(key:IDBValidKey, value:any) {
 		// console.log("setItem " + this.storeName);
 		if(!browserStoreConnection.enabled) {
-			return Promise.resolve(key);
+			return Promise.resolve(true);
 		}
 
 		const store = await this.getStore("readwrite"),
 			req = store.put(value, key + "");
 
-		return this.requestPromise<void>(req).then(() => key + "");
+		return this.requestPromise<void>(req).then(() => true).catch(() => false);
 	}
 
 	/**
@@ -308,25 +308,25 @@ export class BrowserStore {
 
 		return this.requestPromise<void>(req);
 	}
-	// public async keys () {
-	// 	if (!conn.enabled) {
-	// 		return Promise.resolve([]);
-	// 	}
-	// 	const keys: IDBValidKey[] = [];
-	//
-	// 	const store = await this.getStore("readonly");
-	//
-	// 	return new Promise((resolve, reject) => {
-	// 		// This would be store.getAllKeys(), but it isn't supported by Edge or Safari.
-	// 		// And openKeyCursor isn't supported by Safari.
-	// 		(store.openKeyCursor || store.openCursor).call(store).onsuccess = function () {
-	// 			if (!this.result) {
-	// 				resolve(keys);
-	// 				return;
-	// 			}
-	// 			keys.push(this.result.key);
-	// 			this.result.continue();
-	// 		};
-	// 	});
-	// }
+	public async keys () {
+		if (!browserStoreConnection.enabled) {
+			return Promise.resolve([]);
+		}
+		const keys: IDBValidKey[] = [];
+
+		const store = await this.getStore("readonly");
+
+		return new Promise((resolve, reject) => {
+			// This would be store.getAllKeys(), but it isn't supported by Edge or Safari.
+			// And openKeyCursor isn't supported by Safari.
+			(store.openKeyCursor || store.openCursor).call(store).onsuccess = function () {
+				if (!this.result) {
+					resolve(keys);
+					return;
+				}
+				keys.push(this.result.key);
+				this.result.continue();
+			};
+		});
+	}
 }

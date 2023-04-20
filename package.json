@@ -30,7 +30,6 @@
   "description": "Group-Office User Interface",
   "version": "1.0.7",
   "directories": {
-    "example": "examples",
     "test": "tests"
   },
   "repository": {
