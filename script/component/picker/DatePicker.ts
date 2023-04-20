@@ -25,9 +25,10 @@ export interface DatePicker {
 
 export class DatePicker extends Component {
 
-	showWeekNbs: boolean
-	value: DateTime
-	now: DateTime
+	public showWeekNbs: boolean
+	public value: DateTime
+	private now: DateTime
+	public enableRangeSelect = false;
 
 	protected baseCls = "datepicker"
 
@@ -170,6 +171,9 @@ export class DatePicker extends Component {
 			start:HTMLElement,
 			end:HTMLElement;
 		const onMouseMove = ({target}: MouseEvent & {target: HTMLElement}) => {
+			if(!this.enableRangeSelect) {
+				return false;
+			}
 			if(target.isA('DD') && target != end) {
 				[start, end] = (anchor.compareDocumentPosition(target) & 0x02) ? [target,anchor] : [anchor,target];
 				this.markSelected(start,end);
@@ -178,7 +182,7 @@ export class DatePicker extends Component {
 
 			dl.un('mousemove', onMouseMove);
 			window.removeEventListener('mouseup', onMouseUp);
-			if(start == end) {
+			if(!this.enableRangeSelect || start == end) {
 				this.fire('select', this, new DateTime(start.attr('data-date')));
 			} else {
 				this.fire('select-range', this, new DateTime(start.attr('data-date')), new DateTime(end.attr('data-date')));

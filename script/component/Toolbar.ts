@@ -183,6 +183,9 @@ export class Toolbar extends Component {
 
 	private focusParent() {
 		const child = this.items.get(this.focusedItemIndex) as Button;
+		if(!child) {
+			return false;
+		}
 
 		const parentButton = (child.parent! as Menu).parentButton! as Button;
 		if(!parentButton) {
