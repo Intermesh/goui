@@ -18,15 +18,19 @@ interface MapFieldConfig extends Config<Field> {
 	/**
 	 * Function that returns a new form field for an array item
 	 */
-	buildField: (value: {[key:string]:any}) => Field
+	buildField: FieldBuilder
 
 }
+
+type FieldBuilder = (value?: MapFieldValue) => Field;
+
+type MapFieldValue = Record<string, any>;
 
 export class MapField extends Field {
 
 	rows: MapFieldRow[] = []
 
-	constructor(public buildField: (value: {[key:string]:any}) => Field){
+	constructor(public buildField: FieldBuilder){
 		super('div')
 	}
 
@@ -34,31 +38,28 @@ export class MapField extends Field {
 		// empty
 	}
 
-	set value(v: {[key:string]:any}) {
+	set value(v: MapFieldValue) {
 		super.value = v;
 
 		this.items.clear();
 		if(v) {
 			for(const key in v) {
-				const field = this.buildField(v[key]);
-				field.value = v[key];
-				this.rows.push({key, field, isNew: false});
-				this.items.add(field);
+				this.add(v[key], key);
 			}
 		}
 	}
 
-	get value(): {[key:string]:any} {
-		const v: {[key:string]:any} = {};
+	get value(): MapFieldValue {
+		const v: MapFieldValue = {};
 		this.rows.forEach(row => {
 			v[row.key] = row.field.value;
 		})
 		return v;
 	}
 
-	add(data: any) {
+	public add(data: MapFieldValue, key?:string|undefined) {
 		const row = {
-			key: this.nextKey()+"",
+			key: key === undefined ? this.nextKey() : key,
 			field: this.buildField(data),
 			isNew: true
 		};
@@ -71,10 +72,12 @@ export class MapField extends Field {
 		this.items.add(row.field);
 	}
 
-	nextKey() {
+	private _nextKey = 1;
+
+	protected nextKey() {
 		// only works if sorted by key
 		// todo: maybe use GUID for item with sortOrder?
-		return this.rows.length ? (+this.rows[this.rows.length-1].key)+1 : 1;
+		return "_new_" + this._nextKey++;
 	}
 
 	reset() {

@@ -6,6 +6,7 @@
 import {Field} from "./Field.js";
 import {ContainerField} from "./ContainerField.js";
 import {Config, createComponent} from "../Component.js";
+import {btn} from "../Button";
 
 
 /**
@@ -15,11 +16,11 @@ type ArrayFieldConfig = {
 	/**
 	 * Function that returns a new form field for an array item
 	 */
-	itemComponent: ItemComponent
+	buildField: FieldBuilder
 
 } & Config<ArrayField>
 
-type ItemComponent = (value?: Record<string, any>) => Field;
+type FieldBuilder = (value?: Record<string, any>) => Field;
 type ArrayFieldValue = Record<string, any>[];
 
 export interface ArrayField {
@@ -36,13 +37,11 @@ export interface ArrayField {
  */
 export class ArrayField extends ContainerField {
 
-
-
 	/**
 	 *
-	 * @param itemComponent Function that returns a new form field for an array item
+	 * @param buildField Function that returns a new form field for an array item
 	 */
-	constructor(public itemComponent: ItemComponent) {
+	constructor(public buildField: FieldBuilder) {
 		super("div");
 	}
 
@@ -53,8 +52,19 @@ export class ArrayField extends ContainerField {
 
 		if(v) {
 			v.forEach((item) => {
-				const field = this.itemComponent(item);
+				const field = this.buildField(item);
 				field.value = item;
+				field.items.add(btn({
+						// style: {
+						// 	alignSelf: "center"
+						// },
+						icon: "delete",
+						title: "Delete",
+						handler: (btn) => {
+							btn.parent!.remove();
+						}
+					})
+				);
 				this.items.add(field);
 			});
 		}
@@ -88,4 +98,4 @@ export class ArrayField extends ContainerField {
  * @param config
  * @param items
  */
-export const arrayfield = (config: ArrayFieldConfig, ...items: Field[]) => createComponent(new ArrayField(config.itemComponent), config, items);
+export const arrayfield = (config: ArrayFieldConfig, ...items: Field[]) => createComponent(new ArrayField(config.buildField), config, items);

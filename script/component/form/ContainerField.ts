@@ -72,7 +72,7 @@ export class ContainerField<ValueType extends ContainerFieldValue = ContainerFie
 	 *
 	 * @param nameOrItemId
 	 */
-	public findField(nameOrItemId: string): Field | undefined {
+	public findField<FieldType extends Field = Field>(nameOrItemId: string): FieldType | undefined {
 
 		let field;
 
