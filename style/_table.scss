@@ -41,7 +41,7 @@
 
 		//applies to th, td and col
 		.checkbox-select-column {
-			width: dp(48);
+			width: dp(64);
 		}
 
 		border-collapse: collapse;
@@ -137,7 +137,7 @@
 			overflow: hidden;
 			text-overflow: ellipsis;
 			padding: dp(8);
-			//position: relative;
+			position: relative;
 
 			&:first-child {
 				padding-left: dp(16);
@@ -167,6 +167,18 @@
 
 				.hint, .label {
 					display: none;
+				}
+			}
+
+			.goui-button {
+				position: absolute;
+				top: dp(4);
+
+				padding: dp(3) dp(18);
+
+				&.with-icon:not(.with-text) {
+					//icon only
+					padding: dp(3);
 				}
 			}
 		}

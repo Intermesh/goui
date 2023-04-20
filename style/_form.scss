@@ -32,6 +32,7 @@ $formFieldBorderRadius: dp(10);
 	}
 
 	&.box input {
+		margin: 0;
 		min-width: $baseLineHeight;
 		min-height: $baseLineHeight;
 		width: $baseLineHeight;
