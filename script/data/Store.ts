@@ -29,14 +29,14 @@ export type StoreRecord = Record<string, any>
 /**
  * @inheritDoc
  */
-export interface StoreEventMap<T extends Observable, RecordType extends StoreRecord> extends CollectionEventMap<T, RecordType> {
+export interface StoreEventMap<Type, RecordType> extends CollectionEventMap<Type, RecordType> {
 	/**
 	 * Fires when data is loaded into the store
 	 *
 	 * @param store
 	 * @param append Whether the records were added to the store.
 	 */
-	beforeload: <Sender extends T>(store: Sender,  append: boolean) => void
+	beforeload: <Sender extends Type>(store: Sender, append: boolean) => void
 	/**
 	 * Fires when data is loaded into the store
 	 *
@@ -44,21 +44,22 @@ export interface StoreEventMap<T extends Observable, RecordType extends StoreRec
 	 * @param records
 	 * @param append Whether the records were added to the store.
 	 */
-	load: <Sender extends T, SenderRecordType extends RecordType>(store: Sender, records: SenderRecordType[], append: boolean) => void
+	load: <Sender extends Type, SenderRecordType extends RecordType>(store: Sender, records: SenderRecordType[], append: boolean) => void
 }
 
 export interface Store<RecordType extends StoreRecord = StoreRecord> {
 	on<K extends keyof StoreEventMap<this, RecordType>>(eventName: K, listener: Partial<StoreEventMap<this, RecordType>>[K], options?: ObservableListenerOpts): void
 
-	fire<K extends keyof StoreEventMap<this, RecordType>>(eventName: K, ...args: Parameters<StoreEventMap<this, RecordType>[K]>): boolean
+	fire<K extends keyof StoreEventMap<this, RecordType>>(eventName: K, ...args: Parameters<NonNullable<StoreEventMap<this, RecordType>[K]>>): boolean
 
 	set listeners(listeners: ObservableListener<StoreEventMap<this, RecordType>>)
 }
 
+export type storeRecordType<StoreType> = StoreType extends Store<infer RecordType> ? RecordType : never;
 /**
  * Generic data store used by components
  */
-export class Store<RecordType extends StoreRecord> extends Collection<RecordType> {
+export class Store<RecordType  extends StoreRecord = StoreRecord> extends Collection<RecordType> {
 
 	// private static stores: Record<string, Store> = {};
 	//
@@ -158,4 +159,4 @@ export class Store<RecordType extends StoreRecord> extends Collection<RecordType
  *
  * @param config
  */
-export const store = <RecordType extends StoreRecord>(config?: Config<Store>) => createComponent(new Store<RecordType>(), config);
+export const store = <RecordType extends StoreRecord = StoreRecord>(config?: Config<Store>) => createComponent(new Store<RecordType>(), config);

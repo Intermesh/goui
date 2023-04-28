@@ -12,20 +12,20 @@ import {ComponentEventMap, Config, createComponent} from "../Component.js";
 /**
  * @inheritDoc
  */
-export interface ColorMenuEventMap<T extends Observable> extends ComponentEventMap<T> {
+export interface ColorMenuEventMap<Type> extends ComponentEventMap<Type> {
 	/**
 	 * Fires when color is selected
 	 *
 	 * @param menu
 	 * @param color Hexadecimal color. eg. "000000"
 	 */
-	select: (menu: T, color: string) => void
+	select: (menu: Type, color: string) => void
 }
 
 export interface ColorMenu {
 	on<K extends keyof ColorMenuEventMap<ColorMenu>>(eventName: K, listener: Partial<ColorMenuEventMap<ColorMenu>>[K], options?: ObservableListenerOpts): void
 
-	fire<K extends keyof ColorMenuEventMap<ColorMenu>>(eventName: K, ...args: Parameters<ColorMenuEventMap<ColorMenu>[K]>): boolean
+	fire<K extends keyof ColorMenuEventMap<ColorMenu>>(eventName: K, ...args: Parameters<NonNullable<ColorMenuEventMap<ColorMenu>[K]>>): boolean
 
 	set listeners(listeners: ObservableListener<ColorMenuEventMap<this>>)
 }

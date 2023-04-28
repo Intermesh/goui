@@ -4,14 +4,13 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {Store, StoreRecord} from "../../data/Store.js";
 import {Observable} from "../Observable.js";
 import {Table} from "./Table.js";
 import {Component, Config, createComponent} from "../Component.js";
 import {Format} from "../../util/Format.js";
 import {checkbox} from "../form/CheckboxField.js";
 
-type TableColumnRenderer = (columnValue: any, record: StoreRecord, td: HTMLTableCellElement, table: Table, storeIndex: number) => string | Promise<string> | Component | Promise<Component>;
+type TableColumnRenderer = (columnValue: any, record: any, td: HTMLTableCellElement, table: Table, storeIndex: number) => string | Promise<string> | Component | Promise<Component>;
 type HeaderRenderer = (col:TableColumn, headerEl: HTMLTableCellElement, table: Table) => string | Component;
 
 export type align = "left" | "right" | "center";

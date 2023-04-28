@@ -105,7 +105,7 @@ export interface ComponentEventMap<Type> extends ObservableEventMap<Type> {
 export interface Component {
 	on<K extends keyof ComponentEventMap<this>>(eventName: K, listener: Partial<ComponentEventMap<this>>[K], options?: ObservableListenerOpts): void
 
-	fire<K extends keyof ComponentEventMap<this>>(eventName: K, ...args: Parameters<ComponentEventMap<this>[K]>): boolean
+	fire<K extends keyof ComponentEventMap<this>>(eventName: K, ...args: Parameters<NonNullable<ComponentEventMap<this>[K]>>): boolean
 
 	set listeners(listeners: ObservableListener<ComponentEventMap<this>>)
 }
@@ -889,7 +889,13 @@ export class Mask extends Component {
 /**
  * Generic Config option that allows all public properties as options
  */
-export type Config<Cmp> = Partial<Pick<Cmp, { [K in keyof Cmp]: Cmp[K] extends Function ? never : K }[keyof Cmp]>>;
+export type Config<Cmp> = Partial<
+	Pick<Cmp,
+		{
+			[K in keyof Cmp]: Cmp[K] extends Function ? never : K
+		}[keyof Cmp]
+	>
+>;
 
 /**
  * Shorthand function to create a {@see Mask} component
@@ -912,7 +918,7 @@ export const h4 = (config?: Config<Component>|string, ...items: Component[]) => 
 export const code = (config?: Config<Component>|string, ...items: Component[]) => createComponent(new Component("code"), typeof config == 'string' ? {html: config} : config, items);
 export const section = (config?: Config<Component>|string, ...items: Component[]) => createComponent(new Component("section"), typeof config == 'string' ? {html: config} : config, items);
 export const hr = (config?: Config<Component>) => createComponent(new Component("hr"),  config);
-export const createComponent = <T>(comp: T, config:any, items?:Component[]) : T => {
+export const createComponent = <T extends Observable>(comp: T, config:any, items?:Component[]) : T => {
 
 	if (config) {
 		Object.assign(comp as any, config);

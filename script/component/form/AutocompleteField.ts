@@ -5,8 +5,8 @@
  */
 
 import {TextField} from "./TextField.js";
-import {Observable, ObservableListener, ObservableListenerOpts} from "../Observable.js";
-import {StoreRecord} from "../../data/Store.js";
+import {ObservableListener, ObservableListenerOpts} from "../Observable.js";
+
 import {Table} from "../table/Table.js";
 import {root} from "../Root.js";
 import {FunctionUtil} from "../../util/FunctionUtil.js";
@@ -14,19 +14,19 @@ import {FieldEventMap} from "./Field.js";
 import {btn} from "../Button.js";
 import {Config, createComponent} from "../Component.js";
 
-export interface AutocompleteEventMap<T extends Observable> extends FieldEventMap<T> {
+export interface AutocompleteEventMap<Type> extends FieldEventMap<Type> {
 	/**
 	 * Fires when suggestions need to load
 	 *
 	 * @param form
 	 */
-	autocomplete: <Sender extends T>(field: Sender, input: string) => any
+	autocomplete: <Sender extends Type>(field: Sender, input: string) => any
 }
 
 export interface AutocompleteField<TableType extends Table = Table> {
 	on<K extends keyof AutocompleteEventMap<this>>(eventName: K, listener: Partial<AutocompleteEventMap<this>>[K], options?: ObservableListenerOpts): void
 
-	fire<K extends keyof AutocompleteEventMap<this>>(eventName: K, ...args: Parameters<AutocompleteEventMap<this>[K]>): boolean
+	fire<K extends keyof AutocompleteEventMap<this>>(eventName: K, ...args: Parameters<NonNullable<AutocompleteEventMap<this>[K]>>): boolean
 
 	set listeners(listeners: ObservableListener<AutocompleteEventMap<this>>)
 
@@ -129,7 +129,7 @@ export class AutocompleteField<TableType extends Table = Table> extends TextFiel
 		return this._value;
 	}
 
-	private findDisplayValue(v: StoreRecord | string | undefined) {
+	private findDisplayValue(v:any | string | undefined) {
 		if(!v) {
 			return "";
 		}
@@ -139,7 +139,7 @@ export class AutocompleteField<TableType extends Table = Table> extends TextFiel
 			return record ? record[this.displayProperty] : v;
 		} else
 		{
-			return (v as StoreRecord)[this.displayProperty];
+			return v[this.displayProperty];
 		}
 	}
 
@@ -257,7 +257,7 @@ export class AutocompleteField<TableType extends Table = Table> extends TextFiel
 		})
 	}
 
-	private setRecordAsValue(r:StoreRecord) {
+	private setRecordAsValue(r:any) {
 		this.value = this.valueProperty ? r[this.valueProperty] : r;
 		this.fireChange(true);
 	}

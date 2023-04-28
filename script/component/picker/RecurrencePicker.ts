@@ -23,14 +23,14 @@ import {CardContainer, CardContainerEventMap} from "../CardContainer.js";
 import {Menu} from "../menu/Menu.js";
 import {checkboxgroup} from "../form/index.js";
 
-export interface RecurrencePickerEventMap<Sender extends Observable> extends CardContainerEventMap<Sender> {
+export interface RecurrencePickerEventMap<Type> extends CardContainerEventMap<Type> {
 
-	'select': <T extends Sender>(picker: T, rule: RecurrenceRule | null) => false | void
+	select: <Sender extends Type>(picker: Sender, rule: RecurrenceRule | null) => false | void
 }
 
 export interface RecurrencePicker {
 	on<K extends keyof RecurrencePickerEventMap<this>>(eventName: K, listener: Partial<RecurrencePickerEventMap<this>>[K], options?: ObservableListenerOpts): void;
-	fire<K extends keyof RecurrencePickerEventMap<this>>(eventName: K, ...args: Parameters<RecurrencePickerEventMap<this>[K]>): boolean;
+	fire<K extends keyof RecurrencePickerEventMap<this>>(eventName: K, ...args: Parameters<NonNullable<RecurrencePickerEventMap<this>[K]>>): boolean;
 	set listeners(listeners: ObservableListener<RecurrencePickerEventMap<this>>)
 }
 

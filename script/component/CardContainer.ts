@@ -8,7 +8,7 @@ import {Component, ComponentEventMap, Config, createComponent} from "./Component
 import {Observable, ObservableListener, ObservableListenerOpts} from "./Observable.js";
 
 
-export interface CardContainerEventMap<Sender extends Observable> extends ComponentEventMap<Sender> {
+export interface CardContainerEventMap<Type> extends ComponentEventMap<Type> {
 	/**
 	 * Fires before adding an item. Return false to abort.
 	 *
@@ -16,14 +16,14 @@ export interface CardContainerEventMap<Sender extends Observable> extends Compon
 	 * @param item
 	 * @param index
 	 */
-	cardchange: <T extends Sender> (container: T, index: number | undefined, oldIndex: number | undefined) => false | void
+	cardchange: <Sender extends Type> (container: Sender, index: number | undefined, oldIndex: number | undefined) => false | void
 
 }
 
 export interface CardContainer {
 	on<K extends keyof CardContainerEventMap<this>>(eventName: K, listener: Partial<CardContainerEventMap<this>>[K], options?: ObservableListenerOpts): void;
 
-	fire<K extends keyof CardContainerEventMap<this>>(eventName: K, ...args: Parameters<CardContainerEventMap<this>[K]>): boolean;
+	fire<K extends keyof CardContainerEventMap<this>>(eventName: K, ...args: Parameters<NonNullable<CardContainerEventMap<this>[K]>>): boolean;
 
 	set listeners(listeners: ObservableListener<CardContainerEventMap<this>>)
 }

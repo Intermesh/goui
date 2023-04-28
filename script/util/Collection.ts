@@ -9,40 +9,40 @@ import {Observable, ObservableEventMap, ObservableListener, ObservableListenerOp
 /**
  * @inheritDoc
  */
-export interface CollectionEventMap<T extends Observable, CollectionItem> extends ObservableEventMap<T> {
+export interface CollectionEventMap<Type, CollectionItem> extends ObservableEventMap<Type> {
 
 	/**
 	 * Fires before adding an item. Return false to abort.
 	 *
 	 * @param window
 	 */
-	beforeadd: <Sender extends T, SenderCollectionItem extends CollectionItem> (collection: Sender, item: SenderCollectionItem, index:number) => void|false
+	beforeadd: <Sender extends Type, SenderCollectionItem extends CollectionItem> (collection: Sender, item: SenderCollectionItem, index:number) => void|false
 
 	/**
 	 * Fires after adding an item.
 	 *
 	 * @param window
 	 */
-	add: <Sender extends T, SenderCollectionItem extends CollectionItem> (collection: Sender, item:SenderCollectionItem, index:number) => void
+	add: <Sender extends Type, SenderCollectionItem extends CollectionItem> (collection: Sender, item:SenderCollectionItem, index:number) => void
 
 	/**
 	 * Fires after removing an item.
 	 *
 	 * @param window
 	 */
-	remove: <Sender extends T, SenderCollectionItem extends CollectionItem> (collection: Sender, item: SenderCollectionItem, index:number) => void
+	remove: <Sender extends Type, SenderCollectionItem extends CollectionItem> (collection: Sender, item: SenderCollectionItem, index:number) => void
 
 	/**
 	 * Fires before removing an item. Return false to abort.
 	 *
 	 * @param window
 	 */
-	beforeremove: <Sender extends T, SenderCollectionItem extends CollectionItem> (collection: Sender, item: SenderCollectionItem, index:number) => void|false
+	beforeremove: <Sender extends Type, SenderCollectionItem extends CollectionItem> (collection: Sender, item: SenderCollectionItem, index:number) => void|false
 }
 
 export interface Collection<CollectionItem> {
 	on<K extends keyof CollectionEventMap<this, CollectionItem>>(eventName: K, listener: CollectionEventMap<this, CollectionItem>[K], options?: ObservableListenerOpts): void;
-	fire<K extends keyof CollectionEventMap<this, CollectionItem>>(eventName: K, ...args: Parameters<NonNullable<CollectionEventMap<this, CollectionItem>[K]>>): boolean
+	fire<K extends keyof CollectionEventMap<this, CollectionItem>>(eventName: K, ...args: Parameters<NonNullable<NonNullable<CollectionEventMap<this, CollectionItem>[K]>>>): boolean
 	set listeners(listeners: ObservableListener<CollectionEventMap<this, CollectionItem>>)
 }
 

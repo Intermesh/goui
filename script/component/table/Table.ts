@@ -5,24 +5,24 @@
  */
 
 import {comp, Component, ComponentState, Config, createComponent} from "../Component.js";
-import {Store, StoreRecord} from "../../data/Store.js";
+import {Store, storeRecordType} from "../../data/Store.js";
 import {ObjectUtil} from "../../util/ObjectUtil.js";
 import {menu, Menu} from "../menu/Menu.js";
 import {checkbox} from "../form/CheckboxField.js";
 import {Notifier} from "../../Notifier.js";
 import {draggable} from "../DraggableComponent.js";
-import {TableColumn } from "./TableColumns.js";
-import {List, ListConfig, ListEventMap} from "../List.js";
+import {TableColumn} from "./TableColumns.js";
+import {List, ListEventMap} from "../List.js";
 import {ObservableListener, ObservableListenerOpts} from "../Observable";
 
 
-type GroupByRenderer = (groupBy:any, record: StoreRecord, thEl: HTMLTableCellElement, table: Table) => string | Promise<string> | Component | Promise<Component>;
+type GroupByRenderer = (groupBy:any, record: any, thEl: HTMLTableCellElement, table: Table) => string | Promise<string> | Component | Promise<Component>;
 
 
 export interface Table<StoreType extends Store = Store> {
-	on<K extends keyof ListEventMap<this, StoreType>>(eventName: K, listener: Partial<ListEventMap<this, StoreType>>[K], options?: ObservableListenerOpts): void;
+	on<K extends keyof ListEventMap<this>>(eventName: K, listener: Partial<ListEventMap<this>>[K], options?: ObservableListenerOpts): void;
 
-	fire<K extends keyof ListEventMap<this, StoreType>>(eventName: K, ...args: Parameters<ListEventMap<this, StoreType>[K]>): boolean
+	fire<K extends keyof ListEventMap<this>>(eventName: K, ...args: Parameters<NonNullable<ListEventMap<this>[K]>>): boolean
 
 }
 
@@ -499,7 +499,7 @@ export class Table<StoreType extends Store = Store> extends List {
 	private lastGroup?:string;
 	private groupEl?: HTMLTableSectionElement;
 
-	protected renderGroup(record:StoreRecord): HTMLElement {
+	protected renderGroup(record:any): HTMLElement {
 		if(!this.groupBy) {
 			if (!this.groupEl) {
 				this.groupEl = document.createElement('tbody');
@@ -566,7 +566,7 @@ type TableConfig<StoreType extends Store = Store> = Omit<Config<Table>, "rowSele
 	 */
 	columns: TableColumn[],
 
-	listeners?: ObservableListener<ListEventMap<Table<StoreType>, StoreType>>
+	listeners?: ObservableListener<ListEventMap<Table<StoreType>>>
 }
 
 /**
@@ -574,4 +574,4 @@ type TableConfig<StoreType extends Store = Store> = Omit<Config<Table>, "rowSele
  *
  * @param config
  */
-export const table = <StoreType extends Store = Store>(config: TableConfig<StoreType>) => createComponent(new Table<StoreType>(config.store, config.columns), config);
+export const table = <StoreType extends Store = Store>(config: TableConfig<StoreType>) => createComponent(new Table<StoreType>(config.store, config.columns), config) ;

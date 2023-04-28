@@ -5,26 +5,21 @@
  */
 
 import {Component, ComponentEventMap, Config, createComponent} from "./Component.js";
-import {Store, StoreRecord} from "../data/Store.js";
+import {Store, storeRecordType} from "../data/Store.js";
 import {t} from "../Translate.js";
 import {E} from "../util/Element.js";
 import {rowselect, RowSelect, RowSelectConfig} from "./table/RowSelect.js";
-import {Observable, ObservableListener, ObservableListenerOpts} from "./Observable.js";
+import {ObservableListener, ObservableListenerOpts} from "./Observable.js";
 
-// type extractRecordType<ListType> =
-// 	ListType extends List<infer StoreType> ?
-// 		(StoreType extends Store<infer RecordType> ?
-// 			RecordType : StoreRecord ): StoreRecord;
+export type RowRenderer = (record: any, row: HTMLElement, list: any, storeIndex: number) => string | Component[] | void;
 
 type extractStoreType<ListType> = ListType extends List<infer StoreType> ? StoreType : never;
 type extractRecordType<StoreType> = StoreType extends Store<infer RecordType> ? RecordType : never;
 
-
-export type RowRenderer = (record: any, row: HTMLElement, me: any, storeIndex: number) => string | Component[] | void
 /**
  * @inheritDoc
  */
-export interface ListEventMap<Type extends List, StoreType extends Store = Store> extends ComponentEventMap<Type> {
+export interface ListEventMap<Type> extends ComponentEventMap<Type> {
 	/**
 	 * Fires when the user scrolled to the bottom
 	 *
@@ -72,23 +67,23 @@ export interface ListEventMap<Type extends List, StoreType extends Store = Store
 	 * @param list
 	 * @param records
 	 */
-	renderrows: <Sender extends Type> (list: Sender, records: extractRecordType<StoreType>[]) => void;
+	renderrows: <Sender extends Type> (list: Sender, records: any[]) => void;
 
 	/**
 	 * Fires when a row is clicked or navigated with arrows
 	 *
 	 * @param list
 	 * @param storeIndex
-	 * @param ev
+	 * @param record
 	 */
-	navigate: <Sender extends Type> (list: Sender, storeIndex: number, record: extractRecordType<StoreType>) => void
+	navigate: <Sender extends Type> (list: Sender, storeIndex: number, record: extractStoreType<Sender>) => void
 
 }
 
 export interface List<StoreType extends Store = Store> {
-	on<K extends keyof ListEventMap<this, StoreType>>(eventName: K, listener: Partial<ListEventMap<this, StoreType>>[K], options?: ObservableListenerOpts): void;
+	on<K extends keyof ListEventMap<this>>(eventName: K, listener: Partial<ListEventMap<this>>[K], options?: ObservableListenerOpts): void;
 
-	fire<K extends keyof ListEventMap<this, StoreType>>(eventName: K, ...args: Parameters<ListEventMap<this, StoreType>[K]>): boolean
+	fire<K extends keyof ListEventMap<this>>(eventName: K, ...args: Parameters<NonNullable<ListEventMap<this>[K]>>): boolean
 
 }
 
@@ -253,7 +248,7 @@ export class List<StoreType extends Store = Store> extends Component {
 		}
 	}
 
-	protected renderRows(records: StoreRecord[]) {
+	protected renderRows(records: any[]) {
 
 		records.forEach((record, index) => {
 			const container = this.renderGroup(record),
@@ -264,10 +259,10 @@ export class List<StoreType extends Store = Store> extends Component {
 			container.append(row);
 		});
 
-		this.fire("renderrows", this, <never[]>records);
+		this.fire("renderrows", this, records);
 	}
 
-	protected renderGroup(record: StoreRecord): HTMLElement {
+	protected renderGroup(record: any): HTMLElement {
 		return this.el;
 	}
 
@@ -299,7 +294,7 @@ export class List<StoreType extends Store = Store> extends Component {
 		}
 	}
 
-	private onMouseEvent(e: MouseEvent & {target: HTMLElement}, type: keyof ListEventMap<List>) {
+	private onMouseEvent(e: MouseEvent & {target: HTMLElement}, type: any) {
 		const row = this.findRowByEvent(e),
 			index = row ? parseInt(row.dataset.storeIndex!) : -1;
 
@@ -319,14 +314,14 @@ export type ListConfig<StoreType extends Store> = Omit<Config<List>, "rowSelecti
 	/**
 	 * Store that provides the data
 	 */
-	store: Store,
+	store: StoreType,
 
 	/**
 	 * The list item render function
 	 */
 	renderer: RowRenderer,
 
-	listeners?: ObservableListener<ListEventMap<List<StoreType>, StoreType>>
+	listeners?: ObservableListener<ListEventMap<List<StoreType>>>
 }
 
 /**
@@ -334,5 +329,4 @@ export type ListConfig<StoreType extends Store> = Omit<Config<List>, "rowSelecti
  *
  * @param config
  */
-export const list = <StoreType extends Store = Store>(config: ListConfig<StoreType>
-) => createComponent(new List(config.store, config.renderer), config);
+export const list = <StoreType extends Store>(config: ListConfig<StoreType>) : List<StoreType> => createComponent(new List(config.store, config.renderer), config);

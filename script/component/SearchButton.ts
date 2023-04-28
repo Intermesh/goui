@@ -16,7 +16,7 @@ import {Observable, ObservableListener, ObservableListenerOpts} from "./Observab
 /**
  * @inheritDoc
  */
-export interface SearchButtonEventMap<Type extends Observable> extends ButtonEventMap<Type> {
+export interface SearchButtonEventMap<Type> extends ButtonEventMap<Type> {
 
 	input: <Sender extends Type>(searchBtn: Sender, text: string) => void
 
@@ -26,7 +26,7 @@ export interface SearchButtonEventMap<Type extends Observable> extends ButtonEve
 export interface SearchButton {
 	on<K extends keyof SearchButtonEventMap<this>>(eventName: K, listener: Partial<SearchButtonEventMap<this>>[K], options?: ObservableListenerOpts): void;
 
-	fire<K extends keyof SearchButtonEventMap<this>>(eventName: K, ...args: Parameters<SearchButtonEventMap<this>[K]>): boolean
+	fire<K extends keyof SearchButtonEventMap<this>>(eventName: K, ...args: Parameters<NonNullable<SearchButtonEventMap<this>[K]>>): boolean
 
 	set listeners(listeners: ObservableListener<SearchButtonEventMap<this>>)
 }
@@ -64,13 +64,14 @@ export class SearchButton extends Button {
 		})
 
 
-		this.handler = (button, ev) => {
+	}
 
-			this.mainTbar = button.parent as Toolbar;
-			this.getSearchTBar().show();
+	public handler = (button:Button, ev?:MouseEvent) => {
 
-			this.searchField.focus();
-		}
+		this.mainTbar = button.parent as Toolbar;
+		this.getSearchTBar().show();
+
+		this.searchField.focus();
 	}
 
 	public reset() {

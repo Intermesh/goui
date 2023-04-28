@@ -13,7 +13,7 @@ import {t} from "../../Translate.js";
 import {AbstractDataSource, BaseEntity, DefaultEntity, EntityID} from "../../data/index.js";
 
 
-export interface FormEventMap<Sender extends Observable> extends FieldEventMap<Sender> {
+export interface FormEventMap<Type> extends FieldEventMap<Type> {
 	/**
 	 * Fires when the form is submitted. The event is fired after calling the handler.
 	 *
@@ -21,36 +21,36 @@ export interface FormEventMap<Sender extends Observable> extends FieldEventMap<S
 	 *
 	 * @param form
 	 */
-	submit: <T extends Sender>(form: T, handlerResponse: any) => any,
+	submit: <Sender extends Type>(form: Sender, handlerResponse: any) => any,
 
 	/**
 	 * Not fired by the framework. But comes in handy when you extend this form and add a cancel button
 	 *
 	 * @param form
 	 */
-	cancel: <T extends Sender>(form: T) => any
+	cancel: <Sender extends Type>(form: Sender) => any
 
-	saved: <T extends Sender>(form:T, response:any) => any
+	saved: <Sender extends Type>(form:Sender, response:any) => any
 
 	/**
 	 * When the data is fetched from the store. but before it is put into the fields
 	 * @param form
 	 * @param data the entity from the store
 	 */
-	load: <T extends Sender>(form: T, data: any) => any,
+	load: <Sender extends Type>(form: Sender, data: any) => any,
 
 	/**
 	 * When the data in the fields is serialized to a single json object to be posted to the server.
 	 * @param form
 	 * @param data
 	 */
-	serialize: <T extends Sender>(form: T, data: any) => void,
+	serialize: <Sender extends Type>(form: Sender, data: any) => void,
 }
 
 export interface Form {
 	on<K extends keyof FormEventMap<this>>(eventName: K, listener: Partial<FormEventMap<this>>[K], options?: ObservableListenerOpts): void
 
-	fire<K extends keyof FormEventMap<this>>(eventName: K, ...args: Parameters<FormEventMap<this>[K]>): boolean
+	fire<K extends keyof FormEventMap<this>>(eventName: K, ...args: Parameters<NonNullable<FormEventMap<this>[K]>>): boolean
 
 	set listeners(listeners: ObservableListener<FormEventMap<this>>)
 

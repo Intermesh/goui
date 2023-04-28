@@ -61,6 +61,7 @@ export class Tree<StoreType extends Store> extends List {
 
 
         const sub = new Tree<StoreType>(this.storeBuilder, this.renderer, record);
+        sub.labelProperty = this.labelProperty;
         sub.render(row);
 
     }

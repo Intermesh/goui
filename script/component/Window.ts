@@ -20,7 +20,7 @@ import {t} from "../Translate.js";
 /**
  * @inheritDoc
  */
-export interface WindowEventMap<Type extends Observable> extends DraggableComponentEventMap<Type> {
+export interface WindowEventMap<Type> extends DraggableComponentEventMap<Type> {
 	/**
 	 * Fires when the window is closed
 	 *
@@ -40,13 +40,13 @@ export interface WindowEventMap<Type extends Observable> extends DraggableCompon
 	 *
 	 * @param window
 	 */
-	unmaximize:<Sender extends Type> (window: Sender) => void
+	unmaximize: <Sender extends Type> (window: Sender) => void
 }
 
 export interface Window {
 	on<K extends keyof WindowEventMap<this>>(eventName: K, listener: Partial<WindowEventMap<this>>[K], options?: ObservableListenerOpts): void;
 
-	fire<K extends keyof WindowEventMap<this>>(eventName: K, ...args: Parameters<WindowEventMap<this>[K]>): boolean
+	fire<K extends keyof WindowEventMap<this>>(eventName: K, ...args: Parameters<NonNullable<WindowEventMap<this>[K]>>): boolean
 
 	set listeners(listeners: ObservableListener<WindowEventMap<this>>)
 }

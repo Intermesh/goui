@@ -22,7 +22,7 @@ import {MaterialIcon} from "../MaterialIcon.js";
 /**
  * @inheritDoc
  */
-export interface HtmlFieldEventMap<Sender extends Observable> extends FieldEventMap<Sender> {
+export interface HtmlFieldEventMap<Type> extends FieldEventMap<Type> {
 	/**
 	 * Fires before adding an item. Return false to abort.
 	 *
@@ -30,7 +30,7 @@ export interface HtmlFieldEventMap<Sender extends Observable> extends FieldEvent
 	 * @param item
 	 * @param index
 	 */
-	updatetoolbar: <T extends Sender>(htmlfield: T) => void
+	updatetoolbar: <Sender extends Type>(htmlfield: Sender) => void
 
 	/**
 	 * Fires when an image is selected, pasted or dropped into the field
@@ -39,7 +39,7 @@ export interface HtmlFieldEventMap<Sender extends Observable> extends FieldEvent
 	 * @param file
 	 * @param img The img element in the editor
 	 */
-	insertimage: <T extends Sender> (htmlfield: T, file: File, img: HTMLImageElement) => void
+	insertimage: <Sender extends Type> (htmlfield: Sender, file: File, img: HTMLImageElement) => void
 
 	/**
 	 * Fires when a non image is pasted or dropped into the field
@@ -48,14 +48,14 @@ export interface HtmlFieldEventMap<Sender extends Observable> extends FieldEvent
 	 * @param file
 	 * @param img
 	 */
-	attach: <T extends Sender> (htmlfield: T, file: File) => void
+	attach: <Sender extends Type> (htmlfield: Sender, file: File) => void
 }
 
 
 export interface HtmlField extends Field {
 	on<K extends keyof HtmlFieldEventMap<HtmlField>>(eventName: K, listener: Partial<HtmlFieldEventMap<HtmlField>>[K], options?: ObservableListenerOpts): void
 
-	fire<K extends keyof HtmlFieldEventMap<HtmlField>>(eventName: K, ...args: Parameters<HtmlFieldEventMap<HtmlField>[K]>): boolean
+	fire<K extends keyof HtmlFieldEventMap<HtmlField>>(eventName: K, ...args: Parameters<NonNullable<HtmlFieldEventMap<HtmlField>[K]>>): boolean
 
 	set listeners(listeners: ObservableListener<HtmlFieldEventMap<this>>)
 }

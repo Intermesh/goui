@@ -3,7 +3,7 @@
  * @copyright Copyright 2023 Intermesh BV
  * @author Merijn Schering <mschering@intermesh.nl>
  */
-import {Store, StoreRecord} from "../data/Store.js";
+import {Store} from "../data/Store.js";
 import {AbstractDataSource, BaseEntity, DefaultEntity, QueryParams} from "./AbstractDataSource.js";
 import {ObjectUtil} from "../util/index.js";
 import {Config, createComponent, Table, TableColumn} from "../component/index.js";

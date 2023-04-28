@@ -15,13 +15,13 @@ import {E} from "../../util/Element.js";
 /**
  * @inheritDoc
  */
-export interface FieldEventMap<T extends Observable> extends ComponentEventMap<T> {
+export interface FieldEventMap<Type> extends ComponentEventMap<Type> {
 	/**
 	 * Fires when the field changes. It fires on blur.
 	 *
 	 * @param field
 	 */
-	change: <Sender extends T> (field: Sender, newValue: any, oldValue: any) => void
+	change: <Sender extends Type> (field: Sender, newValue: any, oldValue: any) => void
 
 	/**
 	 * Fires when setValue() is called
@@ -30,7 +30,7 @@ export interface FieldEventMap<T extends Observable> extends ComponentEventMap<T
 	 * @param newValue
 	 * @param oldValue
 	 */
-	setvalue: <Sender extends T> (field: Sender, newValue: any, oldValue: any) => void
+	setvalue: <Sender extends Type> (field: Sender, newValue: any, oldValue: any) => void
 
 
 	/**
@@ -40,7 +40,7 @@ export interface FieldEventMap<T extends Observable> extends ComponentEventMap<T
 	 * @param newValue
 	 * @param oldValue
 	 */
-	reset: <Sender extends T> (field: Sender, newValue: any, oldValue: any) => void
+	reset: <Sender extends Type> (field: Sender, newValue: any, oldValue: any) => void
 
 	/**
 	 * Fires when validated
@@ -49,14 +49,14 @@ export interface FieldEventMap<T extends Observable> extends ComponentEventMap<T
 	 *
 	 * @param field
 	 */
-	validate: <Sender extends T> (field: Sender) => void
+	validate: <Sender extends Type> (field: Sender) => void
 }
 
 
 export interface Field extends Component {
 	on<K extends keyof FieldEventMap<this>>(eventName: K, listener: Partial<FieldEventMap<this>>[K], options?: ObservableListenerOpts): void;
 
-	fire<K extends keyof FieldEventMap<this>>(eventName: K, ...args: Parameters<FieldEventMap<this>[K]>): boolean
+	fire<K extends keyof FieldEventMap<this>>(eventName: K, ...args: Parameters<NonNullable<FieldEventMap<this>[K]>>): boolean
 
 	set listeners(listeners: ObservableListener<FieldEventMap<this>>)
 }
@@ -76,7 +76,7 @@ export interface Field extends Component {
 // 	isValid():boolean,
 // 	isEmpty():boolean
 // 	on<K extends keyof FieldEventMap<FieldInterface>>(eventName: K, listener: FieldEventMap<FieldInterface>[K], options?: ObservableListenerOpts): void;
-// 	fire<K extends keyof FieldEventMap<FieldInterface>>(eventName: K, ...args: Parameters<NonNullable<FieldEventMap<FieldInterface>[K]>>): boolean
+// 	fire<K extends keyof FieldEventMap<FieldInterface>>(eventName: K, ...args: Parameters<NonNullable<NonNullable<FieldEventMap<FieldInterface>[K]>>>): boolean
 // }
 
 export abstract class Field extends Component {

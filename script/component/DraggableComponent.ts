@@ -67,13 +67,13 @@ interface ConstrainBox {
 /**
  * @inheritDoc
  */
-export interface DraggableComponentEventMap<Sender extends Observable> extends ComponentEventMap<Sender> {
+export interface DraggableComponentEventMap<Type> extends ComponentEventMap<Type> {
 	/**
 	 * Fires when the component is dropped
 	 *
 	 * @param comp
 	 */
-	drop: <T extends Sender>(comp: T, dragData: DragData, e: MouseEvent) => void
+	drop: <Sender extends Type>(comp: Sender, dragData: DragData, e: MouseEvent) => void
 
 	/**
 	 * Fires contanty while the component is being dragged
@@ -81,7 +81,7 @@ export interface DraggableComponentEventMap<Sender extends Observable> extends C
 	 * @param dragData
 	 * @param e
 	 */
-	drag: <T extends Sender>(comp: T, dragData: DragData, e: MouseEvent) => void;
+	drag: <Sender extends Type>(comp: Sender, dragData: DragData, e: MouseEvent) => void;
 
 	/**
 	 * Return false to prevent drag
@@ -89,13 +89,13 @@ export interface DraggableComponentEventMap<Sender extends Observable> extends C
 	 * @param comp
 	 * @param e
 	 */
-	dragstart: <T extends Sender>(comp: T, dragData: DragData, e: MouseEvent) => false | void;
+	dragstart: <Sender extends Type>(comp: Sender, dragData: DragData, e: MouseEvent) => false | void;
 }
 
 
 export interface DraggableComponent {
 	on<K extends keyof DraggableComponentEventMap<this>>(eventName: K, listener: Partial<DraggableComponentEventMap<this>>[K], options?: ObservableListenerOpts): void;
-	fire<K extends keyof DraggableComponentEventMap<this>>(eventName: K, ...args: Parameters<DraggableComponentEventMap<this>[K]>): boolean
+	fire<K extends keyof DraggableComponentEventMap<this>>(eventName: K, ...args: Parameters<NonNullable<DraggableComponentEventMap<this>[K]>>): boolean
 
 	set listeners(listeners: ObservableListener<DraggableComponentEventMap<this>>)
 }

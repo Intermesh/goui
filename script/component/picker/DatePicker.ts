@@ -9,16 +9,16 @@ import {DateTime} from "../../util/DateTime.js";
 import {E} from "../../util/Element.js";
 import {Observable, ObservableListener, ObservableListenerOpts} from "../Observable.js";
 // import {Button} from "../Button";
-export interface DatePickerEventMap<Sender extends Observable> extends ComponentEventMap<Sender> {
+export interface DatePickerEventMap<Type> extends ComponentEventMap<Type> {
 
-	'select': <T extends Sender>(datepicker: T, date: DateTime) => false | void
-	'select-range': <T extends Sender>(datepicker: T, start: DateTime, end: DateTime) => false | void
+	'select': <Sender extends Type>(datepicker: Sender, date: DateTime) => false | void
+	'select-range': <Sender extends Type>(datepicker: Sender, start: DateTime, end: DateTime) => false | void
 }
 
 export interface DatePicker {
 	on<K extends keyof DatePickerEventMap<this>>(eventName: K, listener: Partial<DatePickerEventMap<this>>[K], options?: ObservableListenerOpts): void;
 
-	fire<K extends keyof DatePickerEventMap<this>>(eventName: K, ...args: Parameters<DatePickerEventMap<this>[K]>): boolean;
+	fire<K extends keyof DatePickerEventMap<this>>(eventName: K, ...args: Parameters<NonNullable<DatePickerEventMap<this>[K]>>): boolean;
 
 	set listeners(listeners: ObservableListener<DatePickerEventMap<this>>)
 }

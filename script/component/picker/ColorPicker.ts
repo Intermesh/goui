@@ -11,7 +11,7 @@ import {comp, Component, ComponentEventMap, Config, createComponent} from "../Co
 /**
  * @inheritDoc
  */
-export interface ColorPickerEventMap<Type extends Observable> extends ComponentEventMap<Type> {
+export interface ColorPickerEventMap<Type> extends ComponentEventMap<Type> {
 	/**
 	 * Fires when color is selected
 	 *
@@ -24,7 +24,7 @@ export interface ColorPickerEventMap<Type extends Observable> extends ComponentE
 export interface ColorPicker {
 	on<K extends keyof ColorPickerEventMap<ColorPicker>>(eventName: K, listener: Partial<ColorPickerEventMap<ColorPicker>>[K], options?: ObservableListenerOpts): void
 
-	fire<K extends keyof ColorPickerEventMap<ColorPicker>>(eventName: K, ...args: Parameters<ColorPickerEventMap<ColorPicker>[K]>): boolean
+	fire<K extends keyof ColorPickerEventMap<ColorPicker>>(eventName: K, ...args: Parameters<NonNullable<ColorPickerEventMap<ColorPicker>[K]>>): boolean
 
 	set listeners(listeners: ObservableListener<ColorPickerEventMap<this>>)
 }
