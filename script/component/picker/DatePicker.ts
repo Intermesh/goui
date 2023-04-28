@@ -18,7 +18,7 @@ export interface DatePickerEventMap<Type> extends ComponentEventMap<Type> {
 export interface DatePicker {
 	on<K extends keyof DatePickerEventMap<this>>(eventName: K, listener: Partial<DatePickerEventMap<this>>[K], options?: ObservableListenerOpts): void;
 
-	fire<K extends keyof DatePickerEventMap<this>>(eventName: K, ...args: Parameters<NonNullable<DatePickerEventMap<this>[K]>>): boolean;
+	fire<K extends keyof DatePickerEventMap<this>>(eventName: K, ...args: Parameters<DatePickerEventMap<this>[K]>): boolean;
 
 	set listeners(listeners: ObservableListener<DatePickerEventMap<this>>)
 }

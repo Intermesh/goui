@@ -55,7 +55,7 @@ export interface HtmlFieldEventMap<Type> extends FieldEventMap<Type> {
 export interface HtmlField extends Field {
 	on<K extends keyof HtmlFieldEventMap<HtmlField>>(eventName: K, listener: Partial<HtmlFieldEventMap<HtmlField>>[K], options?: ObservableListenerOpts): void
 
-	fire<K extends keyof HtmlFieldEventMap<HtmlField>>(eventName: K, ...args: Parameters<NonNullable<HtmlFieldEventMap<HtmlField>[K]>>): boolean
+	fire<K extends keyof HtmlFieldEventMap<HtmlField>>(eventName: K, ...args: Parameters<HtmlFieldEventMap<HtmlField>[K]>): boolean
 
 	set listeners(listeners: ObservableListener<HtmlFieldEventMap<this>>)
 }

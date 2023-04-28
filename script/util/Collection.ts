@@ -42,7 +42,7 @@ export interface CollectionEventMap<Type, CollectionItem> extends ObservableEven
 
 export interface Collection<CollectionItem> {
 	on<K extends keyof CollectionEventMap<this, CollectionItem>>(eventName: K, listener: CollectionEventMap<this, CollectionItem>[K], options?: ObservableListenerOpts): void;
-	fire<K extends keyof CollectionEventMap<this, CollectionItem>>(eventName: K, ...args: Parameters<NonNullable<NonNullable<CollectionEventMap<this, CollectionItem>[K]>>>): boolean
+	fire<K extends keyof CollectionEventMap<this, CollectionItem>>(eventName: K, ...args: Parameters<NonNullable<CollectionEventMap<this, CollectionItem>[K]>>): boolean
 	set listeners(listeners: ObservableListener<CollectionEventMap<this, CollectionItem>>)
 }
 

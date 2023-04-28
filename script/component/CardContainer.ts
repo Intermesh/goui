@@ -23,7 +23,7 @@ export interface CardContainerEventMap<Type> extends ComponentEventMap<Type> {
 export interface CardContainer {
 	on<K extends keyof CardContainerEventMap<this>>(eventName: K, listener: Partial<CardContainerEventMap<this>>[K], options?: ObservableListenerOpts): void;
 
-	fire<K extends keyof CardContainerEventMap<this>>(eventName: K, ...args: Parameters<NonNullable<CardContainerEventMap<this>[K]>>): boolean;
+	fire<K extends keyof CardContainerEventMap<this>>(eventName: K, ...args: Parameters<CardContainerEventMap<this>[K]>): boolean;
 
 	set listeners(listeners: ObservableListener<CardContainerEventMap<this>>)
 }

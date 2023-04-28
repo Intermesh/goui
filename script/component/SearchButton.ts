@@ -26,7 +26,7 @@ export interface SearchButtonEventMap<Type> extends ButtonEventMap<Type> {
 export interface SearchButton {
 	on<K extends keyof SearchButtonEventMap<this>>(eventName: K, listener: Partial<SearchButtonEventMap<this>>[K], options?: ObservableListenerOpts): void;
 
-	fire<K extends keyof SearchButtonEventMap<this>>(eventName: K, ...args: Parameters<NonNullable<SearchButtonEventMap<this>[K]>>): boolean
+	fire<K extends keyof SearchButtonEventMap<this>>(eventName: K, ...args: Parameters<SearchButtonEventMap<this>[K]>): boolean
 
 	set listeners(listeners: ObservableListener<SearchButtonEventMap<this>>)
 }

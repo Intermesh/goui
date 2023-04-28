@@ -198,7 +198,7 @@ export class Observable {
 	 * @param eventName
 	 * @param args
 	 */
-	public fire<K extends keyof ObservableEventMap<this>>(eventName: K, ...args: Parameters<NonNullable<ObservableEventMap<this>[K]>>) {
+	public fire<K extends keyof ObservableEventMap<this>>(eventName: K, ...args: Parameters<ObservableEventMap<this>[K]>) {
 		if (!this.lisnrs || !this.lisnrs[eventName]) {
 			return true;
 		}

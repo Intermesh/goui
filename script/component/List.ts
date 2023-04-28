@@ -76,14 +76,14 @@ export interface ListEventMap<Type> extends ComponentEventMap<Type> {
 	 * @param storeIndex
 	 * @param record
 	 */
-	navigate: <Sender extends Type> (list: Sender, storeIndex: number, record: extractStoreType<Sender>) => void
+	navigate: <Sender extends Type> (list: Sender, storeIndex: number, record: any) => void
 
 }
 
 export interface List<StoreType extends Store = Store> {
 	on<K extends keyof ListEventMap<this>>(eventName: K, listener: Partial<ListEventMap<this>>[K], options?: ObservableListenerOpts): void;
 
-	fire<K extends keyof ListEventMap<this>>(eventName: K, ...args: Parameters<NonNullable<ListEventMap<this>[K]>>): boolean
+	fire<K extends keyof ListEventMap<this>>(eventName: K, ...args: Parameters<ListEventMap<this>[K]>): boolean
 
 }
 

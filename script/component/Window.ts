@@ -46,7 +46,7 @@ export interface WindowEventMap<Type> extends DraggableComponentEventMap<Type> {
 export interface Window {
 	on<K extends keyof WindowEventMap<this>>(eventName: K, listener: Partial<WindowEventMap<this>>[K], options?: ObservableListenerOpts): void;
 
-	fire<K extends keyof WindowEventMap<this>>(eventName: K, ...args: Parameters<NonNullable<WindowEventMap<this>[K]>>): boolean
+	fire<K extends keyof WindowEventMap<this>>(eventName: K, ...args: Parameters<WindowEventMap<this>[K]>): boolean
 
 	set listeners(listeners: ObservableListener<WindowEventMap<this>>)
 }

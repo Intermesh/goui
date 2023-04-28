@@ -27,7 +27,7 @@ export interface ArrayField {
 
 	// on<K extends keyof FieldEventMap<this>>(eventName: K, listener: Partial<FieldEventMap<this>>[K], options?: ObservableListenerOpts): void
 	//
-	// fire<K extends keyof FieldEventMap<this>>(eventName: K, ...args: Parameters<NonNullable<FieldEventMap<this>[K]>>): boolean
+	// fire<K extends keyof FieldEventMap<this>>(eventName: K, ...args: Parameters<FieldEventMap<this>[K]>): boolean
 }
 
 /**

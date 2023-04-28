@@ -26,7 +26,7 @@ export interface AutocompleteEventMap<Type> extends FieldEventMap<Type> {
 export interface AutocompleteField<TableType extends Table = Table> {
 	on<K extends keyof AutocompleteEventMap<this>>(eventName: K, listener: Partial<AutocompleteEventMap<this>>[K], options?: ObservableListenerOpts): void
 
-	fire<K extends keyof AutocompleteEventMap<this>>(eventName: K, ...args: Parameters<NonNullable<AutocompleteEventMap<this>[K]>>): boolean
+	fire<K extends keyof AutocompleteEventMap<this>>(eventName: K, ...args: Parameters<AutocompleteEventMap<this>[K]>): boolean
 
 	set listeners(listeners: ObservableListener<AutocompleteEventMap<this>>)
 

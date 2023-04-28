@@ -51,7 +51,7 @@ export interface ButtonEventMap<Type> extends ComponentEventMap<Type> {
 export interface Button extends Component {
 	on<K extends keyof ButtonEventMap<this>>(eventName: K, listener: Partial<ButtonEventMap<this>>[K], options?: ObservableListenerOpts): void
 
-	fire<K extends keyof ButtonEventMap<this>>(eventName: K, ...args: Parameters<NonNullable<ButtonEventMap<this>[K]>>): boolean
+	fire<K extends keyof ButtonEventMap<this>>(eventName: K, ...args: Parameters<ButtonEventMap<this>[K]>): boolean
 
 	set listeners(listeners: ObservableListener<ButtonEventMap<this>>)
 

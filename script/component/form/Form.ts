@@ -50,7 +50,7 @@ export interface FormEventMap<Type> extends FieldEventMap<Type> {
 export interface Form {
 	on<K extends keyof FormEventMap<this>>(eventName: K, listener: Partial<FormEventMap<this>>[K], options?: ObservableListenerOpts): void
 
-	fire<K extends keyof FormEventMap<this>>(eventName: K, ...args: Parameters<NonNullable<FormEventMap<this>[K]>>): boolean
+	fire<K extends keyof FormEventMap<this>>(eventName: K, ...args: Parameters<FormEventMap<this>[K]>): boolean
 
 	set listeners(listeners: ObservableListener<FormEventMap<this>>)
 

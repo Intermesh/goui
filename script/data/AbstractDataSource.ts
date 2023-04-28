@@ -154,7 +154,7 @@ export interface DataSourceEventMap<T extends Observable, EntityType> extends Ob
 export interface AbstractDataSource<EntityType extends BaseEntity = DefaultEntity> {
 	on<K extends keyof DataSourceEventMap<AbstractDataSource<EntityType>, EntityType>>(eventName: K, listener: DataSourceEventMap<AbstractDataSource<EntityType>, EntityType>[K]): void
 
-	fire<K extends keyof DataSourceEventMap<AbstractDataSource<EntityType>, EntityType>>(eventName: K, ...args: Parameters<NonNullable<NonNullable<DataSourceEventMap<AbstractDataSource<EntityType>, EntityType>[K]>>>): boolean
+	fire<K extends keyof DataSourceEventMap<AbstractDataSource<EntityType>, EntityType>>(eventName: K, ...args: Parameters<NonNullable<DataSourceEventMap<AbstractDataSource<EntityType>, EntityType>[K]>>): boolean
 }
 
 interface SaveData <EntityType extends BaseEntity> {
