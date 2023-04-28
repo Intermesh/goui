@@ -3,7 +3,7 @@
 	position: relative;
 
 	&:focus-within {
-		table {
+
 			tbody {
 				tr.data.selected {
 					background-color: $colorSelectedRow;
@@ -14,7 +14,7 @@
 					}
 				}
 			}
-		}
+
 	}
 
 	//background-color: $colorBackgroundDarker;
@@ -28,16 +28,16 @@
 	}
 
 	&.no-row-lines {
-		table {
+
 			tbody {
 				tr {
 					border-bottom: 1px solid transparent;
 				}
 			}
-		}
+
 	}
 
-	table {
+
 
 		//applies to th, td and col
 		.checkbox-select-column {
@@ -73,10 +73,11 @@
 
 			position: sticky;
 			top: 0;
-
+			z-index: 1;
 			tr {
+
 				th {
-					position:relative;
+
 					background-color: $colorBackgroundDarker;
 					font-size: dp(16);
 					padding: dp(8) dp(8);
@@ -198,16 +199,16 @@
 		//	border-bottom: 1px solid $colorLine;
 		//}
 
-		table {
-			td:first-child {
-				padding-left: 0;
-			}
 
-			td:last-child {
-				padding-right: 0;
-			}
-		}
-	}
+			//td:first-child {
+			//	padding-left: 0;
+			//}
+			//
+			//td:last-child {
+			//	padding-right: 0;
+			//}
+
+
 
 	+.goui-toolbar {
 		margin-top: dp(16);

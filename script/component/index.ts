@@ -20,3 +20,4 @@ export * from './SearchButton.js';
 export * from './Splitter.js';
 export * from './Toolbar.js';
 export * from './Window.js';
+export * from './Tree.js';

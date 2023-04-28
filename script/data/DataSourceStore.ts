@@ -51,7 +51,7 @@ export class DataSourceStore<EntityType extends BaseEntity = DefaultEntity> exte
 		this.queryParams.sort = this.sort;
 
 		if(this.queryParams.limit) {
-			//too see if the remote has more data we query one ID more.
+			//to see if the remote has more data we query one ID more.
 			this.queryParams.limit++;
 		}
 

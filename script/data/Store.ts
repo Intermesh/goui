@@ -158,4 +158,4 @@ export class Store<RecordType extends StoreRecord> extends Collection<RecordType
  *
  * @param config
  */
-export const store = (config?: Config<Store>) => createComponent(new Store(), config);
+export const store = <RecordType extends StoreRecord>(config?: Config<Store>) => createComponent(new Store<RecordType>(), config);

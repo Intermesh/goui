@@ -79,7 +79,7 @@ export class RowSelect extends Observable {
 				this.onKeyDown(e);
 			})
 
-			me.on('rowmousedown', (table: List, index: number, e: MouseEvent) => {
+			me.on('rowmousedown', (table: List, index: number, row, e: MouseEvent) => {
 				this.onRowMouseDown(table, index, e);
 			});
 
@@ -254,7 +254,7 @@ export type RowSelectConfig = {
 	/**
 	 * The list component
 	 */
-	list: List,
+	list: any,
 
 } & Config<RowSelect>
 

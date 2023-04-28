@@ -12,11 +12,19 @@ import {checkbox} from "../form/CheckboxField.js";
 import {Notifier} from "../../Notifier.js";
 import {draggable} from "../DraggableComponent.js";
 import {TableColumn } from "./TableColumns.js";
-import {List} from "../List.js";
+import {List, ListConfig, ListEventMap} from "../List.js";
+import {ObservableListener, ObservableListenerOpts} from "../Observable";
 
 
 type GroupByRenderer = (groupBy:any, record: StoreRecord, thEl: HTMLTableCellElement, table: Table) => string | Promise<string> | Component | Promise<Component>;
 
+
+export interface Table<StoreType extends Store = Store> {
+	on<K extends keyof ListEventMap<this, StoreType>>(eventName: K, listener: Partial<ListEventMap<this, StoreType>>[K], options?: ObservableListenerOpts): void;
+
+	fire<K extends keyof ListEventMap<this, StoreType>>(eventName: K, ...args: Parameters<ListEventMap<this, StoreType>[K]>): boolean
+
+}
 
 /**
  * Table component
@@ -85,7 +93,9 @@ export class Table<StoreType extends Store = Store> extends List {
 	 * @param columns The table columns
 	 */
 	constructor(readonly store: StoreType, public columns: TableColumn[]) {
-		super(store, (record: any, row: HTMLElement, me: List, storeIndex: number) => {
+		super(store, (record, row, me:this, storeIndex) => {
+
+
 			for (let c of this.columns) {
 
 				if (c.hidden) {
@@ -125,7 +135,8 @@ export class Table<StoreType extends Store = Store> extends List {
 				row.append(td);
 			}
 
-		});
+		}, "table");
+
 	}
 
 	/**
@@ -151,10 +162,8 @@ export class Table<StoreType extends Store = Store> extends List {
 
 	private minCellWidth = 30
 
-	protected baseCls = "goui-table scroll";
+	protected baseCls = "goui-table";
 
-
-	protected bodyEl?: HTMLTableElement;
 	private headersRow?: HTMLTableRowElement;
 
 	protected itemTag: keyof HTMLElementTagNameMap = 'tr'
@@ -212,10 +221,9 @@ export class Table<StoreType extends Store = Store> extends List {
 	}
 
 	protected renderBody() {
-		this.bodyEl = document.createElement('table');
 
 		if (this.fitComponent) {
-			this.bodyEl.style.minWidth = "100%";
+			this.el.style.minWidth = "100%";
 		}
 
 		if(this.headers) {
@@ -292,7 +300,7 @@ export class Table<StoreType extends Store = Store> extends List {
 				const w = dragData.data.startWidth + dragData.x - dragData.startX;
 				header.style.width = w + "px"
 				h.width = w;
-				this.bodyEl!.style.width = this.calcTableWidth() + "px";
+				this.el!.style.width = this.calcTableWidth() + "px";
 			});
 
 			splitter.on("drop", () => {
@@ -336,7 +344,7 @@ export class Table<StoreType extends Store = Store> extends List {
 		}
 
 
-		this.bodyEl!.appendChild(colGroup);
+		this.el!.appendChild(colGroup);
 
 		return colGroup;
 	}
@@ -409,7 +417,7 @@ export class Table<StoreType extends Store = Store> extends List {
 		}
 
 		thead.appendChild(this.headersRow);
-		this.bodyEl!.appendChild(thead);
+		this.el!.appendChild(thead);
 
 		return this.headersRow
 	}
@@ -468,8 +476,8 @@ export class Table<StoreType extends Store = Store> extends List {
 			}
 		});
 
-		this.bodyEl!.style.minWidth = "";
-		this.bodyEl!.style.width = this.calcTableWidth() + "px";
+		this.el!.style.minWidth = "";
+		this.el!.style.width = this.calcTableWidth() + "px";
 	}
 
 	/**
@@ -495,7 +503,7 @@ export class Table<StoreType extends Store = Store> extends List {
 		if(!this.groupBy) {
 			if (!this.groupEl) {
 				this.groupEl = document.createElement('tbody');
-				this.bodyEl!.append(this.groupEl);
+				this.el!.append(this.groupEl);
 			}
 			return this.groupEl;
 		}
@@ -530,7 +538,7 @@ export class Table<StoreType extends Store = Store> extends List {
 			this.groupEl = document.createElement('tbody');
 			this.groupEl!.append(tr);
 
-			this.bodyEl!.append(this.groupEl);
+			this.el!.append(this.groupEl);
 
 
 			this.lastGroup = record[this.groupBy];
@@ -539,15 +547,15 @@ export class Table<StoreType extends Store = Store> extends List {
 	}
 
 	protected clearRows() {
-		if(!this.bodyEl) {
+		if(!this.el) {
 			return;
 		}
 		this.groupEl = undefined;
-		this.bodyEl.querySelectorAll('tbody').forEach(tbody => tbody.remove());
+		this.el.querySelectorAll('tbody').forEach(tbody => tbody.remove());
 	}
 }
 
-type TableConfig<StoreType extends Store = Store> = Omit<Config<Table>, "rowSelection"> & {
+type TableConfig<StoreType extends Store = Store> = Omit<Config<Table>, "rowSelection"|"listeners"> & {
 	/**
 	 * Store that provides the data
 	 */
@@ -556,7 +564,9 @@ type TableConfig<StoreType extends Store = Store> = Omit<Config<Table>, "rowSele
 	/**
 	 * The table columns
 	 */
-	columns: TableColumn[]
+	columns: TableColumn[],
+
+	listeners?: ObservableListener<ListEventMap<Table<StoreType>, StoreType>>
 }
 
 /**

@@ -27,7 +27,7 @@ export interface ComponentEventMap<Type> extends ObservableEventMap<Type> {
 	 * @see Component.render()
 	 * @param comp
 	 */
-	render: <Sender extends Type>(sender: Sender) => void
+	render: <Sender extends Type>(comp: Sender) => void
 
 	/**
 	 * Fires just before rendering
@@ -35,7 +35,7 @@ export interface ComponentEventMap<Type> extends ObservableEventMap<Type> {
 	 * @see Component.render()
 	 * @param comp
 	 */
-	beforerender: <Sender extends Type> (sender: Sender) => void
+	beforerender: <Sender extends Type> (comp: Sender) => void
 
 	/**
 	 * Fires before the element is removed. You can cancel the remove by returning false
@@ -43,7 +43,7 @@ export interface ComponentEventMap<Type> extends ObservableEventMap<Type> {
 	 * @see Component.remove()
 	 * @param comp
 	 */
-	beforeremove: <Sender extends Type>(sender: Sender) => false | void
+	beforeremove: <Sender extends Type>(comp: Sender) => false | void
 
 	/**
 	 * Fires after the component has been removed
@@ -51,7 +51,7 @@ export interface ComponentEventMap<Type> extends ObservableEventMap<Type> {
 	 * @see Component.remove()
 	 * @param comp
 	 */
-	remove: <Sender extends Type> (sender: Sender) => void
+	remove: <Sender extends Type> (comp: Sender) => void
 
 	/**
 	 * Fires before show. You can cancel the show by returning false
@@ -59,7 +59,7 @@ export interface ComponentEventMap<Type> extends ObservableEventMap<Type> {
 	 * @see Component.show()
 	 * @param comp
 	 */
-	beforeshow: <Sender extends Type>(sender: Sender) => false | void
+	beforeshow: <Sender extends Type>(comp: Sender) => false | void
 
 	/**
 	 * Fires after showing the component
@@ -67,7 +67,7 @@ export interface ComponentEventMap<Type> extends ObservableEventMap<Type> {
 	 * @see Component.show()
 	 * @param comp
 	 */
-	show: <Sender extends Type>(sender: Sender) => void
+	show: <Sender extends Type>(comp: Sender) => void
 
 	/**
 	 * Fires before hide. You can cancel the hide by returning false
@@ -75,7 +75,7 @@ export interface ComponentEventMap<Type> extends ObservableEventMap<Type> {
 	 * @see Component.hide()
 	 * @param comp
 	 */
-	beforehide: <Sender extends Type>(sender: Sender) => false | void
+	beforehide: <Sender extends Type>(comp: Sender) => false | void
 
 	/**
 	 * Fires after hiding the component
@@ -83,7 +83,7 @@ export interface ComponentEventMap<Type> extends ObservableEventMap<Type> {
 	 * @see Component.show()
 	 * @param comp
 	 */
-	hide: <Sender extends Type> (sender: Sender) => void,
+	hide: <Sender extends Type> (comp: Sender) => void,
 
 	/**
 	 * Fires on focus
@@ -91,7 +91,7 @@ export interface ComponentEventMap<Type> extends ObservableEventMap<Type> {
 	 * @param comp
 	 * @param o
 	 */
-	focus: <Sender extends Type> (sender: Sender, o?: FocusOptions) => void
+	focus: <Sender extends Type> (comp: Sender, o?: FocusOptions) => void
 
 	/**
 	 * Fires when this component is added to a parent
@@ -99,7 +99,7 @@ export interface ComponentEventMap<Type> extends ObservableEventMap<Type> {
 	 * @param me
 	 * @param index the index in the parents' items
 	 */
-	added: <Sender extends Type> (sender: Sender, index: number) => void
+	added: <Sender extends Type> (comp: Sender, index: number) => void
 }
 
 export interface Component {

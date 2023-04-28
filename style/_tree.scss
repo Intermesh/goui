@@ -1,0 +1,62 @@
+ul.goui-tree {
+  display:block;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+
+  ul {
+    display:none;
+    > li{
+      >.node {
+        padding-left: dp(24);
+      }
+    }
+  }
+
+
+  li {
+
+    > .node {
+      padding: dp(4) 0;
+      display: flex;
+      align-content: center;
+      cursor: pointer;
+      &:hover {
+        background-color: $colorHover;
+      }
+    }
+
+    label {
+      margin-left: dp(8);
+      cursor: pointer;
+    }
+    .caret {
+      width: dp(24);
+      height: dp(24);
+      &:before {
+        @extend %icon;
+        content: "arrow_right";
+      }
+    }
+
+    &.expanded {
+      ul {
+        display: block;
+      }
+      .caret:before {
+        content: "arrow_drop_down";
+      }
+    }
+
+    &.no-children {
+      .caret:before {
+        content: none;
+      }
+    }
+  }
+
+
+
+
+
+}

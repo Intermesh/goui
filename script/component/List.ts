@@ -11,12 +11,20 @@ import {E} from "../util/Element.js";
 import {rowselect, RowSelect, RowSelectConfig} from "./table/RowSelect.js";
 import {Observable, ObservableListener, ObservableListenerOpts} from "./Observable.js";
 
+// type extractRecordType<ListType> =
+// 	ListType extends List<infer StoreType> ?
+// 		(StoreType extends Store<infer RecordType> ?
+// 			RecordType : StoreRecord ): StoreRecord;
 
-type RowRenderer = (record: any, row: HTMLElement, me: List, storeIndex: number) => string | Component[] | void
+type extractStoreType<ListType> = ListType extends List<infer StoreType> ? StoreType : never;
+type extractRecordType<StoreType> = StoreType extends Store<infer RecordType> ? RecordType : never;
+
+
+export type RowRenderer = (record: any, row: HTMLElement, me: any, storeIndex: number) => string | Component[] | void
 /**
  * @inheritDoc
  */
-export interface ListEventMap<Type extends Observable> extends ComponentEventMap<Type> {
+export interface ListEventMap<Type extends List, StoreType extends Store = Store> extends ComponentEventMap<Type> {
 	/**
 	 * Fires when the user scrolled to the bottom
 	 *
@@ -32,13 +40,22 @@ export interface ListEventMap<Type extends Observable> extends ComponentEventMap
 	sort: <Sender extends Type> (list: Sender, dataIndex: string) => void
 
 	/**
+	 * Fires when a row is mousedowned
+	 *
+	 * @param list
+	 * @param storeIndex
+	 * @param ev
+	 */
+	rowmousedown: <Sender extends Type> (list: Sender, storeIndex: number, row:HTMLElement, ev: MouseEvent) => void
+
+	/**
 	 * Fires when a row is clicked
 	 *
 	 * @param list
 	 * @param storeIndex
 	 * @param ev
 	 */
-	rowmousedown: <Sender extends Type> (list: Sender, storeIndex: number, ev: MouseEvent) => void
+	rowclick: <Sender extends Type> (list: Sender, storeIndex: number, row:HTMLElement, ev: MouseEvent) => void
 
 	/**
 	 * Fires when a row is double clicked
@@ -47,7 +64,7 @@ export interface ListEventMap<Type extends Observable> extends ComponentEventMap
 	 * @param storeIndex
 	 * @param ev
 	 */
-	rowdblclick: <Sender extends Type> (list: Sender, storeIndex: number, ev: MouseEvent) => void
+	rowdblclick: <Sender extends Type> (list: Sender, storeIndex: number, row:HTMLElement, ev: MouseEvent) => void
 
 	/**
 	 * Fires when records are rendered into rows.
@@ -55,7 +72,7 @@ export interface ListEventMap<Type extends Observable> extends ComponentEventMap
 	 * @param list
 	 * @param records
 	 */
-	renderrows: <Sender extends Type> (list: Sender, records: StoreRecord[]) => void;
+	renderrows: <Sender extends Type> (list: Sender, records: extractRecordType<StoreType>[]) => void;
 
 	/**
 	 * Fires when a row is clicked or navigated with arrows
@@ -64,16 +81,15 @@ export interface ListEventMap<Type extends Observable> extends ComponentEventMap
 	 * @param storeIndex
 	 * @param ev
 	 */
-	navigate: <Sender extends Type> (list: Sender, storeIndex: number, record: StoreRecord) => void
+	navigate: <Sender extends Type> (list: Sender, storeIndex: number, record: extractRecordType<StoreType>) => void
 
 }
 
-export interface List {
-	on<K extends keyof ListEventMap<this>>(eventName: K, listener: Partial<ListEventMap<this>>[K], options?: ObservableListenerOpts): void;
+export interface List<StoreType extends Store = Store> {
+	on<K extends keyof ListEventMap<this, StoreType>>(eventName: K, listener: Partial<ListEventMap<this, StoreType>>[K], options?: ObservableListenerOpts): void;
 
-	fire<K extends keyof ListEventMap<this>>(eventName: K, ...args: Parameters<ListEventMap<this>[K]>): boolean
+	fire<K extends keyof ListEventMap<this, StoreType>>(eventName: K, ...args: Parameters<ListEventMap<this, StoreType>[K]>): boolean
 
-	set listeners(listeners: ObservableListener<ListEventMap<this>>)
 }
 
 export class List<StoreType extends Store = Store> extends Component {
@@ -84,11 +100,10 @@ export class List<StoreType extends Store = Store> extends Component {
 
 	protected loadOnScroll: boolean = false;
 
-	private emptyStateEl?: HTMLDivElement;
+	private emptyStateEl?: HTMLElement;
 
 	private rowSelect?: RowSelect;
 
-	protected bodyEl?: HTMLElement
 
 	protected itemTag: keyof HTMLElementTagNameMap = 'li'
 
@@ -105,8 +120,8 @@ export class List<StoreType extends Store = Store> extends Component {
 		}
 	}
 
-	constructor(readonly store: StoreType, readonly renderer: RowRenderer) {
-		super();
+	constructor(readonly store: StoreType, readonly renderer: RowRenderer, tagName:keyof HTMLElementTagNameMap = "ul") {
+		super(tagName);
 		this.tabIndex = 0;
 
 		store.on("beforeload", () => {
@@ -121,15 +136,21 @@ export class List<StoreType extends Store = Store> extends Component {
 		return this.rowSelect;
 	}
 
+	get el(): HTMLElement {
+		return super.el;
+	}
+
 	protected internalRender() {
 		const el = super.internalRender();
 
 		this.initNavigateEvent();
 
 		el.on("mousedown", (e) => {
-			this.onMouseDown(e);
+			this.onMouseEvent(e, "rowmousedown");
 		}).on("dblclick", (e) => {
-			this.onDblClick(e);
+			this.onMouseEvent(e, "rowdblclick");
+		}).on("click", (e) => {
+			this.onMouseEvent(e, "rowclick");
 		});
 
 		this.renderEmptyState();
@@ -150,7 +171,7 @@ export class List<StoreType extends Store = Store> extends Component {
 		this.store.on("load", (store, records, append) => {
 			const isEmpty = (!append && records.length == 0);
 
-			this.bodyEl!.hidden = isEmpty;
+			//this.el.hidden = isEmpty;
 			this.emptyStateEl!.hidden = !isEmpty;
 
 			if (!append) {
@@ -168,9 +189,9 @@ export class List<StoreType extends Store = Store> extends Component {
 	}
 
 	private initNavigateEvent() {
-		this.on('rowmousedown', (list, storeIndex, ev) => {
+		this.on('rowmousedown', (list, storeIndex, row,  ev) => {
 			if (!ev.shiftKey && !ev.ctrlKey) {
-				const record = this.store.get(storeIndex);
+				const record = this.store.get(storeIndex) as never;
 
 				this.fire("navigate", this, storeIndex, record);
 			}
@@ -185,8 +206,8 @@ export class List<StoreType extends Store = Store> extends Component {
 					const selected = this.rowSelect!.selected;
 					if (selected.length) {
 						const storeIndex = selected[0],
-								record = this.store.get(storeIndex);
-						this.fire("navigate", this, storeIndex, record);
+								record = this.store.get(storeIndex)  as never;
+						this.fire("navigate", this, storeIndex,record);
 					}
 				}
 			});
@@ -195,30 +216,23 @@ export class List<StoreType extends Store = Store> extends Component {
 	}
 
 	protected renderEmptyState() {
-		this.emptyStateEl = E('div').attr('hidden', this.store.count() > 0);
+		this.emptyStateEl = E('li');
+		this.emptyStateEl.hidden = this.store.count() > 0;
 		this.emptyStateEl.innerHTML = this.emptyStateHtml;
 		this.el.appendChild(this.emptyStateEl);
 	}
 
 	protected clearRows() {
-		if(this.bodyEl) {
-			this.bodyEl.innerHTML = "";
-		}
+		this.el.innerHTML = "";
 	}
 
 	protected renderBody() {
-		this.bodyEl = this.bodyEl || E('ul');
-		this.bodyEl.hidden = this.store.count() == 0;
 
 		this.renderRows(this.store.items);
 
-		this.el.append(this.bodyEl);
-
-
-
 		if (this.rowSelect) {
 			this.rowSelect.on('rowselect', (rowSelect, storeIndex) => {
-				const tr = (<HTMLElement>this.bodyEl!.querySelector("[data-store-index='" + storeIndex + "']"));
+				const tr = (<HTMLElement>this.el!.querySelector("[data-store-index='" + storeIndex + "']"));
 
 				if (!tr) {
 					console.error("No row found for selected index: " + storeIndex + ". Maybe it's not rendered yet?");
@@ -229,7 +243,7 @@ export class List<StoreType extends Store = Store> extends Component {
 			});
 
 			this.rowSelect.on('rowdeselect', (rowSelect, storeIndex) => {
-				const tr = this.bodyEl!.querySelector("[data-store-index='" + storeIndex + "']") as HTMLElement;
+				const tr = this.el!.querySelector("[data-store-index='" + storeIndex + "']") as HTMLElement;
 				if (!tr) {
 					console.error("No row found for selected index: " + storeIndex + ". Maybe it's not rendered yet?");
 					return;
@@ -250,11 +264,11 @@ export class List<StoreType extends Store = Store> extends Component {
 			container.append(row);
 		});
 
-		this.fire("renderrows", this, records);
+		this.fire("renderrows", this, <never[]>records);
 	}
 
 	protected renderGroup(record: StoreRecord): HTMLElement {
-		return this.bodyEl!; // no group support yet @see Table
+		return this.el;
 	}
 
 	protected renderRow(record: any, storeIndex: number): HTMLElement {
@@ -285,29 +299,23 @@ export class List<StoreType extends Store = Store> extends Component {
 		}
 	}
 
-	private onMouseDown(e: MouseEvent & {target: HTMLElement}) {
-		const index = this.findRowByEvent(e);
+	private onMouseEvent(e: MouseEvent & {target: HTMLElement}, type: keyof ListEventMap<List>) {
+		const row = this.findRowByEvent(e),
+			index = row ? parseInt(row.dataset.storeIndex!) : -1;
 
 		if (index !== -1) {
-			this.fire('rowmousedown', this, index, e);
+			this.fire(type, this, index, row, e);
 		}
 	}
 
-	private onDblClick(e: MouseEvent & {target: HTMLElement}) {
-		const index = this.findRowByEvent(e);
-
-		if (index !== -1) {
-			this.fire('rowdblclick', this, index, e);
-		}
-	}
 
 	private findRowByEvent(e: MouseEvent & {target: HTMLElement}) {
-		const row = e.target.closest("[data-store-index]") as HTMLElement;
-		return row ? parseInt(row.dataset.storeIndex!) : -1;
+		return  e.target.closest("[data-store-index]") as HTMLElement;
+
 	}
 }
 
-type ListConfig = Omit<Config<List>, "rowSelection"> & {
+export type ListConfig<StoreType extends Store> = Omit<Config<List>, "rowSelection"|"listeners"> & {
 	/**
 	 * Store that provides the data
 	 */
@@ -316,7 +324,9 @@ type ListConfig = Omit<Config<List>, "rowSelection"> & {
 	/**
 	 * The list item render function
 	 */
-	renderer: RowRenderer
+	renderer: RowRenderer,
+
+	listeners?: ObservableListener<ListEventMap<List<StoreType>, StoreType>>
 }
 
 /**
@@ -324,4 +334,5 @@ type ListConfig = Omit<Config<List>, "rowSelection"> & {
  *
  * @param config
  */
-export const list = (config: ListConfig) => createComponent(new List(config.store, config.renderer), config);
+export const list = <StoreType extends Store = Store>(config: ListConfig<StoreType>
+) => createComponent(new List(config.store, config.renderer), config);
