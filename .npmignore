@@ -2,3 +2,5 @@
 node_modules
 *.tsbuildinfo
 /.idea/
+.github
+.git

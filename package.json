@@ -28,7 +28,7 @@
   },
   "name": "@intermesh/goui",
   "description": "Group-Office User Interface",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "directories": {
     "test": "tests"
   },
