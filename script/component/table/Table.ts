@@ -14,6 +14,7 @@ import {draggable} from "../DraggableComponent.js";
 import {TableColumn} from "./TableColumns.js";
 import {List, ListEventMap} from "../List.js";
 import {Config, ObservableListener, ObservableListenerOpts} from "../Observable";
+import {t} from "../../Translate";
 
 
 type GroupByRenderer = (groupBy:any, record: any, thEl: HTMLTableCellElement, table: Table) => string | Promise<string> | Component | Promise<Component>;
@@ -157,7 +158,7 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 	/**
 	 * Group renderer function
 	 */
-	public groupByRenderer: GroupByRenderer = groupBy => groupBy
+	public groupByRenderer: GroupByRenderer = groupBy => groupBy ?? t("None")
 
 	private minCellWidth = 30
 
@@ -507,14 +508,17 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 			return this.groupEl;
 		}
 
-		if(!this.groupEl || record[this.groupBy] != this.lastGroup) {
+		const groupBy = ObjectUtil.path(record, this.groupBy);
+
+		console.warn(this.groupEl,groupBy, this.lastGroup)
+		if(!this.groupEl || groupBy != this.lastGroup) {
 			const tr = document.createElement("tr");
 			tr.classList.add("group");
 
 			const th = document.createElement("th");
 			th.colSpan = this.columns.length;
 
-			const r = this.groupByRenderer(record[this.groupBy], record, th, this);
+			const r = this.groupByRenderer(groupBy, record, th, this);
 
 			if (typeof r === "string") {
 				th.innerHTML = r;
@@ -540,7 +544,7 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 			this.el!.append(this.groupEl);
 
 
-			this.lastGroup = record[this.groupBy];
+			this.lastGroup = groupBy;
 		}
 		return this.groupEl;
 	}
