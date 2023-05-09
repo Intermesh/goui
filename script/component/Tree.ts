@@ -5,7 +5,7 @@ import {E} from "../util";
 import {Config} from "./Observable";
 
 
-export const TreeRowRenderer:RowRenderer = (record, row, me:Tree<Store>, storeIndex) => {
+export const TreeRowRenderer:RowRenderer = (record, row, me, storeIndex) => {
 
     const node = E("div").cls("node"),
         caret = E("span").cls("caret"),

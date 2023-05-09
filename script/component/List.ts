@@ -13,6 +13,9 @@ import {Config, ObservableListener, ObservableListenerOpts} from "./Observable.j
 
 export type RowRenderer = (record: any, row: HTMLElement, list: any, storeIndex: number) => string | Component[] | void;
 
+type extractStoreType<ListType> = ListType extends List<infer StoreType> ? StoreType : never;
+
+type extractRecordType<StoreType> = StoreType extends Store<infer RecordType> ? RecordType : never;
 
 /**
  * @inheritDoc
@@ -65,7 +68,7 @@ export interface ListEventMap<Type> extends ComponentEventMap<Type> {
 	 * @param list
 	 * @param records
 	 */
-	renderrows:  (list: Type, records: any[]) => void;
+	renderrows:  (list: Type, records: extractRecordType<extractStoreType<Type>>[]) => void;
 
 	/**
 	 * Fires when a row is clicked or navigated with arrows
@@ -74,7 +77,7 @@ export interface ListEventMap<Type> extends ComponentEventMap<Type> {
 	 * @param storeIndex
 	 * @param record
 	 */
-	navigate:  (list: Type, storeIndex: number) => void
+	navigate:  (list: Type, storeIndex: number, record: extractRecordType<extractStoreType<Type>>) => void
 
 }
 
@@ -104,10 +107,10 @@ export class List<StoreType extends Store = Store> extends Component {
 	 */
 	set rowSelectionConfig(rowSelectionConfig: boolean | Partial<RowSelectConfig> ) {
 		if (typeof rowSelectionConfig != "boolean") {
-			(rowSelectionConfig as RowSelectConfig).list = this;
+			(rowSelectionConfig as RowSelectConfig).list = this as never;
 			this.rowSelect = rowselect(rowSelectionConfig as RowSelectConfig);
 		} else {
-			this.rowSelect = rowselect({list: this});
+			this.rowSelect = rowselect({list: this  as never});
 		}
 	}
 
@@ -182,7 +185,7 @@ export class List<StoreType extends Store = Store> extends Component {
 	private initNavigateEvent() {
 		this.on('rowmousedown', (list, storeIndex, row,  ev) => {
 			if (!ev.shiftKey && !ev.ctrlKey) {
-				this.fire("navigate", this, storeIndex);
+				this.fire("navigate", this, storeIndex, this.store.get(storeIndex));
 			}
 		});
 
@@ -195,7 +198,7 @@ export class List<StoreType extends Store = Store> extends Component {
 					const selected = this.rowSelect!.selected;
 					if (selected.length) {
 						const storeIndex = selected[0]
-						this.fire("navigate", this, storeIndex);
+						this.fire("navigate", this, storeIndex, this.store.get(storeIndex));
 					}
 				}
 			});

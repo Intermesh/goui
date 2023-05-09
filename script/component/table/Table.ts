@@ -85,7 +85,7 @@ export interface Table<StoreType extends Store = Store> {
  * 	});
  *  ```
  */
-export class Table<StoreType extends Store = Store> extends List {
+export class Table<StoreType extends Store = Store> extends List<StoreType> {
 
 	/**
 	 *
@@ -93,8 +93,7 @@ export class Table<StoreType extends Store = Store> extends List {
 	 * @param columns The table columns
 	 */
 	constructor(readonly store: StoreType, public columns: TableColumn[]) {
-		super(store, (record, row, me:this, storeIndex) => {
-
+		super(store, (record, row, me, storeIndex) => {
 
 			for (let c of this.columns) {
 
