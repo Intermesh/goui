@@ -100,8 +100,8 @@ export interface ComponentEventMap<Type> extends ObservableEventMap<Type> {
 }
 
 export interface Component extends Observable {
-	on<K extends keyof ComponentEventMap<this>>(eventName: K, listener: Partial<ComponentEventMap<this>>[K], options?: ObservableListenerOpts): void
-	fire<K extends keyof ComponentEventMap<this>>(eventName: K, ...args: Parameters<ComponentEventMap<any>[K]>): boolean
+	on<K extends keyof ComponentEventMap<Component>>(eventName: K, listener: Partial<ComponentEventMap<Component>>[K], options?: ObservableListenerOpts): void
+	fire<K extends keyof ComponentEventMap<Component>>(eventName: K, ...args: Parameters<ComponentEventMap<any>[K]>): boolean
 }
 
 /**

@@ -648,4 +648,4 @@ export class HtmlField extends Field {
  *
  * @param config
  */
-export const htmlfield = (config?: Config<HtmlField, FieldEventMap<HtmlField>>) => createComponent(new HtmlField(), config);
+export const htmlfield = (config?: Config<HtmlField, HtmlFieldEventMap<HtmlField>>) => createComponent(new HtmlField(), config);

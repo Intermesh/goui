@@ -22,7 +22,7 @@ type GroupByRenderer = (groupBy:any, record: any, thEl: HTMLTableCellElement, ta
 export interface Table<StoreType extends Store = Store> {
 	on<K extends keyof ListEventMap<this>>(eventName: K, listener: Partial<ListEventMap<this>>[K], options?: ObservableListenerOpts): void;
 
-	fire<K extends keyof ListEventMap<this>>(eventName: K, ...args: Parameters<ListEventMap<Component>[K]>): boolean
+	fire<K extends keyof ListEventMap<this>>(eventName: K, ...args: Parameters<ListEventMap<any>[K]>): boolean
 
 }
 
