@@ -6,8 +6,9 @@
 
 import {Menu} from "./Menu.js";
 import {btn} from "../Button.js";
-import {Observable, ObservableListener, ObservableListenerOpts} from "../Observable.js";
-import {ComponentEventMap, Config, createComponent} from "../Component.js";
+import {Config, Observable, ObservableListener, ObservableListenerOpts} from "../Observable.js";
+import {Component, ComponentEventMap, createComponent} from "../Component.js";
+import {FieldEventMap} from "../form";
 
 /**
  * @inheritDoc
@@ -25,9 +26,8 @@ export interface ColorMenuEventMap<Type> extends ComponentEventMap<Type> {
 export interface ColorMenu {
 	on<K extends keyof ColorMenuEventMap<ColorMenu>>(eventName: K, listener: Partial<ColorMenuEventMap<ColorMenu>>[K], options?: ObservableListenerOpts): void
 
-	fire<K extends keyof ColorMenuEventMap<ColorMenu>>(eventName: K, ...args: Parameters<ColorMenuEventMap<ColorMenu>[K]>): boolean
+	fire<K extends keyof ColorMenuEventMap<ColorMenu>>(eventName: K, ...args: Parameters<ColorMenuEventMap<Component>[K]>): boolean
 
-	set listeners(listeners: ObservableListener<ColorMenuEventMap<this>>)
 }
 
 /**
@@ -162,4 +162,4 @@ export class ColorMenu extends Menu {
  *
  * @param config
  */
-export const colormenu = (config?: Config<ColorMenu>) => createComponent(new ColorMenu(), config);
+export const colormenu = (config?: Config<ColorMenu, ColorMenuEventMap<ColorMenu>>) => createComponent(new ColorMenu(), config);

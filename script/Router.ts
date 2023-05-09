@@ -4,6 +4,7 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 import {Observable, ObservableEventMap, ObservableListenerOpts} from "./component/Observable.js";
+import {WindowEventMap} from "./component";
 
 export interface Route {
 	re: RegExp
@@ -14,13 +15,13 @@ export interface Route {
 /**
  * @inheritDoc
  */
-export interface RouterEventMap<T extends Observable> extends ObservableEventMap<T> {
-	change?: (path: string, oldPath: string) => void
+export interface RouterEventMap<Type extends Observable> extends ObservableEventMap<Type> {
+	change: (path: string, oldPath: string) => void
 }
 
 export interface Router {
 	on<K extends keyof RouterEventMap<Router>>(eventName: K, listener: RouterEventMap<Router>[K], options?: ObservableListenerOpts): void
-	fire<K extends keyof RouterEventMap<Router>>(eventName: K, ...args: Parameters<NonNullable<RouterEventMap<Router>[K]>>): boolean
+	fire<K extends keyof RouterEventMap<Router>>(eventName: K, ...args: Parameters<RouterEventMap<any>[K]>): boolean
 }
 
 export type RouterMethod = (...args: string[]) => Promise<any> | any;

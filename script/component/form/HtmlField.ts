@@ -9,11 +9,11 @@
 import {Field, FieldEventMap} from "./Field.js";
 import {tbar, Toolbar} from "../Toolbar.js";
 import {btn, Button} from "../Button.js";
-import {Observable, ObservableListener, ObservableListenerOpts} from "../Observable.js";
+import {Config, ObservableListenerOpts} from "../Observable.js";
 import {browser} from "../../util/Browser.js";
 import {colormenu, ColorMenu} from "../menu/ColorMenu.js";
 import {Menu} from "../menu/Menu.js";
-import {comp, Config, createComponent} from "../Component.js";
+import {comp, Component, createComponent} from "../Component.js";
 import {FunctionUtil} from "../../util/FunctionUtil.js";
 import {root} from "../Root.js";
 import {MaterialIcon} from "../MaterialIcon.js";
@@ -30,7 +30,7 @@ export interface HtmlFieldEventMap<Type> extends FieldEventMap<Type> {
 	 * @param item
 	 * @param index
 	 */
-	updatetoolbar: <Sender extends Type>(htmlfield: Sender) => void
+	updatetoolbar: (htmlfield: Type) => void
 
 	/**
 	 * Fires when an image is selected, pasted or dropped into the field
@@ -39,7 +39,7 @@ export interface HtmlFieldEventMap<Type> extends FieldEventMap<Type> {
 	 * @param file
 	 * @param img The img element in the editor
 	 */
-	insertimage: <Sender extends Type> (htmlfield: Sender, file: File, img: HTMLImageElement) => void
+	insertimage:  (htmlfield: Type, file: File, img: HTMLImageElement) => void
 
 	/**
 	 * Fires when a non image is pasted or dropped into the field
@@ -48,16 +48,15 @@ export interface HtmlFieldEventMap<Type> extends FieldEventMap<Type> {
 	 * @param file
 	 * @param img
 	 */
-	attach: <Sender extends Type> (htmlfield: Sender, file: File) => void
+	attach:  (htmlfield: Type, file: File) => void
 }
 
 
 export interface HtmlField extends Field {
 	on<K extends keyof HtmlFieldEventMap<HtmlField>>(eventName: K, listener: Partial<HtmlFieldEventMap<HtmlField>>[K], options?: ObservableListenerOpts): void
 
-	fire<K extends keyof HtmlFieldEventMap<HtmlField>>(eventName: K, ...args: Parameters<HtmlFieldEventMap<HtmlField>[K]>): boolean
+	fire<K extends keyof HtmlFieldEventMap<HtmlField>>(eventName: K, ...args: Parameters<HtmlFieldEventMap<Component>[K]>): boolean
 
-	set listeners(listeners: ObservableListener<HtmlFieldEventMap<this>>)
 }
 
 interface CmdConfig {
@@ -649,4 +648,4 @@ export class HtmlField extends Field {
  *
  * @param config
  */
-export const htmlfield = (config?: Config<HtmlField>) => createComponent(new HtmlField(), config);
+export const htmlfield = (config?: Config<HtmlField, FieldEventMap<HtmlField>>) => createComponent(new HtmlField(), config);

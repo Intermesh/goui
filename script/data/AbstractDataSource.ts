@@ -65,7 +65,7 @@ export interface BaseEntity  {
  *
  * Allows any property.
  */
-export interface DefaultEntity extends BaseEntity{
+export interface DefaultEntity extends BaseEntity {
 	[key:string]: any
 }
 
@@ -144,17 +144,17 @@ export interface QueryResponse  {
 	queryState: string
 }
 
-export interface DataSourceEventMap<T extends Observable, EntityType> extends ObservableEventMap<T> {
+export interface DataSourceEventMap<Type extends Observable, EntityType> extends ObservableEventMap<Type> {
 	/**
 	 * Fires when data changed in the store
 	 */
-	change: <Sender extends T>(DataSource: Sender, changes: Changes<EntityType>) => void
+	change: (DataSource: Type, changes: Changes<EntityType>) => void
 }
 
 export interface AbstractDataSource<EntityType extends BaseEntity = DefaultEntity> {
 	on<K extends keyof DataSourceEventMap<AbstractDataSource<EntityType>, EntityType>>(eventName: K, listener: DataSourceEventMap<AbstractDataSource<EntityType>, EntityType>[K]): void
 
-	fire<K extends keyof DataSourceEventMap<AbstractDataSource<EntityType>, EntityType>>(eventName: K, ...args: Parameters<NonNullable<DataSourceEventMap<AbstractDataSource<EntityType>, EntityType>[K]>>): boolean
+	fire<K extends keyof DataSourceEventMap<AbstractDataSource<EntityType>, EntityType>>(eventName: K, ...args: Parameters<DataSourceEventMap<AbstractDataSource<EntityType>, EntityType>[K]>): boolean
 }
 
 interface SaveData <EntityType extends BaseEntity> {

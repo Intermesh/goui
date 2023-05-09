@@ -5,7 +5,9 @@
  */
 
 import {TextField, TextFieldType} from "./TextField.js";
-import {Config, createComponent} from "../Component.js";
+import {createComponent} from "../Component.js";
+import {Config} from "../Observable";
+import {FieldEventMap} from "./Field";
 
 export class NumberField extends TextField {
 
@@ -57,4 +59,4 @@ export class NumberField extends TextField {
 	}
 }
 
-export const numberfield = (config?: Config<NumberField>) => createComponent(new NumberField(), config);
+export const numberfield = (config?: Config<NumberField, FieldEventMap<NumberField>>) => createComponent(new NumberField(), config);

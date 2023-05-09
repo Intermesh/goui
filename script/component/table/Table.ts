@@ -4,7 +4,7 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {comp, Component, ComponentState, Config, createComponent} from "../Component.js";
+import {comp, Component, ComponentState, createComponent} from "../Component.js";
 import {Store, storeRecordType} from "../../data/Store.js";
 import {ObjectUtil} from "../../util/ObjectUtil.js";
 import {menu, Menu} from "../menu/Menu.js";
@@ -13,7 +13,7 @@ import {Notifier} from "../../Notifier.js";
 import {draggable} from "../DraggableComponent.js";
 import {TableColumn} from "./TableColumns.js";
 import {List, ListEventMap} from "../List.js";
-import {ObservableListener, ObservableListenerOpts} from "../Observable";
+import {Config, ObservableListener, ObservableListenerOpts} from "../Observable";
 
 
 type GroupByRenderer = (groupBy:any, record: any, thEl: HTMLTableCellElement, table: Table) => string | Promise<string> | Component | Promise<Component>;
@@ -22,7 +22,7 @@ type GroupByRenderer = (groupBy:any, record: any, thEl: HTMLTableCellElement, ta
 export interface Table<StoreType extends Store = Store> {
 	on<K extends keyof ListEventMap<this>>(eventName: K, listener: Partial<ListEventMap<this>>[K], options?: ObservableListenerOpts): void;
 
-	fire<K extends keyof ListEventMap<this>>(eventName: K, ...args: Parameters<ListEventMap<this>[K]>): boolean
+	fire<K extends keyof ListEventMap<this>>(eventName: K, ...args: Parameters<ListEventMap<Component>[K]>): boolean
 
 }
 
@@ -555,19 +555,7 @@ export class Table<StoreType extends Store = Store> extends List {
 	}
 }
 
-type TableConfig<StoreType extends Store = Store> = Omit<Config<Table>, "rowSelection"|"listeners"> & {
-	/**
-	 * Store that provides the data
-	 */
-	store: StoreType,
-
-	/**
-	 * The table columns
-	 */
-	columns: TableColumn[],
-
-	listeners?: ObservableListener<ListEventMap<Table<StoreType>>>
-}
+type TableConfig<StoreType extends Store = Store> = Omit<Config<Table<StoreType>, ListEventMap<Table<StoreType>>, "store" | "columns">, "rowSelection">
 
 /**
  * Shorthand function to create {@see Table}

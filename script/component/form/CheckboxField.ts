@@ -4,9 +4,10 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {Field} from "./Field.js";
-import {Config, createComponent} from "../Component.js";
+import {Field, FieldEventMap} from "./Field.js";
+import {createComponent} from "../Component.js";
 import {E} from "../../util/Element.js";
+import {Config} from "../Observable";
 
 type CheckBoxType = 'box' | 'switch' | 'button';
 
@@ -156,13 +157,11 @@ export class CheckboxField extends Field {
 
 }
 
-export type CheckboxFieldConfig = Omit<Config<CheckboxField>, "type"> & {
-	type?: CheckBoxType
-};
+export type CheckboxFieldConfig = Config<CheckboxField, FieldEventMap<CheckboxField>>
 
 /**
  * Shorthand function to create {@see CheckboxField}
  *
  * @param config
  */
-export const checkbox = (config?: Config<CheckboxField>) => createComponent(new CheckboxField(config?.type||'box'), config);
+export const checkbox = (config?: Config<CheckboxField, FieldEventMap<CheckboxField>>) => createComponent(new CheckboxField(config?.type||'box'), config);

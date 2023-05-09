@@ -4,8 +4,9 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {Field} from "./Field.js";
-import {Config, createComponent} from "../Component.js";
+import {Field, FieldEventMap} from "./Field.js";
+import {createComponent} from "../Component.js";
+import {Config} from "../Observable";
 
 
 export type TextFieldType = ("text" | "password" | "email" | "url" | "tel" | "search");
@@ -169,4 +170,4 @@ export class TextField extends Field {
  *
  * @param config
  */
-export const textfield = (config?:Config<TextField>) => createComponent(new TextField(), config);
+export const textfield = (config?:Config<TextField, FieldEventMap<TextField>>) => createComponent(new TextField(), config);

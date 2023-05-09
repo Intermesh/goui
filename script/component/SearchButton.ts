@@ -8,9 +8,9 @@ import {btn, Button, ButtonEventMap} from "./Button.js";
 import {tbar, Toolbar} from "./Toolbar.js";
 import {t} from "../Translate.js";
 import {TextField, textfield} from "./form/TextField.js";
-import {Config, createComponent} from "./Component.js";
+import {Component, createComponent} from "./Component.js";
 import {FunctionUtil} from "../util/FunctionUtil.js";
-import {Observable, ObservableListener, ObservableListenerOpts} from "./Observable.js";
+import {Config, Observable, ObservableListener, ObservableListenerOpts} from "./Observable.js";
 
 
 /**
@@ -18,17 +18,14 @@ import {Observable, ObservableListener, ObservableListenerOpts} from "./Observab
  */
 export interface SearchButtonEventMap<Type> extends ButtonEventMap<Type> {
 
-	input: <Sender extends Type>(searchBtn: Sender, text: string) => void
+	input: (searchBtn: Type, text: string) => void
 
-	reset: <Sender extends Type>(searchBtn: Sender) => void
+	reset: (searchBtn: Type) => void
 }
 
 export interface SearchButton {
 	on<K extends keyof SearchButtonEventMap<this>>(eventName: K, listener: Partial<SearchButtonEventMap<this>>[K], options?: ObservableListenerOpts): void;
-
-	fire<K extends keyof SearchButtonEventMap<this>>(eventName: K, ...args: Parameters<SearchButtonEventMap<this>[K]>): boolean
-
-	set listeners(listeners: ObservableListener<SearchButtonEventMap<this>>)
+	fire<K extends keyof SearchButtonEventMap<this>>(eventName: K, ...args: Parameters<SearchButtonEventMap<Component>[K]>): boolean
 }
 
 export class SearchButton extends Button {
@@ -140,4 +137,4 @@ export class SearchButton extends Button {
  * @param config
  * @param items
  */
-export const searchbtn = (config?:Config<SearchButton>) => createComponent(new SearchButton(), config);
+export const searchbtn = (config?:Config<SearchButton, SearchButtonEventMap<SearchButton>>) => createComponent(new SearchButton(), config);

@@ -1,7 +1,8 @@
 import {List, RowRenderer} from "./List";
 import {Store} from "../data";
-import {Config, createComponent} from "./Component";
+import {ComponentEventMap, createComponent} from "./Component";
 import {E} from "../util";
+import {Config} from "./Observable";
 
 
 export const TreeRowRenderer:RowRenderer = (record, row, me:Tree<Store>, storeIndex) => {
@@ -85,15 +86,7 @@ export class Tree<StoreType extends Store> extends List {
 }
 
 
-type TreeConfig<StoreType extends Store = Store> = Omit<Config<Tree<StoreType>>, "rowSelection"> & {
-    /**
-     * Store that provides the data
-     */
-    storeBuilder: TreeStoreBuilder<StoreType>,
-
-    renderer?: RowRenderer
-
-}
+type TreeConfig<StoreType extends Store = Store> = Omit<Config<Tree<StoreType>, ComponentEventMap<Tree<StoreType>>, "storeBuilder" | "renderer">, "rowSelection">
 
 /**
  * Shorthand function to create {@see Table}

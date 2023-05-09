@@ -5,8 +5,8 @@
  */
 
 import {btn} from "../Button.js";
-import {Observable, ObservableListener, ObservableListenerOpts} from "../Observable.js";
-import {comp, Component, ComponentEventMap, Config, createComponent} from "../Component.js";
+import {Config, Observable, ObservableListener, ObservableListenerOpts} from "../Observable.js";
+import {comp, Component, ComponentEventMap, createComponent} from "../Component.js";
 
 /**
  * @inheritDoc
@@ -18,15 +18,13 @@ export interface ColorPickerEventMap<Type> extends ComponentEventMap<Type> {
 	 * @param colorPicker
 	 * @param color Hexadecimal color. eg. "000000"
 	 */
-	select: <Sender extends Type> (colorPicker: Sender, color: string) => void
+	select:  (colorPicker: Type, color: string) => void
 }
 
 export interface ColorPicker {
 	on<K extends keyof ColorPickerEventMap<ColorPicker>>(eventName: K, listener: Partial<ColorPickerEventMap<ColorPicker>>[K], options?: ObservableListenerOpts): void
 
-	fire<K extends keyof ColorPickerEventMap<ColorPicker>>(eventName: K, ...args: Parameters<ColorPickerEventMap<ColorPicker>[K]>): boolean
-
-	set listeners(listeners: ObservableListener<ColorPickerEventMap<this>>)
+	fire<K extends keyof ColorPickerEventMap<ColorPicker>>(eventName: K, ...args: Parameters<ColorPickerEventMap<Component>[K]>): boolean
 }
 
 /**
@@ -153,4 +151,4 @@ export class ColorPicker extends Component {
  *
  * @param config
  */
-export const colorpicker = (config?: Config<ColorPicker>) => createComponent(new ColorPicker(), config);
+export const colorpicker = (config?: Config<ColorPicker, ColorPickerEventMap<ColorPicker>>) => createComponent(new ColorPicker(), config);

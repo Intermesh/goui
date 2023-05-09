@@ -5,9 +5,9 @@
  */
 
 import {ContainerField} from "./ContainerField.js";
-import {Observable, ObservableListener, ObservableListenerOpts} from "../Observable.js";
+import {Config, Observable, ObservableListener, ObservableListenerOpts} from "../Observable.js";
 import {Notifier} from "../../Notifier.js";
-import {Component, Config, createComponent} from "../Component.js";
+import {Component, createComponent} from "../Component.js";
 import {FieldEventMap} from "./Field.js";
 import {t} from "../../Translate.js";
 import {AbstractDataSource, BaseEntity, DefaultEntity, EntityID} from "../../data/index.js";
@@ -21,39 +21,36 @@ export interface FormEventMap<Type> extends FieldEventMap<Type> {
 	 *
 	 * @param form
 	 */
-	submit: <Sender extends Type>(form: Sender, handlerResponse: any) => any,
+	submit: (form: Type, handlerResponse: any) => any,
 
 	/**
 	 * Not fired by the framework. But comes in handy when you extend this form and add a cancel button
 	 *
 	 * @param form
 	 */
-	cancel: <Sender extends Type>(form: Sender) => any
+	cancel: (form: Type) => any
 
-	saved: <Sender extends Type>(form:Sender, response:any) => any
+	saved: (form: Type, response:any) => any
 
 	/**
 	 * When the data is fetched from the store. but before it is put into the fields
 	 * @param form
 	 * @param data the entity from the store
 	 */
-	load: <Sender extends Type>(form: Sender, data: any) => any,
+	load: (form: Type, data: any) => any,
 
 	/**
 	 * When the data in the fields is serialized to a single json object to be posted to the server.
 	 * @param form
 	 * @param data
 	 */
-	serialize: <Sender extends Type>(form: Sender, data: any) => void,
+	serialize: (form: Type, data: any) => void,
 }
 
 export interface Form {
 	on<K extends keyof FormEventMap<this>>(eventName: K, listener: Partial<FormEventMap<this>>[K], options?: ObservableListenerOpts): void
 
-	fire<K extends keyof FormEventMap<this>>(eventName: K, ...args: Parameters<FormEventMap<this>[K]>): boolean
-
-	set listeners(listeners: ObservableListener<FormEventMap<this>>)
-
+	fire<K extends keyof FormEventMap<this>>(eventName: K, ...args: Parameters<FormEventMap<Component>[K]>): boolean
 	get el(): HTMLFormElement
 }
 
@@ -327,4 +324,4 @@ export class Form extends ContainerField {
  * @param config
  * @param items
  */
-export const form = (config?: Config<Form>, ...items: Component[]) => createComponent(new Form, config, items);
+export const form = (config?: Config<Form, FormEventMap<Form>>, ...items: Component[]) => createComponent(new Form, config, items);

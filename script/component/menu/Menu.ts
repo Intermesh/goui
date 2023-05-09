@@ -4,11 +4,12 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {Component, Config, createComponent} from "../Component.js";
+import {Component, ComponentEventMap, createComponent} from "../Component.js";
 import {root} from "../Root.js";
 import {Button} from "../Button.js";
 import {CheckboxField} from "../form/index.js";
 import {Toolbar} from "../Toolbar.js";
+import {Config} from "../Observable";
 
 
 /**

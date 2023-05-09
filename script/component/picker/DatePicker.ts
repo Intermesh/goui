@@ -4,23 +4,22 @@
  * @author Michael de Hart <mdhart@intermesh.nl>
  */
 
-import {Component, ComponentEventMap, Config, createComponent} from "../Component.js";
+import {Component, ComponentEventMap, createComponent} from "../Component.js";
 import {DateTime} from "../../util/DateTime.js";
 import {E} from "../../util/Element.js";
-import {Observable, ObservableListener, ObservableListenerOpts} from "../Observable.js";
+import {Config, Observable, ObservableListener, ObservableListenerOpts} from "../Observable.js";
 // import {Button} from "../Button";
 export interface DatePickerEventMap<Type> extends ComponentEventMap<Type> {
 
-	'select': <Sender extends Type>(datepicker: Sender, date: DateTime) => false | void
-	'select-range': <Sender extends Type>(datepicker: Sender, start: DateTime, end: DateTime) => false | void
+	'select': (datepicker: Type, date: DateTime) => false | void
+	'select-range': (datepicker: Type, start: DateTime, end: DateTime) => false | void
 }
 
 export interface DatePicker {
 	on<K extends keyof DatePickerEventMap<this>>(eventName: K, listener: Partial<DatePickerEventMap<this>>[K], options?: ObservableListenerOpts): void;
 
-	fire<K extends keyof DatePickerEventMap<this>>(eventName: K, ...args: Parameters<DatePickerEventMap<this>[K]>): boolean;
+	fire<K extends keyof DatePickerEventMap<this>>(eventName: K, ...args: Parameters<DatePickerEventMap<Component>[K]>): boolean;
 
-	set listeners(listeners: ObservableListener<DatePickerEventMap<this>>)
 }
 
 export class DatePicker extends Component {
@@ -200,4 +199,4 @@ export class DatePicker extends Component {
 		});
 	}
 }
-export const datepicker = (config?: Config<DatePicker>) => createComponent(new DatePicker(), config);
+export const datepicker = (config?: Config<DatePicker, DatePickerEventMap<DatePicker>>) => createComponent(new DatePicker(), config);

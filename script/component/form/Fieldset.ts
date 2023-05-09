@@ -4,8 +4,10 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {Component, Config, createComponent} from "../Component.js";
+import {Component, createComponent} from "../Component.js";
 import {Form} from "./Form.js";
+import {Config} from "../Observable";
+import {FieldEventMap} from "./Field";
 
 /**
  * Field set component
@@ -48,4 +50,4 @@ export class Fieldset extends Component {
  * @param config
  * @param items
  */
-export const fieldset = (config?: Config<Fieldset>, ...items: Component[]) => createComponent(new Fieldset(), config, items);
+export const fieldset = (config?: Config<Fieldset, FieldEventMap<Fieldset>>, ...items: Component[]) => createComponent(new Fieldset(), config, items);

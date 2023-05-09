@@ -5,14 +5,14 @@
  */
 
 import {TextField} from "./TextField.js";
-import {ObservableListener, ObservableListenerOpts} from "../Observable.js";
+import {Config, ObservableListener, ObservableListenerOpts} from "../Observable.js";
 
 import {Table} from "../table/Table.js";
 import {root} from "../Root.js";
 import {FunctionUtil} from "../../util/FunctionUtil.js";
 import {FieldEventMap} from "./Field.js";
 import {btn} from "../Button.js";
-import {Config, createComponent} from "../Component.js";
+import {Component, createComponent} from "../Component.js";
 
 export interface AutocompleteEventMap<Type> extends FieldEventMap<Type> {
 	/**
@@ -20,16 +20,13 @@ export interface AutocompleteEventMap<Type> extends FieldEventMap<Type> {
 	 *
 	 * @param form
 	 */
-	autocomplete: <Sender extends Type>(field: Sender, input: string) => any
+	autocomplete: (field: Type, input: string) => any
 }
 
 export interface AutocompleteField<TableType extends Table = Table> {
 	on<K extends keyof AutocompleteEventMap<this>>(eventName: K, listener: Partial<AutocompleteEventMap<this>>[K], options?: ObservableListenerOpts): void
 
-	fire<K extends keyof AutocompleteEventMap<this>>(eventName: K, ...args: Parameters<AutocompleteEventMap<this>[K]>): boolean
-
-	set listeners(listeners: ObservableListener<AutocompleteEventMap<this>>)
-
+	fire<K extends keyof AutocompleteEventMap<this>>(eventName: K, ...args: Parameters<AutocompleteEventMap<Component>[K]>): boolean
 }
 
 /**
@@ -268,4 +265,4 @@ export class AutocompleteField<TableType extends Table = Table> extends TextFiel
  *
  * @param config
  */
-export const autocomplete = (config: Config<AutocompleteField> & { table: Table }) => createComponent(new AutocompleteField(config.table), config);
+export const autocomplete = (config: Config<AutocompleteField, AutocompleteEventMap<AutocompleteField>, "table">) => createComponent(new AutocompleteField(config.table), config);

@@ -4,8 +4,9 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {Field} from "./Field.js";
-import {Component, Config, createComponent} from "../Component.js";
+import {Field, FieldEventMap} from "./Field.js";
+import {Component, createComponent} from "../Component.js";
+import {Config} from "../Observable";
 
 export class DisplayField extends Field {
 	baseCls = ''
@@ -17,4 +18,4 @@ export class DisplayField extends Field {
 	}
 }
 
-export const displayfield = (config: Config<DisplayField>, ...items: Component[]) => createComponent(new DisplayField(config?.tagName), config, items);
+export const displayfield = (config: Config<DisplayField, FieldEventMap<DisplayField>>, ...items: Component[]) => createComponent(new DisplayField(config?.tagName), config, items);

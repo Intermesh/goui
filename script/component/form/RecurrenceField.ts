@@ -9,10 +9,11 @@ import {t} from "../../Translate.js";
 import {E} from "../../util/Element.js";
 import {DateTime} from "../../util/DateTime.js";
 import {RecurrenceRule} from "../../util/Recurrence.js";
-import {Config, createComponent} from "../Component.js";
-import {Field} from "./Field.js";
+import {createComponent} from "../Component.js";
+import {Field, FieldEventMap} from "./Field.js";
 import {btn, Button} from "../Button.js";
 import {menu} from "../menu/index.js";
+import {Config} from "../Observable";
 
 export class RecurrenceField extends Field {
 
@@ -109,4 +110,4 @@ export class RecurrenceField extends Field {
  *
  * @param config
  */
-export const recurrencefield = (config?: Config<RecurrenceField>) => createComponent(new RecurrenceField(), config);
+export const recurrencefield = (config?: Config<RecurrenceField, FieldEventMap<RecurrenceField>>) => createComponent(new RecurrenceField(), config);

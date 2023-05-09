@@ -5,7 +5,7 @@
  */
 
 import {FunctionUtil} from "../util/FunctionUtil.js";
-import {ComponentEventMap} from "./Component.js";
+import {Component, ComponentEventMap} from "./Component.js";
 
 type Func = (...args: any[]) => any;
 
@@ -82,49 +82,6 @@ interface ObservableListenerWithOpts<fn> extends ObservableListenerOpts {
 export class Observable {
 
 	private lisnrs: { [key: string]: { listener: Function, unbindkey: Function, options?: ObservableListenerOpts }[] } | undefined;
-
-	/**
-	 * Add listeners
-	 *
-	 * You can pass them in two ways:
-	 *
-	 * @example
-	 * ```
-	 * Component.create({
-	 * 		listeners: {
-	 *
-	 * 			//simple syntax add the listener directly
-	 * 			additem:(container, item, index) => {
-	 * 				//do something when an item was added
-	 * 			},
-	 *
-	 * 	    // extended syntax to pass extra listener options
-	 * 			beforeadditem: {
-	 * 				//with this syntax you can pass extra options
-	 * 				fn:(container, item, index) => {
-	 * 					//do something before an item will be added but only once
-	 * 				},
-	 * 				once: true
-	 * 			}
-	 * 		}
-	 * 	})
-	 * 	```
-	 *
-	 * 	@see Observable.on()
-	 */
-	set listeners(listeners: ObservableListener<ObservableEventMap<this>>) {
-		for (let key in listeners) {
-			const eventName = key as keyof ObservableEventMap<Observable>;
-			if (typeof listeners[eventName] == 'function') {
-				this.on(eventName, listeners[eventName] as never);
-			} else {
-				const o = listeners[eventName] as Partial<ObservableListenerWithOpts<Func>>;
-				const fn = o.fn as never;
-				delete o.fn;
-				this.on(eventName, fn, o);
-			}
-		}
-	}
 
 	/**
 	 * Add a listener
@@ -214,34 +171,59 @@ export class Observable {
 }
 
 
-// export function initComp<T extends Component>(comp: T, config?: any, items?: Component[]) {
-//
-// 	if(config.listeners) {
-//
-// 		for(let key in config.listeners) {
-// 			const eventName = key as keyof ObservableEventMap<Observable>;
-// 			if(typeof config.listeners[eventName] == 'function') {
-// 				comp.on(eventName, config.listeners[eventName] as never);
-// 			} else
-// 			{
-// 				const o = config.listeners[eventName] as Partial<ObservableListenerWithOpts<Func>>;
-// 				const fn =  o.fn as never;
-// 				delete o.fn;
-// 				comp.on(eventName, fn, o);
-// 			}
-// 		}
-//
-// 		delete config.listeners;
-// 	}
-//
-// 	if (config) {
-// 		Object.assign(comp, config);
-// 	}
-//
-// 	if (items && items.length) {
-// 		comp.items.add(...items);
-// 	}
-//
-// 	return comp;
-// }
+// export type WithOptional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
+// export type WithRequired<T, K extends keyof T> = Pick<T, K> & Partial<Omit<T, K>>;
+type Writeable<T> = { -readonly [P in keyof T]: T[P] };
 
+/**
+ * Generic Config option that allows all public properties as options
+ */
+export type Config<Cmp extends Observable, EventMap extends ObservableEventMap<Observable> = ComponentEventMap<Cmp>, Required extends keyof Cmp = never> =
+
+		Writeable<
+			Partial<
+				Pick<Cmp,
+					{
+						[K in keyof Cmp]: Cmp[K] extends Function ? never : K extends Required ? never : K
+					}[keyof Cmp]
+				>
+			>
+		>
+
+		&
+
+		Writeable<Pick<Cmp, Required>>
+
+		& {
+			/**
+			 * Add listeners
+			 *
+			 * You can pass them in two ways:
+			 *
+			 * @example
+			 * ```
+			 * comp({
+			 * 		listeners: {
+			 *
+			 * 			//simple syntax add the listener directly
+			 * 			additem:(container, item, index) => {
+			 * 				//do something when an item was added
+			 * 			},
+			 *
+			 * 	    	// extended syntax to pass extra listener options
+			 * 			beforeadditem: {
+			 * 				//with this syntax you can pass extra options
+			 * 				fn:(container, item, index) => {
+			 * 					//do something before an item will be added but only once
+			 * 				},
+			 * 				once: true
+			 * 			}
+			 * 		}
+			 * 	})
+			 * 	```
+			 *
+			 * 	@see Observable.on()
+			 */
+			listeners?: ObservableListener<EventMap>
+		}
+	;

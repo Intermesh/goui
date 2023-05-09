@@ -1,6 +1,7 @@
-import {Component, Config, createComponent} from "../Component.js";
+import {Component, createComponent} from "../Component.js";
 import {E} from "../../util/index.js";
 import {checkbox, CheckboxField, CheckboxFieldConfig} from "./CheckboxField.js";
+import {Config} from "../Observable";
 
 
 export class CheckboxGroup extends Component {

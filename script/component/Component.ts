@@ -4,15 +4,12 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-// noinspection JSUnusedGlobalSymbols
 
-import {Observable, ObservableEventMap, ObservableListener, ObservableListenerOpts,} from "./Observable.js";
+import {Config, Observable, ObservableEventMap, ObservableListenerOpts,} from "./Observable.js";
 import {State} from "../State.js";
 import {Collection} from "../util/Collection.js";
 
 export type FindComponentPredicate = string | Component | ((comp: Component) => boolean | void);
-
-export type ComponentConstructor<T extends Component> = new (...args: any[]) => T;
 
 
 interface Type<T> {
@@ -27,7 +24,7 @@ export interface ComponentEventMap<Type> extends ObservableEventMap<Type> {
 	 * @see Component.render()
 	 * @param comp
 	 */
-	render: <Sender extends Type>(comp: Sender) => void
+	render: (comp: Type) => void
 
 	/**
 	 * Fires just before rendering
@@ -35,7 +32,7 @@ export interface ComponentEventMap<Type> extends ObservableEventMap<Type> {
 	 * @see Component.render()
 	 * @param comp
 	 */
-	beforerender: <Sender extends Type> (comp: Sender) => void
+	beforerender:  (comp: Type) => void
 
 	/**
 	 * Fires before the element is removed. You can cancel the remove by returning false
@@ -43,7 +40,7 @@ export interface ComponentEventMap<Type> extends ObservableEventMap<Type> {
 	 * @see Component.remove()
 	 * @param comp
 	 */
-	beforeremove: <Sender extends Type>(comp: Sender) => false | void
+	beforeremove: (comp: Type) => false | void
 
 	/**
 	 * Fires after the component has been removed
@@ -51,7 +48,7 @@ export interface ComponentEventMap<Type> extends ObservableEventMap<Type> {
 	 * @see Component.remove()
 	 * @param comp
 	 */
-	remove: <Sender extends Type> (comp: Sender) => void
+	remove:  (comp: Type) => void
 
 	/**
 	 * Fires before show. You can cancel the show by returning false
@@ -59,7 +56,7 @@ export interface ComponentEventMap<Type> extends ObservableEventMap<Type> {
 	 * @see Component.show()
 	 * @param comp
 	 */
-	beforeshow: <Sender extends Type>(comp: Sender) => false | void
+	beforeshow: (comp: Type) => false | void
 
 	/**
 	 * Fires after showing the component
@@ -67,7 +64,7 @@ export interface ComponentEventMap<Type> extends ObservableEventMap<Type> {
 	 * @see Component.show()
 	 * @param comp
 	 */
-	show: <Sender extends Type>(comp: Sender) => void
+	show: (comp: Type) => void
 
 	/**
 	 * Fires before hide. You can cancel the hide by returning false
@@ -75,7 +72,7 @@ export interface ComponentEventMap<Type> extends ObservableEventMap<Type> {
 	 * @see Component.hide()
 	 * @param comp
 	 */
-	beforehide: <Sender extends Type>(comp: Sender) => false | void
+	beforehide: (comp: Type) => false | void
 
 	/**
 	 * Fires after hiding the component
@@ -83,7 +80,7 @@ export interface ComponentEventMap<Type> extends ObservableEventMap<Type> {
 	 * @see Component.show()
 	 * @param comp
 	 */
-	hide: <Sender extends Type> (comp: Sender) => void,
+	hide:  (comp: Type) => void,
 
 	/**
 	 * Fires on focus
@@ -91,7 +88,7 @@ export interface ComponentEventMap<Type> extends ObservableEventMap<Type> {
 	 * @param comp
 	 * @param o
 	 */
-	focus: <Sender extends Type> (comp: Sender, o?: FocusOptions) => void
+	focus:  (comp: Type, o?: FocusOptions) => void
 
 	/**
 	 * Fires when this component is added to a parent
@@ -99,17 +96,17 @@ export interface ComponentEventMap<Type> extends ObservableEventMap<Type> {
 	 * @param me
 	 * @param index the index in the parents' items
 	 */
-	added: <Sender extends Type> (comp: Sender, index: number) => void
+	added:  (comp: Type, index: number) => void
 }
 
-export interface Component {
+export interface Component extends Observable {
 	on<K extends keyof ComponentEventMap<this>>(eventName: K, listener: Partial<ComponentEventMap<this>>[K], options?: ObservableListenerOpts): void
-
-	fire<K extends keyof ComponentEventMap<this>>(eventName: K, ...args: Parameters<ComponentEventMap<this>[K]>): boolean
-
-	set listeners(listeners: ObservableListener<ComponentEventMap<this>>)
+	fire<K extends keyof ComponentEventMap<this>>(eventName: K, ...args: Parameters<ComponentEventMap<any>[K]>): boolean
 }
 
+/**
+ * State object for saving and restoring state of component in browser storage for example
+ */
 export type ComponentState = Record<string, any>;
 
 
@@ -635,9 +632,6 @@ export class Component extends Observable {
 			this.el.tabIndex > -1);
 	}
 
-
-
-
 	/**
 	 * Get the component that's next to this one
 	 */
@@ -887,17 +881,6 @@ export class Mask extends Component {
 }
 
 /**
- * Generic Config option that allows all public properties as options
- */
-export type Config<Cmp> = Partial<
-	Pick<Cmp,
-		{
-			[K in keyof Cmp]: Cmp[K] extends Function ? never : K
-		}[keyof Cmp]
-	>
->;
-
-/**
  * Shorthand function to create a {@see Mask} component
  *
  * @param config
@@ -907,7 +890,7 @@ export const mask = (config?: Config<Mask>) => createComponent(new Mask(), confi
 /**
  * Shorthand function to create {@see Component}
  */
-export const comp = (config?: Config<Component>, ...items: Component[]) => createComponent(new Component(config?.tagName), config, items);	
+export const comp = (config?: Config<Component>, ...items: Component[]) => createComponent(new Component(config?.tagName), config, items);
 
 export const p = (config?: Config<Component>|string, ...items: Component[]) => createComponent(new Component("p"), typeof config == 'string' ? {html: config} : config, items);
 export const h1 = (config?: Config<Component>|string, ...items: Component[]) => createComponent(new Component("h1"), typeof config == 'string' ? {html: config} : config, items);
@@ -921,6 +904,22 @@ export const hr = (config?: Config<Component>) => createComponent(new Component(
 export const createComponent = <T extends Observable>(comp: T, config:any, items?:Component[]) : T => {
 
 	if (config) {
+		if(config.listeners) {
+			for (let key in config.listeners) {
+				const eventName = key as keyof ObservableEventMap<T>;
+				if (typeof config.listeners[eventName] == 'function') {
+					comp.on(eventName, config.listeners[eventName] as never);
+				} else {
+					const o = config.listeners[eventName];
+					const fn = o.fn as never;
+					delete o.fn;
+					comp.on(eventName, fn, o);
+				}
+			}
+
+			delete config.listeners;
+		}
+
 		Object.assign(comp as any, config);
 	}
 	if (items && items.length) {

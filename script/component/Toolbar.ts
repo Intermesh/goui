@@ -4,9 +4,10 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {comp, Component, Config} from "./Component.js";
+import {comp, Component, ComponentEventMap} from "./Component.js";
 import {Button} from "./Button.js";
 import type {Menu} from "./menu/index.js";
+import {Config} from "./Observable";
 
 
 /**

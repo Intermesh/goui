@@ -4,11 +4,11 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {comp, Component, Config, createComponent} from "./Component.js";
+import {comp, Component, createComponent} from "./Component.js";
 import {tbar, Toolbar} from "./Toolbar.js";
 import {btn, Button} from "./Button.js";
 import {DraggableComponent, DraggableComponentEventMap} from "./DraggableComponent.js";
-import {Observable, ObservableListener, ObservableListenerOpts} from "./Observable.js";
+import {Config, Observable, ObservableListener, ObservableListenerOpts} from "./Observable.js";
 import {root} from "./Root.js";
 import {FunctionUtil} from "../util/FunctionUtil.js";
 import {form, Form} from "./form/Form.js";
@@ -26,29 +26,26 @@ export interface WindowEventMap<Type> extends DraggableComponentEventMap<Type> {
 	 *
 	 * @param window
 	 */
-	close: <Sender extends Type>(window: Sender) => void
+	close: (window: Type) => void
 
 	/**
 	 * Fires when the window is maximized
 	 *
 	 * @param window
 	 */
-	maximize: <Sender extends Type>(window: Sender) => void
+	maximize: (window: Type) => void
 
 	/**
 	 * Fires when the window is restored after being maximized
 	 *
 	 * @param window
 	 */
-	unmaximize: <Sender extends Type> (window: Sender) => void
+	unmaximize:  (window: Type) => void
 }
 
 export interface Window {
 	on<K extends keyof WindowEventMap<this>>(eventName: K, listener: Partial<WindowEventMap<this>>[K], options?: ObservableListenerOpts): void;
-
-	fire<K extends keyof WindowEventMap<this>>(eventName: K, ...args: Parameters<WindowEventMap<this>[K]>): boolean
-
-	set listeners(listeners: ObservableListener<WindowEventMap<this>>)
+	fire<K extends keyof WindowEventMap<this>>(eventName: K, ...args: Parameters<WindowEventMap<any>[K]>): boolean
 }
 
 /**
@@ -599,4 +596,4 @@ export class Window extends DraggableComponent {
  * @param config
  * @param items
  */
-export const win = (config?:Config<Window>, ...items:Component[]) => createComponent(new Window(), config, items);
+export const win = (config?:Config<Window, WindowEventMap<Window>>, ...items:Component[]) => createComponent(new Window(), config, items);

@@ -4,11 +4,11 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {Observable, ObservableEventMap, ObservableListener, ObservableListenerOpts} from "../Observable.js";
+import {Config, Observable, ObservableEventMap, ObservableListener, ObservableListenerOpts} from "../Observable.js";
 import {List} from "../List.js";
 import {ArrayUtil} from "../../util/ArrayUtil.js";
-import {Config} from "../Component.js";
-export interface RowSelectEventMap<T extends Observable> extends ObservableEventMap<T> {
+import {Component} from "../Component";
+export interface RowSelectEventMap<Type extends Observable> extends ObservableEventMap<Type> {
 	/**
 	 * Fires when selection changes. When holding arrow on keyboard it will only fire once at key up to prevent
 	 * flooding the server with requests
@@ -29,14 +29,14 @@ export interface RowSelectEventMap<T extends Observable> extends ObservableEvent
 	 * ```
 	 * @param rowSelect
 	 */
-	selectionchange:<Sender extends T> (rowSelect: Sender) => void
+	selectionchange: (rowSelect: Type) => void
 
 	/**
 	 * Fires when a row is selected
 	 * @param rowSelect
 	 * @param storeIndex
 	 */
-	rowselect:<Sender extends T>  (rowSelect: Sender, storeIndex: number) => void
+	rowselect:  (rowSelect: Type, storeIndex: number) => void
 
 	/**
 	 * Fires when a row is deselected
@@ -44,13 +44,13 @@ export interface RowSelectEventMap<T extends Observable> extends ObservableEvent
 	 * @param rowSelect
 	 * @param storeIndex
 	 */
-	rowdeselect:<Sender extends T>  (rowSelect: Sender, storeIndex: number) => void
+	rowdeselect:  (rowSelect: Type, storeIndex: number) => void
 }
 
 export interface RowSelect {
 	on<K extends keyof RowSelectEventMap<this>>(eventName: K, listener: Partial<RowSelectEventMap<this>>[K], options?: ObservableListenerOpts): void
-	fire<K extends keyof RowSelectEventMap<this>>(eventName: K, ...args: Parameters<RowSelectEventMap<this>[K]>): boolean
-	set listeners (listeners: ObservableListener<RowSelectEventMap<this>>)
+	fire<K extends keyof RowSelectEventMap<this>>(eventName: K, ...args: Parameters<RowSelectEventMap<any>[K]>): boolean
+
 }
 
 
@@ -67,10 +67,10 @@ export class RowSelect extends Observable {
 	public multiSelect = true;
 	private hasKeyUpListener: Boolean = false;
 
-	constructor(readonly table: List) {
+	constructor(readonly list: List) {
 		super();
 
-		this.table.on('beforerender', (me: List) => {
+		this.list.on('beforerender', (me: List) => {
 
 			const tableEl = me.el;
 
@@ -84,7 +84,7 @@ export class RowSelect extends Observable {
 			});
 
 			tableEl.addEventListener("focus", (e) => {
-				if(!this.selected.length && this.table.store.get(0)) {
+				if(!this.selected.length && this.list.store.get(0)) {
 					this.selected = [0];
 				}
 			})
@@ -97,7 +97,7 @@ export class RowSelect extends Observable {
 
 	public selectAll() {
 		const selected = [];
-		for(let i = 0, c = this.table.store.count(); i < c; i ++) {
+		for(let i = 0, c = this.list.store.count(); i < c; i ++) {
 			selected.push(i);
 		}
 		this.selected = selected;
@@ -201,7 +201,7 @@ export class RowSelect extends Observable {
 
 		let index = 0, change = false;
 		if (e.key == "ArrowDown") {
-			if (this.lastIndex == this.table.store.count() - 1) {
+			if (this.lastIndex == this.list.store.count() - 1) {
 				return;
 			}
 
@@ -237,7 +237,7 @@ export class RowSelect extends Observable {
 
 		if (change && !this.hasKeyUpListener) {
 			this.hasKeyUpListener = true;
-			this.table.el.addEventListener('keyup', () => {
+			this.list.el.addEventListener('keyup', () => {
 				this.fire('selectionchange', this);
 				this.hasKeyUpListener = false;
 			}, {once: true});
@@ -249,14 +249,7 @@ export class RowSelect extends Observable {
 
 }
 
-export type RowSelectConfig = {
-
-	/**
-	 * The list component
-	 */
-	list: any,
-
-} & Config<RowSelect>
+export type RowSelectConfig = Config<RowSelect, RowSelectEventMap<RowSelect>, "list">
 
 /**
  * Shorthand function to create {@see RowSelect}

@@ -4,9 +4,9 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {Observable} from "../Observable.js";
+import {Config, Observable} from "../Observable.js";
 import {Table} from "./Table.js";
-import {Component, Config, createComponent} from "../Component.js";
+import {Component, createComponent} from "../Component.js";
 import {Format} from "../../util/Format.js";
 import {checkbox} from "../form/CheckboxField.js";
 

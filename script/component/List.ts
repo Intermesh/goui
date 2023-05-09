@@ -4,17 +4,15 @@
  * @author Michael de Hart <mdhart@intermesh.nl>
  */
 
-import {Component, ComponentEventMap, Config, createComponent} from "./Component.js";
+import {Component, ComponentEventMap, createComponent} from "./Component.js";
 import {Store, storeRecordType} from "../data/Store.js";
 import {t} from "../Translate.js";
 import {E} from "../util/Element.js";
 import {rowselect, RowSelect, RowSelectConfig} from "./table/RowSelect.js";
-import {ObservableListener, ObservableListenerOpts} from "./Observable.js";
+import {Config, ObservableListener, ObservableListenerOpts} from "./Observable.js";
 
 export type RowRenderer = (record: any, row: HTMLElement, list: any, storeIndex: number) => string | Component[] | void;
 
-type extractStoreType<ListType> = ListType extends List<infer StoreType> ? StoreType : never;
-type extractRecordType<StoreType> = StoreType extends Store<infer RecordType> ? RecordType : never;
 
 /**
  * @inheritDoc
@@ -25,14 +23,14 @@ export interface ListEventMap<Type> extends ComponentEventMap<Type> {
 	 *
 	 * @param list
 	 */
-	scrolleddown: <Sender extends Type> (list: Sender) => void
+	scrolleddown:  (list: Type) => void
 	/**
 	 * Fires when the user sorts the list
 	 *
 	 * @param list
 	 * @param dataIndex
 	 */
-	sort: <Sender extends Type> (list: Sender, dataIndex: string) => void
+	sort:  (list: Type, dataIndex: string) => void
 
 	/**
 	 * Fires when a row is mousedowned
@@ -41,7 +39,7 @@ export interface ListEventMap<Type> extends ComponentEventMap<Type> {
 	 * @param storeIndex
 	 * @param ev
 	 */
-	rowmousedown: <Sender extends Type> (list: Sender, storeIndex: number, row:HTMLElement, ev: MouseEvent) => void
+	rowmousedown:  (list: Type, storeIndex: number, row:HTMLElement, ev: MouseEvent) => void
 
 	/**
 	 * Fires when a row is clicked
@@ -50,7 +48,7 @@ export interface ListEventMap<Type> extends ComponentEventMap<Type> {
 	 * @param storeIndex
 	 * @param ev
 	 */
-	rowclick: <Sender extends Type> (list: Sender, storeIndex: number, row:HTMLElement, ev: MouseEvent) => void
+	rowclick:  (list: Type, storeIndex: number, row:HTMLElement, ev: MouseEvent) => void
 
 	/**
 	 * Fires when a row is double clicked
@@ -59,7 +57,7 @@ export interface ListEventMap<Type> extends ComponentEventMap<Type> {
 	 * @param storeIndex
 	 * @param ev
 	 */
-	rowdblclick: <Sender extends Type> (list: Sender, storeIndex: number, row:HTMLElement, ev: MouseEvent) => void
+	rowdblclick:  (list: Type, storeIndex: number, row:HTMLElement, ev: MouseEvent) => void
 
 	/**
 	 * Fires when records are rendered into rows.
@@ -67,7 +65,7 @@ export interface ListEventMap<Type> extends ComponentEventMap<Type> {
 	 * @param list
 	 * @param records
 	 */
-	renderrows: <Sender extends Type> (list: Sender, records: any[]) => void;
+	renderrows:  (list: Type, records: any[]) => void;
 
 	/**
 	 * Fires when a row is clicked or navigated with arrows
@@ -76,15 +74,13 @@ export interface ListEventMap<Type> extends ComponentEventMap<Type> {
 	 * @param storeIndex
 	 * @param record
 	 */
-	navigate: <Sender extends Type> (list: Sender, storeIndex: number, record: any) => void
+	navigate:  (list: Type, storeIndex: number) => void
 
 }
 
 export interface List<StoreType extends Store = Store> {
 	on<K extends keyof ListEventMap<this>>(eventName: K, listener: Partial<ListEventMap<this>>[K], options?: ObservableListenerOpts): void;
-
-	fire<K extends keyof ListEventMap<this>>(eventName: K, ...args: Parameters<ListEventMap<this>[K]>): boolean
-
+	fire<K extends keyof ListEventMap<this>>(eventName: K, ...args: Parameters<ListEventMap<any>[K]>): boolean
 }
 
 export class List<StoreType extends Store = Store> extends Component {
@@ -186,9 +182,7 @@ export class List<StoreType extends Store = Store> extends Component {
 	private initNavigateEvent() {
 		this.on('rowmousedown', (list, storeIndex, row,  ev) => {
 			if (!ev.shiftKey && !ev.ctrlKey) {
-				const record = this.store.get(storeIndex) as never;
-
-				this.fire("navigate", this, storeIndex, record);
+				this.fire("navigate", this, storeIndex);
 			}
 		});
 
@@ -200,9 +194,8 @@ export class List<StoreType extends Store = Store> extends Component {
 
 					const selected = this.rowSelect!.selected;
 					if (selected.length) {
-						const storeIndex = selected[0],
-								record = this.store.get(storeIndex)  as never;
-						this.fire("navigate", this, storeIndex,record);
+						const storeIndex = selected[0]
+						this.fire("navigate", this, storeIndex);
 					}
 				}
 			});
@@ -310,19 +303,8 @@ export class List<StoreType extends Store = Store> extends Component {
 	}
 }
 
-export type ListConfig<StoreType extends Store> = Omit<Config<List>, "rowSelection"|"listeners"> & {
-	/**
-	 * Store that provides the data
-	 */
-	store: StoreType,
 
-	/**
-	 * The list item render function
-	 */
-	renderer: RowRenderer,
-
-	listeners?: ObservableListener<ListEventMap<List<StoreType>>>
-}
+export type ListConfig<StoreType extends Store> = Omit<Config<List<StoreType>, ListEventMap<List<StoreType>>, "store" | "renderer">, "rowSelection">
 
 /**
  * Shorthand function to create {@see Table}

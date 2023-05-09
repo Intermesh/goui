@@ -4,9 +4,10 @@
  * @author Michael de Hart <mdhart@intermesh.nl>
  */
 
-import {Field} from "./Field.js";
-import {Config, createComponent} from "../Component.js";
+import {Field, FieldEventMap} from "./Field.js";
+import {createComponent} from "../Component.js";
 import {btn} from "../Button.js";
+import {Config} from "../Observable";
 
 interface MapFieldRow {
 	field: Field
@@ -14,13 +15,7 @@ interface MapFieldRow {
 	isNew: boolean
 }
 
-interface MapFieldConfig extends Config<Field> {
-	/**
-	 * Function that returns a new form field for an array item
-	 */
-	buildField: FieldBuilder
-
-}
+type MapFieldConfig = Config<MapField, FieldEventMap<MapField>, "buildField">;
 
 type FieldBuilder = (value?: MapFieldValue) => Field;
 
@@ -28,7 +23,7 @@ type MapFieldValue = Record<string, any>;
 
 export class MapField extends Field {
 
-	rows: MapFieldRow[] = []
+	private rows: MapFieldRow[] = []
 
 	constructor(public buildField: FieldBuilder){
 		super('div')

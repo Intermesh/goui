@@ -3,7 +3,7 @@
  * @copyright Copyright 2023 Intermesh BV
  * @author Merijn Schering <mschering@intermesh.nl>
  */
-import {Store} from "../data/Store.js";
+import {Store, StoreEventMap} from "../data/Store.js";
 import {AbstractDataSource, BaseEntity, DefaultEntity, QueryParams} from "./AbstractDataSource.js";
 import {ObjectUtil} from "../util/index.js";
 import {Config, createComponent, Table, TableColumn} from "../component/index.js";
@@ -34,7 +34,7 @@ export class DataSourceStore<EntityType extends BaseEntity = DefaultEntity> exte
 	 */
 	private loaded = false;
 
-	constructor(private dataSource:AbstractDataSource<EntityType>) {
+	constructor(readonly dataSource:AbstractDataSource<EntityType>) {
 		super();
 
 		// very quick and dirty update on changes to the entity store.
@@ -138,14 +138,15 @@ export class DataSourceStore<EntityType extends BaseEntity = DefaultEntity> exte
 	}
 }
 
+type DataSourceStoreConfig<EntityType extends BaseEntity = DefaultEntity> =
+	Config<DataSourceStore<EntityType>, StoreEventMap<DataSourceStore<EntityType>, EntityType>, "dataSource">
 
-type DataSourceStoreConfig<EntityType extends BaseEntity = DefaultEntity> = Config<DataSourceStore<EntityType>> & {
+type DataSourceStoreConfig1<EntityType extends BaseEntity = DefaultEntity> = Config<DataSourceStore<EntityType>> & {
 	/**
 	 * Store that provides the data
 	 */
 	dataSource: AbstractDataSource<EntityType>
 }
-
 
 /**
  * Shorthand function to create a {@see DataSourceStore}

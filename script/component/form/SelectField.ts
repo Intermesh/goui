@@ -4,9 +4,10 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {Field} from "./Field.js";
-import {Config, createComponent} from "../Component.js";
+import {Field, FieldEventMap} from "./Field.js";
+import {createComponent} from "../Component.js";
 import {Store} from "../../data/index.js";
+import {Config} from "../Observable";
 
 /**
  * Select field
@@ -116,4 +117,4 @@ export class SelectField extends Field {
  *
  * @param config
  */
-export const select = (config?: Config<SelectField>) => createComponent(new SelectField(), config);
+export const select = (config?: Config<SelectField, FieldEventMap<SelectField>>) => createComponent(new SelectField(), config);

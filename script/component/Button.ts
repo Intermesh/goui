@@ -4,10 +4,10 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {Component, ComponentEventMap, Config, createComponent} from "./Component.js";
+import {Component, ComponentEventMap, createComponent} from "./Component.js";
 import {Menu} from "./menu/Menu.js";
 import {root} from "./Root.js";
-import {Observable, ObservableListener, ObservableListenerOpts} from "./Observable.js";
+import {Config, Observable, ObservableListener, ObservableListenerOpts} from "./Observable.js";
 import {MaterialIcon} from "./MaterialIcon.js";
 import {router} from "../Router.js";
 import {Toolbar} from "./Toolbar.js";
@@ -25,7 +25,7 @@ export interface ButtonEventMap<Type> extends ComponentEventMap<Type> {
 	 * @param item
 	 * @param index
 	 */
-	beforeshowmenu: <Sender extends Type> (button: Sender, menu: Menu, ev: MouseEvent) => false | void
+	beforeshowmenu: (button: Type, menu: Menu, ev: MouseEvent) => false | void
 
 	/**
 	 * Fires when the button menu is shown
@@ -34,7 +34,7 @@ export interface ButtonEventMap<Type> extends ComponentEventMap<Type> {
 	 * @param menu
 	 * @param ev
 	 */
-	showmenu: <Sender extends Type> (button: Sender, menu: Menu, ev: MouseEvent) => false | void,
+	showmenu: (button: Type, menu: Menu, ev: MouseEvent) => false | void,
 
 	/**
 	 * Fires when the button is clicked.
@@ -45,16 +45,12 @@ export interface ButtonEventMap<Type> extends ComponentEventMap<Type> {
 	 * @param button
 	 * @param ev
 	 */
-	click: <Sender extends Type> (button: Sender, ev: MouseEvent) => void
+	click: (button: Type, ev: MouseEvent) => void
 }
 
 export interface Button extends Component {
 	on<K extends keyof ButtonEventMap<this>>(eventName: K, listener: Partial<ButtonEventMap<this>>[K], options?: ObservableListenerOpts): void
-
-	fire<K extends keyof ButtonEventMap<this>>(eventName: K, ...args: Parameters<ButtonEventMap<this>[K]>): boolean
-
-	set listeners(listeners: ObservableListener<ButtonEventMap<this>>)
-
+	fire<K extends keyof ButtonEventMap<this>>(eventName: K, ...args: Parameters<ButtonEventMap<any>[K]>): boolean
 	get el(): HTMLButtonElement
 }
 
@@ -317,4 +313,4 @@ export class Button extends Component {
  *
  * @param config
  */
-export const btn = (config?: Config<Button>) => createComponent(new Button(), config);
+export const btn = (config?: Config<Button, ButtonEventMap<Button>>) => createComponent(new Button(), config);

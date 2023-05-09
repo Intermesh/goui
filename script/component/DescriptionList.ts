@@ -4,7 +4,8 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {comp, Component, Config, createComponent} from "./Component.js";
+import {comp, Component, createComponent} from "./Component.js";
+import {Config} from "./Observable";
 
 type renderFunc = (dd: Component) => void;
 

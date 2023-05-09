@@ -4,9 +4,10 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {Component, Config, createComponent} from "./Component.js";
+import {Component, ComponentEventMap, createComponent} from "./Component.js";
 import {CardContainer} from "./CardContainer.js";
 import {btn} from "./Button.js";
+import {Config} from "./Observable";
 
 
 /**

@@ -3,8 +3,9 @@
  * @copyright Copyright 2023 Intermesh BV
  * @author Merijn Schering <mschering@intermesh.nl>
  */
-import {Component, ComponentState, Config, createComponent, FindComponentPredicate} from "./Component.js";
+import {Component, ComponentState, createComponent, FindComponentPredicate} from "./Component.js";
 import {DraggableComponent} from "./DraggableComponent.js";
+import {Config} from "./Observable";
 
 
 /**

@@ -4,12 +4,13 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {Config, createComponent} from "../Component.js";
+import {createComponent} from "../Component.js";
 import {E} from "../../util/Element.js";
 import {ColorPicker} from "../picker/ColorPicker.js";
-import {Field} from "./Field.js";
+import {Field, FieldEventMap} from "./Field.js";
 import {btn, Button} from "../Button.js";
 import {menu} from "../menu/Menu.js";
+import {Config} from "../Observable";
 
 /**
  * ColorField component
@@ -80,4 +81,4 @@ export class ColorField extends Field {
  *
  * @param config
  */
-export const colorfield = (config?:Config<ColorField>) => createComponent(new ColorField(), config);
+export const colorfield = (config?:Config<ColorField, FieldEventMap<ColorField>>) => createComponent(new ColorField(), config);

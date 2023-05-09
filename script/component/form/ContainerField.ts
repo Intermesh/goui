@@ -5,8 +5,8 @@
  */
 
 import {Field, FieldEventMap} from "./Field.js";
-import {ObservableListener, ObservableListenerOpts} from "../Observable.js";
-import {Component, Config, createComponent} from "../Component.js";
+import {Config, ObservableListener, ObservableListenerOpts} from "../Observable.js";
+import {Component, createComponent} from "../Component.js";
 import {ObjectUtil} from "../../util/ObjectUtil.js";
 import {Value} from "sass";
 
@@ -17,9 +17,7 @@ export type ContainerFieldValue = Record<string, any>;
 export interface ContainerField extends Field {
 	on<K extends keyof FieldEventMap<this>>(eventName: K, listener: Partial<FieldEventMap<ContainerField>>[K], options?: ObservableListenerOpts): void;
 
-	fire<K extends keyof FieldEventMap<this>>(eventName: K, ...args: Parameters<FieldEventMap<ContainerField>[K]>): boolean
-
-	set listeners(listeners: ObservableListener<FieldEventMap<this>>)
+	fire<K extends keyof FieldEventMap<this>>(eventName: K, ...args: Parameters<FieldEventMap<Component>[K]>): boolean
 }
 
 /**
@@ -193,4 +191,4 @@ export class ContainerField<ValueType extends ContainerFieldValue = ContainerFie
  * @param config
  * @param items
  */
-export const containerfield = (config?: Config<ContainerField>, ...items: Component[]) =>createComponent(new ContainerField(), config, items);
+export const containerfield = (config?: Config<ContainerField, FieldEventMap<ContainerField>>, ...items: Component[]) => createComponent(new ContainerField(), config, items);

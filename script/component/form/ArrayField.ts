@@ -3,22 +3,17 @@
  * @copyright Copyright 2023 Intermesh BV
  * @author Merijn Schering <mschering@intermesh.nl>
  */
-import {Field} from "./Field.js";
+import {Field, FieldEventMap} from "./Field.js";
 import {ContainerField} from "./ContainerField.js";
-import {Config, createComponent} from "../Component.js";
+import {createComponent} from "../Component.js";
 import {btn} from "../Button";
+import {Config} from "../Observable";
 
 
 /**
  * @inheritDoc
  */
-type ArrayFieldConfig = {
-	/**
-	 * Function that returns a new form field for an array item
-	 */
-	buildField: FieldBuilder
-
-} & Config<ArrayField>
+type ArrayFieldConfig = Config<ArrayField, FieldEventMap<ArrayField>, "buildField">
 
 type FieldBuilder = (value?: Record<string, any>) => Field;
 type ArrayFieldValue = Record<string, any>[];
@@ -27,7 +22,7 @@ export interface ArrayField {
 
 	// on<K extends keyof FieldEventMap<this>>(eventName: K, listener: Partial<FieldEventMap<this>>[K], options?: ObservableListenerOpts): void
 	//
-	// fire<K extends keyof FieldEventMap<this>>(eventName: K, ...args: Parameters<FieldEventMap<this>[K]>): boolean
+	// fire<K extends keyof FieldEventMap<this>>(eventName: K, ...args: Parameters<FieldEventMap<Component>[K]>): boolean
 }
 
 /**

@@ -4,7 +4,9 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 import {TextField} from "./TextField.js";
-import {Config, createComponent} from "../Component.js";
+import {createComponent} from "../Component.js";
+import {Config} from "../Observable";
+import {FieldEventMap} from "./Field";
 
 /**
  * Text Area component
@@ -49,4 +51,4 @@ export class TextAreaField extends TextField {
  *
  * @param config
  */
-export const textarea = (config?: Config<TextAreaField>) => createComponent(new TextAreaField(), config);
+export const textarea = (config?: Config<TextAreaField, FieldEventMap<TextAreaField>>) => createComponent(new TextAreaField(), config);

@@ -21,7 +21,7 @@ export interface FieldEventMap<Type> extends ComponentEventMap<Type> {
 	 *
 	 * @param field
 	 */
-	change: <Sender extends Type> (field: Sender, newValue: any, oldValue: any) => void
+	change:  (field: Type, newValue: any, oldValue: any) => void
 
 	/**
 	 * Fires when setValue() is called
@@ -30,7 +30,7 @@ export interface FieldEventMap<Type> extends ComponentEventMap<Type> {
 	 * @param newValue
 	 * @param oldValue
 	 */
-	setvalue: <Sender extends Type> (field: Sender, newValue: any, oldValue: any) => void
+	setvalue:  (field: Type, newValue: any, oldValue: any) => void
 
 
 	/**
@@ -40,7 +40,7 @@ export interface FieldEventMap<Type> extends ComponentEventMap<Type> {
 	 * @param newValue
 	 * @param oldValue
 	 */
-	reset: <Sender extends Type> (field: Sender, newValue: any, oldValue: any) => void
+	reset:  (field: Type, newValue: any, oldValue: any) => void
 
 	/**
 	 * Fires when validated
@@ -49,16 +49,13 @@ export interface FieldEventMap<Type> extends ComponentEventMap<Type> {
 	 *
 	 * @param field
 	 */
-	validate: <Sender extends Type> (field: Sender) => void
+	validate:  (field: Type) => void
 }
 
 
 export interface Field extends Component {
 	on<K extends keyof FieldEventMap<this>>(eventName: K, listener: Partial<FieldEventMap<this>>[K], options?: ObservableListenerOpts): void;
-
-	fire<K extends keyof FieldEventMap<this>>(eventName: K, ...args: Parameters<FieldEventMap<this>[K]>): boolean
-
-	set listeners(listeners: ObservableListener<FieldEventMap<this>>)
+	fire<K extends keyof FieldEventMap<this>>(eventName: K, ...args: Parameters<FieldEventMap<any>[K]>): boolean
 }
 
 // /**

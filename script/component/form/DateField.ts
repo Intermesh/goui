@@ -6,10 +6,12 @@
 
 import {TextField} from "./TextField.js";
 import {DateTime} from "../../util/DateTime.js";
-import {Config, createComponent} from "../Component.js";
+import {createComponent} from "../Component.js";
 import {datepicker, DatePicker} from "../picker/DatePicker.js";
 import {btn} from "../Button.js";
 import {menu} from "../menu/Menu.js";
+import {Config} from "../Observable";
+import {FieldEventMap} from "./Field";
 
 
 /**
@@ -130,4 +132,4 @@ export class DateField extends TextField {
  *
  * @param config
  */
-export const datefield = (config?: Config<DateField>) => createComponent(new DateField(), config);
+export const datefield = (config?: Config<DateField, FieldEventMap<DateField>>) => createComponent(new DateField(), config);

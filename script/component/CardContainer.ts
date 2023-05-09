@@ -4,8 +4,8 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {Component, ComponentEventMap, Config, createComponent} from "./Component.js";
-import {Observable, ObservableListener, ObservableListenerOpts} from "./Observable.js";
+import {Component, ComponentEventMap, createComponent} from "./Component.js";
+import {Config, Observable, ObservableListener, ObservableListenerOpts} from "./Observable.js";
 
 
 export interface CardContainerEventMap<Type> extends ComponentEventMap<Type> {
@@ -16,18 +16,14 @@ export interface CardContainerEventMap<Type> extends ComponentEventMap<Type> {
 	 * @param item
 	 * @param index
 	 */
-	cardchange: <Sender extends Type> (container: Sender, index: number | undefined, oldIndex: number | undefined) => false | void
+	cardchange: (container: Type, index: number | undefined, oldIndex: number | undefined) => false | void
 
 }
 
-export interface CardContainer {
+export interface CardContainer extends Component {
 	on<K extends keyof CardContainerEventMap<this>>(eventName: K, listener: Partial<CardContainerEventMap<this>>[K], options?: ObservableListenerOpts): void;
-
-	fire<K extends keyof CardContainerEventMap<this>>(eventName: K, ...args: Parameters<CardContainerEventMap<this>[K]>): boolean;
-
-	set listeners(listeners: ObservableListener<CardContainerEventMap<this>>)
+	fire<K extends keyof CardContainerEventMap<this>>(eventName: K, ...args: Parameters<CardContainerEventMap<any>[K]>): boolean;
 }
-
 
 /**
  * Card container
@@ -150,4 +146,4 @@ export class CardContainer extends Component {
  * @param config
  * @param items
  */
-export const cards = (config?: Config<CardContainer>, ...items: Component[]) => createComponent(new CardContainer(), config, items);
+export const cards = (config?: Config<CardContainer, CardContainerEventMap<CardContainer>>, ...items: Component[]) => createComponent(new CardContainer(), config, items);

@@ -4,8 +4,8 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {Component, ComponentEventMap, Config, createComponent} from "./Component.js";
-import {Observable, ObservableListener, ObservableListenerOpts} from "./Observable.js";
+import {Component, ComponentEventMap, createComponent} from "./Component.js";
+import {Config, Observable, ObservableListener, ObservableListenerOpts} from "./Observable.js";
 import {FunctionUtil} from "../util/FunctionUtil.js";
 
 
@@ -73,7 +73,7 @@ export interface DraggableComponentEventMap<Type> extends ComponentEventMap<Type
 	 *
 	 * @param comp
 	 */
-	drop: <Sender extends Type>(comp: Sender, dragData: DragData, e: MouseEvent) => void
+	drop: (comp: Type, dragData: DragData, e: MouseEvent) => void
 
 	/**
 	 * Fires contanty while the component is being dragged
@@ -81,7 +81,7 @@ export interface DraggableComponentEventMap<Type> extends ComponentEventMap<Type
 	 * @param dragData
 	 * @param e
 	 */
-	drag: <Sender extends Type>(comp: Sender, dragData: DragData, e: MouseEvent) => void;
+	drag: (comp: Type, dragData: DragData, e: MouseEvent) => void;
 
 	/**
 	 * Return false to prevent drag
@@ -89,15 +89,13 @@ export interface DraggableComponentEventMap<Type> extends ComponentEventMap<Type
 	 * @param comp
 	 * @param e
 	 */
-	dragstart: <Sender extends Type>(comp: Sender, dragData: DragData, e: MouseEvent) => false | void;
+	dragstart: (comp: Type, dragData: DragData, e: MouseEvent) => false | void;
 }
 
 
 export interface DraggableComponent {
 	on<K extends keyof DraggableComponentEventMap<this>>(eventName: K, listener: Partial<DraggableComponentEventMap<this>>[K], options?: ObservableListenerOpts): void;
-	fire<K extends keyof DraggableComponentEventMap<this>>(eventName: K, ...args: Parameters<DraggableComponentEventMap<this>[K]>): boolean
-
-	set listeners(listeners: ObservableListener<DraggableComponentEventMap<this>>)
+	fire<K extends keyof DraggableComponentEventMap<this>>(eventName: K, ...args: Parameters<DraggableComponentEventMap<any>[K]>): boolean
 }
 
 export class DraggableComponent extends Component {
@@ -355,4 +353,4 @@ export class DraggableComponent extends Component {
  * @param config
  * @param items
  */
-export const draggable = (config?: Config<DraggableComponent>, ...items: Component[]) => createComponent(new DraggableComponent(config?.tagName), config, items);
+export const draggable = (config?: Config<DraggableComponent, DraggableComponentEventMap<DraggableComponent>>, ...items: Component[]) => createComponent(new DraggableComponent(config?.tagName), config, items);

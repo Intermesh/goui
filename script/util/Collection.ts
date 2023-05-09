@@ -16,34 +16,33 @@ export interface CollectionEventMap<Type, CollectionItem> extends ObservableEven
 	 *
 	 * @param window
 	 */
-	beforeadd: <Sender extends Type, SenderCollectionItem extends CollectionItem> (collection: Sender, item: SenderCollectionItem, index:number) => void|false
+	beforeadd: (collection: Type, item: CollectionItem, index:number) => void|false
 
 	/**
 	 * Fires after adding an item.
 	 *
 	 * @param window
 	 */
-	add: <Sender extends Type, SenderCollectionItem extends CollectionItem> (collection: Sender, item:SenderCollectionItem, index:number) => void
+	add: (collection: Type, item:CollectionItem, index:number) => void
 
 	/**
 	 * Fires after removing an item.
 	 *
 	 * @param window
 	 */
-	remove: <Sender extends Type, SenderCollectionItem extends CollectionItem> (collection: Sender, item: SenderCollectionItem, index:number) => void
+	remove: (collection: Type, item: CollectionItem, index:number) => void
 
 	/**
 	 * Fires before removing an item. Return false to abort.
 	 *
 	 * @param window
 	 */
-	beforeremove: <Sender extends Type, SenderCollectionItem extends CollectionItem> (collection: Sender, item: SenderCollectionItem, index:number) => void|false
+	beforeremove: (collection: Type, item: CollectionItem, index:number) => void|false
 }
 
-export interface Collection<CollectionItem> {
+export interface Collection<CollectionItem> extends Observable {
 	on<K extends keyof CollectionEventMap<this, CollectionItem>>(eventName: K, listener: CollectionEventMap<this, CollectionItem>[K], options?: ObservableListenerOpts): void;
-	fire<K extends keyof CollectionEventMap<this, CollectionItem>>(eventName: K, ...args: Parameters<NonNullable<CollectionEventMap<this, CollectionItem>[K]>>): boolean
-	set listeners(listeners: ObservableListener<CollectionEventMap<this, CollectionItem>>)
+	fire<K extends keyof CollectionEventMap<this, CollectionItem>>(eventName: K, ...args: Parameters<CollectionEventMap<Collection<CollectionItem>, CollectionItem>[K]>): boolean
 }
 
 /**

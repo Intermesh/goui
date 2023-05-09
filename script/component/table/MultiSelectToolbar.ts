@@ -3,17 +3,18 @@
  * @copyright Copyright 2023 Intermesh BV
  * @author Merijn Schering <mschering@intermesh.nl>
  */
-import {comp, Component, Config} from "../Component.js";
+import {comp, Component, ComponentEventMap} from "../Component.js";
 import {tbarItems, Toolbar} from "../Toolbar.js";
 import {Table} from "./Table.js";
 import {t} from "../../Translate.js";
 import {btn, Button} from "../Button.js";
+import {Config} from "../Observable";
 
 export class MultiSelectToolbar extends Toolbar {
 	private label: Component;
 	private backBtn: Button;
 
-	constructor(private table: Table) {
+	constructor(readonly table: Table) {
 		super();
 
 		this.table.rowSelection!.on("selectionchange", (tableRowSelect) => {
@@ -54,7 +55,7 @@ export class MultiSelectToolbar extends Toolbar {
  * @param config
  * @param items
  */
-export const mstbar = (config: Config<MultiSelectToolbar> & {table: Table}, ...items: (Component | "->" | "-")[]) => {
+export const mstbar = (config: Config<MultiSelectToolbar, ComponentEventMap<MultiSelectToolbar>, "table">, ...items: (Component | "->" | "-")[]) => {
 
 	const c = new MultiSelectToolbar(config.table);
 	if (config) {

@@ -3,10 +3,10 @@
  * @copyright Copyright 2023 Intermesh BV
  * @author Merijn Schering <mschering@intermesh.nl>
  */
-import {Observable, ObservableListener, ObservableListenerOpts} from "../component/Observable.js";
+import {Config, Observable, ObservableListener, ObservableListenerOpts} from "../component/Observable.js";
 import {ArrayUtil} from "../util/ArrayUtil.js";
 import {Collection, CollectionEventMap} from "../util/Collection.js";
-import {Config, createComponent} from "../component/Component.js";
+import {createComponent} from "../component/Component.js";
 
 /**
  * Comparator interface for sorting data
@@ -36,7 +36,7 @@ export interface StoreEventMap<Type, RecordType> extends CollectionEventMap<Type
 	 * @param store
 	 * @param append Whether the records were added to the store.
 	 */
-	beforeload: <Sender extends Type>(store: Sender, append: boolean) => void
+	beforeload: (store: Type, append: boolean) => void
 	/**
 	 * Fires when data is loaded into the store
 	 *
@@ -44,7 +44,7 @@ export interface StoreEventMap<Type, RecordType> extends CollectionEventMap<Type
 	 * @param records
 	 * @param append Whether the records were added to the store.
 	 */
-	load: <Sender extends Type, SenderRecordType extends RecordType>(store: Sender, records: SenderRecordType[], append: boolean) => void
+	load: (store: Type, records: RecordType[], append: boolean) => void
 }
 
 export interface Store<RecordType extends StoreRecord = StoreRecord> {
@@ -52,7 +52,6 @@ export interface Store<RecordType extends StoreRecord = StoreRecord> {
 
 	fire<K extends keyof StoreEventMap<this, RecordType>>(eventName: K, ...args: Parameters<StoreEventMap<this, RecordType>[K]>): boolean
 
-	set listeners(listeners: ObservableListener<StoreEventMap<this, RecordType>>)
 }
 
 export type storeRecordType<StoreType> = StoreType extends Store<infer RecordType> ? RecordType : never;

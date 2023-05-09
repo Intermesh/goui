@@ -7,7 +7,8 @@
 import {Toolbar} from "./Toolbar.js";
 import {Store} from "../data/Store.js";
 import {btn, Button} from "./Button.js";
-import {comp, Config, createComponent} from "./Component.js";
+import {comp, createComponent} from "./Component.js";
+import {Config} from "./Observable";
 
 export class Paginator extends Toolbar {
 

@@ -14,9 +14,9 @@ import {textfield} from "../form/TextField.js";
 import {datefield} from "../form/DateField.js";
 import {Form, form} from "../form/Form.js";
 import {tbar} from "../Toolbar.js";
-import {checkbox, CheckboxField} from "../form/CheckboxField.js";
-import {RecurrenceRule, Frequency} from "../../util/Recurrence.js";
-import {Observable, ObservableListener, ObservableListenerOpts} from "../Observable.js";
+import {CheckboxField} from "../form/CheckboxField.js";
+import {Frequency, RecurrenceRule} from "../../util/Recurrence.js";
+import {ObservableListenerOpts} from "../Observable.js";
 import {numberfield} from "../form/NumberField.js";
 import {Field} from "../form/Field.js";
 import {CardContainer, CardContainerEventMap} from "../CardContainer.js";
@@ -25,13 +25,12 @@ import {checkboxgroup} from "../form/index.js";
 
 export interface RecurrencePickerEventMap<Type> extends CardContainerEventMap<Type> {
 
-	select: <Sender extends Type>(picker: Sender, rule: RecurrenceRule | null) => false | void
+	select: (picker: Type, rule: RecurrenceRule | null) => false | void
 }
 
 export interface RecurrencePicker {
 	on<K extends keyof RecurrencePickerEventMap<this>>(eventName: K, listener: Partial<RecurrencePickerEventMap<this>>[K], options?: ObservableListenerOpts): void;
-	fire<K extends keyof RecurrencePickerEventMap<this>>(eventName: K, ...args: Parameters<RecurrencePickerEventMap<this>[K]>): boolean;
-	set listeners(listeners: ObservableListener<RecurrencePickerEventMap<this>>)
+	fire<K extends keyof RecurrencePickerEventMap<this>>(eventName: K, ...args: Parameters<RecurrencePickerEventMap<Component>[K]>): boolean;
 }
 
 type FrequencyDefaults = [text: string, plural: string, repeatDefault: number, untilDefault: string, frequencyText: string]
