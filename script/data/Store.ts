@@ -47,7 +47,7 @@ export interface StoreEventMap<Type, RecordType> extends CollectionEventMap<Type
 	load: (store: Type, records: RecordType[], append: boolean) => void
 }
 
-export interface Store<RecordType extends StoreRecord = StoreRecord> {
+export interface Store<RecordType = StoreRecord> {
 	on<K extends keyof StoreEventMap<this, RecordType>>(eventName: K, listener: Partial<StoreEventMap<this, RecordType>>[K], options?: ObservableListenerOpts): void
 
 	fire<K extends keyof StoreEventMap<this, RecordType>>(eventName: K, ...args: Parameters<StoreEventMap<this, RecordType>[K]>): boolean
@@ -58,7 +58,7 @@ export type storeRecordType<StoreType> = StoreType extends Store<infer RecordTyp
 /**
  * Generic data store used by components
  */
-export class Store<RecordType  extends StoreRecord = StoreRecord> extends Collection<RecordType> {
+export class Store<RecordType = StoreRecord> extends Collection<RecordType> {
 
 	// private static stores: Record<string, Store> = {};
 	//

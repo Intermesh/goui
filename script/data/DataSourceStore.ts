@@ -3,7 +3,7 @@
  * @copyright Copyright 2023 Intermesh BV
  * @author Merijn Schering <mschering@intermesh.nl>
  */
-import {Store, StoreEventMap} from "../data/Store.js";
+import {Store, StoreEventMap, StoreRecord} from "../data/Store.js";
 import {AbstractDataSource, BaseEntity, DefaultEntity, QueryParams} from "./AbstractDataSource.js";
 import {ObjectUtil} from "../util/index.js";
 import {Config, createComponent, Table, TableColumn} from "../component/index.js";
@@ -13,13 +13,13 @@ type Relation<EntityType extends BaseEntity> = Record<keyof EntityType, {
 	path: string
 }>
 
-
+type RecordBuilder<EntityType, StoreRecord> = (entity:EntityType) => Promise<StoreRecord>;
 /**
  * DataSourceStore class
  *
  * Uses an {@see AbstractDataSource} to present data in the view.
  */
-export class DataSourceStore<EntityType extends BaseEntity = DefaultEntity> extends Store<EntityType> {
+export class DataSourceStore<EntityType extends BaseEntity = DefaultEntity, StoreRecord = EntityType> extends Store<StoreRecord> {
 
 	public queryParams: QueryParams = {};
 
@@ -33,6 +33,12 @@ export class DataSourceStore<EntityType extends BaseEntity = DefaultEntity> exte
 	 * True when loaded at least once.
 	 */
 	private loaded = false;
+
+	/**
+	 * Builds record from entity
+	 * @param entity
+	 */
+	public buildRecord: RecordBuilder <EntityType, StoreRecord> = async (entity) => <StoreRecord> <unknown> entity;
 
 	constructor(readonly dataSource:AbstractDataSource<EntityType>) {
 		super();
@@ -68,7 +74,8 @@ export class DataSourceStore<EntityType extends BaseEntity = DefaultEntity> exte
 
 		const getResponse = await this.dataSource.get(queryResponse.ids);
 
-		const records = await this.fetchRelations(getResponse.list);
+		const entities = await this.fetchRelations(getResponse.list),
+			records = await Promise.all(entities.map(this.buildRecord));
 
 		this.loadData(records, append);
 		this.loaded = true;
@@ -102,7 +109,7 @@ export class DataSourceStore<EntityType extends BaseEntity = DefaultEntity> exte
 		return Promise.all(promises).then(() => records);
 	}
 
-	reload(): Promise<EntityType[]> {
+	reload(): Promise<StoreRecord[]> {
 		this.queryParams.position = 0;
 		return super.reload();
 	}
@@ -118,7 +125,7 @@ export class DataSourceStore<EntityType extends BaseEntity = DefaultEntity> exte
 		return this.load(append);
 	}
 
-	loadPrevious(): Promise<EntityType[]> {
+	loadPrevious(): Promise<StoreRecord[]> {
 		if (!this.queryParams.limit) {
 			throw new Error("Limit and position must be set!");
 		}
@@ -138,14 +145,10 @@ export class DataSourceStore<EntityType extends BaseEntity = DefaultEntity> exte
 	}
 }
 
-type DataSourceStoreConfig<EntityType extends BaseEntity = DefaultEntity> =
-	Config<DataSourceStore<EntityType>, StoreEventMap<DataSourceStore<EntityType>, EntityType>, "dataSource">
+type DataSourceStoreConfig<EntityType extends BaseEntity = DefaultEntity, StoreRecord = EntityType> =
+	Config<DataSourceStore<EntityType>, StoreEventMap<DataSourceStore<EntityType>, EntityType>, "dataSource"> & {
 
-type DataSourceStoreConfig1<EntityType extends BaseEntity = DefaultEntity> = Config<DataSourceStore<EntityType>> & {
-	/**
-	 * Store that provides the data
-	 */
-	dataSource: AbstractDataSource<EntityType>
+	buildRecord?: RecordBuilder<EntityType, StoreRecord>
 }
 
 /**
@@ -154,4 +157,4 @@ type DataSourceStoreConfig1<EntityType extends BaseEntity = DefaultEntity> = Con
  * @param config
  */
 export const datasourcestore =
-	<EntityType extends BaseEntity = DefaultEntity>(config: DataSourceStoreConfig<EntityType>) => createComponent(new DataSourceStore<EntityType>(config.dataSource), config);
+	<EntityType extends BaseEntity = DefaultEntity, StoreRecord = EntityType>(config: DataSourceStoreConfig<EntityType, StoreRecord>) => createComponent(new DataSourceStore<EntityType>(config.dataSource), config);

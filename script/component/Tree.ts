@@ -32,7 +32,7 @@ export class Tree<StoreType extends Store> extends List {
 
     public labelProperty = "name";
 
-    constructor(public storeBuilder:TreeStoreBuilder<StoreType>, readonly renderer: RowRenderer, parentRecord?:any) {
+    constructor(public storeBuilder:TreeStoreBuilder<StoreType>, readonly renderer: RowRenderer = TreeRowRenderer, parentRecord?:any) {
 
         const store = storeBuilder(parentRecord);
 
@@ -41,7 +41,7 @@ export class Tree<StoreType extends Store> extends List {
         this.baseCls = "goui goui-tree";
 
         this.on("rowclick", (list, storeIndex, row,  ev) => {
-            this.expand(row);
+            void this.expand(row);
         });
 
         this.emptyStateHtml = "";
@@ -49,17 +49,16 @@ export class Tree<StoreType extends Store> extends List {
 
     private async expand(row:HTMLElement) {
 
-        row.cls("+expanded");
-
-        if(row.childNodes.length > 1) {
+        if(row.has(".expanded")) {
             return;
         }
+
+        row.cls("+expanded");
 
         const record = this.store.get(parseInt(row.dataset.storeIndex!))
         if(!record) {
             return;
         }
-
 
         const sub = new Tree<StoreType>(this.storeBuilder, this.renderer, record);
         sub.labelProperty = this.labelProperty;
@@ -86,11 +85,11 @@ export class Tree<StoreType extends Store> extends List {
 }
 
 
-type TreeConfig<StoreType extends Store = Store> = Omit<Config<Tree<StoreType>, ComponentEventMap<Tree<StoreType>>, "storeBuilder" | "renderer">, "rowSelection">
+type TreeConfig<StoreType extends Store = Store> = Omit<Config<Tree<StoreType>, ComponentEventMap<Tree<StoreType>>, "storeBuilder">, "rowSelection" | "store">
 
 /**
  * Shorthand function to create {@see Table}
  *
  * @param config
  */
-export const tree = <StoreType extends Store = Store>(config: TreeConfig<StoreType>) => createComponent(new Tree<StoreType>(config.storeBuilder, config.renderer ?? TreeRowRenderer), config);
+export const tree = <StoreType extends Store = Store>(config: TreeConfig<StoreType>) => createComponent(new Tree<StoreType>(config.storeBuilder), config);

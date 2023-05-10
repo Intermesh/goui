@@ -101,6 +101,8 @@ export interface CommitResponse<EntityType> {
 
 export type EntityID = string|number;
 
+export type QueryFilter = Record<string, any>;// TODO
+
 export interface QueryParams {
 
 	/**
@@ -123,7 +125,9 @@ export interface QueryParams {
 	 */
 	sort?: Comparator[],
 
-	[key:string]: any
+	filter?: QueryFilter
+
+	// [key:string]: any
 }
 
 
