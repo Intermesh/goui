@@ -96,6 +96,7 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 	constructor(readonly store: StoreType, public columns: TableColumn[]) {
 		super(store, (record, row, me, storeIndex) => {
 
+
 			for (let c of this.columns) {
 
 				if (c.hidden) {

@@ -1,3 +1,14 @@
+%drop-pin {
+  content: " ";
+  display: block;;
+  border-radius: 50%;
+  background-color: $colorPrimary;
+  width: dp(8);
+  height: dp(8);
+  position: absolute;
+
+}
+
 ul.goui-tree {
   display:block;
   list-style-type: none;
@@ -15,17 +26,55 @@ ul.goui-tree {
 
 
   li {
+    margin-top: -1px;
+    cursor: pointer;
+    &.drag-over {
+
+      &.on {
+        > .node {
+          background-color: $colorHover;
+        }
+      }
+
+      &.after {
+        > .node {
+
+          border-bottom: 1px solid $colorPrimary;
+          &:after {
+            @extend %drop-pin;
+            bottom: dp(-5);
+          }
+        }
+      }
+
+      &.before {
+        > .node {
+          border-top: 1px solid $colorPrimary;
+          &:before {
+            @extend %drop-pin;
+            top: dp(-4);
+          }
+        }
+      }
+    }
 
     > .node {
+      position: relative;
+      border-top: 1px solid transparent;
+      border-bottom: 1px solid transparent;
+
+      .dragging & {
+        pointer-events: none;
+      }
+
       padding: dp(4) 0;
       display: flex;
       align-content: center;
-      cursor: pointer;
-
       label {
         margin-left: dp(8);
         cursor: pointer;
       }
+
       .caret {
         width: dp(24);
         height: dp(24);
@@ -36,10 +85,8 @@ ul.goui-tree {
       }
     }
 
-
-
     &.expanded {
-      ul {
+      > ul {
         display: block;
       }
       >.node {
@@ -50,8 +97,10 @@ ul.goui-tree {
     }
 
     &.no-children {
-      .caret:before {
-        content: none;
+      > .node{
+        .caret:before {
+          content: none;
+        }
       }
     }
   }

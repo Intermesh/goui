@@ -856,6 +856,12 @@ export class Component extends Observable {
 		}
 		this.el.classList.remove("masked");
 	}
+
+	private static _uniqueID = 0;
+
+	public static uniqueID() {
+		return "goui-" + (++Component._uniqueID)
+	}
 }
 
 

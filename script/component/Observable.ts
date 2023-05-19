@@ -152,6 +152,8 @@ export class Observable {
 	/**
 	 * Fire an event
 	 *
+	 * When a listener returns false this function will return false too.
+	 *
 	 * @param eventName
 	 * @param args
 	 */

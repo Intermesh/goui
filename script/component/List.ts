@@ -78,7 +78,7 @@ export interface ListEventMap<Type> extends ComponentEventMap<Type> {
 
 }
 
-export interface List<StoreType extends Store = Store> {
+export interface List<StoreType extends Store = Store> extends Component  {
 	on<K extends keyof ListEventMap<this>>(eventName: K, listener: Partial<ListEventMap<this>>[K], options?: ObservableListenerOpts): void;
 	fire<K extends keyof ListEventMap<this>>(eventName: K, ...args: Parameters<ListEventMap<any>[K]>): boolean
 }
