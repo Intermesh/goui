@@ -38,6 +38,8 @@ export interface CollectionEventMap<Type, CollectionItem> extends ObservableEven
 	 * @param window
 	 */
 	beforeremove: (collection: Type, item: CollectionItem, index:number) => void|false
+
+	datachanged: (collection: Type) => void
 }
 
 export interface Collection<CollectionItem> extends Observable {
@@ -100,6 +102,7 @@ export class Collection<CollectionItem> extends Observable implements Iterable<C
 			this.items.splice(index, 0, item);
 
 			this.fire("add", this, item, index);
+			this.fire("datachanged", this);
 
 			index++;
 		});
@@ -168,6 +171,7 @@ export class Collection<CollectionItem> extends Observable implements Iterable<C
 		this.items.splice(index, 1);
 
 		this.fire("remove", this, item, index);
+		this.fire("datachanged", this);
 
 		return true;
 	}

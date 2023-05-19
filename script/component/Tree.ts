@@ -1,4 +1,4 @@
-import {List, ListEventMap, RowRenderer} from "./List";
+import {DROP_POSITION, List, ListEventMap, RowRenderer} from "./List";
 import {Store} from "../data";
 import {Component, ComponentEventMap, createComponent} from "./Component";
 import {E, FunctionUtil} from "../util";
@@ -30,22 +30,9 @@ type extractRecordType<Type> = Type extends Store<infer RecordType> ? RecordType
 
 export type TreeStoreBuilder<StoreType extends Store = Store> = (record?:extractRecordType<StoreType>) => StoreType;
 
-type DROP_POSITION = "before" | "after" | "on";
+
 export interface TreeEventMap<Type> extends ListEventMap<Type> {
 
-
-	/**
-	 * Fires when something was dropped
-	 *
-	 * @param tree The tree that contains the node that is dropped on
-	 * @param e The draag event
-	 * @param dropTree The tree of the node that is dropped on
-	 * @param dropRow The row element that is dropped on
-	 * @param dragData The arbitrary drag data that is set
-	 */
-	drop:  (tree: Type, e: DragEvent, dropTree: Type, dropRow: HTMLElement, position: DROP_POSITION, dragData: any) => void
-
-	dropallowed:  (tree: Type, e: DragEvent, dropRow: HTMLElement, dragData: any) => void
 
 }
 
@@ -59,12 +46,8 @@ export class Tree<StoreType extends Store> extends List {
 
 	public labelProperty = "name";
 
-	public draggable = true;
-	public dropBetween = true;
-	public dropOn = true;
-
 	private static subTrees: Record<string, any> = {}
-	private enterTarget?: EventTarget;
+
 	private dragOverTimeout?: any;
 
 	constructor(public storeBuilder:TreeStoreBuilder<StoreType>, readonly renderer: RowRenderer = TreeRowRenderer, parentRecord?:any) {
@@ -128,18 +111,16 @@ export class Tree<StoreType extends Store> extends List {
 
 	protected renderRow(record: any, storeIndex: number): HTMLElement {
 		let row =  super.renderRow(record, storeIndex);
+		row.cls("+data");
 		row.id = Component.uniqueID();
 		row.dataset.storeIndex = storeIndex + "";
+
 		if(this.draggable) {
 			row.draggable = true;
 			row.ondragstart = this.onNodeDragStart.bind(this);
 		}
 
-		row.ondrop = this.onNodeDrop.bind(this);
-		row.ondragend = this.onNodeDragEnd.bind(this);
-		row.ondragover = FunctionUtil.buffer(10,this.onNodeDragOver.bind(this));
-		row.ondragenter = this.onNodeDragEnter.bind(this);
-		row.ondragleave = this.onNodeDragLeave.bind(this);
+		this.bindDropEvents(row);
 
 		row.getElementsByClassName("caret")[0].on("click", (e) => {
 
@@ -151,105 +132,27 @@ export class Tree<StoreType extends Store> extends List {
 		return row;
 	}
 
-	protected onNodeDragStart(e:DragEvent) {
-		const row = e.target as HTMLDivElement;
-		dragData.treeRow = row;
-		dragData.tree = this;
-		dragData.record = this.store.get(parseInt(row.dataset.storeIndex!));
 
-		// had to add this class because otherwise dragleave fires immediately on child nodes: https://stackoverflow.com/questions/7110353/html5-dragleave-fired-when-hovering-a-child-element
-		root.el.cls("+dragging");
+	protected onNodeDragEnterAllowed(e:DragEvent, dropRow:HTMLElement) {
+		clearTimeout(this.dragOverTimeout);
+		setTimeout(() => {
+			this.dragOverTimeout = setTimeout(() => {
+				this.expand(dropRow);
+			}, 1000);
+		});
 	}
 
-	protected onNodeDragEnd(e:DragEvent) {
-		root.el.cls("-dragging");
-		delete dragData.treeRow;
+	protected onNodeDragLeaveAllowed(e:DragEvent, dropRow: HTMLElement) {
+		clearTimeout(this.dragOverTimeout);
 	}
 
-	protected onNodeDragEnter(e:DragEvent) {
-
-		const dropRow = this.findDropRow(e);
-		if(this.dropAllowed(e, dropRow)) {
-
-			e.stopPropagation();
-			e.preventDefault();
-
-			dropRow.cls("+drag-over");
-
-			clearTimeout(this.dragOverTimeout);
-			setTimeout(() => {
-				this.dragOverTimeout = setTimeout(() => {
-					this.expand(dropRow);
-				}, 1000);
-			})
-
-		}
-
-		return false;
-	}
-
-	protected onNodeDragLeave(e:DragEvent) {
-		const dropRow = this.findDropRow(e);
-		if(this.dropAllowed(e, dropRow)) {
-
-			e.stopPropagation();
-			e.preventDefault();
-			this.clearOverClasses(dropRow);
-			clearTimeout(this.dragOverTimeout);
-		}
-	}
-
-	private findDropRow(e:DragEvent) {
-		return (e.target as HTMLDivElement).closest("LI") as HTMLElement;
-	}
-
-
-	private clearOverClasses(dropRow: HTMLElement) {
-		dropRow.cls("-drag-over");
-		dropRow.classList.remove("before");
-		dropRow.classList.remove("after");
-		dropRow.classList.remove("on");
-	}
-
-	protected onNodeDragOver(e:DragEvent) {
-
-		const dropRow = this.findDropRow(e);
-
-		if(this.dropAllowed(e, dropRow)) {
-			e.stopPropagation();
-			e.preventDefault();
-
-			const pos = this.getDropPosition(e);
-			dropRow.classList.toggle("before", "before" == pos);
-			dropRow.classList.toggle("after", "after" == pos);
-			dropRow.classList.toggle("on", "on" == pos);
-		}
-	}
 
 	protected dropAllowed(e:DragEvent,dropRow:HTMLElement) {
 		const topTree = this.findTopTree();
-		return (dragData.treeRow &&!dragData.treeRow.contains(dropRow)) || topTree.fire("dropallowed", topTree, e, dropRow, dragData);
-	}
-	private getDropPosition(e:DragEvent): DROP_POSITION | undefined {
-
-		if(!this.dropBetween) {
-			return this.dropOn ? "on" : undefined;
-		}
-
-		const betweenZone = 6;
-
-		if(e.offsetY < betweenZone) {
-			return "before";
-		} else if(e.offsetY > (e.target as HTMLElement).offsetHeight - betweenZone) {
-			return "after";
-		} else
-		{
-			return this.dropOn ? "on" : undefined;
-		}
+		return (dragData.row && !dragData.row.contains(dropRow));// && topTree.fire("dropallowed", topTree, e, dropRow, dragData);
 	}
 
 	protected onNodeDrop(e:DragEvent) {
-
 		const dropPos = this.getDropPosition(e);
 		if(!dropPos) {
 			return;
@@ -264,10 +167,16 @@ export class Tree<StoreType extends Store> extends List {
 		this.clearOverClasses(dropRow);
 		clearTimeout(this.dragOverTimeout);
 
-		const topTree = this.findTopTree()
+		dragData.dropTree = dropTree;
 
-		topTree.fire("drop", topTree, e, dropTree, dropRow, dropPos, dragData);
+		const topTree = this.findTopTree();
+		topTree.fire("drop", topTree, e, dropRow, dropPos, dragData);
 		return false;
+	}
+
+	protected onNodeDragEnd(e: DragEvent) {
+		super.onNodeDragEnd(e);
+		delete dragData.dropTree;
 	}
 }
 

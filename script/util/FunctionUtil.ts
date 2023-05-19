@@ -7,7 +7,7 @@ type Func = ((...args: any[]) => any);
 /**
  * Buffer or delay a function
  */
-class BufferedFunction {
+export class BufferedFunction {
 	private id:number|undefined;
 
 	/**
@@ -41,6 +41,13 @@ class BufferedFunction {
 			clearTimeout(this.id);
 			this.id = undefined;
 		}
+	}
+
+	/**
+	 * Check if it's still pending for execution
+	 */
+	pending() {
+		return this.id !== undefined;
 	}
 }
 

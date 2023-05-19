@@ -6,7 +6,7 @@
 import {Config, Observable, ObservableListener, ObservableListenerOpts} from "../component/Observable.js";
 import {ArrayUtil} from "../util/ArrayUtil.js";
 import {Collection, CollectionEventMap} from "../util/Collection.js";
-import {createComponent} from "../component/Component.js";
+import {Component, createComponent} from "../component/Component.js";
 
 /**
  * Comparator interface for sorting data
@@ -50,7 +50,7 @@ export interface StoreEventMap<Type, RecordType> extends CollectionEventMap<Type
 export interface Store<RecordType = StoreRecord> {
 	on<K extends keyof StoreEventMap<this, RecordType>>(eventName: K, listener: Partial<StoreEventMap<this, RecordType>>[K], options?: ObservableListenerOpts): void
 
-	fire<K extends keyof StoreEventMap<this, RecordType>>(eventName: K, ...args: Parameters<StoreEventMap<this, RecordType>[K]>): boolean
+	fire<K extends keyof StoreEventMap<this, RecordType>>(eventName: K, ...args: Parameters<StoreEventMap<any, RecordType>[K]>): boolean
 
 }
 

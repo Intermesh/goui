@@ -1,109 +1,80 @@
-%drop-pin {
-  content: " ";
-  display: block;;
-  border-radius: 50%;
-  background-color: $colorPrimary;
-  width: dp(8);
-  height: dp(8);
-  position: absolute;
 
-}
 
 ul.goui-tree {
-  display:block;
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
+	display:block;
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
 
-  ul {
-    display:none;
-    > li{
-      //>.node {
-        padding-left: dp(24);
-      //}
-    }
-  }
+	ul {
+		display:none;
+		> li{
+			//>.node {
+			padding-left: dp(24);
+			//}
+		}
+	}
 
 
-  li {
-    margin-top: -1px;
-    cursor: pointer;
-    &.drag-over {
+	li {
+		margin-top: -1px;
+		cursor: pointer;
+		&.drag-over {
 
-      &.on {
-        > .node {
-          background-color: $colorHover;
-        }
-      }
+			&.on {
+				> .node {
+					background-color: $colorHover;
+				}
+			}
 
-      &.after {
-        > .node {
+		}
 
-          border-bottom: 1px solid $colorPrimary;
-          &:after {
-            @extend %drop-pin;
-            bottom: dp(-5);
-          }
-        }
-      }
+		> .node {
+			position: relative;
+			border-top: 1px solid transparent;
+			border-bottom: 1px solid transparent;
 
-      &.before {
-        > .node {
-          border-top: 1px solid $colorPrimary;
-          &:before {
-            @extend %drop-pin;
-            top: dp(-4);
-          }
-        }
-      }
-    }
+			.dragging & {
+				pointer-events: none;
+			}
 
-    > .node {
-      position: relative;
-      border-top: 1px solid transparent;
-      border-bottom: 1px solid transparent;
+			padding: dp(4) 0;
+			display: flex;
+			align-content: center;
+			label {
+				margin-left: dp(8);
+				cursor: pointer;
+			}
 
-      .dragging & {
-        pointer-events: none;
-      }
+			.caret {
+				width: dp(24);
+				height: dp(24);
+				&:before {
+					@extend %icon;
+					content: "arrow_right";
+				}
+			}
+		}
 
-      padding: dp(4) 0;
-      display: flex;
-      align-content: center;
-      label {
-        margin-left: dp(8);
-        cursor: pointer;
-      }
+		&.expanded {
+			> ul {
+				display: block;
+			}
+			>.node {
+				.caret:before {
+					content: "arrow_drop_down";
+				}
+			}
+		}
 
-      .caret {
-        width: dp(24);
-        height: dp(24);
-        &:before {
-          @extend %icon;
-          content: "arrow_right";
-        }
-      }
-    }
-
-    &.expanded {
-      > ul {
-        display: block;
-      }
-      >.node {
-        .caret:before {
-          content: "arrow_drop_down";
-        }
-      }
-    }
-
-    &.no-children {
-      > .node{
-        .caret:before {
-          content: none;
-        }
-      }
-    }
-  }
+		&.no-children {
+			> .node{
+				.caret:before {
+					content: none;
+				}
+			}
+		}
+	}
 
 
 

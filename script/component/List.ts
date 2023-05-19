@@ -4,12 +4,16 @@
  * @author Michael de Hart <mdhart@intermesh.nl>
  */
 
-import {Component, ComponentEventMap, createComponent} from "./Component.js";
+import {comp, Component, ComponentEventMap, createComponent} from "./Component.js";
 import {Store, StoreRecord, storeRecordType} from "../data/Store.js";
 import {t} from "../Translate.js";
 import {E} from "../util/Element.js";
 import {rowselect, RowSelect, RowSelectConfig} from "./table/RowSelect.js";
 import {Config, ObservableListener, ObservableListenerOpts} from "./Observable.js";
+import {BufferedFunction, FunctionUtil} from "../util";
+import {dragData} from "../DragData";
+import {root} from "./Root";
+import common from "mocha/lib/interfaces/common";
 
 export type RowRenderer = (record: any, row: HTMLElement, list: any, storeIndex: number) => string | Component[] | void;
 
@@ -76,12 +80,35 @@ export interface ListEventMap<Type> extends ComponentEventMap<Type> {
 	 */
 	navigate:  (list: Type, storeIndex: number) => void
 
+	/**
+	 * Fires when something was dropped
+	 *
+	 * @param tree The tree that contains the node that is dropped on
+	 * @param e The draag event
+	 * @param dropTree The tree of the node that is dropped on
+	 * @param dropRow The row element that is dropped on
+	 * @param dragData The arbitrary drag data that is set
+	 */
+	drop:  (list: Type, e: DragEvent, dropRow: HTMLElement, position: DROP_POSITION, dragData: any) => void
+
+	dropallowed:  (list: Type, e: DragEvent, dropRow: HTMLElement, dragData: any) => void
+
 }
+
+export type DROP_POSITION = "before" | "after" | "on";
 
 export interface List<StoreType extends Store = Store> extends Component  {
 	on<K extends keyof ListEventMap<this>>(eventName: K, listener: Partial<ListEventMap<this>>[K], options?: ObservableListenerOpts): void;
 	fire<K extends keyof ListEventMap<this>>(eventName: K, ...args: Parameters<ListEventMap<any>[K]>): boolean
 }
+
+const dropPin = comp({
+	cls: "drop-pin",
+	hidden: true
+})
+
+root.items.add(dropPin);
+
 
 export class List<StoreType extends Store = Store> extends Component {
 	/**
@@ -95,6 +122,10 @@ export class List<StoreType extends Store = Store> extends Component {
 
 	private rowSelect?: RowSelect;
 
+
+	public draggable = false;
+	public dropBetween = true;
+	public dropOn = true;
 
 	protected itemTag: keyof HTMLElementTagNameMap = 'li'
 
@@ -115,11 +146,17 @@ export class List<StoreType extends Store = Store> extends Component {
 		super(tagName);
 		this.tabIndex = 0;
 
+		const bf = new BufferedFunction(100, this.mask.bind(this));
+
 		store.on("beforeload", () => {
-			this.mask();
+			bf.buffer();
 		})
 		store.on("load", () => {
-			this.unmask();
+			if(bf.pending()) {
+				bf.cancel();
+			} else {
+				this.unmask();
+			}
 		})
 	}
 
@@ -144,39 +181,62 @@ export class List<StoreType extends Store = Store> extends Component {
 			this.onMouseEvent(e, "rowclick");
 		});
 
-		this.renderEmptyState();
+		// this.renderEmptyState();
 		this.renderBody();
 		this.initStore();
 		return el;
 	}
 
-	private initStore() {
+	protected initStore() {
 		if (this.loadOnScroll) {
 			this.el.on('scroll', () => {
 				this.onScroll();
 			}, {passive: true});
 		}
 
+		const onLoadScroll = FunctionUtil.buffer(10, this.onScroll);
+
 		// Use unshift = true so that this listener executes first so that other load listeners execute when the list is
 		// rendered and can select rows.
-		this.store.on("load", (store, records, append) => {
-			const isEmpty = (!append && records.length == 0);
+		// this.store.on("load", (store, records, append) => {
+		// 	const isEmpty = (!append && records.length == 0);
+		//
+		// 	//this.el.hidden = isEmpty;
+		// 	this.emptyStateEl!.hidden = !isEmpty;
+		//
+		// 	if (!append) {
+		// 		this.clearRows();
+		// 	}
+		// 	this.renderRows(records);
+		//
+		// 	if (this.loadOnScroll) {
+		// 		setTimeout(() => {
+		// 			this.onScroll();
+		// 		});
+		// 	}
+		//
+		// }, {unshift: true});
 
-			//this.el.hidden = isEmpty;
-			this.emptyStateEl!.hidden = !isEmpty;
+		this.store.on("remove", (collection, item, index) => {
 
-			if (!append) {
-				this.clearRows();
-			}
-			this.renderRows(records);
+			const rows = this.getRowElements();
+			rows[index].remove();
+		});
+
+		this.store.on("add", (collection, item, index) => {
+			const container = this.renderGroup(item)
+			container.append(this.renderRow(item, index));
 
 			if (this.loadOnScroll) {
-				setTimeout(() => {
-					this.onScroll();
-				});
+				onLoadScroll();
 			}
+		});
 
-		}, {unshift: true});
+
+	}
+
+	protected getRowElements() {
+		return Array.from(this.el.querySelectorAll(":scope > .data"));
 	}
 
 	private initNavigateEvent() {
@@ -265,6 +325,14 @@ export class List<StoreType extends Store = Store> extends Component {
 			.cls('+data')
 			.attr('tabindex','0');
 		row.dataset.storeIndex = storeIndex + "";
+
+		if(this.draggable) {
+			row.draggable = true;
+			row.ondragstart = this.onNodeDragStart.bind(this);
+		}
+
+		this.bindDropEvents(row);
+
 		const r = this.renderer(record, row, this, storeIndex);
 		if (typeof r === "string") {
 			row.innerHTML = r;
@@ -299,8 +367,139 @@ export class List<StoreType extends Store = Store> extends Component {
 
 	private findRowByEvent(e: MouseEvent & {target: HTMLElement}) {
 		return  e.target.closest("[data-store-index]") as HTMLElement;
+	}
+
+
+	protected bindDropEvents(row:HTMLElement) {
+		row.ondrop = this.onNodeDrop.bind(this);
+		row.ondragend = this.onNodeDragEnd.bind(this);
+		row.ondragover = this.onNodeDragOver.bind(this);
+		row.ondragenter = this.onNodeDragEnter.bind(this);
+		row.ondragleave = this.onNodeDragLeave.bind(this);
+	}
+
+	protected onNodeDragStart(e:DragEvent) {
+
+		e.stopPropagation();
+		const row = e.target as HTMLDivElement;
+
+		dragData.row = row;
+		dragData.cmp = this;
+		dragData.record = this.store.get(parseInt(row.dataset.storeIndex!));
+
+		// had to add this class because otherwise dragleave fires immediately on child nodes: https://stackoverflow.com/questions/7110353/html5-dragleave-fired-when-hovering-a-child-element
+		root.el.cls("+dragging");
+	}
+
+	protected onNodeDragEnd(e:DragEvent) {
+		root.el.cls("-dragging");
+		delete dragData.row;
+		delete dragData.cmp;
+	}
+
+	protected onNodeDragEnter(e:DragEvent) {
+
+		const dropRow = this.findDropRow(e);
+		if(this.dropAllowed(e, dropRow)) {
+			e.stopPropagation();
+			e.preventDefault();
+
+			dropRow.cls("+drag-over");
+
+			this.onNodeDragEnterAllowed(e, dropRow);
+		}
+	}
+
+	protected onNodeDragEnterAllowed(e:DragEvent, dropRow:HTMLElement) {
 
 	}
+
+	protected onNodeDragLeave(e:DragEvent) {
+		const dropRow = this.findDropRow(e);
+		if(this.dropAllowed(e, dropRow)) {
+			e.stopPropagation();
+			e.preventDefault();
+			this.clearOverClasses(dropRow);
+			this.onNodeDragLeaveAllowed(e, dropRow);
+		}
+	}
+
+	protected onNodeDragLeaveAllowed(e:DragEvent, dropRow:HTMLElement) {
+
+	}
+
+	protected findDropRow(e:DragEvent) {
+		return (e.target as HTMLDivElement).closest("LI") as HTMLElement;
+	}
+
+
+	protected clearOverClasses(dropRow: HTMLElement) {
+		dropRow.cls("-drag-over");
+		dropRow.classList.remove("before");
+		dropRow.classList.remove("after");
+		dropRow.classList.remove("on");
+	}
+
+	protected onNodeDragOver(e:DragEvent) {
+
+		const dropRow = this.findDropRow(e);
+
+		if(this.dropAllowed(e, dropRow)) {
+			e.stopPropagation();
+			e.preventDefault();
+
+			const pos = this.getDropPosition(e);
+			dropRow.classList.toggle("before", "before" == pos);
+			dropRow.classList.toggle("after", "after" == pos);
+			dropRow.classList.toggle("on", "on" == pos);
+
+			dropPin.hidden = pos == "on" || pos == undefined;
+			const dropRowRect = dropRow.getBoundingClientRect();
+			dropPin.el.style.top = (pos == "before" ? dropRowRect.y : dropRowRect.y + dropRowRect.height - 1) + "px";
+			dropPin.el.style.left = dropRowRect.x + "px";
+			dropPin.el.style.width = dropRowRect.width + "px";
+		}
+	}
+
+	protected dropAllowed(e:DragEvent,dropRow:HTMLElement) {
+		return this.fire("dropallowed", this, e, dropRow, dragData);
+	}
+	protected getDropPosition(e:DragEvent): DROP_POSITION | undefined {
+
+		if(!this.dropBetween) {
+			return this.dropOn ? "on" : undefined;
+		}
+
+		const betweenZone = 6;
+
+		if(e.offsetY < betweenZone) {
+			return "before";
+		} else if(e.offsetY > (e.target as HTMLElement).offsetHeight - betweenZone) {
+			return "after";
+		} else
+		{
+			return this.dropOn ? "on" : undefined;
+		}
+	}
+
+	protected onNodeDrop(e:DragEvent) {
+
+		const dropPos = this.getDropPosition(e);
+		if(!dropPos) {
+			return;
+		}
+
+		e.preventDefault();
+		e.stopPropagation();
+
+		const dropRow = this.findDropRow(e);
+
+		// this.clearOverClasses(dropRow);
+
+		this.fire("drop", this, e, dropRow, dropPos, dragData);
+
+	}
+
 }
 
 

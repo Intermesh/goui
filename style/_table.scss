@@ -1,216 +1,228 @@
 .goui-table {
 
-	position: relative;
+  position: relative;
 
-	&:focus-within {
+  &:focus-within {
 
-			tbody {
-				tr.data.selected {
-					background-color: $colorSelectedRow;
-					outline: none;
-					color: white;
-					a, i.icon {
-						color: white;
-					}
-				}
-			}
+    tbody {
+      tr.data.selected {
+        background-color: $colorSelectedRow;
+        outline: none;
+        color: white;
 
-	}
+        a, i.icon {
+          color: white;
+        }
+      }
+    }
 
-	//background-color: $colorBackgroundDarker;
+  }
 
-
-	&.rowselect {
-		cursor: default;
-		user-select: none;
-		-webkit-user-select: none;
-		-moz-user-select: none;
-	}
-
-	&.no-row-lines {
-
-			tbody {
-				tr {
-					border-bottom: 1px solid transparent;
-				}
-			}
-
-	}
+  //background-color: $colorBackgroundDarker;
 
 
+  &.rowselect {
+    cursor: default;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+  }
 
-		//applies to th, td and col
-		.checkbox-select-column {
-			width: dp(64);
-		}
+  &.no-row-lines {
 
-		border-collapse: collapse;
-		border-spacing: 0;
-		table-layout: fixed;
-		width: dp(100);
+    tbody {
+      tr {
+        border-bottom: 1px solid transparent;
+      }
+    }
 
-		tbody {
-			tr {
-				border-bottom: 1px solid $colorBorder;
+  }
 
-				&.group {
-					color: $colorAccent;
-				}
 
-				&.data {
-					&:hover {
-						background-color: $colorHover;
-					}
+  //applies to th, td and col
+  .checkbox-select-column {
+    width: dp(64);
+  }
 
-					&.selected {
-						background-color: $colorSelectedRowInactive;
-					}
-				}
-			}
-		}
+  border-collapse: collapse;
+  border-spacing: 0;
+  table-layout: fixed;
+  width: dp(100);
 
-		thead {
+  tbody {
+    tr {
+      position: relative;
+      border-bottom: 1px solid $colorBorder;
 
-			position: sticky;
-			top: 0;
-			z-index: 1;
-			tr {
+      &.group {
+        color: $colorAccent;
+      }
 
-				th {
+      &.data {
+        &:hover {
+          background-color: $colorHover;
+        }
 
-					background-color: $colorBackgroundDarker;
-					font-size: dp(16);
-					padding: dp(8) dp(8);
-					&.sorted {
-
-						font-weight: 600; //semibold
-
-						padding-right: dp(40);
-
-						&:after {
-							//asc
-							content: "south";
-							@extend %icon;
-							font-size: dp(16);
-							position: absolute;
-							right: dp(8);
-							top: dp(10); // the th height = line-height 20 + padding 8 = 36
-							color: inherit;
-						}
-
-						&.desc {
-							&:after {
-								content: "north";
-							}
-						}
-					}
-
-					hr {
-						@extend %vr;
-						position: absolute;
-						top: 0;
-						right: 0;
-						bottom: 0;
-						height: 100%;
-					}
-
-					&:before {
-						//normal border on th didn't stick :( so I used this workaround.
-						content: "";
-						position: absolute;
-						left: 0;
-						bottom: 0;
-						width: 100%;
-						border-bottom: $borderWidth solid $colorBorder;
-					}
-
-				}
-			}
-		}
+        &.selected {
+          background-color: $colorSelectedRowInactive;
+        }
+      }
 
 
 
-		td, th {
-			min-width: dp(30);
-			text-align: left;
-			vertical-align: top;
-			white-space: nowrap;
-			overflow: hidden;
-			text-overflow: ellipsis;
-			padding: dp(8);
-			position: relative;
-
-			&:first-child {
-				padding-left: dp(16);
-				//border-radius: dp(10) 0 0 dp(10) ;
-			}
-
-			&:last-child {
-				padding-right: dp(16);
-				//border-radius: 0 dp(10) dp(10) 0;
-			}
-
-			&.r, &.right {
-				text-align: right;
-				float: none
-			}
-
-			//checkboxes in table should be compact
-			.check.box {
-				margin: 0;
-				.control {
-					padding: 0;
-
-					.box-label {
-						display: none;
-					}
-				}
-
-				.hint, .label {
-					display: none;
-				}
-			}
-
-			.goui-button {
-				position: absolute;
-				top: dp(4);
-
-				padding: dp(3) dp(18);
-
-				&.with-icon:not(.with-text) {
-					//icon only
-					padding: dp(3);
-				}
-			}
-		}
+      &.drag-over {
+        &.on {
+          background-color: $colorHover;
+        }
 
 
-		//tr.line td, td.line, th.line, tr.line th {
-		//	border-bottom: 1px solid $colorLine;
-		//}
-		//
-		//tr.totals th {
-		//	padding: dp(8);
-		//	vertical-align: middle;
-		//	border-right: 1px solid $colorLine;
-		//}
-		//
-		//tr.bold-line td, td.bold-line, tr.line th, th.line {
-		//	border-bottom: 1px solid $colorLine;
-		//}
+      }
+    }
+  }
+
+  thead {
+
+    position: sticky;
+    top: 0;
+    z-index: 1;
+
+    tr {
+
+      th {
+
+        background-color: $colorBackgroundDarker;
+        font-size: dp(16);
+        padding: dp(8) dp(8);
+
+        &.sorted {
+
+          font-weight: 600; //semibold
+
+          padding-right: dp(40);
+
+          &:after {
+            //asc
+            content: "south";
+            @extend %icon;
+            font-size: dp(16);
+            position: absolute;
+            right: dp(8);
+            top: dp(10); // the th height = line-height 20 + padding 8 = 36
+            color: inherit;
+          }
+
+          &.desc {
+            &:after {
+              content: "north";
+            }
+          }
+        }
+
+        hr {
+          @extend %vr;
+          position: absolute;
+          top: 0;
+          right: 0;
+          bottom: 0;
+          height: 100%;
+        }
+
+        &:before {
+          //normal border on th didn't stick :( so I used this workaround.
+          content: "";
+          position: absolute;
+          left: 0;
+          bottom: 0;
+          width: 100%;
+          border-bottom: $borderWidth solid $colorBorder;
+        }
+
+      }
+    }
+  }
 
 
-			//td:first-child {
-			//	padding-left: 0;
-			//}
-			//
-			//td:last-child {
-			//	padding-right: 0;
-			//}
+  td, th {
+    min-width: dp(30);
+    text-align: left;
+    vertical-align: top;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: dp(8);
+    position: relative;
+
+    &:first-child {
+      padding-left: dp(16);
+      //border-radius: dp(10) 0 0 dp(10) ;
+    }
+
+    &:last-child {
+      padding-right: dp(16);
+      //border-radius: 0 dp(10) dp(10) 0;
+    }
+
+    &.r, &.right {
+      text-align: right;
+      float: none
+    }
+
+    //checkboxes in table should be compact
+    .check.box {
+      margin: 0;
+
+      .control {
+        padding: 0;
+
+        .box-label {
+          display: none;
+        }
+      }
+
+      .hint, .label {
+        display: none;
+      }
+    }
+
+    .goui-button {
+      position: absolute;
+      top: dp(4);
+
+      padding: dp(3) dp(18);
+
+      &.with-icon:not(.with-text) {
+        //icon only
+        padding: dp(3);
+      }
+    }
+  }
 
 
+  //tr.line td, td.line, th.line, tr.line th {
+  //	border-bottom: 1px solid $colorLine;
+  //}
+  //
+  //tr.totals th {
+  //	padding: dp(8);
+  //	vertical-align: middle;
+  //	border-right: 1px solid $colorLine;
+  //}
+  //
+  //tr.bold-line td, td.bold-line, tr.line th, th.line {
+  //	border-bottom: 1px solid $colorLine;
+  //}
 
-	+.goui-toolbar {
-		margin-top: dp(16);
-	}
+
+  //td:first-child {
+  //	padding-left: 0;
+  //}
+  //
+  //td:last-child {
+  //	padding-right: 0;
+  //}
+
+
+  + .goui-toolbar {
+    margin-top: dp(16);
+  }
 }

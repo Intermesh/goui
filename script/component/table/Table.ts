@@ -140,6 +140,21 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 
 	}
 
+	protected initStore() {
+		super.initStore();
+
+		this.store.on("remove",(collection, item, index) => {
+			//clean up empty groups
+			if(this.groupBy) {
+				this.el.querySelectorAll("tbody").forEach((tbody) => {
+					if (tbody.children.length == 1) {
+						tbody.remove();
+					}
+				})
+			}
+		})
+	}
+
 	/**
 	 * Make the table fits its container in width by setting min-width: 100%
 	 * Defaults to true
@@ -167,7 +182,12 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 
 	private headersRow?: HTMLTableRowElement;
 
-	protected itemTag: keyof HTMLElementTagNameMap = 'tr'
+	protected itemTag: keyof HTMLElementTagNameMap = 'tr';
+
+
+	protected getRowElements() {
+		return Array.from(this.el.getElementsByClassName("data"));
+	}
 
 	protected internalRemove() {
 		if (this.columnMenu) {
@@ -406,10 +426,12 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 				});
 				const sort = this.store.sort;
 				if (sort.length) {
-					if (h.property == sort[0].property) {
-						header.classList.add("sorted");
-						header.classList.add(sort[0].isAscending || sort[0].isAscending === undefined ? "asc" : "desc");
-					}
+					sort.forEach((comparator) => {
+						if (h.property == comparator.property) {
+							header.classList.add("sorted");
+							header.classList.add(comparator.isAscending || comparator.isAscending === undefined ? "asc" : "desc");
+						}
+					})
 				}
 			}
 
@@ -427,11 +449,20 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 		this.fire("sort", this, dataIndex);
 
 		const s = this.store.sort;
-		let isAscending = true;
 
-		if (s[0]) {
-			if (s[0].property == dataIndex) {
-				isAscending = !s[0].isAscending;
+		let sortIndex = s.length - 1 || 0;
+
+		if (s[sortIndex]) {
+			if (s[sortIndex].property == dataIndex) {
+				s[sortIndex].isAscending = !s[sortIndex].isAscending;
+			} else {
+				s[sortIndex].property = dataIndex;
+			}
+		} else
+		{
+			s[sortIndex] = {
+				isAscending: true,
+				property: dataIndex
 			}
 		}
 
@@ -439,20 +470,14 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 			let th = (<HTMLTableCellElement>node);
 			if (th == header) {
 				th.classList.add("sorted");
-				th.classList.remove(isAscending ? "desc" : "asc");
-				th.classList.add(isAscending ? "asc" : "desc");
+				th.classList.remove(s[sortIndex].isAscending ? "desc" : "asc");
+				th.classList.add(s[sortIndex].isAscending ? "asc" : "desc");
 			} else {
 				th.classList.remove("sorted");
 				th.classList.remove("asc");
 				th.classList.remove("desc");
 			}
 		})
-
-
-		this.store.sort = [{
-			property: dataIndex,
-			isAscending: isAscending
-		}];
 
 		this.store.reload().catch((reason) => {
 			Notifier.error(reason);
@@ -511,7 +536,7 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 
 		const groupBy = ObjectUtil.path(record, this.groupBy);
 
-		console.warn(this.groupEl,groupBy, this.lastGroup)
+		// console.warn(this.groupEl,groupBy, this.lastGroup)
 		if(!this.groupEl || groupBy != this.lastGroup) {
 			const tr = document.createElement("tr");
 			tr.classList.add("group");
@@ -556,6 +581,10 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 		}
 		this.groupEl = undefined;
 		this.el.querySelectorAll('tbody').forEach(tbody => tbody.remove());
+	}
+
+	protected findDropRow(e:DragEvent) {
+		return (e.target as HTMLDivElement).closest("TR") as HTMLElement;
 	}
 }
 

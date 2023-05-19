@@ -217,3 +217,22 @@ hr.goui {
 	width: 100%;
 	padding: dp(20);
 }
+
+
+.goui.drop-pin {
+	position:absolute;
+	height: 1px;
+	background-color: $colorPrimary;
+	widht: 100px;
+	&:after {
+		content: " ";
+		display: block;;
+		border-radius: 50%;
+		background-color: $colorPrimary;
+		width: dp(8);
+		height: dp(8);
+		position: absolute;
+		left: 0;
+		top: dp(-4);
+	}
+}
