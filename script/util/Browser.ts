@@ -5,7 +5,7 @@
  */
 
 class Browser {
-	readonly ua:string;
+	readonly ua: string;
 
 	private cache: Record<string, boolean> = {};
 
@@ -14,8 +14,8 @@ class Browser {
 		this.ua = navigator.userAgent.toLowerCase();
 	}
 
-	private check(r:RegExp, cacheKey:string){
-		if(!this.cache[cacheKey]){
+	private check(r: RegExp, cacheKey: string) {
+		if (!this.cache[cacheKey]) {
 			this.cache[cacheKey] = r.test(this.ua);
 		}
 		return this.cache[cacheKey];
@@ -76,14 +76,14 @@ class Browser {
 	 * @param directory Allow directory upload
 	 * @param multiple Allow multiple files
 	 */
-	public pickLocalFiles(multiple = false, directory = false, accept:string|undefined = undefined) : Promise<File[]> {
+	public pickLocalFiles(multiple = false, directory = false, accept: string | undefined = undefined): Promise<File[]> {
 
 		return new Promise((resolve, reject) => {
 			const input = document.createElement("input");
 			input.style.display = "none";
 			input.setAttribute("type", "file");
 			input.addEventListener("change", (e) => {
-				if(input.files) {
+				if (input.files) {
 					resolve(Array.from(input.files));
 				}
 				input.value = "";
@@ -92,15 +92,15 @@ class Browser {
 			// must be added to the DOM for iOS!
 			document.body.appendChild(input);
 
-			if(accept) {
+			if (accept) {
 				input.setAttribute('accept', accept);
 			}
 
-			if(directory) {
+			if (directory) {
 				input.setAttribute('webkitdirectory', "true");
 				input.setAttribute('directory', "true");
 			}
-			if(multiple) {
+			if (multiple) {
 				input.setAttribute('multiple', "true");
 			}
 

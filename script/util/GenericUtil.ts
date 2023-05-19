@@ -10,7 +10,7 @@ export class GenericUtil {
 	 * @param {string} text
 	 */
 	public static copyTextToClipboard(text: string) {
-		const al = <HTMLElement> document.activeElement;
+		const al = <HTMLElement>document.activeElement;
 		if (!navigator.clipboard) {
 			//fallback on workaround with textarea element
 			const textArea = document.createElement("textarea");

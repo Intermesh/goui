@@ -3,18 +3,23 @@
  * @copyright Copyright 2023 Intermesh BV
  * @author Michael de Hart <mdhart@intermesh.nl>
  */
-export function E<K extends keyof HTMLElementTagNameMap>(tag: K, ...items: (Node|string|number)[]): HTMLElementTagNameMap[K] {
-	const el = document.createElement(tag) ;
-	el.append(...items as (Node|string)[]);
+export function E<K extends keyof HTMLElementTagNameMap>(tag: K, ...items: (Node | string | number)[]): HTMLElementTagNameMap[K] {
+	const el = document.createElement(tag);
+	el.append(...items as (Node | string)[]);
 	return el;
 }
+
 declare global {
 	interface Element {
 		/** Chainable shortcut for addEventListener */
-		on<K extends keyof HTMLElementEventMap>(type: K, listener: (ev: HTMLElementEventMap[K] & { target: HTMLElement }) => any, options?: boolean | AddEventListenerOptions): this;
+		on<K extends keyof HTMLElementEventMap>(type: K, listener: (ev: HTMLElementEventMap[K] & {
+			target: HTMLElement
+		}) => any, options?: boolean | AddEventListenerOptions): this;
 
 		/** Chainable shortcut for removeEventListener */
-		un<K extends keyof HTMLElementEventMap>(type: K, listener: (ev: HTMLElementEventMap[K] & { target: HTMLElement }) => any, options?: boolean | AddEventListenerOptions): this;
+		un<K extends keyof HTMLElementEventMap>(type: K, listener: (ev: HTMLElementEventMap[K] & {
+			target: HTMLElement
+		}) => any, options?: boolean | AddEventListenerOptions): this;
 
 		/**
 		 * Change the classList
@@ -70,29 +75,35 @@ Object.assign(Element.prototype, {
 		this.removeEventListener(event, listener, options);
 		return this
 	},
-	cls(name: string|string[], enable?: boolean) {
-		if(!name) return this;
-		if(Array.isArray(name)) {
-			(name as string[]).map((n) => { this.cls(n, enable)});
+	cls(name: string | string[], enable?: boolean) {
+		if (!name) return this;
+		if (Array.isArray(name)) {
+			(name as string[]).map((n) => {
+				this.cls(n, enable)
+			});
 			return this;
 		}
 		name = name as string;
-		if(enable !== undefined) {
+		if (enable !== undefined) {
 			name = (enable ? '+' : '-') + name;
 		}
 		switch (name.substring(0, 1)) {
-			case '+': this.classList.add(name.substring(1));
+			case '+':
+				this.classList.add(name.substring(1));
 				break;
-			case '-': this.classList.remove(name.substring(1));
+			case '-':
+				this.classList.remove(name.substring(1));
 				break;
-			case '!': this.classList.toggle(name.substring(1));
+			case '!':
+				this.classList.toggle(name.substring(1));
 				break;
-			default: this.className = name;
+			default:
+				this.className = name;
 		}
 		return this;
 	},
 	attr(name: string, value?: string) {
-		if(value === undefined) {
+		if (value === undefined) {
 			return this.getAttribute(name);
 		}
 		this.setAttribute(name, value);
@@ -108,7 +119,7 @@ Object.assign(Element.prototype, {
 		return this.tagName.toLowerCase() === tagName.toLowerCase();
 	},
 	up(expression?: string, until?: Element) {
-		if(!expression) return this.parentElement;
+		if (!expression) return this.parentElement;
 		let curr = this;
 		do {
 			if (curr === until)

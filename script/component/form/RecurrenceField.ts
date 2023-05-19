@@ -36,8 +36,8 @@ export class RecurrenceField extends Field {
 	}
 
 	protected createControl() {
-		const input = E('input').attr('type', 'text').attr('readOnly',true).cls('text')
-		this.picker.on('select', (_,val) => {
+		const input = E('input').attr('type', 'text').attr('readOnly', true).cls('text')
+		this.picker.on('select', (_, val) => {
 			this.value = val;
 			input.value = this.toText(val!);
 			this.pickerButton.menu!.hide();
@@ -49,58 +49,63 @@ export class RecurrenceField extends Field {
 		this.picker.setStartDate(date);
 	}
 
-	private toText(rule: RecurrenceRule)  {
+	private toText(rule: RecurrenceRule) {
 		const rr = rule;
-		if(!rr || !rr.frequency) {
+		if (!rr || !rr.frequency) {
 			return t('Not recurring');
 		}
 		const record = RecurrencePicker.frequencies[rr.frequency];
-		if(!record) {
+		if (!record) {
 			return "Unsupported frequency: " + rr.frequency;
 		}
 		let str = record[4];
-		if(rr.interval) {
-			str = t('Every') + ' '+ rr.interval + ' '+ record[rr.interval > 1 ? 1 : 0];
+		if (rr.interval) {
+			str = t('Every') + ' ' + rr.interval + ' ' + record[rr.interval > 1 ? 1 : 0];
 		}
-		if(rr.byDay) {
+		if (rr.byDay) {
 			let
 				days = [],
 				workdays = (rr.byDay.length === 5);
-			for(var i = 0; i < rr.byDay.length; i++) {
-				if(rr.byDay[i].day == 'sa' || rr.byDay[i].day == 'su'){
+			for (var i = 0; i < rr.byDay.length; i++) {
+				if (rr.byDay[i].day == 'sa' || rr.byDay[i].day == 'su') {
 					workdays = false;
 				}
 				var nthDay = '';
-				if(rr.byDay[i].nthOfPeriod) {
-					nthDay = t('the')+' '+this.getSuffix(rr.byDay[i].nthOfPeriod!)+ ' ';
+				if (rr.byDay[i].nthOfPeriod) {
+					nthDay = t('the') + ' ' + this.getSuffix(rr.byDay[i].nthOfPeriod!) + ' ';
 				}
-				days.push(nthDay+DateTime.dayNames[rr.byDay[i].day]);
+				days.push(nthDay + DateTime.dayNames[rr.byDay[i].day]);
 			}
-			if(workdays) {
+			if (workdays) {
 				days = [t('Workdays')];
 			}
-			str += (' '+t('at ')+days.join(', '));
+			str += (' ' + t('at ') + days.join(', '));
 		}
-		if(rr.byMonthDay) {
-			str += (' '+ t('at day')+' '+rr.byMonthDay.join(', '))
+		if (rr.byMonthDay) {
+			str += (' ' + t('at day') + ' ' + rr.byMonthDay.join(', '))
 		}
 
-		if(rr.count) {
-			str += ', '+rr.count+ ' '+t('times');
+		if (rr.count) {
+			str += ', ' + rr.count + ' ' + t('times');
 		}
-		if(rr.until) {
-			str += ', '+t('until')+ ' '+(new DateTime(rr.until)).format("d-m-Y");
+		if (rr.until) {
+			str += ', ' + t('until') + ' ' + (new DateTime(rr.until)).format("d-m-Y");
 		}
 		return str;
 	}
 
 	private getSuffix(week: number) {
 		switch (week) {
-			case 1:return t("first");
-			case 2:return t("second");
-			case 3:return t("third");
-			case 4:return t("fourth");
-			default:return t("last");
+			case 1:
+				return t("first");
+			case 2:
+				return t("second");
+			case 3:
+				return t("third");
+			case 4:
+				return t("fourth");
+			default:
+				return t("last");
 		}
 	}
 }

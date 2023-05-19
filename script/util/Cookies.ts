@@ -17,7 +17,7 @@ class Cookies {
 	 * @param {int} maxAge Maximum age in seconds. Leave empty to clear on browser close
 	 * @returns {void}
 	 */
-	set (name:string, value:string, maxAge?:number) {
+	set(name: string, value: string, maxAge?: number) {
 
 		let maxAgeStr = "";
 		if (maxAge) {
@@ -35,7 +35,7 @@ class Cookies {
 	 * @param {string} name
 	 * @returns {string}
 	 */
-	get(name:string) : string | undefined {
+	get(name: string): string | undefined {
 		const nameEQ = name + "=";
 		const ca = document.cookie.split(';');
 		for (let i = 0; i < ca.length; i++) {
@@ -54,7 +54,7 @@ class Cookies {
 	 * @param {string} name
 	 * @returns {void}
 	 */
-	unset(name:string) {
+	unset(name: string) {
 		document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=' +
 			document.location.pathname + ';SameSite=Strict';
 	}

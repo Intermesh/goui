@@ -4,10 +4,9 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {Component, ComponentEventMap, createComponent} from "../Component.js";
+import {Component, createComponent} from "../Component.js";
 import {root} from "../Root.js";
 import {Button} from "../Button.js";
-import {CheckboxField} from "../form/index.js";
 import {Toolbar} from "../Toolbar.js";
 import {Config} from "../Observable";
 
@@ -113,7 +112,7 @@ export class Menu extends Toolbar {
 			el.classList.add("expand-left");
 		}
 
-		if(this.parentButton) {
+		if (this.parentButton) {
 			el.classList.add("goui-dropdown");
 			el.classList.add("goui-fade-out");
 		}
@@ -180,7 +179,7 @@ export class Menu extends Toolbar {
 	 * @todo avoid going out of the viewport
 	 * @param cmp
 	 */
-	showFor(cmp:Component) {
+	showFor(cmp: Component) {
 		const rect = cmp.el.getBoundingClientRect();
 
 		//must be rendered and visible to get width below
@@ -217,7 +216,7 @@ export class Menu extends Toolbar {
 
 		this.show();
 
-		if(Menu.openedMenu) {
+		if (Menu.openedMenu) {
 			Menu.openedMenu.el.classList.remove("goui-fade-out");
 			Menu.openedMenu.close();
 		}

@@ -28,16 +28,16 @@ export class ColorField extends Field {
 		this.picker = new ColorPicker();
 		this.buttons = [
 			this.pickerButton = btn({
-			icon: "expand_more",
-			menuAlignTo: this,
-			menu:
-				menu({},
-					this.picker
-				)
-		})];
+				icon: "expand_more",
+				menuAlignTo: this,
+				menu:
+					menu({},
+						this.picker
+					)
+			})];
 	}
 
-	protected createControl() : undefined | HTMLElement{
+	protected createControl(): undefined | HTMLElement {
 		this.colorDot = E('div').cls('+color-dot');
 		this.el.cls("+no-floating-label");
 
@@ -53,7 +53,7 @@ export class ColorField extends Field {
 
 		super.setInvalid(msg);
 
-		if(this.rendered) {
+		if (this.rendered) {
 			this.applyInvalidMsg();
 		}
 	}
@@ -65,7 +65,7 @@ export class ColorField extends Field {
 
 	set value(v: any) {
 		if (this.colorDot) {
-			this.colorDot.style.backgroundColor = "#"+v;
+			this.colorDot.style.backgroundColor = "#" + v;
 		}
 		super.value = v;
 	}
@@ -81,4 +81,4 @@ export class ColorField extends Field {
  *
  * @param config
  */
-export const colorfield = (config?:Config<ColorField, FieldEventMap<ColorField>>) => createComponent(new ColorField(), config);
+export const colorfield = (config?: Config<ColorField, FieldEventMap<ColorField>>) => createComponent(new ColorField(), config);

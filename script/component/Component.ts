@@ -32,7 +32,7 @@ export interface ComponentEventMap<Type> extends ObservableEventMap<Type> {
 	 * @see Component.render()
 	 * @param comp
 	 */
-	beforerender:  (comp: Type) => void
+	beforerender: (comp: Type) => void
 
 	/**
 	 * Fires before the element is removed. You can cancel the remove by returning false
@@ -48,7 +48,7 @@ export interface ComponentEventMap<Type> extends ObservableEventMap<Type> {
 	 * @see Component.remove()
 	 * @param comp
 	 */
-	remove:  (comp: Type) => void
+	remove: (comp: Type) => void
 
 	/**
 	 * Fires before show. You can cancel the show by returning false
@@ -80,7 +80,7 @@ export interface ComponentEventMap<Type> extends ObservableEventMap<Type> {
 	 * @see Component.show()
 	 * @param comp
 	 */
-	hide:  (comp: Type) => void,
+	hide: (comp: Type) => void,
 
 	/**
 	 * Fires on focus
@@ -88,7 +88,7 @@ export interface ComponentEventMap<Type> extends ObservableEventMap<Type> {
 	 * @param comp
 	 * @param o
 	 */
-	focus:  (comp: Type, o?: FocusOptions) => void
+	focus: (comp: Type, o?: FocusOptions) => void
 
 	/**
 	 * Fires when this component is added to a parent
@@ -96,11 +96,12 @@ export interface ComponentEventMap<Type> extends ObservableEventMap<Type> {
 	 * @param me
 	 * @param index the index in the parents' items
 	 */
-	added:  (comp: Type, index: number) => void
+	added: (comp: Type, index: number) => void
 }
 
 export interface Component extends Observable {
 	on<K extends keyof ComponentEventMap<Component>>(eventName: K, listener: Partial<ComponentEventMap<Component>>[K], options?: ObservableListenerOpts): void
+
 	fire<K extends keyof ComponentEventMap<Component>>(eventName: K, ...args: Parameters<ComponentEventMap<any>[K]>): boolean
 }
 
@@ -108,7 +109,6 @@ export interface Component extends Observable {
  * State object for saving and restoring state of component in browser storage for example
  */
 export type ComponentState = Record<string, any>;
-
 
 
 /**
@@ -207,7 +207,7 @@ export class Component extends Observable {
 		});
 
 		this.items.on("remove", (collection, item) => {
-			if(item.parent) {
+			if (item.parent) {
 				item.parent = undefined;
 				item.remove();
 			}
@@ -311,7 +311,7 @@ export class Component extends Observable {
 	}
 
 	private initClassName() {
-		if(this.el.classList.contains("goui")) {
+		if (this.el.classList.contains("goui")) {
 			return;
 		}
 		this.el.classList.add("goui");
@@ -390,8 +390,8 @@ export class Component extends Observable {
 
 		// If parent is already rendered then we must determine the DOM index of this child item
 		// if parent is rendering then we can simply add it
-		if(!parentEl) {
-			if(!this.parent) {
+		if (!parentEl) {
+			if (!this.parent) {
 				throw new Error("No parent set for " + (typeof this));
 			}
 			parentEl = this.parent.el;
@@ -419,7 +419,7 @@ export class Component extends Observable {
 	 * @protected
 	 */
 	protected getInsertBefore() {
-		if(!this.parent!.rendered) {
+		if (!this.parent!.rendered) {
 			return undefined;
 		}
 
@@ -637,12 +637,12 @@ export class Component extends Observable {
 	 */
 	public nextItem() {
 
-		if(!this.parent) {
+		if (!this.parent) {
 			return undefined;
 		}
 		const index = this.parent.items.indexOf(this);
 
-		if(index == -1) {
+		if (index == -1) {
 			return undefined;
 		}
 
@@ -654,12 +654,12 @@ export class Component extends Observable {
 	 */
 	public previousItem() {
 
-		if(!this.parent) {
+		if (!this.parent) {
 			return undefined;
 		}
 		const index = this.parent.items.indexOf(this);
 
-		if(index < 1) {
+		if (index < 1) {
 			return undefined;
 		}
 
@@ -721,7 +721,7 @@ export class Component extends Observable {
 		if (this._items) {
 			this._items.forEach((item) => {
 				// if items are hidden then defer rendering until item is shown
-				if(item.hidden) {
+				if (item.hidden) {
 					item.on("show", (item) => {
 						this.renderItem(item);
 					}, {once: true})
@@ -742,7 +742,7 @@ export class Component extends Observable {
 	 * @param item
 	 * @protected
 	 */
-	protected renderItem(item:Component) {
+	protected renderItem(item: Component) {
 		// getInsertBefore check for ext components. They don't have it.
 		item.render(this.itemContainerEl, item.getInsertBefore ? item.getInsertBefore() : undefined);
 	}
@@ -898,19 +898,19 @@ export const mask = (config?: Config<Mask>) => createComponent(new Mask(), confi
  */
 export const comp = (config?: Config<Component>, ...items: Component[]) => createComponent(new Component(config?.tagName), config, items);
 
-export const p = (config?: Config<Component>|string, ...items: Component[]) => createComponent(new Component("p"), typeof config == 'string' ? {html: config} : config, items);
-export const h1 = (config?: Config<Component>|string, ...items: Component[]) => createComponent(new Component("h1"), typeof config == 'string' ? {html: config} : config, items);
-export const h2 = (config?: Config<Component>|string, ...items: Component[]) => createComponent(new Component("h2"), typeof config == 'string' ? {html: config} : config, items);
-export const h3 = (config?: Config<Component>|string, ...items: Component[]) => createComponent(new Component("h3"), typeof config == 'string' ? {html: config} : config, items);
-export const h4 = (config?: Config<Component>|string, ...items: Component[]) => createComponent(new Component("h4"), typeof config == 'string' ? {html: config} : config, items);
+export const p = (config?: Config<Component> | string, ...items: Component[]) => createComponent(new Component("p"), typeof config == 'string' ? {html: config} : config, items);
+export const h1 = (config?: Config<Component> | string, ...items: Component[]) => createComponent(new Component("h1"), typeof config == 'string' ? {html: config} : config, items);
+export const h2 = (config?: Config<Component> | string, ...items: Component[]) => createComponent(new Component("h2"), typeof config == 'string' ? {html: config} : config, items);
+export const h3 = (config?: Config<Component> | string, ...items: Component[]) => createComponent(new Component("h3"), typeof config == 'string' ? {html: config} : config, items);
+export const h4 = (config?: Config<Component> | string, ...items: Component[]) => createComponent(new Component("h4"), typeof config == 'string' ? {html: config} : config, items);
 
-export const code = (config?: Config<Component>|string, ...items: Component[]) => createComponent(new Component("code"), typeof config == 'string' ? {html: config} : config, items);
-export const section = (config?: Config<Component>|string, ...items: Component[]) => createComponent(new Component("section"), typeof config == 'string' ? {html: config} : config, items);
-export const hr = (config?: Config<Component>) => createComponent(new Component("hr"),  config);
-export const createComponent = <T extends Observable>(comp: T, config:any, items?:Component[]) : T => {
+export const code = (config?: Config<Component> | string, ...items: Component[]) => createComponent(new Component("code"), typeof config == 'string' ? {html: config} : config, items);
+export const section = (config?: Config<Component> | string, ...items: Component[]) => createComponent(new Component("section"), typeof config == 'string' ? {html: config} : config, items);
+export const hr = (config?: Config<Component>) => createComponent(new Component("hr"), config);
+export const createComponent = <T extends Observable>(comp: T, config: any, items?: Component[]): T => {
 
 	if (config) {
-		if(config.listeners) {
+		if (config.listeners) {
 			for (let key in config.listeners) {
 				const eventName = key as keyof ObservableEventMap<T>;
 				if (typeof config.listeners[eventName] == 'function') {

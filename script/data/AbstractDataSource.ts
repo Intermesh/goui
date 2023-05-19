@@ -56,7 +56,7 @@ export type CommitEntityError = Record<EntityID, CommitError>
 /**
  * The base of an entity. It should at lease have an "id" property.
  */
-export interface BaseEntity  {
+export interface BaseEntity {
 	id: EntityID
 }
 
@@ -66,7 +66,7 @@ export interface BaseEntity  {
  * Allows any property.
  */
 export interface DefaultEntity extends BaseEntity {
-	[key:string]: any
+	[key: string]: any
 }
 
 
@@ -81,7 +81,7 @@ export interface Changes<EntityType> {
 	destroyed?: EntityID[],
 	newState: string,
 	oldState: string,
-	hasMoreChanges?:boolean
+	hasMoreChanges?: boolean
 }
 
 export interface CommitResponse<EntityType> {
@@ -99,7 +99,7 @@ export interface CommitResponse<EntityType> {
 	oldState: string
 }
 
-export type EntityID = string|number;
+export type EntityID = string | number;
 
 export type QueryFilter = Record<string, any>;// TODO
 
@@ -131,16 +131,16 @@ export interface QueryParams {
 }
 
 
-export interface QueryResponse  {
+export interface QueryResponse {
 	/**
 	 * The entity ID's in the correct order
 	 */
-	ids:EntityID[],
+	ids: EntityID[],
 
 	/**
 	 * If calculateTotal was set to true this will show the total number of results
 	 */
-	total?:number,
+	total?: number,
 
 	/**
 	 * The state of the query on the server
@@ -161,19 +161,19 @@ export interface AbstractDataSource<EntityType extends BaseEntity = DefaultEntit
 	fire<K extends keyof DataSourceEventMap<AbstractDataSource<EntityType>, EntityType>>(eventName: K, ...args: Parameters<DataSourceEventMap<AbstractDataSource<EntityType>, EntityType>[K]>): boolean
 }
 
-interface SaveData <EntityType extends BaseEntity> {
+interface SaveData<EntityType extends BaseEntity> {
 	data: Partial<EntityType>,
 	resolve: (value: EntityType) => void,
 	reject: (reason?: any) => void
 }
 
-interface DestroyData  {
+interface DestroyData {
 	resolve: (value: EntityID) => void,
 	reject: (reason?: any) => void
 }
 
-interface GetData<EntityType extends BaseEntity>  {
-	resolves: ((value: EntityType|undefined) => void)[],
+interface GetData<EntityType extends BaseEntity> {
+	resolves: ((value: EntityType | undefined) => void)[],
 	rejects: ((reason?: any) => void)[]
 }
 
@@ -194,7 +194,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	 *
 	 * @private
 	 */
-	private _state?:string;
+	private _state?: string;
 	private readonly delayedCommit: (...args: any[]) => void;
 	private readonly delayedGet: (...args: any[]) => void;
 	private _browserStore?: BrowserStore;
@@ -210,7 +210,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	 * @protected
 	 */
 	public async getState() {
-		if(!this._state) {
+		if (!this._state) {
 			this._state = await this.browserStore.getItem("__state__");
 		}
 
@@ -225,12 +225,12 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	 * @param state
 	 * @protected
 	 */
-	protected async setState(state:string|undefined) {
+	protected async setState(state: string | undefined) {
 		this._state = state;
 
-		console.warn("set state " + this.id +  ": " + state);
+		console.warn("set state " + this.id + ": " + state);
 
-		if(state === undefined) {
+		if (state === undefined) {
 			this.data = {};
 			return this.browserStore.clear();
 		} else {
@@ -243,14 +243,14 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	 * @private
 	 */
 	private get browserStore() {
-		if(!this._browserStore) {
+		if (!this._browserStore) {
 			this._browserStore = new BrowserStore("ds-" + this.id);
 		}
 
 		return this._browserStore;
 	}
 
-	constructor(public readonly id:string) {
+	constructor(public readonly id: string) {
 		super();
 
 		this.delayedCommit = FunctionUtil.buffer(0, () => {
@@ -276,9 +276,9 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	 *
 	 * @param ids
 	 */
-	public async get(ids:EntityID[]): Promise<GetResponse<EntityType>> {
+	public async get(ids: EntityID[]): Promise<GetResponse<EntityType>> {
 
-		const promises: Promise<EntityType|undefined>[] = [],  order:Record<EntityID, number> = {};
+		const promises: Promise<EntityType | undefined>[] = [], order: Record<EntityID, number> = {};
 
 		//first see if we have it in our data property
 		ids.forEach((id, index) => {
@@ -291,13 +291,13 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 		let entities = await Promise.all(promises);
 
 		const response: GetResponse<EntityType> = {
-			list:[],
+			list: [],
 			notFound: [],
 			state: await this.getState()
 		};
 
 		entities.forEach((e, index) => {
-			if(e === undefined) {
+			if (e === undefined) {
 				response.notFound!.push(ids[index]);
 			} else {
 				response.list.push(e);
@@ -305,13 +305,13 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 		})
 
 		response.list = response.list.sort(function (a, b) {
-				return order[a.id] - order[b.id];
-			});
+			return order[a.id] - order[b.id];
+		});
 
 		return response;
 	}
 
-	protected add(data:EntityType) {
+	protected add(data: EntityType) {
 
 		console.debug("Adding " + this.id + ": " + data.id);
 		this.data[data.id] = data;
@@ -319,7 +319,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 		return this.browserStore.setItem(data.id, data).then(() => data);
 	}
 
-	protected remove(id:EntityID) {
+	protected remove(id: EntityID) {
 
 		console.debug("Removing " + this.id + ": " + id);
 		delete this.data[id];
@@ -335,10 +335,10 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	 *
 	 * @param id
 	 */
-	public async single(id: EntityID): Promise<EntityType|undefined> {
+	public async single(id: EntityID): Promise<EntityType | undefined> {
 
 		const p = new Promise((resolve, reject) => {
-			if(!this.getIds[id]) {
+			if (!this.getIds[id]) {
 				this.getIds[id] = {
 					resolves: [resolve],
 					rejects: [reject]
@@ -347,12 +347,12 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 				this.getIds[id].resolves.push(resolve);
 				this.getIds[id].rejects.push(reject);
 			}
-		}) as Promise<EntityType|undefined> ;
+		}) as Promise<EntityType | undefined>;
 		this.delayedGet();
 		return p;
 	}
 
-	private returnGet(id:EntityID) {
+	private returnGet(id: EntityID) {
 		let r;
 		while (r = this.getIds[id].resolves.shift()) {
 			r.call(this, structuredClone(this.data[id]));
@@ -368,12 +368,12 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	protected async doGet() {
 
 		const unknownIds: EntityID[] = [];
-		for(let id in this.getIds) {
-			if(this.data[id]) {
+		for (let id in this.getIds) {
+			if (this.data[id]) {
 				this.returnGet(id);
 			} else {
 				const data = await this.browserStore.getItem(id);
-				if(data) {
+				if (data) {
 					this.data[id] = data;
 					this.returnGet(id);
 				} else {
@@ -382,7 +382,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 			}
 		}
 
-		if(!unknownIds.length) {
+		if (!unknownIds.length) {
 			// Can we return without a server call? State won't be checked.
 			// In the detail view we call an additional validateState() function to do this to
 			// save a lot of empty calls.
@@ -414,7 +414,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	 * @param ids
 	 * @protected
 	 */
-	protected abstract internalGet(ids:EntityID[]) : Promise<GetResponse<EntityType>>;
+	protected abstract internalGet(ids: EntityID[]): Promise<GetResponse<EntityType>>;
 
 	/**
 	 * Create entity
@@ -424,20 +424,20 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	 * @param data
 	 * @param createId The create ID to use when committing this entity to the server
 	 */
-	public create(data:Partial<EntityType>, createId?: EntityID): Promise<EntityType> {
+	public create(data: Partial<EntityType>, createId?: EntityID): Promise<EntityType> {
 
-		if(createId === undefined) {
+		if (createId === undefined) {
 			createId = this.createID()
 		}
 
 		const p = new Promise((resolve, reject) => {
-			this.creates[createId!] ={
+			this.creates[createId!] = {
 				data: data,
 				resolve: resolve,
 				reject: reject
 			}
 		}).finally(() => {
-				delete this.creates[createId!];
+			delete this.creates[createId!];
 		}) as Promise<EntityType>;
 
 		this.delayedCommit();
@@ -461,13 +461,13 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	 *
 	 * @param data
 	 */
-	public update(data:Partial<EntityType> & BaseEntity): Promise<EntityType> {
+	public update(data: Partial<EntityType> & BaseEntity): Promise<EntityType> {
 		const p = new Promise((resolve, reject) => {
-				this.updates[data.id!] = {
-					data: data,
-					resolve: resolve,
-					reject: reject
-				}
+			this.updates[data.id!] = {
+				data: data,
+				resolve: resolve,
+				reject: reject
+			}
 		}).finally(() => {
 			delete this.updates[data.id!];
 		}) as Promise<EntityType>;
@@ -490,13 +490,13 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	 *
 	 * @param id
 	 */
-	public destroy(id:EntityID) {
+	public destroy(id: EntityID) {
 		const p = new Promise((resolve, reject) => {
 			this.destroys[id] = {
 				resolve: resolve,
 				reject: reject
 			}
-		}). finally(() => {
+		}).finally(() => {
 			delete this.destroys[id];
 		})
 
@@ -512,7 +512,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 
 		let hasMoreChanges = true, hasAChange = false;
 
-		const allChanges : Changes<EntityType> = {
+		const allChanges: Changes<EntityType> = {
 			created: [],
 			updated: [],
 			destroyed: [],
@@ -523,7 +523,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 		try {
 			while (hasMoreChanges) {
 				const state = await this.getState();
-				if(state === undefined) {
+				if (state === undefined) {
 					// no state so nothing to update
 					return;
 				}
@@ -568,12 +568,12 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 
 				hasMoreChanges = !!changes.hasMoreChanges;
 			}
-		} catch(e) {
+		} catch (e) {
 			console.error(this.id + " Error while updating from server. Resetting data source.");
 			console.error(e);
 			await this.reset();
 		}
-		if(hasAChange) {
+		if (hasAChange) {
 			this.fire("change", this, allChanges);
 		}
 
@@ -585,7 +585,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	 *
 	 * @protected
 	 */
-	protected abstract internalRemoteChanges(state: string|undefined) : Promise<Changes<EntityType>>
+	protected abstract internalRemoteChanges(state: string | undefined): Promise<Changes<EntityType>>
 
 	/**
 	 * Commit pending changes to remote
@@ -593,22 +593,22 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	private async commit() {
 
 
-		const params: SetRequest<EntityType> =  Object.assign({
+		const params: SetRequest<EntityType> = Object.assign({
 			create: {},
 			update: {},
 			destroy: [],
 			ifInState: await this.getState(),
 		}, this.commitBaseParams);
 
-		for(let id in this.creates) {
+		for (let id in this.creates) {
 			params.create[id] = this.creates[id].data;
 		}
 
-		for(let id in this.updates) {
+		for (let id in this.updates) {
 			params.update[id] = this.updates[id].data;
 		}
 
-		for(let id in this.destroys) {
+		for (let id in this.destroys) {
 			params.destroy.push(id);
 		}
 
@@ -618,7 +618,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 				for (let clientId in response.created) {
 					//merge client data with server defaults.
 					let data = Object.assign(params.create ? (params.create[clientId] || {}) : {}, response.created[clientId] || {});
-					this.add(data).then(() =>	this.creates[clientId].resolve(data));
+					this.add(data).then(() => this.creates[clientId].resolve(data));
 				}
 			}
 
@@ -639,7 +639,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 					//merge existing data, with updates from client and server
 					let data = params.update && params.update[serverId] ? Object.assign(this.data[serverId], params.update[serverId]) : this.data[serverId];
 					data = Object.assign(data, response.updated[serverId] || {});
-					this.add(data).then((data) =>	this.updates[serverId].resolve(data) );
+					this.add(data).then((data) => this.updates[serverId].resolve(data));
 				}
 			}
 
@@ -664,7 +664,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 			await this.setState(response.newState);
 
 			this.fire("change", this, {
-				created:  response.created ? Object.keys(response.created) : [],
+				created: response.created ? Object.keys(response.created) : [],
 				updated: response.updated ? Object.keys(response.updated) : [],
 				destroyed: response.destroyed || [],
 				oldState: response.oldState,
@@ -684,17 +684,17 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 			})
 
 			.finally(() => {
-			this.creates = {};
-			this.updates = {};
-			this.destroys = {};
-		})
+				this.creates = {};
+				this.updates = {};
+				this.destroys = {};
+			})
 	}
 
 	/**
 	 * Implements commit (save and destroy) to the remote source
 	 * @protected
 	 */
-	protected abstract internalCommit(params: SetRequest<EntityType>) : Promise<CommitResponse<EntityType>>
+	protected abstract internalCommit(params: SetRequest<EntityType>): Promise<CommitResponse<EntityType>>
 
 	/**
 	 * Query the server for a list of entity ID's
@@ -703,7 +703,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	 *
 	 * @link https://jmap.io/spec-core.html#query
 	 */
-	public query(params: QueryParams) : Promise<QueryResponse> {
+	public query(params: QueryParams): Promise<QueryResponse> {
 		return this.internalQuery(params).then(r => {
 			return this.checkState(r.queryState, r);
 		});
@@ -716,9 +716,9 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	 * @param retVal
 	 * @private
 	 */
-	protected async checkState<T>(serverState:string|undefined, retVal: T) : Promise<T> {
+	protected async checkState<T>(serverState: string | undefined, retVal: T): Promise<T> {
 		let state = await this.getState()
-		if(!state) {
+		if (!state) {
 			// We are empty!
 			this.data = {};
 			await this.browserStore.clear();
@@ -726,7 +726,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 			state = serverState;
 		}
 		// Check if our data is up-to-date
-		if(serverState != state) {
+		if (serverState != state) {
 			return this.updateFromServer().then(() => retVal);
 		} else {
 			return Promise.resolve(retVal);
@@ -737,5 +737,5 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	 * Handle the query to the remote
 	 * @param params
 	 */
-	protected abstract internalQuery(params:QueryParams): Promise<QueryResponse>;
+	protected abstract internalQuery(params: QueryParams): Promise<QueryResponse>;
 }

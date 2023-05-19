@@ -13,7 +13,7 @@ interface RecurrenceConfig {
 
 type AtLeast<T, K extends keyof T> = Partial<T> & Pick<T, K>
 
-type NDay = {day: string, nthOfPeriod?: number};
+type NDay = { day: string, nthOfPeriod?: number };
 export type Frequency = "yearly" | "monthly" | "weekly" | "daily" //| "hourly"
 type DayOfWeek = 'mo' | 'tu' | 'we' | 'th' | 'fr' | 'sa' | 'su'
 export type RecurrenceRule = {
@@ -31,6 +31,7 @@ export type RecurrenceRule = {
 	byYearDay?: number[]
 	byHour?: number[]
 }
+
 /**
  * Class for looping date for Recurrence Rule
  */
@@ -39,7 +40,7 @@ export class Recurrence {
 	static dayMap = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'];
 
 	completed?: boolean
-	rule: RecurrenceRule & {interval:number}
+	rule: RecurrenceRule & { interval: number }
 	dtstart: Date
 	current: DateTime
 	last?: DateTime
@@ -55,12 +56,13 @@ export class Recurrence {
 	}
 
 	private dayNb(shortName: string) {
-		return {'mo':1,'tu':2, 'wo':3, 'th':4, 'fr':5, 'sa': 6, 'su':0}[shortName];
+		return {'mo': 1, 'tu': 2, 'wo': 3, 'th': 4, 'fr': 5, 'sa': 6, 'su': 0}[shortName];
 	}
+
 	private nDayHas(date: DateTime) {
 		// todo: change date.getDay() to 'mo' or 'su' and find period type in rrule and nthOfPeriod in date
-		for(const d of this.rule.byDay!) {
-			if(this.dayNb(d.day) === date.getDay() && d.nthOfPeriod == 1) return true;
+		for (const d of this.rule.byDay!) {
+			if (this.dayNb(d.day) === date.getDay() && d.nthOfPeriod == 1) return true;
 		}
 		return false;
 	}
@@ -77,7 +79,7 @@ export class Recurrence {
 		if (config.ff) {
 			while (this.current.date < config.ff && this.next()) {
 				// fast forwarding
-				console.log('ff ',this.current.date);
+				console.log('ff ', this.current.date);
 			}
 		}
 	}
@@ -148,8 +150,8 @@ export class Recurrence {
 			this.current.addDays(this.rule.interval);
 		} while (
 			!this.nDayHas(this.current) ||
-			!this.rule.byMonth!.includes(""+this.current.getMonth())
-		);
+			!this.rule.byMonth!.includes("" + this.current.getMonth())
+			);
 	}
 
 	private nextWeekly() {
@@ -184,7 +186,7 @@ export class Recurrence {
 		// if('byDay' in p) {
 		// 	this.sortByDay(p.byDay, this.rule.wkst);
 		// }
-		if('byYearDay' in p && ('byMonth' in p || 'byWeek' in p || 'byMonthDay' in p || 'byDay' in p)) {
+		if ('byYearDay' in p && ('byMonth' in p || 'byWeek' in p || 'byMonthDay' in p || 'byDay' in p)) {
 			throw new Error('Invalid byYearday rule');
 		}
 		if ("byWeekNo" in p && "byMonthDay" in p) {
@@ -193,7 +195,7 @@ export class Recurrence {
 		if (['daily', 'weekly', 'monthly', 'yearly'].indexOf(p.frequency) === -1) {
 			throw new Error('Invalid frequency rule');
 		}
-		if(p.frequency == 'monthly' && ('byYearDay' in p || 'byWeekNo' in p)) {
+		if (p.frequency == 'monthly' && ('byYearDay' in p || 'byWeekNo' in p)) {
 			throw new Error('Invalid monthly rule');
 		}
 		if (p.frequency == "weekly" && ("byYearDay" in p || "byMonthDay" in p)) {

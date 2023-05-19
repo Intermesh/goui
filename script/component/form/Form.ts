@@ -5,12 +5,12 @@
  */
 
 import {ContainerField} from "./ContainerField.js";
-import {Config, Observable, ObservableListener, ObservableListenerOpts} from "../Observable.js";
+import {Config, ObservableListenerOpts} from "../Observable.js";
 import {Notifier} from "../../Notifier.js";
 import {Component, createComponent} from "../Component.js";
 import {FieldEventMap} from "./Field.js";
 import {t} from "../../Translate.js";
-import {AbstractDataSource, BaseEntity, DefaultEntity, EntityID} from "../../data/index.js";
+import {AbstractDataSource, DefaultEntity, EntityID} from "../../data/index.js";
 
 
 export interface FormEventMap<Type> extends FieldEventMap<Type> {
@@ -30,7 +30,7 @@ export interface FormEventMap<Type> extends FieldEventMap<Type> {
 	 */
 	cancel: (form: Type) => any
 
-	saved: (form: Type, response:any) => any
+	saved: (form: Type, response: any) => any
 
 	/**
 	 * When the data is fetched from the store. but before it is put into the fields
@@ -51,6 +51,7 @@ export interface Form {
 	on<K extends keyof FormEventMap<this>>(eventName: K, listener: Partial<FormEventMap<this>>[K], options?: ObservableListenerOpts): void
 
 	fire<K extends keyof FormEventMap<this>>(eventName: K, ...args: Parameters<FormEventMap<Component>[K]>): boolean
+
 	get el(): HTMLFormElement
 }
 
@@ -152,7 +153,7 @@ export class Form extends ContainerField {
 	 *
 	 * @param form
 	 */
-	public handler: ((this: this, form: Form) => any|Promise<any>) | undefined;
+	public handler: ((this: this, form: Form) => any | Promise<any>) | undefined;
 
 	store?: AbstractDataSource
 
@@ -162,7 +163,7 @@ export class Form extends ContainerField {
 		this.reset();
 		this.currentId = '_new_';
 		this.fire('load', this, data);
-		if(data){
+		if (data) {
 			this.setValues(data);
 		}
 	}
@@ -174,13 +175,13 @@ export class Form extends ContainerField {
 		try {
 			this.currentId = id;
 			let entity = await this.store!.single(id);
-			if(!entity) {
+			if (!entity) {
 				throw "Failed to load entity with id " + id;
 			}
 			this.fire('load', this, entity);
 			this.value = entity;
 		} catch (e) {
-			alert(t("Error")+ ' '+ e);
+			alert(t("Error") + ' ' + e);
 		} finally {
 			this.unmask();
 		}
@@ -256,36 +257,36 @@ export class Form extends ContainerField {
 		this.clearInvalid();
 
 		if (this.isValid()) {
-			el.cls(['+valid','-invalid']);
+			el.cls(['+valid', '-invalid']);
 
 			let handlerResponse = undefined;
 			if (this.handler) {
 				try {
 					handlerResponse = await this.handler!(this);
-				}catch(e:any){
-					el.cls(['-valid','+invalid']);
+				} catch (e: any) {
+					el.cls(['-valid', '+invalid']);
 
- 					const msg = typeof(e) == "string" ? e : e.message;
+					const msg = typeof (e) == "string" ? e : e.message;
 					Notifier.error(msg);
 					return;
 				}
-			} else if(this.store) {
+			} else if (this.store) {
 				try {
 					this._value = {};
 					let v = this.value as DefaultEntity;
-					if( this.currentId) {
+					if (this.currentId) {
 						v.id = this.currentId;
 					}
 					this.fire('serialize', this, v);
 
 					let response;
-					if(this.currentId) {
+					if (this.currentId) {
 						response = this.store.update(v);
 					} else {
 						response = this.store.create(v);
 					}
 
-					if(response) {
+					if (response) {
 						this.fire('saved', this, response);
 					}
 
@@ -300,12 +301,12 @@ export class Form extends ContainerField {
 
 			//this.reset();
 		} else {
-			el.cls(['-valid','+invalid']);
+			el.cls(['-valid', '+invalid']);
 
 			Notifier.error(t('You have errors in your form. The invalid fields are marked.'));
 
 			const invalid = this.findFirstInvalid();
-			if(invalid) {
+			if (invalid) {
 				invalid.focus();
 			}
 		}

@@ -4,10 +4,10 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {Config, Observable, ObservableEventMap, ObservableListener, ObservableListenerOpts} from "../Observable.js";
+import {Config, Observable, ObservableEventMap, ObservableListenerOpts} from "../Observable.js";
 import {List} from "../List.js";
 import {ArrayUtil} from "../../util/ArrayUtil.js";
-import {Component} from "../Component";
+
 export interface RowSelectEventMap<Type extends Observable> extends ObservableEventMap<Type> {
 	/**
 	 * Fires when selection changes. When holding arrow on keyboard it will only fire once at key up to prevent
@@ -36,7 +36,7 @@ export interface RowSelectEventMap<Type extends Observable> extends ObservableEv
 	 * @param rowSelect
 	 * @param storeIndex
 	 */
-	rowselect:  (rowSelect: Type, storeIndex: number) => void
+	rowselect: (rowSelect: Type, storeIndex: number) => void
 
 	/**
 	 * Fires when a row is deselected
@@ -44,11 +44,12 @@ export interface RowSelectEventMap<Type extends Observable> extends ObservableEv
 	 * @param rowSelect
 	 * @param storeIndex
 	 */
-	rowdeselect:  (rowSelect: Type, storeIndex: number) => void
+	rowdeselect: (rowSelect: Type, storeIndex: number) => void
 }
 
 export interface RowSelect {
 	on<K extends keyof RowSelectEventMap<this>>(eventName: K, listener: Partial<RowSelectEventMap<this>>[K], options?: ObservableListenerOpts): void
+
 	fire<K extends keyof RowSelectEventMap<this>>(eventName: K, ...args: Parameters<RowSelectEventMap<any>[K]>): boolean
 
 }
@@ -84,7 +85,7 @@ export class RowSelect extends Observable {
 			});
 
 			tableEl.addEventListener("focus", (e) => {
-				if(!this.selected.length && this.list.store.get(0)) {
+				if (!this.selected.length && this.list.store.get(0)) {
 					this.selected = [0];
 				}
 			})
@@ -97,7 +98,7 @@ export class RowSelect extends Observable {
 
 	public selectAll() {
 		const selected = [];
-		for(let i = 0, c = this.list.store.count(); i < c; i ++) {
+		for (let i = 0, c = this.list.store.count(); i < c; i++) {
 			selected.push(i);
 		}
 		this.selected = selected;
@@ -142,7 +143,6 @@ export class RowSelect extends Observable {
 		this.selected = selection;
 
 
-
 	}
 
 
@@ -169,7 +169,7 @@ export class RowSelect extends Observable {
 			this.fire('rowselect', this, i);
 		})
 
-		if(newSelection.length) {
+		if (newSelection.length) {
 			this.lastIndex = newSelection[0];
 		}
 
@@ -184,7 +184,7 @@ export class RowSelect extends Observable {
 
 	private onKeyDown(e: KeyboardEvent) {
 
-		if(e.key == "Escape") {
+		if (e.key == "Escape") {
 			this.clear();
 			return;
 		}
@@ -213,7 +213,7 @@ export class RowSelect extends Observable {
 			index = this.lastIndex - 1
 		}
 
-		console.warn("rowselectkeydown",index);
+		console.warn("rowselectkeydown", index);
 
 		if (e.shiftKey && this.multiSelect) {
 

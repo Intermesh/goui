@@ -3,10 +3,10 @@
  * @copyright Copyright 2023 Intermesh BV
  * @author Merijn Schering <mschering@intermesh.nl>
  */
-import {Config, Observable, ObservableListener, ObservableListenerOpts} from "../component/Observable.js";
+import {Config, ObservableListenerOpts} from "../component/Observable.js";
 import {ArrayUtil} from "../util/ArrayUtil.js";
 import {Collection, CollectionEventMap} from "../util/Collection.js";
-import {Component, createComponent} from "../component/Component.js";
+import {createComponent} from "../component/Component.js";
 
 /**
  * Comparator interface for sorting data
@@ -55,6 +55,7 @@ export interface Store<RecordType = StoreRecord> {
 }
 
 export type storeRecordType<StoreType> = StoreType extends Store<infer RecordType> ? RecordType : never;
+
 /**
  * Generic data store used by components
  */

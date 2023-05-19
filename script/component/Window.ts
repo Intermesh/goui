@@ -6,14 +6,14 @@
 
 import {comp, Component, createComponent} from "./Component.js";
 import {tbar, Toolbar} from "./Toolbar.js";
-import {btn, Button} from "./Button.js";
+import {btn} from "./Button.js";
 import {DraggableComponent, DraggableComponentEventMap} from "./DraggableComponent.js";
-import {Config, Observable, ObservableListener, ObservableListenerOpts} from "./Observable.js";
+import {Config, ObservableListenerOpts} from "./Observable.js";
 import {root} from "./Root.js";
 import {FunctionUtil} from "../util/FunctionUtil.js";
-import {form, Form} from "./form/Form.js";
-import {fieldset, Fieldset} from "./form/Fieldset.js";
-import {textfield, TextField} from "./form/TextField.js";
+import {form} from "./form/Form.js";
+import {fieldset} from "./form/Fieldset.js";
+import {textfield} from "./form/TextField.js";
 import {t} from "../Translate.js";
 
 
@@ -40,11 +40,12 @@ export interface WindowEventMap<Type> extends DraggableComponentEventMap<Type> {
 	 *
 	 * @param window
 	 */
-	unmaximize:  (window: Type) => void
+	unmaximize: (window: Type) => void
 }
 
 export interface Window {
 	on<K extends keyof WindowEventMap<this>>(eventName: K, listener: Partial<WindowEventMap<this>>[K], options?: ObservableListenerOpts): void;
+
 	fire<K extends keyof WindowEventMap<this>>(eventName: K, ...args: Parameters<WindowEventMap<any>[K]>): boolean
 }
 
@@ -69,6 +70,7 @@ export class Window extends DraggableComponent {
 		this.resizable = true;
 		this.width = 400;
 	}
+
 	protected baseCls = "goui-window"
 
 	/**
@@ -90,7 +92,6 @@ export class Window extends DraggableComponent {
 	 * Make the window modal so the user can only interact with this window.
 	 */
 	public modal = false
-
 
 
 	private titleCmp!: Component;
@@ -143,8 +144,6 @@ export class Window extends DraggableComponent {
 	}
 
 
-
-
 	protected applyTitle() {
 		// don't set title on el
 	}
@@ -155,7 +154,7 @@ export class Window extends DraggableComponent {
 
 	public getHeader() {
 
-		if(!this.header) {
+		if (!this.header) {
 			this.header = tbar({
 					cls: "header"
 				},
@@ -200,7 +199,7 @@ export class Window extends DraggableComponent {
 		});
 
 
-		if(this.maximized) {
+		if (this.maximized) {
 			this.maximize();
 		}
 
@@ -213,11 +212,11 @@ export class Window extends DraggableComponent {
 			}
 		});
 
-		if(this.resizable) {
+		if (this.resizable) {
 			this.observerResize();
 		}
 
-		if(this.modal) {
+		if (this.modal) {
 			el.classList.add("modal");
 		}
 
@@ -236,10 +235,9 @@ export class Window extends DraggableComponent {
 
 		this.resizeObserver = new ResizeObserver(entries => {
 
-			if(init) {
+			if (init) {
 				saveState();
-			} else
-			{
+			} else {
 				init = true;
 			}
 		});
@@ -248,9 +246,8 @@ export class Window extends DraggableComponent {
 
 	}
 
-	protected buildState()
-	{
-		if(this.isMaximized()) {
+	protected buildState() {
+		if (this.isMaximized()) {
 			const s = this.getState();
 			s.maximized = true;
 			return s;
@@ -270,18 +267,17 @@ export class Window extends DraggableComponent {
 		if (s.height)
 			this.height = s.height;
 
-		if(s.top != undefined) {
+		if (s.top != undefined) {
 			this.el.style.top = s.top + "px";
 
 			if (s.left != undefined) {
 				this.el.style.left = s.left + "px";
 			}
-		} else
-		{
+		} else {
 			this.center();
 		}
 
-		if(s.maximized) {
+		if (s.maximized) {
 			this.maximized = true;
 		}
 	}
@@ -299,7 +295,7 @@ export class Window extends DraggableComponent {
 
 		this.focussedBeforeOpen = document.activeElement || undefined;
 
-		if(!this.rendered) {
+		if (!this.rendered) {
 
 			root.items.add(this);
 
@@ -322,7 +318,7 @@ export class Window extends DraggableComponent {
 				this.modalOverlay.show();
 			}
 
-			if(!this.hasState()) {
+			if (!this.hasState()) {
 				this.shrinkToFit();
 				this.center();
 			} else {
@@ -336,18 +332,18 @@ export class Window extends DraggableComponent {
 	}
 
 	private shrinkToFit() {
-		if(this.el.offsetHeight > window.innerHeight) {
+		if (this.el.offsetHeight > window.innerHeight) {
 			this.el.style.height = window.innerHeight * .9 + "px";
 		}
 
-		if(this.el.offsetWidth > window.innerWidth) {
+		if (this.el.offsetWidth > window.innerWidth) {
 			this.el.style.width = window.innerWidth * .9 + "px";
 		}
 	}
 
 	private disableBodyScroll() {
 		// When the modal is shown, we want a fixed body
-		if(window.getComputedStyle(document.body).overflow != "hidden") {
+		if (window.getComputedStyle(document.body).overflow != "hidden") {
 			document.body.style.top = `-${window.scrollY}px`;
 			document.body.style.position = 'fixed';
 		}
@@ -368,17 +364,16 @@ export class Window extends DraggableComponent {
 	}
 
 
-
 	/**
 	 * @inheritDoc
 	 */
 	public remove() {
 
-		if(this.focussedBeforeOpen instanceof HTMLElement) {
+		if (this.focussedBeforeOpen instanceof HTMLElement) {
 			this.focussedBeforeOpen.focus();
 		}
 
-		if(this.resizeObserver) {
+		if (this.resizeObserver) {
 			//otherwise it will fire when removing this element.
 			this.resizeObserver.disconnect();
 		}
@@ -404,7 +399,7 @@ export class Window extends DraggableComponent {
 	 * Center the window in the screen
 	 */
 	public center() {
-		this.el.style.top = (((window.innerHeight - this.height)  / 2)) + "px";
+		this.el.style.top = (((window.innerHeight - this.height) / 2)) + "px";
 		this.el.style.left = (((window.innerWidth - this.width) / 2)) + "px";
 
 		return this;
@@ -443,23 +438,23 @@ export class Window extends DraggableComponent {
 	 * Show modal alert window
 	 *
 	 */
-	public static alert(text: any, title:string = t("Alert")): Promise<void> {
+	public static alert(text: any, title: string = t("Alert")): Promise<void> {
 
-		if(text.message) {
+		if (text.message) {
 			console.error(text);
 			text = text.message;
 		}
 		return new Promise((resolve, reject) => {
 
 			win({
-				modal: true,
-				title: title,
-				listeners: {
-					close: () => {
-						resolve();
+					modal: true,
+					title: title,
+					listeners: {
+						close: () => {
+							resolve();
+						}
 					}
-				}
-			},
+				},
 				comp({
 					flex: 1,
 					cls: "scroll pad",
@@ -476,35 +471,35 @@ export class Window extends DraggableComponent {
 	 * Returns a promise with the input or undefined if the user cancelled
 	 *
 	 */
-	public static prompt(text: string, inputLabel:string, defaultValue = "", title:string = t("Please enter")): Promise<string|undefined> {
+	public static prompt(text: string, inputLabel: string, defaultValue = "", title: string = t("Please enter")): Promise<string | undefined> {
 
 		return new Promise((resolve, reject) => {
 
 			let cancelled = true;
 
 			const w = win({
-				modal: true,
-				title: title,
-				listeners: {
-					focus: () => {
-						w.items.get(0)!.focus();
-					},
-					close: () => {
-						if (cancelled) {
-							resolve(undefined);
+					modal: true,
+					title: title,
+					listeners: {
+						focus: () => {
+							w.items.get(0)!.focus();
+						},
+						close: () => {
+							if (cancelled) {
+								resolve(undefined);
+							}
 						}
 					}
-				}
-			},
+				},
 
 				form({
 
-					handler: (form) => {
-						resolve(form.getValues()['input']);
-						cancelled = false;
-						w.close();
-					}
-				},
+						handler: (form) => {
+							resolve(form.getValues()['input']);
+							cancelled = false;
+							w.close();
+						}
+					},
 
 					fieldset({},
 						comp({
@@ -530,9 +525,7 @@ export class Window extends DraggableComponent {
 							text: "Ok"
 						})
 					)
-
 				)
-
 			);
 
 			w.show();
@@ -540,49 +533,49 @@ export class Window extends DraggableComponent {
 	}
 
 	/**
-	* Ask the user for confirmation
-	*/
+	 * Ask the user for confirmation
+	 */
 	public static confirm(text: string, title: string = t("Please confirm")): Promise<boolean> {
 
 		return new Promise((resolve, reject) => {
 
 			const yesBtn = btn({
-				text: t("Yes"),
-				cls: "filled primary",
-				handler: () => {
-					resolve(true);
-					w.close();
-				}
-			}),
-				w = win({
-					modal: true,
-					title: title,
-					closable: false,
-					listeners: {
-						focus: () => {
-							yesBtn.focus();
-						}
+					text: t("Yes"),
+					cls: "filled primary",
+					handler: () => {
+						resolve(true);
+						w.close();
 					}
-				},
-
-				comp({
-					cls: "pad",
-					html: text
 				}),
-
-				tbar({},
-					'->',
-					btn({
-						text: t("No"),
-						handler: () => {
-							resolve(false);
-							w.close();
+				w = win({
+						modal: true,
+						title: title,
+						closable: false,
+						listeners: {
+							focus: () => {
+								yesBtn.focus();
+							}
 						}
+					},
+
+					comp({
+						cls: "pad",
+						html: text
 					}),
 
-					yesBtn
-				)
-			);
+					tbar({},
+						'->',
+						btn({
+							text: t("No"),
+							handler: () => {
+								resolve(false);
+								w.close();
+							}
+						}),
+
+						yesBtn
+					)
+				);
 
 			w.show();
 		});
@@ -596,4 +589,4 @@ export class Window extends DraggableComponent {
  * @param config
  * @param items
  */
-export const win = (config?:Config<Window, WindowEventMap<Window>>, ...items:Component[]) => createComponent(new Window(), config, items);
+export const win = (config?: Config<Window, WindowEventMap<Window>>, ...items: Component[]) => createComponent(new Window(), config, items);

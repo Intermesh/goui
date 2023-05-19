@@ -4,7 +4,7 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {comp, Component, ComponentEventMap} from "./Component.js";
+import {comp, Component} from "./Component.js";
 import {Button} from "./Button.js";
 import type {Menu} from "./menu/index.js";
 import {Config} from "./Observable";
@@ -60,29 +60,28 @@ export class Toolbar extends Component {
 	private findToolbar(): Toolbar | undefined {
 
 		let parent;
-		if((this as unknown as Menu).parentButton) {
+		if ((this as unknown as Menu).parentButton) {
 			parent = (this as unknown as Menu).parentButton!.parent;
-		} else
-		{
+		} else {
 			parent = this.parent;
 		}
 
-		if(!parent || !(parent instanceof Toolbar)) {
+		if (!parent || !(parent instanceof Toolbar)) {
 			return undefined;
 		}
 
-		if(parent.orientation == "horizontal") {
+		if (parent.orientation == "horizontal") {
 			return parent;
 		} else {
 			return parent.findToolbar();
 		}
 
 	}
-	
+
 	private setupKeyboardNav() {
 
 		this.on("focus", () => {
-			if(this.focusedItemIndex > -1) {
+			if (this.focusedItemIndex > -1) {
 				this.items.get(this.focusedItemIndex).focus();
 			}
 		});
@@ -96,9 +95,9 @@ export class Toolbar extends Component {
 			switch ((ev as KeyboardEvent).key) {
 				case 'ArrowRight':
 					if (this.orientation == "vertical") {
-						if(!this.focusChild()) {
+						if (!this.focusChild()) {
 							const tb = this.findToolbar();
-							if(tb) {
+							if (tb) {
 								tb.focusNext();
 							}
 						}
@@ -122,9 +121,9 @@ export class Toolbar extends Component {
 				case 'ArrowLeft':
 					if (this.orientation == "vertical") {
 
-						if(!this.focusParent()) {
+						if (!this.focusParent()) {
 							const tb = this.findToolbar();
-							if(tb) {
+							if (tb) {
 								tb.focusNext(-1);
 							}
 						}
@@ -134,7 +133,7 @@ export class Toolbar extends Component {
 					}
 					ev.stopPropagation();
 					ev.preventDefault();
-				break;
+					break;
 
 				case 'ArrowUp':
 					if (this.orientation == "vertical") {
@@ -150,22 +149,22 @@ export class Toolbar extends Component {
 		});
 	}
 
-	public focusNext(inc = 1) : boolean {
+	public focusNext(inc = 1): boolean {
 
 		const nextIndex = this.focusedItemIndex + inc;
 
 		this.focusedItemIndex = Math.min(Math.max(nextIndex, 0), this.items.count() - 1);
 
-		if(nextIndex != this.focusedItemIndex) {
+		if (nextIndex != this.focusedItemIndex) {
 			return false;
 		}
 
 		const cmp = this.items.get(this.focusedItemIndex)!;
-		if(!cmp.isFocusable()) {
+		if (!cmp.isFocusable()) {
 			return this.focusNext(inc);
 		} else {
 			cmp.focus();
-			if(this.orientation == 'horizontal') {
+			if (this.orientation == 'horizontal') {
 				cmp.el.click();
 			}
 			return true;
@@ -174,7 +173,7 @@ export class Toolbar extends Component {
 
 	private focusChild() {
 		const child = this.items.get(this.focusedItemIndex) as Button;
-		if(!child || !child.menu) {
+		if (!child || !child.menu) {
 			return false;
 		}
 
@@ -184,12 +183,12 @@ export class Toolbar extends Component {
 
 	private focusParent() {
 		const child = this.items.get(this.focusedItemIndex) as Button;
-		if(!child) {
+		if (!child) {
 			return false;
 		}
 
 		const parentButton = (child.parent! as Menu).parentButton! as Button;
-		if(!parentButton) {
+		if (!parentButton) {
 			return false;
 		}
 		parentButton.focus();
@@ -247,7 +246,7 @@ export const tbar = (config?: Config<Toolbar>, ...items: (Component | "->" | "-"
 	return c;
 }
 
-export const tbarItems = (items: (Component | "->" | "-")[]) : Component[] => {
+export const tbarItems = (items: (Component | "->" | "-")[]): Component[] => {
 	const l = items.length;
 	if (l) {
 

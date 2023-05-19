@@ -11,7 +11,7 @@ import {Format} from "../../util/Format.js";
 import {checkbox} from "../form/CheckboxField.js";
 
 type TableColumnRenderer = (columnValue: any, record: any, td: HTMLTableCellElement, table: Table, storeIndex: number) => string | Promise<string> | Component | Promise<Component>;
-type HeaderRenderer = (col:TableColumn, headerEl: HTMLTableCellElement, table: Table) => string | Component;
+type HeaderRenderer = (col: TableColumn, headerEl: HTMLTableCellElement, table: Table) => string | Component;
 
 export type align = "left" | "right" | "center";
 
@@ -139,12 +139,13 @@ export class DateColumn extends TableColumn {
 export const datecolumn = (config: TableColumnConfig) => createComponent(new DateColumn(config.id), config);
 
 export class CheckboxColumn extends TableColumn {
-	constructor(id:string) {
+	constructor(id: string) {
 		super(id);
 
 		this.cls = "checkbox-select-column";
 
 	}
+
 	renderer = (val: boolean) => {
 		return checkbox({
 			value: val
@@ -169,16 +170,15 @@ export class CheckboxSelectColumn extends TableColumn {
 		this.cls = "checkbox-select-column";
 	}
 
-	headerRenderer:HeaderRenderer = (col, headerEl,table) => {
+	headerRenderer: HeaderRenderer = (col, headerEl, table) => {
 
 		return checkbox({
 			listeners: {
 				change: (field, newValue, oldValue) => {
 
-					if(newValue) {
+					if (newValue) {
 						table.rowSelection!.selectAll();
-					} else
-					{
+					} else {
 						table.rowSelection!.clear();
 					}
 
@@ -187,7 +187,7 @@ export class CheckboxSelectColumn extends TableColumn {
 		});
 	}
 
-	renderer:TableColumnRenderer = (val: boolean, record, td, table, rowIndex) => {
+	renderer: TableColumnRenderer = (val: boolean, record, td, table, rowIndex) => {
 
 		return checkbox({
 			value: val,
@@ -204,11 +204,10 @@ export class CheckboxSelectColumn extends TableColumn {
 				change: (field, newValue, oldValue) => {
 
 					const index = table.store.indexOf(record), selected = table.rowSelection!.selected;
-					if(newValue) {
+					if (newValue) {
 						selected.push(index);
 						table.rowSelection!.selected = selected;
-					} else
-					{
+					} else {
 						table.rowSelection!.selected = selected.filter(i => i != index);
 					}
 

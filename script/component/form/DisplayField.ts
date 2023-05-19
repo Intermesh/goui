@@ -10,9 +10,11 @@ import {Config} from "../Observable";
 
 export class DisplayField extends Field {
 	baseCls = ''
-	constructor(tagName:keyof HTMLElementTagNameMap = "div") { // default is <label>. but that will trigger click of button inside
+
+	constructor(tagName: keyof HTMLElementTagNameMap = "div") { // default is <label>. but that will trigger click of button inside
 		super(tagName);
 	}
+
 	protected renderControl() {
 		// empty
 	}

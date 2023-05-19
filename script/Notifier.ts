@@ -4,7 +4,7 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {comp, Component} from "./component/Component.js";
+import {comp} from "./component/Component.js";
 import {root} from "./component/Root.js";
 
 /**
@@ -28,8 +28,7 @@ export class Notifier {
 		console.error(msg);
 		if (msg instanceof Object && msg.message) {
 			msg = msg.message;
-		} else if (typeof msg != "string")
-		{
+		} else if (typeof msg != "string") {
 			msg = msg + "";
 		}
 
@@ -73,17 +72,17 @@ class Message {
 	constructor(msg: string, type: string, timeout = 3000) {
 
 		const alert = comp({
-			cls: "goui-alert " + type
-		},
+				cls: "goui-alert " + type
+			},
 			comp({
-				tagName:"span",
+				tagName: "span",
 				text: msg
 			})
 		);
 
 		root.items.add(alert);
 
-		if(timeout) {
+		if (timeout) {
 			this.timeout = window.setTimeout(() => {
 				alert.remove();
 			}, timeout);
@@ -92,7 +91,7 @@ class Message {
 		setTimeout(() => {
 			document.body.addEventListener("click", () => {
 				alert.remove();
-				if(this.timeout) {
+				if (this.timeout) {
 					clearTimeout(this.timeout);
 				}
 			}, {once: true});

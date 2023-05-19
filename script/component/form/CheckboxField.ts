@@ -24,7 +24,7 @@ export class CheckboxField extends Field {
 	constructor(public readonly type: CheckBoxType = 'box') {
 		super();
 		this.type = type;
-		this.el.cls(type,true);
+		this.el.cls(type, true);
 	}
 
 	protected input: HTMLInputElement | undefined;
@@ -54,7 +54,9 @@ export class CheckboxField extends Field {
 
 	protected createControl(): undefined | HTMLElement {
 
-		const el = E('input').on("change", () => {this.fireChange();});
+		const el = E('input').on("change", () => {
+			this.fireChange();
+		});
 		el.type = "checkbox";
 		el.required = this.required;
 		el.name = this.name;
@@ -66,9 +68,9 @@ export class CheckboxField extends Field {
 		if (this.invalidMsg) {
 			this.applyInvalidMsg();
 		}
-		const lbl = E('span',this.label).cls('box-label');
+		const lbl = E('span', this.label).cls('box-label');
 
-		if(this._cls) {
+		if (this._cls) {
 			lbl.cls("+" + this._cls);
 		}
 
@@ -164,4 +166,4 @@ export type CheckboxFieldConfig = Config<CheckboxField, FieldEventMap<CheckboxFi
  *
  * @param config
  */
-export const checkbox = (config?: Config<CheckboxField, FieldEventMap<CheckboxField>>) => createComponent(new CheckboxField(config?.type||'box'), config);
+export const checkbox = (config?: Config<CheckboxField, FieldEventMap<CheckboxField>>) => createComponent(new CheckboxField(config?.type || 'box'), config);

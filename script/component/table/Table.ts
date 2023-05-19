@@ -5,7 +5,7 @@
  */
 
 import {comp, Component, ComponentState, createComponent} from "../Component.js";
-import {Store, storeRecordType} from "../../data/Store.js";
+import {Store} from "../../data/Store.js";
 import {ObjectUtil} from "../../util/ObjectUtil.js";
 import {menu, Menu} from "../menu/Menu.js";
 import {checkbox} from "../form/CheckboxField.js";
@@ -13,11 +13,11 @@ import {Notifier} from "../../Notifier.js";
 import {draggable} from "../DraggableComponent.js";
 import {TableColumn} from "./TableColumns.js";
 import {List, ListEventMap} from "../List.js";
-import {Config, ObservableListener, ObservableListenerOpts} from "../Observable";
+import {Config, ObservableListenerOpts} from "../Observable";
 import {t} from "../../Translate";
 
 
-type GroupByRenderer = (groupBy:any, record: any, thEl: HTMLTableCellElement, table: Table) => string | Promise<string> | Component | Promise<Component>;
+type GroupByRenderer = (groupBy: any, record: any, thEl: HTMLTableCellElement, table: Table) => string | Promise<string> | Component | Promise<Component>;
 
 
 export interface Table<StoreType extends Store = Store> {
@@ -108,7 +108,7 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 					td.style.textAlign = c.align;
 				}
 
-				if(c.cls) {
+				if (c.cls) {
 					td.classList.add(...c.cls.split(" "));
 				}
 
@@ -143,9 +143,9 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 	protected initStore() {
 		super.initStore();
 
-		this.store.on("remove",(collection, item, index) => {
+		this.store.on("remove", (collection, item, index) => {
 			//clean up empty groups
-			if(this.groupBy) {
+			if (this.groupBy) {
 				this.el.querySelectorAll("tbody").forEach((tbody) => {
 					if (tbody.children.length == 1) {
 						tbody.remove();
@@ -169,7 +169,7 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 	/**
 	 * Group the table by this property.
 	 */
-	public groupBy?:string;
+	public groupBy?: string;
 
 	/**
 	 * Group renderer function
@@ -247,7 +247,7 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 			this.el.style.minWidth = "100%";
 		}
 
-		if(this.headers) {
+		if (this.headers) {
 			this.renderHeaders();
 		} else {
 			this.renderColGroup();
@@ -275,7 +275,7 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 			});
 
 			this.columns.forEach((c) => {
-				if(c.header && c.hidable) {
+				if (c.header && c.hidable) {
 					this.columnMenu!.items.add(checkbox({
 						label: c.header,
 						name: c.id,
@@ -357,7 +357,7 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 				col.style.textAlign = h.align;
 			}
 
-			if(h.cls) {
+			if (h.cls) {
 				col.classList.add(...h.cls.split(" "));
 			}
 
@@ -395,7 +395,7 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 				header.style.textAlign = h.align;
 			}
 
-			if(h.cls) {
+			if (h.cls) {
 				header.classList.add(...h.cls.split(" "));
 			}
 
@@ -406,8 +406,7 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 				} else if (r instanceof Component) {
 					r.render(header);
 				}
-			} else
-			{
+			} else {
 				header.innerHTML = h.header || "";
 			}
 
@@ -458,8 +457,7 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 			} else {
 				s[sortIndex].property = dataIndex;
 			}
-		} else
-		{
+		} else {
 			s[sortIndex] = {
 				isAscending: true,
 				property: dataIndex
@@ -522,11 +520,11 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 		}, 0);
 	}
 
-	private lastGroup?:string;
+	private lastGroup?: string;
 	private groupEl?: HTMLTableSectionElement;
 
-	protected renderGroup(record:any): HTMLElement {
-		if(!this.groupBy) {
+	protected renderGroup(record: any): HTMLElement {
+		if (!this.groupBy) {
 			if (!this.groupEl) {
 				this.groupEl = document.createElement('tbody');
 				this.el!.append(this.groupEl);
@@ -537,7 +535,7 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 		const groupBy = ObjectUtil.path(record, this.groupBy);
 
 		// console.warn(this.groupEl,groupBy, this.lastGroup)
-		if(!this.groupEl || groupBy != this.lastGroup) {
+		if (!this.groupEl || groupBy != this.lastGroup) {
 			const tr = document.createElement("tr");
 			tr.classList.add("group");
 
@@ -550,7 +548,7 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 				th.innerHTML = r;
 			} else if (r instanceof Component) {
 				r.render(th);
-			} else if(r instanceof Promise) {
+			} else if (r instanceof Promise) {
 				r.then((s) => {
 					if (s instanceof Component) {
 						s.render(th);
@@ -576,14 +574,14 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 	}
 
 	protected clearRows() {
-		if(!this.el) {
+		if (!this.el) {
 			return;
 		}
 		this.groupEl = undefined;
 		this.el.querySelectorAll('tbody').forEach(tbody => tbody.remove());
 	}
 
-	protected findDropRow(e:DragEvent) {
+	protected findDropRow(e: DragEvent) {
 		return (e.target as HTMLDivElement).closest("TR") as HTMLElement;
 	}
 }
@@ -595,4 +593,4 @@ type TableConfig<StoreType extends Store = Store> = Omit<Config<Table<StoreType>
  *
  * @param config
  */
-export const table = <StoreType extends Store = Store>(config: TableConfig<StoreType>) => createComponent(new Table<StoreType>(config.store, config.columns), config) ;
+export const table = <StoreType extends Store = Store>(config: TableConfig<StoreType>) => createComponent(new Table<StoreType>(config.store, config.columns), config);

@@ -5,7 +5,7 @@
  */
 
 import {TextField} from "./TextField.js";
-import {Config, ObservableListener, ObservableListenerOpts} from "../Observable.js";
+import {Config, ObservableListenerOpts} from "../Observable.js";
 
 import {Table} from "../table/Table.js";
 import {root} from "../Root.js";
@@ -126,16 +126,15 @@ export class AutocompleteField<TableType extends Table = Table> extends TextFiel
 		return this._value;
 	}
 
-	private findDisplayValue(v:any | string | undefined) {
-		if(!v) {
+	private findDisplayValue(v: any | string | undefined) {
+		if (!v) {
 			return "";
 		}
 
-		if(this.valueProperty) {
+		if (this.valueProperty) {
 			const record = this.table.store.find((record, index, obj) => record[this.valueProperty!] == v);
 			return record ? record[this.displayProperty] : v;
-		} else
-		{
+		} else {
 			return v[this.displayProperty];
 		}
 	}
@@ -167,16 +166,15 @@ export class AutocompleteField<TableType extends Table = Table> extends TextFiel
 
 
 	private selectValueInTable() {
-		if(this.value) {
+		if (this.value) {
 			//Try to select record
-			if(this.table.store.loading) {
+			if (this.table.store.loading) {
 				this.table.store.on("load", (store, records, append) => {
 					const index = this.findStoreIndexForValue();
 					console.warn("Selected index", index);
 					this.table.rowSelection!.selected = [index];
 				}, {once: true});
-			} else
-			{
+			} else {
 				const index = this.findStoreIndexForValue();
 				this.table.rowSelection!.selected = [index];
 			}
@@ -184,11 +182,10 @@ export class AutocompleteField<TableType extends Table = Table> extends TextFiel
 	}
 
 	private findStoreIndexForValue() {
-		if(this.valueProperty) {
+		if (this.valueProperty) {
 			return this.table.store.findIndex((record) => record[this.valueProperty!] == this.value);
-		} else
-		{
-			return this.table.store.findIndex( this.value);
+		} else {
+			return this.table.store.findIndex(this.value);
 		}
 	}
 
@@ -254,7 +251,7 @@ export class AutocompleteField<TableType extends Table = Table> extends TextFiel
 		})
 	}
 
-	private setRecordAsValue(r:any) {
+	private setRecordAsValue(r: any) {
 		this.value = this.valueProperty ? r[this.valueProperty] : r;
 		this.fireChange(true);
 	}

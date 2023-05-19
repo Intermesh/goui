@@ -5,15 +5,14 @@
  */
 
 import {comp, Component, ComponentEventMap, createComponent} from "./Component.js";
-import {Store, StoreRecord, storeRecordType} from "../data/Store.js";
+import {Store} from "../data/Store.js";
 import {t} from "../Translate.js";
 import {E} from "../util/Element.js";
 import {rowselect, RowSelect, RowSelectConfig} from "./table/RowSelect.js";
-import {Config, ObservableListener, ObservableListenerOpts} from "./Observable.js";
+import {Config, ObservableListenerOpts} from "./Observable.js";
 import {BufferedFunction, FunctionUtil} from "../util";
 import {dragData} from "../DragData";
 import {root} from "./Root";
-import common from "mocha/lib/interfaces/common";
 
 export type RowRenderer = (record: any, row: HTMLElement, list: any, storeIndex: number) => string | Component[] | void;
 
@@ -27,14 +26,14 @@ export interface ListEventMap<Type> extends ComponentEventMap<Type> {
 	 *
 	 * @param list
 	 */
-	scrolleddown:  (list: Type) => void
+	scrolleddown: (list: Type) => void
 	/**
 	 * Fires when the user sorts the list
 	 *
 	 * @param list
 	 * @param dataIndex
 	 */
-	sort:  (list: Type, dataIndex: string) => void
+	sort: (list: Type, dataIndex: string) => void
 
 	/**
 	 * Fires when a row is mousedowned
@@ -43,7 +42,7 @@ export interface ListEventMap<Type> extends ComponentEventMap<Type> {
 	 * @param storeIndex
 	 * @param ev
 	 */
-	rowmousedown:  (list: Type, storeIndex: number, row:HTMLElement, ev: MouseEvent) => void
+	rowmousedown: (list: Type, storeIndex: number, row: HTMLElement, ev: MouseEvent) => void
 
 	/**
 	 * Fires when a row is clicked
@@ -52,7 +51,7 @@ export interface ListEventMap<Type> extends ComponentEventMap<Type> {
 	 * @param storeIndex
 	 * @param ev
 	 */
-	rowclick:  (list: Type, storeIndex: number, row:HTMLElement, ev: MouseEvent) => void
+	rowclick: (list: Type, storeIndex: number, row: HTMLElement, ev: MouseEvent) => void
 
 	/**
 	 * Fires when a row is double clicked
@@ -61,7 +60,7 @@ export interface ListEventMap<Type> extends ComponentEventMap<Type> {
 	 * @param storeIndex
 	 * @param ev
 	 */
-	rowdblclick:  (list: Type, storeIndex: number, row:HTMLElement, ev: MouseEvent) => void
+	rowdblclick: (list: Type, storeIndex: number, row: HTMLElement, ev: MouseEvent) => void
 
 	/**
 	 * Fires when records are rendered into rows.
@@ -69,7 +68,7 @@ export interface ListEventMap<Type> extends ComponentEventMap<Type> {
 	 * @param list
 	 * @param records
 	 */
-	renderrows:  (list: Type, records: any[]) => void;
+	renderrows: (list: Type, records: any[]) => void;
 
 	/**
 	 * Fires when a row is clicked or navigated with arrows
@@ -78,7 +77,7 @@ export interface ListEventMap<Type> extends ComponentEventMap<Type> {
 	 * @param storeIndex
 	 * @param record
 	 */
-	navigate:  (list: Type, storeIndex: number) => void
+	navigate: (list: Type, storeIndex: number) => void
 
 	/**
 	 * Fires when something was dropped
@@ -89,16 +88,17 @@ export interface ListEventMap<Type> extends ComponentEventMap<Type> {
 	 * @param dropRow The row element that is dropped on
 	 * @param dragData The arbitrary drag data that is set
 	 */
-	drop:  (list: Type, e: DragEvent, dropRow: HTMLElement, position: DROP_POSITION, dragData: any) => void
+	drop: (list: Type, e: DragEvent, dropRow: HTMLElement, position: DROP_POSITION, dragData: any) => void
 
-	dropallowed:  (list: Type, e: DragEvent, dropRow: HTMLElement, dragData: any) => void
+	dropallowed: (list: Type, e: DragEvent, dropRow: HTMLElement, dragData: any) => void
 
 }
 
 export type DROP_POSITION = "before" | "after" | "on";
 
-export interface List<StoreType extends Store = Store> extends Component  {
+export interface List<StoreType extends Store = Store> extends Component {
 	on<K extends keyof ListEventMap<this>>(eventName: K, listener: Partial<ListEventMap<this>>[K], options?: ObservableListenerOpts): void;
+
 	fire<K extends keyof ListEventMap<this>>(eventName: K, ...args: Parameters<ListEventMap<any>[K]>): boolean
 }
 
@@ -133,16 +133,16 @@ export class List<StoreType extends Store = Store> extends Component {
 	 * Row selection object
 	 * @param rowSelectionConfig
 	 */
-	set rowSelectionConfig(rowSelectionConfig: boolean | Partial<RowSelectConfig> ) {
+	set rowSelectionConfig(rowSelectionConfig: boolean | Partial<RowSelectConfig>) {
 		if (typeof rowSelectionConfig != "boolean") {
 			(rowSelectionConfig as RowSelectConfig).list = this as never;
 			this.rowSelect = rowselect(rowSelectionConfig as RowSelectConfig);
 		} else {
-			this.rowSelect = rowselect({list: this  as never});
+			this.rowSelect = rowselect({list: this as never});
 		}
 	}
 
-	constructor(readonly store: StoreType, readonly renderer: RowRenderer, tagName:keyof HTMLElementTagNameMap = "ul") {
+	constructor(readonly store: StoreType, readonly renderer: RowRenderer, tagName: keyof HTMLElementTagNameMap = "ul") {
 		super(tagName);
 		this.tabIndex = 0;
 
@@ -152,7 +152,7 @@ export class List<StoreType extends Store = Store> extends Component {
 			bf.buffer();
 		})
 		store.on("load", () => {
-			if(bf.pending()) {
+			if (bf.pending()) {
 				bf.cancel();
 			} else {
 				this.unmask();
@@ -160,7 +160,7 @@ export class List<StoreType extends Store = Store> extends Component {
 		})
 	}
 
-	get rowSelection() : RowSelect | undefined {
+	get rowSelection(): RowSelect | undefined {
 		return this.rowSelect;
 	}
 
@@ -240,7 +240,7 @@ export class List<StoreType extends Store = Store> extends Component {
 	}
 
 	private initNavigateEvent() {
-		this.on('rowmousedown', (list, storeIndex, row,  ev) => {
+		this.on('rowmousedown', (list, storeIndex, row, ev) => {
 			if (!ev.shiftKey && !ev.ctrlKey) {
 				this.fire("navigate", this, storeIndex);
 			}
@@ -305,8 +305,8 @@ export class List<StoreType extends Store = Store> extends Component {
 
 		records.forEach((record, index) => {
 			const container = this.renderGroup(record),
-					row = this.renderRow(record, index);
-			if(this.rowSelection && this.rowSelection.selected.indexOf(index) > -1) {
+				row = this.renderRow(record, index);
+			if (this.rowSelection && this.rowSelection.selected.indexOf(index) > -1) {
 				row.cls("+selected");
 			}
 			container.append(row);
@@ -323,10 +323,10 @@ export class List<StoreType extends Store = Store> extends Component {
 
 		const row = E(this.itemTag)
 			.cls('+data')
-			.attr('tabindex','0');
+			.attr('tabindex', '0');
 		row.dataset.storeIndex = storeIndex + "";
 
-		if(this.draggable) {
+		if (this.draggable) {
 			row.draggable = true;
 			row.ondragstart = this.onNodeDragStart.bind(this);
 		}
@@ -355,7 +355,7 @@ export class List<StoreType extends Store = Store> extends Component {
 		}
 	}
 
-	private onMouseEvent(e: MouseEvent & {target: HTMLElement}, type: any) {
+	private onMouseEvent(e: MouseEvent & { target: HTMLElement }, type: any) {
 		const row = this.findRowByEvent(e),
 			index = row ? parseInt(row.dataset.storeIndex!) : -1;
 
@@ -365,12 +365,12 @@ export class List<StoreType extends Store = Store> extends Component {
 	}
 
 
-	private findRowByEvent(e: MouseEvent & {target: HTMLElement}) {
-		return  e.target.closest("[data-store-index]") as HTMLElement;
+	private findRowByEvent(e: MouseEvent & { target: HTMLElement }) {
+		return e.target.closest("[data-store-index]") as HTMLElement;
 	}
 
 
-	protected bindDropEvents(row:HTMLElement) {
+	protected bindDropEvents(row: HTMLElement) {
 		row.ondrop = this.onNodeDrop.bind(this);
 		row.ondragend = this.onNodeDragEnd.bind(this);
 		row.ondragover = this.onNodeDragOver.bind(this);
@@ -378,7 +378,7 @@ export class List<StoreType extends Store = Store> extends Component {
 		row.ondragleave = this.onNodeDragLeave.bind(this);
 	}
 
-	protected onNodeDragStart(e:DragEvent) {
+	protected onNodeDragStart(e: DragEvent) {
 
 		e.stopPropagation();
 		const row = e.target as HTMLDivElement;
@@ -391,16 +391,16 @@ export class List<StoreType extends Store = Store> extends Component {
 		root.el.cls("+dragging");
 	}
 
-	protected onNodeDragEnd(e:DragEvent) {
+	protected onNodeDragEnd(e: DragEvent) {
 		root.el.cls("-dragging");
 		delete dragData.row;
 		delete dragData.cmp;
 	}
 
-	protected onNodeDragEnter(e:DragEvent) {
+	protected onNodeDragEnter(e: DragEvent) {
 
 		const dropRow = this.findDropRow(e);
-		if(this.dropAllowed(e, dropRow)) {
+		if (this.dropAllowed(e, dropRow)) {
 			e.stopPropagation();
 			e.preventDefault();
 
@@ -410,13 +410,13 @@ export class List<StoreType extends Store = Store> extends Component {
 		}
 	}
 
-	protected onNodeDragEnterAllowed(e:DragEvent, dropRow:HTMLElement) {
+	protected onNodeDragEnterAllowed(e: DragEvent, dropRow: HTMLElement) {
 
 	}
 
-	protected onNodeDragLeave(e:DragEvent) {
+	protected onNodeDragLeave(e: DragEvent) {
 		const dropRow = this.findDropRow(e);
-		if(this.dropAllowed(e, dropRow)) {
+		if (this.dropAllowed(e, dropRow)) {
 			e.stopPropagation();
 			e.preventDefault();
 			this.clearOverClasses(dropRow);
@@ -424,11 +424,11 @@ export class List<StoreType extends Store = Store> extends Component {
 		}
 	}
 
-	protected onNodeDragLeaveAllowed(e:DragEvent, dropRow:HTMLElement) {
+	protected onNodeDragLeaveAllowed(e: DragEvent, dropRow: HTMLElement) {
 
 	}
 
-	protected findDropRow(e:DragEvent) {
+	protected findDropRow(e: DragEvent) {
 		return (e.target as HTMLDivElement).closest("LI") as HTMLElement;
 	}
 
@@ -440,11 +440,11 @@ export class List<StoreType extends Store = Store> extends Component {
 		dropRow.classList.remove("on");
 	}
 
-	protected onNodeDragOver(e:DragEvent) {
+	protected onNodeDragOver(e: DragEvent) {
 
 		const dropRow = this.findDropRow(e);
 
-		if(this.dropAllowed(e, dropRow)) {
+		if (this.dropAllowed(e, dropRow)) {
 			e.stopPropagation();
 			e.preventDefault();
 
@@ -461,31 +461,31 @@ export class List<StoreType extends Store = Store> extends Component {
 		}
 	}
 
-	protected dropAllowed(e:DragEvent,dropRow:HTMLElement) {
+	protected dropAllowed(e: DragEvent, dropRow: HTMLElement) {
 		return this.fire("dropallowed", this, e, dropRow, dragData);
 	}
-	protected getDropPosition(e:DragEvent): DROP_POSITION | undefined {
 
-		if(!this.dropBetween) {
+	protected getDropPosition(e: DragEvent): DROP_POSITION | undefined {
+
+		if (!this.dropBetween) {
 			return this.dropOn ? "on" : undefined;
 		}
 
 		const betweenZone = 6;
 
-		if(e.offsetY < betweenZone) {
+		if (e.offsetY < betweenZone) {
 			return "before";
-		} else if(e.offsetY > (e.target as HTMLElement).offsetHeight - betweenZone) {
+		} else if (e.offsetY > (e.target as HTMLElement).offsetHeight - betweenZone) {
 			return "after";
-		} else
-		{
+		} else {
 			return this.dropOn ? "on" : undefined;
 		}
 	}
 
-	protected onNodeDrop(e:DragEvent) {
+	protected onNodeDrop(e: DragEvent) {
 
 		const dropPos = this.getDropPosition(e);
-		if(!dropPos) {
+		if (!dropPos) {
 			return;
 		}
 
@@ -510,4 +510,4 @@ export type ListConfig<StoreType extends Store> = Omit<Config<List<StoreType>, L
  *
  * @param config
  */
-export const list = <StoreType extends Store>(config: ListConfig<StoreType>) : List<StoreType> => createComponent(new List(config.store, config.renderer), config);
+export const list = <StoreType extends Store>(config: ListConfig<StoreType>): List<StoreType> => createComponent(new List(config.store, config.renderer), config);

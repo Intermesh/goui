@@ -4,7 +4,7 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {Observable, ObservableEventMap, ObservableListener, ObservableListenerOpts} from "../component/Observable.js";
+import {Observable, ObservableEventMap, ObservableListenerOpts} from "../component/Observable.js";
 
 /**
  * @inheritDoc
@@ -16,44 +16,45 @@ export interface CollectionEventMap<Type, CollectionItem> extends ObservableEven
 	 *
 	 * @param window
 	 */
-	beforeadd: (collection: Type, item: CollectionItem, index:number) => void|false
+	beforeadd: (collection: Type, item: CollectionItem, index: number) => void | false
 
 	/**
 	 * Fires after adding an item.
 	 *
 	 * @param window
 	 */
-	add: (collection: Type, item:CollectionItem, index:number) => void
+	add: (collection: Type, item: CollectionItem, index: number) => void
 
 	/**
 	 * Fires after removing an item.
 	 *
 	 * @param window
 	 */
-	remove: (collection: Type, item: CollectionItem, index:number) => void
+	remove: (collection: Type, item: CollectionItem, index: number) => void
 
 	/**
 	 * Fires before removing an item. Return false to abort.
 	 *
 	 * @param window
 	 */
-	beforeremove: (collection: Type, item: CollectionItem, index:number) => void|false
+	beforeremove: (collection: Type, item: CollectionItem, index: number) => void | false
 
 	datachanged: (collection: Type) => void
 }
 
 export interface Collection<CollectionItem> extends Observable {
 	on<K extends keyof CollectionEventMap<this, CollectionItem>>(eventName: K, listener: CollectionEventMap<this, CollectionItem>[K], options?: ObservableListenerOpts): void;
+
 	fire<K extends keyof CollectionEventMap<this, CollectionItem>>(eventName: K, ...args: Parameters<CollectionEventMap<Collection<CollectionItem>, CollectionItem>[K]>): boolean
 }
 
 /**
  * Collection of items
  */
-export class Collection<CollectionItem> extends Observable implements Iterable<CollectionItem>{
+export class Collection<CollectionItem> extends Observable implements Iterable<CollectionItem> {
 	readonly items: CollectionItem[];
 
-	constructor(items:CollectionItem[] = []) {
+	constructor(items: CollectionItem[] = []) {
 		super();
 		this.items = items;
 	}
@@ -67,7 +68,7 @@ export class Collection<CollectionItem> extends Observable implements Iterable<C
 	 *
 	 * @returns the index of the last added item
 	 */
-	public add(...items:CollectionItem[]) : number {
+	public add(...items: CollectionItem[]): number {
 		let index = -1;
 		items.forEach((item) => {
 			index = this.items.length;
@@ -88,9 +89,9 @@ export class Collection<CollectionItem> extends Observable implements Iterable<C
 	 *
 	 * @param index Use negative indexes to insert from the end. For example -1 inserts before the last item.
 	 */
-	public insert(index:number, ...items:CollectionItem[])  {
+	public insert(index: number, ...items: CollectionItem[]) {
 
-		if(index < 0) {
+		if (index < 0) {
 			index = this.count() + index;
 		}
 
@@ -114,7 +115,7 @@ export class Collection<CollectionItem> extends Observable implements Iterable<C
 	 * Get an item at the given index
 	 * @param index
 	 */
-	public get(index:number) : CollectionItem {
+	public get(index: number): CollectionItem {
 		return this.items[index];
 	}
 
@@ -136,20 +137,19 @@ export class Collection<CollectionItem> extends Observable implements Iterable<C
 	 * Find the index of an item. Returns -1 if not found.
 	 * @param item
 	 */
-	public indexOf(item:CollectionItem) {
+	public indexOf(item: CollectionItem) {
 		return this.items.indexOf(item)
 	}
 
 	/**
 	 * Remove items
 	 */
-	public remove (...items:CollectionItem[]) {
+	public remove(...items: CollectionItem[]) {
 		items.forEach((item) => {
 			const index = this.indexOf(item);
-			if(index == -1) {
+			if (index == -1) {
 				return false;
-			} else
-			{
+			} else {
 				return this.removeAt(index);
 			}
 		});
@@ -164,7 +164,7 @@ export class Collection<CollectionItem> extends Observable implements Iterable<C
 
 		const item = this.get(index);
 
-		if(!this.fire("beforeremove", this, item, index)) {
+		if (!this.fire("beforeremove", this, item, index)) {
 			return false;
 		}
 
@@ -188,7 +188,7 @@ export class Collection<CollectionItem> extends Observable implements Iterable<C
 	 */
 	public clear() {
 		const l = this.count();
-		for(let i = l - 1; i >= 0; i--) {
+		for (let i = l - 1; i >= 0; i--) {
 			this.removeAt(i);
 		}
 
@@ -200,7 +200,7 @@ export class Collection<CollectionItem> extends Observable implements Iterable<C
 	 *
 	 * @param items
 	 */
-	public replace(...items:CollectionItem[]) {
+	public replace(...items: CollectionItem[]) {
 		return this.clear().add(...items);
 	}
 
@@ -227,7 +227,7 @@ export class Collection<CollectionItem> extends Observable implements Iterable<C
 	 *
 	 * @returns CollectionItem | undefined
 	 */
-	public find (predicate: (value: CollectionItem, index: number, obj: CollectionItem[]) => unknown): CollectionItem|undefined {
+	public find(predicate: (value: CollectionItem, index: number, obj: CollectionItem[]) => unknown): CollectionItem | undefined {
 		return this.items.find(predicate) as CollectionItem;
 	}
 
@@ -250,7 +250,6 @@ export class Collection<CollectionItem> extends Observable implements Iterable<C
 	public findIndex(predicate: (value: CollectionItem, index: number, obj: CollectionItem[]) => unknown): number {
 		return this.items.findIndex(predicate);
 	}
-
 
 
 }

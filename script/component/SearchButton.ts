@@ -10,7 +10,7 @@ import {t} from "../Translate.js";
 import {TextField, textfield} from "./form/TextField.js";
 import {Component, createComponent} from "./Component.js";
 import {FunctionUtil} from "../util/FunctionUtil.js";
-import {Config, Observable, ObservableListener, ObservableListenerOpts} from "./Observable.js";
+import {Config, ObservableListenerOpts} from "./Observable.js";
 
 
 /**
@@ -25,6 +25,7 @@ export interface SearchButtonEventMap<Type> extends ButtonEventMap<Type> {
 
 export interface SearchButton {
 	on<K extends keyof SearchButtonEventMap<this>>(eventName: K, listener: Partial<SearchButtonEventMap<this>>[K], options?: ObservableListenerOpts): void;
+
 	fire<K extends keyof SearchButtonEventMap<this>>(eventName: K, ...args: Parameters<SearchButtonEventMap<Component>[K]>): boolean
 }
 
@@ -63,7 +64,7 @@ export class SearchButton extends Button {
 
 	}
 
-	public handler = (button:Button, ev?:MouseEvent) => {
+	public handler = (button: Button, ev?: MouseEvent) => {
 
 		this.mainTbar = button.parent as Toolbar;
 		this.getSearchTBar().show();
@@ -92,10 +93,10 @@ export class SearchButton extends Button {
 
 	private getSearchTBar() {
 
-		if(!this.searchTBar) {
-				this.searchTBar = tbar({
+		if (!this.searchTBar) {
+			this.searchTBar = tbar({
 					cls: "search"
-					},
+				},
 
 				btn({
 					icon: "chevron_left",
@@ -137,4 +138,4 @@ export class SearchButton extends Button {
  * @param config
  * @param items
  */
-export const searchbtn = (config?:Config<SearchButton, SearchButtonEventMap<SearchButton>>) => createComponent(new SearchButton(), config);
+export const searchbtn = (config?: Config<SearchButton, SearchButtonEventMap<SearchButton>>) => createComponent(new SearchButton(), config);

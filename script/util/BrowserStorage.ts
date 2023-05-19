@@ -6,13 +6,13 @@
 class Connection {
 	private conn?: IDBDatabase;
 
-	
+
 	constructor(private dbName = "goui") {
 	}
-	
+
 	public enabled = true;
 
-	private version?:number;
+	private version?: number;
 
 	public upgrading = false;
 
@@ -22,14 +22,14 @@ class Connection {
 	 *  https://bugs.webkit.org/show_bug.cgi?id=226547
 	 * @return {*|Promise}
 	 */
-	private idbReady():Promise<Connection>{
+	private idbReady(): Promise<Connection> {
 		const isSafari = /Safari\//.test(navigator.userAgent) &&
 			!/Chrom(e|ium)\//.test(navigator.userAgent);
 		// No point putting other browsers through this mess.
-		if(!isSafari || !window.indexedDB.databases){
+		if (!isSafari || !window.indexedDB.databases) {
 			return Promise.resolve(this);
 		}
-		let intervalId:any;
+		let intervalId: any;
 		return new Promise((resolve) => {
 
 			const tryIdb = () => {
@@ -45,11 +45,11 @@ class Connection {
 	 * If upgrade is pending this promise resolves when done.
 	 */
 	public upgradeReady() {
-		let intervalId:any;
+		let intervalId: any;
 		return new Promise((resolve) => {
 			const checkUpgrading = () => {
 				console.log("Check upgrade");
-				if(!this.upgrading) {
+				if (!this.upgrading) {
 					resolve(this);
 				}
 			}
@@ -61,17 +61,17 @@ class Connection {
 	/**
 	 * Connect to the database
 	 */
-	public async connect (): Promise<IDBDatabase> {
+	public async connect(): Promise<IDBDatabase> {
 
-		if(this.upgrading) {
+		if (this.upgrading) {
 			await this.upgradeReady();
 		}
 
-		if(!this.conn) {
+		if (!this.conn) {
 			this.conn = await this.idbReady().then(() => {
 
 				return new Promise((resolve, reject) => {
-					const	openreq = window.indexedDB.open(this.dbName);
+					const openreq = window.indexedDB.open(this.dbName);
 					openreq.onerror = () => {
 						this.enabled = false;
 						console.warn("Disabling browser storage in indexedDB because browser doesn't support it.")
@@ -89,7 +89,7 @@ class Connection {
 						resolve(openreq.result);
 					}
 
-					openreq.onblocked = function() {
+					openreq.onblocked = function () {
 						console.log("IndexedDB upgrade blocked");
 						reject("blocked");
 					}
@@ -107,7 +107,7 @@ class Connection {
 	 *
 	 * When resolved it MUST set conn.upgrading to false.
 	 */
-	public async upgrade() : Promise<IDBVersionChangeEvent> {
+	public async upgrade(): Promise<IDBVersionChangeEvent> {
 
 		this.upgrading = true;
 		this.disconnect();
@@ -116,7 +116,7 @@ class Connection {
 			// this connect() call, will call onUpgradeResolve to resolve this problem
 			let version = this.version! + 1;
 
-			const	openreq = window.indexedDB.open(this.dbName, version);
+			const openreq = window.indexedDB.open(this.dbName, version);
 			openreq.onerror = () => {
 				this.enabled = false;
 				console.warn("Disabling browser storage in indexedDB because browser doesn't support it.")
@@ -147,7 +147,7 @@ class Connection {
 	 * Disconnect from the database
 	 */
 	public disconnect() {
-		if(this.conn) {
+		if (this.conn) {
 			this.conn.close();
 			this.conn = undefined;
 		}
@@ -157,14 +157,14 @@ class Connection {
 	 * Delete the entire database
 	 */
 	public async deleteDatabase() {
-		if(!this.enabled) {
+		if (!this.enabled) {
 			return Promise.resolve(null);
 		}
-		
+
 		return new Promise((resolve, reject) => {
 			const openreq = indexedDB.deleteDatabase(this.dbName);
-			openreq.onerror = () =>  reject(openreq.error);
-			openreq.onsuccess = () =>  resolve(openreq.result);
+			openreq.onerror = () => reject(openreq.error);
+			openreq.onsuccess = () => resolve(openreq.result);
 		});
 	}
 }
@@ -181,15 +181,15 @@ export const browserStoreConnection = new Connection();
  */
 export class BrowserStore {
 
-	constructor(public storeName:string){
+	constructor(public storeName: string) {
 
 	}
 
-	private async getStore(mode:IDBTransactionMode) {
+	private async getStore(mode: IDBTransactionMode) {
 		// console.log("getStore " + this.storeName);
 		let db = await browserStoreConnection.connect();
 
-		if(!db.objectStoreNames.contains(this.storeName)) {
+		if (!db.objectStoreNames.contains(this.storeName)) {
 			db = await this.createStore();
 		}
 
@@ -197,14 +197,14 @@ export class BrowserStore {
 			.objectStore(this.storeName);
 	}
 
-	private async createStore() : Promise<IDBDatabase> {
-		if(browserStoreConnection.upgrading) {
+	private async createStore(): Promise<IDBDatabase> {
+		if (browserStoreConnection.upgrading) {
 			// it might be created concurrenty
 			await browserStoreConnection.upgradeReady();
 
 			let db = await browserStoreConnection.connect();
 
-			if(db.objectStoreNames.contains(this.storeName)) {
+			if (db.objectStoreNames.contains(this.storeName)) {
 				return db;
 			}
 		}
@@ -213,7 +213,7 @@ export class BrowserStore {
 			// Somehow TS doens't know about the target :(
 			const e = await browserStoreConnection.upgrade(),
 				db = (e.target as any).result as IDBDatabase,
-				t= (e.target as any).transaction as IDBTransaction;
+				t = (e.target as any).transaction as IDBTransaction;
 
 			db.createObjectStore(this.storeName);
 
@@ -229,7 +229,7 @@ export class BrowserStore {
 		});
 	}
 
-	private requestPromise<ReturnType>(req: IDBRequest) : Promise<ReturnType> {
+	private requestPromise<ReturnType>(req: IDBRequest): Promise<ReturnType> {
 		return new Promise((resolve, reject) => {
 
 			req.onerror = (e) => {
@@ -247,9 +247,9 @@ export class BrowserStore {
 	 *
 	 * @param key
 	 */
-  public async getItem (key:IDBValidKey) : Promise<any> {
-	  // console.log("getItem " + this.storeName);
-		if(!browserStoreConnection.enabled) {
+	public async getItem(key: IDBValidKey): Promise<any> {
+		// console.log("getItem " + this.storeName);
+		if (!browserStoreConnection.enabled) {
 			return Promise.resolve(undefined);
 		}
 
@@ -266,9 +266,9 @@ export class BrowserStore {
 	 * @param key
 	 * @param value
 	 */
-	public async setItem(key:IDBValidKey, value:any) {
+	public async setItem(key: IDBValidKey, value: any) {
 		// console.log("setItem " + this.storeName);
-		if(!browserStoreConnection.enabled) {
+		if (!browserStoreConnection.enabled) {
 			return Promise.resolve(true);
 		}
 
@@ -284,8 +284,8 @@ export class BrowserStore {
 	 * @param key
 	 */
 
-	public async removeItem(key:IDBValidKey) {
-		if(!browserStoreConnection.enabled) {
+	public async removeItem(key: IDBValidKey) {
+		if (!browserStoreConnection.enabled) {
 			return Promise.resolve(key);
 		}
 
@@ -299,7 +299,7 @@ export class BrowserStore {
 	 * Clear all data from this store
 	 */
 	public async clear() {
-		if(!browserStoreConnection.enabled) {
+		if (!browserStoreConnection.enabled) {
 			return Promise.resolve(null);
 		}
 
@@ -308,7 +308,8 @@ export class BrowserStore {
 
 		return this.requestPromise<void>(req);
 	}
-	public async keys () {
+
+	public async keys() {
 		if (!browserStoreConnection.enabled) {
 			return Promise.resolve([]);
 		}

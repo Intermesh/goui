@@ -91,8 +91,8 @@ export class QuoteStripper {
 		for (let i = 0, c = lines.length; i < c; i++) {
 			const plain = lines[i].replace(/(<([^>]+)>)/ig, ""); //strip html tags
 
-			if(plain.match(maybeHeader)) {
-				if(!maybePos) {
+			if (plain.match(maybeHeader)) {
+				if (!maybePos) {
 					maybePos = pos;
 				}
 			} else {

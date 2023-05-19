@@ -5,7 +5,7 @@
  */
 
 import {Component, ComponentEventMap} from "../Component.js";
-import {Observable, ObservableListener, ObservableListenerOpts} from "../Observable.js";
+import {ObservableListenerOpts} from "../Observable.js";
 import {Button} from "../Button.js";
 import {tbar, Toolbar} from "../Toolbar.js";
 import {t} from "../../Translate.js";
@@ -21,7 +21,7 @@ export interface FieldEventMap<Type> extends ComponentEventMap<Type> {
 	 *
 	 * @param field
 	 */
-	change:  (field: Type, newValue: any, oldValue: any) => void
+	change: (field: Type, newValue: any, oldValue: any) => void
 
 	/**
 	 * Fires when setValue() is called
@@ -30,7 +30,7 @@ export interface FieldEventMap<Type> extends ComponentEventMap<Type> {
 	 * @param newValue
 	 * @param oldValue
 	 */
-	setvalue:  (field: Type, newValue: any, oldValue: any) => void
+	setvalue: (field: Type, newValue: any, oldValue: any) => void
 
 
 	/**
@@ -40,7 +40,7 @@ export interface FieldEventMap<Type> extends ComponentEventMap<Type> {
 	 * @param newValue
 	 * @param oldValue
 	 */
-	reset:  (field: Type, newValue: any, oldValue: any) => void
+	reset: (field: Type, newValue: any, oldValue: any) => void
 
 	/**
 	 * Fires when validated
@@ -49,12 +49,13 @@ export interface FieldEventMap<Type> extends ComponentEventMap<Type> {
 	 *
 	 * @param field
 	 */
-	validate:  (field: Type) => void
+	validate: (field: Type) => void
 }
 
 
 export interface Field extends Component {
 	on<K extends keyof FieldEventMap<this>>(eventName: K, listener: Partial<FieldEventMap<this>>[K], options?: ObservableListenerOpts): void;
+
 	fire<K extends keyof FieldEventMap<this>>(eventName: K, ...args: Parameters<FieldEventMap<any>[K]>): boolean
 }
 
@@ -81,9 +82,10 @@ export abstract class Field extends Component {
 	private toolbar?: Toolbar;
 	protected wrap?: HTMLDivElement;
 
-	constructor(tagName:keyof HTMLElementTagNameMap = "label") {
+	constructor(tagName: keyof HTMLElementTagNameMap = "label") {
 		super(tagName);
 	}
+
 	readonly isFormField = true
 
 	protected baseCls = "goui-form-field"
@@ -144,7 +146,7 @@ export abstract class Field extends Component {
 		this.el.append(this.wrap = E("div").cls('+wrap'));
 
 		const control = this.createControl();
-		if(control) {
+		if (control) {
 			this.wrap.append(control.cls('+control'));
 		}
 		// label must follow input so we can make the transform transition with pure css with input::focus & input::placeholder-shown + label
@@ -153,7 +155,7 @@ export abstract class Field extends Component {
 			this.wrap.append(label);
 		}
 
-		if(this._buttons) {
+		if (this._buttons) {
 			this.toolbar = tbar({}, ...this._buttons);
 			this.toolbar.parent = this;
 			this.toolbar.render(this.wrap);
@@ -192,7 +194,7 @@ export abstract class Field extends Component {
 		return this.hintEl;
 	}
 
-	protected createLabel() : HTMLDivElement | void {
+	protected createLabel(): HTMLDivElement | void {
 		return E('div', this._label).cls('label')
 	}
 
@@ -221,7 +223,6 @@ export abstract class Field extends Component {
 	public set required(required: boolean) {
 		this._required = required;
 	}
-
 
 
 	public get label() {
@@ -272,7 +273,7 @@ export abstract class Field extends Component {
 		// 	this.resetValue = v;//ObjectUtil.clone(v);
 		// }
 
-		if(!this.resetValue) {
+		if (!this.resetValue) {
 			this.resetValue = v;
 		}
 
@@ -287,7 +288,7 @@ export abstract class Field extends Component {
 	 */
 	protected fireChange(suppresSetValue = false) {
 		const v = this.value;
-		if(!suppresSetValue) {
+		if (!suppresSetValue) {
 			this.fire('setvalue', this, v, this.oldValue);
 		}
 		//used set timeout so focusout event happens first and field validates before change event

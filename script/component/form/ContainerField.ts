@@ -5,10 +5,9 @@
  */
 
 import {Field, FieldEventMap} from "./Field.js";
-import {Config, ObservableListener, ObservableListenerOpts} from "../Observable.js";
+import {Config, ObservableListenerOpts} from "../Observable.js";
 import {Component, createComponent} from "../Component.js";
 import {ObjectUtil} from "../../util/ObjectUtil.js";
-import {Value} from "sass";
 
 
 export type ContainerFieldValue = Record<string, any>;
@@ -27,7 +26,7 @@ export interface ContainerField extends Field {
  */
 export class ContainerField<ValueType extends ContainerFieldValue = ContainerFieldValue> extends Field {
 
-	constructor(tagName:keyof HTMLElementTagNameMap = "div") {
+	constructor(tagName: keyof HTMLElementTagNameMap = "div") {
 		super(tagName);
 	}
 
@@ -51,7 +50,7 @@ export class ContainerField<ValueType extends ContainerFieldValue = ContainerFie
 			}
 
 			if (item.isFormField) {
-				if(!nameOrItemId || (item.name == nameOrItemId || item.itemId == nameOrItemId)) {
+				if (!nameOrItemId || (item.name == nameOrItemId || item.itemId == nameOrItemId)) {
 					fields.push(item);
 				}
 				return false;
@@ -93,7 +92,7 @@ export class ContainerField<ValueType extends ContainerFieldValue = ContainerFie
 		for (let name in v) {
 			// We cast to any[] for Ext compatibility. We try setValue() for Ext if it exists
 			let fields = this.findFields(name) as any[];
-			fields.forEach(field =>	field.setValue ? field.setValue(v[name]) : field.value = v[name]);
+			fields.forEach(field => field.setValue ? field.setValue(v[name]) : field.value = v[name]);
 		}
 
 		super.value = v;
@@ -109,10 +108,9 @@ export class ContainerField<ValueType extends ContainerFieldValue = ContainerFie
 			const fieldVal = field.getValue ? field.getValue() : field.value;
 
 			if (fieldName && !field.disabled && !field.hidden) {
-				if(!formProps[fieldName]) {
+				if (!formProps[fieldName]) {
 					formProps[fieldName] = fieldVal;
-				} else
-				{
+				} else {
 					formProps[fieldName] = ObjectUtil.merge(formProps[field.name], fieldVal);
 				}
 			}
@@ -132,7 +130,7 @@ export class ContainerField<ValueType extends ContainerFieldValue = ContainerFie
 	/**
 	 * Find the first invalid field
 	 */
-	public findFirstInvalid() : Field | undefined{
+	public findFirstInvalid(): Field | undefined {
 		const items = this.findFields();
 
 		let invalid = undefined;

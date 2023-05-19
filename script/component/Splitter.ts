@@ -54,16 +54,15 @@ export class Splitter extends DraggableComponent {
 			if (!(resizeComponentPredicate instanceof Component)) {
 				this._resizeComponent = this.parent!.findChild(this.resizeComponentPredicate)!;
 
-				if(!this._resizeComponent) {
+				if (!this._resizeComponent) {
 					console.warn(this.resizeComponentPredicate);
 					throw "Could not find component to resize!";
 				}
-			} else
-			{
+			} else {
 				this._resizeComponent = resizeComponentPredicate;
 			}
 
-			if(this._state) {
+			if (this._state) {
 				this.restoreState(this._state);
 			}
 		});
@@ -76,8 +75,8 @@ export class Splitter extends DraggableComponent {
 		// this component is added to a parent.
 		this._state = state;
 
-		if(this._resizeComponent) {
-			if(this._state) {
+		if (this._resizeComponent) {
+			if (this._state) {
 				if (this._state.width)
 					this._resizeComponent.width = this._state.width;
 
@@ -124,7 +123,7 @@ export class Splitter extends DraggableComponent {
 
 				let width = Math.max(this.minSize, dragData.data.startWidth + offset);
 
-				if(this.maxSize) {
+				if (this.maxSize) {
 					width = Math.min(this.maxSize, width);
 				}
 
@@ -138,7 +137,7 @@ export class Splitter extends DraggableComponent {
 				}
 
 				let height = Math.max(this.minSize, dragData.data.startHeight + offset);
-				if(this.maxSize) {
+				if (this.maxSize) {
 					height = Math.min(this.maxSize, height);
 				}
 				this._resizeComponent!.height = height;

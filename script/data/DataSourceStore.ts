@@ -3,17 +3,18 @@
  * @copyright Copyright 2023 Intermesh BV
  * @author Merijn Schering <mschering@intermesh.nl>
  */
-import {Store, StoreEventMap, StoreRecord} from "../data/Store.js";
+import {Store, StoreEventMap} from "../data/Store.js";
 import {AbstractDataSource, BaseEntity, DefaultEntity, QueryParams} from "./AbstractDataSource.js";
 import {ObjectUtil} from "../util/index.js";
-import {Config, createComponent, Table, TableColumn} from "../component/index.js";
+import {Config, createComponent} from "../component/index.js";
 
 type Relation<EntityType extends BaseEntity> = Record<keyof EntityType, {
 	dataSource: AbstractDataSource,
 	path: string
 }>
 
-type RecordBuilder<EntityType, StoreRecord> = (entity:EntityType) => Promise<StoreRecord>;
+type RecordBuilder<EntityType, StoreRecord> = (entity: EntityType) => Promise<StoreRecord>;
+
 /**
  * DataSourceStore class
  *
@@ -38,14 +39,14 @@ export class DataSourceStore<EntityType extends BaseEntity = DefaultEntity, Stor
 	 * Builds record from entity
 	 * @param entity
 	 */
-	public buildRecord: RecordBuilder <EntityType, StoreRecord> = async (entity) => <StoreRecord> <unknown> entity;
+	public buildRecord: RecordBuilder<EntityType, StoreRecord> = async (entity) => <StoreRecord><unknown>entity;
 
-	constructor(readonly dataSource:AbstractDataSource<EntityType>) {
+	constructor(readonly dataSource: AbstractDataSource<EntityType>) {
 		super();
 
 		// very quick and dirty update on changes to the entity store.
 		this.dataSource.on('change', async () => {
-			if(this.loaded) {
+			if (this.loaded) {
 				this.reload();
 			}
 		});
@@ -56,18 +57,18 @@ export class DataSourceStore<EntityType extends BaseEntity = DefaultEntity, Stor
 
 		this.queryParams.sort = this.sort;
 
-		if(this.queryParams.limit) {
+		if (this.queryParams.limit) {
 			//to see if the remote has more data we query one ID more.
 			this.queryParams.limit++;
 		}
 
 		const queryResponse = await this.dataSource.query(this.queryParams);
 
-		if(this.queryParams.limit) {
+		if (this.queryParams.limit) {
 			// check if the server has more data.
 			this.queryParams.limit--;
 			this.hasMore = queryResponse.ids.length > this.queryParams.limit;
-			if(this.hasMore) {
+			if (this.hasMore) {
 				queryResponse.ids.pop();
 			}
 		}
@@ -84,7 +85,7 @@ export class DataSourceStore<EntityType extends BaseEntity = DefaultEntity, Stor
 	}
 
 	private async fetchRelations(records: EntityType[]) {
-		if(!this.relations) {
+		if (!this.relations) {
 			return records;
 		}
 		let relationName: (keyof EntityType);
@@ -94,11 +95,11 @@ export class DataSourceStore<EntityType extends BaseEntity = DefaultEntity, Stor
 			const rel = this.relations[relationName]!
 
 			let id;
-			for(let i = 0, l = records.length; i < l; i++) {
+			for (let i = 0, l = records.length; i < l; i++) {
 				id = ObjectUtil.path(records[i], rel.path);
-				if(id) {
+				if (id) {
 					promises.push(rel.dataSource.single(id).then((e) => {
-						if(e) {
+						if (e) {
 							records[i][relationName] = e as never;
 						}
 					}));

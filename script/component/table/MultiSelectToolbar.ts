@@ -23,7 +23,7 @@ export class MultiSelectToolbar extends Toolbar {
 
 			this.hidden = l < 2;
 
-			if(!this.hidden) {
+			if (!this.hidden) {
 				this.label.text = l + " " + t("selected");
 			}
 		});

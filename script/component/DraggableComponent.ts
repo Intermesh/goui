@@ -5,7 +5,7 @@
  */
 
 import {Component, ComponentEventMap, createComponent} from "./Component.js";
-import {Config, Observable, ObservableListener, ObservableListenerOpts} from "./Observable.js";
+import {Config, ObservableListenerOpts} from "./Observable.js";
 import {FunctionUtil} from "../util/FunctionUtil.js";
 
 
@@ -95,6 +95,7 @@ export interface DraggableComponentEventMap<Type> extends ComponentEventMap<Type
 
 export interface DraggableComponent {
 	on<K extends keyof DraggableComponentEventMap<this>>(eventName: K, listener: Partial<DraggableComponentEventMap<this>>[K], options?: ObservableListenerOpts): void;
+
 	fire<K extends keyof DraggableComponentEventMap<this>>(eventName: K, ...args: Parameters<DraggableComponentEventMap<any>[K]>): boolean
 }
 
@@ -115,21 +116,20 @@ export class DraggableComponent extends Component {
 	/**
 	 * Enable dragging
 	 */
-	private _draggable:boolean = true;
+	private _draggable: boolean = true;
 
-	constructor(tagName:keyof HTMLElementTagNameMap = "div") {
+	constructor(tagName: keyof HTMLElementTagNameMap = "div") {
 		super(tagName);
 
-		if(this.baseCls) {
+		if (this.baseCls) {
 			this.baseCls += " draggable";
-		} else
-		{
+		} else {
 			this.baseCls = "draggable";
 		}
 
 		this.on("render", () => {
 			// invoke draggable setter once
-			if(this._draggable) {
+			if (this._draggable) {
 				this.draggable = this._draggable;
 			}
 		});
@@ -138,16 +138,16 @@ export class DraggableComponent extends Component {
 	/**
 	 * Enable or disable dragging
 	 */
-	public set draggable(draggable:boolean) {
+	public set draggable(draggable: boolean) {
 		this._draggable = draggable;
 
 		const dragHandle = this.getDragHandle();
 
-		if(!dragHandle) {
+		if (!dragHandle) {
 			return;
 		}
 
-		if(draggable) {
+		if (draggable) {
 			dragHandle.classList.add("goui-draghandle")
 			this.getDragHandle().addEventListener('click', this.onDragHandleClick);
 			this.getDragHandle().addEventListener('mousedown', this.onDragHandleMouseDown);

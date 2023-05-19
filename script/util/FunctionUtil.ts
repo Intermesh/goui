@@ -4,18 +4,19 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 type Func = ((...args: any[]) => any);
+
 /**
  * Buffer or delay a function
  */
 export class BufferedFunction {
-	private id:number|undefined;
+	private id: number | undefined;
 
 	/**
 	 * Constructor
 	 * @param delay Delay to execute function
 	 * @param fn Function to buffer
 	 */
-	constructor(readonly delay:number, readonly fn:Function) {
+	constructor(readonly delay: number, readonly fn: Function) {
 		this.delay = delay;
 		this.fn = fn;
 	}
@@ -25,7 +26,7 @@ export class BufferedFunction {
 	 *
 	 * @param args
 	 */
-	buffer(args:any[] = []) {
+	buffer(args: any[] = []) {
 		this.cancel();
 		this.id = window.setTimeout(() => {
 			this.cancel();
@@ -37,7 +38,7 @@ export class BufferedFunction {
 	 * Cancel the function call
 	 */
 	cancel() {
-		if(this.id) {
+		if (this.id) {
 			clearTimeout(this.id);
 			this.id = undefined;
 		}
@@ -98,13 +99,13 @@ export class FunctionUtil {
 		let frame = -1;
 
 		return (...args: any[]) => {
-			if(frame > -1) {
+			if (frame > -1) {
 				cancelAnimationFrame(frame);
 			}
 
-			 frame = window.requestAnimationFrame(() => {
-				 fn.apply(null, args);
-			 });
+			frame = window.requestAnimationFrame(() => {
+				fn.apply(null, args);
+			});
 		}
 	}
 
@@ -130,8 +131,8 @@ export class FunctionUtil {
 	 * ```
 	 *
 	 */
-	public static createSequence<F extends Func>(origFn: F, newFn: (retVal: ReturnType<F>, ...args: Parameters<F>) => unknown) : F {
-		return function(this: unknown, ...args:Parameters<F>) {
+	public static createSequence<F extends Func>(origFn: F, newFn: (retVal: ReturnType<F>, ...args: Parameters<F>) => unknown): F {
+		return function (this: unknown, ...args: Parameters<F>) {
 			const r = origFn.apply(this, args);
 			return newFn.call(this, r as ReturnType<F>, ...args);
 		} as F
@@ -157,7 +158,7 @@ export class FunctionUtil {
 	 * ```
 	 */
 	public static createInterceptor<F extends Func>(origFn: F, newFn: (...args: Parameters<F>) => unknown): F {
-		return function(this: unknown, ...args:Parameters<F>) {
+		return function (this: unknown, ...args: Parameters<F>) {
 			newFn.apply(this, args);
 			return origFn.apply(this, args);
 		} as F

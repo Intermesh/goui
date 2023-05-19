@@ -19,10 +19,10 @@ class Root extends Component {
 		return this.el;
 	}
 
-	private _rootEl?:HTMLElement;
+	private _rootEl?: HTMLElement;
 
 	get el() {
-		if(!this._rootEl) {
+		if (!this._rootEl) {
 			this._rootEl = document.getElementById("goui") || document.body;
 		}
 

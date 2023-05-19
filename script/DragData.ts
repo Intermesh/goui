@@ -1,1 +1,1 @@
-export const dragData:any = {};
+export const dragData: any = {};

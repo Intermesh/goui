@@ -5,7 +5,7 @@
  */
 
 import {Component, ComponentEventMap, createComponent} from "./Component.js";
-import {Config, Observable, ObservableListener, ObservableListenerOpts} from "./Observable.js";
+import {Config, ObservableListenerOpts} from "./Observable.js";
 
 
 export interface CardContainerEventMap<Type> extends ComponentEventMap<Type> {
@@ -22,6 +22,7 @@ export interface CardContainerEventMap<Type> extends ComponentEventMap<Type> {
 
 export interface CardContainer extends Component {
 	on<K extends keyof CardContainerEventMap<this>>(eventName: K, listener: Partial<CardContainerEventMap<this>>[K], options?: ObservableListenerOpts): void;
+
 	fire<K extends keyof CardContainerEventMap<this>>(eventName: K, ...args: Parameters<CardContainerEventMap<any>[K]>): boolean;
 }
 
@@ -118,7 +119,7 @@ export class CardContainer extends Component {
 	 * The active card index. Defaults to 0 if not given.
 	 */
 	get activeItem(): number {
-		if ( this._activeItem == undefined && this.items.count()) {
+		if (this._activeItem == undefined && this.items.count()) {
 			this._activeItem = 0;
 		}
 		return this._activeItem!;

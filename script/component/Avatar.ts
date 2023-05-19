@@ -4,7 +4,7 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {Component, ComponentEventMap, createComponent} from "./Component.js";
+import {Component, createComponent} from "./Component.js";
 import {Config} from "./Observable";
 
 export class Avatar extends Component {

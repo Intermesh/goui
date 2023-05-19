@@ -34,7 +34,7 @@ export class DateField extends TextField {
 
 	constructor() {
 		super();
-		this.picker = datepicker({showWeekNbs:false});
+		this.picker = datepicker({showWeekNbs: false});
 		this.buttons = [
 			this.pickerButton = btn({
 				icon: "expand_more",
@@ -51,7 +51,7 @@ export class DateField extends TextField {
 
 	protected createControl() {
 		const input = super.createControl();
-		this.picker.on('select', (_,val) => {
+		this.picker.on('select', (_, val) => {
 			this.date = val;
 			super.value = val.format(this.inputFormat);
 			this.pickerButton.menu!.hide();
@@ -74,9 +74,9 @@ export class DateField extends TextField {
 
 	}
 
-	set value(v: string  | undefined) {
-		if(v === undefined) {
-			if(this.timefield)
+	set value(v: string | undefined) {
+		if (v === undefined) {
+			if (this.timefield)
 				this.timefield.value = '';
 			super.value = '';
 			return;
@@ -84,7 +84,7 @@ export class DateField extends TextField {
 		// if(v instanceof DateTime) { // from datepicker
 		// 	v = v.format(this.inputFormat);
 		// }
-		const [date ,time] = v.split('T');
+		const [date, time] = v.split('T');
 		const d = DateTime.createFromFormat(date + "", this.outputFormat);
 
 		if (!d) {
@@ -101,24 +101,24 @@ export class DateField extends TextField {
 	get value(): string | undefined {
 		const date = this.getValueAsDateTime();
 
-		if(!date) {
+		if (!date) {
 			return undefined;
 		}
 
 		const timeFormat = this.timefield ? 'TH:i' : '';
 
-		return date.format(this.outputFormat+timeFormat);
+		return date.format(this.outputFormat + timeFormat);
 	}
 
 	private getValueAsDateTime() {
 		let v = super.value,
-			timeFormat ='';
-		if(this.timefield) {
-			v += 'T'+this.timefield.value;
+			timeFormat = '';
+		if (this.timefield) {
+			v += 'T' + this.timefield.value;
 			timeFormat = 'TH:i';
 		}
 		let date;
-		if (!v || !(date = DateTime.createFromFormat(v, this.inputFormat+timeFormat))) {
+		if (!v || !(date = DateTime.createFromFormat(v, this.inputFormat + timeFormat))) {
 			return undefined;
 		}
 		return date;

@@ -55,11 +55,11 @@ export class Format {
 	 *
 	 * @param date
 	 */
-	public static date(date:string|DateTime|Date) {
-		if(!date) {
+	public static date(date: string | DateTime | Date) {
+		if (!date) {
 			return "";
 		}
-		if(!(date instanceof DateTime)) {
+		if (!(date instanceof DateTime)) {
 			date = new DateTime(date);
 		}
 
@@ -70,8 +70,8 @@ export class Format {
 	 * Format a time to a string
 	 * @param date
 	 */
-	public static time(date:string|DateTime|Date) {
-		if(!(date instanceof DateTime)) {
+	public static time(date: string | DateTime | Date) {
+		if (!(date instanceof DateTime)) {
 			date = new DateTime(date);
 		}
 
@@ -85,13 +85,13 @@ export class Format {
 	 * @see Format.timeFormat
 	 * @param date
 	 */
-	public static dateTime(date:string|DateTime|Date) {
-		if(!(date instanceof DateTime)) {
+	public static dateTime(date: string | DateTime | Date) {
+		if (!(date instanceof DateTime)) {
 			date = new DateTime(date);
 		}
 
 		//We want leading zero's in full date time strings so they align. There for replace g and H
-		return date.toTimezone(this.timezone).format(Format.dateFormat + " " + Format.timeFormat.replace("g","h").replace("G", "H"))
+		return date.toTimezone(this.timezone).format(Format.dateFormat + " " + Format.timeFormat.replace("g", "h").replace("G", "H"))
 	}
 
 
@@ -100,7 +100,7 @@ export class Format {
 	 *
 	 * @param amount
 	 */
-	public static money (amount: number) : string {
+	public static money(amount: number): string {
 		return this.currency + " " + this.number(amount, 2);
 	}
 
@@ -110,36 +110,36 @@ export class Format {
 	 * @param value
 	 * @param decimals
 	 */
-	public static number (value:number, decimals = 2): string {
+	public static number(value: number, decimals = 2): string {
 		const neg = value < 0;
 
-		if(neg) {
+		if (neg) {
 			value *= -1;
 		}
-	
+
 		const dec = this.decimalSeparator,
 			tho = this.thousandsSeparator;
-	
-		const no =  value.toFixed(decimals), parts = no.split('.');
-	
+
+		const no = value.toFixed(decimals), parts = no.split('.');
+
 		let formatted = "";
 		const length = parts[0].length;
-		for(let i = length - 1, l = 0; i >= l; i--) {
+		for (let i = length - 1, l = 0; i >= l; i--) {
 			formatted = parts[0][i] + formatted;
-	
-			if(i > 0 && (length - i) % 3 == 0) {
+
+			if (i > 0 && (length - i) % 3 == 0) {
 				formatted = tho + formatted;
 			}
 		}
-	
-		if(decimals) {
+
+		if (decimals) {
 			formatted += dec + parts[1];
 		}
-	
-		if(neg) {
+
+		if (neg) {
 			formatted = "-" + formatted;
 		}
-	
+
 		return formatted;
 	}
 

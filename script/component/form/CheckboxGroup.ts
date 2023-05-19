@@ -1,11 +1,12 @@
 import {Component, createComponent} from "../Component.js";
 import {E} from "../../util/index.js";
-import {checkbox, CheckboxField, CheckboxFieldConfig} from "./CheckboxField.js";
+import {checkbox, CheckboxFieldConfig} from "./CheckboxField.js";
 import {Config} from "../Observable";
 
 
 export class CheckboxGroup extends Component {
 	private _itemContainerEl?: HTMLDivElement;
+
 	constructor() {
 		super("fieldset");
 
@@ -13,7 +14,7 @@ export class CheckboxGroup extends Component {
 
 	}
 
-	set options(options:CheckboxFieldConfig[]) {
+	set options(options: CheckboxFieldConfig[]) {
 		this.items.replace(...options.map(o => {
 			o.type = "button";
 			return checkbox(o)
@@ -24,7 +25,7 @@ export class CheckboxGroup extends Component {
 		return;
 	}
 
-	public label:string = "";
+	public label: string = "";
 
 	protected renderItems() {
 
@@ -36,7 +37,7 @@ export class CheckboxGroup extends Component {
 	}
 
 	protected get itemContainerEl(): HTMLDivElement {
-		if(!this._itemContainerEl) {
+		if (!this._itemContainerEl) {
 			this._itemContainerEl = E("div").cls("goui group");
 			this.el.appendChild(this._itemContainerEl)
 		}

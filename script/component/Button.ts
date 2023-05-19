@@ -6,11 +6,9 @@
 
 import {Component, ComponentEventMap, createComponent} from "./Component.js";
 import {Menu} from "./menu/Menu.js";
-import {root} from "./Root.js";
-import {Config, Observable, ObservableListener, ObservableListenerOpts} from "./Observable.js";
+import {Config, ObservableListenerOpts} from "./Observable.js";
 import {MaterialIcon} from "./MaterialIcon.js";
 import {router} from "../Router.js";
-import {Toolbar} from "./Toolbar.js";
 
 type ButtonType = "button" | "submit" | "reset";
 
@@ -50,7 +48,9 @@ export interface ButtonEventMap<Type> extends ComponentEventMap<Type> {
 
 export interface Button extends Component {
 	on<K extends keyof ButtonEventMap<this>>(eventName: K, listener: Partial<ButtonEventMap<this>>[K], options?: ObservableListenerOpts): void
+
 	fire<K extends keyof ButtonEventMap<this>>(eventName: K, ...args: Parameters<ButtonEventMap<any>[K]>): boolean
+
 	get el(): HTMLButtonElement
 }
 
@@ -97,12 +97,13 @@ export class Button extends Component {
 		super("button");
 		this.type = "button";
 	}
+
 	/**
 	 * Find the first menu in the tree of submenu's
 	 */
 	private findTopMenu(): Menu | undefined {
 		if (this.parent instanceof Menu) {
-			if(!this.parent.parentButton) {
+			if (!this.parent.parentButton) {
 				return undefined;
 			}
 			if (this.parent.parentButton.parent instanceof Menu) {
@@ -131,8 +132,8 @@ export class Button extends Component {
 
 		const el = super.internalRender();
 
-		if(this.route != undefined) {
-			if(this.handler) {
+		if (this.route != undefined) {
+			if (this.handler) {
 				throw "You can't set both handler and route on a button";
 			}
 
@@ -202,7 +203,7 @@ export class Button extends Component {
 	/**
 	 * Align menu to this component when it's shown. If not set it will align to the button.
 	 */
-	public menuAlignTo: Component|undefined;
+	public menuAlignTo: Component | undefined;
 
 	/**
 	 * Add menu to this button
@@ -273,7 +274,7 @@ export class Button extends Component {
 
 		if (this._icon) {
 			this.el.classList.add("with-icon");
-		}else {
+		} else {
 			this.el.classList.remove("with-icon");
 		}
 
@@ -289,7 +290,7 @@ export class Button extends Component {
 		if (!this._iconEl) {
 			this._iconEl = document.createElement("i");
 			this._iconEl.classList.add("icon");
-			if(this._textEl) {
+			if (this._textEl) {
 				this.el.insertBefore(this._iconEl, this._textEl);
 			} else {
 				this.el.appendChild(this._iconEl);

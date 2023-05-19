@@ -4,7 +4,7 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {Component, ComponentEventMap, createComponent} from "./Component.js";
+import {Component, createComponent} from "./Component.js";
 import {CardContainer} from "./CardContainer.js";
 import {btn} from "./Button.js";
 import {Config} from "./Observable";
@@ -48,7 +48,7 @@ export class CardMenu extends Component {
 
 	/**
 	 * The card container this menu is for.
-	 * 
+	 *
 	 * If not given it will be looked up in the parent of the menu.
 	 */
 	public cardContainer?: CardContainer
@@ -56,7 +56,7 @@ export class CardMenu extends Component {
 
 	focus(o?: FocusOptions) {
 		const first = this.cardContainer?.items.first();
-		if(first) {
+		if (first) {
 			first.focus(o);
 		} else {
 			super.focus(o);
@@ -101,11 +101,11 @@ export class CardMenu extends Component {
 
 		this.cardContainer!.items.forEach((item, index) => {
 
-			if(!item.itemId) {
+			if (!item.itemId) {
 				item.itemId = 'card-' + index;
 			}
 
-			if(this.findItem(item.itemId)) {
+			if (this.findItem(item.itemId)) {
 				return;
 			}
 
@@ -128,11 +128,10 @@ export class CardMenu extends Component {
 }
 
 
-
 /**
  * Shorthand function to create {@see CardMenu}
  *
  * @param config
  * @param items
  */
-export const cardmenu = (config?:Config<CardMenu>, ...items:Component[]) => createComponent(new CardMenu(), config, items);
+export const cardmenu = (config?: Config<CardMenu>, ...items: Component[]) => createComponent(new CardMenu(), config, items);

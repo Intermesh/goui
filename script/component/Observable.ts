@@ -5,7 +5,7 @@
  */
 
 import {FunctionUtil} from "../util/FunctionUtil.js";
-import {Component, ComponentEventMap} from "./Component.js";
+import {ComponentEventMap} from "./Component.js";
 
 type Func = (...args: any[]) => any;
 
@@ -81,7 +81,9 @@ interface ObservableListenerWithOpts<fn> extends ObservableListenerOpts {
  */
 export class Observable {
 
-	private lisnrs: { [key: string]: { listener: Function, unbindkey: Function, options?: ObservableListenerOpts }[] } | undefined;
+	private lisnrs: {
+		[key: string]: { listener: Function, unbindkey: Function, options?: ObservableListenerOpts }[]
+	} | undefined;
 
 	/**
 	 * Add a listener
@@ -182,50 +184,50 @@ type Writeable<T> = { -readonly [P in keyof T]: T[P] };
  */
 export type Config<Cmp extends Observable, EventMap extends ObservableEventMap<Observable> = ComponentEventMap<Cmp>, Required extends keyof Cmp = never> =
 
-		Writeable<
-			Partial<
-				Pick<Cmp,
-					{
-						[K in keyof Cmp]: Cmp[K] extends Function ? never : K extends Required ? never : K
-					}[keyof Cmp]
-				>
+	Writeable<
+		Partial<
+			Pick<Cmp,
+				{
+					[K in keyof Cmp]: Cmp[K] extends Function ? never : K extends Required ? never : K
+				}[keyof Cmp]
 			>
 		>
+	>
 
-		&
+	&
 
-		Writeable<Pick<Cmp, Required>>
+	Writeable<Pick<Cmp, Required>>
 
-		& {
-			/**
-			 * Add listeners
-			 *
-			 * You can pass them in two ways:
-			 *
-			 * @example
-			 * ```
-			 * comp({
-			 * 		listeners: {
-			 *
-			 * 			//simple syntax add the listener directly
-			 * 			additem:(container, item, index) => {
-			 * 				//do something when an item was added
-			 * 			},
-			 *
-			 * 	    	// extended syntax to pass extra listener options
-			 * 			beforeadditem: {
-			 * 				//with this syntax you can pass extra options
-			 * 				fn:(container, item, index) => {
-			 * 					//do something before an item will be added but only once
-			 * 				},
-			 * 				once: true
-			 * 			}
-			 * 		}
-			 * 	})
-			 * 	```
-			 *
-			 * 	@see Observable.on()
-			 */
-			listeners?: ObservableListener<EventMap>
-		}
+	& {
+	/**
+	 * Add listeners
+	 *
+	 * You can pass them in two ways:
+	 *
+	 * @example
+	 * ```
+	 * comp({
+	 * 		listeners: {
+	 *
+	 * 			//simple syntax add the listener directly
+	 * 			additem:(container, item, index) => {
+	 * 				//do something when an item was added
+	 * 			},
+	 *
+	 * 	    	// extended syntax to pass extra listener options
+	 * 			beforeadditem: {
+	 * 				//with this syntax you can pass extra options
+	 * 				fn:(container, item, index) => {
+	 * 					//do something before an item will be added but only once
+	 * 				},
+	 * 				once: true
+	 * 			}
+	 * 		}
+	 * 	})
+	 * 	```
+	 *
+	 * 	@see Observable.on()
+	 */
+	listeners?: ObservableListener<EventMap>
+}
 	;

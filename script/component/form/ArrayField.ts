@@ -45,7 +45,7 @@ export class ArrayField extends ContainerField {
 
 		this.items.clear();
 
-		if(v) {
+		if (v) {
 			v.forEach((item) => {
 				const field = this.buildField(item);
 				field.value = item;
@@ -70,7 +70,7 @@ export class ArrayField extends ContainerField {
 		const v: ArrayFieldValue = [];
 
 		this.items.forEach((item) => {
-			if(item instanceof Field) {
+			if (item instanceof Field) {
 				v.push(item.value);
 			}
 		});

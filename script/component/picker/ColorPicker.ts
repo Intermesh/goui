@@ -5,7 +5,7 @@
  */
 
 import {btn} from "../Button.js";
-import {Config, Observable, ObservableListener, ObservableListenerOpts} from "../Observable.js";
+import {Config, ObservableListenerOpts} from "../Observable.js";
 import {comp, Component, ComponentEventMap, createComponent} from "../Component.js";
 
 /**
@@ -18,7 +18,7 @@ export interface ColorPickerEventMap<Type> extends ComponentEventMap<Type> {
 	 * @param colorPicker
 	 * @param color Hexadecimal color. eg. "000000"
 	 */
-	select:  (colorPicker: Type, color: string) => void
+	select: (colorPicker: Type, color: string) => void
 }
 
 export interface ColorPicker {
@@ -78,6 +78,7 @@ export class ColorPicker extends Component {
 	getText() {
 		return this.value.substring(1);
 	}
+
 	setValue(val: string) {
 		this.value = val;
 	}
@@ -87,8 +88,8 @@ export class ColorPicker extends Component {
 		this.items.add(
 			comp({}, ...this.colors
 				.map(color => btn({
-					itemId:  color,
-					cls: this.value == "#" +color ? 'with-icon pressed' : 'with-icon',
+					itemId: color,
+					cls: this.value == "#" + color ? 'with-icon pressed' : 'with-icon',
 					listeners: {
 						beforerender: (btn) => {
 							const colorDiv = document.createElement("div");

@@ -20,11 +20,11 @@ export class SelectField extends Field {
 
 	protected input: HTMLSelectElement | undefined;
 
-	public options: {[key:string]: any}[] = [];
+	public options: { [key: string]: any }[] = [];
 	public store?: Store
 
 	public valueField = 'value';
-	public textRenderer?: (record: {[key:string]: any})=> string = (record: {[key:string]: any}) => record.name;
+	public textRenderer?: (record: { [key: string]: any }) => string = (record: { [key: string]: any }) => record.name;
 
 	protected createControl(): undefined | HTMLElement {
 		//grab value before creating this.input otherwise it will return the input value
@@ -52,7 +52,7 @@ export class SelectField extends Field {
 	}
 
 	drawOptions() {
-		if(!this.input) return;
+		if (!this.input) return;
 		this.input.innerHTML = ''; // redraw
 		(this.store ? this.store.items : this.options).forEach((o: any) => {
 			const opt = new Option();

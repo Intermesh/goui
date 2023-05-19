@@ -4,7 +4,6 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 import {Observable, ObservableEventMap, ObservableListenerOpts} from "./component/Observable.js";
-import {WindowEventMap} from "./component";
 
 export interface Route {
 	re: RegExp
@@ -21,6 +20,7 @@ export interface RouterEventMap<Type extends Observable> extends ObservableEvent
 
 export interface Router {
 	on<K extends keyof RouterEventMap<Router>>(eventName: K, listener: RouterEventMap<Router>[K], options?: ObservableListenerOpts): void
+
 	fire<K extends keyof RouterEventMap<Router>>(eventName: K, ...args: Parameters<RouterEventMap<any>[K]>): boolean
 }
 
@@ -120,7 +120,7 @@ export class Router extends Observable {
 	/**
 	 * Start the router and run the matching route handlers
 	 */
-	public start() : Promise<void> {
+	public start(): Promise<void> {
 		const path = this.getPath();
 
 		const oldPath = this.loadedPath;
@@ -149,7 +149,7 @@ export class Router extends Observable {
 
 		//nothing matched so we load the default
 
-		return this.defaultRoute ? this.handleRoute(this.defaultRoute, [] , oldPath) : Promise.resolve();
+		return this.defaultRoute ? this.handleRoute(this.defaultRoute, [], oldPath) : Promise.resolve();
 
 	}
 

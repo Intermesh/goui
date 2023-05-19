@@ -6,9 +6,8 @@
 
 type KeyValue = Record<string, any>
 
-export class ObjectUtil
-{
-	public static isObject = (obj:any) => {
+export class ObjectUtil {
+	public static isObject = (obj: any) => {
 		return Object.prototype.toString.call(obj) === '[object Object]';
 	}
 
@@ -30,7 +29,7 @@ export class ObjectUtil
 	 * @param path
 	 * @return The value from the path or undefined if not found
 	 */
-	public static path (obj:KeyValue, path:string): any {
+	public static path(obj: KeyValue, path: string): any {
 
 		const dotPos = path.indexOf(".");
 
@@ -38,18 +37,18 @@ export class ObjectUtil
 
 		const next = obj[prop];
 
-		if(!next) {
+		if (!next) {
 			return next;
 		}
-		if(dotPos == -1) {
+		if (dotPos == -1) {
 			return next;
 		}
 
-		if(!ObjectUtil.isObject(next)) {
+		if (!ObjectUtil.isObject(next)) {
 			return undefined;
 		}
 
-		return this.path(next, path.substr(dotPos+1));
+		return this.path(next, path.substr(dotPos + 1));
 	}
 
 	/**
@@ -57,17 +56,16 @@ export class ObjectUtil
 	 * @param o1
 	 * @param o2
 	 */
-	public static merge(o1:Record<string, any>, o2:any) {
+	public static merge(o1: Record<string, any>, o2: any) {
 
-		if(!this.isObject(o2)) {
+		if (!this.isObject(o2)) {
 			return o2;
 		}
 
-		for(let key in o2) {
-			if(key in o1 && this.isObject(o1[key])) {
+		for (let key in o2) {
+			if (key in o1 && this.isObject(o1[key])) {
 				o1[key] = this.merge(o1[key], o2[key]);
-			} else
-			{
+			} else {
 				o1[key] = o2[key];
 			}
 		}
@@ -83,6 +81,7 @@ export class ObjectUtil
 	public static clone<T>(source: T): T {
 		return JSON.parse(JSON.stringify(source));
 	}
+
 	//
 	// private static deepClone(source: any, hash = new WeakMap()): any {
 	// 	if(Array.isArray(source)) {

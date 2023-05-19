@@ -15,7 +15,7 @@ export class ArrayUtil {
 	 * @param array1
 	 * @param array2
 	 */
-	public static diff(array1:any[], array2:any[]) {
+	public static diff(array1: any[], array2: any[]) {
 		return array1.filter((i) => {
 			return array2.indexOf(i) === -1;
 		});
@@ -27,7 +27,7 @@ export class ArrayUtil {
 	 * @param array1
 	 * @param array2
 	 */
-	public static intersect(array1:any[], array2:any[]) {
+	public static intersect(array1: any[], array2: any[]) {
 		return array1.filter((i) => {
 			return array2.indexOf(i) !== -1;
 		});
@@ -39,13 +39,13 @@ export class ArrayUtil {
 	 * @param array
 	 * @param comparators
 	 */
-	public static multiSort(array:any[], comparators:Comparator[]) {
+	public static multiSort(array: any[], comparators: Comparator[]) {
 
-		if(!comparators.length) {
+		if (!comparators.length) {
 			return array;
 		}
 
-		const keySort = (a:any, b:any, isAscending:boolean) => {
+		const keySort = (a: any, b: any, isAscending: boolean) => {
 			const direction = isAscending ? 1 : -1;
 
 			if (a === b) { // If the values are the same, do not switch positions.

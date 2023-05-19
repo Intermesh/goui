@@ -32,7 +32,7 @@ export class Paginator extends Toolbar {
 			}),
 
 			comp({
-				flex:1
+				flex: 1
 			}),
 
 			this.next = btn({
@@ -61,4 +61,6 @@ export class Paginator extends Toolbar {
  *
  * @param config
  */
-export const paginator = (config: Config<Paginator> & {store:Store}) => createComponent(new Paginator(config.store), config);
+export const paginator = (config: Config<Paginator> & {
+	store: Store
+}) => createComponent(new Paginator(config.store), config);

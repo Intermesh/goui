@@ -27,17 +27,17 @@ export class TextField extends Field {
 	/**
 	 * When the field is empty this will be dispklayed inside the field
 	 */
-	public placeholder:string = " ";
+	public placeholder: string = " ";
 
 	/**
 	 * Autocomplete value
 	 */
-	public autocomplete:string | undefined;
+	public autocomplete: string | undefined;
 
 	/**
 	 * Pattern regex for validation
 	 */
-	public pattern:HTMLInputElement["pattern"] | undefined;
+	public pattern: HTMLInputElement["pattern"] | undefined;
 
 
 	get input() {
@@ -47,19 +47,19 @@ export class TextField extends Field {
 	set title(title: string) {
 		super.title = title;
 
-		if(this._input) {
+		if (this._input) {
 			this._input.title = this.title;
 		}
 	}
 
 	focus(o?: FocusOptions) {
-		if(!this._input) {
+		if (!this._input) {
 			super.focus(o);
 		}
 		this._input?.focus(o);
 	}
 
-	protected createControl() : undefined | HTMLElement{
+	protected createControl(): undefined | HTMLElement {
 
 		//grab value before creating this.input otherwise it will return the input value
 		const v = this.value,
@@ -69,19 +69,19 @@ export class TextField extends Field {
 		this._input.classList.add("text");
 		this._input.type = this.type;
 
-		if(this.pattern) {
+		if (this.pattern) {
 			this._input.pattern = this.pattern;
 		}
 
-		if(this.autocomplete) {
+		if (this.autocomplete) {
 			this._input.autocomplete = this.autocomplete;
 		}
 
-		if(this.placeholder) {
+		if (this.placeholder) {
 			this._input.placeholder = this.placeholder;
 		}
 		this._input.required = this.required;
-		if(name) {
+		if (name) {
 			this._input.name = name;
 		}
 		this._input.readOnly = this.readOnly;
@@ -90,7 +90,7 @@ export class TextField extends Field {
 			this._input.value = v;
 		}
 
-		if(this.title) {
+		if (this.title) {
 			this._input.title = this.title;
 		}
 
@@ -98,7 +98,7 @@ export class TextField extends Field {
 			this.fireChange();
 		});
 
-		if(this.invalidMsg) {
+		if (this.invalidMsg) {
 			this.applyInvalidMsg();
 		}
 
@@ -111,7 +111,7 @@ export class TextField extends Field {
 
 		super.setInvalid(msg);
 
-		if(this.rendered) {
+		if (this.rendered) {
 			this.applyInvalidMsg();
 		}
 	}
@@ -158,7 +158,7 @@ export class TextField extends Field {
 		super.validate();
 
 		//this implements the native browser validation
-		if(!this._input!.validity.valid) {
+		if (!this._input!.validity.valid) {
 			this.setInvalid(this._input!.validationMessage);
 		}
 	}
@@ -170,4 +170,4 @@ export class TextField extends Field {
  *
  * @param config
  */
-export const textfield = (config?:Config<TextField, FieldEventMap<TextField>>) => createComponent(new TextField(), config);
+export const textfield = (config?: Config<TextField, FieldEventMap<TextField>>) => createComponent(new TextField(), config);

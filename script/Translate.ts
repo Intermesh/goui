@@ -8,7 +8,7 @@
 
 import {ObjectUtil} from "./util/ObjectUtil.js";
 
-type lang = {[key: string]: {[key: string]: {[key: string]: string}}};
+type lang = { [key: string]: { [key: string]: { [key: string]: string } } };
 
 export class Translate {
 	private lang: lang = {};
@@ -16,18 +16,18 @@ export class Translate {
 	private defaultPkg = "core";
 	private defaultModule = "core";
 
-	public setDefaultModule(pkg:string, module:string) {
+	public setDefaultModule(pkg: string, module: string) {
 		this.defaultModule = module;
 		this.defaultPkg = pkg;
 	}
 
-	public load(lang:lang, pkg = "core", module = "core") {
+	public load(lang: lang, pkg = "core", module = "core") {
 
-		if(!this.lang[pkg]) {
+		if (!this.lang[pkg]) {
 			this.lang[pkg] = {};
 		}
 
-		if(!this.lang[pkg][module]) {
+		if (!this.lang[pkg][module]) {
 			this.lang[pkg][module] = {};
 		}
 
@@ -43,26 +43,25 @@ export class Translate {
 	 * @param pkg The module package
 	 * @param module The module name
 	 */
-	public static t(key:string, pkg?:string, module?:string) : any {
+	public static t(key: string, pkg?: string, module?: string): any {
 
 
-		if(!pkg) {
+		if (!pkg) {
 			pkg = translate.defaultPkg;
 		}
 
-		if(!module) {
+		if (!module) {
 			module = translate.defaultModule;
 		}
 
-		if(translate.lang?.[pkg]?.[module]?.[key]) {
+		if (translate.lang?.[pkg]?.[module]?.[key]) {
 			return translate.lang[pkg][module][key];
-		} else if(pkg == "core" && module == "core")
-		{
-			if(!translate.missing[pkg]) {
+		} else if (pkg == "core" && module == "core") {
+			if (!translate.missing[pkg]) {
 				translate.missing[pkg] = {};
 			}
 
-			if(!translate.missing[pkg][module]) {
+			if (!translate.missing[pkg][module]) {
 				translate.missing[pkg][module] = {};
 			}
 

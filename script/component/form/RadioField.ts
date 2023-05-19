@@ -37,15 +37,15 @@ type RadioType = 'box' | 'button';
 export class RadioField extends Field {
 
 	options: RadioOption[] = [];
-	inputs: {[key:string]:HTMLInputElement} = {};
+	inputs: { [key: string]: HTMLInputElement } = {};
 
-	readonly type : RadioType;
+	readonly type: RadioType;
 	protected baseCls = 'goui-form-field radiogroup';
 
 	constructor(type: RadioType = 'box') {
 		super('fieldset');
 		this.type = type;
-		this.el.cls(type,true);
+		this.el.cls(type, true);
 	}
 
 	protected createLabel(): HTMLDivElement | void {
@@ -62,13 +62,15 @@ export class RadioField extends Field {
 		const radio = E('div').cls('radio');
 
 		this.options.forEach((o) => {
-			const btn =E('input').on("change", () => {this.fireChange();});
+			const btn = E('input').on("change", () => {
+				this.fireChange();
+			});
 			btn.type = "radio";
 			btn.name = this.name || this.itemId;
 			btn.readOnly = this.readOnly;
 			if (o.value) {
 				btn.value = o.value;
-				if(this._value == o.value) {
+				if (this._value == o.value) {
 					btn.checked = true;
 				}
 				this.inputs[o.value] = btn;
@@ -76,7 +78,7 @@ export class RadioField extends Field {
 
 			radio.append(E('label',
 				btn,
-				E('span',o.text).cls('box-label')
+				E('span', o.text).cls('box-label')
 			).cls('control'));
 		});
 
@@ -89,13 +91,13 @@ export class RadioField extends Field {
 
 	set value(v: string | undefined) {
 		super.value = v;
-		if(v && v in this.inputs)
+		if (v && v in this.inputs)
 			this.inputs[v].checked = true;
 	}
 
 	get value() {
-		for(let v in this.inputs) {
-			if(this.inputs[v].checked){
+		for (let v in this.inputs) {
+			if (this.inputs[v].checked) {
 				return v;
 			}
 		}
@@ -109,4 +111,4 @@ export class RadioField extends Field {
  *
  * @param config
  */
-export const radio = (config?: Config<RadioField, FieldEventMap<RadioField>>) => createComponent(new RadioField(config?.type||'box'), config);
+export const radio = (config?: Config<RadioField, FieldEventMap<RadioField>>) => createComponent(new RadioField(config?.type || 'box'), config);

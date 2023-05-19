@@ -39,7 +39,7 @@ export interface HtmlFieldEventMap<Type> extends FieldEventMap<Type> {
 	 * @param file
 	 * @param img The img element in the editor
 	 */
-	insertimage:  (htmlfield: Type, file: File, img: HTMLImageElement) => void
+	insertimage: (htmlfield: Type, file: File, img: HTMLImageElement) => void
 
 	/**
 	 * Fires when a non image is pasted or dropped into the field
@@ -48,7 +48,7 @@ export interface HtmlFieldEventMap<Type> extends FieldEventMap<Type> {
 	 * @param file
 	 * @param img
 	 */
-	attach:  (htmlfield: Type, file: File) => void
+	attach: (htmlfield: Type, file: File) => void
 }
 
 
@@ -70,7 +70,7 @@ interface CmdConfig {
 /**
  * Available toolbar items
  */
-type ToolbarItems = "-" |"bold" | "italic" | "underline" |
+type ToolbarItems = "-" | "bold" | "italic" | "underline" |
 	"foreColor" | "backColor" | "removeFormat" |
 	"justifyLeft" | "justifyCenter" | "justifyRight" |
 	"insertOrderedList" |
@@ -191,24 +191,24 @@ export class HtmlField extends Field {
 			updateFn: (btn) => {
 				const s = document.getSelection();
 
-				if(!s || !s.anchorNode) {
+				if (!s || !s.anchorNode) {
 					btn.el.style.color = "";
 					return;
 				}
-				let el : Node|HTMLElement|null = s.anchorNode;
+				let el: Node | HTMLElement | null = s.anchorNode;
 
-				while(!(el instanceof HTMLElement) && el != null) {
+				while (!(el instanceof HTMLElement) && el != null) {
 					el = el.parentElement;
 				}
 
-				if(!el) {
+				if (!el) {
 					btn.el.style.color = "";
 					return;
 				}
 				// let color = s ? this.closestStyle(<HTMLElement>s.anchorNode!, "color") : undefined;
 				const closest = el.closest("[color]");
 
-				if(!closest) {
+				if (!closest) {
 					btn.el.style.color = "";
 					return;
 				}
@@ -406,7 +406,7 @@ export class HtmlField extends Field {
 			this.editor.dataset.placeholder = this.placeholder;
 		}
 
-		if(v) {
+		if (v) {
 			this.editor.innerHTML = v;
 			// Image.replaceImages(this.editor);
 		}

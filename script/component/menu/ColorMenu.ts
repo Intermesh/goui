@@ -6,9 +6,8 @@
 
 import {Menu} from "./Menu.js";
 import {btn} from "../Button.js";
-import {Config, Observable, ObservableListener, ObservableListenerOpts} from "../Observable.js";
+import {Config, ObservableListenerOpts} from "../Observable.js";
 import {Component, ComponentEventMap, createComponent} from "../Component.js";
-import {FieldEventMap} from "../form";
 
 /**
  * @inheritDoc

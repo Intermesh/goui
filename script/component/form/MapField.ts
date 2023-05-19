@@ -11,7 +11,7 @@ import {Config} from "../Observable";
 
 interface MapFieldRow {
 	field: Field
-	key : string
+	key: string
 	isNew: boolean
 }
 
@@ -25,7 +25,7 @@ export class MapField extends Field {
 
 	private rows: MapFieldRow[] = []
 
-	constructor(public buildField: FieldBuilder){
+	constructor(public buildField: FieldBuilder) {
 		super('div')
 	}
 
@@ -37,8 +37,8 @@ export class MapField extends Field {
 		super.value = v;
 
 		this.items.clear();
-		if(v) {
-			for(const key in v) {
+		if (v) {
+			for (const key in v) {
 				this.add(v[key], key);
 			}
 		}
@@ -52,7 +52,7 @@ export class MapField extends Field {
 		return v;
 	}
 
-	public add(data: MapFieldValue, key?:string|undefined) {
+	public add(data: MapFieldValue, key?: string | undefined) {
 		const row = {
 			key: key === undefined ? this.nextKey() : key,
 			field: this.buildField(data),
@@ -60,7 +60,10 @@ export class MapField extends Field {
 		};
 		row.field.items.add(btn({
 			icon: "delete",
-			handler: button => { this.rows.splice(this.rows.indexOf(row),1); row.field.remove(); }
+			handler: button => {
+				this.rows.splice(this.rows.indexOf(row), 1);
+				row.field.remove();
+			}
 		}));
 		row.field.value = data;
 		this.rows.push(row);

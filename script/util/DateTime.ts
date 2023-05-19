@@ -361,8 +361,9 @@ export type Timezone =
 const SystemTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone.toLowerCase() as Timezone;
 
 function pad(n: any): string {
-	return (n < 10 ? '0':'') + n;
+	return (n < 10 ? '0' : '') + n;
 }
+
 const durationRegex = /(-)?P(?:([.,\d]+)Y)?(?:([.,\d]+)M)?(?:([.,\d]+)W)?(?:([.,\d]+)D)?(?:T(?:([.,\d]+)H)?(?:([.,\d]+)M)?(?:([.,\d]+)S)?)?/;
 
 /**
@@ -376,19 +377,19 @@ export class DateTime {
 	readonly date: Date;
 
 	static firstWeekDay = 1; // 1 = monday, 7 = sunday
-	static dayNames: Record<string,string> = {}; // {mo: t('Monday'), tu: t('Tuesday'), ...}
+	static dayNames: Record<string, string> = {}; // {mo: t('Monday'), tu: t('Tuesday'), ...}
 	static dayMap: string[] = [] // ['mo','tu',...] if week starts on monday else index 0 = 'su'
 	static monthNames: string[] = []
 
 	static staticInit(lang: string) {
 		const locale = new Intl.Locale(lang),
-			dayList = ['su','mo','tu','we','th','fr','sa'];
-		if('weekInfo' in locale) {
+			dayList = ['su', 'mo', 'tu', 'we', 'th', 'fr', 'sa'];
+		if ('weekInfo' in locale) {
 			// @ts-ignore
 			DateTime.firstWeekDay = locale.weekInfo.firstDay; // weekInfo might not be supported in all browsers
 		}
 		let tmp = new Date('1970-01-01'),
-		   intlDays = new Intl.DateTimeFormat(lang, {weekday: 'long'});
+			intlDays = new Intl.DateTimeFormat(lang, {weekday: 'long'});
 
 		for (let i = 0; i < 7; i++) {  // monday
 			tmp.setDate(i + 4 + DateTime.firstWeekDay);
@@ -406,9 +407,9 @@ export class DateTime {
 	/**
 	 * The timezone of the date
 	 */
-	public timezone:Timezone = SystemTimeZone;
+	public timezone: Timezone = SystemTimeZone;
 
-	constructor(date:Date| number | string = new Date()) {
+	constructor(date: Date | number | string = new Date()) {
 		this.date = (date instanceof Date) ?
 			date :
 			new Date(date);
@@ -461,9 +462,9 @@ export class DateTime {
 	 *
 	 * @param timezone eg. europe/amsterdam
 	 */
-	toTimezone<T extends string> (timezone: Timezone) {
+	toTimezone<T extends string>(timezone: Timezone) {
 
-		if(this.timezone == timezone) {
+		if (this.timezone == timezone) {
 			return this.clone();
 		}
 
@@ -473,35 +474,35 @@ export class DateTime {
 		d.timezone = timezone;
 		const newOffset = d.getTimezoneOffset();
 
-		d.setMinutes(d.getMinutes() - newOffset + offset );
+		d.setMinutes(d.getMinutes() - newOffset + offset);
 
 		return d;
 	}
 
 	diff(end: DateTime) {
 		let monthDays = end.clone().setDate(0).getDate(),
-			sihdmy = [0,0,0,0,0, end.getYear() - this.getYear()],
+			sihdmy = [0, 0, 0, 0, 0, end.getYear() - this.getYear()],
 			it = 0,
 			map = {getSeconds: 60, getMinutes: 60, getHours: 24, getDate: monthDays, getMonth: 12};
-		for(let i in map) {
+		for (let i in map) {
 			let fn = i as 'getSeconds' | 'getMinutes' | 'getHours' | 'getDate' | 'getMonth';
-			if(sihdmy[it]+end[fn]() < this[fn]()){
-				sihdmy[it+1]--;
+			if (sihdmy[it] + end[fn]() < this[fn]()) {
+				sihdmy[it + 1]--;
 				sihdmy[it] += map[fn] - this[fn]() + end[fn]();
-			} else if(sihdmy[it]+end[fn]() > this[fn]()) {
+			} else if (sihdmy[it] + end[fn]() > this[fn]()) {
 				sihdmy[it] += end[fn]() - this[fn]();
 			}
 			it++;
 		}
 		// sec, min, hour, day, month, year
-		const [s,i,h,d,m,y] = sihdmy;
-		return 'P'+(y>0 ? y+'Y':'')+
-			(m>0 ? m+'M':'')+
-			(d>0 ? d+'D':'')+
-			((h || i || s) ? 'T'+
-				(h>0 ? h+'H':'')+
-				(i>0 ? i+'M':'')+
-				(s>0 ? s+'S':''):'');
+		const [s, i, h, d, m, y] = sihdmy;
+		return 'P' + (y > 0 ? y + 'Y' : '') +
+			(m > 0 ? m + 'M' : '') +
+			(d > 0 ? d + 'D' : '') +
+			((h || i || s) ? 'T' +
+				(h > 0 ? h + 'H' : '') +
+				(i > 0 ? i + 'M' : '') +
+				(s > 0 ? s + 'S' : '') : '');
 
 	}
 
@@ -509,7 +510,7 @@ export class DateTime {
 		return Math.floor((
 			Date.UTC(other.getYear(), other.date.getMonth(), other.getDate()) -
 			Date.UTC(this.getYear(), this.date.getMonth(), this.getDate())
-		) /	86400000);
+		) / 86400000);
 	}
 
 
@@ -527,9 +528,13 @@ export class DateTime {
 		return this.toTimezone("UTC");
 	}
 
-	private static getFormatter(timezone:Timezone) {
-		if(!DateTime.cache[timezone]) {
-			DateTime.cache[timezone] = new Intl.DateTimeFormat('en-US', {timeZone: timezone, dateStyle: 'short', timeStyle: 'short'});
+	private static getFormatter(timezone: Timezone) {
+		if (!DateTime.cache[timezone]) {
+			DateTime.cache[timezone] = new Intl.DateTimeFormat('en-US', {
+				timeZone: timezone,
+				dateStyle: 'short',
+				timeStyle: 'short'
+			});
 		}
 
 		return DateTime.cache[timezone];
@@ -544,7 +549,7 @@ export class DateTime {
 	 */
 	private getSystemTimezoneDiff() {
 
-		if(this.timezone == SystemTimeZone) {
+		if (this.timezone == SystemTimeZone) {
 			return 0;
 		}
 
@@ -556,16 +561,16 @@ export class DateTime {
 		// we don't care about milliseconds and seconds
 		const u = Math.floor(this.date.getTime() / 1000 / 60), localU = Math.floor(d.getTime() / 1000 / 60);
 
-		return  u - localU;
+		return u - localU;
 
 	}
 
-	private static cache:Record<string, Intl.DateTimeFormat> = {};
+	private static cache: Record<string, Intl.DateTimeFormat> = {};
 
 	/**
 	 * The ISO-8601 week number of year (weeks starting on Monday)
 	 */
-	getWeekOfYear():number {
+	getWeekOfYear(): number {
 
 		const ms1d = 864e5, // milliseconds in a day
 			ms7d = 7 * ms1d; // milliseconds in a week
@@ -608,15 +613,16 @@ export class DateTime {
 		return this.date.getMonth() + 1;
 	}
 
-	getDate() : number {
+	getDate(): number {
 		return this.date.getDate();
 	}
+
 	getMonthDay(): number {
 		return this.getDate();
 	}
 
 	/** 0 for sunday, 1 for monday, 2 for tuesday */
-	getDay() : number {
+	getDay(): number {
 		return this.date.getDay();
 	}
 
@@ -624,7 +630,7 @@ export class DateTime {
 	 * Like getDay but take firstWeekDay of the week into account
 	 * 0 = first day of the week, 6 = last day
 	 */
-	getWeekDay() : number {
+	getWeekDay(): number {
 		if (DateTime.firstWeekDay == 1) { // monday
 			return (this.date.getDay() || 7) - 1;
 		}
@@ -654,7 +660,7 @@ export class DateTime {
 	}
 
 	getMinuteOfDay(): number {
-		return this.date.getHours()*60 + this.date.getMinutes();
+		return this.date.getHours() * 60 + this.date.getMinutes();
 	}
 
 	/**
@@ -688,72 +694,73 @@ export class DateTime {
 		return this;
 	}
 
-	setMonth(month:number) {
+	setMonth(month: number) {
 		this.date.setMonth(month - 1);
 		return this;
 	}
 
-	setDate(date:number) {
+	setDate(date: number) {
 		this.date.setDate(date);
 		return this;
 	}
-	setMonthDay(date:number) {
+
+	setMonthDay(date: number) {
 		return this.setDate(date);
 	}
 
-	setWeekDay(day:number) {
+	setWeekDay(day: number) {
 		this.date.setDate(this.date.getDate() - this.getWeekDay() + day);
 		return this;
 	}
 
 	/** Jump to day in current week */
-	setDay(day:number) {
+	setDay(day: number) {
 		this.date.setDate(this.date.getDate() - this.date.getDay() + day);
 		return this;
 	}
 
-	addYears(years:number) {
+	addYears(years: number) {
 		this.date.setFullYear(this.date.getFullYear() + years);
 		return this;
 	}
 
-	addMonths(months:number) {
+	addMonths(months: number) {
 		this.date.setMonth(this.date.getMonth() + months);
 		return this;
 	}
 
-	addDays(days:number) {
+	addDays(days: number) {
 		this.date.setDate(this.date.getDate() + days);
 		return this;
 	}
 
-	addHours(hours:number) {
+	addHours(hours: number) {
 		this.date.setHours(this.date.getHours() + hours);
 		return this;
 	}
 
-	addMinutes(minutes:number) {
+	addMinutes(minutes: number) {
 		this.date.setMinutes(this.date.getMinutes() + minutes);
 		return this;
 	}
 
-	addSeconds(seconds:number) {
+	addSeconds(seconds: number) {
 		this.date.setSeconds(this.date.getSeconds() + seconds);
 		return this;
 	}
 
 	addDuration(iso8601: string) {
-		let p:any,
+		let p: any,
 			matches = iso8601.match(durationRegex)!;
 		matches.shift(); // full match
 		const sign = matches.shift() || '';
-		for(let o of ['FullYear', 'Month', 'Week', 'Date', 'Hours', 'Minutes', 'Seconds']) {
-			if(p = matches.shift()) { // p= amount to add
-				if(o === 'Week') {
+		for (let o of ['FullYear', 'Month', 'Week', 'Date', 'Hours', 'Minutes', 'Seconds']) {
+			if (p = matches.shift()) { // p= amount to add
+				if (o === 'Week') {
 					p *= 7;
 					o = 'Date';
 				}
-				this.date['set'+o as 'setDate'](this.date['get'+o as 'getDate']() + parseInt(sign+p))
+				this.date['set' + o as 'setDate'](this.date['get' + o as 'getDate']() + parseInt(sign + p))
 			}
 		}
 		return this;
@@ -777,28 +784,28 @@ export class DateTime {
 		return m == 1 && this.isLeapYear() ? 29 : daysInMonth[m];
 	}
 
-	getGMTOffset(colon: ":"|"" = ":") {
+	getGMTOffset(colon: ":" | "" = ":") {
 		const tzo = this.getTimezoneOffset();
 		return (tzo > 0 ? "-" : "+") + pad(Math.floor(Math.abs(tzo) / 60)) + colon + pad(Math.abs(tzo % 60));
 	}
 
-	private static converters: {[key:string]:(date: DateTime) => string|number} = {
+	private static converters: { [key: string]: (date: DateTime) => string | number } = {
 		'd': date => pad(date.getMonthDay()),
-		'D': date => DateTime.dayNames[DateTime.dayMap[date.getWeekDay()]].substring(0,3),
+		'D': date => DateTime.dayNames[DateTime.dayMap[date.getWeekDay()]].substring(0, 3),
 		'j': date => date.getMonthDay(),
 		'l': date => DateTime.dayNames[DateTime.dayMap[date.getWeekDay()]],
-		'S': date => ["st","nd","rd"][((date.getMonthDay()+90)%100-10)%10-1]||"th",
+		'S': date => ["st", "nd", "rd"][((date.getMonthDay() + 90) % 100 - 10) % 10 - 1] || "th",
 
 		'w': date => date.getDay(),
 		'z': date => date.getDayOfYear(),
 		'W': date => date.getWeekOfYear(),
-		'F': date => DateTime.monthNames[date.getMonth()-1],
+		'F': date => DateTime.monthNames[date.getMonth() - 1],
 		'm': date => pad(date.getMonth()),
-		'M': date => DateTime.monthNames[date.getMonth()-1].substring(0,3),
+		'M': date => DateTime.monthNames[date.getMonth() - 1].substring(0, 3),
 		'n': date => date.getMonth(),
 
 		'Y': date => date.getYear(),
-		'y': date => (date.getYear()+"").substr(-2),
+		'y': date => (date.getYear() + "").substr(-2),
 		'a': date => date.getHours() > 12 ? 'pm' : 'am',
 		'A': date => date.getHours() > 12 ? 'PM' : 'AM',
 
@@ -864,13 +871,13 @@ export class DateTime {
 		let output = "";
 		for (let i = 0, l = chars.length; i < l; i++) {
 			let char = chars[i];
-			if(char == '\\') {
+			if (char == '\\') {
 				i++;
 				if (chars.length > i + 1) {
 					char += chars[i];
 				}
 			} else if (char in DateTime.converters) {
-				char = DateTime.converters[char](this)+"";
+				char = DateTime.converters[char](this) + "";
 			}
 			output += char;
 		}
@@ -878,13 +885,13 @@ export class DateTime {
 	}
 
 
-	public static createFormatRegex(format:string) {
+	public static createFormatRegex(format: string) {
 		const chars = format.split("");
 		let output = "";
 
-		for(let i = 0, l = chars.length; i < l; i++) {
+		for (let i = 0, l = chars.length; i < l; i++) {
 			let char = chars[i];
-			switch(char) {
+			switch (char) {
 				case 'Y':
 					char = "(?<Y>\\d{4})";
 					break;
@@ -893,7 +900,7 @@ export class DateTime {
 				case 'i':
 
 				case 'y':
-					char = "(?<"+char+">\\d{2})";
+					char = "(?<" + char + ">\\d{2})";
 					break;
 
 				case 'G':
@@ -904,7 +911,7 @@ export class DateTime {
 				case 'h':
 				case 'j':
 				case 'n':
-					char = "(?<"+char+">\\d{1,2})";
+					char = "(?<" + char + ">\\d{1,2})";
 					break;
 
 				case 'a':
@@ -954,25 +961,25 @@ export class DateTime {
 	 * const date = console.log(Date.createFromFormat("10/12/2021 9:09am", "m/d/Y g:ia", "America/New_York));
 	 * ```
 	 */
-	public static createFromFormat (dateStr:string, format: string = "c", timezone?:Timezone): DateTime|null {
+	public static createFromFormat(dateStr: string, format: string = "c", timezone?: Timezone): DateTime | null {
 
 
 		const regex = new RegExp(DateTime.createFormatRegex(format), 'u');
 		const result = regex.exec(dateStr);
 
-		if(!result) {
+		if (!result) {
 			return null;
 		}
 
 		const date = new DateTime();
-		date.setHours(0,0,0,0);
+		date.setHours(0, 0, 0, 0);
 
-		if(timezone) {
+		if (timezone) {
 			date.timezone = timezone;
 		}
 
-		for(let key in result.groups) {
-			switch(key) {
+		for (let key in result.groups) {
+			switch (key) {
 				case "Y":
 					date.setYear(parseInt(result.groups["Y"]));
 					break;
@@ -1029,12 +1036,13 @@ export class DateTime {
 	 * @param date
 	 * @return number
 	 */
-	public compare(date:DateTime):number {
+	public compare(date: DateTime): number {
 		return (this.date > date.date ? 1 : 0) - (this.date < date.date ? 1 : 0);
 	}
 
 
 }
+
 DateTime.staticInit(navigator.language);
 
 
