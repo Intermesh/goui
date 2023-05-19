@@ -77,12 +77,12 @@ export class Tree<StoreType extends Store> extends List {
 		}
 	}
 
-	private expand(row: HTMLElement): Tree<StoreType> {
+	private expand(row: HTMLElement): Promise<Tree<StoreType>> {
 
 		row.cls("+expanded");
 
 		if (Tree.subTrees[row.id]) {
-			return Tree.subTrees[row.id];
+			return Promise.resolve(Tree.subTrees[row.id]);
 		}
 
 		const record = this.store.get(parseInt(row.dataset.storeIndex!))
@@ -100,7 +100,14 @@ export class Tree<StoreType extends Store> extends List {
 
 		Tree.subTrees[row.id] = sub;
 
-		return sub;
+		sub.store.on("beforeload", () => {
+			row.setAttribute("disabled", "");
+		})
+		sub.store.on("load", () => {
+			row.removeAttribute("disabled");
+		})
+
+		return sub.store.load().then(() => sub);
 
 	}
 
@@ -160,23 +167,21 @@ export class Tree<StoreType extends Store> extends List {
 		e.preventDefault();
 		e.stopPropagation();
 
-
 		const dropRow = this.findDropRow(e);
-		const dropTree = this.expand(dropRow);
+
 		this.clearOverClasses(dropRow);
 		clearTimeout(this.dragOverTimeout);
 
-		dragData.dropTree = dropTree;
+		this.expand(dropRow).then((dropTree) => {
 
-		const topTree = this.findTopTree();
-		topTree.fire("drop", topTree, e, dropRow, dropPos, dragData);
+			dragData.dropTree = dropTree;
+
+			const topTree = this.findTopTree();
+			topTree.fire("drop", topTree, e, dropRow, dropPos, dragData);
+		});
 		return false;
 	}
 
-	protected onNodeDragEnd(e: DragEvent) {
-		super.onNodeDragEnd(e);
-		delete dragData.dropTree;
-	}
 }
 
 

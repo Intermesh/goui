@@ -385,7 +385,8 @@ export class List<StoreType extends Store = Store> extends Component {
 
 		dragData.row = row;
 		dragData.cmp = this;
-		dragData.record = this.store.get(parseInt(row.dataset.storeIndex!));
+		dragData.storeIndex = parseInt(row.dataset.storeIndex!);
+		dragData.record = this.store.get(dragData.storeIndex);
 
 		// had to add this class because otherwise dragleave fires immediately on child nodes: https://stackoverflow.com/questions/7110353/html5-dragleave-fired-when-hovering-a-child-element
 		root.el.cls("+dragging");
@@ -393,8 +394,6 @@ export class List<StoreType extends Store = Store> extends Component {
 
 	protected onNodeDragEnd(e: DragEvent) {
 		root.el.cls("-dragging");
-		delete dragData.row;
-		delete dragData.cmp;
 	}
 
 	protected onNodeDragEnter(e: DragEvent) {
