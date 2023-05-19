@@ -167,17 +167,19 @@ export class Tree<StoreType extends Store> extends List {
 		e.preventDefault();
 		e.stopPropagation();
 
-		const dropRow = this.findDropRow(e);
+		const dropRow = this.findDropRow(e),
+			dropIndex = this.getRowElements().indexOf(dropRow);
 
 		this.clearOverClasses(dropRow);
 		clearTimeout(this.dragOverTimeout);
 
 		this.expand(dropRow).then((dropTree) => {
 
-			dragData.dropTree = dropTree;
+			dragData.dropTree = this;
+			dragData.childrenTree = dropTree;
 
 			const topTree = this.findTopTree();
-			topTree.fire("drop", topTree, e, dropRow, dropPos, dragData);
+			topTree.fire("drop", topTree, e, dropRow, dropIndex, dropPos, dragData);
 		});
 		return false;
 	}

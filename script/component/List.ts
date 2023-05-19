@@ -84,11 +84,12 @@ export interface ListEventMap<Type> extends ComponentEventMap<Type> {
 	 *
 	 * @param tree The tree that contains the node that is dropped on
 	 * @param e The draag event
-	 * @param dropTree The tree of the node that is dropped on
 	 * @param dropRow The row element that is dropped on
+	 * @param dropIndex Store index
+	 * @param position
 	 * @param dragData The arbitrary drag data that is set
 	 */
-	drop: (list: Type, e: DragEvent, dropRow: HTMLElement, position: DROP_POSITION, dragData: any) => void
+	drop: (list: Type, e: DragEvent, dropRow: HTMLElement, dropIndex:number, position: DROP_POSITION, dragData: any) => void
 
 	dropallowed: (list: Type, e: DragEvent, dropRow: HTMLElement, dragData: any) => void
 
@@ -235,7 +236,7 @@ export class List<StoreType extends Store = Store> extends Component {
 
 	}
 
-	protected getRowElements() {
+	protected getRowElements(): HTMLElement[] {
 		return Array.from(this.el.querySelectorAll(":scope > .data"));
 	}
 
@@ -280,7 +281,8 @@ export class List<StoreType extends Store = Store> extends Component {
 
 		if (this.rowSelect) {
 			this.rowSelect.on('rowselect', (rowSelect, storeIndex) => {
-				const tr = (<HTMLElement>this.el!.querySelector("[data-store-index='" + storeIndex + "']"));
+
+				const tr = this.getRowElements()[storeIndex];
 
 				if (!tr) {
 					console.error("No row found for selected index: " + storeIndex + ". Maybe it's not rendered yet?");
@@ -291,7 +293,7 @@ export class List<StoreType extends Store = Store> extends Component {
 			});
 
 			this.rowSelect.on('rowdeselect', (rowSelect, storeIndex) => {
-				const tr = this.el!.querySelector("[data-store-index='" + storeIndex + "']") as HTMLElement;
+				const tr = this.getRowElements()[storeIndex];
 				if (!tr) {
 					console.error("No row found for selected index: " + storeIndex + ". Maybe it's not rendered yet?");
 					return;
@@ -324,7 +326,6 @@ export class List<StoreType extends Store = Store> extends Component {
 		const row = E(this.itemTag)
 			.cls('+data')
 			.attr('tabindex', '0');
-		row.dataset.storeIndex = storeIndex + "";
 
 		if (this.draggable) {
 			row.draggable = true;
@@ -357,7 +358,7 @@ export class List<StoreType extends Store = Store> extends Component {
 
 	private onMouseEvent(e: MouseEvent & { target: HTMLElement }, type: any) {
 		const row = this.findRowByEvent(e),
-			index = row ? parseInt(row.dataset.storeIndex!) : -1;
+			index = row ? this.getRowElements().indexOf(row) : -1;
 
 		if (index !== -1) {
 			this.fire(type, this, index, row, e);
@@ -366,7 +367,7 @@ export class List<StoreType extends Store = Store> extends Component {
 
 
 	private findRowByEvent(e: MouseEvent & { target: HTMLElement }) {
-		return e.target.closest("[data-store-index]") as HTMLElement;
+		return e.target.closest(".data") as HTMLElement;
 	}
 
 
@@ -385,7 +386,7 @@ export class List<StoreType extends Store = Store> extends Component {
 
 		dragData.row = row;
 		dragData.cmp = this;
-		dragData.storeIndex = parseInt(row.dataset.storeIndex!);
+		dragData.storeIndex = this.getRowElements().indexOf(row);
 		dragData.record = this.store.get(dragData.storeIndex);
 
 		// had to add this class because otherwise dragleave fires immediately on child nodes: https://stackoverflow.com/questions/7110353/html5-dragleave-fired-when-hovering-a-child-element
@@ -491,11 +492,12 @@ export class List<StoreType extends Store = Store> extends Component {
 		e.preventDefault();
 		e.stopPropagation();
 
-		const dropRow = this.findDropRow(e);
+		const dropRow = this.findDropRow(e),
+			dropIndex = this.getRowElements().indexOf(dropRow);
 
-		// this.clearOverClasses(dropRow);
+		this.clearOverClasses(dropRow);
 
-		this.fire("drop", this, e, dropRow, dropPos, dragData);
+		this.fire("drop", this, e, dropRow, dropIndex, dropPos, dragData);
 
 	}
 
