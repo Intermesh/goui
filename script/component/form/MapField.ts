@@ -28,6 +28,7 @@ export class MapField extends Field {
 	constructor(public buildField: FieldBuilder) {
 		super('div')
 	}
+	protected baseCls = "";
 
 	protected renderControl() {
 		// empty

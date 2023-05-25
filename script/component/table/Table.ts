@@ -160,7 +160,7 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 	 * Make the table fits its container in width by setting min-width: 100%
 	 * Defaults to true
 	 */
-	public fitComponent = true;
+	public fitParent = false;
 
 	/**
 	 * Show headers
@@ -244,7 +244,7 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 
 	protected renderBody() {
 
-		if (this.fitComponent) {
+		if (this.fitParent) {
 			this.el.style.minWidth = "100%";
 		}
 
