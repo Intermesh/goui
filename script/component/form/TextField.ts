@@ -9,7 +9,7 @@ import {createComponent} from "../Component.js";
 import {Config} from "../Observable";
 
 
-export type TextFieldType = ("text" | "password" | "email" | "url" | "tel" | "search");
+export type TextFieldType = ("text" | "password" | "email" | "url" | "tel" | "search" | "time" | "date" | "datetime-local");
 
 /**
  * TextField component

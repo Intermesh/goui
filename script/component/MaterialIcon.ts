@@ -132,6 +132,8 @@ export type MaterialIcon =
 	"business_center" |
 	"cached" |
 	"cake" |
+	"calendar_today" |
+	"calendar_month" |
 	"call" |
 	"call_end" |
 	"call_made" |

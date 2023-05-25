@@ -55,6 +55,9 @@ export class NumberField extends TextField {
 		if (this.max !== undefined) {
 			this._input!.attr('max', this.max);
 		}
+		if(this.decimals) {
+			this._input!.attr('step', '0.'.padEnd(this.decimals + 1, "0") + "1")
+		}
 		return this._input;
 	}
 }

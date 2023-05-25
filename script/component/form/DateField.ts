@@ -37,7 +37,7 @@ export class DateField extends TextField {
 		this.picker = datepicker({showWeekNbs: false});
 		this.buttons = [
 			this.pickerButton = btn({
-				icon: "expand_more",
+				icon: "calendar_today",
 				menuAlignTo: this,
 				menu:
 					menu({},
