@@ -44,9 +44,17 @@ ul.goui-tree {
 			label {
 				margin-left: dp(8);
 				cursor: pointer;
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+
+			i {
+				flex-shrink: 0;
 			}
 
 			.caret {
+				flex-shrink: 0;
 				width: dp(24);
 				height: dp(24);
 				&:before {

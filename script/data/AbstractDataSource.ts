@@ -99,7 +99,7 @@ export interface CommitResponse<EntityType> {
 	oldState: string
 }
 
-export type EntityID = string | number;
+export type EntityID = string;
 
 export type QueryFilter = Record<string, any>;// TODO
 
@@ -276,9 +276,13 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	 *
 	 * @param ids
 	 */
-	public async get(ids: EntityID[]): Promise<GetResponse<EntityType>> {
+	public async get(ids?: EntityID[]): Promise<GetResponse<EntityType>> {
 
 		const promises: Promise<EntityType | undefined>[] = [], order: Record<EntityID, number> = {};
+
+		if(ids == undefined) {
+			ids = (await this.query()).ids;
+		}
 
 		//first see if we have it in our data property
 		ids.forEach((id, index) => {
@@ -298,7 +302,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 
 		entities.forEach((e, index) => {
 			if (e === undefined) {
-				response.notFound!.push(ids[index]);
+				response.notFound!.push(ids![index]);
 			} else {
 				response.list.push(e);
 			}
@@ -703,7 +707,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	 *
 	 * @link https://jmap.io/spec-core.html#query
 	 */
-	public query(params: QueryParams): Promise<QueryResponse> {
+	public query(params: QueryParams = {}): Promise<QueryResponse> {
 		return this.internalQuery(params).then(r => {
 			return this.checkState(r.queryState, r);
 		});

@@ -123,12 +123,23 @@ export class List<StoreType extends Store = Store> extends Component {
 
 	private rowSelect?: RowSelect;
 
-
+	/**
+	 * Allow items to be dragged
+	 */
 	public draggable = false;
-	public dropBetween = true;
-	public dropOn = true;
+
+	/**
+	 * Allow to drop between items
+	 */
+	public dropBetween = false;
+
+	/**
+	 * Allow to drop on items
+	 */
+	public dropOn = false;
 
 	protected itemTag: keyof HTMLElementTagNameMap = 'li'
+	// protected fragment?: DocumentFragment;
 
 	/**
 	 * Row selection object
@@ -185,6 +196,7 @@ export class List<StoreType extends Store = Store> extends Component {
 		// this.renderEmptyState();
 		this.renderBody();
 		this.initStore();
+
 		return el;
 	}
 
@@ -197,36 +209,39 @@ export class List<StoreType extends Store = Store> extends Component {
 
 		const onLoadScroll = FunctionUtil.buffer(10, this.onScroll);
 
-		// Use unshift = true so that this listener executes first so that other load listeners execute when the list is
-		// rendered and can select rows.
+		// // Use unshift = true so that this listener executes first so that other load listeners execute when the list is
+		// // rendered and can select rows.
 		// this.store.on("load", (store, records, append) => {
 		// 	const isEmpty = (!append && records.length == 0);
 		//
 		// 	//this.el.hidden = isEmpty;
-		// 	this.emptyStateEl!.hidden = !isEmpty;
+		// 	//this.emptyStateEl!.hidden = !isEmpty;
 		//
 		// 	if (!append) {
 		// 		this.clearRows();
 		// 	}
 		// 	this.renderRows(records);
 		//
-		// 	if (this.loadOnScroll) {
-		// 		setTimeout(() => {
-		// 			this.onScroll();
-		// 		});
-		// 	}
-		//
 		// }, {unshift: true});
 
+
+		// handling remove and add per items allows a drag and drop action via store.remove and store.add
 		this.store.on("remove", (collection, item, index) => {
 
 			const rows = this.getRowElements();
 			rows[index].remove();
 		});
 
-		this.store.on("add", (collection, item, index) => {
+		this.store.on("add", async (collection, item, index) => {
 			const container = this.renderGroup(item)
-			container.append(this.renderRow(item, index));
+
+			if(index == collection.count() -1) {
+				container.append(this.renderRow(item, index));
+			} else
+			{
+				const before = container.children[index];
+				container.insertBefore(this.renderRow(item, index), before);
+			}
 
 			if (this.loadOnScroll) {
 				onLoadScroll();
@@ -303,21 +318,29 @@ export class List<StoreType extends Store = Store> extends Component {
 		}
 	}
 
-	protected renderRows(records: any[]) {
+	protected async renderRows(records: any[]) {
 
-		records.forEach((record, index) => {
-			const container = this.renderGroup(record),
-				row = this.renderRow(record, index);
-			if (this.rowSelection && this.rowSelection.selected.indexOf(index) > -1) {
+		// this.fragment = new DocumentFragment();
+
+		for(let i = 0, l = records.length; i < l; i++) {
+			const container = this.renderGroup(records[i]),
+				row = await this.renderRow(records[i], i);
+			if (this.rowSelection && this.rowSelection.selected.indexOf(i) > -1) {
 				row.cls("+selected");
 			}
 			container.append(row);
-		});
+		};
+
+		// this.el.append(this.fragment);
+
+		// this.fragment = undefined;
+
 
 		this.fire("renderrows", this, records);
 	}
 
-	protected renderGroup(record: any): HTMLElement {
+	protected renderGroup(record: any): HTMLElement|DocumentFragment {
+		// return this.fragment!;
 		return this.el;
 	}
 
@@ -380,7 +403,6 @@ export class List<StoreType extends Store = Store> extends Component {
 	}
 
 	protected onNodeDragStart(e: DragEvent) {
-
 		e.stopPropagation();
 		const row = e.target as HTMLDivElement;
 
@@ -438,9 +460,15 @@ export class List<StoreType extends Store = Store> extends Component {
 		dropRow.classList.remove("before");
 		dropRow.classList.remove("after");
 		dropRow.classList.remove("on");
+
+		dropPin.hidden = true;
 	}
 
 	protected onNodeDragOver(e: DragEvent) {
+
+		if(!this.dropOn && !this.dropBetween) {
+			return;
+		}
 
 		const dropRow = this.findDropRow(e);
 

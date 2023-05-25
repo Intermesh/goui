@@ -94,6 +94,10 @@ export class Store<RecordType = StoreRecord> extends Collection<RecordType> {
 		this.fire("load", this, records, append);
 	}
 
+	set data(records: RecordType[]) {
+		this.loadData(records);
+	}
+
 	/**
 	 * Reload the data from the source
 	 */

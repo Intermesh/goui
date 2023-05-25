@@ -528,7 +528,7 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 		if (!this.groupBy) {
 			if (!this.groupEl) {
 				this.groupEl = document.createElement('tbody');
-				this.el!.append(this.groupEl);
+				this.el.append(this.groupEl);
 			}
 			return this.groupEl;
 		}

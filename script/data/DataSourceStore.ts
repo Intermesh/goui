@@ -4,7 +4,7 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 import {Store, StoreEventMap} from "../data/Store.js";
-import {AbstractDataSource, BaseEntity, DefaultEntity, QueryParams} from "./AbstractDataSource.js";
+import {AbstractDataSource, BaseEntity, Changes, DefaultEntity, QueryParams} from "./AbstractDataSource.js";
 import {ObjectUtil} from "../util/index.js";
 import {Config, createComponent} from "../component/index.js";
 
@@ -36,6 +36,11 @@ export class DataSourceStore<EntityType extends BaseEntity = DefaultEntity, Stor
 	private loaded = false;
 
 	/**
+	 * Reload when the datasource changes
+	 */
+	public monitorChanges = true;
+
+	/**
 	 * Builds record from entity
 	 * @param entity
 	 */
@@ -44,12 +49,18 @@ export class DataSourceStore<EntityType extends BaseEntity = DefaultEntity, Stor
 	constructor(readonly dataSource: AbstractDataSource<EntityType>) {
 		super();
 
-		// very quick and dirty update on changes to the entity store.
-		this.dataSource.on('change', async () => {
-			if (this.loaded) {
-				void this.reload();
-			}
-		});
+		this.dataSource.on('change', this.onChange.bind(this));
+	}
+
+	/**
+	 * Reloads the store when the datasource changes
+	 *
+	 * @protected
+	 */
+	protected async onChange(DataSource:AbstractDataSource<EntityType>, changes: Changes<EntityType>) {
+		if (this.loaded && this.monitorChanges) {
+			void this.reload();
+		}
 	}
 
 
@@ -158,4 +169,4 @@ type DataSourceStoreConfig<EntityType extends BaseEntity = DefaultEntity, StoreR
  * @param config
  */
 export const datasourcestore =
-	<EntityType extends BaseEntity = DefaultEntity, StoreRecord = EntityType>(config: DataSourceStoreConfig<EntityType, StoreRecord>) => createComponent(new DataSourceStore<EntityType>(config.dataSource), config);
+	<EntityType extends BaseEntity = DefaultEntity, StoreRecord = EntityType>(config: DataSourceStoreConfig<EntityType, StoreRecord>) => createComponent(new DataSourceStore<EntityType, StoreRecord>(config.dataSource), config);

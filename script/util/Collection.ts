@@ -5,6 +5,7 @@
  */
 
 import {Observable, ObservableEventMap, ObservableListenerOpts} from "../component/Observable.js";
+import {ArrayUtil} from "./ArrayUtil";
 
 /**
  * @inheritDoc
@@ -201,7 +202,14 @@ export class Collection<CollectionItem> extends Observable implements Iterable<C
 	 * @param items
 	 */
 	public replace(...items: CollectionItem[]) {
-		return this.clear().add(...items);
+		//return this.clear().add(...items);
+
+		if(JSON.stringify(items) == JSON.stringify(this.items)) {
+			// no change
+			return;
+		} else{
+			this.clear().add(...items);
+		}
 	}
 
 	/**
@@ -229,6 +237,19 @@ export class Collection<CollectionItem> extends Observable implements Iterable<C
 	 */
 	public find(predicate: (value: CollectionItem, index: number, obj: CollectionItem[]) => unknown): CollectionItem | undefined {
 		return this.items.find(predicate) as CollectionItem;
+	}
+
+	/**
+	 * The filter() method creates a new array with all elements that pass the test implemented by the provided function.
+	 *
+	 * @param predicate find calls predicate once for each element of the array, in ascending
+	 * order, until it finds one where predicate returns true. If such an element is found, find
+	 * immediately returns that element value. Otherwise, find returns undefined.
+	 *
+	 * @returns CollectionItem | undefined
+	 */
+	public filter(predicate: (value: CollectionItem, index: number, obj: CollectionItem[]) => unknown): CollectionItem[] {
+		return this.items.filter(predicate) as CollectionItem[];
 	}
 
 	/**
