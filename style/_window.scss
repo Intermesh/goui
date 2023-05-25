@@ -16,6 +16,26 @@
 		border: $borderWidth solid rgba(30, 18, 70, 0.6);
 	}
 
+	.collapse-btn {
+		i:after {
+			content: "expand_more";
+		}
+	}
+
+	&.collapsed {
+		.collapse-btn {
+			i:after {
+				content: "expand_less";
+			}
+		}
+		>*:not(.header) {
+			display: none;
+		}
+
+		height: dp(74) !important;
+		min-height: 0;
+	}
+
 	&.maximized
 	{
 		top: 0 !important;
@@ -27,6 +47,10 @@
 		width: auto !important;
 		height: auto !important;
 		resize: none !important;
+
+		.collapse-btn {
+			@extend *, [disabled];
+		}
 	}
 
 	@media only screen and (max-width: $breakpointSmall) {

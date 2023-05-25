@@ -130,9 +130,9 @@ export class DraggableComponent extends Component {
 		this.on("render", () => {
 			// invoke draggable setter once
 			if (this._draggable) {
-				this.draggable = this._draggable;
+				this.toggleDraggable(this._draggable);
 			}
-		});
+		}, {once: true});
 	}
 
 	/**
@@ -141,6 +141,12 @@ export class DraggableComponent extends Component {
 	public set draggable(draggable: boolean) {
 		this._draggable = draggable;
 
+		if(this.rendered) {
+			this.toggleDraggable(draggable);
+		}
+	}
+
+	private toggleDraggable(draggable: boolean) {
 		const dragHandle = this.getDragHandle();
 
 		if (!dragHandle) {
@@ -149,12 +155,12 @@ export class DraggableComponent extends Component {
 
 		if (draggable) {
 			dragHandle.classList.add("goui-draghandle")
-			this.getDragHandle().addEventListener('click', this.onDragHandleClick);
-			this.getDragHandle().addEventListener('mousedown', this.onDragHandleMouseDown);
+			dragHandle.addEventListener('click', this.onDragHandleClick);
+			dragHandle.addEventListener('mousedown', this.onDragHandleMouseDown);
 		} else {
 			dragHandle.classList.remove("goui-draghandle")
-			this.getDragHandle().removeEventListener('click', this.onDragHandleClick);
-			this.getDragHandle().removeEventListener('mousedown', this.onDragHandleMouseDown);
+			dragHandle.removeEventListener('click', this.onDragHandleClick);
+			dragHandle.removeEventListener('mousedown', this.onDragHandleMouseDown);
 		}
 	}
 

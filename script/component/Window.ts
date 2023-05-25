@@ -89,6 +89,11 @@ export class Window extends DraggableComponent {
 	public closable = true
 
 	/**
+	 * Enable tool to collapse window
+	 */
+	public collapsible = false
+
+	/**
 	 * Make the window modal so the user can only interact with this window.
 	 */
 	public modal = false
@@ -153,7 +158,6 @@ export class Window extends DraggableComponent {
 	}
 
 	public getHeader() {
-
 		if (!this.header) {
 			this.header = tbar({
 					cls: "header"
@@ -171,6 +175,17 @@ export class Window extends DraggableComponent {
 				this.header.items.add(this.initMaximizeTool());
 			}
 
+
+			if (this.collapsible) {
+				this.header.items.add(btn({
+					cls: "collapse-btn",
+					icon: "", // set empty so 'collapsed class can set it class can set it
+					handler: () => {
+						this.collapsed = !this.collapsed;
+					}
+				}));
+			}
+
 			if (this.closable) {
 				this.header.items.add(btn({
 					icon: "close",
@@ -184,6 +199,14 @@ export class Window extends DraggableComponent {
 		this.header.parent = this;
 
 		return this.header;
+	}
+
+	public set collapsed(collapsed) {
+		this.el.classList.toggle("collapsed", collapsed);
+	}
+
+	public get collapsed() {
+		return this.el.classList.contains("collapsed");
 	}
 
 	protected internalRender() {
@@ -416,6 +439,8 @@ export class Window extends DraggableComponent {
 	 * Grow window to the maximum of the viewport
 	 */
 	public maximize() {
+
+		this.collapsed = false;
 		this.el.classList.add('maximized');
 
 		this.fire("maximize", this);

@@ -89,7 +89,7 @@ export class Button extends Component {
 
 	private _menu?: Menu;
 
-	private _icon?: MaterialIcon;
+	private _icon?: MaterialIcon | "";
 
 	private _text?: string;
 
@@ -269,10 +269,10 @@ export class Button extends Component {
 	/**
 	 * Set's the button icon and adds a "icon" css class
 	 */
-	set icon(icon: MaterialIcon | undefined) {
+	set icon(icon: MaterialIcon | "" | undefined) {
 		this._icon = icon;
 
-		if (this._icon) {
+		if (this._icon != undefined) {
 			this.el.classList.add("with-icon");
 		} else {
 			this.el.classList.remove("with-icon");

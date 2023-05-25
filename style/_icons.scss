@@ -30,7 +30,7 @@ $material-icons-font-path: '../resources/iconfont/';
 }
 
 .goui {
-	i.icon {
+	i.icon, i.icon:after {
 
 		@extend %icon;
 	}
