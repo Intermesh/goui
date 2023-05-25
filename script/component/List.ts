@@ -406,6 +406,9 @@ export class List<StoreType extends Store = Store> extends Component {
 		e.stopPropagation();
 		const row = e.target as HTMLDivElement;
 
+		//needed for iOS
+		e.dataTransfer!.setData('text/plain', 'goui');
+
 		dragData.row = row;
 		dragData.cmp = this;
 		dragData.storeIndex = this.getRowElements().indexOf(row);
