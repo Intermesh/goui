@@ -1,13 +1,14 @@
 import {List, ListEventMap, RowRenderer} from "./List";
-import {DataSourceStore, store, Store, StoreRecord} from "../data";
+import {store, Store, StoreRecord} from "../data";
 import {Component, createComponent} from "./Component";
 import {E} from "../util";
 import {Config, ObservableListenerOpts} from "./Observable";
 import {dragData} from "../DragData";
 import {MaterialIcon} from "./MaterialIcon";
+import {checkbox} from "./form";
 
 
-export const TreeRowRenderer: RowRenderer = (record, row, me, storeIndex) => {
+export const TreeRowRenderer: RowRenderer = (record, row, me:Tree, storeIndex) => {
 
 	const node = E("div").cls("node"),
 		caret = E("span").cls("caret"),
@@ -25,21 +26,60 @@ export const TreeRowRenderer: RowRenderer = (record, row, me, storeIndex) => {
 		row.cls("+" + record.cls);
 	}
 
-	node.append(caret, icon, label);
+	node.append(caret, icon);
+
+	if(record.check != undefined) {
+		const c = checkbox({
+			value: record.check,
+			listeners: {
+				change:(field, newValue, oldValue) => {
+					record.check = newValue
+
+					const top = me.findTopTree();
+					top.fire("checkchange",  top, this, record, storeIndex, newValue);
+				}
+			}
+		});
+		c.render(node);
+	}
+
+	node.append(label);
 
 	row.append(node);
 }
 
 type extractRecordType<Type> = Type extends Store<infer RecordType> ? RecordType : never
 
-export type TreeStoreBuilder<StoreType extends Store = Store> = (record?: extractRecordType<StoreType>) => StoreType;
-
-
 export interface TreeEventMap<Type> extends ListEventMap<Type> {
-
+	/**
+	 * Fires when a node expands
+	 *
+	 * @param tree The main tree
+	 * @param childrenTree The tree component that will load the children of the expanding ndoe
+	 * @param record The record of the expanding node
+	 * @param storeIndex The index of the record in the store
+	 */
 	expand: (tree:Type, childrenTree: Type, record:StoreRecord | undefined, storeIndex: number) => void;
+
+	/**
+	 * Fires when a node collapses
+	 *
+	 * @param tree The main tree
+	 * @param childrenTree The tree component that will load the children of the collapsing ndoe
+	 * @param record The record of the collapsing node
+	 * @param storeIndex The index of the record in the store
+	 */
 	collapse: (tree:Type, childrenTree: Type, record:StoreRecord, storeIndex: number) => void;
 
+	/**
+	 * Fires when a node collapses
+	 *
+	 * @param tree The main tree
+	 * @param childrenTree The tree component that will load the children of the collapsing ndoe
+	 * @param record The record of the collapsing node
+	 * @param storeIndex The index of the record in the store
+	 */
+	checkchange: (tree:Type, childrenTree: Type, record:StoreRecord, storeIndex: number, checked:boolean) => void;
 }
 
 export interface Tree extends List<Store<TreeRecord>> {
@@ -72,7 +112,12 @@ export type TreeRecord = {
 	/**
 	 * CSS class for the node
 	 */
-	cls?:string
+	cls?:string,
+
+	/**
+	 * If set a checkbox will render
+	 */
+	check?: boolean
 }
 
 export class Tree extends List<Store<TreeRecord>> {
@@ -83,7 +128,6 @@ export class Tree extends List<Store<TreeRecord>> {
 
 	private expandedIds:Record<string, boolean> = {};
 
-
 	private parentStoreIndex = -1;
 
 	constructor(readonly renderer: RowRenderer = TreeRowRenderer) {
@@ -93,7 +137,9 @@ export class Tree extends List<Store<TreeRecord>> {
 		this.baseCls = "goui goui-tree";
 
 		this.on("rowclick", (list, storeIndex, row, ev) => {
-			void this.expand(row);
+			if(list == this) {
+				void this.expand(row);
+			}
 		});
 
 		this.store.on("remove", (collection, item, index) => {
@@ -111,6 +157,13 @@ export class Tree extends List<Store<TreeRecord>> {
 
 	public set data(records:TreeRecord[]) {
 		this.store.loadData(records);
+	}
+
+	/**
+	 * The full hierarchical store data of the tree
+	 */
+	public get data(): TreeRecord[] {
+		return this.store.data;
 	}
 
 	/**
@@ -140,7 +193,7 @@ export class Tree extends List<Store<TreeRecord>> {
 	/**
 	 * Find the first menu in the tree of submenu's
 	 */
-	private findTopTree(): Tree {
+	public findTopTree(): Tree {
 
 		if (this.parent instanceof Tree) {
 			return this.parent.findTopTree();
@@ -182,6 +235,16 @@ export class Tree extends List<Store<TreeRecord>> {
 		if(record.children) {
 			sub.data = record.children;
 		}
+
+		// set the data on parent if store is loaded by an expand event.
+		// this way the data can be retrieved in full using the top tree's data get accessor. eg. tree.data
+		sub.store.on("load", (store1, records, append) => {
+			record.children = store1.data;
+		});
+
+		["rowclick", "rowdblclick", "rowcontextmenu", "rowmousedown"].forEach( (e) => {
+			this.relayEvent(sub, e);
+		})
 
 		this.subTrees[storeIndex] = sub;
 

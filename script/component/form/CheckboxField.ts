@@ -68,16 +68,23 @@ export class CheckboxField extends Field {
 		if (this.invalidMsg) {
 			this.applyInvalidMsg();
 		}
-		const lbl = E('span', this.label).cls('box-label');
 
-		if (this._cls) {
-			lbl.cls("+" + this._cls);
+
+		const control = E('div',
+			this.input
+		);
+
+
+		if(this.label) {
+			const lbl = E('span', this.label).cls('box-label');
+
+			if (this._cls) {
+				lbl.cls("+" + this._cls);
+			}
+			control.append(lbl);
 		}
 
-		return E('div',
-			this.input,
-			lbl
-		);
+		return control;
 	}
 
 	setInvalid(msg: string) {

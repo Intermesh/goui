@@ -98,6 +98,10 @@ export class Store<RecordType = StoreRecord> extends Collection<RecordType> {
 		this.loadData(records);
 	}
 
+	get data() {
+		return this.getArray();
+	}
+
 	/**
 	 * Reload the data from the source
 	 */

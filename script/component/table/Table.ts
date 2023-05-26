@@ -15,7 +15,6 @@ import {TableColumn} from "./TableColumns.js";
 import {List, ListEventMap} from "../List.js";
 import {Config, ObservableListenerOpts} from "../Observable";
 import {t} from "../../Translate";
-import HTML = Mocha.reporters.HTML;
 
 
 type GroupByRenderer = (groupBy: any, record: any, thEl: HTMLTableCellElement, table: Table) => string | Promise<string> | Component | Promise<Component>;

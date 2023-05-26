@@ -55,7 +55,7 @@ $formFieldBorderRadius: dp(10);
 		}
 		&:focus {
 			border-color: $colorPrimary;
-			box-shadow: 0 0 0 1px $colorPrimary;
+			//box-shadow: 0 0 0 1px $colorPrimary;
 		}
 		&[style]:checked:before {
 			color:inherit;
@@ -193,7 +193,7 @@ $formFieldBorderRadius: dp(10);
 }
 
 .goui-form-field {
-	width: 100%;
+//	width: 100%; messes up tree
 	align-self: start;
 	margin-bottom: dp(12);
 	margin-top: dp(4);
@@ -201,7 +201,7 @@ $formFieldBorderRadius: dp(10);
 
 .goui-form-field {
 	display: block;
-	border-radius: $formFieldBorderRadius;
+	//border-radius: $formFieldBorderRadius;
 	.wrap {
 		display: flex;
 		flex-flow: row nowrap;

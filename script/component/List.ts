@@ -63,6 +63,15 @@ export interface ListEventMap<Type> extends ComponentEventMap<Type> {
 	rowdblclick: (list: Type, storeIndex: number, row: HTMLElement, ev: MouseEvent) => void
 
 	/**
+	 * Fires when a row is right clicked
+	 *
+	 * @param list
+	 * @param storeIndex
+	 * @param ev
+	 */
+	rowcontextmenu: (list: Type, storeIndex: number, row: HTMLElement, ev: MouseEvent) => void
+
+	/**
 	 * Fires when records are rendered into rows.
 	 *
 	 * @param list
@@ -191,6 +200,8 @@ export class List<StoreType extends Store = Store> extends Component {
 			this.onMouseEvent(e, "rowdblclick");
 		}).on("click", (e) => {
 			this.onMouseEvent(e, "rowclick");
+		}).on("contextmenu", (e) => {
+			this.onMouseEvent(e, "rowcontextmenu");
 		});
 
 		// this.renderEmptyState();

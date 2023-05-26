@@ -5,7 +5,7 @@
  */
 
 import {FunctionUtil} from "../util/FunctionUtil.js";
-import {ComponentEventMap} from "./Component.js";
+import {Component, ComponentEventMap} from "./Component.js";
 
 type Func = (...args: any[]) => any;
 
@@ -171,6 +171,14 @@ export class Observable {
 		}
 
 		return true;
+	}
+
+	protected relayEvent(comp:Observable, type: any) {
+		//@ts-ignore
+		comp.on(type, (...args:any[]) =>{
+			//@ts-ignore
+			this.fire(type, ...args);
+		});
 	}
 }
 
