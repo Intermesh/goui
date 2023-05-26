@@ -201,7 +201,7 @@ export class AutocompleteField<TableType extends Table = Table> extends TextFiel
 		this.table.hidden = true;
 
 		//todo what if list goes off screen?
-		this.table.style.position = 'absolute';
+		this.table.style.position = 'fixed';
 
 		if (!this.table.height) {
 			this.table.height = 300;
