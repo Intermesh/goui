@@ -167,7 +167,7 @@ export class Button extends Component {
 			// Michael had problems with e.detail < 2 but we don't remember why. Discuss when we run into this.
 			if (this.handler && e.button == 0 && e.detail < 2) {
 
-				e.preventDefault(); // prevent submitting form
+				// e.preventDefault(); // prevent submitting form
 
 				this.handler.call(this, this, e);
 

@@ -37,8 +37,8 @@ body {
 .goui.hbox {
 	display: flex;
 	flex-direction: row;
-	max-width: none;
-	max-height: none;
+	//max-width: none;
+	//max-height: none;
 	gap: 0;
 	justify-content: flex-start;
 	flex-wrap: nowrap;
@@ -65,8 +65,8 @@ body {
 // Stack items vertically
 // For border layout use height's on east and west and add class "go-scroll" on center
 .goui.vbox {
-	max-width: none;
-	max-height: none;
+	//max-width: none;
+	//max-height: none;
 	gap: 0;
 	justify-content: flex-start;
 	display: flex;
