@@ -832,6 +832,17 @@ export class Component extends Observable {
 		}
 	}
 
+	/**
+	 * Set attributes of the DOM element
+	 *
+	 * @param attr
+	 */
+	set attr(attr:Record<string, string>) {
+		for(let name in attr) {
+			this.el.setAttribute(name, attr[name]);
+		}
+	}
+
 
 	/**
 	 * Mask the component to disable user interaction
@@ -899,6 +910,7 @@ export const mask = (config?: Config<Mask>) => createComponent(new Mask(), confi
 export const comp = (config?: Config<Component>, ...items: Component[]) => createComponent(new Component(config?.tagName), config, items);
 
 export const p = (config?: Config<Component> | string, ...items: Component[]) => createComponent(new Component("p"), typeof config == 'string' ? {html: config} : config, items);
+export const small = (config?: Config<Component> | string, ...items: Component[]) => createComponent(new Component("small"), typeof config == 'string' ? {html: config} : config, items);
 export const h1 = (config?: Config<Component> | string, ...items: Component[]) => createComponent(new Component("h1"), typeof config == 'string' ? {html: config} : config, items);
 export const h2 = (config?: Config<Component> | string, ...items: Component[]) => createComponent(new Component("h2"), typeof config == 'string' ? {html: config} : config, items);
 export const h3 = (config?: Config<Component> | string, ...items: Component[]) => createComponent(new Component("h3"), typeof config == 'string' ? {html: config} : config, items);
