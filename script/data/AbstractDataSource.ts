@@ -199,6 +199,8 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	private readonly delayedGet: (...args: any[]) => void;
 	private _browserStore?: BrowserStore;
 
+	public persist = true;
+
 	/**
 	 * Extra parameters to send to the Foo/set
 	 */
@@ -230,6 +232,10 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 
 		console.warn("set state " + this.id + ": " + state);
 
+		if(!this.persist) {
+			return;
+		}
+
 		if (state === undefined) {
 			this.data = {};
 			return this.browserStore.clear();
@@ -250,15 +256,15 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 		return this._browserStore;
 	}
 
-	constructor(public readonly id: string) {
+	protected constructor(public readonly id: string) {
 		super();
 
 		this.delayedCommit = FunctionUtil.buffer(0, () => {
-			this.commit();
+			void this.commit();
 		});
 
 		this.delayedGet = FunctionUtil.buffer(0, () => {
-			this.doGet();
+			void this.doGet();
 		})
 	}
 
@@ -320,6 +326,10 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 		console.debug("Adding " + this.id + ": " + data.id);
 		this.data[data.id] = data;
 
+		if(!this.persist) {
+			return Promise.resolve(data);
+		}
+
 		return this.browserStore.setItem(data.id, data).then(() => data);
 	}
 
@@ -327,6 +337,10 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 
 		console.debug("Removing " + this.id + ": " + id);
 		delete this.data[id];
+
+		if(!this.persist) {
+			return Promise.resolve(id);
+		}
 
 		return this.browserStore.removeItem(id).then(() => id);
 	}
@@ -375,7 +389,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 		for (let id in this.getIds) {
 			if (this.data[id]) {
 				this.returnGet(id);
-			} else {
+			} else if(this.persist) {
 				const data = await this.browserStore.getItem(id);
 				if (data) {
 					this.data[id] = data;
