@@ -17,3 +17,4 @@ export * from './SelectField.js';
 export * from './TextField.js';
 export * from './TextareaField.js';
 export * from './CheckboxGroup.js';
+export * from './ChipsField.js';

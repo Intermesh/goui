@@ -13,6 +13,7 @@ import {FunctionUtil} from "../../util/FunctionUtil.js";
 import {FieldEventMap} from "./Field.js";
 import {btn} from "../Button.js";
 import {Component, createComponent} from "../Component.js";
+import {List} from "../List";
 
 export interface AutocompleteEventMap<Type> extends FieldEventMap<Type> {
 	/**
@@ -23,7 +24,7 @@ export interface AutocompleteEventMap<Type> extends FieldEventMap<Type> {
 	autocomplete: (field: Type, input: string) => any
 }
 
-export interface AutocompleteField<TableType extends Table = Table> {
+export interface AutocompleteField<ListType extends List = List> {
 	on<K extends keyof AutocompleteEventMap<this>>(eventName: K, listener: Partial<AutocompleteEventMap<this>>[K], options?: ObservableListenerOpts): void
 
 	fire<K extends keyof AutocompleteEventMap<this>>(eventName: K, ...args: Parameters<AutocompleteEventMap<Component>[K]>): boolean
@@ -32,12 +33,12 @@ export interface AutocompleteField<TableType extends Table = Table> {
 /**
  * Autocomplete field
  */
-export class AutocompleteField<TableType extends Table = Table> extends TextField {
+export class AutocompleteField<ListType extends List = List> extends TextField {
 
 	/**
 	 * The property of the selected {@see StoreRecord} to display in the input
 	 */
-	public displayProperty: string;
+	public displayProperty?: string;
 
 	/**
 	 * The property to use as value. If null then the whole store record is used.
@@ -49,10 +50,12 @@ export class AutocompleteField<TableType extends Table = Table> extends TextFiel
 	 * @param table The table to use for suggestions
 	 * @param buffer Buffer typing in the input in ms
 	 */
-	constructor(readonly table: TableType, private buffer = 300) {
+	constructor(readonly table: ListType, private buffer = 300) {
 		super();
 
-		this.displayProperty = this.table.columns[0].property;
+		if(this.table instanceof Table) {
+			this.displayProperty = this.table.columns[0].property;
+		}
 
 		this.autocomplete = "off";
 		this.baseCls += " autocomplete";
@@ -133,8 +136,17 @@ export class AutocompleteField<TableType extends Table = Table> extends TextFiel
 
 		if (this.valueProperty) {
 			const record = this.table.store.find((record, index, obj) => record[this.valueProperty!] == v);
-			return record ? record[this.displayProperty] : v;
+			if(!record) {
+				return v;
+			}
+			if(!this.displayProperty) {
+				this.displayProperty = Object.keys(record)[0];
+			}
+			return record[this.displayProperty];
 		} else {
+			if(!this.displayProperty) {
+				this.displayProperty = Object.keys(v)[0];
+			}
 			return v[this.displayProperty];
 		}
 	}
@@ -258,7 +270,7 @@ export class AutocompleteField<TableType extends Table = Table> extends TextFiel
 }
 
 /**
- * Shorthand function to create {@see TextAreaField}
+ * Shorthand function to create an {@see AutocompleteField}
  *
  * @param config
  */

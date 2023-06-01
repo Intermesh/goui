@@ -394,7 +394,7 @@ export class Component extends Observable {
 			if (!this.parent) {
 				throw new Error("No parent set for " + (typeof this));
 			}
-			parentEl = this.parent.el;
+			parentEl = this.parent.itemContainerEl;
 			insertBefore = this.getInsertBefore();
 		}
 

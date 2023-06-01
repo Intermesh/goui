@@ -710,3 +710,55 @@ div.color-dot {
 	height: dp(24);
 	flex: 1;
 }
+
+
+.chips {
+
+	&.has-chips {
+		.wrap {
+			.editor {
+				@extend %float-label;
+			}
+		}
+	}
+
+	.editor {
+		@extend %input;
+		width: auto;
+		flex: 1;
+		min-width: 0;
+		cursor: text;
+		white-space: nowrap;
+		overflow: hidden;
+		max-width: 100%;
+		float:left;
+		display:inline-block;
+	}
+	.wrap {
+		&:focus-within {
+			.editor {
+				@extend %float-label;
+			}
+		}
+		display: block;
+		overflow: hidden;
+
+		.chip {
+			float: left;
+			border-radius: dp(20);
+			background-color: $colorBackgroundDarker;
+			padding: dp(3) dp(16);
+			margin: dp(8);
+			overflow: hidden;
+			max-width: dp(120);
+			min-width: dp(60);
+			text-overflow: ellipsis;
+			white-space: nowrap;
+
+			&.selected {
+				background-color: $colorSelectedRow;
+				color: white;
+			}
+		}
+	}
+}
