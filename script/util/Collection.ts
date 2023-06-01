@@ -202,14 +202,7 @@ export class Collection<CollectionItem> extends Observable implements Iterable<C
 	 * @param items
 	 */
 	public replace(...items: CollectionItem[]) {
-		//return this.clear().add(...items);
-
-		if(JSON.stringify(items) == JSON.stringify(this.items)) {
-			// no change
-			return;
-		} else{
-			this.clear().add(...items);
-		}
+		this.clear().add(...items);
 	}
 
 	/**
