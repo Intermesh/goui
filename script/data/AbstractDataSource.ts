@@ -199,6 +199,9 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	private readonly delayedGet: (...args: any[]) => void;
 	private _browserStore?: BrowserStore;
 
+	/**
+	 * Store data in the browser storage so it will persist across sessions
+	 */
 	public persist = true;
 
 	/**
@@ -212,7 +215,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	 * @protected
 	 */
 	public async getState() {
-		if (!this._state) {
+		if (!this._state && this.persist) {
 			this._state = await this.browserStore.getItem("__state__");
 		}
 
@@ -249,6 +252,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	 * @private
 	 */
 	private get browserStore() {
+		debugger;
 		if (!this._browserStore) {
 			this._browserStore = new BrowserStore("ds-" + this.id);
 		}
@@ -256,7 +260,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 		return this._browserStore;
 	}
 
-	protected constructor(public readonly id: string) {
+	constructor(public readonly id: string) {
 		super();
 
 		this.delayedCommit = FunctionUtil.buffer(0, () => {
@@ -397,6 +401,8 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 				} else {
 					unknownIds.push(id);
 				}
+			} else {
+				unknownIds.push(id);
 			}
 		}
 
@@ -738,8 +744,10 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 		let state = await this.getState()
 		if (!state) {
 			// We are empty!
-			this.data = {};
-			await this.browserStore.clear();
+			if(this.persist) {
+				this.data = {};
+				await this.browserStore.clear();
+			}
 			await this.setState(serverState!);
 			state = serverState;
 		}
