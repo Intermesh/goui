@@ -94,9 +94,9 @@ export class Router extends Observable {
 	 * });
 	 * ```
 	 *
-	 * @param re /^notes/(.*)$/
-	 * @param handler Is called with the arguments matched in the route regexp. May return Promise. When the
-	 *  promise is resolved it will continue matching sub routes.
+	 * @param re eg. /^notes/(.*)$/
+	 * @param handler Is called with the arguments matched in the route regexp. May return Promise so the router start()
+	 *  promise will resolve when this promise is resolved.
 	 */
 	add(re: RegExp | RouterMethod, handler?: RouterMethod) {
 
