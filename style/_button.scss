@@ -50,9 +50,10 @@
 		}
 	}
 
-	&:active {
-		filter: brightness(150%);
-	}
+	//&:active {
+	// This had a wierd effect with menu. When holding mouse button it dissappeared
+	//	filter: brightness(150%);
+	//}
 
 	&.primary {
 		color: $colorSecondary;

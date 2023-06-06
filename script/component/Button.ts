@@ -23,7 +23,7 @@ export interface ButtonEventMap<Type> extends ComponentEventMap<Type> {
 	 * @param item
 	 * @param index
 	 */
-	beforeshowmenu: (button: Type, menu: Menu, ev: MouseEvent) => false | void
+	beforeshowmenu: (button: Type, menu: Menu) => false | void
 
 	/**
 	 * Fires when the button menu is shown
@@ -32,7 +32,7 @@ export interface ButtonEventMap<Type> extends ComponentEventMap<Type> {
 	 * @param menu
 	 * @param ev
 	 */
-	showmenu: (button: Type, menu: Menu, ev: MouseEvent) => false | void,
+	showmenu: (button: Type, menu: Menu) => false | void,
 
 	/**
 	 * Fires when the button is clicked.
@@ -186,7 +186,7 @@ export class Button extends Component {
 
 	private onMenuButtonClick(ev: MouseEvent) {
 		if (this._menu!.hidden) {
-			this.showMenu(this.el, ev);
+			this.showMenu();
 		} else {
 			this._menu!.hide();
 		}
@@ -195,7 +195,7 @@ export class Button extends Component {
 	private onMenuMouseEnter(ev: MouseEvent) {
 		if (Menu.openedMenu && Menu.openedMenu != this._menu && Menu.openedMenu.parentButton!.parent === this._menu!.parentButton!.parent) {
 
-			this.showMenu(this.el, ev);
+			this.showMenu();
 		}
 	}
 
@@ -203,7 +203,7 @@ export class Button extends Component {
 	/**
 	 * Align menu to this component when it's shown. If not set it will align to the button.
 	 */
-	public menuAlignTo: Component | undefined;
+	public menuAlignTo: HTMLElement | undefined;
 
 	/**
 	 * Add menu to this button
@@ -223,15 +223,19 @@ export class Button extends Component {
 		return this._menu;
 	}
 
-	private showMenu(el: HTMLButtonElement, ev: MouseEvent) {
+	public showMenu() {
 
-		// noinspection PointlessBooleanExpressionJS
-		if (this.fire("beforeshowmenu", this, this._menu!, ev) === false) {
+		if(!this._menu?.hidden) {
 			return;
 		}
-		this._menu!.showFor(this.menuAlignTo || this);
 
-		this.fire("showmenu", this, this._menu!, ev);
+		// noinspection PointlessBooleanExpressionJS
+		if (this.fire("beforeshowmenu", this, this._menu!) === false) {
+			return;
+		}
+		this._menu!.showFor(this.menuAlignTo ?? this.el);
+
+		this.fire("showmenu", this, this._menu!);
 	}
 
 	protected internalRemove() {

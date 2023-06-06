@@ -188,7 +188,14 @@ export class Observable {
 type Writeable<T> = { -readonly [P in keyof T]: T[P] };
 
 /**
- * Generic Config option that allows all public properties as options
+ * Generic Config option that allows all public properties as options.
+ * It excludes all function types. If you need to pass functions as config options you will need to add them like this:
+ *
+ * ```
+ * type ChipsConfig = Config<ChipsField, FieldEventMap<ChipsField>> &
+ *   // Add the function properties as they are filtered out
+ * 	Partial<Pick<ChipsField, "textInputToValue" | "chipRenderer">>
+ * ```
  */
 export type Config<Cmp extends Observable, EventMap extends ObservableEventMap<Observable> = ComponentEventMap<Cmp>, Required extends keyof Cmp = never> =
 

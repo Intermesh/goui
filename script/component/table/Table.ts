@@ -20,11 +20,9 @@ import {t} from "../../Translate";
 type GroupByRenderer = (groupBy: any, record: any, thEl: HTMLTableCellElement, table: Table) => string | Promise<string> | Component | Promise<Component>;
 
 
-export interface Table<StoreType extends Store = Store> {
+export interface Table<StoreType extends Store = Store> extends List<StoreType>  {
 	on<K extends keyof ListEventMap<this>>(eventName: K, listener: Partial<ListEventMap<this>>[K], options?: ObservableListenerOpts): void;
-
 	fire<K extends keyof ListEventMap<this>>(eventName: K, ...args: Parameters<ListEventMap<any>[K]>): boolean
-
 }
 
 /**

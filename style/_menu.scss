@@ -116,6 +116,7 @@ menu.goui-dropdown {
 		transition: 0s;
 		visibility: visible;
 		opacity: 1;
+		pointer-events: all;
 	}
 
 
@@ -132,7 +133,7 @@ button.goui-button.with-text.has-menu {
 		@extend %icon;
 		margin-right: 0;
 		content: "expand_more";
-		.menu & {
+		button.goui-button menu.goui & {
 			content: "chevron_right";
 		}
 	}

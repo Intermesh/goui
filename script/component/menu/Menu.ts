@@ -117,7 +117,6 @@ export class Menu extends Toolbar {
 			el.classList.add("goui-fade-out");
 		}
 
-
 		this.el.addEventListener('keydown', (ev) => {
 			switch ((ev as KeyboardEvent).key) {
 
@@ -170,26 +169,31 @@ export class Menu extends Toolbar {
 	// 	}
 	// }
 
+	public alignEl?: HTMLElement;
+
 
 	/**
 	 * Show aligned to the given component.
 	 *
-	 * It will align the top left of the menu top the bottom left of the component.
+	 * It will align the top left of the menu top the bottom left of the component. It will also be at least as wide as
+	 * the given component by setting the min-width style.
 	 *
 	 * @todo avoid going out of the viewport
 	 * @param cmp
 	 */
-	showFor(cmp: Component) {
-		const rect = cmp.el.getBoundingClientRect();
+	showFor(alignEl: HTMLElement) {
+		const rect = alignEl.getBoundingClientRect();
 
 		//must be rendered and visible to get width below
 		if (!this.rendered) {
-			this.hidden = true;
-			root.items.add(this);
+			this.renderMenu();
 		}
 
 		//show first for positioning correctly below
 		this.show();
+
+		// make the menu at least as wide as the component it aligns too.
+		this.el.style.minWidth = rect.width + "px";
 
 		this.showAt({
 			x: this.expandLeft ? rect.right - this.width : rect.x,
@@ -198,6 +202,23 @@ export class Menu extends Toolbar {
 
 		//put back fade out class removed in mouseenter listener above
 		this.el.classList.add("goui-fade-out");
+	}
+
+	private renderMenu() {
+		this.hidden = true;
+
+		// if this menu belongs to a button we set the parent to the button even though it's rendered to the
+		// root element of goui. This way we can easily find the parents from menu's and it's children (pickers)
+		// using {@see Component.findAncestor()};
+		if(this.parentButton) {
+			this.on("added", comp => {
+				comp.parent =this.parentButton
+			}, {once: true})
+		}
+
+		root.items.add(this);
+
+
 	}
 
 	/**
@@ -209,9 +230,12 @@ export class Menu extends Toolbar {
 		this.el.style.left = coords.x + "px";
 		this.el.style.top = coords.y + "px";
 
-		if (!this.parent) {
-			this.hidden = true;
-			root.items.add(this);
+		if (!this.rendered) {
+			this.renderMenu();
+		}
+
+		if(Menu.openedMenu == this) {
+			return;
 		}
 
 		this.show();

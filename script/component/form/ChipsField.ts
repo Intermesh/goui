@@ -11,9 +11,21 @@ export class ChipsField extends Field {
 	private editor?: Component;
 	private chipsContainer?: HTMLDivElement;
 
+	/**
+	 * Function that transforms the user text input to a chip
+	 *
+	 * @param text
+	 */
+	public textInputToValue = async (text: string) :Promise<any> => {
+		return text;
+	}
 
-	public chipRenderer = (data: any) => {
-		return data;
+	/**
+	 * Renders a value to the chip component
+	 * @param value
+	 */
+	public chipRenderer = async (chip:Component, value: any) => {
+		chip.text = value;
 	}
 
 	protected createControl(): HTMLElement | undefined {
@@ -45,6 +57,10 @@ export class ChipsField extends Field {
 			}
 		})
 
+		this.editor!.el.addEventListener("focus", (ev) => {
+			this.clearSelection();
+		})
+
 		this.editor.render(this.wrap!);
 
 		this.items.add(this.editor);
@@ -56,16 +72,18 @@ export class ChipsField extends Field {
 
 		this.clearInvalid();
 
-		console.warn(ev.key);
 		switch (ev.key) {
 			case "Enter":
 				ev.preventDefault();
-				this.items.insert(-1, comp({
-						cls: "chip",
-						html: this.chipRenderer(this.editor!.text)
+				const chip =  this.createChip();
+				this.textInputToValue(this.editor!.text).then((value) => {
+					return this.chipRenderer(chip, value).then(() => {
+						this.items.insert(-1, chip);
 					})
-				);
+				});
+
 				this.editor!.text = "";
+
 			break;
 
 			case "ArrowLeft":
@@ -82,11 +100,29 @@ export class ChipsField extends Field {
 		}
 	}
 
+	private createChip() {
+		const chip = comp({
+			cls: "chip"
+		});
+		chip.el.addEventListener("click" , () => {
+			this.select(this.items.indexOf(chip));
+			this.wrap!.focus();
+		})
+		return chip;
+	}
+
 	protected get itemContainerEl(): HTMLElement {
 		return this.wrap!;
 	}
 
 	private selectedIndex = -1;
+
+	private clearSelection() {
+		if(this.selectedIndex > -1) {
+			this.items.get(this.selectedIndex).el.classList.remove("selected");
+			this.selectedIndex = -1;
+		}
+	}
 
 	private select(index:number) {
 
@@ -94,9 +130,7 @@ export class ChipsField extends Field {
 			return;
 		}
 
-		if(this.selectedIndex > -1) {
-			this.items.get(this.selectedIndex).el.classList.remove("selected");
-		}
+		this.clearSelection();
 
 		if(index > (this.items.count() - 2)) {
 			this.editor!.focus();
@@ -109,8 +143,8 @@ export class ChipsField extends Field {
 	}
 	private onElKeyDown(ev: KeyboardEvent) {
 		switch (ev.key) {
+			case "Delete":
 			case "Backspace":
-
 				this.items.get(this.selectedIndex).remove();
 				this.select(this.selectedIndex);
 				break;
@@ -124,12 +158,39 @@ export class ChipsField extends Field {
 				break;
 		}
 	}
+
+	protected internalSetValue(v: any[], old: any) {
+		if(this.rendered) {
+			this.renderValue();
+		}
+	}
+
+	protected internalRender(): HTMLElement {
+		const el = super.internalRender();
+		this.renderValue();
+		return el;
+	}
+
+	private renderValue() {
+		this.value.forEach((v:any) => {
+			const chip =  this.createChip();
+
+			this.chipRenderer(chip, v).then(() => {
+				this.items.insert(-1, chip);
+			});
+		});
+	}
 }
 
-
+type ChipsConfig = Config<ChipsField, FieldEventMap<ChipsField>> &
+	// Add the function properties as they are filtered out
+	Partial<Pick<ChipsField, "textInputToValue" | "chipRenderer">>
 /**
  * Shorthand function to create {@see ChipsField}
  *
  * @param config
  */
-export const chips = (config: Config<ChipsField, FieldEventMap<ChipsField>>) => createComponent(new ChipsField(), config);
+export const chips = (config?: ChipsConfig) => createComponent(new ChipsField(), config);
+
+
+

@@ -29,7 +29,7 @@ export class ColorField extends Field {
 		this.buttons = [
 			this.pickerButton = btn({
 				icon: "expand_more",
-				menuAlignTo: this,
+				menuAlignTo: this.el,
 				menu:
 					menu({},
 						this.picker

@@ -99,6 +99,7 @@
 	&.goui-fade-in, &.goui-fade-out {
 		opacity: 0;
 		visibility: hidden;
+		pointer-events: none;
 	}
 
 	&.goui-fade-in {

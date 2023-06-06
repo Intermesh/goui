@@ -141,18 +141,25 @@ export abstract class Field extends Component {
 		return !this.hidden;
 	}
 
-	protected renderControl() {
+	get el(): HTMLElement {
+		const el = super.el;
 		// wrap required to place buttons after element
-		this.el.append(this.wrap = E("div").cls('+wrap'));
+		if(!this.wrap) {
+			el.append(this.wrap = E("div").cls('+wrap'));
+		}
+		return el;
+	}
+
+	protected renderControl() {
 
 		const control = this.createControl();
 		if (control) {
-			this.wrap.append(control.cls('+control'));
+			this.wrap!.append(control.cls('+control'));
 		}
 		// label must follow input so we can make the transform transition with pure css with input::focus & input::placeholder-shown + label
 		const label = this.createLabel();
 		if (label) {
-			this.wrap.append(label);
+			this.wrap!.append(label);
 		}
 
 		if (this._buttons) {
@@ -277,9 +284,15 @@ export abstract class Field extends Component {
 			this.resetValue = v;
 		}
 
+		this.internalSetValue(v, old);
+
 		this.oldValue = v;
 
 		this.fire("setvalue", this, this._value, old);
+	}
+
+	protected internalSetValue(v:any, old:any) {
+
 	}
 
 	/**

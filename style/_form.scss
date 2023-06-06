@@ -735,6 +735,7 @@ div.color-dot {
 		display:inline-block;
 	}
 	.wrap {
+		cursor: text;
 		&:focus-within {
 			.editor {
 				@extend %float-label;
@@ -747,8 +748,8 @@ div.color-dot {
 			float: left;
 			border-radius: dp(20);
 			background-color: $colorBackgroundDarker;
-			padding: dp(3) dp(16);
-			margin: dp(8);
+			padding: dp(3) dp(12);
+			margin: dp(8) dp(4);
 			overflow: hidden;
 			max-width: dp(120);
 			min-width: dp(60);

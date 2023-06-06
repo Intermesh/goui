@@ -1,0 +1,65 @@
+import {Table, TableColumn} from "../table";
+import {Store, storeRecordType} from "../../data";
+import {createComponent} from "../Component";
+import {ListEventMap} from "../List";
+import {Config, ObservableListenerOpts} from "../Observable";
+
+export type tablePickerStoreType<ListType> = ListType extends TablePicker<infer StoreType> ? StoreType : never;
+
+
+export interface TablePickerEventMap<Type extends TablePicker<Store>> extends ListEventMap<Type> {
+	select: (tablePicker: Type, record: storeRecordType<tablePickerStoreType<Type>>) => false | void
+}
+
+export interface TablePicker<StoreType extends Store = Store> extends Table<StoreType> {
+	on<K extends keyof TablePickerEventMap<this>>(eventName: K, listener: Partial<TablePickerEventMap<this>>[K], options?: ObservableListenerOpts): void;
+	fire<K extends keyof TablePickerEventMap<this>>(eventName: K, ...args: Parameters<TablePickerEventMap<any>[K]>): boolean
+}
+
+
+export class TablePicker<StoreType extends Store> extends Table<StoreType> {
+	constructor(readonly store: StoreType, public columns: TableColumn[]) {
+		super(store, columns);
+
+		this.rowSelectionConfig = {multiSelect: false};
+		this.fitParent = true;
+
+
+		// set value on click and enter
+		this.on("rowmousedown", (table, rowIndex, ev) => {
+			this.fire("select", this, this.store.get(rowIndex));
+		});
+
+		// stop clicks on menu from hiding menu
+		this.el.addEventListener("mousedown", (ev) => {
+			ev.stopPropagation();
+		});
+
+		this.el.addEventListener('keydown', (ev) => {
+			switch (ev.key) {
+
+				case "Enter":
+					const selected = this.rowSelection!.selected;
+					if (selected.length) {
+						this.fire("select", this, this.store.get(selected[0]));
+					}
+					ev.preventDefault();
+					break;
+			}
+		})
+	}
+
+
+
+
+
+}
+
+type TablePickerConfig<StoreType extends Store = Store> = Omit<Config<TablePicker<StoreType>, TablePickerEventMap<TablePicker<StoreType>>, "store" | "columns">, "rowSelection">
+
+/**
+ * Shorthand function to create {@see Table}
+ *
+ * @param config
+ */
+export const tablepicker = <StoreType extends Store = Store>(config: TablePickerConfig<StoreType>) => createComponent(new TablePicker<StoreType>(config.store, config.columns), config);

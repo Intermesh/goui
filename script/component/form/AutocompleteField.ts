@@ -5,15 +5,19 @@
  */
 
 import {TextField} from "./TextField.js";
-import {Config, ObservableListenerOpts} from "../Observable.js";
+import {Config, ObservableEventMap, ObservableListenerOpts} from "../Observable.js";
 
 import {Table} from "../table/Table.js";
 import {root} from "../Root.js";
 import {FunctionUtil} from "../../util/FunctionUtil.js";
 import {FieldEventMap} from "./Field.js";
-import {btn} from "../Button.js";
+import {btn, Button} from "../Button.js";
 import {Component, createComponent} from "../Component.js";
 import {List} from "../List";
+import {TablePicker, tablePickerStoreType} from "../picker";
+import {Menu, menu} from "../menu";
+import {storeRecordType} from "../../data";
+import {ChipsField} from "./ChipsField";
 
 export interface AutocompleteEventMap<Type> extends FieldEventMap<Type> {
 	/**
@@ -24,7 +28,7 @@ export interface AutocompleteEventMap<Type> extends FieldEventMap<Type> {
 	autocomplete: (field: Type, input: string) => any
 }
 
-export interface AutocompleteField<ListType extends List = List> {
+export interface AutocompleteField<T extends TablePicker> {
 	on<K extends keyof AutocompleteEventMap<this>>(eventName: K, listener: Partial<AutocompleteEventMap<this>>[K], options?: ObservableListenerOpts): void
 
 	fire<K extends keyof AutocompleteEventMap<this>>(eventName: K, ...args: Parameters<AutocompleteEventMap<Component>[K]>): boolean
@@ -33,69 +37,119 @@ export interface AutocompleteField<ListType extends List = List> {
 /**
  * Autocomplete field
  */
-export class AutocompleteField<ListType extends List = List> extends TextField {
+export class AutocompleteField<T extends TablePicker> extends TextField {
 
-	/**
-	 * The property of the selected {@see StoreRecord} to display in the input
-	 */
-	public displayProperty?: string;
 
-	/**
-	 * The property to use as value. If null then the whole store record is used.
-	 */
-	public valueProperty?: string;
+	private readonly menu: Menu;
+	private readonly menuButton: Button;
 
 	/**
 	 *
 	 * @param table The table to use for suggestions
 	 * @param buffer Buffer typing in the input in ms
 	 */
-	constructor(readonly table: ListType, private buffer = 300) {
+	constructor(readonly table: T, private buffer = 300) {
 		super();
-
-		if(this.table instanceof Table) {
-			this.displayProperty = this.table.columns[0].property;
-		}
 
 		this.autocomplete = "off";
 		this.baseCls += " autocomplete";
 
+		table.on("select", (tablePicker, record) => {
 
+			this.value = this.pickerRecordToValue(this, record);
+			tablePicker.findAncestorByType(Menu)!.hide();
+			this.focus();
+		});
+
+		this.menu = menu({
+				height: 300,
+				cls: "scroll",
+				listeners: {
+					hide: (menu) => {
+						if(menu.rendered) {
+							const textfield = menu.findAncestorByType(TextField)!;
+							textfield.focus();
+						}
+					}
+				}
+
+			},
+			this.table
+		);
+
+		this.menuButton = btn({
+			icon: "expand_more",
+			type: "button",
+			handler: (button, ev) => {
+				this.fire("autocomplete", this, "");
+			},
+			menu: this.menu
+		});
 	}
+
+	/**
+	 * Method that transforms a record from the TablePicker store to a value for this field.
+	 * This is not necessarily a text value. In conjunction with {@see valueToTextField()} this
+	 * could also be an ID of an object for example.
+	 *
+	 * @param field
+	 * @param record
+	 */
+	public pickerRecordToValue = (field: this, record:storeRecordType<tablePickerStoreType<T>>) : any => {
+		return record.id;
+	}
+
+	/**
+	 * This method transforms the value in to a text representation for the input field
+	 *
+	 * @param field
+	 * @param value
+	 */
+	public async valueToTextField(field: this, value:any) {
+		return "";
+	}
+
+	protected setInputValue(v: string) {
+
+		this.valueToTextField(this, v).then(v => {
+
+			if(this._input) {
+				super.setInputValue(v);
+			} else {
+				this.on("render", () => {
+					super.setInputValue(v);
+				}, {once: true})
+			}
+		})
+	}
+
 
 	protected internalRender(): HTMLElement {
 
 		this.buttons = this.buttons || [];
-		this.buttons.push(
-			btn({
-				icon: "expand_more",
-				type: "button",
-				handler: () => {
-					this.fire("autocomplete", this, "");
-					this.table.show();
-					this.focus();
-				}
-			})
-		);
+		this.buttons.push(this.menuButton);
 
 		const el = super.internalRender();
 
-		this._input!.addEventListener('input', FunctionUtil.buffer(this.buffer, this.onInput.bind(this)))
+		this.menuButton.menuAlignTo = this.wrap;
 
-		this.setupTable();
+		this._input!.addEventListener('input', FunctionUtil.buffer(this.buffer, this.onInput.bind(this)))
 
 		this._input!.addEventListener('keydown', (ev) => {
 
 			switch ((ev as KeyboardEvent).key) {
 				case 'ArrowDown':
-					this.table.show();
+					ev.preventDefault();
+					this.menuButton.showMenu();
 					this.table.focus();
 					break;
 
 				case 'Escape':
-					if (!this.table.hidden) {
-						this.table.hide();
+					if (!this.menu.hidden) {
+						this.menu.hide();
+						ev.preventDefault();
 						ev.stopPropagation();
+						this.focus();
 					}
 					break;
 			}
@@ -104,174 +158,22 @@ export class AutocompleteField<ListType extends List = List> extends TextField {
 		return el;
 	}
 
-
-	protected internalRemove() {
-		this.table.remove();
-		return super.internalRemove();
-	}
-
 	private onInput(ev: KeyboardEvent) {
-		this.table.show();
+		this.menuButton.showMenu();
 		this.fire("autocomplete", this, this._input!.value);
 	}
 
-	protected setInputValue(v: string) {
-		if (this._input) {
-			this._input.value = this.findDisplayValue(v);
-		}
-	}
-
-	set value(v: any) {
-		super.value = v;
-	}
-
-	get value(): any {
-		return this._value;
-	}
-
-	private findDisplayValue(v: any | string | undefined) {
-		if (!v) {
-			return "";
-		}
-
-		if (this.valueProperty) {
-			const record = this.table.store.find((record, index, obj) => record[this.valueProperty!] == v);
-			if(!record) {
-				return v;
-			}
-			if(!this.displayProperty) {
-				this.displayProperty = Object.keys(record)[0];
-			}
-			return record[this.displayProperty];
-		} else {
-			if(!this.displayProperty) {
-				this.displayProperty = Object.keys(v)[0];
-			}
-			return v[this.displayProperty];
-		}
-	}
-
-	private onTableShow() {
-		this.el.classList.add("expanded");
-
-		const rect = this.wrap!.getBoundingClientRect();
-
-		this.table.el.style.left = rect.x + "px";
-		this.table.el.style.top = (rect.bottom - 2) + "px";
-		this.table.width = rect.width;
-		if (!this.table.el.style.zIndex) {
-			this.table.el.style.zIndex = (this.computeZIndex() + 1).toString();
-		}
-
-		//must be rendered and visible to get width below
-		if (!this.table.rendered) {
-			root.items.add(this.table);
-		}
-
-		this.selectValueInTable();
-
-		//hide menu when clicked elsewhere
-		window.addEventListener("mousedown", (ev) => {
-			this.table.hide();
-		}, {once: true});
-	}
-
-
-	private selectValueInTable() {
-		if (this.value) {
-			//Try to select record
-			if (this.table.store.loading) {
-				this.table.store.on("load", (store, records, append) => {
-					const index = this.findStoreIndexForValue();
-					console.warn("Selected index", index);
-					this.table.rowSelection!.selected = [index];
-				}, {once: true});
-			} else {
-				const index = this.findStoreIndexForValue();
-				this.table.rowSelection!.selected = [index];
-			}
-		}
-	}
-
-	private findStoreIndexForValue() {
-		if (this.valueProperty) {
-			return this.table.store.findIndex((record) => record[this.valueProperty!] == this.value);
-		} else {
-			return this.table.store.findIndex(this.value);
-		}
-	}
-
-	private onTableHide() {
-		this.el.cls("-expanded");
-		this.focus();
-	}
-
-	private setupTable() {
-
-		//setup for expanding under input
-		this.table.cls = "autocomplete-suggestions";
-		this.table.hidden = true;
-
-		//todo what if list goes off screen?
-		this.table.style.position = 'fixed';
-
-		if (!this.table.height) {
-			this.table.height = 300;
-		}
-
-		this.table.rowSelectionConfig = {multiSelect: false};
-
-		this.table.parent = this;
-
-		this.table.on("show", () => {
-			this.onTableShow();
-		});
-
-		this.table.on("hide", () => {
-			this.onTableHide();
-		});
-
-		// set value on click and enter
-		this.table.on("rowmousedown", (table, rowIndex, ev) => {
-			this.setRecordAsValue(this.table.store.get(rowIndex));
-			this.table.hide();
-		});
-
-		// stop clicks on menu from hiding menu
-		this.table.el.addEventListener("mousedown", (ev) => {
-			ev.stopPropagation();
-		});
-
-		this.table.el.addEventListener('keydown', (ev) => {
-			switch (ev.key) {
-
-				case "Enter":
-					const selected = this.table.rowSelection!.selected;
-					if (selected.length) {
-						this.setRecordAsValue(this.table.store.get(selected[0]));
-					}
-
-					this.table.hide();
-					ev.preventDefault();
-					break;
-
-				case 'Escape':
-					this.table.hide();
-					ev.preventDefault();
-					break;
-			}
-		})
-	}
-
-	private setRecordAsValue(r: any) {
-		this.value = this.valueProperty ? r[this.valueProperty] : r;
-		this.fireChange(true);
-	}
 }
+
+type AutoCompleteConfig<T extends TablePicker, Map extends ObservableEventMap<any>, Required extends keyof AutocompleteField<T>> = Config<AutocompleteField<T>, Map, Required> &
+// Add the function properties as they are filtered out
+	Partial<Pick<AutocompleteField<T>, "pickerRecordToValue" | "valueToTextField">>;
+
+
 
 /**
  * Shorthand function to create an {@see AutocompleteField}
  *
  * @param config
  */
-export const autocomplete = (config: Config<AutocompleteField, AutocompleteEventMap<AutocompleteField>, "table">) => createComponent(new AutocompleteField(config.table), config);
+export const autocomplete = <T extends TablePicker> (config: AutoCompleteConfig<T, AutocompleteEventMap<AutocompleteField<T>>, "table">) => createComponent(new AutocompleteField(config.table), config);

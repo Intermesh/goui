@@ -80,6 +80,7 @@ export class Collection<CollectionItem> extends Observable implements Iterable<C
 			this.items.push(item);
 
 			this.fire("add", this, item, index);
+			this.fire("datachanged", this);
 		});
 
 		return index;

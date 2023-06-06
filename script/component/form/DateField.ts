@@ -38,7 +38,7 @@ export class DateField extends TextField {
 		this.buttons = [
 			this.pickerButton = btn({
 				icon: "calendar_today",
-				menuAlignTo: this,
+				menuAlignTo: this.el,
 				menu:
 					menu({},
 						this.picker

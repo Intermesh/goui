@@ -9,6 +9,9 @@ import {Config, Observable, ObservableEventMap, ObservableListenerOpts,} from ".
 import {State} from "../State.js";
 import {Collection} from "../util/Collection.js";
 
+/**
+ * A component identifier by id, itemId, Component instance or custom function
+ */
 export type FindComponentPredicate = string | Component | ((comp: Component) => boolean | void);
 
 
@@ -91,7 +94,7 @@ export interface ComponentEventMap<Type> extends ObservableEventMap<Type> {
 	focus: (comp: Type, o?: FocusOptions) => void
 
 	/**
-	 * Fires when this component is added to a parent
+	 * Fires when this component is added to a parent but before rendering
 	 *
 	 * @param me
 	 * @param index the index in the parents' items
@@ -198,6 +201,7 @@ export class Component extends Observable {
 
 			item.parent = this;
 
+			// fires before render! Menu uses this to modify item.parent
 			item.fire("added", item, index);
 
 			if (this.rendered) {
@@ -751,7 +755,7 @@ export class Component extends Observable {
 	 * Find the item by element ID, itemId property, Component instance or custom function
 	 */
 	public findItemIndex(predicate: FindComponentPredicate): number {
-		let fn = this.getFindPredicate(predicate);
+		let fn = this.createFindPredicateFunction(predicate);
 		return this.items.findIndex(fn);
 	}
 
@@ -762,7 +766,7 @@ export class Component extends Observable {
 	 *
 	 */
 	public findItem(predicate: FindComponentPredicate): Component | undefined {
-		let fn = this.getFindPredicate(predicate);
+		let fn = this.createFindPredicateFunction(predicate);
 		return this.items.find(fn);
 	}
 
@@ -784,7 +788,7 @@ export class Component extends Observable {
 		return this;
 	}
 
-	private getFindPredicate(predicate: FindComponentPredicate): (comp: Component) => boolean | void {
+	private createFindPredicateFunction(predicate: FindComponentPredicate): (comp: Component) => boolean | void {
 		if (predicate instanceof Function) {
 			return predicate;
 		} else {
@@ -801,7 +805,7 @@ export class Component extends Observable {
 	 *
 	 */
 	public findChild(predicate: FindComponentPredicate): Component | undefined {
-		let fn = this.getFindPredicate(predicate);
+		let fn = this.createFindPredicateFunction(predicate);
 
 		let child;
 		this.cascade((item: any) => {
