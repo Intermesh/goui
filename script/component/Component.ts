@@ -432,8 +432,8 @@ export class Component extends Observable {
 		let refItem: Node | undefined = undefined;
 		//find nearest rendered item
 		for (let i = index + 1, l = this.parent!.items.count(); i < l; i++) {
-			if (this.parent!.items.get(i).rendered) {
-				refItem = this.parent!.items.get(i).el;
+			if (this.parent!.items.get(i)!.rendered) {
+				refItem = this.parent!.items.get(i)!.el;
 				break;
 			}
 		}

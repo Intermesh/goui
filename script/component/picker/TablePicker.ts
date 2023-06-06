@@ -27,7 +27,7 @@ export class TablePicker<StoreType extends Store> extends Table<StoreType> {
 
 		// set value on click and enter
 		this.on("rowmousedown", (table, rowIndex, ev) => {
-			this.fire("select", this, this.store.get(rowIndex));
+			this.fire("select", this, this.store.get(rowIndex)!);
 		});
 
 		// stop clicks on menu from hiding menu
@@ -41,7 +41,7 @@ export class TablePicker<StoreType extends Store> extends Table<StoreType> {
 				case "Enter":
 					const selected = this.rowSelection!.selected;
 					if (selected.length) {
-						this.fire("select", this, this.store.get(selected[0]));
+						this.fire("select", this, this.store.get(selected[0])!);
 					}
 					ev.preventDefault();
 					break;

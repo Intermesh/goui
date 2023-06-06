@@ -119,7 +119,7 @@ export class ChipsField extends Field {
 
 	private clearSelection() {
 		if(this.selectedIndex > -1) {
-			this.items.get(this.selectedIndex).el.classList.remove("selected");
+			this.items.get(this.selectedIndex)!.el.classList.remove("selected");
 			this.selectedIndex = -1;
 		}
 	}
@@ -138,14 +138,14 @@ export class ChipsField extends Field {
 		}
 
 		this.selectedIndex = index;
-		this.items.get(this.selectedIndex).el.classList.add("selected");
+		this.items.get(this.selectedIndex)!.el.classList.add("selected");
 
 	}
 	private onElKeyDown(ev: KeyboardEvent) {
 		switch (ev.key) {
 			case "Delete":
 			case "Backspace":
-				this.items.get(this.selectedIndex).remove();
+				this.items.get(this.selectedIndex)!.remove();
 				this.select(this.selectedIndex);
 				break;
 

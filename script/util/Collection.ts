@@ -117,7 +117,7 @@ export class Collection<CollectionItem> extends Observable implements Iterable<C
 	 * Get an item at the given index
 	 * @param index
 	 */
-	public get(index: number): CollectionItem {
+	public get(index: number): CollectionItem | undefined {
 		return this.items[index];
 	}
 
@@ -165,6 +165,9 @@ export class Collection<CollectionItem> extends Observable implements Iterable<C
 	public removeAt(index: number) {
 
 		const item = this.get(index);
+		if(!item) {
+			return false;
+		}
 
 		if (!this.fire("beforeremove", this, item, index)) {
 			return false;

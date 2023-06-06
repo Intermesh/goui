@@ -6,7 +6,7 @@
 
 import {comp, Component} from "./Component.js";
 import {Button} from "./Button.js";
-import type {Menu} from "./menu/index.js";
+import type {Menu} from "./menu/Menu.js";
 import {Config} from "./Observable";
 
 
@@ -53,7 +53,6 @@ export class Toolbar extends Component {
 
 	private focusedItemIndex = -1;
 
-
 	/**
 	 * Find the first menu in the tree of submenu's
 	 */
@@ -80,9 +79,17 @@ export class Toolbar extends Component {
 
 	private setupKeyboardNav() {
 
+		this.items.on("add", (collection, item, index) => {
+
+			item.el.addEventListener("click", () => {
+				this.focusedItemIndex = index;
+			})
+
+		})
+
 		this.on("focus", () => {
 			if (this.focusedItemIndex > -1) {
-				this.items.get(this.focusedItemIndex).focus();
+				this.items.get(this.focusedItemIndex)!.focus();
 			}
 		});
 
@@ -91,6 +98,7 @@ export class Toolbar extends Component {
 		})
 
 		this.el.addEventListener('keydown', (ev) => {
+
 
 			switch ((ev as KeyboardEvent).key) {
 				case 'ArrowRight':

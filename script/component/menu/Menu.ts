@@ -265,6 +265,10 @@ export class Menu extends Toolbar {
 		return this.removeOnClose ? this.remove() : this.hide();
 	}
 
+	focus(o?: FocusOptions) {
+		this.items.get(0)?.focus(o);
+	}
+
 }
 
 /**
