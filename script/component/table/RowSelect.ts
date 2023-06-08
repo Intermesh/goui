@@ -62,6 +62,10 @@ export class RowSelect extends Observable {
 
 	private _selected: number[] = [];
 
+	/**
+	 * Last selected index used for multi selection with shift
+	 * @private
+	 */
 	private lastIndex = -1;
 	private shiftStartIndex?: number;
 
@@ -106,6 +110,8 @@ export class RowSelect extends Observable {
 
 	/**
 	 * Get selected indexes
+	 *
+	 * Note that this is a copy and can't be edited directly. You have to set the selected property with a changed array.
 	 */
 	public get selected() {
 		return [...this._selected];
@@ -141,8 +147,38 @@ export class RowSelect extends Observable {
 		}
 
 		this.selected = selection;
+	}
+
+	public add(index:number) {
+		if(this._selected.indexOf(index) > -1) {
+			return;
+		}
+
+		this._selected.push(index);
+
+		this.fire('rowselect', this, index);
+		this.fire('selectionchange', this);
+	}
 
 
+	/**
+	 * Remove an index from the selection
+	 *
+	 * @param index
+	 * @param silent Don't fire events
+	 */
+	public remove(index:number, silent = false) {
+		const selectedIndex = this._selected.indexOf(index);
+		if(selectedIndex == -1) {
+			return;
+		}
+
+		this._selected.splice(selectedIndex, 1);
+
+		if(!silent) {
+			this.fire('rowdeselect', this, index);
+			this.fire('selectionchange', this);
+		}
 	}
 
 
@@ -213,8 +249,6 @@ export class RowSelect extends Observable {
 			index = this.lastIndex - 1
 		}
 
-		console.warn("rowselectkeydown", index);
-
 		if (e.shiftKey && this.multiSelect) {
 
 			const selected = this.selected;
@@ -233,6 +267,7 @@ export class RowSelect extends Observable {
 			change = this.setSelected(selected, true);
 		} else {
 			change = this.setSelected([index], true);
+			this.list.focusRow(index);
 		}
 
 		if (change && !this.hasKeyUpListener) {

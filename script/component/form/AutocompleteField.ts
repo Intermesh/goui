@@ -45,16 +45,16 @@ export class AutocompleteField<T extends TablePicker> extends TextField {
 
 	/**
 	 *
-	 * @param table The table to use for suggestions
+	 * @param picker The table to use for suggestions
 	 * @param buffer Buffer typing in the input in ms
 	 */
-	constructor(readonly table: T, private buffer = 300) {
+	constructor(readonly picker: T, private buffer = 300) {
 		super();
 
 		this.autocomplete = "off";
 		this.baseCls += " autocomplete";
 
-		table.on("select", (tablePicker, record) => {
+		picker.on("select", (tablePicker, record) => {
 
 			this.value = this.pickerRecordToValue(this, record);
 			tablePicker.findAncestorByType(Menu)!.hide();
@@ -74,7 +74,7 @@ export class AutocompleteField<T extends TablePicker> extends TextField {
 				}
 
 			},
-			this.table
+			this.picker
 		);
 
 		this.menuButton = btn({
@@ -138,10 +138,18 @@ export class AutocompleteField<T extends TablePicker> extends TextField {
 		this._input!.addEventListener('keydown', (ev) => {
 
 			switch ((ev as KeyboardEvent).key) {
+
+				case 'Enter':
+					if(!this.menu.hidden) {
+						ev.preventDefault();
+						this.picker.onSelect();
+					}
+					break;
+
 				case 'ArrowDown':
 					ev.preventDefault();
 					this.menuButton.showMenu();
-					this.table.focus();
+					this.picker.focus();
 					break;
 
 				case 'Escape':
@@ -176,4 +184,4 @@ type AutoCompleteConfig<T extends TablePicker, Map extends ObservableEventMap<an
  *
  * @param config
  */
-export const autocomplete = <T extends TablePicker> (config: AutoCompleteConfig<T, AutocompleteEventMap<AutocompleteField<T>>, "table">) => createComponent(new AutocompleteField(config.table), config);
+export const autocomplete = <T extends TablePicker> (config: AutoCompleteConfig<T, AutocompleteEventMap<AutocompleteField<T>>, "picker">) => createComponent(new AutocompleteField(config.picker), config);

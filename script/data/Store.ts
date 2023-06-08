@@ -89,7 +89,6 @@ export class Store<RecordType = StoreRecord> extends Collection<RecordType> {
 	 * @param append
 	 */
 	public loadData(records: RecordType[], append = true) {
-
 		append ? this.add(...records) : this.replace(...records);
 		this.fire("load", this, records, append);
 	}

@@ -98,7 +98,7 @@ export class Observable {
 		const unbindkey = listener!;
 
 		if (options) {
-			if (options.buffer) {
+			if (options.buffer !== undefined) {
 				listener = FunctionUtil.buffer(options.buffer, listener!) as never;
 			}
 

@@ -26,9 +26,18 @@ export class TablePicker<StoreType extends Store> extends Table<StoreType> {
 
 
 		// set value on click and enter
-		this.on("rowmousedown", (table, rowIndex, ev) => {
-			this.fire("select", this, this.store.get(rowIndex)!);
+		this.on("rowclick", (table, rowIndex, row, ev) => {
+			this.onSelect();
 		});
+
+		this.on("hide", () => {
+			this.rowSelection!.clear();
+		});
+
+		//datachanged fires for each row. With buffer = 0 only fires once at load
+		this.store.on("datachanged", () => {
+			this.rowSelection!.selected = [0];
+		}, {buffer: 0})
 
 		// stop clicks on menu from hiding menu
 		this.el.addEventListener("mousedown", (ev) => {
@@ -39,14 +48,21 @@ export class TablePicker<StoreType extends Store> extends Table<StoreType> {
 			switch (ev.key) {
 
 				case "Enter":
-					const selected = this.rowSelection!.selected;
-					if (selected.length) {
-						this.fire("select", this, this.store.get(selected[0])!);
-					}
 					ev.preventDefault();
+					this.onSelect();
 					break;
 			}
 		})
+
+
+	}
+
+	public onSelect() {
+		const selected = this.rowSelection!.selected;
+		if (selected.length) {
+			this.fire("select", this, this.store.get(selected[0])!);
+		}
+
 	}
 
 

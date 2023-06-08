@@ -8,7 +8,7 @@ import {E} from "../../util/Element.js";
 export class ChipsField extends Field {
 
 	protected baseCls = 'goui-form-field chips';
-	private editor?: Component;
+	private _editor?: Component;
 	private chipsContainer?: HTMLDivElement;
 
 	/**
@@ -28,6 +28,10 @@ export class ChipsField extends Field {
 		chip.text = value;
 	}
 
+	public get editor() : Component {
+		return this._editor!;
+	}
+
 	protected createControl(): HTMLElement | undefined {
 
 		this.items.on("datachanged", collection => {
@@ -35,14 +39,14 @@ export class ChipsField extends Field {
 		})
 
 
-		this.editor = comp({
+		this._editor = comp({
 			attr: {
 				contentEditable: "true"
 			},
 			cls: "editor"
 		})
 
-		this.editor.el.addEventListener("keydown", (ev) => {
+		this._editor.el.addEventListener("keydown", (ev) => {
 			this.onEditorKeyDown(ev);
 		});
 
@@ -53,17 +57,17 @@ export class ChipsField extends Field {
 
 		this.wrap!.addEventListener("focus", (ev) => {
 			if(this.selectedIndex == -1) {
-				this.editor!.focus();
+				this._editor!.focus();
 			}
 		})
 
-		this.editor!.el.addEventListener("focus", (ev) => {
+		this._editor!.el.addEventListener("focus", (ev) => {
 			this.clearSelection();
 		})
 
-		this.editor.render(this.wrap!);
+		this._editor.render(this.wrap!);
 
-		this.items.add(this.editor);
+		this.items.add(this._editor);
 
 		return undefined;
 	}
@@ -76,20 +80,20 @@ export class ChipsField extends Field {
 			case "Enter":
 				ev.preventDefault();
 				const chip =  this.createChip();
-				this.textInputToValue(this.editor!.text).then((value) => {
+				this.textInputToValue(this._editor!.text).then((value) => {
 					return this.chipRenderer(chip, value).then(() => {
 						this.items.insert(-1, chip);
 					})
 				});
 
-				this.editor!.text = "";
+				this._editor!.text = "";
 
 			break;
 
 			case "ArrowLeft":
 			case "Backspace":
 				ev.stopPropagation();
-				if(this.editor!.html == "") {
+				if(this._editor!.html == "") {
 					ev.preventDefault();
 
 					this.select(this.items.count() - 2);
@@ -133,7 +137,7 @@ export class ChipsField extends Field {
 		this.clearSelection();
 
 		if(index > (this.items.count() - 2)) {
-			this.editor!.focus();
+			this._editor!.focus();
 			return;
 		}
 
@@ -146,6 +150,7 @@ export class ChipsField extends Field {
 			case "Delete":
 			case "Backspace":
 				this.items.get(this.selectedIndex)!.remove();
+				this.value = this.value.splice(this.selectedIndex, 1);
 				this.select(this.selectedIndex);
 				break;
 
@@ -161,6 +166,10 @@ export class ChipsField extends Field {
 
 	protected internalSetValue(v: any[], old: any) {
 		if(this.rendered) {
+			//remove all chips except the editor (last item).
+			for(let i = 0; i < this.items.count() -1; i++) {
+				this.items.removeAt(i);
+			}
 			this.renderValue();
 		}
 	}
@@ -179,6 +188,10 @@ export class ChipsField extends Field {
 				this.items.insert(-1, chip);
 			});
 		});
+	}
+
+	focus(o?: FocusOptions) {
+		this.editor.focus(o);
 	}
 }
 

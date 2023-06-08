@@ -5,7 +5,7 @@
  */
 
 import {comp, Component, ComponentEventMap, createComponent} from "./Component.js";
-import {Store} from "../data/Store.js";
+import {Store, StoreRecord} from "../data/Store.js";
 import {t} from "../Translate.js";
 import {E} from "../util/Element.js";
 import {rowselect, RowSelect, RowSelectConfig} from "./table/RowSelect.js";
@@ -220,44 +220,37 @@ export class List<StoreType extends Store = Store> extends Component {
 
 		const onLoadScroll = FunctionUtil.buffer(10, this.onScroll);
 
-		// // Use unshift = true so that this listener executes first so that other load listeners execute when the list is
-		// // rendered and can select rows.
-		// this.store.on("load", (store, records, append) => {
-		// 	const isEmpty = (!append && records.length == 0);
-		//
-		// 	//this.el.hidden = isEmpty;
-		// 	//this.emptyStateEl!.hidden = !isEmpty;
-		//
-		// 	if (!append) {
-		// 		this.clearRows();
-		// 	}
-		// 	this.renderRows(records);
-		//
-		// }, {unshift: true});
-
-
 		// handling remove and add per items allows a drag and drop action via store.remove and store.add
 		this.store.on("remove", (collection, item, index) => {
-
 			const rows = this.getRowElements();
-			rows[index].remove();
+			rows[index]?.remove();
+
+			if(this.rowSelection) {
+				this.rowSelection.remove(index, true);
+			}
 		});
 
-		this.store.on("add", async (collection, item, index) => {
-			const container = this.renderGroup(item)
-
-			if(index == collection.count() -1) {
-				container.append(this.renderRow(item, index));
-			} else
-			{
-				const before = container.children[index];
-				container.insertBefore(this.renderRow(item, index), before);
-			}
+		this.store.on("add", (collection, item, index) => {
+			this.onRecordAdd(collection, item, index);
 
 			if (this.loadOnScroll) {
 				onLoadScroll();
 			}
 		});
+
+	}
+
+	protected onRecordAdd(collection:StoreType, item:StoreRecord, index:number) {
+
+		const container = this.renderGroup(item)
+
+		if(index == collection.count() -1) {
+			container.append(this.renderRow(item, index));
+		} else
+		{
+			const before = container.children[index];
+			container.insertBefore(this.renderRow(item, index), before);
+		}
 
 
 	}
@@ -315,7 +308,9 @@ export class List<StoreType extends Store = Store> extends Component {
 					return;
 				}
 				tr.classList.add('selected');
-				tr.focus();
+
+				// focus so it scrolls in view
+				//tr.focus();
 			});
 
 			this.rowSelect.on('rowdeselect', (rowSelect, storeIndex) => {
@@ -329,23 +324,23 @@ export class List<StoreType extends Store = Store> extends Component {
 		}
 	}
 
-	protected async renderRows(records: any[]) {
+	public focusRow(index:number) {
+		const tr = this.getRowElements()[index];
+		if(tr) {
+			tr.focus();
+		}
+	}
 
-		// this.fragment = new DocumentFragment();
+	protected renderRows(records: any[]) {
 
 		for(let i = 0, l = records.length; i < l; i++) {
 			const container = this.renderGroup(records[i]),
-				row = await this.renderRow(records[i], i);
+				row = this.renderRow(records[i], i);
 			if (this.rowSelection && this.rowSelection.selected.indexOf(i) > -1) {
 				row.cls("+selected");
 			}
 			container.append(row);
-		};
-
-		// this.el.append(this.fragment);
-
-		// this.fragment = undefined;
-
+		}
 
 		this.fire("renderrows", this, records);
 	}
@@ -391,6 +386,10 @@ export class List<StoreType extends Store = Store> extends Component {
 	}
 
 	private onMouseEvent(e: MouseEvent & { target: HTMLElement }, type: any) {
+
+		e.stopPropagation();
+		e.preventDefault();
+
 		const row = this.findRowByEvent(e),
 			index = row ? this.getRowElements().indexOf(row) : -1;
 

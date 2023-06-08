@@ -40,6 +40,19 @@ export interface CollectionEventMap<Type, CollectionItem> extends ObservableEven
 	 */
 	beforeremove: (collection: Type, item: CollectionItem, index: number) => void | false
 
+	/**
+	 * Fires when a row is removed or added.
+	 * On a store load this fires lots of times. You can use buffer = 0 to do an action once after load and on add and remove
+	 * of a single row:
+	 *
+	 * ```
+	 * this.store.on("datachanged", () => {
+	 * 	  this.rowSelection!.selected = [0];
+	 * }, {buffer: 0})
+	 * ```
+	 *
+	 * @param collection
+	 */
 	datachanged: (collection: Type) => void
 }
 

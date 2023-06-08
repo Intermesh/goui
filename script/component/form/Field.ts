@@ -80,7 +80,7 @@ export interface Field extends Component {
 export abstract class Field extends Component {
 	private _buttons?: Button[];
 	private toolbar?: Toolbar;
-	protected wrap?: HTMLDivElement;
+	private _wrap?: HTMLDivElement;
 
 	constructor(tagName: keyof HTMLElementTagNameMap = "label") {
 		super(tagName);
@@ -143,11 +143,23 @@ export abstract class Field extends Component {
 
 	get el(): HTMLElement {
 		const el = super.el;
-		// wrap required to place buttons after element
-		if(!this.wrap) {
-			el.append(this.wrap = E("div").cls('+wrap'));
-		}
+
+		// if(!this.wrap) {
+		// 	el.append(this.wrap = E("div").cls('+wrap'));
+		// }
 		return el;
+	}
+
+	/**
+	 * A wrapper DIV element that contains input and toolbar for input buttons like an expand button for a drop down
+	 */
+	get wrap() {
+		// wrap required to place buttons after element
+		if(!this._wrap) {
+			this.el.append(this._wrap = E("div").cls('+wrap'));
+		}
+
+		return this._wrap;
 	}
 
 	protected renderControl() {
