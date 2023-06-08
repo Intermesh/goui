@@ -90,15 +90,12 @@ export class Menu extends Toolbar {
 		this.orientation = "vertical";
 	}
 
+	public renderTo? = root.el;
+
 	/**
 	 * Remove menu when closed
 	 */
 	public removeOnClose = true;
-
-	/**
-	 * The button this menu belongs to
-	 */
-	public parentButton: Button | undefined;
 
 	/**
 	 * Is true when any menu is visible
@@ -112,7 +109,8 @@ export class Menu extends Toolbar {
 			el.classList.add("expand-left");
 		}
 
-		if (this.parentButton) {
+		if (this.isDropdown()) {
+
 			el.classList.add("goui-dropdown");
 			el.classList.add("goui-fade-out");
 		}
@@ -129,6 +127,10 @@ export class Menu extends Toolbar {
 		});
 
 		return el;
+	}
+
+	public isDropdown() {
+		return this.parent instanceof Button;
 	}
 
 
@@ -155,6 +157,10 @@ export class Menu extends Toolbar {
 		const li = document.createElement("li");
 
 		item.render(li);
+
+		if(item instanceof Button && item.menu) {
+			item.menu!.render(li);
+		}
 
 		return li;
 	}
@@ -184,9 +190,12 @@ export class Menu extends Toolbar {
 	showFor(alignEl: HTMLElement) {
 		const rect = alignEl.getBoundingClientRect();
 
-		//must be rendered and visible to get width below
-		if (!this.rendered) {
-			this.renderMenu();
+		if(!this.parent) {
+			root.items.add(this);
+		}
+
+		if(!this.rendered) {
+			this.render();
 		}
 
 		//show first for positioning correctly below
@@ -204,22 +213,6 @@ export class Menu extends Toolbar {
 		this.el.classList.add("goui-fade-out");
 	}
 
-	private renderMenu() {
-		this.hidden = true;
-
-		// if this menu belongs to a button we set the parent to the button even though it's rendered to the
-		// root element of goui. This way we can easily find the parents from menu's and it's children (pickers)
-		// using {@see Component.findAncestor()};
-		if(this.parentButton) {
-			this.on("added", comp => {
-				comp.parent =this.parentButton
-			}, {once: true})
-		}
-
-		root.items.add(this);
-
-
-	}
 
 	/**
 	 * Show menu at coordinates on the page
@@ -230,8 +223,12 @@ export class Menu extends Toolbar {
 		this.el.style.left = coords.x + "px";
 		this.el.style.top = coords.y + "px";
 
-		if (!this.rendered) {
-			this.renderMenu();
+		if(!this.parent) {
+			root.items.add(this);
+		}
+
+		if(!this.rendered) {
+			this.render();
 		}
 
 		if(Menu.openedMenu == this) {
@@ -251,11 +248,6 @@ export class Menu extends Toolbar {
 		window.addEventListener("mousedown", (ev) => {
 			this.close();
 		}, {once: true});
-
-		// stop clicks on menu from hiding menu
-		this.el.addEventListener("mousedown", (ev) => {
-			ev.stopPropagation();
-		});
 	}
 
 	public close() {

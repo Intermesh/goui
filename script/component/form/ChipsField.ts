@@ -5,6 +5,8 @@ import {comp, Component, createComponent} from "../Component";
 import {Config} from "../Observable";
 import {AutocompleteEventMap, AutocompleteField} from "./AutocompleteField";
 import {E} from "../../util/Element.js";
+import {btn} from "../Button";
+import {t} from "../../Translate";
 export class ChipsField extends Field {
 
 	protected baseCls = 'goui-form-field chips';
@@ -25,7 +27,7 @@ export class ChipsField extends Field {
 	 * @param value
 	 */
 	public chipRenderer = async (chip:Component, value: any) => {
-		chip.text = value;
+		chip.items.get(0)!.text = value;
 	}
 
 	public get editor() : Component {
@@ -40,11 +42,14 @@ export class ChipsField extends Field {
 
 
 		this._editor = comp({
+			id: Component.uniqueID(),
 			attr: {
 				contentEditable: "true"
 			},
 			cls: "editor"
-		})
+		});
+
+		this.el.setAttribute("for", this._editor.id);
 
 		this._editor.el.addEventListener("keydown", (ev) => {
 			this.onEditorKeyDown(ev);
@@ -106,8 +111,19 @@ export class ChipsField extends Field {
 
 	private createChip() {
 		const chip = comp({
-			cls: "chip"
-		});
+			cls: "chip hbox"
+		},
+			comp({}),
+			btn({
+				title: t("Remove"),
+				icon: "cancel",
+				handler: (btn) => {
+					const index = this.items.indexOf(chip);
+					chip.remove();
+					this.value.splice(index, 1);
+				}
+			})
+		);
 		chip.el.addEventListener("click" , () => {
 			this.select(this.items.indexOf(chip));
 			this.wrap!.focus();
@@ -123,7 +139,10 @@ export class ChipsField extends Field {
 
 	private clearSelection() {
 		if(this.selectedIndex > -1) {
-			this.items.get(this.selectedIndex)!.el.classList.remove("selected");
+			const item = this.items.get(this.selectedIndex);
+			if(item) {
+				item.el.classList.remove("selected");
+			}
 			this.selectedIndex = -1;
 		}
 	}
@@ -150,7 +169,7 @@ export class ChipsField extends Field {
 			case "Delete":
 			case "Backspace":
 				this.items.get(this.selectedIndex)!.remove();
-				this.value = this.value.splice(this.selectedIndex, 1);
+				this.value.splice(this.selectedIndex, 1);
 				this.select(this.selectedIndex);
 				break;
 
@@ -170,6 +189,11 @@ export class ChipsField extends Field {
 			for(let i = 0; i < this.items.count() -1; i++) {
 				this.items.removeAt(i);
 			}
+
+			while(this.items.count() > 1) {
+				this.items.removeAt(0);
+			}
+
 			this.renderValue();
 		}
 	}

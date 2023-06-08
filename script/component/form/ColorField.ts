@@ -42,6 +42,7 @@ export class ColorField extends Field {
 		this.el.cls("+no-floating-label");
 
 		this.picker.on('select', (colorPicker, val) => {
+			debugger;
 			this.value = val;
 			this.pickerButton.menu!.hide();
 		});

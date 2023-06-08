@@ -133,8 +133,8 @@ export class ColorMenu extends Menu {
 
 		this._value = color;
 
-		if (this.updateButton && this.parentButton) {
-			this.parentButton.el.style.color = color;
+		if (this.updateButton) {
+			this.parent!.el.style.color = color;
 		}
 
 		if (!this.rendered) {

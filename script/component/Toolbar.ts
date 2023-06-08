@@ -58,12 +58,7 @@ export class Toolbar extends Component {
 	 */
 	private findToolbar(): Toolbar | undefined {
 
-		let parent;
-		if ((this as unknown as Menu).parentButton) {
-			parent = (this as unknown as Menu).parentButton!.parent;
-		} else {
-			parent = this.parent;
-		}
+		let parent = this.parent;
 
 		if (!parent || !(parent instanceof Toolbar)) {
 			return undefined;
@@ -195,11 +190,9 @@ export class Toolbar extends Component {
 			return false;
 		}
 
-		const parentButton = (child.parent! as Menu).parentButton! as Button;
-		if (!parentButton) {
-			return false;
+		if(child.parent) {
+			child.parent.focus();
 		}
-		parentButton.focus();
 
 		return true;
 	}

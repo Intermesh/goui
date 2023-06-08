@@ -747,7 +747,7 @@ div.color-dot {
 		.chip {
 			float: left;
 			border-radius: dp(20);
-			background-color: $colorBackgroundDarker;
+			background-color: #D3D3D3;
 			padding: dp(3) dp(12);
 			margin: dp(8) dp(4);
 			overflow: hidden;
@@ -755,10 +755,22 @@ div.color-dot {
 			min-width: dp(60);
 			text-overflow: ellipsis;
 			white-space: nowrap;
+			cursor: default;
 
 			&.selected {
 				background-color: $colorSelectedRow;
 				color: white;
+				.goui-button {
+					color: white;
+				}
+			}
+
+			.goui-button {
+				color: $colorTextSecondary;
+				padding: 0;
+				margin: 0;
+				margin-left: dp(8);
+				margin-right: dp(-8);
 			}
 		}
 	}

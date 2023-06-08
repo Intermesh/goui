@@ -205,9 +205,8 @@ export class Collection<CollectionItem> extends Observable implements Iterable<C
 	 * Clears all items
 	 */
 	public clear() {
-		const l = this.count();
-		for (let i = l - 1; i >= 0; i--) {
-			this.removeAt(i);
+		while(this.count()) {
+			this.removeAt(0);
 		}
 
 		return this;

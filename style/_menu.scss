@@ -27,6 +27,7 @@ menu.goui-dropdown {
 
 	li {
 		display:block;
+		position: relative;
 		padding: 0;
 		margin: 0;
 
@@ -90,7 +91,18 @@ menu.goui-dropdown {
 	}
 
 	// First menu is always visible. button must be clicked to toggle hidden attribute.
-	button > menu.goui-dropdown {
+
+
+	&.expand-left {
+
+		li > menu.goui-dropdown {
+			left: -100%;
+			transform: translateX(dp(-24));
+		}
+
+	}
+
+	li > menu.goui-dropdown {
 		position: absolute;
 		&:not(:hover) {
 			//https://easings.net/#easeInCubic
@@ -100,19 +112,11 @@ menu.goui-dropdown {
 		opacity: 0;
 		top: 0;
 		left: 100%;
-	}
-
-	&.expand-left {
-
-		button > menu.goui-dropdown {
-			left: -100%;
-			transform: translateX(dp(-24));
-		}
-
+		margin-left: dp(-4);
 	}
 
 	//second expands on hover
-	button:hover > menu.goui-dropdown, button:focus-within > menu {
+	li:hover > menu.goui-dropdown, li:focus-within > menu {
 		transition: 0s;
 		visibility: visible;
 		opacity: 1;

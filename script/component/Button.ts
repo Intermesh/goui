@@ -102,17 +102,21 @@ export class Button extends Component {
 	 * Find the first menu in the tree of submenu's
 	 */
 	private findTopMenu(): Menu | undefined {
-		if (this.parent instanceof Menu) {
-			if (!this.parent.parentButton) {
-				return undefined;
-			}
-			if (this.parent.parentButton.parent instanceof Menu) {
-				return this.parent.parentButton.findTopMenu();
-			} else {
-				return this.parent as Menu;
-			}
-		} else {
+		if(!(this.parent instanceof Menu)) {
 			return undefined;
+		}
+
+		if(!(this.parent.parent instanceof Button)) {
+			return this.parent;
+		} else
+		{
+			const next = this.parent.parent.findTopMenu();
+			if(next) {
+				return next;
+			} else
+			{
+				return this.parent;
+			}
 		}
 	}
 
@@ -156,8 +160,9 @@ export class Button extends Component {
 				this.el.addEventListener("mouseenter", this.onMenuMouseEnter.bind(this));
 				this.el.addEventListener("click", this.onMenuButtonClick.bind(this));
 			} else {
-				this.menu.parent = this;
-				this.menu.render(el);
+				this.menu.renderTo = undefined;
+				// this.menu.parent = this.parent ;
+				// this.menu.render(this.parent.el);
 			}
 		}
 
@@ -171,9 +176,10 @@ export class Button extends Component {
 
 				this.handler.call(this, this, e);
 
-				// close menu if handler is set
+				// close dropdown menu if handler is set
 				const topMenu = this.findTopMenu();
-				if (topMenu) {
+
+				if (topMenu && topMenu.isDropdown()) {
 					topMenu.close();
 				}
 			}
@@ -193,7 +199,7 @@ export class Button extends Component {
 	}
 
 	private onMenuMouseEnter(ev: MouseEvent) {
-		if (Menu.openedMenu && Menu.openedMenu != this._menu && Menu.openedMenu.parentButton!.parent === this._menu!.parentButton!.parent) {
+		if (Menu.openedMenu && Menu.openedMenu != this._menu && Menu.openedMenu.parent!.parent === this._menu!.parent!.parent) {
 
 			this.showMenu();
 		}
@@ -210,7 +216,7 @@ export class Button extends Component {
 	 */
 	set menu(menu: Menu | undefined) {
 		if (menu) {
-			menu.parentButton = this;
+			menu.parent = this;
 			menu.removeOnClose = false;
 
 			this.el.classList.add("has-menu");

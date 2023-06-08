@@ -177,6 +177,12 @@ export class Component extends Observable {
 	 */
 	public parent?: Component;
 
+	/**
+	 * Normally components are rendered to its parent component's element. But in some cases like menu's it's desired
+	 * to render them to the root and position them absolute.
+	 */
+	public renderTo?: HTMLElement;
+
 	private _items?: Collection<Component>;
 
 	private _mask: Mask | undefined;
@@ -395,11 +401,17 @@ export class Component extends Observable {
 		// If parent is already rendered then we must determine the DOM index of this child item
 		// if parent is rendering then we can simply add it
 		if (!parentEl) {
-			if (!this.parent) {
-				throw new Error("No parent set for " + (typeof this));
+
+			if(this.renderTo) {
+				parentEl = this.renderTo;
+			} else {
+
+				if (!this.parent) {
+					throw new Error("No parent set for " + (typeof this));
+				}
+				parentEl = this.parent.itemContainerEl;
+				insertBefore = this.getInsertBefore();
 			}
-			parentEl = this.parent.itemContainerEl;
-			insertBefore = this.getInsertBefore();
 		}
 
 		if (!insertBefore) {
