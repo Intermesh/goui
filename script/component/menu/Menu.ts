@@ -248,6 +248,11 @@ export class Menu extends Toolbar {
 		window.addEventListener("mousedown", (ev) => {
 			this.close();
 		}, {once: true});
+
+		// stop clicks on menu from hiding menu. Otherwise it hides before button handlers fire.
+		this.el.addEventListener("mousedown", (ev) => {
+			ev.stopPropagation();
+		});
 	}
 
 	public close() {
