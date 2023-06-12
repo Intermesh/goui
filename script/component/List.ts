@@ -119,7 +119,11 @@ const dropPin = comp({
 
 root.items.add(dropPin);
 
-
+/**
+ * List component
+ *
+ * Create a list with a custom item renderer. Also capable for selecting rows.
+ */
 export class List<StoreType extends Store = Store> extends Component {
 	/**
 	 * Shown when the list is empty.
@@ -386,9 +390,6 @@ export class List<StoreType extends Store = Store> extends Component {
 	}
 
 	private onMouseEvent(e: MouseEvent & { target: HTMLElement }, type: any) {
-
-		e.stopPropagation();
-		e.preventDefault();
 
 		const row = this.findRowByEvent(e),
 			index = row ? this.getRowElements().indexOf(row) : -1;
