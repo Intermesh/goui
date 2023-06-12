@@ -5,6 +5,10 @@
  */
 import {DateTime, Timezone} from "./DateTime.js";
 
+/**
+ * Formatting utilities
+ * @category Utility
+ */
 export class Format {
 
 	/**

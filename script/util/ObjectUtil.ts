@@ -6,6 +6,10 @@
 
 type KeyValue = Record<string, any>
 
+/**
+ * Utilities to operate on objects
+ * @category Utility
+ */
 export class ObjectUtil {
 	public static isObject = (obj: any) => {
 		return Object.prototype.toString.call(obj) === '[object Object]';

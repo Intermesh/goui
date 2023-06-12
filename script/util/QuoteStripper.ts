@@ -4,6 +4,11 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
+/**
+ * Class to strip quotes like when someone replies to an email of a string
+ *
+ * @category Utility
+ */
 export class QuoteStripper {
 
 	private bodyWithoutQuote?: string

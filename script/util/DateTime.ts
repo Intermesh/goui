@@ -6,6 +6,9 @@
 
 export {}
 
+/**
+ * @category Utility
+ */
 export type Timezone =
 	'utc' |
 	'UTC' |
@@ -370,6 +373,8 @@ const durationRegex = /(-)?P(?:([.,\d]+)Y)?(?:([.,\d]+)M)?(?:([.,\d]+)W)?(?:([.,
  * DateTime object
  *
  * Adds formatting, parsing and timezone support to a standard Date object
+ *
+ * @category Utility
  */
 export class DateTime {
 

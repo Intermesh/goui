@@ -6,6 +6,8 @@
 
 /**
  * Cookie utilities
+ *
+ * @category Utility
  */
 class Cookies {
 

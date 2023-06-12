@@ -58,6 +58,8 @@ export type storeRecordType<StoreType> = StoreType extends Store<infer RecordTyp
 
 /**
  * Generic data store used by components
+ *
+ * @category Data
  */
 export class Store<RecordType = StoreRecord> extends Collection<RecordType> {
 

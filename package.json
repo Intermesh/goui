@@ -12,7 +12,8 @@
     "material-icons": "latest",
     "mocha": "latest",
     "sass": "latest",
-    "ts-node": "latest"
+    "ts-node": "latest",
+    "typedoc": "^0.24.8"
   },
   "scripts": {
     "test": "mocha",

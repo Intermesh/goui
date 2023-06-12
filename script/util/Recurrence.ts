@@ -34,6 +34,8 @@ export type RecurrenceRule = {
 
 /**
  * Class for looping date for Recurrence Rule
+ *
+ * @category Utility
  */
 export class Recurrence {
 

@@ -7,6 +7,8 @@ type Func = ((...args: any[]) => any);
 
 /**
  * Buffer or delay a function
+ * @category Utility
+ *
  */
 export class BufferedFunction {
 	private id: number | undefined;
@@ -54,6 +56,8 @@ export class BufferedFunction {
 
 /**
  * Function utilities
+ *
+ * @category Utility
  */
 export class FunctionUtil {
 

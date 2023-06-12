@@ -19,6 +19,7 @@ type RecordBuilder<EntityType, StoreRecord> = (entity: EntityType) => Promise<St
  * DataSourceStore class
  *
  * Uses an {@see AbstractDataSource} to present data in the view.
+ * @category Data
  */
 export class DataSourceStore<EntityType extends BaseEntity = DefaultEntity, StoreRecord = EntityType> extends Store<StoreRecord> {
 

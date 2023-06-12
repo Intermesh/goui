@@ -6,6 +6,11 @@
 
 import {Comparator} from "../data/Store.js";
 
+/**
+ * Array functions
+ *
+ * @category Utility
+ */
 export class ArrayUtil {
 	/**
 	 * Get array of all values of array1 that are NOT present in array2

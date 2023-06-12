@@ -5,10 +5,10 @@
  */
 
 import {Observable, ObservableEventMap, ObservableListenerOpts} from "../component/Observable.js";
-import {ArrayUtil} from "./ArrayUtil";
 
 /**
  * @inheritDoc
+ * @category Utility
  */
 export interface CollectionEventMap<Type, CollectionItem> extends ObservableEventMap<Type> {
 
@@ -56,6 +56,10 @@ export interface CollectionEventMap<Type, CollectionItem> extends ObservableEven
 	datachanged: (collection: Type) => void
 }
 
+/**
+ *
+ * @category Utility
+ */
 export interface Collection<CollectionItem> extends Observable {
 	on<K extends keyof CollectionEventMap<this, CollectionItem>>(eventName: K, listener: CollectionEventMap<this, CollectionItem>[K], options?: ObservableListenerOpts): void;
 
@@ -64,6 +68,8 @@ export interface Collection<CollectionItem> extends Observable {
 
 /**
  * Collection of items
+ *
+ * @category Utility
  */
 export class Collection<CollectionItem> extends Observable implements Iterable<CollectionItem> {
 	readonly items: CollectionItem[];

@@ -2,6 +2,8 @@
  * Connection
  *
  * Creates an indexed DB connection
+ *
+ * @category Utility
  */
 class Connection {
 	private conn?: IDBDatabase;
@@ -171,6 +173,8 @@ class Connection {
 
 /**
  * Singleton connection object
+ *
+ * @category Utility
  */
 export const browserStoreConnection = new Connection();
 
@@ -178,6 +182,8 @@ export const browserStoreConnection = new Connection();
  * Browser Store
  *
  * Wrapper around an indexeddb objectstore
+ *
+ * @category Utility
  */
 export class BrowserStore {
 

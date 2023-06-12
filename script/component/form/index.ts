@@ -18,3 +18,4 @@ export * from './TextField.js';
 export * from './TextareaField.js';
 export * from './CheckboxGroup.js';
 export * from './ChipsField.js';
+export * from './DataSourceForm.js';

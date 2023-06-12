@@ -3,6 +3,15 @@
  * @copyright Copyright 2023 Intermesh BV
  * @author Michael de Hart <mdhart@intermesh.nl>
  */
+
+/**
+ * Short function to create a HTML element by tag name
+ *
+ * @category Utility
+ * @param tag Tag name
+ * @param items Elements to append to this new element
+ * @constructor
+ */
 export function E<K extends keyof HTMLElementTagNameMap>(tag: K, ...items: (Node | string | number)[]): HTMLElementTagNameMap[K] {
 	const el = document.createElement(tag);
 	el.append(...items as (Node | string)[]);
@@ -10,6 +19,9 @@ export function E<K extends keyof HTMLElementTagNameMap>(tag: K, ...items: (Node
 }
 
 declare global {
+	/**
+	 * @category Utility
+	 */
 	interface Element {
 		/** Chainable shortcut for addEventListener */
 		on<K extends keyof HTMLElementEventMap>(type: K, listener: (ev: HTMLElementEventMap[K] & {
@@ -65,7 +77,11 @@ declare global {
 		up(selector: string, until?: Element): HTMLElement | null
 	}
 }
-
+/**
+ * DOM Html Element
+ * @class Element
+ * @category Utitlity
+ */
 Object.assign(Element.prototype, {
 	on<K extends keyof ElementEventMap>(event: K, listener: (ev: ElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions) {
 		this.addEventListener(event, listener, options);

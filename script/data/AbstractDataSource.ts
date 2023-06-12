@@ -11,6 +11,7 @@ import {BrowserStore} from "../util/BrowserStorage.js";
 
 /**
  * The response of the {@see AbstractDataSource.get()} method
+ * @category Data
  */
 export interface GetResponse<EntityType> {
 
@@ -30,6 +31,9 @@ export interface GetResponse<EntityType> {
 	state?: string
 }
 
+/**
+ * @category Data
+ */
 export interface SetRequest<EntityType> {
 	create: Record<EntityID, Partial<EntityType>>
 	update: Record<EntityID, Partial<EntityType>>
@@ -37,6 +41,9 @@ export interface SetRequest<EntityType> {
 	ifInstate?: string
 }
 
+/**
+ * @category Data
+ */
 export enum CommitErrorType {
 	'forbidden',
 	'overQuota',
@@ -55,6 +62,7 @@ export type CommitEntityError = Record<EntityID, CommitError>
 
 /**
  * The base of an entity. It should at lease have an "id" property.
+ * @category Data
  */
 export interface BaseEntity {
 	id: EntityID
@@ -64,26 +72,35 @@ export interface BaseEntity {
  * Default entity
  *
  * Allows any property.
+ * @category Data
  */
 export interface DefaultEntity extends BaseEntity {
 	[key: string]: any
 }
 
-
+/**
+ * @category Data
+ */
 export interface CommitError {
 	type: CommitErrorType
 	description?: string
 }
 
+/**
+ * @category Data
+ */
 export interface Changes<EntityType> {
 	created?: EntityID[]
 	updated?: EntityID[]
 	destroyed?: EntityID[],
-	newState: string,
-	oldState: string,
+	newState?: string,
+	oldState?: string,
 	hasMoreChanges?: boolean
 }
 
+/**
+ * @category Data
+ */
 export interface CommitResponse<EntityType> {
 
 	created?: Record<EntityID, EntityType>
@@ -94,15 +111,24 @@ export interface CommitResponse<EntityType> {
 	notUpdated?: CommitEntityError
 	notDestroyed?: CommitEntityError,
 
-	newState: string
+	newState?: string
 
-	oldState: string
+	oldState?: string
 }
 
+/**
+ * @category Data
+ */
 export type EntityID = string;
 
+/**
+ * @category Data
+ */
 export type QueryFilter = Record<string, any>;// TODO
 
+/**
+ * @category Data
+ */
 export interface QueryParams {
 
 	/**
@@ -145,9 +171,12 @@ export interface QueryResponse {
 	/**
 	 * The state of the query on the server
 	 */
-	queryState: string
+	queryState?: string
 }
 
+/**
+ * @category Data
+ */
 export interface DataSourceEventMap<Type extends Observable, EntityType> extends ObservableEventMap<Type> {
 	/**
 	 * Fires when data changed in the store
@@ -187,6 +216,8 @@ interface GetData<EntityType extends BaseEntity> {
  *
  * Use a {@see DataSourceStore} in components to list data from datasources.
  * The {@see Form} component can also load from a datasource.
+ *
+ * @category Data
  */
 export abstract class AbstractDataSource<EntityType extends BaseEntity = DefaultEntity> extends Observable {
 	/**
@@ -238,13 +269,12 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 		if(!this.persist) {
 			return;
 		}
+		return this.browserStore.setItem("__state__", state);
+	}
 
-		if (state === undefined) {
-			this.data = {};
-			return this.browserStore.clear();
-		} else {
-			return this.browserStore.setItem("__state__", state);
-		}
+	public clearCache() {
+		this.data = {};
+		return this.browserStore.clear();
 	}
 
 	/**
@@ -252,7 +282,6 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	 * @private
 	 */
 	private get browserStore() {
-		debugger;
 		if (!this._browserStore) {
 			this._browserStore = new BrowserStore("ds-" + this.id);
 		}
@@ -734,7 +763,10 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	}
 
 	/**
-	 * Check's if we are up-to-date with the server and fetches updates if needed
+	 * Check's if we are up-to-date with the server and fetches updates if needed.
+	 *
+	 * If no state is returned by the data source this function will ignore states and the data source should then
+	 * always refresh data.
 	 *
 	 * @param serverState
 	 * @param retVal
@@ -742,12 +774,13 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	 */
 	protected async checkState<T>(serverState: string | undefined, retVal: T): Promise<T> {
 		let state = await this.getState()
-		if (!state) {
-			// We are empty!
-			if(this.persist) {
-				this.data = {};
-				await this.browserStore.clear();
-			}
+		if (!state && serverState) {
+			// // We are empty!
+			// if(this.persist) {
+			// 	console.warn("Emptying store as there's no server state")
+			// 	this.data = {};
+			// 	await this.browserStore.clear();
+			// }
 			await this.setState(serverState!);
 			state = serverState;
 		}

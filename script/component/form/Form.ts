@@ -4,13 +4,13 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {ContainerField} from "./ContainerField.js";
+import {ContainerField, ContainerFieldValue} from "./ContainerField.js";
 import {Config, ObservableListenerOpts} from "../Observable.js";
 import {Notifier} from "../../Notifier.js";
 import {Component, createComponent} from "../Component.js";
 import {FieldEventMap} from "./Field.js";
 import {t} from "../../Translate.js";
-import {AbstractDataSource, DefaultEntity, EntityID} from "../../data/index.js";
+import {AbstractDataSource, BaseEntity, DefaultEntity, EntityID} from "../../data/index.js";
 
 
 export interface FormEventMap<Type> extends FieldEventMap<Type> {
@@ -47,12 +47,15 @@ export interface FormEventMap<Type> extends FieldEventMap<Type> {
 	serialize: (form: Type, data: any) => void,
 }
 
-export interface Form {
+export interface Form<ValueType extends ContainerFieldValue = ContainerFieldValue> extends ContainerField<ValueType> {
 	on<K extends keyof FormEventMap<this>>(eventName: K, listener: Partial<FormEventMap<this>>[K], options?: ObservableListenerOpts): void
 
 	fire<K extends keyof FormEventMap<this>>(eventName: K, ...args: Parameters<FormEventMap<Component>[K]>): boolean
 
 	get el(): HTMLFormElement
+
+	get value(): ValueType
+	set value(v:ValueType)
 }
 
 /**
@@ -137,7 +140,7 @@ export interface Form {
  * ```
  *
  */
-export class Form extends ContainerField {
+export class Form<ValueType extends ContainerFieldValue = ContainerFieldValue> extends ContainerField<ValueType> {
 	protected baseCls = "goui-form"
 	public hideLabel = true;
 
@@ -153,39 +156,7 @@ export class Form extends ContainerField {
 	 *
 	 * @param form
 	 */
-	public handler: ((this: this, form: Form) => any | Promise<any>) | undefined;
-
-	store?: AbstractDataSource
-
-	protected currentId?: EntityID
-
-	public create(data: any) {
-		this.reset();
-		this.currentId = '_new_';
-		this.fire('load', this, data);
-		if (data) {
-			this.setValues(data);
-		}
-	}
-
-	public async load(id: EntityID) {
-
-		this.mask();
-
-		try {
-			this.currentId = id;
-			let entity = await this.store!.single(id);
-			if (!entity) {
-				throw "Failed to load entity with id " + id;
-			}
-			this.fire('load', this, entity);
-			this.value = entity;
-		} catch (e) {
-			alert(t("Error") + ' ' + e);
-		} finally {
-			this.unmask();
-		}
-	}
+	public handler: ((this: this, form: Form<ValueType>) => any | Promise<any>) | undefined;
 
 	protected internalRender() {
 		const el = super.internalRender();
@@ -193,13 +164,10 @@ export class Form extends ContainerField {
 		// disable browser validation
 		this.el.noValidate = true;
 
-		if (this.handler) {
-
-			el.addEventListener("submit", (event) => {
-				event.preventDefault();
-				this.submit();
-			});
-		}
+		el.addEventListener("submit", (event) => {
+			event.preventDefault();
+			this.submit();
+		});
 
 		el.addEventListener("reset", (e) => {
 			e.preventDefault();
@@ -233,7 +201,7 @@ export class Form extends ContainerField {
 	 *
 	 * @param v
 	 */
-	setValues(v: { [key: string]: any }) {
+	setValues(v: ValueType) {
 		this.value = v;
 	}
 
@@ -244,7 +212,6 @@ export class Form extends ContainerField {
 		this.findFields().forEach((field) => {
 			field.reset();
 		})
-		delete this.currentId;
 	}
 
 	/**
@@ -270,33 +237,7 @@ export class Form extends ContainerField {
 					Notifier.error(msg);
 					return;
 				}
-			} else if (this.store) {
-				try {
-					this._value = {};
-					let v = this.value as DefaultEntity;
-					if (this.currentId) {
-						v.id = this.currentId;
-					}
-					this.fire('serialize', this, v);
-
-					let response;
-					if (this.currentId) {
-						response = this.store.update(v);
-					} else {
-						response = this.store.create(v);
-					}
-
-					if (response) {
-						this.fire('saved', this, response);
-					}
-
-				} catch (e) {
-					console.log(t("Error"), e);
-				} finally {
-					this.unmask();
-				}
 			}
-
 			this.fire("submit", this, handlerResponse);
 
 			//this.reset();
@@ -325,4 +266,4 @@ export class Form extends ContainerField {
  * @param config
  * @param items
  */
-export const form = (config?: Config<Form, FormEventMap<Form>>, ...items: Component[]) => createComponent(new Form, config, items);
+export const form = <ValueType extends ContainerFieldValue = ContainerFieldValue>(config?: Config<Form<ValueType>, FormEventMap<Form<ValueType>>>, ...items: Component[]) => createComponent(new Form<ValueType>, config, items);
