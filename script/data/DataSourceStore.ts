@@ -8,10 +8,10 @@ import {AbstractDataSource, BaseEntity, Changes, DefaultEntity, QueryParams} fro
 import {ObjectUtil} from "../util/index.js";
 import {Config, createComponent} from "../component/index.js";
 
-type Relation<EntityType extends BaseEntity> = Record<keyof EntityType, {
-	dataSource: AbstractDataSource,
+type Relation<EntityType extends BaseEntity> = Partial<Record<keyof EntityType, {
+	dataSource: AbstractDataSource<EntityType>,
 	path: string
-}>
+}>>
 
 type RecordBuilder<EntityType, StoreRecord> = (entity: EntityType) => Promise<StoreRecord>;
 
