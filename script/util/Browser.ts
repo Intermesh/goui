@@ -121,7 +121,7 @@ class Browser {
 	 *
 	 * @param {string} text
 	 */
-	public static copyTextToClipboard(text: string) {
+	public copyTextToClipboard(text: string) {
 		const al = <HTMLElement>document.activeElement;
 		if (!navigator.clipboard) {
 			//fallback on workaround with textarea element
