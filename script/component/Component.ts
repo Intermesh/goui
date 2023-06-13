@@ -5,9 +5,10 @@
  */
 
 
-import {Config, Observable, ObservableEventMap, ObservableListenerOpts,} from "./Observable.js";
+import {Config, Observable, ObservableEventMap, ObservableListener, ObservableListenerOpts,} from "./Observable.js";
 import {State} from "../State.js";
 import {Collection} from "../util/Collection.js";
+import {btn, Button} from "./Button";
 
 /**
  * A component identifier by id, itemId, Component instance or custom function
@@ -129,6 +130,8 @@ export type ComponentState = Record<string, any>;
  * ```
  */
 export class Component extends Observable {
+
+	public test:unknown;
 	protected _cls?: string;
 
 	/**
@@ -935,7 +938,11 @@ export const h4 = (config?: Config<Component> | string, ...items: Component[]) =
 export const code = (config?: Config<Component> | string, ...items: Component[]) => createComponent(new Component("code"), typeof config == 'string' ? {html: config} : config, items);
 export const section = (config?: Config<Component> | string, ...items: Component[]) => createComponent(new Component("section"), typeof config == 'string' ? {html: config} : config, items);
 export const hr = (config?: Config<Component>) => createComponent(new Component("hr"), config);
-export const createComponent = <T extends Observable>(comp: T, config: any, items?: Component[]): T => {
+
+type BaseConfig = {
+	listeners?:ObservableListener<any>
+}
+export const createComponent = <T extends Observable, C extends BaseConfig>(comp: T, config?: C, items?: Component[]): T => {
 
 	if (config) {
 		if (config.listeners) {
