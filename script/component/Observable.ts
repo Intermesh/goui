@@ -187,6 +187,10 @@ export class Observable {
 // export type WithRequired<T, K extends keyof T> = Pick<T, K> & Partial<Omit<T, K>>;
 type Writeable<T> = { -readonly [P in keyof T]: T[P] };
 
+type ExcludeFunctionPropertyNames<T> = Pick<T, {
+	[K in keyof T]: T[K] extends Function ? never : K
+}[keyof T]>;
+
 /**
  * Generic Config option that allows all public properties as options.
  * It excludes all function types. If you need to pass functions as config options you will need to add them like this:
@@ -201,17 +205,17 @@ export type Config<Cmp extends Observable, EventMap extends ObservableEventMap<O
 
 	Writeable<
 		Partial<
-			Pick<Cmp,
-				{
-					[K in keyof Cmp]: Cmp[K] extends Function ? never : K extends Required ? never : K
-				}[keyof Cmp]
+			ExcludeFunctionPropertyNames<
+				Omit<Cmp, Required>
 			>
 		>
 	>
 
 	&
 
-	Writeable<Pick<Cmp, Required>>
+	Writeable<
+		Pick<Cmp, Required>
+	>
 
 	& {
 	/**

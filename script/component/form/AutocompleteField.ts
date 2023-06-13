@@ -6,18 +6,14 @@
 
 import {TextField} from "./TextField.js";
 import {Config, ObservableEventMap, ObservableListenerOpts} from "../Observable.js";
-
-import {Table} from "../table/Table.js";
-import {root} from "../Root.js";
 import {FunctionUtil} from "../../util/FunctionUtil.js";
 import {FieldEventMap} from "./Field.js";
 import {btn, Button} from "../Button.js";
 import {Component, createComponent} from "../Component.js";
-import {List} from "../List";
-import {TablePicker, tablePickerStoreType} from "../picker";
+import {List, listStoreType} from "../List";
+import {listpicker} from "../picker";
 import {Menu, menu} from "../menu";
-import {storeRecordType} from "../../data";
-import {ChipsField} from "./ChipsField";
+import {Store, store, StoreRecord, storeRecordType} from "../../data";
 
 export interface AutocompleteEventMap<Type> extends FieldEventMap<Type> {
 	/**
@@ -28,7 +24,7 @@ export interface AutocompleteEventMap<Type> extends FieldEventMap<Type> {
 	autocomplete: (field: Type, input: string) => any
 }
 
-export interface AutocompleteField<T extends TablePicker> {
+export interface AutocompleteField<T extends List> {
 	on<K extends keyof AutocompleteEventMap<this>>(eventName: K, listener: Partial<AutocompleteEventMap<this>>[K], options?: ObservableListenerOpts): void
 
 	fire<K extends keyof AutocompleteEventMap<this>>(eventName: K, ...args: Parameters<AutocompleteEventMap<Component>[K]>): boolean
@@ -37,27 +33,32 @@ export interface AutocompleteField<T extends TablePicker> {
 /**
  * Autocomplete field
  */
-export class AutocompleteField<T extends TablePicker> extends TextField {
+export class AutocompleteField<T extends List> extends TextField {
 
 
 	private readonly menu: Menu;
 	private readonly menuButton: Button;
-
+	public readonly picker;
 	/**
 	 *
-	 * @param picker The table to use for suggestions
+	 * @param list The table to use for suggestions
 	 * @param buffer Buffer typing in the input in ms
 	 */
-	constructor(readonly picker: T, private buffer = 300) {
+	constructor(readonly list: T, private buffer = 300) {
 		super();
 
 		this.autocomplete = "off";
 		this.baseCls += " autocomplete";
 
-		picker.on("select", (tablePicker, record) => {
+		this.picker = listpicker({
+			list: list
+		});
+
+
+		this.picker.on("select", (tablePicker, record) => {
 
 			this.value = this.pickerRecordToValue(this, record);
-			tablePicker.findAncestorByType(Menu)!.hide();
+			tablePicker.list.findAncestorByType(Menu)!.hide();
 			this.focus();
 		});
 
@@ -95,7 +96,7 @@ export class AutocompleteField<T extends TablePicker> extends TextField {
 	 * @param field
 	 * @param record
 	 */
-	public pickerRecordToValue = (field: this, record:storeRecordType<tablePickerStoreType<T>>) : any => {
+	public pickerRecordToValue = (field: this, record:storeRecordType<listStoreType<T>>) : any => {
 		return record.id;
 	}
 
@@ -149,7 +150,7 @@ export class AutocompleteField<T extends TablePicker> extends TextField {
 				case 'ArrowDown':
 					ev.preventDefault();
 					this.menuButton.showMenu();
-					this.picker.focus();
+					this.list.focus();
 					break;
 
 				case 'Escape':
@@ -173,7 +174,7 @@ export class AutocompleteField<T extends TablePicker> extends TextField {
 
 }
 
-type AutoCompleteConfig<T extends TablePicker, Map extends ObservableEventMap<any>, Required extends keyof AutocompleteField<T>> = Config<AutocompleteField<T>, Map, Required> &
+type AutoCompleteConfig<T extends List, Map extends ObservableEventMap<any>, Required extends keyof AutocompleteField<T>> = Config<AutocompleteField<T>, Map, Required> &
 // Add the function properties as they are filtered out
 	Partial<Pick<AutocompleteField<T>, "pickerRecordToValue" | "valueToTextField">>;
 
@@ -184,4 +185,4 @@ type AutoCompleteConfig<T extends TablePicker, Map extends ObservableEventMap<an
  *
  * @param config
  */
-export const autocomplete = <T extends TablePicker> (config: AutoCompleteConfig<T, AutocompleteEventMap<AutocompleteField<T>>, "picker">) => createComponent(new AutocompleteField(config.picker), config);
+export const autocomplete = <T extends List> (config: AutoCompleteConfig<T, AutocompleteEventMap<AutocompleteField<T>>, "list">) => createComponent(new AutocompleteField(config.list), config);

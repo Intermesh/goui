@@ -13,7 +13,8 @@
     "mocha": "latest",
     "sass": "latest",
     "ts-node": "latest",
-    "typedoc": "^0.24.8"
+    "typedoc": "latest",
+    "typescript": "latest"
   },
   "scripts": {
     "test": "mocha",

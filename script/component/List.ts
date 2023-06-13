@@ -16,6 +16,8 @@ import {root} from "./Root";
 
 export type RowRenderer = (record: any, row: HTMLElement, list: any, storeIndex: number) => string | Component[] | void;
 
+export type listStoreType<ListType> = ListType extends List<infer StoreType> ? StoreType : never;
+
 
 /**
  * @inheritDoc
