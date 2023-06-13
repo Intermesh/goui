@@ -33,12 +33,15 @@ export interface AutocompleteField<T extends List> {
 /**
  * Autocomplete field
  */
-export class AutocompleteField<T extends List> extends TextField {
+export class AutocompleteField<T extends List = List> extends TextField {
 
 
 	private readonly menu: Menu;
 	private readonly menuButton: Button;
 	public readonly picker;
+
+
+	public readonly test?: Component;
 	/**
 	 *
 	 * @param list The table to use for suggestions
@@ -96,7 +99,7 @@ export class AutocompleteField<T extends List> extends TextField {
 	 * @param field
 	 * @param record
 	 */
-	public pickerRecordToValue = (field: this, record:storeRecordType<listStoreType<T>>) : any => {
+	public pickerRecordToValue (field: this, record:storeRecordType<listStoreType<T>>) : any {
 		return record.id;
 	}
 
