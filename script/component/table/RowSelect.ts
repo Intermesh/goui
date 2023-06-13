@@ -7,6 +7,7 @@
 import {Config, Observable, ObservableEventMap, ObservableListenerOpts} from "../Observable.js";
 import {List} from "../List.js";
 import {ArrayUtil} from "../../util/ArrayUtil.js";
+import {createComponent} from "../Component";
 
 export interface RowSelectEventMap<Type extends Observable> extends ObservableEventMap<Type> {
 	/**
@@ -291,4 +292,4 @@ export type RowSelectConfig = Config<RowSelect, RowSelectEventMap<RowSelect>, "l
  *
  * @param config
  */
-export const rowselect = (config: RowSelectConfig) => Object.assign(new RowSelect(config.list), config);
+export const rowselect = (config: RowSelectConfig) => createComponent(new RowSelect(config.list), config);
