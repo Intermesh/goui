@@ -171,9 +171,6 @@ $formFieldBorderRadius: dp(10);
 	border-radius: $formFieldBorderRadius - $borderWidth;
 	&:read-only:not(select) {
 		background-color: $colorBackgroundReadOnly;
-		&+.label {
-			background-color: $colorBackgroundReadOnly;
-		}
 	}
 
 	&::placeholder {
@@ -203,6 +200,7 @@ $formFieldBorderRadius: dp(10);
 	display: block;
 	//border-radius: $formFieldBorderRadius;
 	.wrap {
+		overflow:hidden;
 		display: flex;
 		flex-flow: row nowrap;
 		transition: border-color 100ms linear;
@@ -232,8 +230,6 @@ $formFieldBorderRadius: dp(10);
 				&.with-icon:not(.with-text) {
 					padding: dp(6);
 				}
-
-				color: $colorPrimary;
 				&:hover {
 					background-color: transparent;
 				}
@@ -542,7 +538,6 @@ $formFieldBorderRadius: dp(10);
 			appearance: none;
 		}
 		&:after {
-			color: $colorPrimary;
 			position: absolute;
 			display: inline-block;
 			top: dp(14);
@@ -569,8 +564,6 @@ $formFieldBorderRadius: dp(10);
 		font-size: dp(24);
 		font-weight: 500;
 		margin: dp(8) 0 dp(24) 0;
-		color: black;
-
 	}
 }
 
@@ -747,7 +740,7 @@ div.color-dot {
 		.chip {
 			float: left;
 			border-radius: dp(20);
-			background-color: #D3D3D3;
+			background-color: var(--bg-primary);
 			padding: dp(3) dp(12);
 			margin: dp(8) dp(4);
 			overflow: hidden;

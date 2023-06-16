@@ -9,6 +9,30 @@
 	}
 }
 
+.goui.root {
+	font: $fontBase;
+	color: $colorText;
+	width: 100%; //Needed for modal windows setting it to position fixed, top 0
+	background-color: var(--bg-body);
+	@include light-theme;
+
+	&.dark {
+		@include dark-theme;
+		* {
+			color-scheme: dark;
+		}
+	}
+}
+
+@media (prefers-color-scheme: dark) {
+	.goui.root.system {
+		@include dark-theme;
+		* {
+			color-scheme: dark;
+		}
+	}
+}
+
 //h1{
 //	font-weight: 500;
 //	display: block;

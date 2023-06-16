@@ -62,6 +62,14 @@ menu.goui-dropdown {
 			}
 		}
 
+		.radiogroup {
+			>.wrap {
+				.radio {
+					display:block; //makes them stack in rows
+				}
+			}
+		}
+
 		label.goui-form-field.check.box {
 			margin-bottom: 0;
 			.control {

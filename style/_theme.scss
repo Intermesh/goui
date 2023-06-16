@@ -1,0 +1,60 @@
+@mixin light-theme {
+
+		--fg-border:			rgba(68, 68, 68, 0.26);
+		--fg-line:				#{rgba(black, 0.04)};
+
+		--fg-text:           rgb(1, 4, 10);
+		--fg-secondary-text: #{rgba(1, 4, 10, 0.56)};
+
+		--bg-body: 			white;
+		--bg-button:	  	#f1f1f1;
+		--bg-layer: 		#f5f5f5;
+		--bg-side-bar: #efeff2;
+		--bg-header: #1E1246;
+		--bg-primary: #dae3f0;
+
+	//not in GO
+		--bg-focus: 		rgba(2, 119, 189, 0.16);
+		--bg-read-only: #f1f1f1;
+		--bg-input: white;
+	//not in GO
+
+		--bg-hover:      	#{rgba(black, 0.04)};
+		--bg-selected:   	#{rgba(30,18,70, 0.8)};
+		--bg-selected-inactive: #{rgba(black, .08)};
+
+		--c-primary: 		#1652a1;
+		--c-secondary: 	 #00b0ad;
+		--c-accent: 		#ff7200;
+
+}
+
+@mixin dark-theme {
+
+	--fg-border:			rgba(255, 255, 255, 0.3);
+	--fg-line:				#{rgba(white, 0.3)};
+
+	--fg-text:           white;
+	--fg-secondary-text: rgba(255,255,255, 0.7);
+
+
+	--bg-body: 			#1b1b1b;
+	--bg-button:	  transparent;
+	--bg-layer: 		#303030;
+	--bg-side-bar: #343638;
+	--bg-primary: #1652a1;
+
+	--bg-header: #202020;
+
+	//not in GO
+	--bg-focus: 		rgba(2, 119, 189, 0.16);
+	--bg-read-only: #1b1b1b;
+	--bg-input: #272727;
+	//not in GO
+
+	--bg-hover:      rgba(255,255,255, 0.04);
+	--bg-selected: #{rgba(140,90,240,0.8)};
+	--bg-selected-inactive: #4a4a60;
+
+	--c-primary: #009BC9;
+}

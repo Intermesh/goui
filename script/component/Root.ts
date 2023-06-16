@@ -44,6 +44,8 @@ class Root extends Component {
 			// document.head.appendChild(link);
 
 			this.el.classList.add("goui");
+			this.el.classList.add("root");
+
 		}, {
 			once: true
 		})

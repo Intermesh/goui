@@ -4,6 +4,12 @@
 
 $buttonSize: 40px;
 
+menu.goui-dropdown {
+	.datepicker {
+		margin: 0 auto;
+	}
+}
+
 .datepicker {
 	width: 7 * ($buttonSize + 4px) + 8px;
 	position: relative;
@@ -63,7 +69,7 @@ $buttonSize: 40px;
 		cursor: pointer;
 		user-select: none;
 		-webkit-user-select: none;
-		color: rgba(0, 0, 0, 0.87);
+		color: $colorText;
 		&.selected {
 			border-radius: 0;
 			&.head {
@@ -84,7 +90,7 @@ $buttonSize: 40px;
 			bottom: 0;
 		}
 		&.off {
-			color: rgba(0, 0, 0, 0.38);
+			opacity: .4;
 		}
 	}
 

@@ -5,7 +5,9 @@ $borderWidth: 1px;
 $baseLineHeight: dp(20);
 $fontSize: sp(16);
 
+
 @import 'config';
+@import '_theme';
 
 @import 'icons';
 @import 'shadows';

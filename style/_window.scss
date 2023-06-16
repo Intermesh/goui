@@ -1,6 +1,7 @@
 .goui-window-modal-overlay {
-	opacity: .8;
-	background-color: #7b7a7a;
+
+	backdrop-filter: blur(2px);
+
 	top: 0;
 	left:0;
 	bottom:0;
@@ -8,12 +9,21 @@
 	width: 100%;
 	height: 100%;
 	position: fixed;
+	&:after {
+		opacity: .8;
+		background-color: #7b7a7a;
+		top: 0;
+		left:0;
+		bottom:0;
+		right:0;
+		position: absolute;
+		content: " "
+	}
 }
 .goui-window {
 	&.modal {
 		@extend .z24;
-		//box-shadow: 0 0px 20px 0 rgb(0 0 0 / 40%);
-		border: $borderWidth solid rgba(30, 18, 70, 0.6);
+		border: 0;
 	}
 
 	.collapse-btn {
@@ -65,7 +75,7 @@
 		resize: none !important;
 	}
 
-	background-color: white;
+	background-color: var(--bg-body);
 
 	@extend .vbox;
 
@@ -109,22 +119,17 @@
 
 	.header {
 		height: dp(74);
-		color: #313131;
 		background: $colorWindowHeader;
 		position: relative;
-		//border-bottom: 1px solid $colorBorderWindow;
 		margin: 0;
-
 
 		& + *:not(.goui-cardmenu):not(form) {
 			margin-top: 0;
-			//border-top: $borderWidth solid $colorBorderWindow;
 		}
 
 		& + form {
 			&:first-child:not(.goui-cardmenu) {
 				margin-top: 0;
-				//border-top: $borderWidth solid $colorBorderWindow;
 			}
 		}
 	}
@@ -140,8 +145,6 @@
 	.goui-toolbar:last-child:not(:only-child) {
 		padding-left: dp(18);
 		padding-right: dp(18);
-		//background: $colorBackgroundToolbar;
-		//border-top: $borderWidth solid $colorBorderWindow;
 	}
 }
 
