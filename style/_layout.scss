@@ -15,6 +15,10 @@
 	background-color: $colorBackgroundDarker;
 }
 
+.goui.main {
+	background-color: var(--bg-main);
+}
+
 // flow layout. generally used or form fields
 .goui.flow {
 	display: flex;
@@ -127,7 +131,7 @@
 	border: $borderWidth solid $colorBorder;
 	border-radius: dp(12);
 	overflow:hidden;
-	background-color: $colorBackground;
+	background-color: var(--bg-main);
 
 	> .toolbar {
 		background-color: $colorBackgroundDarker;

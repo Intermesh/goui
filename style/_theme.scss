@@ -6,7 +6,9 @@
 		--fg-text:           rgb(1, 4, 10);
 		--fg-secondary-text: #{rgba(1, 4, 10, 0.56)};
 
-		--bg-body: 			white;
+		--bg-body: 			#efeff2;
+	  --bg-box: var(--bg-main); //deprecated used bg-main
+		--bg-main: white;
 		--bg-button:	  	#f1f1f1;
 		--bg-layer: 		#f5f5f5;
 		--bg-side-bar: #efeff2;
@@ -38,7 +40,8 @@
 	--fg-secondary-text: rgba(255,255,255, 0.7);
 
 
-	--bg-body: 			#1b1b1b;
+	--bg-body: 			#343638;
+	--bg-main: #1b1b1b;
 	--bg-button:	  transparent;
 	--bg-layer: 		#303030;
 	--bg-side-bar: #343638;
