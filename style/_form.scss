@@ -127,6 +127,7 @@ $formFieldBorderRadius: dp(10);
 	.wrap {
 		background-color: transparent;
 		border: none;
+		border-radius: 0;
 	}
 
 	.label {
@@ -483,7 +484,7 @@ $formFieldBorderRadius: dp(10);
 			width: dp(50);
 			height: dp(28);
 			overflow:hidden;
-			border: $borderWidth solid $colorBorder;
+			border: $borderWidth solid $colorText;
 			position:relative;
 			border-radius:999px;
 			&::before {
@@ -501,7 +502,7 @@ $formFieldBorderRadius: dp(10);
 				display:block;
 				height: dp(14);
 				width: dp(14);
-				background-color:  rgba(0, 0, 0, 0.48);
+				background-color:  $colorTextSecondary;//rgba(0, 0, 0, 0.48);
 				border-radius:999px;
 			}
 			&:checked {

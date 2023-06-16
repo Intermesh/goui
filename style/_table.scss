@@ -8,10 +8,10 @@
       tr.data.selected {
         background-color: $colorSelectedRow;
         outline: none;
-        color: white;
+        color: var(--fg-selected);
 
         a, i.icon {
-          color: white;
+          color: var(--fg-selected);
         }
       }
     }
