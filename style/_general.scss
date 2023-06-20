@@ -16,17 +16,22 @@
 	background-color: var(--bg-body);
 
 }
-
 .goui {
 	@include light-theme;
+}
 
-	&.dark {
+
+.dark {
+	@include dark-theme;
+	.goui {
 		@include dark-theme;
-		* {
-			color-scheme: dark;
-		}
+	}
+	* {
+		color-scheme: dark;
 	}
 }
+
+
 
 @media (prefers-color-scheme: dark) {
 	.goui.root.system {
