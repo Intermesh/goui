@@ -125,6 +125,14 @@ export class AutocompleteField<T extends List = List> extends TextField {
 		})
 	}
 
+	get value(): any {
+		return this._value;
+	}
+
+	set value(v: any) {
+		super.value = v;
+	}
+
 
 	protected internalRender(): HTMLElement {
 

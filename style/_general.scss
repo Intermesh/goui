@@ -14,6 +14,10 @@
 	color: $colorText;
 	width: 100%; //Needed for modal windows setting it to position fixed, top 0
 	background-color: var(--bg-body);
+
+}
+
+.goui {
 	@include light-theme;
 
 	&.dark {
