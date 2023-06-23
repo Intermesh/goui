@@ -12,7 +12,7 @@ import {
 /**
  * @category Data
  */
-export class RestDataSource<EntityType extends BaseEntity> extends AbstractDataSource<EntityType> {
+export class RestDataSource<EntityType extends BaseEntity = DefaultEntity> extends AbstractDataSource<EntityType> {
 
 	/**
 	 * Constructor
@@ -21,12 +21,28 @@ export class RestDataSource<EntityType extends BaseEntity> extends AbstractDataS
 	 * @param id The Data source ID. Will be appended to the base uri above. for Example
 	 *  if the ID is "users" the uri will be: "https://groupoffice.com/api/users"
 	 */
-	constructor(public readonly uri:string, id: string) {
+	constructor(public readonly uri:string, id?: string) {
+		id = id || "restDataSource";
 		super(id);
 
 		if(uri.substring(-1,1) != "/") {
 			this.uri  = uri + "/";
 		}
+	}
+
+	public read(id :number|number[], path: string="", options: RequestInit={}){
+		if(typeof id === "number") {
+			path += "/" + id;
+		} else {
+			if(path != "" && path.substring(-1,1) != "/") {
+				// path = path + "/";
+			}
+		}
+		return this.request(path, options);
+	}
+
+	public doRequest(path: string="", options: RequestInit={}) {
+		return this.request(path, options);
 	}
 
 	private request(path: string = "", options: RequestInit = {}) {
@@ -40,7 +56,7 @@ export class RestDataSource<EntityType extends BaseEntity> extends AbstractDataS
 			path = "/" + path;
 		}
 
-		return fetch(this.uri + this.id + path, baseOpts).then(response => {
+		return fetch(this.uri + path, baseOpts).then(response => {
 			if (response.status != 200) {
 				throw response.statusText;
 			}

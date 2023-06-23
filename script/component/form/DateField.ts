@@ -76,8 +76,9 @@ export class DateField extends TextField {
 
 	set value(v: string | undefined) {
 		if (v === undefined) {
-			if (this.timefield)
+			if (this.timefield) {
 				this.timefield.value = '';
+			}
 			super.value = '';
 			return;
 		}
@@ -107,7 +108,8 @@ export class DateField extends TextField {
 
 		const timeFormat = this.timefield ? 'TH:i' : '';
 
-		return date.format(this.outputFormat + timeFormat);
+		// return date.format(this.outputFormat + timeFormat);
+		return date.format(this.inputFormat + timeFormat);
 	}
 
 	private getValueAsDateTime() {

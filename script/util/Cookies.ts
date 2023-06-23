@@ -17,10 +17,11 @@ class Cookies {
 	 * @param {string} name
 	 * @param {string} value
 	 * @param {int} maxAge Maximum age in seconds. Leave empty to clear on browser close
+	 * @param {string} path
 	 * @returns {void}
 	 */
-	set(name: string, value: string, maxAge?: number) {
-
+	set(name: string, value: string, maxAge?: number, path?: string) {
+		path = path || document.location.pathname;
 		let maxAgeStr = "";
 		if (maxAge) {
 			maxAgeStr = ";Max-Age=" + maxAge;
@@ -28,7 +29,7 @@ class Cookies {
 		const secure = location.protocol === 'https:' ? ';secure' : '';
 
 		document.cookie = name + "=" + encodeURIComponent(value + "") + maxAgeStr + secure +
-			";path=" + document.location.pathname + ';SameSite=Strict';
+			";path=" + path + ';SameSite=Strict';
 	}
 
 	/**
@@ -56,9 +57,10 @@ class Cookies {
 	 * @param {string} name
 	 * @returns {void}
 	 */
-	unset(name: string) {
+	unset(name: string, path?: string) {
+		path = path || document.location.pathname;
 		document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=' +
-			document.location.pathname + ';SameSite=Strict';
+			path + ';SameSite=Strict';
 	}
 }
 

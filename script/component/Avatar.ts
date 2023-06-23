@@ -31,6 +31,14 @@ export class Avatar extends Component {
 		return this.title;
 	}
 
+	set backgroundImage(imgUrl :string) {
+		this.el.style.backgroundImage = "url("+imgUrl+")";
+	}
+
+	get backgroundImage() :string {
+		return this.el.style.backgroundImage;
+	}
+
 
 	/**
 	 * Grabs the first char of the first and last word.

@@ -159,7 +159,6 @@ export class Store<RecordType = StoreRecord> extends Collection<RecordType> {
 	public hasPrevious() {
 		return false;
 	}
-
 }
 
 
