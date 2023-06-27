@@ -107,7 +107,7 @@ export class ContainerField<ValueType extends ContainerFieldValue = ContainerFie
 			const fieldName = (field.getName ? field.getName() : field.name) as keyof ValueType
 			const fieldVal = field.getValue ? field.getValue() : field.value;
 
-			if (fieldName && !field.disabled && !field.hidden) {
+			if (fieldName && !field.disabled) {
 				if (!formProps[fieldName]) {
 					formProps[fieldName] = fieldVal;
 				} else {
