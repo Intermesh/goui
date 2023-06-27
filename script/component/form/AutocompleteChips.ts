@@ -188,6 +188,9 @@ export class AutocompleteChips<T extends List = List> extends ChipsField {
 	}
 
 	private onMenuHide() {
+		if(!this.menu.rendered) {
+			return;
+		}
 		const keys : Record<string, boolean> = {};
 
 		const newValues = this.list.rowSelection!.selected.map((index) => {
