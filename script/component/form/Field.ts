@@ -81,6 +81,7 @@ export abstract class Field extends Component {
 	private _buttons?: Button[];
 	private toolbar?: Toolbar;
 	private _wrap?: HTMLDivElement;
+	private _labelEl?: HTMLElement;
 
 	constructor(tagName: keyof HTMLElementTagNameMap = "label") {
 		super(tagName);
@@ -212,12 +213,17 @@ export abstract class Field extends Component {
 		return this.hintEl;
 	}
 
-	protected createLabel(): HTMLDivElement | void {
+	protected createLabel(): HTMLElement | void {
+		this._labelEl = E('div', this.getLabelText()).cls('label');
+		return this._labelEl;
+	}
+
+	private getLabelText() {
 		let labelText = this._label;
 		if(this._required) {
 			labelText += '*';
 		}
-		return E('div', labelText).cls('label')
+		return labelText;
 	}
 
 	/**
@@ -244,6 +250,9 @@ export abstract class Field extends Component {
 	 */
 	public set required(required: boolean) {
 		this._required = required;
+		if(this._labelEl) {
+			this._labelEl.innerHTML = this.getLabelText();
+		}
 	}
 
 
@@ -256,6 +265,9 @@ export abstract class Field extends Component {
 	 */
 	public set label(label: string) {
 		this._label = label;
+		if(this._labelEl) {
+			this._labelEl.innerHTML = this.getLabelText();
+		}
 	}
 
 	public get hint() {
