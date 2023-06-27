@@ -213,7 +213,11 @@ export abstract class Field extends Component {
 	}
 
 	protected createLabel(): HTMLDivElement | void {
-		return E('div', this._label).cls('label')
+		let labelText = this._label;
+		if(this._required) {
+			labelText += '*';
+		}
+		return E('div', labelText).cls('label')
 	}
 
 	/**
