@@ -1,12 +1,9 @@
-import {TextAreaField} from "./TextareaField.js";
-import {TextField} from "./TextField.js";
 import {Field, FieldEventMap} from "./Field";
 import {comp, Component, createComponent} from "../Component";
 import {Config} from "../Observable";
-import {AutocompleteEventMap, AutocompleteField} from "./AutocompleteField";
-import {E} from "../../util/Element.js";
 import {btn} from "../Button";
 import {t} from "../../Translate";
+
 export class ChipsField extends Field {
 
 	protected baseCls = 'goui-form-field chips';
@@ -41,6 +38,12 @@ export class ChipsField extends Field {
 		})
 
 
+		this.chipsContainer = document.createElement("div");
+		this.chipsContainer.classList.add("control-wrap");
+
+		this.wrap!.append(this.chipsContainer);
+
+
 		this._editor = comp({
 			id: Component.uniqueID(),
 			attr: {
@@ -70,7 +73,7 @@ export class ChipsField extends Field {
 			this.clearSelection();
 		})
 
-		this._editor.render(this.wrap!);
+		this._editor.render(this.chipsContainer!);
 
 		this.items.add(this._editor);
 
@@ -132,7 +135,7 @@ export class ChipsField extends Field {
 	}
 
 	protected get itemContainerEl(): HTMLElement {
-		return this.wrap!;
+		return this.chipsContainer!;
 	}
 
 	private selectedIndex = -1;
@@ -185,6 +188,7 @@ export class ChipsField extends Field {
 
 	protected internalSetValue(v: any[], old: any) {
 		if(this.rendered) {
+			debugger;
 			//remove all chips except the editor (last item).
 			for(let i = 0; i < this.items.count() -1; i++) {
 				this.items.removeAt(i);
@@ -205,6 +209,9 @@ export class ChipsField extends Field {
 	}
 
 	private renderValue() {
+		if(!this.value) {
+			return;
+		}
 		this.value.forEach((v:any) => {
 			const chip =  this.createChip();
 

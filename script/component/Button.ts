@@ -205,12 +205,6 @@ export class Button extends Component {
 		}
 	}
 
-
-	/**
-	 * Align menu to this component when it's shown. If not set it will align to the button.
-	 */
-	public menuAlignTo: HTMLElement | undefined;
-
 	/**
 	 * Add menu to this button
 	 */
@@ -231,15 +225,23 @@ export class Button extends Component {
 
 	public showMenu() {
 
-		if(!this._menu?.hidden) {
+		if(!this._menu) {
+			return;
+		}
+
+		if(!this._menu.hidden) {
 			return;
 		}
 
 		// noinspection PointlessBooleanExpressionJS
-		if (this.fire("beforeshowmenu", this, this._menu!) === false) {
+		if (this.fire("beforeshowmenu", this, this._menu) === false) {
 			return;
 		}
-		this._menu!.showFor(this.menuAlignTo ?? this.el);
+		if(!this._menu.alignTo) {
+			this._menu.alignTo = this.el;
+		}
+
+		this._menu.show();
 
 		this.fire("showmenu", this, this._menu!);
 	}

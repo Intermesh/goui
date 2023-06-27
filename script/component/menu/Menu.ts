@@ -9,6 +9,7 @@ import {root} from "../Root.js";
 import {Button} from "../Button.js";
 import {Toolbar} from "../Toolbar.js";
 import {Config} from "../Observable";
+import HTML = Mocha.reporters.HTML;
 
 
 /**
@@ -90,6 +91,16 @@ export class Menu extends Toolbar {
 		this.orientation = "vertical";
 	}
 
+	/**
+	 * Align the menu to this element
+	 */
+	public alignTo?: HTMLElement;
+
+	/**
+	 * Make the menu at least as wide as the component it aligns too.
+	 */
+	public alignToInheritWidth = false;
+
 	public renderTo? = root.el;
 
 	/**
@@ -125,6 +136,8 @@ export class Menu extends Toolbar {
 					break;
 			}
 		});
+
+		this.renderAlignTo();
 
 		return el;
 	}
@@ -188,41 +201,50 @@ export class Menu extends Toolbar {
 	 * @param cmp
 	 */
 	showFor(alignEl: HTMLElement) {
-		const rect = alignEl.getBoundingClientRect();
 
-		if(!this.parent) {
-			root.items.add(this);
-		}
-
-		if(!this.rendered) {
-			this.render();
-		}
+		this.alignTo = alignEl;
 
 		//show first for positioning correctly below
 		this.show();
-
-		// make the menu at least as wide as the component it aligns too.
-		//this.el.style.minWidth = rect.width + "px";
-
-		this.showAt({
-			x: this.expandLeft ? rect.right - this.width : rect.x,
-			y: rect.bottom
-		});
-
-		//put back fade out class removed in mouseenter listener above
-		this.el.classList.add("goui-fade-out");
 	}
 
 
-	/**
-	 * Show menu at coordinates on the page
-	 *
-	 * @param coords
-	 */
-	showAt(coords: { x: number, y: number } | MouseEvent) {
-		this.el.style.left = coords.x + "px";
-		this.el.style.top = coords.y + "px";
 
+	private renderAlignTo() {
+		if(!this.alignTo) {
+			return;
+		}
+		const rect = this.alignTo.getBoundingClientRect();
+
+		this.x = this.expandLeft ? rect.right - this.width : rect.x;
+		this.y = rect.bottom;
+
+		if(this.alignToInheritWidth) {
+			// make the menu at least as wide as the component it aligns too.
+			this.el.style.minWidth = rect.width + "px";
+		}
+	}
+
+	/**
+	 * Set X coordinate
+	 *
+	 * @param x
+	 */
+	public set x(x:number) {
+		this.el.style.left = x + "px";
+	}
+
+	/**
+	 * Set Y coordinate
+	 *
+	 * @param y
+	 */
+	public set y(y:number) {
+		this.el.style.top = y + "px";
+	}
+
+
+	show(): boolean {
 		if(!this.parent) {
 			root.items.add(this);
 		}
@@ -232,10 +254,8 @@ export class Menu extends Toolbar {
 		}
 
 		if(Menu.openedMenu == this) {
-			return;
+			return true;
 		}
-
-		this.show();
 
 		if (Menu.openedMenu) {
 			Menu.openedMenu.el.classList.remove("goui-fade-out");
@@ -249,10 +269,28 @@ export class Menu extends Toolbar {
 			this.close();
 		}, {once: true});
 
-		// stop clicks on menu from hiding menu. Otherwise it hides before button handlers fire.
+		// stop clicks on menu from hiding menu, otherwise it hides before button handlers fire.
 		this.el.addEventListener("mousedown", (ev) => {
 			ev.stopPropagation();
 		});
+
+		//put back fade out class removed in mouseenter listener above
+		this.el.classList.add("goui-fade-out");
+
+		return super.show();
+	}
+
+
+	/**
+	 * Show menu at coordinates on the page
+	 *
+	 * @param coords
+	 */
+	showAt(coords: { x: number, y: number } | MouseEvent) {
+		this.x = coords.x;
+		this.y = coords.y;
+
+		this.show();
 	}
 
 	public close() {
