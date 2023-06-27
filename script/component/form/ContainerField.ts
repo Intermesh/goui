@@ -87,7 +87,7 @@ export class ContainerField<ValueType extends ContainerFieldValue = ContainerFie
 		return field;
 	}
 
-	set value(v: ValueType) {
+	set value(v: Partial<ValueType>) {
 
 		for (let name in v) {
 			// We cast to any[] for Ext compatibility. We try setValue() for Ext if it exists
@@ -98,7 +98,7 @@ export class ContainerField<ValueType extends ContainerFieldValue = ContainerFie
 		super.value = v;
 	}
 
-	public get value(): ValueType {
+	public get value(): Partial<ValueType> {
 
 		const formProps: ValueType = super.value || {};
 

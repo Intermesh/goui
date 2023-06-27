@@ -26,7 +26,7 @@ export class DataSourceForm<ValueType extends BaseEntity = DefaultEntity> extend
 
 				let response;
 				if (this.currentId) {
-					response = this.dataSource.update(v);
+					response = this.dataSource.update(v as ValueType);
 				} else {
 					response = this.dataSource.create(v);
 				}

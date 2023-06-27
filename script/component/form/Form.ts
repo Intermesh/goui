@@ -54,8 +54,8 @@ export interface Form<ValueType extends ContainerFieldValue = ContainerFieldValu
 
 	get el(): HTMLFormElement
 
-	get value(): ValueType
-	set value(v:ValueType)
+	get value(): Partial<ValueType>
+	set value(v:Partial<ValueType>)
 }
 
 /**
@@ -201,7 +201,7 @@ export class Form<ValueType extends ContainerFieldValue = ContainerFieldValue> e
 	 *
 	 * @param v
 	 */
-	setValues(v: ValueType) {
+	setValues(v: Partial<ValueType>) {
 		this.value = v;
 	}
 
