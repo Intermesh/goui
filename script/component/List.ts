@@ -124,7 +124,7 @@ root.items.add(dropPin);
 /**
  * List component
  *
- * Create a list with a custom item renderer. Also capable for selecting rows.
+ * Create a list with a custom item renderer. Also capable of selecting rows.
  */
 export class List<StoreType extends Store = Store> extends Component {
 	/**
@@ -365,6 +365,9 @@ export class List<StoreType extends Store = Store> extends Component {
 		if (this.draggable) {
 			row.draggable = true;
 			row.ondragstart = this.onNodeDragStart.bind(this);
+		}
+		if (this.rowSelection && this.rowSelection.selected.indexOf(storeIndex) > -1) {
+			row.classList.add("selected");
 		}
 
 		this.bindDropEvents(row);

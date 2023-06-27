@@ -710,7 +710,7 @@ div.color-dot {
 
 	&.has-chips {
 		.wrap {
-			.editor {
+			.control-wrap {
 				@extend %float-label;
 			}
 		}
@@ -731,12 +731,19 @@ div.color-dot {
 	.wrap {
 		cursor: text;
 		&:focus-within {
-			.editor {
+			.control-wrap {
 				@extend %float-label;
 			}
 		}
-		display: block;
-		overflow: hidden;
+		display: flex;
+
+		.control-wrap {
+			display:block;
+			flex: 1;
+			overflow: hidden;
+
+		}
+
 
 		.chip {
 			float: left;

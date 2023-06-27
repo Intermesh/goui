@@ -4,6 +4,9 @@ import {Config} from "../Observable";
 import {btn} from "../Button";
 import {t} from "../../Translate";
 
+/**
+ * Chips component
+ */
 export class ChipsField extends Field {
 
 	protected baseCls = 'goui-form-field chips';
@@ -11,7 +14,9 @@ export class ChipsField extends Field {
 	private chipsContainer?: HTMLDivElement;
 
 	/**
-	 * Function that transforms the user text input to a chip
+	 * Function that transforms the user text input to a chip.
+	 *
+	 * If it returns an empty value no chip will be rendered
 	 *
 	 * @param text
 	 */
@@ -89,6 +94,9 @@ export class ChipsField extends Field {
 				ev.preventDefault();
 				const chip =  this.createChip();
 				this.textInputToValue(this._editor!.text).then((value) => {
+					if(!value) {
+						return;
+					}
 					return this.chipRenderer(chip, value).then(() => {
 						this.items.insert(-1, chip);
 					})
@@ -188,7 +196,6 @@ export class ChipsField extends Field {
 
 	protected internalSetValue(v: any[], old: any) {
 		if(this.rendered) {
-			debugger;
 			//remove all chips except the editor (last item).
 			for(let i = 0; i < this.items.count() -1; i++) {
 				this.items.removeAt(i);

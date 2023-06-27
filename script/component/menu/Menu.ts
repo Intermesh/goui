@@ -137,8 +137,6 @@ export class Menu extends Toolbar {
 			}
 		});
 
-		this.renderAlignTo();
-
 		return el;
 	}
 
@@ -210,7 +208,7 @@ export class Menu extends Toolbar {
 
 
 
-	private renderAlignTo() {
+	private setAlignTo() {
 		if(!this.alignTo) {
 			return;
 		}
@@ -252,6 +250,8 @@ export class Menu extends Toolbar {
 		if(!this.rendered) {
 			this.render();
 		}
+
+		this.setAlignTo();
 
 		if(Menu.openedMenu == this) {
 			return true;
