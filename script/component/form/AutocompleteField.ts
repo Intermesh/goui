@@ -141,7 +141,8 @@ export class AutocompleteField<T extends List = List> extends TextField {
 
 		const el = super.internalRender();
 
-		this.menuButton.menuAlignTo = this.wrap;
+		this.menu.alignTo = this.wrap;
+		this.menu.alignToInheritWidth = true;
 
 		this._input!.addEventListener('input', FunctionUtil.buffer(this.buffer, this.onInput.bind(this)))
 
