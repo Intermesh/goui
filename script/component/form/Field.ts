@@ -119,7 +119,6 @@ export abstract class Field extends Component {
 		this.el.addEventListener("focusout", (e) => {
 			// When a user clicks a button, perhaps submit or navigates then don't validate
 			if (!e.relatedTarget || (<HTMLElement>e.relatedTarget).tagName != "BUTTON") {
-				this.clearInvalid();
 				this.validate();
 			}
 
@@ -361,6 +360,9 @@ export abstract class Field extends Component {
 	}
 
 	protected validate() {
+
+		this.clearInvalid();
+
 		if (this._required && this.isEmpty()) {
 			this.setInvalid(t("This field is required"));
 		}

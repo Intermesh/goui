@@ -55,6 +55,8 @@ export class DateField extends TextField {
 			this.date = val;
 			super.value = val.format(this.inputFormat);
 			this.pickerButton.menu!.hide();
+			this.clearInvalid();
+			this.focus();
 		});
 
 		this.pickerButton.menu!.on("show", () => {

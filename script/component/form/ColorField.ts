@@ -44,6 +44,8 @@ export class ColorField extends Field {
 		this.picker.on('select', (colorPicker, val) => {
 			this.value = val;
 			this.pickerButton.menu!.hide();
+			this.clearInvalid();
+			this.focus();
 		});
 
 		return this.colorDot;

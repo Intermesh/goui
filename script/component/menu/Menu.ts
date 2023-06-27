@@ -202,7 +202,7 @@ export class Menu extends Toolbar {
 		this.show();
 
 		// make the menu at least as wide as the component it aligns too.
-		this.el.style.minWidth = rect.width + "px";
+		//this.el.style.minWidth = rect.width + "px";
 
 		this.showAt({
 			x: this.expandLeft ? rect.right - this.width : rect.x,

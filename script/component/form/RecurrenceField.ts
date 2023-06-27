@@ -41,6 +41,8 @@ export class RecurrenceField extends Field {
 			this.value = val;
 			input.value = this.toText(val!);
 			this.pickerButton.menu!.hide();
+			this.clearInvalid();
+			this.focus();
 		});
 		return input;
 	}
