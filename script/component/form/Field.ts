@@ -115,9 +115,18 @@ export abstract class Field extends Component {
 	 */
 	protected oldValue?: string;
 
-	protected validateOnBlur() {
+	/**
+	 * Validate the field on blur
+	 */
+	public validateOnBlur = true;
+
+	private _validateOnBlur() {
 		// Validate field on blur
 		this.el.addEventListener("focusout", (e) => {
+
+			if(!this.validateOnBlur) {
+				return;
+			}
 			// When a user clicks a button, perhaps submit or navigates then don't validate
 			if (!e.relatedTarget || (<HTMLElement>e.relatedTarget).tagName != "BUTTON") {
 				this.validate();
@@ -130,7 +139,7 @@ export abstract class Field extends Component {
 
 		const el = super.internalRender();
 
-		this.validateOnBlur();
+		this._validateOnBlur();
 
 		this.renderControl();
 

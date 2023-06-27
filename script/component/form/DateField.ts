@@ -34,6 +34,7 @@ export class DateField extends TextField {
 
 	constructor() {
 		super();
+		let origValidateOnBlur = true;
 		this.picker = datepicker({showWeekNbs: false});
 		this.buttons = [
 			this.pickerButton = btn({
@@ -41,7 +42,16 @@ export class DateField extends TextField {
 				menu:
 					menu({
 							alignTo:  this.el,
-							alignToInheritWidth: false
+							alignToInheritWidth: false,
+							listeners: {
+								beforeshow: () => {
+									origValidateOnBlur = this.validateOnBlur;
+									this.validateOnBlur = false;
+								},
+								hide: () => {
+									this.validateOnBlur = origValidateOnBlur;
+								}
+							}
 						},
 						this.picker
 					)

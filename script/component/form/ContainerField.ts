@@ -157,9 +157,10 @@ export class ContainerField<ValueType extends ContainerFieldValue = ContainerFie
 		});
 	}
 
-	protected validateOnBlur() {
-		//not needed on container field
-	}
+	/**
+	 * Not needed on container field as the fields within handle this.
+	 */
+	public validateOnBlur = false;
 
 	protected applyInvalidMsg() {
 		if (this.invalidMsg) {
