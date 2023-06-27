@@ -1,7 +1,7 @@
 import {Table} from "../table";
-import {store, storeRecordType} from "../../data";
+import {storeRecordType} from "../../data";
 import {Component, ComponentEventMap, createComponent} from "../Component";
-import {list, List, listStoreType} from "../List";
+import {List, listStoreType} from "../List";
 import {Config, ObservableListener, ObservableListenerOpts} from "../Observable";
 
 

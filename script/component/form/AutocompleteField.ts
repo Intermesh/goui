@@ -13,7 +13,7 @@ import {Component, createComponent} from "../Component.js";
 import {List, listStoreType} from "../List";
 import {listpicker} from "../picker";
 import {Menu, menu} from "../menu";
-import {Store, store, StoreRecord, storeRecordType} from "../../data";
+import {storeRecordType} from "../../data";
 
 export interface AutocompleteEventMap<Type> extends FieldEventMap<Type> {
 	/**
