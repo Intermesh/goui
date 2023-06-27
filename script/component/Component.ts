@@ -504,12 +504,14 @@ export class Component extends Observable {
 		const eventName = hidden ? "hide" : "show";
 
 		// noinspection PointlessBooleanExpressionJS
-		if (this.fire("before" + eventName as keyof ComponentEventMap<Component>, this) === false) {
+		if (this.rendered && this.fire("before" + eventName as keyof ComponentEventMap<Component>, this) === false) {
 			return;
 		}
 		this.el.hidden = hidden;
 
-		this.fire(eventName, this);
+		if(this.rendered) {
+			this.fire(eventName, this);
+		}
 	}
 
 	get hidden() {
