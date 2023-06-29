@@ -17,7 +17,7 @@ export class Avatar extends Component {
 	];
 
 	set displayName(displayName: string) {
-		this.html = this.initials(displayName);
+		this.text = this.initials(displayName);
 		this.title = displayName;
 
 		let j = 0;
@@ -31,8 +31,11 @@ export class Avatar extends Component {
 		return this.title;
 	}
 
-	set backgroundImage(imgUrl :string) {
-		this.el.style.backgroundImage = "url("+imgUrl+")";
+	set backgroundImage(imgUrl: string | undefined) {
+		this.el.style.backgroundImage = imgUrl ? "url("+imgUrl+")" : "none";
+		if(imgUrl) {
+			this.text = "";
+		}
 	}
 
 	get backgroundImage() :string {
