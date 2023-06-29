@@ -5,7 +5,7 @@
  */
 
 import {E} from "../../util/Element.js";
-import {createComponent} from "../Component.js";
+import {Component, createComponent} from "../Component.js";
 import {Field, FieldEventMap} from "./Field.js";
 import {Config} from "../Observable";
 
@@ -54,6 +54,9 @@ export class RadioField extends Field {
 
 	protected createControl(): undefined | HTMLElement {
 
+		if(!this.name && !this.itemId) {
+			this.itemId = "radio-" + Component.uniqueID();
+		}
 
 		const label = E("h3").cls("legend");
 		label.innerText = this.label;

@@ -23,7 +23,7 @@ type RecordBuilder<EntityType, StoreRecord> = (entity: EntityType) => Promise<St
  */
 export class DataSourceStore<EntityType extends BaseEntity = DefaultEntity, StoreRecord = EntityType> extends Store<StoreRecord> {
 
-	public queryParams: QueryParams = {};
+	public queryParams: Omit<QueryParams, "sort"> = {};
 
 	public hasMore = false;
 
@@ -67,14 +67,15 @@ export class DataSourceStore<EntityType extends BaseEntity = DefaultEntity, Stor
 
 	protected async internalLoad(append = false) {
 
-		this.queryParams.sort = this.sort;
+		const queryParams:QueryParams = structuredClone(this.queryParams);
+		queryParams.sort = this.sort;
 
-		if (this.queryParams.limit) {
+		if (queryParams.limit) {
 			//to see if the remote has more data we query one ID more.
-			this.queryParams.limit++;
+			queryParams.limit++;
 		}
 
-		const queryResponse = await this.dataSource.query(this.queryParams);
+		const queryResponse = await this.dataSource.query(queryParams);
 
 		if (this.queryParams.limit) {
 			// check if the server has more data.

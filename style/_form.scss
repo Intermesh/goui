@@ -113,15 +113,17 @@ $formFieldBorderRadius: dp(10);
 			}
 		}
 
+		input:checked + span.box-label {
+			background-color: $colorFocus;
+		}
+
 		.box-label {
 			@extend .goui-button;
 		}
 		input {
 			margin: 0;
 		}
-		input:checked + span {
-			background-color: $colorFocus;
-		}
+
 	}
 
 	.wrap {
@@ -437,13 +439,11 @@ $formFieldBorderRadius: dp(10);
 
 			.radio {
 
-
-
 				background-color: $colorBackgroundInput;
 				border: 1px solid $colorBorder;
 				border-radius: dp(12);
 
-				&:focus-within {
+				&:focus-visible {
 					border-color: $colorPrimary;
 				}
 

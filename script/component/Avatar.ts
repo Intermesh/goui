@@ -18,11 +18,11 @@ export class Avatar extends Component {
 
 	set displayName(displayName: string) {
 		this.html = this.initials(displayName);
-		this.title = this.displayName;
+		this.title = displayName;
 
 		let j = 0;
 		for (let i = 0, l = this.displayName.length; i < l; i++) {
-			j += this.displayName.charCodeAt(i);
+			j += displayName.charCodeAt(i);
 		}
 		this.el.style.backgroundColor = "#" + Avatar.colors[j % Avatar.colors.length];
 	}
