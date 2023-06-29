@@ -218,15 +218,15 @@ hr.goui {
 .goui.goui-avatar {
 	cursor: default;
 	position: relative;
-	display: inline-block;
+	display: block;
 	color:white;
 	padding: 0;
 	background-color: $colorTextSecondary;
 	background-size: cover;
 	border-radius: 50%;
-	width: dp(40);
-	height: dp(40);
-	line-height: dp(40);
+	width: $baseLineHeight + dp(22);
+	height: $baseLineHeight + dp(22);
+	line-height: $baseLineHeight + dp(22);
 	font-size: dp(16);
 	text-align: center;
 	overflow: hidden;

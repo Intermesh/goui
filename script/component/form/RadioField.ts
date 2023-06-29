@@ -43,7 +43,7 @@ export class RadioField extends Field {
 	protected baseCls = 'goui-form-field radiogroup';
 
 	constructor(type: RadioType = 'box') {
-		super('fieldset');
+		super('div');
 		this.type = type;
 		this.el.cls(type, true);
 	}

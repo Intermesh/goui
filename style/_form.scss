@@ -15,6 +15,10 @@ $formFieldBorderRadius: dp(10);
 		color: $colorTextSecondary;
 		font: $fontBase;
 		margin: dp(24) 0 dp(8) 0;
+
+		&:empty {
+			display: none;
+		}
 	}
 
 	@extend %boxgroup;
@@ -106,7 +110,7 @@ $formFieldBorderRadius: dp(10);
 
 			span.box-label {
 				//put here and not below for extra strong rules
-				padding: dp(9) dp(18);
+				padding: dp(8) dp(18);
 
 				font-weight:normal;
 				margin:0;
@@ -247,11 +251,11 @@ $formFieldBorderRadius: dp(10);
 	position: relative;
 
 	&:focus-within {
-		.wrap {
+		>.wrap {
 			border-color: $colorPrimary;
 		}
 
-		.label {
+		>.label {
 			color: $colorPrimary;
 		}
 	}

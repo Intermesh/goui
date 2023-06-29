@@ -49,6 +49,7 @@ export class SearchButton extends Button {
 
 			buttons: [
 				btn({
+					type: "button",
 					icon: "clear",
 					handler: () => {
 						this.reset();
@@ -59,7 +60,21 @@ export class SearchButton extends Button {
 
 		this.searchField.on("render", () => {
 			this.searchField.input!.addEventListener('input', FunctionUtil.buffer(this.buffer, this.onInput.bind(this)))
+
+			this.searchField.el.addEventListener('keydown', (e:KeyboardEvent) => {
+				if(e.key == "Enter") {
+					e.preventDefault();
+					e.stopPropagation();
+				}
+
+				if(e.key == "Escape") {
+					e.preventDefault();
+					e.stopPropagation();
+					this.close();
+				}
+			})
 		})
+
 
 
 	}
@@ -79,15 +94,18 @@ export class SearchButton extends Button {
 		this.fire("reset", this);
 		this.fire("input", this, "");
 		this.el.classList.remove("accent");
+		this.el.classList.remove("filled");
 	}
 
 	public close() {
 		this.searchTBar!.hide();
 		this.mainTbar!.show();
+		this.focus();
 	}
 
 	private onInput() {
 		this.el.classList.toggle("accent", !!this.searchField.value);
+		this.el.classList.toggle("filled", !!this.searchField.value);
 		this.fire("input", this, this.searchField.value);
 	}
 
