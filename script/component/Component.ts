@@ -131,7 +131,6 @@ export type ComponentState = Record<string, any>;
  */
 export class Component extends Observable {
 
-	public test:unknown;
 	protected _cls?: string;
 
 	/**
