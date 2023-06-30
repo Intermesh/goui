@@ -69,6 +69,7 @@ export class Window extends DraggableComponent {
 		super();
 		this.resizable = true;
 		this.width = 400;
+		this.hidden = true;
 	}
 
 	protected baseCls = "goui-window"
