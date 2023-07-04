@@ -154,6 +154,17 @@ export class TextField extends Field {
 		return super.name;
 	}
 
+	set readOnly(readOnly: boolean) {
+		super.readOnly = readOnly;
+		if(this._input) {
+			this._input.readOnly = this.readOnly;
+		}
+	}
+
+	get readOnly() {
+		return super.readOnly;
+	}
+
 	protected validate() {
 		super.validate();
 
