@@ -87,6 +87,17 @@ export class CheckboxField extends Field {
 		return control;
 	}
 
+	set readOnly(readOnly: boolean) {
+		super.readOnly = readOnly;
+		if(this.input) {
+			this.input.readOnly = this.readOnly;
+		}
+	}
+
+	get readOnly() {
+		return super.readOnly;
+	}
+
 	setInvalid(msg: string) {
 
 		super.setInvalid(msg);

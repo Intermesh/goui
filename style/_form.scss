@@ -176,9 +176,6 @@ $formFieldBorderRadius: dp(10);
 	color: $colorText;
 	display: block;// for text area which has inline-block by default and gets some extra margin
 	border-radius: $formFieldBorderRadius - $borderWidth;
-	&:read-only:not(select) {
-		background-color: $colorBackgroundReadOnly;
-	}
 
 	&::placeholder {
 		transition: all 200ms linear;
@@ -193,6 +190,7 @@ $formFieldBorderRadius: dp(10);
 	&+div.label, &+.goui-toolbar+div.label {
 		font-size: sp(13);
 		top: 0;
+		left: dp(16);
 	}
 }
 
@@ -206,7 +204,23 @@ $formFieldBorderRadius: dp(10);
 .goui-form-field {
 	display: block;
 	//border-radius: $formFieldBorderRadius;
+
+	&.readonly {
+		.wrap {
+			background-color: $colorBackgroundReadOnly;
+			div.label {
+				background-color: $colorBackgroundReadOnly;
+			}
+		}
+	}
 	.wrap {
+
+		> i {
+			width: dp(24);
+			height: dp(24);
+			margin: dp(11) dp(0) dp(11) dp(16);
+		}
+
 		overflow:hidden;
 		display: flex;
 		flex-flow: row nowrap;
@@ -244,6 +258,15 @@ $formFieldBorderRadius: dp(10);
 		}
 	}
 
+	&.with-icon {
+		div.label {
+			left: dp(48);
+		}
+		input {
+			padding-left: dp(10);
+		}
+	}
+
 	+ hr {
 		margin-top: 0;
 	}
@@ -253,10 +276,14 @@ $formFieldBorderRadius: dp(10);
 	&:focus-within {
 		>.wrap {
 			border-color: $colorPrimary;
-		}
 
-		>.label {
-			color: $colorPrimary;
+			> i {
+				color: $colorPrimary;
+			}
+
+			>.label {
+				color: $colorPrimary;
+			}
 		}
 	}
 
@@ -311,7 +338,9 @@ $formFieldBorderRadius: dp(10);
 		height: $borderWidth;
 		background-color: $colorBackgroundInput;
 
-		transition: all 200ms linear;
+		//transition: all 100ms linear;
+
+		transition: all .15s cubic-bezier(.4,0,.2,1);
 
 		//below performs better but looks ugly on windows :(
 		will-change: top, font-size;
@@ -324,6 +353,7 @@ $formFieldBorderRadius: dp(10);
 	&.no-floating-label {
 		div.label {
 			top: 0;
+			left: dp(16);
 			font-size: sp(13);
 		}
 	}
@@ -339,11 +369,17 @@ $formFieldBorderRadius: dp(10);
 		.wrap {
 			border-color: $colorError;
 			background-color: $colorErrorBg;
+			> i {
+				color: $colorError;
+			}
+
+			> .label {
+				background-color: $colorErrorBg;
+				color: $colorError;
+			}
 		}
-		.label {
-			background-color: $colorErrorBg;
-		}
-		.hint, .label {
+
+		.hint {
 			color: $colorError;
 		}
 

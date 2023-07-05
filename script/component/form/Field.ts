@@ -10,6 +10,7 @@ import {Button} from "../Button.js";
 import {tbar, Toolbar} from "../Toolbar.js";
 import {t} from "../../Translate.js";
 import {E} from "../../util/Element.js";
+import {MaterialIcon} from "../MaterialIcon";
 
 
 /**
@@ -82,6 +83,8 @@ export abstract class Field extends Component {
 	private toolbar?: Toolbar;
 	private _wrap?: HTMLDivElement;
 	private _labelEl?: HTMLElement;
+	private _icon: MaterialIcon | "" | undefined;
+	private iconEl?: HTMLElement;
 
 	constructor(tagName: keyof HTMLElementTagNameMap = "label") {
 		super(tagName);
@@ -173,24 +176,39 @@ export abstract class Field extends Component {
 
 	protected renderControl() {
 
+		// const icon = this.createIcon();
+		// if(icon) {
+		// 	this.wrap.append(icon);
+		// }
+
 		const control = this.createControl();
 		if (control) {
 			this.wrap!.append(control.cls('+control'));
 		}
+
 		// label must follow input so we can make the transform transition with pure css with input::focus & input::placeholder-shown + label
 		const label = this.createLabel();
 		if (label) {
 			this.wrap!.append(label);
 		}
 
+		this.renderButtons();
+
+		const hint = this.createHint();
+		if (hint) {
+			this.el.appendChild(hint);
+		}
+	}
+
+	private renderButtons() {
 		if (this._buttons) {
 			this.toolbar = tbar({}, ...this._buttons);
 			this.toolbar.parent = this;
 			this.toolbar.render(this.wrap);
-		}
-		const hint = this.createHint();
-		if (hint) {
-			this.el.appendChild(hint);
+		} else {
+			if(this.toolbar) {
+				this.toolbar.remove();
+			}
 		}
 	}
 
@@ -211,6 +229,10 @@ export abstract class Field extends Component {
 	 */
 	public set buttons(buttons: Button[] | undefined) {
 		this._buttons = buttons;
+
+		if(this.rendered) {
+			this.renderButtons();
+		}
 	}
 
 	public get buttons() {
@@ -262,6 +284,9 @@ export abstract class Field extends Component {
 		if(this._labelEl) {
 			this._labelEl.innerHTML = this.getLabelText();
 		}
+		if (this.rendered) {
+			this.clearInvalid();
+		}
 	}
 
 
@@ -277,6 +302,21 @@ export abstract class Field extends Component {
 		if(this._labelEl) {
 			this._labelEl.innerHTML = this.getLabelText();
 		}
+	}
+
+
+	public get icon() {
+		return this._icon;
+	}
+
+	/**
+	 * The field's label
+	 */
+	public set icon(icon: MaterialIcon | "" | undefined) {
+		this._icon = icon;
+
+		this.createIcon()
+
 	}
 
 	public get hint() {
@@ -299,6 +339,8 @@ export abstract class Field extends Component {
 	 * Make the field read only
 	 */
 	public set readOnly(readOnly: boolean) {
+
+		this.el.classList.toggle("readonly", readOnly);
 		this._readOnly = readOnly;
 	}
 
@@ -432,5 +474,30 @@ export abstract class Field extends Component {
 			console.warn("Field '" + this.name + "' is invalid: " + this.invalidMsg, this);
 		}
 		return this.invalidMsg == "";
+	}
+
+	private createIcon() {
+
+		if(this._icon) {
+			if(!this.iconEl) {
+				this.iconEl = E("i").cls("icon");
+			}
+
+			this.iconEl.innerText = this._icon;
+
+			this.el.classList.add("with-icon");
+
+			if(this.wrap) {
+				this.wrap.insertBefore(this.iconEl, this.wrap.firstChild);
+			}
+
+			return this.iconEl;
+		} else {
+			if(this.iconEl) {
+				this.iconEl.remove();
+				this.el.classList.remove("with-icon");
+			}
+		}
+
 	}
 }
