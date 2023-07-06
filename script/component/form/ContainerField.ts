@@ -135,7 +135,7 @@ export class ContainerField<ValueType extends ContainerFieldValue = ContainerFie
 
 		let invalid = undefined;
 		items.forEach((field) => {
-			if (!field.isValid()) {
+			if (!field.disabled && !field.isValid()) {
 				invalid = field;
 			}
 		});
