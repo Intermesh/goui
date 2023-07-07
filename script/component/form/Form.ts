@@ -13,7 +13,7 @@ import {t} from "../../Translate.js";
 import {AbstractDataSource, BaseEntity, DefaultEntity, EntityID} from "../../data/index.js";
 
 
-export interface FormEventMap<Type> extends FieldEventMap<Type> {
+export interface FormEventMap<Type, ValueType extends ContainerFieldValue = ContainerFieldValue> extends FieldEventMap<Type> {
 	/**
 	 * Fires when the form is submitted. The event is fired after calling the handler.
 	 *
@@ -29,32 +29,16 @@ export interface FormEventMap<Type> extends FieldEventMap<Type> {
 	 * @param form
 	 */
 	cancel: (form: Type) => any
-
-	saved: (form: Type, response: any) => any
-
-	/**
-	 * When the data is fetched from the store. but before it is put into the fields
-	 * @param form
-	 * @param data the entity from the store
-	 */
-	load: (form: Type, data: any) => any,
-
-	/**
-	 * When the data in the fields is serialized to a single json object to be posted to the server.
-	 * @param form
-	 * @param data
-	 */
-	serialize: (form: Type, data: any) => void,
 }
 
 export interface Form<ValueType extends ContainerFieldValue = ContainerFieldValue> extends ContainerField<ValueType> {
-	on<K extends keyof FormEventMap<this>>(eventName: K, listener: Partial<FormEventMap<this>>[K], options?: ObservableListenerOpts): void
+	on<K extends keyof FormEventMap<this, ValueType>>(eventName: K, listener: Partial<FormEventMap<this,ValueType>>[K], options?: ObservableListenerOpts): void
 
-	fire<K extends keyof FormEventMap<this>>(eventName: K, ...args: Parameters<FormEventMap<Component>[K]>): boolean
+	fire<K extends keyof FormEventMap<this, ValueType>>(eventName: K, ...args: Parameters<FormEventMap<any, ValueType>[K]>): boolean
 
 	get el(): HTMLFormElement
 
-	get value(): Partial<ValueType>
+	get value(): ValueType
 	set value(v:Partial<ValueType>)
 }
 

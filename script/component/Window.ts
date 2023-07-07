@@ -15,6 +15,7 @@ import {form} from "./form/Form.js";
 import {fieldset} from "./form/Fieldset.js";
 import {textfield} from "./form/TextField.js";
 import {t} from "../Translate.js";
+import {DateTime} from "../util";
 
 
 /**
@@ -464,6 +465,11 @@ export class Window extends DraggableComponent {
 		this.fire("unmaximize", this);
 
 		return this;
+	}
+
+
+	public static error(msg:string) {
+		return Window.alert(msg, t("Error") + " - " + (new DateTime).format("Y-m-d H:i:s"));
 	}
 
 	/**
