@@ -156,7 +156,8 @@ export class Router extends Observable {
 	private handleRoute(handler: Function, match: string[], oldPath: string) {
 
 		for (let n = 0, l = match.length; n < l; n++) {
-			match[n] = decodeURIComponent(match[n]);
+			//could be undefined
+			match[n] = match[n] ? decodeURIComponent(match[n]) : match[n];
 		}
 
 		this.params = match;
