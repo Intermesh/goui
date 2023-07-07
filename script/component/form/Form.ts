@@ -10,7 +10,6 @@ import {Notifier} from "../../Notifier.js";
 import {Component, createComponent} from "../Component.js";
 import {FieldEventMap} from "./Field.js";
 import {t} from "../../Translate.js";
-import {AbstractDataSource, BaseEntity, DefaultEntity, EntityID} from "../../data/index.js";
 
 
 export interface FormEventMap<Type, ValueType extends ContainerFieldValue = ContainerFieldValue> extends FieldEventMap<Type> {

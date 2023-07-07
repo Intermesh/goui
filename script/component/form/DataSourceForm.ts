@@ -8,11 +8,8 @@ import {AbstractDataSource, BaseEntity, DefaultEntity, EntityID} from "../../dat
 import {t} from "../../Translate";
 import {Config, ObservableListenerOpts} from "../Observable";
 import {Component, createComponent} from "../Component";
-import {ContainerField, ContainerFieldValue} from "./ContainerField";
-import {FieldEventMap} from "./Field";
+import {ContainerFieldValue} from "./ContainerField";
 import {Window} from "../Window";
-
-
 
 
 export interface DataSourceFormEventMap<Type, ValueType extends ContainerFieldValue = ContainerFieldValue> extends FormEventMap<Type> {
