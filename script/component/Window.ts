@@ -319,6 +319,8 @@ export class Window extends DraggableComponent {
 
 		this.focussedBeforeOpen = document.activeElement || undefined;
 
+		let ret;
+
 		if (!this.rendered) {
 
 			root.items.add(this);
@@ -342,15 +344,19 @@ export class Window extends DraggableComponent {
 				this.modalOverlay.show();
 			}
 
+			// has to be shown before center() otherwise it can't calculate it's width and height
+			ret = super.show();
+
 			if (!this.hasState()) {
 				this.shrinkToFit();
 				this.center();
 			} else {
 				this.constrainTo(window);
 			}
+		} else {
+			ret = super.show();
 		}
 
-		const ret = super.show();
 		this.focus();
 		return ret;
 	}
@@ -471,7 +477,6 @@ export class Window extends DraggableComponent {
 			text = text.message;
 		}
 		return new Promise((resolve, reject) => {
-
 			win({
 					modal: true,
 					title: title,
