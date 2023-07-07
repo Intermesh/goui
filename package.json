@@ -30,7 +30,7 @@
   },
   "name": "@intermesh/goui",
   "description": "Group-Office User Interface",
-  "version": "1.0.19",
+  "version": "1.0.20",
   "directories": {
     "test": "tests"
   },
