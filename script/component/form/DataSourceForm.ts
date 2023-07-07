@@ -6,37 +6,93 @@
 import {Form, FormEventMap} from "./Form";
 import {AbstractDataSource, BaseEntity, DefaultEntity, EntityID} from "../../data";
 import {t} from "../../Translate";
-import {Config} from "../Observable";
+import {Config, ObservableListenerOpts} from "../Observable";
 import {Component, createComponent} from "../Component";
+import {ContainerFieldValue} from "./ContainerField";
+import {Window} from "../Window";
+
+
+export interface DataSourceFormEventMap<Type, ValueType extends ContainerFieldValue = ContainerFieldValue> extends FormEventMap<Type> {
+
+	/**
+	 * Fires when the entity is saved successfully
+	 * @param form
+	 * @param data
+	 */
+	save: (form: Type, data: ValueType) => any
+
+	/**
+	 * Fires when an error occurred when saving
+	 *
+	 * If a listener returns "false", the standard error dialog
+	 * is not shown.
+	 *
+	 * @param form
+	 * @param data
+	 */
+	saveerror: (form: Type, error: any) => any
+
+	/**
+	 * When the data is fetched from the store. but before it is put into the fields
+	 * @param form
+	 * @param data the entity from the store
+	 */
+	load: (form: Type, data: ValueType) => any,
+
+	/**
+	 * Fires when an error occurred when loading.
+	 *
+	 * If a listener returns "false", the standard error dialog
+	 * is not shown.
+	 *
+	 * @param form
+	 * @param data
+	 */
+	loaderror: (form: Type, error: any) => any
+
+	/**
+	 * When the data in the fields is serialized to a single json object to be posted to the server.
+	 * @param form
+	 * @param data
+	 */
+	beforesave: (form: Type, data: ValueType) => void,
+}
+
+export interface DataSourceForm<ValueType extends BaseEntity = DefaultEntity> extends Form<ValueType> {
+	on<K extends keyof DataSourceFormEventMap<this, ValueType>>(eventName: K, listener: Partial<DataSourceFormEventMap<this,ValueType>>[K], options?: ObservableListenerOpts): void
+	fire<K extends keyof DataSourceFormEventMap<this, ValueType>>(eventName: K, ...args: Parameters<DataSourceFormEventMap<any, ValueType>[K]>): boolean
+}
 
 export class DataSourceForm<ValueType extends BaseEntity = DefaultEntity> extends Form<ValueType> {
-
 
 	constructor(public dataSource: AbstractDataSource<ValueType>) {
 		super();
 
-		this.handler = form1 => {
+		this.handler = async form1 => {
 			try {
 				this._value = {};
 				let v = this.value;
 				if (this.currentId) {
 					v.id = this.currentId;
 				}
-				this.fire('serialize', this, v);
+				this.fire('beforesave', this, v);
 
-				let response;
+				let data;
 				if (this.currentId) {
-					response = this.dataSource.update(v as ValueType);
+					data = await this.dataSource.update(v as ValueType);
 				} else {
-					response = this.dataSource.create(v);
+					data = await this.dataSource.create(v);
 				}
 
-				if (response) {
-					this.fire('saved', this, response);
+				if (data) {
+					this.fire('save', this, data);
 				}
 
-			} catch (e) {
+			} catch (e:any) {
 				console.log(t("Error"), e);
+				if(this.fire('saveerror', this, e) !== false) {
+					void Window.error(e.message);
+				}
 			} finally {
 				this.unmask();
 			}
@@ -75,8 +131,12 @@ export class DataSourceForm<ValueType extends BaseEntity = DefaultEntity> extend
 			}
 			this.fire('load', this, entity);
 			this.value = entity as ValueType;
-		} catch (e) {
+		} catch (e:any) {
 			alert(t("Error") + ' ' + e);
+			console.log(t("Error"), e);
+			if(this.fire('loaderror', this, e) !== false) {
+				void Window.error(e.message);
+			}
 		} finally {
 			this.unmask();
 		}
@@ -89,4 +149,4 @@ export class DataSourceForm<ValueType extends BaseEntity = DefaultEntity> extend
  * @param config
  * @param items
  */
-export const datasourceform = <ValueType extends BaseEntity =  DefaultEntity>(config: Config<DataSourceForm<ValueType>, FormEventMap<DataSourceForm<ValueType>>, "dataSource">, ...items: Component[]) => createComponent(new DataSourceForm<ValueType>(config.dataSource), config, items);
+export const datasourceform = <ValueType extends BaseEntity =  DefaultEntity>(config: Config<DataSourceForm<ValueType>, DataSourceFormEventMap<DataSourceForm<ValueType>>, "dataSource">, ...items: Component[]) => createComponent(new DataSourceForm<ValueType>(config.dataSource), config, items);

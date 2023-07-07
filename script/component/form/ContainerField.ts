@@ -98,7 +98,7 @@ export class ContainerField<ValueType extends ContainerFieldValue = ContainerFie
 		super.value = v;
 	}
 
-	public get value(): Partial<ValueType> {
+	public get value(): ValueType {
 
 		const formProps: ValueType = super.value || {};
 
