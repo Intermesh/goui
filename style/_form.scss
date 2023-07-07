@@ -337,13 +337,10 @@ $formFieldBorderRadius: dp(10);
 		top: math.div($baseLineHeight, 2) + dp(11);
 		height: $borderWidth;
 		background-color: $colorBackgroundInput;
-
-		//transition: all 100ms linear;
-
-		transition: all .15s cubic-bezier(.4,0,.2,1);
+		transition: top .15s cubic-bezier(.4,0,.2,1), left .15s cubic-bezier(.4,0,.2,1), font-size .15s cubic-bezier(.4,0,.2,1);
 
 		//below performs better but looks ugly on windows :(
-		will-change: top, font-size;
+		will-change: top, left, font-size;
 
 		&:empty {
 			display: none;
