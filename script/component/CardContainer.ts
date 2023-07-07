@@ -67,6 +67,8 @@ export class CardContainer extends Component {
 				const index = this.findItemIndex(comp);
 				this.activeItem = index;
 			});
+
+			item.el.classList.add('card-container-item');
 		});
 	}
 

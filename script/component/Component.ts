@@ -693,7 +693,7 @@ export class Component extends Observable {
 	 *
 	 * @param fn When the function returns true the item will be returned. Otherwise it will move up to the next parent.
 	 */
-	public findAncestor(fn: (Component: Component) => void | boolean): Component | undefined {
+	public findAncestor(fn: (cmp: Component) => void | boolean): Component | undefined {
 		let p = this.parent;
 		while (p != undefined) {
 			if (fn(p)) {

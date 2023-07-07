@@ -51,6 +51,15 @@ export interface FieldEventMap<Type> extends ComponentEventMap<Type> {
 	 * @param field
 	 */
 	validate: (field: Type) => void
+
+	/**
+	 * Fires when the field is invalid
+	 *
+	 * Use {@see setInvalid()} to mark field invalid
+	 *
+	 * @param field
+	 */
+	invalid: (field: Type) => void
 }
 
 
@@ -415,6 +424,8 @@ export abstract class Field extends Component {
 		if (this.rendered) {
 			this.applyInvalidMsg();
 		}
+
+		this.fire("invalid", this);
 	}
 
 	/**
