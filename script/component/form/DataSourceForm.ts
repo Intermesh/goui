@@ -10,6 +10,8 @@ import {Config, ObservableListenerOpts} from "../Observable";
 import {Component, createComponent} from "../Component";
 import {ContainerFieldValue} from "./ContainerField";
 import {Window} from "../Window";
+import {Notifier} from "../../Notifier";
+import {CardContainer} from "../CardContainer";
 
 
 export interface DataSourceFormEventMap<Type, ValueType extends ContainerFieldValue = ContainerFieldValue> extends FormEventMap<Type> {
@@ -89,14 +91,38 @@ export class DataSourceForm<ValueType extends BaseEntity = DefaultEntity> extend
 				}
 
 			} catch (e:any) {
+
+				if(e.type == "invalidProperties") {
+					this.handleServerValidation(e);
+					return;
+				}
+
 				console.log(t("Error"), e);
 				if(this.fire('saveerror', this, e) !== false) {
-					void Window.error(e.message);
+					void Window.error(e.message ?? t("Unknown error"));
 				}
 			} finally {
 				this.unmask();
 			}
 		}
+	}
+
+	private handleServerValidation(error: any) {
+		for(const propertyName in error.validationErrors) {
+			const field = this.findField(propertyName);
+			if(!field) {
+				continue;
+			}
+
+			field.setInvalid(error.validationErrors[propertyName].description);
+		}
+
+		const invalid = this.findFirstInvalid();
+		if (invalid) {
+			invalid.focus();
+		}
+
+		this.setInvalid(t('You have errors in your form. The invalid fields are marked.'));
 	}
 
 	protected currentId?: EntityID

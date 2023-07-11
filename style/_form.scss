@@ -362,11 +362,27 @@ $formFieldBorderRadius: dp(10);
 		-moz-appearance: none; /* Removes Default Firefox style*/
 	}
 
+	/** start text and textarea **/
+	input.text, textarea, select {
+		@extend %input;
+		&:focus, &:not(:placeholder-shown) {
+			@extend %float-label;
+		}
+
+		&:focus {
+			color: $colorPrimary;
+		}
+	}
+
 	&.invalid {
 		.wrap {
 			border-color: $colorError;
 			background-color: $colorErrorBg;
 			> i {
+				color: $colorError;
+			}
+
+			input {
 				color: $colorError;
 			}
 
@@ -404,17 +420,7 @@ $formFieldBorderRadius: dp(10);
 		}
 	}
 
-	/** start text and textarea **/
-	input.text, textarea, select {
-		@extend %input;
-		&:focus, &:not(:placeholder-shown) {
-			@extend %float-label;
-		}
 
-		&:focus {
-			color: $colorPrimary;
-		}
-	}
 
 	input.number {
 		padding-right: 0;

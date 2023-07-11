@@ -123,7 +123,10 @@ export class Observable {
 	private once(eventName: keyof ObservableEventMap<Observable>, listener: Function) {
 		const newfn = (...args: any[]) => {
 			listener.apply(null, args);
-			this.un(eventName, listener);
+			// use set timeout so for .. of loop will continue with next listeners
+			setTimeout(() => {
+				this.un(eventName, listener);
+			})
 		}
 		return newfn;
 	}

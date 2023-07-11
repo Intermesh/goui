@@ -227,12 +227,12 @@ export class Form<ValueType extends ContainerFieldValue = ContainerFieldValue> e
 		} else {
 			el.cls(['-valid', '+invalid']);
 
-			Notifier.error(t('You have errors in your form. The invalid fields are marked.'));
-
 			const invalid = this.findFirstInvalid();
 			if (invalid) {
 				invalid.focus();
 			}
+
+			this.setInvalid(t('You have errors in your form. The invalid fields are marked.'))
 		}
 	}
 

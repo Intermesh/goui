@@ -121,7 +121,12 @@ export class ContainerField<ValueType extends ContainerFieldValue = ContainerFie
 
 	protected validate() {
 		super.validate();
-		let invalid = this.findFirstInvalid();
+		let invalid;
+		this.findFields().forEach((i) => {
+			if (!i.disabled && !i.isValid()) {
+				invalid = i;
+			}
+		})
 		if (invalid) {
 			this.setInvalid("There's an invalid field");
 		}
@@ -133,14 +138,13 @@ export class ContainerField<ValueType extends ContainerFieldValue = ContainerFie
 	public findFirstInvalid(): Field | undefined {
 		const items = this.findFields();
 
-		let invalid = undefined;
-		items.forEach((field) => {
-			if (!field.disabled && !field.isValid()) {
-				invalid = field;
+		for(let i = 0, l = items.length; i < l; i++) {
+			if (!items[i].disabled && !items[i].isValid()) {
+				return items[i];
 			}
-		});
+		}
 
-		return invalid;
+		return undefined;
 	}
 
 	protected renderControl() {
