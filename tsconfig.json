@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "strict" : true,
-    "target": "ES2017",
+    "target": "es2020",
     "sourceMap": true,
     "lib": ["es2020", "dom"],
     "moduleResolution": "node",
