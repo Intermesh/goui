@@ -206,7 +206,7 @@
 	border-radius: $borderRadius;
 	margin: dp(8);
 	background-color: white;
-	@extend .z2;
+	@extend .z2 !optional;
 }
 
 

@@ -12,6 +12,7 @@ export * from './HtmlField.js';
 export * from './MapField.js';
 export * from './NumberField.js';
 export * from './RadioField.js';
+export * from './RangeField.js';
 export * from './RecurrenceField.js';
 export * from './SelectField.js';
 export * from './TextField.js';
