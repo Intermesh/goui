@@ -939,6 +939,9 @@ export const code = (config?: Config<Component> | string, ...items: Component[])
 export const section = (config?: Config<Component> | string, ...items: Component[]) => createComponent(new Component("section"), typeof config == 'string' ? {html: config} : config, items);
 export const hr = (config?: Config<Component>) => createComponent(new Component("hr"), config);
 
+
+export const progress = (config?: Config<Component>) => createComponent(new Component("progress"), config);
+
 type BaseConfig = {
 	listeners?:ObservableListener<any>
 }
