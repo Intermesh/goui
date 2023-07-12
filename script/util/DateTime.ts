@@ -4,8 +4,6 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-export {}
-
 /**
  * @category Utility
  */
