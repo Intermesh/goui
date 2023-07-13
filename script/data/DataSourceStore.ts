@@ -3,10 +3,17 @@
  * @copyright Copyright 2023 Intermesh BV
  * @author Merijn Schering <mschering@intermesh.nl>
  */
-import {Store, StoreEventMap} from "../data/Store.js";
-import {AbstractDataSource, BaseEntity, Changes, DefaultEntity, QueryParams} from "./AbstractDataSource.js";
+import {Comparator, Store, StoreEventMap, StoreRecord} from "../data/Store.js";
+import {
+	AbstractDataSource,
+	BaseEntity,
+	Changes,
+	dataSourceEntityType,
+	DefaultEntity,
+	QueryParams
+} from "./AbstractDataSource.js";
 import {ObjectUtil} from "../util/index.js";
-import {Config, createComponent} from "../component/index.js";
+import {Config, createComponent, ObservableListener} from "../component/index.js";
 
 type Relation<EntityType extends BaseEntity> = Partial<Record<keyof EntityType, {
 	dataSource: AbstractDataSource<EntityType>,
@@ -21,15 +28,15 @@ type RecordBuilder<EntityType, StoreRecord> = (entity: EntityType) => Promise<St
  * Uses an {@see AbstractDataSource} to present data in the view.
  * @category Data
  */
-export class DataSourceStore<EntityType extends BaseEntity = DefaultEntity, StoreRecord = EntityType> extends Store<StoreRecord> {
+export class DataSourceStore<DataSource extends AbstractDataSource = AbstractDataSource, StoreRecord = dataSourceEntityType<DataSource>> extends Store<StoreRecord> {
 
 	public queryParams: Omit<QueryParams, "sort"> = {};
 
 	public hasMore = false;
 
-	public relations?: Relation<EntityType>;
+	public relations?: Relation<dataSourceEntityType<DataSource>>;
 
-	public properties?: string[] = [];
+	// public properties?: string[] = [];
 
 	/**
 	 * True when loaded at least once.
@@ -45,12 +52,14 @@ export class DataSourceStore<EntityType extends BaseEntity = DefaultEntity, Stor
 	 * Builds record from entity
 	 * @param entity
 	 */
-	public buildRecord: RecordBuilder<EntityType, StoreRecord> = async (entity) => <StoreRecord><unknown>entity;
+	public buildRecord: RecordBuilder<dataSourceEntityType<DataSource>, StoreRecord> = async (entity) => <StoreRecord><unknown>entity;
 
-	constructor(readonly dataSource: AbstractDataSource<EntityType>) {
+	constructor(public dataSource:DataSource) {
 		super();
 
-		this.dataSource.on('change', this.onChange.bind(this));
+		this.dataSource.on('change', (dataSource, changes) => {
+			this.onChange(dataSource, changes);
+		});
 	}
 
 	/**
@@ -58,7 +67,7 @@ export class DataSourceStore<EntityType extends BaseEntity = DefaultEntity, Stor
 	 *
 	 * @protected
 	 */
-	protected async onChange(DataSource:AbstractDataSource<EntityType>, changes: Changes<EntityType>) {
+	protected async onChange(DataSource:DataSource, changes: Changes<dataSourceEntityType<DataSource>>) {
 		if (this.loaded && this.monitorChanges) {
 			void this.reload();
 		}
@@ -88,7 +97,7 @@ export class DataSourceStore<EntityType extends BaseEntity = DefaultEntity, Stor
 
 		const getResponse = await this.dataSource.get(queryResponse.ids);
 
-		const entities = await this.fetchRelations(getResponse.list),
+		const entities = await this.fetchRelations(getResponse.list as dataSourceEntityType<DataSource>[]),
 			records = await Promise.all(entities.map(this.buildRecord));
 
 		this.loadData(records, append);
@@ -97,11 +106,11 @@ export class DataSourceStore<EntityType extends BaseEntity = DefaultEntity, Stor
 		return records;
 	}
 
-	private async fetchRelations(records: EntityType[]) {
+	private async fetchRelations(records: dataSourceEntityType<DataSource>[]) {
 		if (!this.relations) {
 			return records;
 		}
-		let relationName: (keyof EntityType);
+		let relationName: (keyof dataSourceEntityType<DataSource>);
 		const promises = [];
 
 		for (relationName in this.relations) {
@@ -159,11 +168,32 @@ export class DataSourceStore<EntityType extends BaseEntity = DefaultEntity, Stor
 	}
 }
 
-type DataSourceStoreConfig<EntityType extends BaseEntity = DefaultEntity, StoreRecord = EntityType> =
-	Config<DataSourceStore<EntityType>, StoreEventMap<DataSourceStore<EntityType>, EntityType>, "dataSource"> & {
+// Somehow using Config<DataSourceStore...> didn't work because it uses dataSourceEntityType<DataSource>
+// that's why we relist the props here.
 
-	buildRecord?: RecordBuilder<EntityType, StoreRecord>
-}
+type DataSourceStoreConfig<DataSource extends AbstractDataSource, RecordType> =
+
+	// Config<DataSourceStore<DataSource, RecordType>, StoreEventMap<DataSourceStore<DataSource, RecordType>, RecordType>,  "dataSource" >
+	//
+	// &
+
+	Omit<Config<Store<RecordType>>, "listeners"> &
+
+	{
+		queryParams?: QueryParams,
+
+		dataSource: DataSource,
+
+		buildRecord?: RecordBuilder<dataSourceEntityType<DataSource>, RecordType>,
+
+		relations?: Relation<dataSourceEntityType<DataSource>>,
+
+		listeners?: ObservableListener<StoreEventMap<DataSourceStore<DataSource, RecordType>,RecordType>>
+	}
+
+
+
+
 
 /**
  * Shorthand function to create a {@see DataSourceStore}
@@ -171,4 +201,4 @@ type DataSourceStoreConfig<EntityType extends BaseEntity = DefaultEntity, StoreR
  * @param config
  */
 export const datasourcestore =
-	<EntityType extends BaseEntity = DefaultEntity, StoreRecord = EntityType>(config: DataSourceStoreConfig<EntityType, StoreRecord>) => createComponent(new DataSourceStore<EntityType, StoreRecord>(config.dataSource), config);
+	<DataSource extends AbstractDataSource = AbstractDataSource, RecordType = dataSourceEntityType<DataSource>>(config: DataSourceStoreConfig<DataSource, RecordType>) => createComponent(new DataSourceStore<DataSource, RecordType>(config.dataSource), config);

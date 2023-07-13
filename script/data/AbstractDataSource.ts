@@ -5,15 +5,16 @@
  */
 
 import {Observable, ObservableEventMap} from "../component/index.js";
-import {Comparator} from "./Store.js";
+import {Comparator, Store} from "./Store.js";
 import {FunctionUtil} from "../util/index.js";
 import {BrowserStore} from "../util/BrowserStorage.js";
+import Base = Mocha.reporters.Base;
 
 /**
  * The response of the {@see AbstractDataSource.get()} method
  * @category Data
  */
-export interface GetResponse<EntityType> {
+export interface GetResponse<EntityType extends BaseEntity> {
 
 	/**
 	 * The list of entities in the order they were requested
@@ -89,7 +90,7 @@ export interface CommitError {
 /**
  * @category Data
  */
-export interface Changes<EntityType> {
+export interface Changes<EntityType extends BaseEntity> {
 	created?: EntityID[]
 	updated?: EntityID[]
 	destroyed?: EntityID[],
@@ -101,7 +102,7 @@ export interface Changes<EntityType> {
 /**
  * @category Data
  */
-export interface CommitResponse<EntityType> {
+export interface CommitResponse<EntityType extends BaseEntity> {
 
 	created?: Record<EntityID, EntityType>
 	updated?: Record<EntityID, EntityType>
@@ -177,22 +178,25 @@ export interface QueryResponse {
 /**
  * @category Data
  */
-export interface DataSourceEventMap<Type extends Observable, EntityType> extends ObservableEventMap<Type> {
+export interface DataSourceEventMap<Type extends Observable, EntityType extends BaseEntity> extends ObservableEventMap<Type> {
 	/**
 	 * Fires when data changed in the store
 	 */
-	change: (DataSource: Type, changes: Changes<EntityType>) => void
+	change: (dataSource: Type, changes: Changes<EntityType>) => void
 }
 
-export interface AbstractDataSource<EntityType extends BaseEntity = DefaultEntity> {
-	on<K extends keyof DataSourceEventMap<AbstractDataSource<EntityType>, EntityType>>(eventName: K, listener: DataSourceEventMap<AbstractDataSource<EntityType>, EntityType>[K]): void
+export type dataSourceEntityType<DS> = DS extends AbstractDataSource<infer EntityType> ? EntityType : never;
 
-	fire<K extends keyof DataSourceEventMap<AbstractDataSource<EntityType>, EntityType>>(eventName: K, ...args: Parameters<DataSourceEventMap<AbstractDataSource<EntityType>, EntityType>[K]>): boolean
+
+export interface AbstractDataSource<EntityType extends BaseEntity = DefaultEntity>  extends Observable {
+	on<K extends keyof DataSourceEventMap<this, EntityType>>(eventName: K, listener: DataSourceEventMap<this, EntityType>[K]): void
+
+	fire<K extends keyof DataSourceEventMap<this, EntityType>>(eventName: K, ...args: Parameters<DataSourceEventMap<this, EntityType>[K]>): boolean
 }
 
-interface SaveData<EntityType extends BaseEntity> {
+type SaveData<EntityType extends BaseEntity> = {
 	data: Partial<EntityType>,
-	resolve: (value: EntityType) => void,
+	resolve: (value: any) => void, //changing this to EntityType somehow breaks!?
 	reject: (reason?: any) => void
 }
 
@@ -201,8 +205,8 @@ interface DestroyData {
 	reject: (reason?: any) => void
 }
 
-interface GetData<EntityType extends BaseEntity> {
-	resolves: ((value: EntityType | undefined) => void)[],
+type GetData<EntityType extends BaseEntity> = {
+	resolves: ((value: any | undefined) => void)[],
 	rejects: ((reason?: any) => void)[]
 }
 
@@ -302,7 +306,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	}
 
 	protected data: Record<EntityID, EntityType> = {};
-	protected creates: Record<EntityID, SaveData<EntityType>> = {}
+	protected creates: Record<EntityID, SaveData<EntityType>> = {};
 	protected updates: Record<EntityID, SaveData<EntityType>> = {};
 	protected destroys: Record<EntityID, DestroyData> = {};
 
