@@ -261,7 +261,7 @@ export abstract class Field extends Component {
 	private getLabelText() {
 		let labelText = this._label;
 		if(this._required) {
-			labelText += '*';
+			labelText += ' *';
 		}
 		return labelText;
 	}
