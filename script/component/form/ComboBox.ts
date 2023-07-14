@@ -1,10 +1,18 @@
 import {AutocompleteField} from "./AutocompleteField";
-import {AbstractDataSource, DataSourceStore, datasourcestore, Store} from "../../data";
+import {
+	AbstractDataSource,
+	DataSourceStore,
+	datasourcestore,
+	DataSourceStoreConfig,
+	Store,
+	StoreRecord
+} from "../../data";
 import {column, Table, table} from "../table";
 import {Config} from "../Observable";
 import {FieldEventMap} from "./Field";
 import {createComponent} from "../Component";
 import {DateField} from "./DateField";
+import {ObjectUtil} from "../../util";
 
 
 
@@ -46,12 +54,21 @@ export class ComboBox<DS extends AbstractDataSource = AbstractDataSource> extend
 		this.picker.list.store.addScrollLoader(this.menu.el);
 
 		this.on("autocomplete", async (field, input) => {
+			this.list.store.queryParams.position = 0;
 			if(!this.list.store.queryParams.filter) {
 				this.list.store.queryParams.filter = {};
 			}
 			this.list.store.queryParams.filter[this.filterName ?? this.displayProperty] = input;
 			await this.list.store.load();
 		});
+	}
+
+	/**
+	 * Pass config options for the underlying dropdown table store
+	 * @param storeConfig
+	 */
+	set storeConfig(storeConfig:Omit<DataSourceStoreConfig<DS, StoreRecord>, "dataSource">) {
+		ObjectUtil.merge(this.picker.list.store, storeConfig);
 	}
 
 

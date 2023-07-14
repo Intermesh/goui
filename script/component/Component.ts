@@ -636,10 +636,10 @@ export class Component extends Observable {
 	 */
 	public focus(o?: FocusOptions) {
 		// setTimeout needed for chrome :(
-		setTimeout(() => {
+		// setTimeout(() => {
 			this.el.focus(o);
 			this.fire("focus", this, o);
-		});
+		// });
 	}
 
 

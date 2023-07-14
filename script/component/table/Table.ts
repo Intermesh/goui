@@ -584,11 +584,11 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 	}
 }
 
-type TableConfig<StoreType extends Store = Store> = Omit<Config<Table<StoreType>, ListEventMap<Table<StoreType>>, "store" | "columns">, "rowSelection">
+export type TableConfig<TableType extends Table = Table> = Omit<Config<TableType, ListEventMap<TableType>, "store" | "columns">, "rowSelection">
 
 /**
  * Shorthand function to create {@see Table}
  *
  * @param config
  */
-export const table = <StoreType extends Store = Store>(config: TableConfig<StoreType>) => createComponent(new Table<StoreType>(config.store, config.columns), config);
+export const table = <StoreType extends Store = Store>(config: TableConfig<Table<StoreType>>) => createComponent(new Table<StoreType>(config.store, config.columns), config);

@@ -202,7 +202,7 @@ export class DataSourceStore<DataSource extends AbstractDataSource = AbstractDat
 // Somehow using Config<DataSourceStore...> didn't work because it uses dataSourceEntityType<DataSource>
 // that's why we relist the props here.
 
-type DataSourceStoreConfig<DataSource extends AbstractDataSource, RecordType> =
+export type DataSourceStoreConfig<DataSource extends AbstractDataSource, RecordType> =
 
 	// Config<DataSourceStore<DataSource, RecordType>, StoreEventMap<DataSourceStore<DataSource, RecordType>, RecordType>,  "dataSource" >
 	//
