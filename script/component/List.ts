@@ -132,8 +132,6 @@ export class List<StoreType extends Store = Store> extends Component {
 	 */
 	public emptyStateHtml = `<div class="goui-empty-state"><i class="icon">article</i><p>${t("Nothing to show")}</p></div>`
 
-	protected loadOnScroll: boolean = false;
-
 	private emptyStateEl?: HTMLElement;
 
 	private rowSelect?: RowSelect;
@@ -218,14 +216,6 @@ export class List<StoreType extends Store = Store> extends Component {
 	}
 
 	protected initStore() {
-		if (this.loadOnScroll) {
-			this.el.on('scroll', () => {
-				this.onScroll();
-			}, {passive: true});
-		}
-
-		const onLoadScroll = FunctionUtil.buffer(10, this.onScroll);
-
 		// handling remove and add per items allows a drag and drop action via store.remove and store.add
 		this.store.on("remove", (collection, item, index) => {
 			const rows = this.getRowElements();
@@ -238,12 +228,7 @@ export class List<StoreType extends Store = Store> extends Component {
 
 		this.store.on("add", (collection, item, index) => {
 			this.onRecordAdd(collection, item, index);
-
-			if (this.loadOnScroll) {
-				onLoadScroll();
-			}
 		});
-
 	}
 
 	protected onRecordAdd(collection:StoreType, item:StoreRecord, index:number) {
@@ -381,18 +366,18 @@ export class List<StoreType extends Store = Store> extends Component {
 		return row;
 	}
 
-	private onScroll() {
-		const el = this.el;
-		const pixelsLeft = el.scrollHeight - el.scrollTop - el.offsetHeight;
-
-		if (pixelsLeft < 100) {
-			if (!this.store.loading && this.store.hasNext()) {
-				this.store.loadNext(true).finally(() => {
-					this.fire("scrolleddown", this);
-				});
-			}
-		}
-	}
+	// private onScroll() {
+	// 	const el = this.el;
+	// 	const pixelsLeft = el.scrollHeight - el.scrollTop - el.offsetHeight;
+	//
+	// 	if (pixelsLeft < 100) {
+	// 		if (!this.store.loading && this.store.hasNext()) {
+	// 			this.store.loadNext(true).finally(() => {
+	// 				this.fire("scrolleddown", this);
+	// 			});
+	// 		}
+	// 	}
+	// }
 
 	private onMouseEvent(e: MouseEvent & { target: HTMLElement }, type: any) {
 
