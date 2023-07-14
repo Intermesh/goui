@@ -7,29 +7,18 @@ import {createComponent} from "../Component";
 import {DateField} from "./DateField";
 
 
-class T<DS extends Store> {
-	constructor(public ds:DS) {
-
-		table({
-			store: ds,
-			columns: []
-		})
-
-	}
-
-}
 
 /**
  * Combo box
  *
- * An extention of the Autocomplete field that simplifies the creation of a simple combobox with a valueProperty and displayProperty.
+ * An extension of the Autocomplete field that simplifies the creation of a simple combobox with a
+ * valueProperty and displayProperty.
  */
 export class ComboBox<DS extends AbstractDataSource = AbstractDataSource> extends AutocompleteField<Table<DataSourceStore<DS>>> {
 
 	public filterName?:string;
 
 	constructor(public readonly dataSource:DS, public readonly displayProperty = "name", public readonly valueProperty = "id") {
-
 
 		const dropDownTable = table({
 			headers: false,
