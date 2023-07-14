@@ -39,6 +39,10 @@ export class DatePicker extends Component {
 	protected grid: HTMLElement
 	protected menu: HTMLElement
 
+	minDate?: DateTime;
+
+	maxDate?: DateTime;
+
 	constructor() {
 		super();
 		this.showWeekNbs = true;
@@ -91,7 +95,7 @@ export class DatePicker extends Component {
 		this.months.append(...DateTime.monthNames.map((name, i) =>
 			E('li', name).cls('now', i === this.now.getMonth() - 1).attr('data-nb', i + 1)
 		));
-		//this.internalRender();
+		this.internalRender();
 	}
 
 	moveMonth(amount: number) {
@@ -122,17 +126,28 @@ export class DatePicker extends Component {
 		dl.append(...Object.values(DateTime.dayNames).map(s => E('dt', s.substring(0, 2))));
 		// dates and week nbs
 		for (let i = 0; i < 42; i++) {
-			if (this.showWeekNbs && i % 7 == 0)
+			if (this.showWeekNbs && i % 7 == 0) {
 				weekNbs.append(E('li', itr.format('W')));
+			}
+			let disabled = false;
+			if(this.minDate && this.minDate.getTime() > itr.getTime()) {
+				disabled = true;
+			}
+			if(this.maxDate && this.maxDate.getTime() < itr.getTime()) {
+				disabled = true;
+			}
+
 			dl.append(E('dd', itr.format('j')).attr('data-date', itr.format('Y-m-d'))
+				// .cls('disabled', disabled)
 				.cls('off', itr.format('Ym') !== this.value.format('Ym'))
 				.cls('today', itr.format(`Ymd`) === this.now.format(`Ymd`))
 			);
 			itr.addDays(1);
 		}
 
-		if (this.showWeekNbs)
+		if (this.showWeekNbs) {
 			cal.append(weekNbs);
+		}
 
 		this.setupDraggability(dl);
 		cal.append(dl);
