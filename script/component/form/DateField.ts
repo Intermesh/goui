@@ -24,11 +24,15 @@ export class DateField extends TextField {
 	inputFormat = "d-m-Y";
 	outputFormat = "Y-m-d";
 
-	date?: DateTime
+	date?: DateTime;
 
-	timefield?: TextField
+	timefield?: TextField;
 
-	private readonly picker: DatePicker
+	minDate?: string;
+
+	maxDate?: string;
+
+	private readonly picker: DatePicker;
 
 	private readonly pickerButton;
 
@@ -82,10 +86,36 @@ export class DateField extends TextField {
 		super.validate();
 
 		const v = super.value;
-		if (v && !DateTime.createFromFormat(v, this.inputFormat)) {
+		if(!v) {
+			return;
+		}
+		const dv = DateTime.createFromFormat(v, this.inputFormat);
+
+		if (!dv) {
 			this.setInvalid("Incorrect date format");
+		} else {
+			if (this.maxDate) {
+				const dvMax = DateTime.createFromFormat(this.maxDate, this.inputFormat);
+				if(!dvMax) {
+					this.setInvalid("Incorrect maximum date format")
+				} else if(dv.getTime() > dvMax.getTime()) {
+					this.setInvalid("Date cannot be later than " + this.maxDate);
+				}
+			}
+
+			if(this.minDate) {
+				const dvMin = DateTime.createFromFormat(this.minDate, this.inputFormat);
+				if(!dvMin) {
+					this.setInvalid("Incorrect minimum date format");
+				} else if(dv.getTime() < dvMin.getTime()) {
+					this.setInvalid("Date cannot be earlier than " + this.minDate);
+				}
+			}
 		}
 
+		// if(this.minDate && dv < DateTime.createFromFormat(this.minDate, this.inputFormat)) {
+		// 	this.setInvalid("Date cannot be earlier than " + this.maxDate);
+		// }
 	}
 
 	set value(v: string | undefined) {
