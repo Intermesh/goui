@@ -12,6 +12,7 @@ import {btn} from "../Button.js";
 import {menu} from "../menu/Menu.js";
 import {Config} from "../Observable";
 import {FieldEventMap} from "./Field";
+import {t} from "../../Translate";
 
 
 /**
@@ -28,9 +29,9 @@ export class DateField extends TextField {
 
 	timefield?: TextField;
 
-	minDate?: string;
+	minDate?: DateTime;
 
-	maxDate?: string;
+	maxDate?: DateTime;
 
 	private readonly picker: DatePicker;
 
@@ -92,30 +93,17 @@ export class DateField extends TextField {
 		const dv = DateTime.createFromFormat(v, this.inputFormat);
 
 		if (!dv) {
-			this.setInvalid("Incorrect date format");
+			this.setInvalid(t("{date} is not a valid date. The format for dates is {format}").replace('{date}', v).replace('{format}', this.inputFormat));
 		} else {
-			if (this.maxDate) {
-				const dvMax = DateTime.createFromFormat(this.maxDate, this.inputFormat);
-				if(!dvMax) {
-					this.setInvalid("Incorrect maximum date format")
-				} else if(dv.getTime() > dvMax.getTime()) {
-					this.setInvalid("Date cannot be later than " + this.maxDate);
-				}
+			if (this.maxDate && dv.getTime() > this.maxDate.getTime()) {
+				this.setInvalid(t("The date in this field must be before {maxDate}.").replace('{maxDate}', this.maxDate.format(this.inputFormat)));
 			}
 
-			if(this.minDate) {
-				const dvMin = DateTime.createFromFormat(this.minDate, this.inputFormat);
-				if(!dvMin) {
-					this.setInvalid("Incorrect minimum date format");
-				} else if(dv.getTime() < dvMin.getTime()) {
-					this.setInvalid("Date cannot be earlier than " + this.minDate);
-				}
+			if(this.minDate && dv.getTime() < this.minDate.getTime()) {
+				this.setInvalid(t("The date in this field must be after {minDate}.").replace('{minDate}', this.minDate.format(this.inputFormat)));
 			}
 		}
 
-		// if(this.minDate && dv < DateTime.createFromFormat(this.minDate, this.inputFormat)) {
-		// 	this.setInvalid("Date cannot be earlier than " + this.maxDate);
-		// }
 	}
 
 	set value(v: string | undefined) {
