@@ -13,7 +13,7 @@ import {Component, createComponent} from "../Component.js";
 import {List, listStoreType} from "../List";
 import {listpicker} from "../picker";
 import {Menu, menu} from "../menu";
-import {storeRecordType} from "../../data";
+import {DataSourceStore, storeRecordType} from "../../data";
 
 export interface AutocompleteEventMap<Type> extends FieldEventMap<Type> {
 	/**
@@ -36,8 +36,8 @@ export interface AutocompleteField<T extends List> {
 export class AutocompleteField<T extends List = List> extends TextField {
 
 
-	private readonly menu: Menu;
-	private readonly menuButton: Button;
+	protected readonly menu: Menu;
+	protected readonly menuButton: Button;
 	public readonly picker;
 
 	/**

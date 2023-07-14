@@ -12,7 +12,7 @@ import {
 	DefaultEntity,
 	QueryParams
 } from "./AbstractDataSource.js";
-import {ObjectUtil} from "../util/index.js";
+import {FunctionUtil, ObjectUtil} from "../util/index.js";
 import {Config, createComponent, ObservableListener} from "../component/index.js";
 
 type Relation<EntityType extends BaseEntity> = Partial<Record<keyof EntityType, {
@@ -88,7 +88,6 @@ export class DataSourceStore<DataSource extends AbstractDataSource = AbstractDat
 
 		if (this.queryParams.limit) {
 			// check if the server has more data.
-			this.queryParams.limit--;
 			this.hasMore = queryResponse.ids.length > this.queryParams.limit;
 			if (this.hasMore) {
 				queryResponse.ids.pop();
@@ -139,7 +138,7 @@ export class DataSourceStore<DataSource extends AbstractDataSource = AbstractDat
 
 	public loadNext(append = false) {
 		if (!this.queryParams.limit) {
-			throw new Error("Limit and position must be set!");
+			throw new Error("Limit must be set for pagination");
 		}
 
 		this.queryParams.position = this.queryParams.position || 0;
@@ -166,6 +165,38 @@ export class DataSourceStore<DataSource extends AbstractDataSource = AbstractDat
 	public hasPrevious() {
 		return this.queryParams.position! > 0;
 	}
+
+	/**
+	 * Load more data when this element is scrolled down
+	 *
+	 * @param el
+	 */
+	public addScrollLoader(el: HTMLElement) {
+
+		const onScroll = () => {
+			const pixelsLeft = el.scrollHeight - el.scrollTop - el.offsetHeight;
+			console.warn(pixelsLeft);
+			if (pixelsLeft < 100) {
+				if (!this.loading && this.hasNext()) {
+					void this.loadNext(true);
+				}
+			}
+		}
+
+		el.addEventListener("scroll", onScroll, {passive: true});
+
+		// this will fill the empty space on firt load.
+		this.on("load", (store, records, append) => {
+			// use set timeout otherwise this.loading is still true
+			setTimeout(() => {
+				onScroll();
+			})
+		});
+
+		return onScroll;
+	}
+
+	private onScroll: any;
 }
 
 // Somehow using Config<DataSourceStore...> didn't work because it uses dataSourceEntityType<DataSource>

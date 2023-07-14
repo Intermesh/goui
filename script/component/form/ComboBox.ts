@@ -25,6 +25,9 @@ export class ComboBox<DS extends AbstractDataSource = AbstractDataSource> extend
 			fitParent: true,
 			store: datasourcestore({
 				dataSource: dataSource,
+				queryParams: {
+					limit: 50
+				}
 
 			}),
 			columns:[
@@ -38,6 +41,9 @@ export class ComboBox<DS extends AbstractDataSource = AbstractDataSource> extend
 		})
 
 		super(dropDownTable);
+
+		// load next data on scroll
+		this.picker.list.store.addScrollLoader(this.menu.el);
 
 		this.on("autocomplete", async (field, input) => {
 			if(!this.list.store.queryParams.filter) {
