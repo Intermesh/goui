@@ -412,6 +412,11 @@ export class DateTime {
 	 */
 	public timezone: Timezone = SystemTimeZone;
 
+	/**
+	 * Constructor
+	 *
+	 * @param date Can be a date object, a unix timestamp or date string (see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date#date_time_string_format)
+	 */
 	constructor(date: Date | number | string = new Date()) {
 		this.date = (date instanceof Date) ?
 			date :
