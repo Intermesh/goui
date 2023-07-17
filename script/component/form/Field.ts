@@ -384,11 +384,13 @@ export abstract class Field extends Component {
 
 	/**
 	 * Helper to fire "change" event. Child classes must implement this.
-	 * @protected
+	 *
+	 * @param suppressSetValue If another helper component like a date picker just called "set value" then you can
+	 *  set this to true to prevent firing twice.
 	 */
-	protected fireChange(suppresSetValue = false) {
+	protected fireChange(suppressSetValue = false) {
 		const v = this.value;
-		if (!suppresSetValue) {
+		if (!suppressSetValue) {
 			this.fire('setvalue', this, v, this.oldValue);
 		}
 		//used set timeout so focusout event happens first and field validates before change event

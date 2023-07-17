@@ -175,7 +175,6 @@ export class DataSourceStore<DataSource extends AbstractDataSource = AbstractDat
 
 		const onScroll = () => {
 			const pixelsLeft = el.scrollHeight - el.scrollTop - el.offsetHeight;
-			console.warn(pixelsLeft);
 			if (pixelsLeft < 100) {
 				if (!this.loading && this.hasNext()) {
 					void this.loadNext(true);

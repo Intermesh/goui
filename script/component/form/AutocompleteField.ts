@@ -61,6 +61,8 @@ export class AutocompleteField<T extends List = List> extends TextField {
 			this.value = this.pickerRecordToValue(this, record);
 			tablePicker.list.findAncestorByType(Menu)!.hide();
 			this.focus();
+
+			this.fireChange(true);
 		});
 
 		this.menu = menu({
@@ -133,7 +135,6 @@ export class AutocompleteField<T extends List = List> extends TextField {
 		super.value = v;
 	}
 
-
 	protected internalRender(): HTMLElement {
 
 		this.buttons = this.buttons || [];
@@ -143,6 +144,8 @@ export class AutocompleteField<T extends List = List> extends TextField {
 
 		this.menu.alignTo = this.wrap;
 		this.menu.alignToInheritWidth = true;
+
+		this._input!.removeEventListener("change", this.onInputChange);
 
 		this._input!.addEventListener('input', FunctionUtil.buffer(this.buffer, this.onInput.bind(this)))
 
