@@ -13,7 +13,7 @@ import {Component, createComponent} from "../Component.js";
 import {List, listStoreType} from "../List";
 import {listpicker} from "../picker";
 import {Menu, menu} from "../menu";
-import {DataSourceStore, storeRecordType} from "../../data";
+import {storeRecordType} from "../../data";
 
 export interface AutocompleteEventMap<Type> extends FieldEventMap<Type> {
 	/**
@@ -84,7 +84,7 @@ export class AutocompleteField<T extends List = List> extends TextField {
 		this.menuButton = btn({
 			icon: "expand_more",
 			type: "button",
-			handler: (button, ev) => {
+			handler: () => {
 				this.fire("autocomplete", this, "");
 			},
 			menu: this.menu

@@ -3,16 +3,9 @@
  * @copyright Copyright 2023 Intermesh BV
  * @author Merijn Schering <mschering@intermesh.nl>
  */
-import {Comparator, Store, StoreEventMap, StoreRecord} from "../data/Store.js";
-import {
-	AbstractDataSource,
-	BaseEntity,
-	Changes,
-	dataSourceEntityType,
-	DefaultEntity,
-	QueryParams
-} from "./AbstractDataSource.js";
-import {FunctionUtil, ObjectUtil} from "../util/index.js";
+import {Store, StoreEventMap} from "../data/Store.js";
+import {AbstractDataSource, BaseEntity, Changes, dataSourceEntityType, QueryParams} from "./AbstractDataSource.js";
+import {ObjectUtil} from "../util/index.js";
 import {Config, createComponent, ObservableListener} from "../component/index.js";
 
 type Relation<EntityType extends BaseEntity> = Partial<Record<keyof EntityType, {
@@ -194,8 +187,6 @@ export class DataSourceStore<DataSource extends AbstractDataSource = AbstractDat
 
 		return onScroll;
 	}
-
-	private onScroll: any;
 }
 
 // Somehow using Config<DataSourceStore...> didn't work because it uses dataSourceEntityType<DataSource>
