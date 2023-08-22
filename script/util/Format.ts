@@ -147,5 +147,13 @@ export class Format {
 		return formatted;
 	}
 
+	public static duration(value: number): string {
+		if (value < 0) {
+			return "";
+		}
+		let minutes = value % 60;
+		return Math.floor(value / 60) + ':' + ((minutes < 10) ? "0" + minutes : minutes);
+	}
+
 }
 

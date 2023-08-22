@@ -654,7 +654,7 @@ export class Component extends Observable {
 	/**
 	 * Get the component that's next to this one
 	 */
-	public nextItem() {
+	public nextSibling() {
 
 		if (!this.parent) {
 			return undefined;
@@ -671,7 +671,7 @@ export class Component extends Observable {
 	/**
 	 * Get the component that's previous to this one
 	 */
-	public previousItem() {
+	public previousSibling() {
 
 		if (!this.parent) {
 			return undefined;

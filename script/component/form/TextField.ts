@@ -94,9 +94,7 @@ export class TextField extends Field {
 			this._input.title = this.title;
 		}
 
-		this._input.addEventListener("change", () => {
-			this.fireChange();
-		});
+		this._input.addEventListener("change", this.onInputChange);
 
 		if (this.invalidMsg) {
 			this.applyInvalidMsg();
@@ -105,6 +103,10 @@ export class TextField extends Field {
 		return this._input;
 
 
+	}
+
+	protected onInputChange = () => {
+		this.fireChange();
 	}
 
 	setInvalid(msg: string) {

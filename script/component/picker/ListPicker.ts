@@ -38,7 +38,9 @@ export class ListPicker<ListType extends List> extends Component {
 
 		//datachanged fires for each row. With buffer = 0 only fires once at load
 		this.list.store.on("datachanged", () => {
-			this.list.rowSelection!.selected = [0];
+			if(this.list.store.count() > 0) {
+				this.list.rowSelection!.selected = [0];
+			}
 		}, {buffer: 0})
 
 		// stop clicks on menu from hiding menu
