@@ -147,12 +147,26 @@ export class Format {
 		return formatted;
 	}
 
+
 	public static duration(value: number): string {
 		if (value < 0) {
 			return "";
 		}
 		let minutes = value % 60;
 		return Math.floor(value / 60) + ':' + ((minutes < 10) ? "0" + minutes : minutes);
+	}
+
+	public static shortTime(v: string): string {
+		let arV = v.split(":");
+		if (arV.length !== 3) {
+			return '';
+		}
+		return arV[0] + ":" + arV[1];
+	}
+
+	public static minutes(timeStr: string): number {
+		const parts = timeStr.split(':');
+		return parseInt(parts[0]) * 60 + parseInt(parts[1]);
 	}
 
 }
