@@ -5,11 +5,11 @@
  */
 
 import {TextField} from "./TextField.js";
-import {DateTime} from "../../util/DateTime.js";
+import {DateTime} from "../../util";
 import {createComponent} from "../Component.js";
-import {datepicker, DatePicker} from "../picker/DatePicker.js";
+import {datepicker, DatePicker} from "../picker";
 import {btn} from "../Button.js";
-import {menu} from "../menu/Menu.js";
+import {menu} from "../menu";
 import {Config} from "../Observable";
 import {FieldEventMap} from "./Field";
 import {t} from "../../Translate";
@@ -107,7 +107,8 @@ export class DateField extends TextField {
 	}
 
 	set value(v: string | undefined) {
-		if (v === undefined) {
+		// null may come from the server
+		if (v === undefined || v === null) {
 			if (this.timefield) {
 				this.timefield.value = '';
 			}
