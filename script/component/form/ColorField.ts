@@ -41,6 +41,9 @@ export class ColorField extends Field {
 
 	protected createControl(): undefined | HTMLElement {
 		this.colorDot = E('div').cls('+color-dot');
+		if(this.value) {
+			this.colorDot.style.backgroundColor = "#" + this.value;
+		}
 		this.el.cls("+no-floating-label");
 
 		this.picker.on('select', (colorPicker, val) => {

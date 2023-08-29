@@ -743,8 +743,8 @@ form {
 
 div.color-dot {
 	border-radius: $formFieldBorderRadius;
-	margin: dp(12);
-	height: dp(24);
+	margin: dp(11); //match input
+	height: $baseLineHeight;
 	flex: 1;
 }
 
