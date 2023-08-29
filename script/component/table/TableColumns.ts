@@ -9,6 +9,8 @@ import {Table} from "./Table.js";
 import {Component, createComponent} from "../Component.js";
 import {Format} from "../../util/Format.js";
 import {checkbox} from "../form/CheckboxField.js";
+import {btn} from "../Button";
+import {menu} from "../menu";
 
 type TableColumnRenderer = (columnValue: any, record: any, td: HTMLTableCellElement, table: Table, storeIndex: number) => string | Promise<string> | Component | Promise<Component>;
 type HeaderRenderer = (col: TableColumn, headerEl: HTMLTableCellElement, table: Table) => string | Component;
@@ -218,3 +220,22 @@ export class CheckboxSelectColumn extends TableColumn {
 }
 
 export const checkboxselectcolumn = (config?: TableColumnConfig) => createComponent(new CheckboxSelectColumn(), config);
+
+
+export const menucolumn = (...items:Component[]) => column({
+		width: 48,
+		id: "btn",
+		// headerRenderer: (col: TableColumn, headerEl: HTMLTableCellElement, table: Table) => {
+		// 	headerEl.style.position = "sticky";
+		// 	headerEl.style.right = "0";
+		// 	return "";
+		// },
+		renderer: (columnValue: any, record, td, table, rowIndex) => {
+			// td.style.position = "sticky";
+			// td.style.right = "0";
+			return btn({
+				icon: "more_vert",
+				menu: menu({}, ...items)
+			})
+		}
+	});
