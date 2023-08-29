@@ -7,8 +7,8 @@
 import {Config, Observable} from "../Observable.js";
 import {Table} from "./Table.js";
 import {Component, createComponent} from "../Component.js";
-import {Format} from "../../util/Format.js";
-import {checkbox} from "../form/CheckboxField.js";
+import {Format} from "../../util";
+import {checkbox} from "../form";
 import {btn} from "../Button";
 import {menu} from "../menu";
 
@@ -18,6 +18,9 @@ type HeaderRenderer = (col: TableColumn, headerEl: HTMLTableCellElement, table: 
 export type align = "left" | "right" | "center";
 
 export class TableColumn extends Observable {
+
+
+	public parent: Table | undefined;
 
 	/**
 	 *
@@ -222,6 +225,13 @@ export class CheckboxSelectColumn extends TableColumn {
 export const checkboxselectcolumn = (config?: TableColumnConfig) => createComponent(new CheckboxSelectColumn(), config);
 
 
+/**
+ * Creates a menu button.
+ *
+ * All items will have a property dataSet.rowIndex and dataSet.table so you know which record has been clicked on.
+ *
+ * @param items
+ */
 export const menucolumn = (...items:Component[]) => column({
 		width: 48,
 		id: "btn",
@@ -233,6 +243,12 @@ export const menucolumn = (...items:Component[]) => column({
 		renderer: (columnValue: any, record, td, table, rowIndex) => {
 			// td.style.position = "sticky";
 			// td.style.right = "0";
+
+			items.forEach(i => {
+				i.dataSet.table = table;
+				i.dataSet.rowIndex = rowIndex;
+			});
+
 			return btn({
 				icon: "more_vert",
 				menu: menu({}, ...items)

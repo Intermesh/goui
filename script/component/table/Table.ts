@@ -97,6 +97,8 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 
 			for (let c of this.columns) {
 
+				c.parent = this;
+
 				if (c.hidden) {
 					continue;
 				}
@@ -117,10 +119,12 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 					if (typeof r === "string") {
 						td.innerHTML = r;
 					} else if (r instanceof Component) {
+						r.parent = this;
 						r.render(td);
 					} else {
 						r.then((s) => {
 							if (s instanceof Component) {
+								s.parent = this;
 								s.render(td);
 							} else {
 								td.innerHTML = s;

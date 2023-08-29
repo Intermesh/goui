@@ -189,6 +189,14 @@ export class Component extends Observable {
 
 	private _mask: Mask | undefined;
 
+
+	/**
+	 * Set arbitrary data on a component.
+	 *
+	 * Should be used with caution as this data is not typed.
+	 */
+	public readonly dataSet : Record<string, any> = {};
+
 	/**
 	 * Component item ID that can be used to lookup the Component inside a Component with Component.findItem() and
 	 * Component.findItemIndex();
