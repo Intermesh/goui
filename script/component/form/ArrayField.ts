@@ -65,6 +65,11 @@ export class ArrayField extends ContainerField {
 		return v;
 	}
 
+	/**
+	 * Add value to the values array
+	 *
+	 * @param value
+	 */
 	public addValue(value:Record<string,any> = {}) {
 		const field = this.buildField(value);
 		field.value = value;
@@ -80,6 +85,8 @@ export class ArrayField extends ContainerField {
 			})
 		);
 		this.items.add(field);
+
+		return this;
 	}
 
 	reset() {
