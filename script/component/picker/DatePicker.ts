@@ -92,7 +92,7 @@ export class DatePicker extends Component {
 		for (let i = -100; i < 100; i++) {
 			this.years.append(E('li', (this.value.getYear() + i) + "").cls('now', i === 0));
 		}
-		this.months.append(...DateTime.monthNames.map((name, i) =>
+		this.months.replaceChildren(...DateTime.monthNames.map((name, i) =>
 			E('li', name).cls('now', i === this.now.getMonth() - 1).attr('data-nb', i + 1)
 		));
 		this.internalRender();
@@ -138,7 +138,7 @@ export class DatePicker extends Component {
 			}
 
 			dl.append(E('dd', itr.format('j')).attr('data-date', itr.format('Y-m-d'))
-				// .cls('disabled', disabled)
+				.cls('disabled', disabled)
 				.cls('off', itr.format('Ym') !== this.value.format('Ym'))
 				.cls('today', itr.format(`Ymd`) === this.now.format(`Ymd`))
 			);

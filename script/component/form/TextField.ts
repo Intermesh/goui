@@ -25,14 +25,15 @@ export class TextField extends Field {
 	 */
 	public type: TextFieldType = "text";
 	/**
-	 * When the field is empty this will be dispklayed inside the field
+	 * When the field is empty this will be displayed inside the field
 	 */
 	public placeholder: string = " ";
 
 	/**
 	 * Autocomplete value
 	 */
-	public autocomplete: AutoFill | undefined;
+	// public autocomplete: AutoFill | undefined;
+	public autocomplete: string | undefined;
 
 	/**
 	 * Pattern regex for validation
