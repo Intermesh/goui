@@ -361,7 +361,10 @@ export class List<StoreType extends Store = Store> extends Component {
 		if (typeof r === "string") {
 			row.innerHTML = r;
 		} else if (Array.isArray(r)) {
-			r.forEach(c => c.render(row));
+			r.forEach(c => {
+				c.parent = this;
+				c.render(row)
+			});
 		} // else NO-OP renderder will be responsible for appending html to the row @see Table
 		return row;
 	}

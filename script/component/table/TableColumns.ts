@@ -7,8 +7,10 @@
 import {Config, Observable} from "../Observable.js";
 import {Table} from "./Table.js";
 import {Component, createComponent} from "../Component.js";
-import {Format} from "../../util/Format.js";
-import {checkbox} from "../form/CheckboxField.js";
+import {Format} from "../../util";
+import {checkbox} from "../form";
+import {btn} from "../Button";
+import {menu} from "../menu";
 
 type TableColumnRenderer = (columnValue: any, record: any, td: HTMLTableCellElement, table: Table, storeIndex: number) => string | Promise<string> | Component | Promise<Component>;
 type HeaderRenderer = (col: TableColumn, headerEl: HTMLTableCellElement, table: Table) => string | Component;
@@ -16,6 +18,9 @@ type HeaderRenderer = (col: TableColumn, headerEl: HTMLTableCellElement, table: 
 export type align = "left" | "right" | "center";
 
 export class TableColumn extends Observable {
+
+
+	public parent: Table | undefined;
 
 	/**
 	 *
@@ -218,3 +223,35 @@ export class CheckboxSelectColumn extends TableColumn {
 }
 
 export const checkboxselectcolumn = (config?: TableColumnConfig) => createComponent(new CheckboxSelectColumn(), config);
+
+
+/**
+ * Creates a menu button.
+ *
+ * All items will have a property dataSet.rowIndex and dataSet.table so you know which record has been clicked on.
+ *
+ * @param items
+ */
+export const menucolumn = (...items:Component[]) => column({
+		width: 48,
+		id: "btn",
+		// headerRenderer: (col: TableColumn, headerEl: HTMLTableCellElement, table: Table) => {
+		// 	headerEl.style.position = "sticky";
+		// 	headerEl.style.right = "0";
+		// 	return "";
+		// },
+		renderer: (columnValue: any, record, td, table, rowIndex) => {
+			// td.style.position = "sticky";
+			// td.style.right = "0";
+
+			items.forEach(i => {
+				i.dataSet.table = table;
+				i.dataSet.rowIndex = rowIndex;
+			});
+
+			return btn({
+				icon: "more_vert",
+				menu: menu({}, ...items)
+			})
+		}
+	});

@@ -7,8 +7,7 @@
 
 import {Config, Observable, ObservableEventMap, ObservableListener, ObservableListenerOpts,} from "./Observable.js";
 import {State} from "../State.js";
-import {Collection} from "../util/Collection.js";
-import {btn, Button} from "./Button";
+import {Collection} from "../util";
 
 /**
  * A component identifier by id, itemId, Component instance or custom function
@@ -132,6 +131,7 @@ export type ComponentState = Record<string, any>;
 export class Component extends Observable {
 
 	protected _cls?: string;
+	private maskTimeout?: any;
 
 	/**
 	 * Component constructor
@@ -189,6 +189,14 @@ export class Component extends Observable {
 
 	private _mask: Mask | undefined;
 
+
+	/**
+	 * Set arbitrary data on a component.
+	 *
+	 * Should be used with caution as this data is not typed.
+	 */
+	public readonly dataSet : Record<string, any> = {};
+
 	/**
 	 * Component item ID that can be used to lookup the Component inside a Component with Component.findItem() and
 	 * Component.findItemIndex();
@@ -205,7 +213,7 @@ export class Component extends Observable {
 
 	private initItems() {
 
-		this.items.on("add", (collection, item, index) => {
+		this.items.on("add", (_collection, item, index) => {
 
 			item.parent = this;
 
@@ -218,7 +226,7 @@ export class Component extends Observable {
 
 		});
 
-		this.items.on("remove", (collection, item) => {
+		this.items.on("remove", (_collection, item) => {
 			if (item.parent) {
 				item.parent = undefined;
 				item.remove();
@@ -454,8 +462,6 @@ export class Component extends Observable {
 
 		return refItem;
 	}
-
-	private isRemoving = false;
 
 	/**
 	 * Remove component from the component tree
@@ -868,19 +874,28 @@ export class Component extends Observable {
 	 * It creates an absolute positioned Mask
 	 * component. This component should have a non-static position style for this to work.
 	 */
-	public mask() {
-		if (!this._mask) {
-			this._mask = mask({spinner: true});
-			this.items.add(this._mask);
-		}
-		this.el.classList.add("masked");
-		this._mask.show();
+	public mask(delay = 300) {
+
+		this.maskTimeout = setTimeout(() => {
+			if (!this._mask) {
+				this._mask = mask({spinner: true});
+				this.items.add(this._mask);
+			}
+			this.el.classList.add("masked");
+			this._mask.show();
+			this.maskTimeout = undefined;
+		}, delay);
 	}
 
 	/**
 	 * Unmask the body
 	 */
 	public unmask() {
+		if(this.maskTimeout) {
+			clearTimeout(this.maskTimeout);
+			this.maskTimeout = undefined;
+			return;
+		}
 		if (this._mask) {
 			this._mask.hide();
 		}

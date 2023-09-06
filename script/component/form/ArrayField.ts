@@ -47,20 +47,7 @@ export class ArrayField extends ContainerField {
 
 		if (v) {
 			v.forEach((item) => {
-				const field = this.buildField(item);
-				field.value = item;
-				field.items.add(btn({
-						// style: {
-						// 	alignSelf: "center"
-						// },
-						icon: "delete",
-						title: "Delete",
-						handler: (btn) => {
-							btn.parent!.remove();
-						}
-					})
-				);
-				this.items.add(field);
+				this.addValue(item);
 			});
 		}
 	}
@@ -76,6 +63,30 @@ export class ArrayField extends ContainerField {
 		});
 
 		return v;
+	}
+
+	/**
+	 * Add value to the values array
+	 *
+	 * @param value
+	 */
+	public addValue(value:Record<string,any> = {}) {
+		const field = this.buildField(value);
+		field.value = value;
+		field.items.add(btn({
+				// style: {
+				// 	alignSelf: "center"
+				// },
+				icon: "delete",
+				title: "Delete",
+				handler: (btn) => {
+					btn.parent!.remove();
+				}
+			})
+		);
+		this.items.add(field);
+
+		return this;
 	}
 
 	reset() {

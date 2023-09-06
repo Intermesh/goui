@@ -1,19 +1,10 @@
 import {AutocompleteField} from "./AutocompleteField";
-import {
-	AbstractDataSource,
-	DataSourceStore,
-	datasourcestore,
-	DataSourceStoreConfig,
-	Store,
-	StoreRecord
-} from "../../data";
+import {AbstractDataSource, DataSourceStore, datasourcestore, DataSourceStoreConfig, StoreRecord} from "../../data";
 import {column, Table, table} from "../table";
 import {Config} from "../Observable";
 import {FieldEventMap} from "./Field";
 import {createComponent} from "../Component";
-import {DateField} from "./DateField";
 import {ObjectUtil} from "../../util";
-
 
 
 /**
@@ -53,7 +44,7 @@ export class ComboBox<DS extends AbstractDataSource = AbstractDataSource> extend
 		// load next data on scroll
 		this.picker.list.store.addScrollLoader(this.menu.el);
 
-		this.on("autocomplete", async (field, input) => {
+		this.on("autocomplete", async (_field, input) => {
 			this.list.store.queryParams.position = 0;
 			if(!this.list.store.queryParams.filter) {
 				this.list.store.queryParams.filter = {};
@@ -72,11 +63,11 @@ export class ComboBox<DS extends AbstractDataSource = AbstractDataSource> extend
 	}
 
 
-	pickerRecordToValue(field: this, record: any): string {
+	pickerRecordToValue(_field: this, record: any): string {
 		return record[this.valueProperty];
 	}
 
-	async valueToTextField(field: this, value: string): Promise<string> {
+	async valueToTextField(_field: this, value: string): Promise<string> {
 		const nb = await this.dataSource.single(value);
 		return nb ? nb.name : "?";
 	}

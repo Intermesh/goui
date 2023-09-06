@@ -365,11 +365,15 @@ $formFieldBorderRadius: dp(10);
 	/** start text and textarea **/
 	input.text, textarea, select {
 		@extend %input;
-		&:focus, &:not(:placeholder-shown) {
+		&:not(:placeholder-shown) {
 			@extend %float-label;
+			&+div.label, &+.goui-toolbar+div.label {
+				transition: none;
+			}
 		}
 
 		&:focus {
+			@extend %float-label;
 			color: $colorPrimary;
 		}
 	}
@@ -743,8 +747,8 @@ form {
 
 div.color-dot {
 	border-radius: $formFieldBorderRadius;
-	margin: dp(12);
-	height: dp(24);
+	margin: dp(11); //match input
+	height: $baseLineHeight;
 	flex: 1;
 }
 
