@@ -11,6 +11,7 @@ import {tbar, Toolbar} from "../Toolbar.js";
 import {t} from "../../Translate.js";
 import {E} from "../../util/Element.js";
 import {MaterialIcon} from "../MaterialIcon";
+import {Menu} from "../menu";
 
 
 /**
@@ -132,28 +133,57 @@ export abstract class Field extends Component {
 	 */
 	public validateOnBlur = true;
 
-	private _validateOnBlur() {
-		// Validate field on blur
-		this.el.addEventListener("focusout", (e) => {
+	/**
+	 * Fires a change event if the field's value is different since it got focus
+	 * @protected
+	 */
+	protected fireChangeOnBlur = true;
 
-			if(!this.validateOnBlur) {
-				return;
-			}
+	protected onFocusOut(e:FocusEvent) {
+		if(this.validateOnBlur) {
+
 			// When a user clicks a button, perhaps submit or navigates then don't validate
 			if (!e.relatedTarget || (<HTMLElement>e.relatedTarget).tagName != "BUTTON") {
 				this.validate();
 			}
+		}
 
-		});
+		// detect changed value. Handle objects by comparing JSON values
+		if(this.fireChangeOnBlur && this.isDirty()) {
+			this.fireChange();
+		}
+	}
+
+	/**
+	 * Return true if the field was modified
+	 */
+	public isDirty():boolean {
+		// detect changed value. Handle objects by comparing JSON values
+		const v = this.value;
+		if(typeof(v) == 'object') {
+			return JSON.stringify(this.oldValue) != JSON.stringify(v);
+		} else {
+			return this.oldValue  != v;
+		}
+	}
+
+	protected onFocusIn(e:FocusEvent) {
+		this.captureValueForChange();
+	}
+
+	protected captureValueForChange() {
+		const v = this.value;
+		this.oldValue = typeof(v) == 'object' ? structuredClone(v) : v;
 	}
 
 	protected internalRender() {
 
 		const el = super.internalRender();
 
-		this._validateOnBlur();
-
 		this.renderControl();
+
+		this.el.addEventListener("focusin", this.onFocusIn.bind(this));
+		this.el.addEventListener("focusout", this.onFocusOut.bind(this));
 
 		return el;
 	}
@@ -214,11 +244,40 @@ export abstract class Field extends Component {
 			this.toolbar = tbar({}, ...this._buttons);
 			this.toolbar.parent = this;
 			this.toolbar.render(this.wrap);
+
+			this._buttons.forEach((btn) => {
+				if(btn.menu) {
+					this.setupMenu(btn.menu);
+				}
+			})
+
 		} else {
 			if(this.toolbar) {
 				this.toolbar.remove();
 			}
 		}
+	}
+
+	/**
+	 * When buttons with menus are added it is handy to delay the validation on blur.
+	 * Because when the user will click something in the menu it will blur the field and you probably don't
+	 * want it to validate at that point. It's important that the menu will return focus to the field
+	 * and sets the value afterward.
+	 *
+	 * @param menu
+	 * @protected
+	 */
+	protected setupMenu(menu:Menu) {
+
+		let origValidateOnBlur= false;
+		menu.on("beforeshow", () => {
+			origValidateOnBlur = this.validateOnBlur;
+			this.validateOnBlur = false;
+		});
+		menu.on("hide", () => {
+			this.validateOnBlur = origValidateOnBlur;
+			this.focus();
+		});
 	}
 
 	protected createControl(): HTMLElement | undefined {
@@ -373,8 +432,6 @@ export abstract class Field extends Component {
 
 		this.internalSetValue(v, old);
 
-		this.oldValue = v;
-
 		this.fire("setvalue", this, this._value, old);
 	}
 
@@ -388,16 +445,11 @@ export abstract class Field extends Component {
 	 * @param suppressSetValue If another helper component like a date picker just called "set value" then you can
 	 *  set this to true to prevent firing twice.
 	 */
-	protected fireChange(suppressSetValue = false) {
+	protected fireChange() {
 		const v = this.value;
-		if (!suppressSetValue) {
-			this.fire('setvalue', this, v, this.oldValue);
-		}
-		//used set timeout so focusout event happens first and field validates before change event
-		setTimeout(() => {
-			this.fire("change", this, v, this.oldValue);
-			this.oldValue = v;
-		});
+		console.warn("change", this, v, this.oldValue);
+		this.fire("change", this, v, this.oldValue);
+		this.captureValueForChange();
 	}
 
 	public get value() {

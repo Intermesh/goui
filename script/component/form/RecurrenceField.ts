@@ -40,11 +40,13 @@ export class RecurrenceField extends Field {
 	protected createControl() {
 		const input = E('input').attr('type', 'text').attr('readOnly', true).cls('text')
 		this.picker.on('select', (_, val) => {
-			this.value = val;
-			input.value = this.toText(val!);
+
 			this.pickerButton.menu!.hide();
 			this.clearInvalid();
 			this.focus();
+
+			this.value = val;
+			input.value = this.toText(val!);
 		});
 		return input;
 	}

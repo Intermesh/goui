@@ -40,7 +40,7 @@ export class MapField extends Field {
 		this.items.clear();
 		if (v) {
 			for (const key in v) {
-				this.add(v[key], key);
+				this.internalAdd(v[key], key);
 			}
 		}
 	}
@@ -53,7 +53,23 @@ export class MapField extends Field {
 		return v;
 	}
 
+	/**
+	 * Add value to the map.
+	 *
+	 * Also fires change event
+	 *
+	 * @param data
+	 * @param key
+	 */
 	public add(data: MapFieldValue, key?: string | undefined) {
+		if(!this.oldValue) {
+			this.captureValueForChange();
+		}
+		this.internalAdd(data, key);
+		this.fireChange();
+	}
+
+	private internalAdd(data: MapFieldValue, key?: string | undefined) {
 		const row = {
 			key: key === undefined ? this.nextKey() : key,
 			field: this.buildField(data),

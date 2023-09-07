@@ -163,11 +163,15 @@ export class Observable {
 	 * @param args
 	 */
 	public fire<K extends keyof ObservableEventMap<this>>(eventName: K, ...args: Parameters<ObservableEventMap<this>[K]>) {
+
+		// console.log(eventName, ...args);
+
 		if (!this.lisnrs || !this.lisnrs[eventName]) {
 			return true;
 		}
 
 		for (let l of this.lisnrs[eventName]) {
+
 			if (l.listener.apply(null, args) === false) {
 				return false;
 			}

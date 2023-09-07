@@ -47,10 +47,13 @@ export class ColorField extends Field {
 		this.el.cls("+no-floating-label");
 
 		this.picker.on('select', (colorPicker, val) => {
-			this.value = val;
+
 			this.pickerButton.menu!.hide();
 			this.clearInvalid();
 			this.focus();
+
+			//important to set value after focus so change event will fire on focusout
+			this.value = val;
 		});
 
 		return this.colorDot;

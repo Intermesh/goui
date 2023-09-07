@@ -63,12 +63,7 @@ export class ChipsField extends Field {
 			this.onEditorKeyDown(ev);
 		});
 
-		this.wrap!.tabIndex = -1;
-		this.wrap!.addEventListener("keydown", (ev) => {
-			this.onElKeyDown(ev);
-		})
-
-		this.wrap!.addEventListener("focus", (ev) => {
+		this.el.addEventListener("click", (ev) => {
 			if(this.selectedIndex == -1) {
 				this._editor!.focus();
 			}
@@ -99,6 +94,7 @@ export class ChipsField extends Field {
 					}
 					return this.chipRenderer(chip, value).then(() => {
 						this.items.insert(-1, chip);
+						this.value.push(value);
 					})
 				});
 
@@ -106,15 +102,37 @@ export class ChipsField extends Field {
 
 			break;
 
+			case "ArrowRight":
+				if(this.selectedIndex > -1) {
+					this.select(this.selectedIndex + 1);
+				}
+				break;
+
 			case "ArrowLeft":
+				if(this.selectedIndex == -1) {
+					if(this._editor!.html == "") {
+						ev.preventDefault();
+						this.select(this.items.count() - 2);
+					}
+				} else {
+					this.select(this.selectedIndex - 1);
+				}
+				break;
+
+			case "Delete":
 			case "Backspace":
 				ev.stopPropagation();
 				if(this._editor!.html == "") {
-					ev.preventDefault();
 
-					this.select(this.items.count() - 2);
-					this.wrap!.focus();
-
+					if(this.selectedIndex == -1) {
+						ev.preventDefault();
+						this.select(this.items.count() - 2);
+					} else {
+						this.items.get(this.selectedIndex)!.remove();
+						this.value.splice(this.selectedIndex, 1);
+						this.select(this.selectedIndex);
+					}
+					// this.focus();
 				}
 				break;
 		}
@@ -129,15 +147,17 @@ export class ChipsField extends Field {
 				title: t("Remove"),
 				icon: "cancel",
 				handler: (btn) => {
+					this.captureValueForChange();
 					const index = this.items.indexOf(chip);
 					chip.remove();
 					this.value.splice(index, 1);
+					this.fireChange();
 				}
 			})
 		);
 		chip.el.addEventListener("click" , () => {
 			this.select(this.items.indexOf(chip));
-			this.wrap!.focus();
+			// this.focus();
 		})
 		return chip;
 	}
@@ -174,24 +194,6 @@ export class ChipsField extends Field {
 		this.selectedIndex = index;
 		this.items.get(this.selectedIndex)!.el.classList.add("selected");
 
-	}
-	private onElKeyDown(ev: KeyboardEvent) {
-		switch (ev.key) {
-			case "Delete":
-			case "Backspace":
-				this.items.get(this.selectedIndex)!.remove();
-				this.value.splice(this.selectedIndex, 1);
-				this.select(this.selectedIndex);
-				break;
-
-			case "ArrowLeft":
-				this.select(this.selectedIndex - 1);
-				break;
-
-			case "ArrowRight":
-				this.select(this.selectedIndex + 1);
-				break;
-		}
 	}
 
 	protected internalSetValue(v: any[], old: any) {

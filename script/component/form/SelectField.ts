@@ -38,10 +38,6 @@ export class SelectField extends Field {
 
 		this.drawOptions();
 
-		this.input.addEventListener("change", () => {
-			this.fireChange();
-		});
-
 		this.el.appendChild(this.input);
 
 		return this.input;

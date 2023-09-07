@@ -820,7 +820,7 @@ export class Component extends Observable {
 	}
 
 	/**
-	 * Find a child by element ID, itemId property, Component instance or custom function.
+	 * Find a child at any level by element ID, itemId property, Component instance or custom function.
 	 *
 	 * It cascades down the component hierarchy. See also {@see findChildByType}
 	 *
@@ -840,6 +840,25 @@ export class Component extends Observable {
 	}
 
 	/**
+	 * Find children at any level by element ID, itemId property, Component instance or custom function.
+	 *
+	 * It cascades down the component hierarchy. See also {@see findChildByType}
+	 *
+	 */
+	public findChildren(predicate: FindComponentPredicate): Component[] {
+		let fn = this.createFindPredicateFunction(predicate);
+
+		const children:Component[] = [];
+		this.cascade((item: any) => {
+			if (fn(item)) {
+				children.push(item);
+			}
+		});
+
+		return children;
+	}
+
+	/**
 	 * Find child by instance type of the parent
 	 *
 	 * @example
@@ -855,6 +874,19 @@ export class Component extends Observable {
 		} else {
 			return undefined;
 		}
+	}
+
+	/**
+	 * Find children by instance type of the parent
+	 *
+	 * @example
+	 * ```
+	 * const form = textField.findAncestorByType(Form);
+	 * ```
+	 * @param cls
+	 */
+	public findChildrenByType<T extends Component>(cls: Type<T>): T[] {
+		return this.findChildren(Component => Component instanceof cls) as T[];
 	}
 
 	/**

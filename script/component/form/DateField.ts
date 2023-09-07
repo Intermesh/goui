@@ -47,16 +47,7 @@ export class DateField extends TextField {
 				menu:
 					menu({
 							alignTo:  this.el,
-							alignToInheritWidth: false,
-							listeners: {
-								beforeshow: () => {
-									origValidateOnBlur = this.validateOnBlur;
-									this.validateOnBlur = false;
-								},
-								hide: () => {
-									this.validateOnBlur = origValidateOnBlur;
-								}
-							}
+							alignToInheritWidth: false
 						},
 						this.picker
 					)
@@ -70,10 +61,11 @@ export class DateField extends TextField {
 		const input = super.createControl();
 		this.picker.on('select', (_, val) => {
 			this.date = val;
-			super.value = val.format(this.inputFormat);
 			this.pickerButton.menu!.hide();
 			this.clearInvalid();
-			this.focus();
+
+			//important to set value after focus so change event will fire on focusout
+			super.value = val.format(this.inputFormat);
 		});
 
 		this.pickerButton.menu!.on("show", () => {

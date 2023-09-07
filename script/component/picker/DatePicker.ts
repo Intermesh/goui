@@ -201,7 +201,6 @@ export class DatePicker extends Component {
 				this.markSelected(start, end);
 			}
 		}, onMouseUp = (_e: MouseEvent) => {
-
 			dl.un('mousemove', onMouseMove);
 			window.removeEventListener('mouseup', onMouseUp);
 			if (!this.enableRangeSelect || start == end) {
@@ -210,8 +209,8 @@ export class DatePicker extends Component {
 				this.fire('select-range', this, new DateTime(start.attr('data-date')), new DateTime(end.attr('data-date')));
 			}
 		};
-		dl.on('mousedown', ({target}) => {
 
+		dl.on('mousedown', ({target}) => {
 			if (target.isA('dd')) {
 				anchor = start = end = target;
 				dl.querySelectorAll('dd.selected').forEach(e => e.cls(['selected', 'tail', 'head'], false)); // clear selection

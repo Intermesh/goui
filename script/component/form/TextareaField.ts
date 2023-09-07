@@ -38,10 +38,6 @@ export class TextAreaField extends TextField {
 			this._input.value = v;
 		}
 
-		this._input.addEventListener("change", () => {
-			this.fireChange();
-		});
-
 		return this._input;
 	}
 }

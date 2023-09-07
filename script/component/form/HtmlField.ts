@@ -95,8 +95,6 @@ export class HtmlField extends Field {
 
 	private editor: HTMLDivElement | undefined;
 
-	private valueOnFocus: string | undefined;
-
 	private tbar?: Toolbar;
 
 	constructor() {
@@ -417,16 +415,11 @@ export class HtmlField extends Field {
 		const selectionChangeFn = FunctionUtil.buffer(300, () => this.updateToolbar());
 
 		this.editor.addEventListener("focus", () => {
-			this.valueOnFocus = this.value;
 			document.addEventListener("selectionchange", selectionChangeFn);
-
 			this.showToolbar();
 		});
 
 		this.editor.addEventListener("blur", (e) => {
-			if (this.valueOnFocus != this.value) {
-				this.fireChange();
-			}
 			document.removeEventListener("selectionchange", selectionChangeFn);
 			if (!(e.relatedTarget instanceof HTMLElement) || !this.getToolbar().el.contains(e.relatedTarget)) {
 				this.hideToolbar();
