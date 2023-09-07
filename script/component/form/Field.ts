@@ -502,6 +502,67 @@ export abstract class Field extends Component {
 		this.fire("validate", this);
 	}
 
+
+	/*
+
+			badInput
+:
+false
+customError
+:
+false
+patternMismatch
+:
+false
+rangeOverflow
+:
+false
+rangeUnderflow
+:
+false
+stepMismatch
+:
+false
+tooLong
+:
+false
+tooShort
+:
+false
+typeMismatch
+:
+false
+
+			 */
+	public setValidityState(input:HTMLInputElement|HTMLTextAreaElement|HTMLSelectElement) {
+
+		const validity = input.validity;
+
+		if(validity.valid) {
+			return;
+		}
+
+		if(validity.typeMismatch) {
+			switch(input.type){
+				case 'email':
+					this.setInvalid(t("Please enter a valid e-mail address"));
+					return;
+
+				default:
+					this.setInvalid(t("Please a valid value"));
+					return;
+			}
+
+		} else if(validity.valueMissing) {
+			this.setInvalid(t("This field is required"));
+		} else {
+			console.warn("TODO: Implement translated message");
+			this.setInvalid(input.validationMessage);
+		}
+
+
+	}
+
 	protected applyInvalidMsg() {
 		if (this.invalidMsg) {
 			this.el.classList.add("invalid");

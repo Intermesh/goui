@@ -100,9 +100,10 @@ export class SelectField extends Field {
 		super.validate();
 
 		//this implements the native browser validation
-		if (!this.input!.validity.valid) {
-			this.setInvalid(this.input!.validationMessage);
-		}
+
+		if(this.input)
+			this.setValidityState(this.input);
+
 	}
 
 

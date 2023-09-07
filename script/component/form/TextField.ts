@@ -163,8 +163,9 @@ export class TextField extends Field {
 		super.validate();
 
 		//this implements the native browser validation
-		if (this._input && !this._input.validity.valid) {
-			this.setInvalid(this._input.validationMessage);
+		if (this._input) {
+
+			this.setValidityState(this._input);
 		}
 	}
 
