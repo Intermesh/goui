@@ -403,7 +403,7 @@ export class DateTime {
 		let intlMonth = new Intl.DateTimeFormat(lang, {month: 'long'});
 		for (let i = 0; i < 12; i++) {
 			tmp.setMonth(i);
-			DateTime.monthNames.push(intlMonth.format(tmp));
+			DateTime.monthNames[i] = intlMonth.format(tmp);
 		}
 	}
 

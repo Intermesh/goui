@@ -77,7 +77,26 @@ export class DateField extends TextField {
 		});
 
 		this.pickerButton.menu!.on("show", () => {
-			this.picker.setValue(this.getValueAsDateTime() || new DateTime());
+			let dt = new DateTime();
+			if(this.minDate) {
+				this.picker.minDate = this.minDate;
+				if(this.minDate.getTime() > dt.getTime()) {
+					dt = this.minDate;
+					dt.setHours(0);
+					dt.setMinutes(0);
+				}
+			}
+
+			if(this.maxDate) {
+				this.picker.maxDate = this.maxDate;
+				if(this.maxDate.getTime() < dt.getTime()) {
+					dt = this.maxDate;
+					dt.setHours(23)
+					dt.setMinutes(59);
+				}
+			}
+
+			this.picker.setValue(this.getValueAsDateTime() || dt);
 		})
 
 		return input;
