@@ -137,6 +137,14 @@ export class Menu extends Toolbar {
 			}
 		});
 
+		const onClose = () => {
+			if (Menu.openedMenu == this) {
+				Menu.openedMenu = undefined;
+			}
+		}
+
+		this.on("hide", onClose);
+		this.on("remove", onClose);
 		return el;
 	}
 
@@ -254,6 +262,7 @@ export class Menu extends Toolbar {
 		this.setAlignTo();
 
 		if(Menu.openedMenu == this) {
+			console.warn("Already open");
 			return true;
 		}
 
@@ -263,6 +272,7 @@ export class Menu extends Toolbar {
 		}
 
 		Menu.openedMenu = this;
+
 
 		//hide menu when clicked elsewhere
 		window.addEventListener("mousedown", (ev) => {
@@ -294,9 +304,6 @@ export class Menu extends Toolbar {
 	}
 
 	public close() {
-		if (Menu.openedMenu == this) {
-			Menu.openedMenu = undefined;
-		}
 		return this.removeOnClose ? this.remove() : this.hide();
 	}
 
