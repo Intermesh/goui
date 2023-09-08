@@ -68,8 +68,11 @@ export class ComboBox<DS extends AbstractDataSource = AbstractDataSource> extend
 	}
 
 	async valueToTextField(_field: this, value: string): Promise<string> {
+		if(value === "") {
+			return "";
+		}
 		const nb = await this.dataSource.single(value);
-		return nb ? nb.name : "?";
+		return nb ? nb[this.displayProperty] : "?";
 	}
 }
 

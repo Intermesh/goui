@@ -148,12 +148,18 @@ export class Format {
 	}
 
 
-	public static duration(value: number): string {
+	public static duration(value: number, zeroPad:boolean = false): string {
 		if (value < 0) {
 			return "";
 		}
-		let minutes = value % 60;
-		return Math.floor(value / 60) + ':' + ((minutes < 10) ? "0" + minutes : minutes);
+		let retStr = "";
+		const hours = Math.floor(value / 60), minutes = value % 60;;
+		if(zeroPad && hours < 10) {
+			retStr += "0";
+		}
+		retStr += hours + ":";
+		retStr += ((minutes < 10) ? "0" + minutes : minutes);
+		return retStr;
 	}
 
 	public static shortTime(v: string): string {

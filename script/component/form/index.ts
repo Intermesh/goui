@@ -22,3 +22,4 @@ export * from './ChipsField.js';
 export * from './DataSourceForm.js';
 export * from './AutocompleteChips.js';
 export * from './ComboBox.js';
+export * from './DurationField.js';
