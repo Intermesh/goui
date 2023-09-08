@@ -38,10 +38,6 @@ export class SelectField extends Field {
 
 		this.drawOptions();
 
-		this.input.addEventListener("change", () => {
-			this.fireChange();
-		});
-
 		this.el.appendChild(this.input);
 
 		return this.input;
@@ -104,9 +100,10 @@ export class SelectField extends Field {
 		super.validate();
 
 		//this implements the native browser validation
-		if (!this.input!.validity.valid) {
-			this.setInvalid(this.input!.validationMessage);
-		}
+
+		if(this.input)
+			this.setValidityState(this.input);
+
 	}
 
 

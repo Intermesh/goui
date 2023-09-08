@@ -234,7 +234,7 @@ $formFieldBorderRadius: dp(10);
 			padding: 0 !important;
 			border-radius: 0 $formFieldBorderRadius $formFieldBorderRadius 0;
 
-			border-left: $borderWidth solid $colorBorder !important; //importants for Window rule for border top
+			border-left: $borderWidth solid $colorBorder;// !important; //importants for Window rule for border top
 			border-top: 0 !important;
 			border-right: 0 !important;
 			border-bottom: 0 !important;
@@ -380,9 +380,9 @@ $formFieldBorderRadius: dp(10);
 
 	&.invalid {
 		.wrap {
-			border-color: $colorError;
+			border-color: $colorErrorBorder;
 			background-color: $colorErrorBg;
-			> i {
+			i {
 				color: $colorError;
 			}
 
@@ -394,6 +394,10 @@ $formFieldBorderRadius: dp(10);
 				background-color: $colorErrorBg;
 				color: $colorError;
 			}
+
+			menu.goui-toolbar {
+				border-color: $colorErrorBorder;
+			};
 		}
 
 		.hint {
@@ -821,5 +825,36 @@ div.color-dot {
 				margin-right: dp(-8);
 			}
 		}
+	}
+}
+
+
+
+
+.goui-form-field.range {
+
+	.wrap {
+		border: none;
+		overflow:visible;
+	}
+
+	input[type='range'] {
+		overflow: visible;;
+		padding: 0;
+		-webkit-appearance: none;
+		background: $colorPrimary;
+		height: dp(8);
+		margin: dp(19);
+	}
+
+	input[type='range']::-webkit-slider-thumb {
+		-webkit-appearance: none;
+		background: $colorPrimary;
+		height: dp(24);
+		width: dp(24);
+		border-radius: 50%;
+		cursor: ew-resize;
+		box-shadow: 0 0 2px 0 #555;
+		transition: background .3s ease-in-out;
 	}
 }

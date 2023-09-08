@@ -47,7 +47,7 @@ export class ArrayField extends ContainerField {
 
 		if (v) {
 			v.forEach((item) => {
-				this.addValue(item);
+				this.internalAddValue(item);
 			});
 		}
 	}
@@ -66,11 +66,23 @@ export class ArrayField extends ContainerField {
 	}
 
 	/**
-	 * Add value to the values array
+	 * Add value to the values array. Also fires change event
 	 *
 	 * @param value
 	 */
 	public addValue(value:Record<string,any> = {}) {
+
+		if(!this.oldValue) {
+			this.captureValueForChange();
+		}
+
+		this.internalAddValue(value);
+		this.fireChange();
+
+		return this;
+	}
+
+	private internalAddValue(value:Record<string,any>) {
 		const field = this.buildField(value);
 		field.value = value;
 		field.items.add(btn({
@@ -81,12 +93,11 @@ export class ArrayField extends ContainerField {
 				title: "Delete",
 				handler: (btn) => {
 					btn.parent!.remove();
+					this.fireChange();
 				}
 			})
 		);
 		this.items.add(field);
-
-		return this;
 	}
 
 	reset() {

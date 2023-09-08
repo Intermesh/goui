@@ -42,17 +42,17 @@ $colorSuccess:		#155724 !default;
 $colorSuccessBorder:		#c3e6cb !default;
 $colorSuccessBg: #d4edda !default;
 
-$colorError: #721c24 !default;
-$colorErrorBorder: #E53935 !default;
-$colorErrorBg: #FFEBEE !default;
+$colorError: var(--fg-error) !default;
+$colorErrorBorder: var(--border-error) !default;
+$colorErrorBg: var(--bg-error) !default;
 
-$colorWarning: #856404 !default;
-$colorWarningBorder: #ffeeba !default;
-$colorWarningBg: #fff3cd !default;
+$colorWarning: var(--fg-warning) !default;
+$colorWarningBorder: var(--border-warning) !default;
+$colorWarningBg: var(--bg-warning) !default;
 
-$colorNotice: #004089 !default;
-$colorNoticeBorder: #b8daff !default;
-$colorNoticeBg: #cce5ff !default;
+$colorNotice: var(--fg-notice) !default;
+$colorNoticeBorder: var(--border-notice) !default;
+$colorNoticeBg: var(--bg-notice) !default;
 
 
 

@@ -1,34 +1,50 @@
 @mixin light-theme {
 
-		--fg-border:			rgba(68, 68, 68, 0.26);
-		--fg-line:				#{rgba(black, 0.04)};
+	--fg-border:			rgba(68, 68, 68, 0.26);
+	--fg-line:				#{rgba(black, 0.04)};
 
-		--fg-text:           rgb(1, 4, 10);
-		--fg-secondary-text: #{rgba(1, 4, 10, 0.56)};
-		--fg-selected: white;
+	--fg-text:           rgb(1, 4, 10);
+	--fg-secondary-text: #{rgba(1, 4, 10, 0.56)};
+	--fg-selected: white;
 
-		--bg-body: 			#fafafa;
-	  --bg-box: var(--bg-main); //deprecated used bg-main
-		--bg-main: white;
-		--bg-button:	  	#f1f1f1;
-		--bg-layer: 		#f5f5f5;
-		--bg-side-bar: #efeff2;
-		--bg-header: #1E1246;
-		--bg-primary: #dae3f0;
 
-	//not in GO
-		--bg-focus: 		rgba(2, 119, 189, 0.16);
-		--bg-read-only: #f1f1f1;
-		--bg-input: white;
-	//not in GO
 
-		--bg-hover:      	#{rgba(black, 0.04)};
-		--bg-selected:   	#{rgba(30,18,70, 0.8)};
-		--bg-selected-inactive: #{rgba(black, .08)};
+	--bg-body: 			#fafafa;
+	--bg-box: var(--bg-main); //deprecated used bg-main
+	--bg-main: white;
+	--bg-button:	  	#f1f1f1;
+	--bg-layer: 		#f5f5f5;
+	--bg-side-bar: #efeff2;
+	--bg-header: #1E1246;
+	--bg-primary: #dae3f0;
 
-		--c-primary: 		#1652a1;
-		--c-secondary: 	 #00b0ad;
-		--c-accent: 		#ff7200;
+//not in GO
+	--bg-focus: 		rgba(2, 119, 189, 0.16);
+	--bg-read-only: #f1f1f1;
+	--bg-input: white;
+//not in GO
+
+	--bg-hover:      	#{rgba(black, 0.04)};
+	--bg-selected:   	#{rgba(30,18,70, 0.8)};
+	--bg-selected-inactive: #{rgba(black, .08)};
+
+	--c-primary: 		#1652a1;
+	--c-secondary: 	 #00b0ad;
+	--c-accent: 		#ff7200;
+
+
+
+	--fg-error: #721c24;
+	--border-error: #721c24;
+	--bg-error: #FFEBEE;
+
+	--fg-warning: #856404;
+	--border-warning: #ffeeba;
+	--bg-warning: #fff3cd;
+
+	--fg-notice: #004089;
+	--border-notice: #b8daff;
+	--bg-notice: #cce5ff;
 
 }
 
@@ -61,4 +77,17 @@
 	--bg-selected-inactive: #4a4a60;
 
 	--c-primary: #009BC9;
+
+	--fg-error: #FFEBEE;
+	--border-error: #a43432;
+	--bg-error: #721c24;
+
+	--fg-warning: #856404;
+	--border-warning: #ffeeba;
+	--bg-warning: #fff3cd;
+
+	--fg-notice: #004089;
+	--border-notice: #b8daff;
+	--bg-notice: #cce5ff;
+
 }

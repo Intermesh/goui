@@ -183,6 +183,7 @@ export class AutocompleteChips<T extends List = List> extends ChipsField {
 	}
 
 	private onInput(ev: KeyboardEvent) {
+		console.warn('onInput');
 		this.menuButton.showMenu();
 		this.fire("autocomplete", this, this.editor.el.innerText);
 	}
@@ -198,7 +199,12 @@ export class AutocompleteChips<T extends List = List> extends ChipsField {
 			return this.pickerRecordToValue(this, record);
 		});
 
+		this.list.rowSelection!.clear();
+		this.editor.el.innerText = "";
+		this.focus();
 
+
+		// set value after focus as this will start tracking for the change event
 		if(this.list.rowSelection!.multiSelect) {
 			this.value = newValues;
 		} else
@@ -208,10 +214,6 @@ export class AutocompleteChips<T extends List = List> extends ChipsField {
 			}
 			this.value = this.value.concat(newValues);
 		}
-
-		this.list.rowSelection!.clear();
-		this.editor.el.innerText = "";
-		this.focus();
 	}
 }
 

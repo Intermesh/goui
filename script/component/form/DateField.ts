@@ -46,17 +46,8 @@ export class DateField extends TextField {
 				icon: "calendar_today",
 				menu:
 					menu({
-							alignTo:  this.el,
-							alignToInheritWidth: false,
-							listeners: {
-								beforeshow: () => {
-									origValidateOnBlur = this.validateOnBlur;
-									this.validateOnBlur = false;
-								},
-								hide: () => {
-									this.validateOnBlur = origValidateOnBlur;
-								}
-							}
+							alignTo:  this.wrap,
+							alignToInheritWidth: false
 						},
 						this.picker
 					)
@@ -70,14 +61,34 @@ export class DateField extends TextField {
 		const input = super.createControl();
 		this.picker.on('select', (_, val) => {
 			this.date = val;
-			super.value = val.format(this.inputFormat);
 			this.pickerButton.menu!.hide();
 			this.clearInvalid();
-			this.focus();
+
+			//important to set value after focus so change event will fire on focusout
+			super.value = val.format(this.inputFormat);
 		});
 
 		this.pickerButton.menu!.on("show", () => {
-			this.picker.setValue(this.getValueAsDateTime() || new DateTime());
+			let dt = new DateTime();
+			if(this.minDate) {
+				this.picker.minDate = this.minDate;
+				if(this.minDate.getTime() > dt.getTime()) {
+					dt = this.minDate;
+					dt.setHours(0);
+					dt.setMinutes(0);
+				}
+			}
+
+			if(this.maxDate) {
+				this.picker.maxDate = this.maxDate;
+				if(this.maxDate.getTime() < dt.getTime()) {
+					dt = this.maxDate;
+					dt.setHours(23)
+					dt.setMinutes(59);
+				}
+			}
+
+			this.picker.setValue(this.getValueAsDateTime() || dt);
 		})
 
 		return input;

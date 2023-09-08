@@ -94,19 +94,11 @@ export class TextField extends Field {
 			this._input.title = this.title;
 		}
 
-		this._input.addEventListener("change", this.onInputChange);
-
 		if (this.invalidMsg) {
 			this.applyInvalidMsg();
 		}
 
 		return this._input;
-
-
-	}
-
-	protected onInputChange = () => {
-		this.fireChange();
 	}
 
 	setInvalid(msg: string) {
@@ -171,8 +163,9 @@ export class TextField extends Field {
 		super.validate();
 
 		//this implements the native browser validation
-		if (this._input && !this._input.validity.valid) {
-			this.setInvalid(this._input.validationMessage);
+		if (this._input) {
+
+			this.setValidityState(this._input);
 		}
 	}
 

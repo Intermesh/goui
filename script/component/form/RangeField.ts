@@ -1,7 +1,7 @@
 /**
  * @license https://github.com/Intermesh/goui/blob/main/LICENSE MIT License
  * @copyright Copyright 2023 Intermesh BV
- * @author Merijn Schering <mschering@intermesh.nl>
+ * @author Joachim van de Haterd <jhaterd@intermesh.nl>
  */
 
 import {TextField, TextFieldType} from "./TextField.js";
@@ -47,7 +47,7 @@ export class RangeField extends TextField {
 
     protected createControl(): undefined | HTMLElement {
         super.createControl();
-        this._input!.cls('+range')
+        this.el.cls('+range')
         // this._input!.attr('type','number');
         if (this.min !== undefined) {
             this._input!.attr('min', this.min);

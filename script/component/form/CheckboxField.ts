@@ -52,6 +52,9 @@ export class CheckboxField extends Field {
 		return span;
 	}
 
+	// we handle it with the native change event here
+	protected fireChangeOnBlur = false;
+
 	protected createControl(): undefined | HTMLElement {
 
 		const el = E('input').on("change", () => {

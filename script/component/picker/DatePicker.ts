@@ -39,6 +39,10 @@ export class DatePicker extends Component {
 	protected grid: HTMLElement
 	protected menu: HTMLElement
 
+	minDate?: DateTime;
+
+	maxDate?: DateTime;
+
 	constructor() {
 		super();
 		this.showWeekNbs = true;
@@ -49,20 +53,20 @@ export class DatePicker extends Component {
 
 		this.el.append(
 			this.menu = E('header',
-				E('button', '◀').on('click', _ => {
+				E('button', E('i', "chevron_left").cls("icon")).cls(["goui-button", "nav"], true).on('click', _ => {
 					this.moveMonth(-1)
 				}),
-				this.monthEl = E('span').on('click', _ => {
+				this.monthEl = E('button').cls("goui-button").on('click', _ => {
 					this.months.cls('!active');
 					this.years.cls('-active');
 				}),
-				this.yearEl = E('span').on('click', _ => {
+				this.yearEl = E('button').cls("goui-button").on('click', _ => {
 					this.years.cls('!active');
 					this.months.cls('-active');
 					// scroll half way
 					this.years.scrollTop = (this.years.scrollHeight / 2) - (this.years.clientHeight / 2);
 				}),
-				E('button', "▶").on('click', _ => {
+				E('button', E('i', "chevron_right").cls("icon")).cls(["goui-button", "nav"], true).on('click', _ => {
 					this.moveMonth(1)
 				})
 			),
@@ -88,10 +92,10 @@ export class DatePicker extends Component {
 		for (let i = -100; i < 100; i++) {
 			this.years.append(E('li', (this.value.getYear() + i) + "").cls('now', i === 0));
 		}
-		this.months.append(...DateTime.monthNames.map((name, i) =>
+		this.months.replaceChildren(...DateTime.monthNames.map((name, i) =>
 			E('li', name).cls('now', i === this.now.getMonth() - 1).attr('data-nb', i + 1)
 		));
-		//this.internalRender();
+		this.internalRender();
 	}
 
 	moveMonth(amount: number) {
@@ -122,17 +126,28 @@ export class DatePicker extends Component {
 		dl.append(...Object.values(DateTime.dayNames).map(s => E('dt', s.substring(0, 2))));
 		// dates and week nbs
 		for (let i = 0; i < 42; i++) {
-			if (this.showWeekNbs && i % 7 == 0)
+			if (this.showWeekNbs && i % 7 == 0) {
 				weekNbs.append(E('li', itr.format('W')));
+			}
+			let disabled = false;
+			if(this.minDate && this.minDate.getTime() > itr.getTime()) {
+				disabled = true;
+			}
+			if(this.maxDate && this.maxDate.getTime() < itr.getTime()) {
+				disabled = true;
+			}
+
 			dl.append(E('dd', itr.format('j')).attr('data-date', itr.format('Y-m-d'))
+				.cls('disabled', disabled)
 				.cls('off', itr.format('Ym') !== this.value.format('Ym'))
 				.cls('today', itr.format(`Ymd`) === this.now.format(`Ymd`))
 			);
 			itr.addDays(1);
 		}
 
-		if (this.showWeekNbs)
+		if (this.showWeekNbs) {
 			cal.append(weekNbs);
+		}
 
 		this.setupDraggability(dl);
 		cal.append(dl);
@@ -186,7 +201,6 @@ export class DatePicker extends Component {
 				this.markSelected(start, end);
 			}
 		}, onMouseUp = (_e: MouseEvent) => {
-
 			dl.un('mousemove', onMouseMove);
 			window.removeEventListener('mouseup', onMouseUp);
 			if (!this.enableRangeSelect || start == end) {
@@ -195,8 +209,8 @@ export class DatePicker extends Component {
 				this.fire('select-range', this, new DateTime(start.attr('data-date')), new DateTime(end.attr('data-date')));
 			}
 		};
-		dl.on('mousedown', ({target}) => {
 
+		dl.on('mousedown', ({target}) => {
 			if (target.isA('dd')) {
 				anchor = start = end = target;
 				dl.querySelectorAll('dd.selected').forEach(e => e.cls(['selected', 'tail', 'head'], false)); // clear selection
