@@ -179,7 +179,7 @@ export class Button extends Component {
 				// close dropdown menu if handler is set
 				const topMenu = this.findTopMenu();
 
-				if (topMenu && topMenu.isDropdown()) {
+				if (topMenu && topMenu.isDropdown) {
 					topMenu.close();
 				}
 			}
@@ -212,6 +212,7 @@ export class Button extends Component {
 		if (menu) {
 			menu.parent = this;
 			menu.removeOnClose = false;
+			menu.isDropdown = true;
 
 			this.el.classList.add("has-menu");
 		}

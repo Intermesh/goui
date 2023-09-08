@@ -101,6 +101,9 @@ export class Menu extends Toolbar {
 	 */
 	public alignToInheritWidth = false;
 
+	/**
+	 * @inheritDoc
+	 */
 	public renderTo? = root.el;
 
 	/**
@@ -109,22 +112,12 @@ export class Menu extends Toolbar {
 	public removeOnClose = true;
 
 	/**
-	 * Is true when any menu is visible
+	 * Is set to the menu currently open. There can only be one dropdown open at the same time
 	 */
 	public static openedMenu?: Menu;
 
 	protected internalRender() {
 		const el = super.internalRender();
-
-		if (this.expandLeft) {
-			el.classList.add("expand-left");
-		}
-
-		if (this.isDropdown()) {
-
-			el.classList.add("goui-dropdown");
-			el.classList.add("goui-fade-out");
-		}
 
 		this.el.addEventListener('keydown', (ev) => {
 			switch ((ev as KeyboardEvent).key) {
@@ -148,19 +141,31 @@ export class Menu extends Toolbar {
 		return el;
 	}
 
-	public isDropdown() {
-		return this.parent instanceof Button;
+	/**
+	 * Menu can be rendered as a component in the normal flow or as a
+	 * floating dropdown.
+	 *
+	 * @param value
+	 */
+	public set isDropdown(value: boolean) {
+		this.el.classList.toggle("goui-dropdown", value);
+		this.el.classList.toggle("goui-fade-out", value);
 	}
 
+	public get isDropdown() {
+		return this.el.classList.contains("goui-dropdown");
+	}
 
+	/**
+	 * Expand menu on the left side of the parent button
+	 * @param expandLeft
+	 */
 	set expandLeft(expandLeft: boolean) {
 		this.el.classList.add("expand-left");
 	}
-
 	get expandLeft() {
 		return this.el.classList.contains("expand-left");
 	}
-
 	protected renderItem(item: Component) {
 
 		const insertBefore = this.getInsertBefore();
@@ -290,9 +295,10 @@ export class Menu extends Toolbar {
 		return super.show();
 	}
 
-
 	/**
-	 * Show menu at coordinates on the page
+	 * Show menu at coordinates on the page.
+	 *
+	 * Useful for a context menu
 	 *
 	 * @param coords
 	 */
@@ -303,11 +309,20 @@ export class Menu extends Toolbar {
 		this.show();
 	}
 
+	/**
+	 * Closes the menu.
+	 *
+	 * It will hide or remove it depending on the "removeOnClose" property.
+	 */
 	public close() {
 		return this.removeOnClose ? this.remove() : this.hide();
 	}
 
-	focus(o?: FocusOptions) {
+
+	/**
+	 * @inheritDoc
+	 */
+	public focus(o?: FocusOptions) {
 		this.items.get(0)?.focus(o);
 	}
 
