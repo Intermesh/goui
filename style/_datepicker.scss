@@ -109,7 +109,7 @@ menu.goui-dropdown {
 		border-radius: 1.2rem;
 	}
 
-	li.now,
+	li.now:not(.selected),
 	dd.today:before {
 		color: #005fb8;
 	}
@@ -127,15 +127,18 @@ menu.goui-dropdown {
 			flex: 1;
 			text-align: center;
 		}
-		> button {
-			width: 28px;
-			max-width: 28px;
+		> button.nav {
+			width: dp(50);
+			max-width: dp(50);
 			padding: 0;
 			border: 0;
 		}
-		> span {
-			cursor: pointer;
+
+		> button {
+			text-align: center;
+			display:block;
 		}
+
 	}
 
 	@keyframes go-top {
@@ -155,7 +158,7 @@ menu.goui-dropdown {
 		user-select:none;
 		&.top {
 			position: absolute;
-			top: 17px;
+			top: dp(50);
 			bottom: 0;
 			width: 100%;
 			> * { // todo

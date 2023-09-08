@@ -46,7 +46,7 @@ export class DateField extends TextField {
 				icon: "calendar_today",
 				menu:
 					menu({
-							alignTo:  this.el,
+							alignTo:  this.wrap,
 							alignToInheritWidth: false
 						},
 						this.picker
