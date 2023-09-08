@@ -534,7 +534,7 @@ typeMismatch
 false
 
 			 */
-	public setValidityState(input:HTMLInputElement|HTMLTextAreaElement|HTMLSelectElement) {
+	protected setValidityState(input:HTMLInputElement|HTMLTextAreaElement|HTMLSelectElement) {
 
 		const validity = input.validity;
 
@@ -549,12 +549,18 @@ false
 					return;
 
 				default:
-					this.setInvalid(t("Please a valid value"));
+					this.setInvalid(t("Please enter a valid value"));
 					return;
 			}
 
 		} else if(validity.valueMissing) {
 			this.setInvalid(t("This field is required"));
+		} else if(validity.tooLong) {
+			this.setInvalid(t("The maximum length for this field is {max}").replace("{max}", (input as HTMLInputElement).maxLength));
+		} else if(validity.tooShort) {
+			this.setInvalid(t("The minimum length for this field is {max}").replace("{max}", (input as HTMLInputElement).minLength));
+		}else if(validity.patternMismatch) {
+			this.setInvalid(t("Please match the format requested").replace("{max}", (input as HTMLInputElement).minLength));
 		} else {
 			console.warn("TODO: Implement translated message");
 			this.setInvalid(input.validationMessage);
