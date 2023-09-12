@@ -63,8 +63,6 @@ export class DurationField extends TextField {
             this._input.title = this.title;
         }
 
-        this._input.addEventListener("change", this.onInputChange);
-
         if (this.invalidMsg) {
             this.applyInvalidMsg();
         }
