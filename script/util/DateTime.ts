@@ -971,7 +971,6 @@ export class DateTime {
 	 */
 	public static createFromFormat(dateStr: string, format: string = "c", timezone?: Timezone): DateTime | null {
 
-
 		const regex = new RegExp(DateTime.createFormatRegex(format), 'u');
 		const result = regex.exec(dateStr);
 
@@ -986,20 +985,23 @@ export class DateTime {
 			date.timezone = timezone;
 		}
 
+		// Set year and month first...
+		if(result.groups!["Y"]) {
+			date.setYear(parseInt(result.groups!["Y"]));
+			delete result.groups!["Y"];
+		} else if (result.groups!["y"]) {
+			date.setYear(parseInt(2000 + result.groups!["y"]));
+			delete result.groups!["y"];
+		}
+		for(let key of ["n", "m"]) {
+			if(result.groups![key]) {
+				date.setMonth(parseInt(result.groups![key]));
+				delete result.groups![key];
+			}
+		}
+		// ...then do the rest.
 		for (let key in result.groups) {
 			switch (key) {
-				case "Y":
-					date.setYear(parseInt(result.groups["Y"]));
-					break;
-				case "y":
-					date.setYear(parseInt(2000 + result.groups["y"]));
-					break;
-
-				case 'n':
-				case 'm':
-					date.setMonth(parseInt(result.groups[key]));
-					break;
-
 				case 'j':
 				case 'd':
 					date.setMonthDay(parseInt(result.groups[key]));
@@ -1028,7 +1030,6 @@ export class DateTime {
 					break;
 			}
 		}
-
 		return date;
 	}
 
