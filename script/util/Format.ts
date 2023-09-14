@@ -164,7 +164,7 @@ export class Format {
 
 	public static shortTime(v: string): string {
 		let arV = v.split(":");
-		if (arV.length !== 3) {
+		if (arV.length < 2 || arV.length > 3) {
 			return '';
 		}
 		return arV[0] + ":" + arV[1];
