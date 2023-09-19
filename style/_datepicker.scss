@@ -137,6 +137,11 @@ menu.goui-dropdown {
 		> button {
 			text-align: center;
 			display:block;
+
+			i.icon {
+				display: inline;
+				vertical-align: bottom;
+			}
 		}
 
 	}
