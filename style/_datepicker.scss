@@ -128,13 +128,14 @@ menu.goui-dropdown {
 			text-align: center;
 		}
 		> button.nav {
-			width: dp(56);
-			max-width: dp(56);
+			width: dp(50);
+			max-width: dp(50);
 			padding: 0;
 			border: 0;
 		}
 
-		> button {
+		> button:not(.nav) {
+
 			text-align: center;
 			display:block;
 

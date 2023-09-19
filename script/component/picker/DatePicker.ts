@@ -32,8 +32,8 @@ export class DatePicker extends Component {
 
 	protected baseCls = "datepicker"
 
-	protected monthEl: HTMLSpanElement
-	protected yearEl: HTMLSpanElement
+	protected monthEl: HTMLButtonElement
+	protected yearEl: HTMLButtonElement
 	protected years: HTMLElement
 	protected months: HTMLElement
 	protected grid: HTMLElement
@@ -53,7 +53,7 @@ export class DatePicker extends Component {
 
 		this.el.append(
 			this.menu = E('header',
-				E('button', E('i', "chevron_left").cls("icon")).cls(["goui-button", "nav"], true).on('click', _ => {
+				E('button', E('i', "chevron_left").cls("icon")).cls(["goui-button", "nav", "with-icon"], true).on('click', _ => {
 					this.moveMonth(-1)
 				}),
 				this.monthEl = E('button').cls("goui-button").on('click', _ => {
@@ -66,7 +66,7 @@ export class DatePicker extends Component {
 					// scroll half way
 					this.years.scrollTop = (this.years.scrollHeight / 2) - (this.years.clientHeight / 2);
 				}),
-				E('button', E('i', "chevron_right").cls("icon")).cls(["goui-button", "nav"], true).on('click', _ => {
+				E('button', E('i', "chevron_right").cls("icon")).cls(["goui-button", "nav", "with-icon"], true).on('click', _ => {
 					this.moveMonth(1)
 				})
 			),
@@ -111,8 +111,8 @@ export class DatePicker extends Component {
 	protected internalRender() {
 		const el = super.internalRender();
 
-		this.monthEl.innerHTML = this.value.format('M') + '&nbsp;<i class="icon">arrow_drop_down</i>';
-		this.yearEl.innerHTML = this.value.format('Y') + '&nbsp;<i class="icon">arrow_drop_down</i>';
+		this.monthEl.innerHTML = this.value.format('M') + '<i class="icon">arrow_drop_down</i>';
+		this.yearEl.innerHTML = this.value.format('Y') + '<i class="icon">arrow_drop_down</i>';
 		this.years.querySelector('.selected')?.cls('-selected');
 		// let y = this.value.getYear() - this.now.getYear() + 100;
 		// this.years.children[y]?.cls('+selected');
