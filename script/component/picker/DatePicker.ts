@@ -89,6 +89,8 @@ export class DatePicker extends Component {
 				})
 			).cls(['cards', 'top'], true)
 		);
+
+		// minimum and maximum year
 		for (let i = -100; i < 100; i++) {
 			this.years.append(E('li', (this.value.getYear() + i) + "").cls('now', i === 0));
 		}
@@ -109,11 +111,26 @@ export class DatePicker extends Component {
 	protected internalRender() {
 		const el = super.internalRender();
 
-		this.monthEl.textContent = this.value.format('M');
-		this.yearEl.textContent = this.value.format('Y');
+		this.monthEl.innerHTML = this.value.format('M') + '&nbsp;<i class="icon">arrow_drop_down</i>';
+		this.yearEl.innerHTML = this.value.format('Y') + '&nbsp;<i class="icon">arrow_drop_down</i>';
 		this.years.querySelector('.selected')?.cls('-selected');
-		let y = this.value.getYear() - this.now.getYear() + 100;
-		this.years.children[y]?.cls('+selected');
+		// let y = this.value.getYear() - this.now.getYear() + 100;
+		// this.years.children[y]?.cls('+selected');
+
+		for(let i=0,l=this.years.children.length;i<l;i++) {
+			const child = this.years.children[i];
+			const curYear = parseInt(child.textContent!);
+			if(curYear === this.value.getYear()) {
+				child.cls('+selected');
+			}
+			if(this.minDate && this.minDate!.getYear() > curYear ) {
+				child.cls('+disabled');
+			}
+			if(this.maxDate && this.maxDate!.getYear() < curYear) {
+				child.cls('+disabled');
+			}
+
+		}
 		this.months.querySelector('.selected')?.cls('-selected');
 		this.months.querySelector('[data-nb="' + this.value.getMonth() + '"]')?.cls('+selected');
 
