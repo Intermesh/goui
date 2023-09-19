@@ -6,10 +6,8 @@
 	border: $borderWidth solid transparent;
 	border-radius: dp(12);
 	padding: dp(11) dp(18); //padding 11 because line height is 24 instead of 22
-
 	display: flex;
 	align-items: center;
-
 
 	&.with-icon:not(.with-text) {
 		//icon only

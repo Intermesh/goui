@@ -39,7 +39,6 @@ export class DateField extends TextField {
 
 	constructor() {
 		super();
-		let origValidateOnBlur = true;
 		this.picker = datepicker({showWeekNbs: false});
 		this.buttons = [
 			this.pickerButton = btn({
@@ -59,6 +58,14 @@ export class DateField extends TextField {
 
 	protected createControl() {
 		const input = super.createControl();
+
+		if(this.minDate) {
+			this.picker.minDate = this.minDate;
+		}
+		if(this.maxDate) {
+			this.picker.maxDate = this.maxDate;
+		}
+
 		this.picker.on('select', (_, val) => {
 			this.date = val;
 			this.pickerButton.menu!.hide();
@@ -71,7 +78,6 @@ export class DateField extends TextField {
 		this.pickerButton.menu!.on("show", () => {
 			let dt = new DateTime();
 			if(this.minDate) {
-				this.picker.minDate = this.minDate;
 				if(this.minDate.getTime() > dt.getTime()) {
 					dt = this.minDate;
 					dt.setHours(0);
@@ -80,7 +86,6 @@ export class DateField extends TextField {
 			}
 
 			if(this.maxDate) {
-				this.picker.maxDate = this.maxDate;
 				if(this.maxDate.getTime() < dt.getTime()) {
 					dt = this.maxDate;
 					dt.setHours(23)
