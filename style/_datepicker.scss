@@ -61,6 +61,11 @@ menu.goui-dropdown {
 		min-width: $buttonSize;
 		height: $buttonSize;
 		margin: 2px;
+		&.disabled {
+			pointer-events: none;
+			/* for "disabled" effect */
+			opacity: 0.5;
+		}
 	}
 
 	dd { // dates

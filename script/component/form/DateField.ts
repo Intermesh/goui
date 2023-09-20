@@ -56,15 +56,18 @@ export class DateField extends TextField {
 		this.title = "Incorrect date format";
 	}
 
+	public setMinDate(dt: DateTime|undefined) {
+		this.minDate = dt;
+		this.picker.minDate = dt;
+	}
+
+	public setMaxDate(dt: DateTime|undefined) {
+		this.maxDate = dt;
+		this.picker.maxDate = dt;
+	}
+
 	protected createControl() {
 		const input = super.createControl();
-
-		if(this.minDate) {
-			this.picker.minDate = this.minDate;
-		}
-		if(this.maxDate) {
-			this.picker.maxDate = this.maxDate;
-		}
 
 		this.picker.on('select', (_, val) => {
 			this.date = val;
