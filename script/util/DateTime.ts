@@ -417,10 +417,10 @@ export class DateTime {
 	 *
 	 * @param date Can be a date object, a unix timestamp or date string (see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date#date_time_string_format)
 	 */
-	constructor(date: Date | number | string = new Date()) {
+	constructor(date?: Date | number | string) {
 		this.date = (date instanceof Date) ?
 			date :
-			new Date(date);
+			(date ? new Date(date) : new Date());
 	}
 
 	/**

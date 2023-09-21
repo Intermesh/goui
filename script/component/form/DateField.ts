@@ -69,35 +69,19 @@ export class DateField extends TextField {
 		});
 
 		this.pickerButton.menu!.on("beforeshow", () => {
-			let dt = new DateTime();
-			if(this.minDate) {
-				if(this.minDate.getTime() > dt.getTime()) {
-					dt = this.minDate;
-					dt.setHours(0);
-					dt.setMinutes(0);
-				}
-			}
-
-			if(this.maxDate) {
-				if(this.maxDate.getTime() < dt.getTime()) {
-					dt = this.maxDate;
-					dt.setHours(23)
-					dt.setMinutes(59);
-				}
-			}
 
 			this.picker.minDate = this.minDate;
 			this.picker.maxDate = this.maxDate;
 
-			this.picker.setValue(this.getValueAsDateTime() || dt);
+			const val = this.getValueAsDateTime();
 
-			// if(this.picker.rendered) {
-			// 	this.picker.refresh();
-			// }
+			if(val)
+				this.picker.setValue(val);
 		})
 
 		return input;
 	}
+
 
 	protected validate() {
 		super.validate();
@@ -111,11 +95,11 @@ export class DateField extends TextField {
 		if (!dv) {
 			this.setInvalid(t("'{date}' is not a valid date. The format for dates is {format}").replace('{date}', v).replace('{format}', this.inputFormat));
 		} else {
-			if (this.maxDate && dv.getTime() > this.maxDate.getTime()) {
+			if (this.maxDate && dv.format("Ymd") > this.maxDate.format("Ymd")) {
 				this.setInvalid(t("The date in this field must be before {maxDate}.").replace('{maxDate}', this.maxDate.format(this.inputFormat)));
 			}
 
-			if(this.minDate && dv.getTime() < this.minDate.getTime()) {
+			if(this.minDate && dv.format("Ymd") < this.minDate.format("Ymd")) {
 				this.setInvalid(t("The date in this field must be after {minDate}.").replace('{minDate}', this.minDate.format(this.inputFormat)));
 			}
 		}

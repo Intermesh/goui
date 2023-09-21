@@ -128,19 +128,25 @@ export class DatePicker extends Component {
 	}
 
 
+	private constrainValue() {
+		if(this.maxDate) {
+			if (this.value.format("Ymd") > this.maxDate.format("Ymd")) {
+				this.value = this.maxDate.clone();
+			}
+		}
 
-	protected internalRender() {
-		const el = super.internalRender();
+		if(this.minDate) {
+			if (this.value.format("Ymd") < this.minDate.format("Ymd")) {
+				this.value = this.minDate.clone();
+			}
+		}
+	}
 
-		const year = this.value.format('Y'), month = this.value.format("M");
+	private setYearClases() {
 
-		this.renderedMonth = year+month;
-
-		this.monthEl.innerHTML = month + '<i class="icon">arrow_drop_down</i>';
-		this.yearEl.innerHTML = year + '<i class="icon">arrow_drop_down</i>';
 		this.years.querySelector('.selected')?.cls('-selected');
 
-		for(let i=0,l=this.years.children.length;i<l;i++) {
+		for(let i= 0, l= this.years.children.length; i < l; i++) {
 			const child = this.years.children[i];
 			const curYear = parseInt(child.textContent!);
 			if(curYear === this.value.getYear()) {
@@ -152,10 +158,40 @@ export class DatePicker extends Component {
 			if(this.maxDate && this.maxDate!.getYear() < curYear) {
 				child.cls('+disabled');
 			}
-
 		}
-		this.months.querySelector('.selected')?.cls('-selected');
-		this.months.querySelector('[data-nb="' + this.value.getMonth() + '"]')?.cls('+selected');
+	}
+
+	private setMonthClasses() {
+		for(let m= 0; m < 12;m++) {
+			const child = this.months.children[m];
+			const curMonth =this.value.getYear() + (m+1).toString().padStart(2,"0");
+			let sign;
+			sign = m === this.value.getMonth() ? "+" : "-";
+			child.cls(sign + 'selected');
+
+			sign = (this.minDate && this.minDate.format("Ym") > curMonth) ||
+			(this.maxDate && this.maxDate.format("Ym") < curMonth)  ? "+" : "-";
+
+			child.cls(sign + 'disabled');
+		}
+	}
+
+	protected internalRender() {
+
+		this.constrainValue();
+
+		const el = super.internalRender();
+
+		const year = this.value.format('Y'), month = this.value.format("M");
+
+		this.renderedMonth = year+month;
+		this.yearEl.innerHTML = year + '<i class="icon">arrow_drop_down</i>';
+		this.monthEl.innerHTML = month + '<i class="icon">arrow_drop_down</i>';
+
+
+		this.setYearClases();
+		this.setMonthClasses();
+
 
 		const cal = E('div').cls('active');
 		const dl = E('dl'),
@@ -164,23 +200,28 @@ export class DatePicker extends Component {
 
 		//header with day names
 		dl.append(...Object.values(DateTime.dayNames).map(s => E('dt', s.substring(0, 2))));
+
+		const valueStr = this.value.format("Ymd");
+
 		// dates and week nbs
 		for (let i = 0; i < 42; i++) {
+			const itrStr = itr.format("Ymd");
+
 			if (this.showWeekNbs && i % 7 == 0) {
 				weekNbs.append(E('li', itr.format('W')));
 			}
-			let disabled = false;
-			if(this.minDate && this.minDate.getTime() > itr.getTime()) {
-				disabled = true;
-			}
-			if(this.maxDate && this.maxDate.getTime() < itr.getTime()) {
-				disabled = true;
-			}
+			const disabled =
+				(this.minDate && this.minDate.format("Ymd") > itrStr)
+					||
+				(this.maxDate && this.maxDate.format("Ymd") < itrStr);
+
+			const selected = itrStr == valueStr;
 
 			dl.append(E('dd', itr.format('j')).attr('data-date', itr.format('Y-m-d'))
 				.cls('disabled', disabled)
 				.cls('off', itr.format('Ym') !== this.value.format('Ym'))
-				.cls('today', itr.format(`Ymd`) === this.now.format(`Ymd`))
+				.cls('today', itr.format(`Ymd`) === this.now.format("Ymd"))
+				.cls('selected', selected)
 			);
 			itr.addDays(1);
 		}
@@ -210,12 +251,13 @@ export class DatePicker extends Component {
 		if (this.rendered && start.format('Ym') != this.renderedMonth) {
 			this.el.cls('+preload');
 			this.internalRender();
-		}
+		} else {
 
-		const startEl = this.grid.querySelector<HTMLElement>('dd[data-date="' + start.format('Y-m-d') + '"]')!,
-			endEl = !end ? startEl : this.grid.querySelector<HTMLElement>('dd[data-date="' + end.format('Y-m-d') + '"]')!;
-		if (startEl && endEl) {
-			this.markSelected(startEl, endEl)
+			const startEl = this.grid.querySelector<HTMLElement>('dd[data-date="' + start.format('Y-m-d') + '"]')!,
+				endEl = !end ? startEl : this.grid.querySelector<HTMLElement>('dd[data-date="' + end.format('Y-m-d') + '"]')!;
+			if (startEl && endEl) {
+				this.markSelected(startEl, endEl)
+			}
 		}
 	}
 

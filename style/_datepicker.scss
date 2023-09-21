@@ -2,7 +2,7 @@
 	animation-duration: 0s !important;
 }
 
-$buttonSize: 40px;
+$buttonSize: dp(34);
 
 menu.goui-dropdown {
 	.datepicker {
@@ -11,14 +11,14 @@ menu.goui-dropdown {
 }
 
 .datepicker {
-	width: 7 * ($buttonSize + 4px) + 8px;
+	width: 7 * ($buttonSize + dp(4)) + dp(8);
 	position: relative;
 	dl {
-		width: 19.6rem;
+		width: 100%;//19.6rem;
 		margin: 0;
 		display: grid;
 		grid-template-columns: repeat(7, 1fr);
-		row-gap: 2px;
+		row-gap: dp(2);
 	}
 
 	ul { // month / year pickers
@@ -26,7 +26,7 @@ menu.goui-dropdown {
 		display: grid;
 		grid-template-columns: repeat(2, 1fr);
 		align-items: center;
-		gap: 2px;
+		gap: dp(2);
 		background-color: $colorBackgroundDarker;
 		overflow-y: auto;
 		width: 100%;
@@ -48,11 +48,11 @@ menu.goui-dropdown {
 		border-right: 1px solid rgba(0, 0, 0, 0.16);
 		font-size: 1rem;
 		padding: 0;
-		margin: 3rem 0 0 0;
+		margin: dp(2) 0 0 0;
 		> li {
 			cursor: default;
 			user-select: none;
-			margin-bottom: 2px;
+			margin-bottom: dp(2);
 		}
 	}
 	dd, dt, li {
@@ -60,7 +60,7 @@ menu.goui-dropdown {
 		line-height: $buttonSize;
 		min-width: $buttonSize;
 		height: $buttonSize;
-		margin: 2px;
+		margin: dp(2);
 		&.disabled {
 			text-decoration: line-through;
 		}
@@ -74,7 +74,7 @@ menu.goui-dropdown {
 		-webkit-user-select: none;
 		color: $colorText;
 		&.selected {
-			border-radius: 0;
+			//border-radius: 0;
 			&.head {
 				border-top-left-radius: 50%;
 				border-bottom-left-radius: 50%;
@@ -121,10 +121,10 @@ menu.goui-dropdown {
 			flex: 1;
 			text-align: center;
 		}
-		> button.nav {
-			width: dp(50);
-			max-width: dp(50);
-			padding: 0;
+		> button.nav.goui-button.with-icon {
+			width: dp(32);
+			max-width: dp(32);
+			padding: dp(4);
 			border: 0;
 		}
 
@@ -132,7 +132,7 @@ menu.goui-dropdown {
 
 			text-align: center;
 			display:block;
-
+			padding: dp(4);
 			i.icon {
 				display: inline;
 				vertical-align: bottom;
@@ -158,7 +158,7 @@ menu.goui-dropdown {
 		user-select:none;
 		&.top {
 			position: absolute;
-			top: dp(50);
+			//top: dp(50);
 			bottom: 0;
 			width: 100%;
 			> * { // todo
