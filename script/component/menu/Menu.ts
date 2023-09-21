@@ -157,7 +157,8 @@ export class Menu extends Toolbar {
 	}
 
 	/**
-	 * Expand menu on the left side of the parent button
+	 * Expand menu on the left side of the parent button.
+	 * If not set then it will automatically detect that it goes outside the right side off the screen and set this to true
 	 * @param expandLeft
 	 */
 	set expandLeft(expandLeft: boolean) {
@@ -189,18 +190,11 @@ export class Menu extends Toolbar {
 		return li;
 	}
 
-
-	// private getOutOfBounds() {
-	// 	const rect = this.el.getBoundingClientRect();
-	//
-	// 	return {
-	// 		x:0,
-	// 		y:0
-	// 	}
-	// }
-
+	/**
+	 * Align the menu on this element.
+	 * The menu aligns at the bottom by default. If it runs off screen then it will align on top.
+	 */
 	public alignEl?: HTMLElement;
-
 
 	/**
 	 * Show aligned to the given component.
@@ -225,12 +219,26 @@ export class Menu extends Toolbar {
 		}
 		const rect = this.alignTo.getBoundingClientRect();
 
-		this.x = this.expandLeft ? rect.right - this.width : rect.x;
-		this.y = rect.bottom;
+		const x = this.expandLeft ? rect.right - this.width : rect.x;
+		const y = rect.bottom;
+
+		this.x = x;
+		this.y = y;
 
 		if(this.alignToInheritWidth) {
 			// make the menu at least as wide as the component it aligns too.
 			this.el.style.minWidth = rect.width + "px";
+		}
+
+		//aligns down by default. If it runs off screen then align on top
+		if(y + this.el.offsetHeight > window.innerHeight) {
+			this.y = rect.top - this.el.offsetHeight;
+		}
+
+		//aligns left by default. If it runs off screen then align right
+		if(!this.expandLeft && x + this.el.offsetWidth > window.innerWidth) {
+			this.expandLeft = true;
+			this.x = rect.right - this.width;
 		}
 	}
 
@@ -243,6 +251,10 @@ export class Menu extends Toolbar {
 		this.el.style.left = x + "px";
 	}
 
+	public get x() {
+		return parseInt(this.el.style.left);
+	}
+
 	/**
 	 * Set Y coordinate
 	 *
@@ -250,6 +262,11 @@ export class Menu extends Toolbar {
 	 */
 	public set y(y:number) {
 		this.el.style.top = y + "px";
+	}
+
+
+	public get y() {
+		return parseInt(this.el.style.top);
 	}
 
 
@@ -268,7 +285,6 @@ export class Menu extends Toolbar {
 			this.setAlignTo();
 
 			if (Menu.openedMenu == this) {
-				console.warn("Already open");
 				return true;
 			}
 
@@ -278,7 +294,6 @@ export class Menu extends Toolbar {
 			}
 
 			Menu.openedMenu = this;
-
 
 			//hide menu when clicked elsewhere
 			window.addEventListener("mousedown", (ev) => {
@@ -320,14 +335,12 @@ export class Menu extends Toolbar {
 		return this.removeOnClose ? this.remove() : this.hide();
 	}
 
-
 	/**
 	 * @inheritDoc
 	 */
 	public focus(o?: FocusOptions) {
 		this.items.get(0)?.focus(o);
 	}
-
 }
 
 /**

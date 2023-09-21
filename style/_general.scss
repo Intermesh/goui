@@ -141,7 +141,7 @@
 
 	&.goui-fade-out {
 		//https://easings.net/#easeInCubic
-		transition: all 200ms cubic-bezier(0.32, 0, 0.67, 0);
+		transition: opacity 200ms cubic-bezier(0.32, 0, 0.67, 0);
 	}
 }
 
