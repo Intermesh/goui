@@ -43,6 +43,12 @@ export class DatePicker extends Component {
 
 	maxDate?: DateTime;
 
+	/**
+	 * Used to determine if a refresh() is needed when new value is set.
+	 * @private
+	 */
+	private renderedMonth?: string;
+
 	constructor() {
 		super();
 		this.showWeekNbs = true;
@@ -76,7 +82,7 @@ export class DatePicker extends Component {
 					const year = +target.textContent!;
 					if (!isNaN(year)) {
 						this.value.setYear(year);
-						this.internalRender()
+						this.internalRender();
 						this.years.cls('-active');
 					}
 				}),
@@ -97,7 +103,6 @@ export class DatePicker extends Component {
 		this.months.replaceChildren(...DateTime.monthNames.map((name, i) =>
 			E('li', name).cls('now', i === this.now.getMonth() - 1).attr('data-nb', i + 1)
 		));
-		this.internalRender();
 	}
 
 	moveMonth(amount: number) {
@@ -108,14 +113,32 @@ export class DatePicker extends Component {
 		this.internalRender();
 	}
 
+	/**
+	 * Refresh the view
+	 */
+	public refresh() {
+		this.el.cls('+preload');
+		this.internalRender();
+		if(this.value) {
+			const startEl = this.grid.querySelector<HTMLElement>('dd[data-date="' + this.value.format('Y-m-d') + '"]')!;
+			if (startEl) {
+				this.markSelected(startEl, startEl)
+			}
+		}
+	}
+
+
+
 	protected internalRender() {
 		const el = super.internalRender();
 
-		this.monthEl.innerHTML = this.value.format('M') + '<i class="icon">arrow_drop_down</i>';
-		this.yearEl.innerHTML = this.value.format('Y') + '<i class="icon">arrow_drop_down</i>';
+		const year = this.value.format('Y'), month = this.value.format("M");
+
+		this.renderedMonth = year+month;
+
+		this.monthEl.innerHTML = month + '<i class="icon">arrow_drop_down</i>';
+		this.yearEl.innerHTML = year + '<i class="icon">arrow_drop_down</i>';
 		this.years.querySelector('.selected')?.cls('-selected');
-		// let y = this.value.getYear() - this.now.getYear() + 100;
-		// this.years.children[y]?.cls('+selected');
 
 		for(let i=0,l=this.years.children.length;i<l;i++) {
 			const child = this.years.children[i];
@@ -181,10 +204,14 @@ export class DatePicker extends Component {
 	}
 
 	setValue(start: DateTime, end?: DateTime) {
-		if (start.format('Ym') != this.value.format('Ym')) {
-			this.value = start;
+
+		this.value = start;
+
+		if (this.rendered && start.format('Ym') != this.renderedMonth) {
+			this.el.cls('+preload');
 			this.internalRender();
 		}
+
 		const startEl = this.grid.querySelector<HTMLElement>('dd[data-date="' + start.format('Y-m-d') + '"]')!,
 			endEl = !end ? startEl : this.grid.querySelector<HTMLElement>('dd[data-date="' + end.format('Y-m-d') + '"]')!;
 		if (startEl && endEl) {

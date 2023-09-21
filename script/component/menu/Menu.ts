@@ -219,8 +219,6 @@ export class Menu extends Toolbar {
 		this.show();
 	}
 
-
-
 	private setAlignTo() {
 		if(!this.alignTo) {
 			return;
@@ -255,44 +253,48 @@ export class Menu extends Toolbar {
 	}
 
 
-	show(): boolean {
-		if(!this.parent) {
-			root.items.add(this);
+	protected internalSetHidden(hidden:boolean) {
+
+		if(!hidden) {
+
+			if (!this.parent) {
+				root.items.add(this);
+			}
+
+			if (!this.rendered) {
+				this.render();
+			}
+
+			this.setAlignTo();
+
+			if (Menu.openedMenu == this) {
+				console.warn("Already open");
+				return true;
+			}
+
+			if (Menu.openedMenu) {
+				Menu.openedMenu.el.classList.remove("goui-fade-out");
+				Menu.openedMenu.close();
+			}
+
+			Menu.openedMenu = this;
+
+
+			//hide menu when clicked elsewhere
+			window.addEventListener("mousedown", (ev) => {
+				this.close();
+			}, {once: true});
+
+			// stop clicks on menu from hiding menu, otherwise it hides before button handlers fire.
+			this.el.addEventListener("mousedown", (ev) => {
+				ev.stopPropagation();
+			});
+
+			//put back fade out class removed in mouseenter listener above
+			this.el.classList.add("goui-fade-out");
 		}
 
-		if(!this.rendered) {
-			this.render();
-		}
-
-		this.setAlignTo();
-
-		if(Menu.openedMenu == this) {
-			console.warn("Already open");
-			return true;
-		}
-
-		if (Menu.openedMenu) {
-			Menu.openedMenu.el.classList.remove("goui-fade-out");
-			Menu.openedMenu.close();
-		}
-
-		Menu.openedMenu = this;
-
-
-		//hide menu when clicked elsewhere
-		window.addEventListener("mousedown", (ev) => {
-			this.close();
-		}, {once: true});
-
-		// stop clicks on menu from hiding menu, otherwise it hides before button handlers fire.
-		this.el.addEventListener("mousedown", (ev) => {
-			ev.stopPropagation();
-		});
-
-		//put back fade out class removed in mouseenter listener above
-		this.el.classList.add("goui-fade-out");
-
-		return super.show();
+		super.internalSetHidden(hidden);
 	}
 
 	/**

@@ -316,50 +316,51 @@ export class Window extends DraggableComponent {
 		return this.show();
 	}
 
-	public show() {
+	protected internalSetHidden(hidden: boolean) {
 
-		this.focussedBeforeOpen = document.activeElement || undefined;
+		if(!hidden) {
+			this.focussedBeforeOpen = document.activeElement || undefined;
 
-		let ret;
+			let ret;
 
-		if (!this.rendered) {
+			if (!this.rendered) {
 
-			root.items.add(this);
+				root.items.add(this);
 
-			if (this.modal) {
-				this.modalOverlay = comp({
-					cls: "goui-window-modal-overlay goui-goui-fade-in goui-goui-fade-out",
-					hidden: true
-				});
+				if (this.modal) {
+					this.modalOverlay = comp({
+						cls: "goui-window-modal-overlay goui-goui-fade-in goui-goui-fade-out",
+						hidden: true
+					});
 
-				this.modalOverlay.el.style.zIndex = (parseInt(getComputedStyle(this.el).zIndex)).toString()
+					this.modalOverlay.el.style.zIndex = (parseInt(getComputedStyle(this.el).zIndex)).toString()
 
-				root.items.insert(-1, this.modalOverlay);
+					root.items.insert(-1, this.modalOverlay);
 
-				this.disableBodyScroll();
+					this.disableBodyScroll();
 
-				this.modalOverlay.el.addEventListener("click", (ev) => {
-					this.focus();
-				});
+					this.modalOverlay.el.addEventListener("click", (ev) => {
+						this.focus();
+					});
 
-				this.modalOverlay.show();
-			}
+					this.modalOverlay.show();
+				}
 
-			// has to be shown before center() otherwise it can't calculate it's width and height
-			ret = super.show();
+				// has to be shown before center() otherwise it can't calculate it's width and height
+				super.internalSetHidden(hidden);
 
-			if (!this.hasState()) {
-				this.shrinkToFit();
-				this.center();
+				if (!this.hasState()) {
+					this.shrinkToFit();
+					this.center();
+				} else {
+					this.constrainTo(window);
+				}
 			} else {
-				this.constrainTo(window);
+				super.internalSetHidden(hidden);
 			}
-		} else {
-			ret = super.show();
-		}
 
-		this.focus();
-		return ret;
+			this.focus();
+		}
 	}
 
 	private shrinkToFit() {

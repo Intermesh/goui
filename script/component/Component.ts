@@ -512,10 +512,21 @@ export class Component extends Observable {
 		if (this.fire("before" + eventName as keyof ComponentEventMap<Component>, this) === false) {
 			return;
 		}
-		this.el.hidden = hidden;
+
+		this.internalSetHidden(hidden);
 
 		this.fire(eventName, this);
 
+	}
+
+	/**
+	 * Overridable method so that the (before)show/hide event fire before and after.
+	 *
+	 * @param hidden
+	 * @protected
+	 */
+	protected internalSetHidden(hidden: boolean) {
+		this.el.hidden = hidden;
 	}
 
 	get hidden() {
@@ -527,6 +538,9 @@ export class Component extends Observable {
 	 *
 	 * This sets the "hidden" attribute on the DOM element which set's CSS display:none.
 	 * You can change this to fade with css class "goui-fade-in" and "goui-fade-out"
+	 *
+	 * If you want to override this function, please override internalSetHidden instead so the beforeshow and show event
+	 * fire at the right time.
 	 */
 	public hide() {
 		this.hidden = true;
@@ -536,6 +550,9 @@ export class Component extends Observable {
 
 	/**
 	 * Show the component
+	 *
+	 * If you want to override this function, please override internalSetHidden instead so the beforeshow and show event
+	 * fire at the right time.
 	 */
 	public show() {
 		this.hidden = false;

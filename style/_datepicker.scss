@@ -62,9 +62,7 @@ menu.goui-dropdown {
 		height: $buttonSize;
 		margin: 2px;
 		&.disabled {
-			pointer-events: none;
-			/* for "disabled" effect */
-			opacity: 0.5;
+			text-decoration: line-through;
 		}
 	}
 
@@ -86,13 +84,8 @@ menu.goui-dropdown {
 				border-bottom-right-radius: 50%;
 			}
 		}
-		&.today:before {
-			content: '';
-			position: absolute;
-			left: 0;
-			right: 0;
-			top: 0;
-			bottom: 0;
+		&.today {
+			border: 1px solid $colorPrimary;
 		}
 		&.off {
 			opacity: .4;
@@ -114,10 +107,6 @@ menu.goui-dropdown {
 		border-radius: 1.2rem;
 	}
 
-	li.now:not(.selected),
-	dd.today:before {
-		color: #005fb8;
-	}
 
 	dt {
 		font-size: 1rem;
