@@ -53,7 +53,7 @@ export class DateField extends TextField {
 			})
 		];
 		this.pattern = DateTime.createFormatRegex(this.inputFormat);
-		this.title = "Incorrect date format";
+		this.autocomplete = "off";
 	}
 
 	protected createControl() {
@@ -109,7 +109,7 @@ export class DateField extends TextField {
 		const dv = DateTime.createFromFormat(v, this.inputFormat);
 
 		if (!dv) {
-			this.setInvalid(t("{date} is not a valid date. The format for dates is {format}").replace('{date}', v).replace('{format}', this.inputFormat));
+			this.setInvalid(t("'{date}' is not a valid date. The format for dates is {format}").replace('{date}', v).replace('{format}', this.inputFormat));
 		} else {
 			if (this.maxDate && dv.getTime() > this.maxDate.getTime()) {
 				this.setInvalid(t("The date in this field must be before {maxDate}.").replace('{maxDate}', this.maxDate.format(this.inputFormat)));
