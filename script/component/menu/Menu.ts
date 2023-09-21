@@ -89,6 +89,7 @@ export class Menu extends Toolbar {
 		super();
 		this.baseCls = "";
 		this.orientation = "vertical";
+
 	}
 
 	/**
@@ -150,6 +151,7 @@ export class Menu extends Toolbar {
 	public set isDropdown(value: boolean) {
 		this.el.classList.toggle("goui-dropdown", value);
 		this.el.classList.toggle("goui-fade-out", value);
+		this.hidden = true;
 	}
 
 	public get isDropdown() {

@@ -317,7 +317,6 @@ export class Window extends DraggableComponent {
 	}
 
 	protected internalSetHidden(hidden: boolean) {
-
 		if(!hidden) {
 			this.focussedBeforeOpen = document.activeElement || undefined;
 
@@ -360,6 +359,8 @@ export class Window extends DraggableComponent {
 			}
 
 			this.focus();
+		} else {
+			super.internalSetHidden(hidden);
 		}
 	}
 
