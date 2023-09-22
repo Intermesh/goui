@@ -211,9 +211,9 @@ export class DatePicker extends Component {
 				weekNbs.append(E('li', itr.format('W')));
 			}
 			const disabled =
-				(this.minDate && this.minDate.format("Ymd") > itrStr)
+				(!!this.minDate && (this.minDate.format("Ymd") > itrStr))
 					||
-				(this.maxDate && this.maxDate.format("Ymd") < itrStr);
+				(!!this.maxDate && (this.maxDate.format("Ymd") < itrStr));
 
 			const selected = itrStr == valueStr;
 
