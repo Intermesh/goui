@@ -447,7 +447,6 @@ export abstract class Field extends Component {
 	 */
 	protected fireChange() {
 		const v = this.value;
-		console.warn("change", this, v, this.oldValue);
 		this.fire("change", this, v, this.oldValue);
 		this.captureValueForChange();
 	}
