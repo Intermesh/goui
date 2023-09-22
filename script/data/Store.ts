@@ -45,6 +45,14 @@ export interface StoreEventMap<Type, RecordType> extends CollectionEventMap<Type
 	 * @param append Whether the records were added to the store.
 	 */
 	load: (store: Type, records: RecordType[], append: boolean) => void
+
+	/**
+	 * Fires when data load failed
+	 *
+	 * @param store
+	 * @param reason
+	 */
+	loadexception: (store: Type, reason:any) => void
 }
 
 export interface Store<RecordType = StoreRecord> {
@@ -131,6 +139,11 @@ export class Store<RecordType = StoreRecord> extends Collection<RecordType> {
 		this._loading = true;
 		this.fire("beforeload", this, append);
 		return this.internalLoad(append)
+			.catch(reason => {
+				console.error(reason)
+				this.fire("loadexception", this, reason);
+				throw reason;
+			})
 			.finally(() => {
 				this._loading = false;
 			});

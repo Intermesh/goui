@@ -16,6 +16,7 @@ import {fieldset} from "./form/Fieldset.js";
 import {textfield} from "./form/TextField.js";
 import {t} from "../Translate.js";
 import {DateTime} from "../util";
+import {Menu} from "./menu";
 
 
 /**
@@ -318,6 +319,12 @@ export class Window extends DraggableComponent {
 
 	protected internalSetHidden(hidden: boolean) {
 		if(!hidden) {
+
+			//Close opened menu's becuase they have a higher z-index. They need work inside modal windows.
+			if(Menu.openedMenu) {
+				Menu.openedMenu.close();
+			}
+
 			this.focussedBeforeOpen = document.activeElement || undefined;
 
 			let ret;

@@ -13,6 +13,7 @@ import {Config, ObservableListenerOpts} from "./Observable.js";
 import {BufferedFunction, FunctionUtil} from "../util";
 import {dragData} from "../DragData";
 import {root} from "./Root";
+import {Window} from "./Window";
 
 export type RowRenderer = (record: any, row: HTMLElement, list: any, storeIndex: number) => string | Component[] | void;
 
@@ -177,6 +178,11 @@ export class List<StoreType extends Store = Store> extends Component {
 		store.on("load", () => {
 			this.unmask();
 		});
+
+		store.on("loadexception", (store, reason) => {
+			Window.error(reason);
+			this.unmask();
+		})
 	}
 
 	get rowSelection(): RowSelect | undefined {
