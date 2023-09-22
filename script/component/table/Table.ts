@@ -143,21 +143,6 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 
 	}
 
-	protected initStore() {
-		super.initStore();
-
-		this.store.on("remove", (collection, item, index) => {
-			//clean up empty groups
-			if (this.groupBy) {
-				this.el.querySelectorAll("tbody").forEach((tbody) => {
-					if (tbody.children.length == 1) {
-						tbody.remove();
-					}
-				})
-			}
-		})
-	}
-
 	/**
 	 * Make the table fits its container in width by setting min-width: 100%
 	 * Defaults to true
