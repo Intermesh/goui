@@ -171,18 +171,12 @@ export class List<StoreType extends Store = Store> extends Component {
 		super(tagName);
 		this.tabIndex = 0;
 
-		const bf = new BufferedFunction(100, this.mask.bind(this));
-
 		store.on("beforeload", () => {
-			bf.buffer();
-		})
+			this.mask()
+		});
 		store.on("load", () => {
-			if (bf.pending()) {
-				bf.cancel();
-			} else {
-				this.unmask();
-			}
-		})
+			this.unmask();
+		});
 	}
 
 	get rowSelection(): RowSelect | undefined {
