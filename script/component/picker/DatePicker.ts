@@ -166,7 +166,7 @@ export class DatePicker extends Component {
 			const child = this.months.children[m];
 			const curMonth =this.value.getYear() + (m+1).toString().padStart(2,"0");
 			let sign;
-			sign = m === this.value.getMonth() ? "+" : "-";
+			sign = m === (this.value.getMonth() -1)  ? "+" : "-";
 			child.cls(sign + 'selected');
 
 			sign = (this.minDate && this.minDate.format("Ym") > curMonth) ||
