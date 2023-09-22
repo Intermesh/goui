@@ -217,20 +217,20 @@ export class List<StoreType extends Store = Store> extends Component {
 
 	protected initStore() {
 		// handling remove and add per items allows a drag and drop action via store.remove and store.add
-		this.store.on("remove", (collection, item, index) => {
-			const rows = this.getRowElements();
-			rows[index]?.remove();
-
-			if(this.rowSelection) {
-				this.rowSelection.remove(index, true);
-			}
-		});
-
-		this.store.on("add", (collection, item, index) => {
-			this.onRecordAdd(collection, item, index);
-		});
+		this.store.on("remove", this.onRecordRemove.bind(this));
+		this.store.on("add", this.onRecordAdd.bind(this));
 	}
 
+	protected onRecordRemove(collection:StoreType, item:StoreRecord, index:number) {
+		const rows = this.getRowElements();
+		rows[index]?.remove();
+
+		if(this.rowSelection) {
+			this.rowSelection.remove(index, true);
+		}
+	}
+
+	//todo inserting doesn't work with groups yet. It can only append to the last
 	protected onRecordAdd(collection:StoreType, item:StoreRecord, index:number) {
 
 		const container = this.renderGroup(item)
@@ -242,8 +242,6 @@ export class List<StoreType extends Store = Store> extends Component {
 			const before = container.children[index];
 			container.insertBefore(this.renderRow(item, index), before);
 		}
-
-
 	}
 
 	protected getRowElements(): HTMLElement[] {
@@ -279,10 +277,6 @@ export class List<StoreType extends Store = Store> extends Component {
 		this.emptyStateEl.hidden = this.store.count() > 0;
 		this.emptyStateEl.innerHTML = this.emptyStateHtml;
 		this.el.appendChild(this.emptyStateEl);
-	}
-
-	protected clearRows() {
-		this.el.innerHTML = "";
 	}
 
 	protected renderBody() {

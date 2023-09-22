@@ -5,7 +5,7 @@
  */
 
 import {comp, Component, ComponentState, createComponent} from "../Component.js";
-import {Store} from "../../data/Store.js";
+import {Store, StoreRecord} from "../../data/Store.js";
 import {ObjectUtil} from "../../util/ObjectUtil.js";
 import {menu, Menu} from "../menu/Menu.js";
 import {checkbox} from "../form/CheckboxField.js";
@@ -15,6 +15,7 @@ import {TableColumn} from "./TableColumns.js";
 import {List, ListEventMap} from "../List.js";
 import {Config, ObservableListenerOpts} from "../Observable";
 import {t} from "../../Translate";
+import {index} from "typedoc/dist/lib/output/themes/default/partials";
 
 
 type GroupByRenderer = (groupBy: any, record: any, thEl: HTMLTableCellElement, table: Table) => string | Promise<string> | Component | Promise<Component>;
@@ -575,12 +576,23 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 		return this.groupEl;
 	}
 
-	protected clearRows() {
-		if (!this.el) {
-			return;
+	protected onRecordRemove(collection: StoreType, item: StoreRecord, index: number) {
+
+		let groupEl;
+		if(this.groupBy) {
+			const rows = this.getRowElements();
+			groupEl = rows[index]?.parentElement;
 		}
-		this.groupEl = undefined;
-		this.el.querySelectorAll('tbody').forEach(tbody => tbody.remove());
+
+		super.onRecordRemove(collection, item, index)
+//console.warn(groupEl, groupEl?.children.length);
+		//cleanup group if only group header is left
+		if(groupEl && groupEl.children.length == 1) {
+			if(groupEl == this.groupEl) {
+				this.groupEl = undefined;
+			}
+			groupEl.remove();
+		}
 	}
 
 	protected findDropRow(e: DragEvent) {
