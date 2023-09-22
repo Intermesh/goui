@@ -391,7 +391,6 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	 * @param id
 	 */
 	public async single(id: EntityID): Promise<EntityType | undefined> {
-
 		const p = new Promise((resolve, reject) => {
 			if (!this.getIds[id]) {
 				this.getIds[id] = {
@@ -410,8 +409,10 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	private returnGet(id: EntityID) {
 		let r;
 		while (r = this.getIds[id].resolves.shift()) {
+			// this.getIds[id].rejects.shift();
 			r.call(this, structuredClone(this.data[id]));
 		}
+		delete this.getIds[id];
 	}
 
 	/**
@@ -459,9 +460,18 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 					while (r = this.getIds[id].resolves.shift()) {
 						r.call(this, undefined);
 					}
+					delete this.getIds[id];
 				});
-
-			})
+			}).catch((e)=>{
+				//reject all
+				unknownIds.forEach((id) => {
+					let r;
+					while (r = this.getIds[id].rejects.shift()) {
+						r.call(this, e);
+					}
+					delete this.getIds[id];
+				})
+			});
 
 	}
 
