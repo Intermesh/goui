@@ -54,7 +54,10 @@ declare global {
 
 		// set attributes
 		attr(name: string, value: any): this
-
+		/**
+		 * Add style to an element in a chainable way
+ 		 */
+		css(style: Partial<CSSStyleDeclaration>): this
 		/**
 		 * Check if element has attribute of className
 		 * Will check for class if clsOrAttr starts with a '.'
@@ -67,7 +70,6 @@ declare global {
 
 		/** Check if tagName matches case-insensitive */
 		isA(tagName: string): boolean
-
 		/**
 		 * Look up the dom tree for an element matchign the expression
 		 * If no selector is given, return the parent
@@ -116,6 +118,10 @@ Object.assign(Element.prototype, {
 			default:
 				this.className = name;
 		}
+		return this;
+	},
+	css(style: Partial<CSSStyleDeclaration>) {
+		Object.assign((this as HTMLElement).style, style);
 		return this;
 	},
 	attr(name: string, value?: string) {

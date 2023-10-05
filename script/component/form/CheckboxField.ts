@@ -27,6 +27,8 @@ export class CheckboxField extends Field {
 		this.el.cls(type, true);
 	}
 
+	protected _color: string = '';
+
 	protected input: HTMLInputElement | undefined;
 
 	protected baseCls = 'goui-form-field check';
@@ -65,7 +67,10 @@ export class CheckboxField extends Field {
 		el.name = this.name;
 		el.readOnly = this.readOnly;
 		el.checked = !!this.value;
-
+		if(this._color) {
+			el.style.backgroundColor = this._color;
+			el.style.color = '#fff';
+		}
 		this.input = el;
 
 		if (this.invalidMsg) {
@@ -76,7 +81,6 @@ export class CheckboxField extends Field {
 		const control = E('div',
 			this.input
 		);
-
 
 		if(this.label) {
 			const lbl = E('span', this.label).cls('box-label');
@@ -138,8 +142,19 @@ export class CheckboxField extends Field {
 		return this.input;
 	}
 
-	set value(v: boolean) {
+	set color(v: string) {
+		this._color = v;
+		if (this.input) {
+			this.input.style.backgroundColor = v || '';
+		}
 
+	}
+
+	get color(): string {
+		return this._color;
+	}
+
+	set value(v: boolean) {
 		if (this.input) {
 			this.input.checked = v;
 		}
@@ -176,8 +191,6 @@ export class CheckboxField extends Field {
 			this.setInvalid(this.input!.validationMessage);
 		}
 	}
-
-
 }
 
 export type CheckboxFieldConfig = Config<CheckboxField, FieldEventMap<CheckboxField>>
@@ -187,4 +200,4 @@ export type CheckboxFieldConfig = Config<CheckboxField, FieldEventMap<CheckboxFi
  *
  * @param config
  */
-export const checkbox = (config?: Config<CheckboxField, FieldEventMap<CheckboxField>>) => createComponent(new CheckboxField(config?.type || 'box'), config);
+export const checkbox = (config?: CheckboxFieldConfig) => createComponent(new CheckboxField(config?.type || 'box'), config);

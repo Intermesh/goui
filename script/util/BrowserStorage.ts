@@ -296,7 +296,7 @@ export class BrowserStore {
 		}
 
 		const store = await this.getStore("readwrite"),
-			req = store.delete(key);
+			req = store.delete(""+key);
 
 		return this.requestPromise<void>(req).then(() => key);
 	}

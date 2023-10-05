@@ -37,6 +37,7 @@ $formFieldBorderRadius: dp(10);
 
 	&.box input {
 		margin: 0;
+		color: $colorPrimary;
 		min-width: $baseLineHeight;
 		min-height: $baseLineHeight;
 		width: $baseLineHeight;
@@ -52,7 +53,7 @@ $formFieldBorderRadius: dp(10);
 			width: $baseLineHeight;
 			height: $baseLineHeight;
 			transition: 90ms transform ease-in-out;
-			background-color: $colorPrimary;
+			background-color: currentColor;
 		}
 		&:checked:before { // tick-on
 			transform: scale(1);

@@ -89,7 +89,6 @@ export class Menu extends Toolbar {
 		super();
 		this.baseCls = "";
 		this.orientation = "vertical";
-
 	}
 
 	/**

@@ -81,7 +81,7 @@ export class Recurrence {
 		if (config.ff) {
 			while (this.current.date < config.ff && this.next()) {
 				// fast forwarding
-				console.log('ff ', this.current.date);
+				//console.log('ff ', this.current.date);
 			}
 		}
 	}
@@ -134,7 +134,7 @@ export class Recurrence {
 			return null;
 		} else {
 			this.occurrence++;
-			console.log(this.occurrence);
+			//console.log(this.occurrence);
 			return this.current;
 		}
 	}

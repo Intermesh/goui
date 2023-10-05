@@ -90,17 +90,17 @@ export class DateField extends TextField {
 		if(!v) {
 			return;
 		}
-		const dv = DateTime.createFromFormat(v, this.inputFormat);
+		const dv = this.getValueAsDateTime();
 
 		if (!dv) {
 			this.setInvalid(t("'{date}' is not a valid date. The format for dates is {format}").replace('{date}', v).replace('{format}', this.inputFormat));
 		} else {
 			if (this.maxDate && dv.format("Ymd") > this.maxDate.format("Ymd")) {
 				this.setInvalid(t("The date in this field must be before {maxDate}.").replace('{maxDate}', this.maxDate.format(this.inputFormat)));
-			}
-
-			if(this.minDate && dv.format("Ymd") < this.minDate.format("Ymd")) {
+			} else if(this.minDate && dv.getTime() < this.minDate.getTime()) {
 				this.setInvalid(t("The date in this field must be after {minDate}.").replace('{minDate}', this.minDate.format(this.inputFormat)));
+			} else {
+				this.date = dv; // update date value when valid
 			}
 		}
 
@@ -148,7 +148,7 @@ export class DateField extends TextField {
 	private getValueAsDateTime() {
 		let v = super.value,
 			timeFormat = '';
-		if (this.timefield) {
+		if (this.timefield && !this.timefield.hidden) {
 			v += 'T' + this.timefield.value;
 			timeFormat = 'TH:i';
 		}
