@@ -206,7 +206,7 @@ export class Form<ValueType extends ContainerFieldValue = ContainerFieldValue> e
 	 * - value was set (usually through a load) OR
 	 * - submitted
 	 */
-	public getModified(): Partial<ValueType> {
+	public get modified(): Partial<ValueType> {
 		const v = this.value;
 		for (const name in this.oldValue) {
 			if(JSON.stringify(v[name]) === JSON.stringify(this.oldValue[name])) {
