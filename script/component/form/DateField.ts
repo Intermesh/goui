@@ -65,6 +65,7 @@ export class DateField extends TextField {
 			this.clearInvalid();
 
 			//important to set value after focus so change event will fire on focusout
+			//focus is returned in {@see Field} .setupMenu()} when the picker button's menu hides.
 			super.value = val.format(this.inputFormat);
 		});
 

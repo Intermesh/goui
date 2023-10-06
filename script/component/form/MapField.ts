@@ -62,7 +62,7 @@ export class MapField extends Field {
 	 * @param key
 	 */
 	public add(data: MapFieldValue, key?: string | undefined) {
-		if(!this.oldValue) {
+		if(!this.valueOnFocus) {
 			this.captureValueForChange();
 		}
 		this.internalAdd(data, key);

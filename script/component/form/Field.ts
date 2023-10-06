@@ -21,6 +21,8 @@ export interface FieldEventMap<Type> extends ComponentEventMap<Type> {
 	/**
 	 * Fires when the field changes. It fires on blur.
 	 *
+	 * Note: this event does not fire on {@see ContainerField} and {@see Form}
+	 *
 	 * @param field
 	 */
 	change: (field: Type, newValue: any, oldValue: any) => void
@@ -126,7 +128,7 @@ export abstract class Field extends Component {
 	 * Used for "change" event
 	 * @protected
 	 */
-	protected oldValue?: string;
+	protected valueOnFocus?: string;
 
 	/**
 	 * Validate the field on blur
@@ -149,7 +151,7 @@ export abstract class Field extends Component {
 		}
 
 		// detect changed value. Handle objects by comparing JSON values
-		if(this.fireChangeOnBlur && this.isDirty()) {
+		if(this.fireChangeOnBlur && this.isChangedSinceFocus()) {
 			this.fireChange();
 		}
 	}
@@ -157,23 +159,25 @@ export abstract class Field extends Component {
 	/**
 	 * Return true if the field was modified
 	 */
-	public isDirty():boolean {
+	protected isChangedSinceFocus():boolean {
 		// detect changed value. Handle objects by comparing JSON values
 		const v = this.value;
 		if(typeof(v) == 'object') {
-			return JSON.stringify(this.oldValue) != JSON.stringify(v);
+			return JSON.stringify(this.valueOnFocus) != JSON.stringify(v);
 		} else {
-			return this.oldValue  != v;
+			return this.valueOnFocus  != v;
 		}
 	}
 
 	protected onFocusIn(e:FocusEvent) {
-		this.captureValueForChange();
+		if(this.fireChangeOnBlur) {
+			this.captureValueForChange();
+		}
 	}
 
 	protected captureValueForChange() {
 		const v = this.value;
-		this.oldValue = typeof(v) == 'object' ? structuredClone(v) : v;
+		this.valueOnFocus = typeof(v) == 'object' ? structuredClone(v) : v;
 	}
 
 	protected internalRender() {
@@ -414,24 +418,19 @@ export abstract class Field extends Component {
 
 	/**
 	 * Set the field value
-	 *
-	 * @param v
-	 * @param useForReset When true, this value is recorded for use when reset() is used.
 	 */
 	public set value(v: any) {
 		const old = this._value;
 		this._value = v;
 
-		// if (useForReset) {
-		// 	this.resetValue = v;//ObjectUtil.clone(v);
-		// }
-
-		if (!this.resetValue) {
+		// not sure if this is allright. We track the value to reset if it's set while not added to a parent yet.
+		// it should be the value it gets when configured logically and not loaded or changed by the user. AFAIK
+		// this is the easiest way to do it.
+		if(!this.parent && !this.resetValue) {
 			this.resetValue = v;
 		}
 
 		this.internalSetValue(v, old);
-
 		this.fire("setvalue", this, this._value, old);
 	}
 
@@ -441,14 +440,11 @@ export abstract class Field extends Component {
 
 	/**
 	 * Helper to fire "change" event. Child classes must implement this.
-	 *
-	 * @param suppressSetValue If another helper component like a date picker just called "set value" then you can
-	 *  set this to true to prevent firing twice.
 	 */
 	protected fireChange() {
 		const v = this.value;
-		this.fire("change", this, v, this.oldValue);
-		this.captureValueForChange();
+		this.fire("change", this, v, this.valueOnFocus);
+		this.valueOnFocus = undefined;
 	}
 
 	public get value() {
@@ -456,8 +452,7 @@ export abstract class Field extends Component {
 	}
 
 	/**
-	 * Reset the field value to the initial value
-	 * The initial value is set by setValue() when "useForReset" is set to true.
+	 * Reset the field value to the value that was given to the field's constructor
 	 * @see setValue()
 	 */
 	public reset() {
@@ -465,6 +460,7 @@ export abstract class Field extends Component {
 		this.value = this.resetValue;
 		this.clearInvalid();
 		this.fire("reset", this, this.resetValue, old);
+		this.fire("change", this, this.resetValue, old);
 	}
 
 	/**

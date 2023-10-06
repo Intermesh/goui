@@ -541,7 +541,7 @@ export class Window extends DraggableComponent {
 				form({
 
 						handler: (form) => {
-							resolve(form.getValues()['input']);
+							resolve(form.value.input);
 							cancelled = false;
 							w.close();
 						}

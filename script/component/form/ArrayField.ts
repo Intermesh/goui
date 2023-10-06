@@ -72,7 +72,7 @@ export class ArrayField extends ContainerField {
 	 */
 	public addValue(value:Record<string,any> = {}) {
 
-		if(!this.oldValue) {
+		if(!this.valueOnFocus) {
 			this.captureValueForChange();
 		}
 

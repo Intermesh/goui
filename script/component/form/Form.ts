@@ -37,8 +37,7 @@ export interface Form<ValueType extends ContainerFieldValue = ContainerFieldValu
 
 	get el(): HTMLFormElement
 
-	get value(): ValueType
-	set value(v:Partial<ValueType>)
+
 }
 
 /**
@@ -126,6 +125,7 @@ export interface Form<ValueType extends ContainerFieldValue = ContainerFieldValu
 export class Form<ValueType extends ContainerFieldValue = ContainerFieldValue> extends ContainerField<ValueType> {
 	protected baseCls = "goui-form"
 	public hideLabel = true;
+	private oldValue?: ValueType;
 
 	constructor() {
 		super("form");
@@ -168,24 +168,9 @@ export class Form<ValueType extends ContainerFieldValue = ContainerFieldValue> e
 			}
 		})
 
+		this.trackModifications();
+
 		return el;
-	}
-
-
-	/**
-	 * Get all form values
-	 */
-	getValues(): { [key: string]: any } {
-		return this.value;
-	}
-
-	/**
-	 * Set form field values
-	 *
-	 * @param v
-	 */
-	setValues(v: Partial<ValueType>) {
-		this.value = v;
 	}
 
 	/**
@@ -195,6 +180,38 @@ export class Form<ValueType extends ContainerFieldValue = ContainerFieldValue> e
 		this.findFields().forEach((field) => {
 			field.reset();
 		})
+	}
+
+
+	public trackModifications() {
+		this.oldValue = this.value;
+	}
+
+	set value(v: Partial<ValueType>) {
+		super.value = v;
+		this.trackModifications();
+	}
+
+	get value(): ValueType {
+		return super.value;
+	}
+
+	/**
+	 * Get the modified field values since the form was:
+	 *
+	 * - rendered OR
+	 * - value was set (usually through a load) OR
+	 * - submitted
+	 */
+	public getModified(): Partial<ValueType> {
+		const v = this.value;
+		for (const name in this.oldValue) {
+			if(JSON.stringify(v[name]) === JSON.stringify(this.oldValue[name])) {
+				delete v[name];
+			}
+		}
+
+		return v;
 	}
 
 	/**
@@ -213,6 +230,7 @@ export class Form<ValueType extends ContainerFieldValue = ContainerFieldValue> e
 			if (this.handler) {
 				try {
 					handlerResponse = await this.handler!(this);
+
 				} catch (e: any) {
 					el.cls(['-valid', '+invalid']);
 
@@ -223,7 +241,8 @@ export class Form<ValueType extends ContainerFieldValue = ContainerFieldValue> e
 			}
 			this.fire("submit", this, handlerResponse);
 
-			//this.reset();
+			this.trackModifications();
+
 		} else {
 			el.cls(['-valid', '+invalid']);
 

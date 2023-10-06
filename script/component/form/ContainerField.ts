@@ -34,6 +34,7 @@ export class ContainerField<ValueType extends ContainerFieldValue = ContainerFie
 
 	public hideLabel = true;
 
+	protected fireChangeOnBlur = false;
 
 	/**
 	 * Find all form fields
