@@ -4,7 +4,14 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 import {Store, StoreEventMap} from "../data/Store.js";
-import {AbstractDataSource, BaseEntity, Changes, dataSourceEntityType, QueryParams} from "./AbstractDataSource.js";
+import {
+	AbstractDataSource,
+	BaseEntity,
+	Changes,
+	dataSourceEntityType,
+	DefaultEntity,
+	QueryParams
+} from "./AbstractDataSource.js";
 import {ObjectUtil} from "../util/index.js";
 import {Config, createComponent, ObservableListener} from "../component/index.js";
 
@@ -27,7 +34,7 @@ export class DataSourceStore<DataSource extends AbstractDataSource = AbstractDat
 
 	public hasMore = false;
 
-	public relations?: Relation<dataSourceEntityType<DataSource>>;
+	public relations?: Relation<DefaultEntity>;
 
 	// public properties?: string[] = [];
 
@@ -102,19 +109,19 @@ export class DataSourceStore<DataSource extends AbstractDataSource = AbstractDat
 		if (!this.relations) {
 			return records;
 		}
-		let relationName: (keyof dataSourceEntityType<DataSource>);
 		const promises = [];
 
-		for (relationName in this.relations) {
-			const rel = this.relations[relationName]!
+		for (const relationName in this.relations) {
+			const rel = this.relations[relationName as keyof DefaultEntity]!;
 
 			let id;
 			for (let i = 0, l = records.length; i < l; i++) {
 				id = ObjectUtil.path(records[i], rel.path);
+
 				if (id) {
 					promises.push(rel.dataSource.single(id).then((e) => {
 						if (e) {
-							records[i][relationName] = e as never;
+							records[i][relationName as (keyof dataSourceEntityType<DataSource>)] = e as never;
 						}
 					}));
 				}
@@ -207,7 +214,7 @@ export type DataSourceStoreConfig<DataSource extends AbstractDataSource, RecordT
 
 		buildRecord?: RecordBuilder<dataSourceEntityType<DataSource>, RecordType>,
 
-		relations?: Relation<dataSourceEntityType<DataSource>>,
+		relations?: Relation<DefaultEntity>,
 
 		listeners?: ObservableListener<StoreEventMap<DataSourceStore<DataSource, RecordType>,RecordType>>
 	}
