@@ -74,14 +74,11 @@ export class DataSourceForm<ValueType extends BaseEntity = DefaultEntity> extend
 			try {
 				this._value = {};
 				let v = this.value;
-				if (this.currentId) {
-					v.id = this.currentId;
-				}
 				this.fire('beforesave', this, v);
 
 				let data;
 				if (this.currentId) {
-					data = await this.dataSource.update(v as ValueType);
+					data = await this.dataSource.update(this.currentId, v as ValueType);
 				} else {
 					data = await this.dataSource.create(v);
 				}

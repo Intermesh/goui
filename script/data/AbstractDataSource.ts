@@ -528,15 +528,15 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	 *
 	 * @param data
 	 */
-	public update(data: Partial<EntityType> & BaseEntity): Promise<EntityType> {
+	public update(id:EntityID, data: Partial<EntityType> & BaseEntity): Promise<EntityType> {
 		const p = new Promise((resolve, reject) => {
-			this.updates[data.id!] = {
+			this.updates[id] = {
 				data: data,
 				resolve: resolve,
 				reject: reject
 			}
 		}).finally(() => {
-			delete this.updates[data.id!];
+			delete this.updates[id];
 		}) as Promise<EntityType>;
 
 		this.delayedCommit();
