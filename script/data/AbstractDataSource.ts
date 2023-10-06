@@ -465,11 +465,13 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 			}).catch((e)=>{
 				//reject all
 				unknownIds.forEach((id) => {
-					let r;
-					while (r = this.getIds[id].rejects.shift()) {
-						r.call(this, e);
+					if(this.getIds[id]) {
+						let r;
+						while (r = this.getIds[id].rejects.shift()) {
+							r.call(this, e);
+						}
+						delete this.getIds[id];
 					}
-					delete this.getIds[id];
 				})
 			});
 
