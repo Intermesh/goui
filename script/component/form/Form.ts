@@ -183,7 +183,10 @@ export class Form<ValueType extends ContainerFieldValue = ContainerFieldValue> e
 	}
 
 
-	public trackModifications() {
+	/**
+	 * Capture snapshot for tracking changes so getModified() can return modifications.
+	 */
+	protected trackModifications() {
 		this.oldValue = structuredClone(this.value);
 	}
 
