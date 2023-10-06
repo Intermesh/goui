@@ -58,7 +58,7 @@ export class DataSourceStore<DataSource extends AbstractDataSource = AbstractDat
 		super();
 
 		this.dataSource.on('change', (dataSource, changes) => {
-			this.onChange(dataSource, changes);
+			void this.onChange(dataSource, changes);
 		});
 	}
 
@@ -67,8 +67,8 @@ export class DataSourceStore<DataSource extends AbstractDataSource = AbstractDat
 	 *
 	 * @protected
 	 */
-	protected async onChange(DataSource:DataSource, changes: Changes<dataSourceEntityType<DataSource>>) {
-		if (this.loaded && this.monitorChanges) {
+	protected async onChange(DataSource:DataSource, changes: Changes) {
+		if (this.loaded && this.monitorChanges && !this.loading) {
 			void this.reload();
 		}
 	}

@@ -925,6 +925,10 @@ export class Component extends Observable {
 	 */
 	public mask(delay = 300) {
 
+		if(this.maskTimeout || (this._mask && this._mask.hidden == false)) {
+			return ;
+		}
+
 		this.maskTimeout = setTimeout(() => {
 			if (!this._mask) {
 				this._mask = mask({spinner: true});
@@ -943,7 +947,6 @@ export class Component extends Observable {
 		if(this.maskTimeout) {
 			clearTimeout(this.maskTimeout);
 			this.maskTimeout = undefined;
-			return;
 		}
 		if (this._mask) {
 			this._mask.hide();

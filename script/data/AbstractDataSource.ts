@@ -5,10 +5,9 @@
  */
 
 import {Observable, ObservableEventMap} from "../component/index.js";
-import {Comparator, Store} from "./Store.js";
+import {Comparator} from "./Store.js";
 import {FunctionUtil} from "../util/index.js";
 import {BrowserStore} from "../util/BrowserStorage.js";
-import Base = Mocha.reporters.Base;
 
 /**
  * The response of the {@see AbstractDataSource.get()} method
@@ -90,7 +89,7 @@ export interface CommitError {
 /**
  * @category Data
  */
-export interface Changes<EntityType extends BaseEntity> {
+export interface Changes {
 	created?: EntityID[]
 	updated?: EntityID[]
 	destroyed?: EntityID[],
@@ -178,20 +177,20 @@ export interface QueryResponse {
 /**
  * @category Data
  */
-export interface DataSourceEventMap<Type extends Observable, EntityType extends BaseEntity> extends ObservableEventMap<Type> {
+export interface DataSourceEventMap<Type extends Observable> extends ObservableEventMap<Type> {
 	/**
 	 * Fires when data changed in the store
 	 */
-	change: (dataSource: Type, changes: Changes<EntityType>) => void
+	change: (dataSource: Type, changes: Changes) => void
 }
 
 export type dataSourceEntityType<DS> = DS extends AbstractDataSource<infer EntityType> ? EntityType : never;
 
 
 export interface AbstractDataSource<EntityType extends BaseEntity = DefaultEntity>  extends Observable {
-	on<K extends keyof DataSourceEventMap<this, EntityType>>(eventName: K, listener: DataSourceEventMap<this, EntityType>[K]): void
+	on<K extends keyof DataSourceEventMap<this>>(eventName: K, listener: DataSourceEventMap<this>[K]): void
 
-	fire<K extends keyof DataSourceEventMap<this, EntityType>>(eventName: K, ...args: Parameters<DataSourceEventMap<this, EntityType>[K]>): boolean
+	fire<K extends keyof DataSourceEventMap<this>>(eventName: K, ...args: Parameters<DataSourceEventMap<this>[K]>): boolean
 }
 
 type SaveData<EntityType extends BaseEntity> = {
@@ -205,7 +204,7 @@ interface DestroyData {
 	reject: (reason?: any) => void
 }
 
-type GetData<EntityType extends BaseEntity> = {
+type GetData = {
 	resolves: ((value: any | undefined) => void)[],
 	rejects: ((reason?: any) => void)[]
 }
@@ -293,7 +292,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 		return this._browserStore;
 	}
 
-	constructor(public readonly id: string) {
+	protected constructor(public readonly id: string) {
 		super();
 
 		this.delayedCommit = FunctionUtil.buffer(0, () => {
@@ -310,7 +309,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	protected updates: Record<EntityID, SaveData<EntityType>> = {};
 	protected destroys: Record<EntityID, DestroyData> = {};
 
-	protected getIds: Record<EntityID, GetData<EntityType>> = {};
+	protected getIds: Record<EntityID, GetData> = {};
 
 	/**
 	 * Get entities from the store
@@ -358,28 +357,28 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 		return response;
 	}
 
-	protected add(data: EntityType) {
+	protected async add(data: EntityType) {
 
 		console.debug("Adding " + this.id + ": " + data.id);
 		this.data[data.id] = data;
 
-		if(!this.persist) {
+		if (!this.persist) {
 			return Promise.resolve(data);
 		}
-
-		return this.browserStore.setItem(data.id, data).then(() => data);
+		await this.browserStore.setItem(data.id, data);
+		return data;
 	}
 
-	protected remove(id: EntityID) {
+	protected async remove(id: EntityID) {
 
 		console.debug("Removing " + this.id + ": " + id);
 		delete this.data[id];
 
-		if(!this.persist) {
+		if (!this.persist) {
 			return Promise.resolve(id);
 		}
-
-		return this.browserStore.removeItem(id).then(() => id);
+		await this.browserStore.removeItem(id);
+		return id;
 	}
 
 	/**
@@ -528,6 +527,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	 *
 	 * Multiple calls will be joined together in a single call on the next event loop
 	 *
+	 * @param id
 	 * @param data
 	 */
 	public update(id:EntityID, data: Partial<EntityType> & BaseEntity): Promise<EntityType> {
@@ -581,7 +581,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 
 		let hasMoreChanges = true, hasAChange = false;
 
-		const allChanges: Changes<EntityType> = {
+		const allChanges: Changes = {
 			created: [],
 			updated: [],
 			destroyed: [],
@@ -654,7 +654,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	 *
 	 * @protected
 	 */
-	protected abstract internalRemoteChanges(state: string | undefined): Promise<Changes<EntityType>>
+	protected abstract internalRemoteChanges(state: string | undefined): Promise<Changes>
 
 	/**
 	 * Commit pending changes to remote
@@ -772,10 +772,9 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	 *
 	 * @link https://jmap.io/spec-core.html#query
 	 */
-	public query(params: QueryParams = {}): Promise<QueryResponse> {
-		return this.internalQuery(params).then(r => {
-			return this.checkState(r.queryState, r);
-		});
+	public async query(params: QueryParams = {}): Promise<QueryResponse> {
+		let r = await this.internalQuery(params);
+		return this.checkState(r.queryState, r);
 	}
 
 	/**

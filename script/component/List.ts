@@ -173,9 +173,11 @@ export class List<StoreType extends Store = Store> extends Component {
 		this.tabIndex = 0;
 
 		store.on("beforeload", () => {
+			console.warn("beforeload");
 			this.mask()
 		});
 		store.on("load", () => {
+			console.warn("load");
 			this.unmask();
 		});
 
