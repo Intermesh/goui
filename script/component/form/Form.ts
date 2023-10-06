@@ -184,7 +184,7 @@ export class Form<ValueType extends ContainerFieldValue = ContainerFieldValue> e
 
 
 	public trackModifications() {
-		this.oldValue = this.value;
+		this.oldValue = structuredClone(this.value);
 	}
 
 	set value(v: Partial<ValueType>) {
