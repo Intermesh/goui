@@ -132,7 +132,7 @@ export class DataSourceForm<ValueType extends BaseEntity = DefaultEntity> extend
 		//this.currentId = '_new_';
 		this.fire('load', this, data);
 		if (data) {
-			this.setValues(data);
+			this.value = data;
 		}
 	}
 	reset() {
