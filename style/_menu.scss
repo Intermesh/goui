@@ -180,3 +180,16 @@ button.goui-button.with-text.has-menu {
 
 	}
 }
+
+menu.main-menu, menu.west-menu {
+	width: dp(200);
+	list-style: none;
+	padding: dp(8);
+	margin-bottom: dp(12);
+	background-color: var(--bg-side-bar);
+
+	.goui-button {
+		width: 100%;
+		text-align: left;
+	}
+}

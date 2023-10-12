@@ -34,7 +34,7 @@ export class NumberField extends TextField {
 	set value(v: number | undefined) {
 		if (isNaN(v!)) {
 			throw new Error("Invalid number");
-		} else if (v) {
+		} else if (v !== undefined) {
 			super.value = +v.toFixed(this.decimals);
 		}
 
