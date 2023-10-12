@@ -190,7 +190,7 @@ export class RestDataSource<EntityType extends BaseEntity = DefaultEntity> exten
 	 * @param state
 	 * @protected
 	 */
-	protected async internalRemoteChanges(state: string | undefined): Promise<Changes<DefaultEntity>> {
+	protected async internalRemoteChanges(state: string | undefined): Promise<Changes> {
 		return {}
 	}
 
