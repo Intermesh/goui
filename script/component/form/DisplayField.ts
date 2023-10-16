@@ -9,15 +9,27 @@ import {Component, createComponent} from "../Component.js";
 import {Config} from "../Observable";
 
 export class DisplayField extends Field {
-	baseCls = ''
+	private control?: HTMLDivElement;
 
-	constructor(tagName: keyof HTMLElementTagNameMap = "div") { // default is <label>. but that will trigger click of button inside
-		super(tagName);
+	protected baseCls = 'goui-form-field no-floating-label'
+
+
+	public renderer = (v:any, field:DisplayField) => v ?? "";
+
+	protected createControl(): HTMLElement | undefined {
+		this.control = document.createElement("div");
+		this.control.classList.add('display-field-control');
+		return this.control;
 	}
 
-	protected renderControl() {
-		// empty
+	protected internalSetValue(v?: any) {
+		if(this.control)
+			this.control.innerText = this.renderer(v, this);
 	}
 }
 
-export const displayfield = (config: Config<DisplayField, FieldEventMap<DisplayField>>, ...items: Component[]) => createComponent(new DisplayField(config?.tagName), config, items);
+type DisplayFieldConfig = Config<DisplayField, FieldEventMap<DisplayField>> & {
+	renderer?: (v:any, field:DisplayField) => string;
+}
+
+export const displayfield = (config: DisplayFieldConfig, ...items: Component[]) => createComponent(new DisplayField(config?.tagName), config, items);

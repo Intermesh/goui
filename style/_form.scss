@@ -191,7 +191,7 @@ $formFieldBorderRadius: dp(10);
 	&+div.label, &+.goui-toolbar+div.label {
 		font-size: sp(13);
 		top: 0;
-		left: dp(16);
+		//left: dp(16);
 	}
 }
 
@@ -351,7 +351,7 @@ $formFieldBorderRadius: dp(10);
 	&.no-floating-label {
 		div.label {
 			top: 0;
-			left: dp(16);
+			//left: dp(16);
 			font-size: sp(13);
 		}
 	}
@@ -364,7 +364,7 @@ $formFieldBorderRadius: dp(10);
 	}
 
 	/** start text and textarea **/
-	input.text, textarea, select {
+	input.text, textarea, select, .display-field-control {
 		@extend %input;
 		&:not(:placeholder-shown) {
 			@extend %float-label;

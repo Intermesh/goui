@@ -227,6 +227,10 @@ export abstract class Field extends Component {
 		const control = this.createControl();
 		if (control) {
 			this.wrap!.append(control.cls('+control'));
+
+			if (this.title) {
+				control.title = this.title;
+			}
 		}
 
 		// label must follow input so we can make the transform transition with pure css with input::focus & input::placeholder-shown + label
@@ -241,6 +245,8 @@ export abstract class Field extends Component {
 		if (hint) {
 			this.el.appendChild(hint);
 		}
+
+		this.internalSetValue(this.value);
 	}
 
 	private renderButtons() {
@@ -430,11 +436,17 @@ export abstract class Field extends Component {
 			this.resetValue = v;
 		}
 
-		this.internalSetValue(v, old);
+		this.internalSetValue(v);
 		this.fire("setvalue", this, this._value, old);
 	}
 
-	protected internalSetValue(v:any, old:any) {
+	/**
+	 * Applies set value to the control
+	 *
+	 * @param v
+	 * @protected
+	 */
+	protected internalSetValue(v?:any) {
 
 	}
 

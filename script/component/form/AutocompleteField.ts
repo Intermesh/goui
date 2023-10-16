@@ -112,15 +112,20 @@ export class AutocompleteField<T extends List = List> extends TextField {
 		return "";
 	}
 
-	protected setInputValue(v: string) {
 
-		this.valueToTextField(this, v).then(v => {
+	protected internalSetValue(v?: string) {
+
+		if(v == undefined) {
+			return super.internalSetValue(v);
+		}
+
+		this.valueToTextField(this, v+"").then(v => {
 
 			if(this._input) {
-				super.setInputValue(v);
+				super.internalSetValue(v);
 			} else {
 				this.on("render", () => {
-					super.setInputValue(v);
+					super.internalSetValue(v);
 				}, {once: true})
 			}
 		})

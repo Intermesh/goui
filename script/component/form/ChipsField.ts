@@ -196,7 +196,7 @@ export class ChipsField extends Field {
 
 	}
 
-	protected internalSetValue(v: any[], old: any) {
+	protected internalSetValue(v: any[]) {
 		if(this.rendered) {
 			//remove all chips except the editor (last item).
 			for(let i = 0; i < this.items.count() -1; i++) {

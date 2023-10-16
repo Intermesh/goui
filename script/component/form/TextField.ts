@@ -86,13 +86,7 @@ export class TextField extends Field {
 		}
 		this._input.readOnly = this.readOnly;
 
-		if (v !== undefined) {
-			this._input.value = v;
-		}
 
-		if (this.title) {
-			this._input.title = this.title;
-		}
 
 		if (this.invalidMsg) {
 			this.applyInvalidMsg();
@@ -115,16 +109,13 @@ export class TextField extends Field {
 		this.applyInvalidMsg();
 	}
 
-	protected setInputValue(v: string) {
+	protected internalSetValue(v?: string) {
 		if (this._input) {
 			this._input.value = v + "";
 		}
 	}
 
 	set value(v: any) {
-
-		this.setInputValue(v || "");
-
 		super.value = v;
 	}
 
