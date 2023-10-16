@@ -191,20 +191,76 @@ $formFieldBorderRadius: dp(10);
 	&+div.label, &+.goui-toolbar+div.label {
 		font-size: sp(13);
 		top: 0;
-		//left: dp(16);
+		left: dp(16);
+	}
+}
+
+.goui-form-field, .goui-display-field {
+
+	display: block;
+	margin-bottom: dp(12);
+	margin-top: dp(4);
+	position: relative;
+}
+
+.goui-display-field {
+
+
+
+	&.with-icon {
+		.wrap {
+			div.label {
+				left: dp(52);
+			}
+
+			.control {
+				padding-left: dp(10);
+			}
+		}
+	}
+
+	.wrap {
+
+		> i {
+			width: dp(24);
+			height: dp(24);
+			margin: dp(11) dp(0) dp(11) dp(16);
+		}
+		overflow:hidden;
+		display: flex;
+		flex-flow: row nowrap;
+		border: $borderWidth solid transparent;
+
+
+		div.label {
+			font-size: sp(13);
+			display: flex;
+			align-items: center;
+			overflow: visible;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			color: $colorTextSecondary;
+			vertical-align: top;
+			position:absolute;
+			left: dp(18);
+			top: dp(-2);
+		}
+
+		.control {
+			font: $fontBase;
+			min-width: dp(100); //for select element
+			margin: dp(6) 0 0;
+			border: 0;
+			padding: dp(11) dp(16);
+			width: 100%;
+			//outline: none;
+			color: $colorText;
+			display: block;// for text area which has inline-block by default and gets some extra margin
+		}
 	}
 }
 
 .goui-form-field {
-//	width: 100%; messes up tree
-//	align-self: start;
-	margin-bottom: dp(12);
-	margin-top: dp(4);
-}
-
-.goui-form-field {
-	display: block;
-	//border-radius: $formFieldBorderRadius;
 
 	&.readonly {
 		.wrap {
@@ -271,8 +327,6 @@ $formFieldBorderRadius: dp(10);
 	+ hr {
 		margin-top: 0;
 	}
-
-	position: relative;
 
 	&:focus-within {
 		>.wrap {
@@ -351,7 +405,7 @@ $formFieldBorderRadius: dp(10);
 	&.no-floating-label {
 		div.label {
 			top: 0;
-			//left: dp(16);
+			left: dp(16);
 			font-size: sp(13);
 		}
 	}

@@ -111,7 +111,7 @@ export class TextField extends Field {
 
 	protected internalSetValue(v?: string) {
 		if (this._input) {
-			this._input.value = v + "";
+			this._input.value = v ?? "";
 		}
 	}
 
@@ -120,10 +120,10 @@ export class TextField extends Field {
 	}
 
 	get value() {
-		if (!this._input) {
+		if (!this.rendered) {
 			return super.value;
 		} else {
-			return this._input.value;
+			return this._input!.value;
 		}
 	}
 

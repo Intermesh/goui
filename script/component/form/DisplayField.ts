@@ -11,14 +11,11 @@ import {Config} from "../Observable";
 export class DisplayField extends Field {
 	private control?: HTMLDivElement;
 
-	protected baseCls = 'goui-form-field no-floating-label'
-
-
+	protected baseCls = 'goui-display-field'
 	public renderer = (v:any, field:DisplayField) => v ?? "";
 
 	protected createControl(): HTMLElement | undefined {
 		this.control = document.createElement("div");
-		this.control.classList.add('display-field-control');
 		return this.control;
 	}
 
