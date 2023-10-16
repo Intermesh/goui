@@ -43,63 +43,12 @@ export interface Form<ValueType extends ContainerFieldValue = ContainerFieldValu
 /**
  * Form component
  *
- * @example
- * ```
- * const form = form({
- * 	cls: "scroll fit",
- * 	handler: () => {
- *
- * 		console.log(form.getValues());
- *
- * 		const sub = <ContainerField>form.findField("sub");
- * 		const test1 = <TextField>sub.findField("test1");
- * 		test1.setInvalid("Hey something went wrong!");
- * 	},
- * 	items: [
- * 		Fieldset.create({
- * 			items: [
- *
- * 				TextField.create({
- * 					label: "Required field",
- * 					name: "test",
- * 					required: true
- * 				}),
- * 				DateField.create({
- * 					label: "Date",
- * 					name: "date"
- *
- * 				}),
- * 				HtmlField.create({
- * 					label: "Html"
- * 				}),
- *
- * 		    // This will create a "sub" object in the form values with the child components
- * 				ContainerField.create({
- * 					name: "sub",
- * 					items: [
- * 						TextField.create({
- * 							label: "A freaking long stupid label",
- * 							name: "test1",
- * 						}),
- * 						TextField.create({
- * 							label: "Test 2",
- * 							name: "test2",
- * 						}),
- * 					]
- * 				}),
- * 				CheckboxField.create({
- * 					label: "A checkbox label comes after",
- * 					name: "checkbox"
- * 				})
- * 			]
- * 		})
- * 	]
- * });
+ * Forms can be used to submit or present data.
  *
  * @example Password validation
  *
  * ```
- * 	TextField.create({
+ * 	textfield({
  * 		type: "password",
  * 		label: "Password",
  * 		name: "password",
@@ -113,7 +62,7 @@ export interface Form<ValueType extends ContainerFieldValue = ContainerFieldValu
  * 		},
  * 	}),
  *
- * 	TextField.create({
+ * 	textfield({
  * 		itemId: "confirm",//item ID used instead of name so this field won't be submitted
  * 		type: "password",
  * 		label: "Confirm password"
