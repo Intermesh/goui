@@ -36,6 +36,9 @@
 @media (prefers-color-scheme: dark) {
 	.goui.root.system {
 		@include dark-theme;
+		.goui {
+			@include dark-theme;
+		}
 		* {
 			color-scheme: dark;
 		}
