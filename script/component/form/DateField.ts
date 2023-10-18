@@ -6,12 +6,12 @@
 
 import {TextField} from "./TextField.js";
 import {DateTime} from "../../util";
-import {createComponent} from "../Component.js";
+import {createComponent, FindComponentPredicate} from "../Component.js";
 import {datepicker, DatePicker} from "../picker";
 import {btn} from "../Button.js";
 import {menu} from "../menu";
 import {Config} from "../Observable";
-import {FieldEventMap} from "./Field";
+import {Field, FieldEventMap} from "./Field";
 import {t} from "../../Translate";
 
 
@@ -27,7 +27,7 @@ export class DateField extends TextField {
 
 	date?: DateTime;
 
-	timefield?: TextField;
+	timeField?: TextField
 
 	minDate?: DateTime;
 
@@ -66,7 +66,7 @@ export class DateField extends TextField {
 
 			//important to set value after focus so change event will fire on focusout
 			//focus is returned in {@see Field} .setupMenu()} when the picker button's menu hides.
-			super.value = val.format(this.inputFormat);
+			super.value = val.format(this.outputFormat);
 		});
 
 		this.pickerButton.menu!.on("beforeshow", () => {
@@ -110,50 +110,74 @@ export class DateField extends TextField {
 	set value(v: string | undefined) {
 		// null may come from the server
 		if (v === undefined || v === null) {
-			if (this.timefield) {
-				this.timefield.value = '';
+			if (this.timeField) {
+				this.timeField.value = '';
 			}
 			super.value = '';
 			return;
 		}
-		// if(v instanceof DateTime) { // from datepicker
-		// 	v = v.format(this.inputFormat);
-		// }
-		const [date, time] = v.split('T');
-		const d = DateTime.createFromFormat(date + "", this.outputFormat);
 
+		const [date, time] = v.split('T');
+
+		if (this.timeField && time) {
+			this.timeField.value = time.substring(0, 5);
+		}
+
+		const d = DateTime.createFromFormat(date, this.outputFormat);
+		if (!d) {
+			throw new Error("Invalid date format " + date);
+		}
+		this.picker.setValue(d);
+		super.value = date;
+
+		console.log("setvalue", v, this.value);
+	}
+
+	protected internalSetValue(v?: string) {
+
+		if(!v) {
+			return super.internalSetValue("");
+		}
+		const d = DateTime.createFromFormat(v + "", this.outputFormat);
 		if (!d) {
 			throw new Error("Invalid date format " + v);
 		}
-		if (this.timefield && time) {
-			this.timefield.value = time.substring(0, 5);
-		}
-		this.date = d;
-		this.picker.setValue(d);
-		super.value = d.format(this.inputFormat);
+		v = d.format(this.inputFormat);
+		super.internalSetValue(v);
 	}
 
-	get value(): string | undefined {
-		const date = this.getValueAsDateTime();
-
-		if (!date) {
-			return undefined;
+	get value() {
+		let dateStr;
+		if (!this.rendered) {
+			dateStr = super.value;
+		} else {
+			if(!this._input!.value) {
+				return undefined;
+			}
+			const d = DateTime.createFromFormat(this._input!.value , this.inputFormat);
+			if (!d) {
+				throw new Error("Invalid date format " + this._input!.value);
+			}
+			dateStr = d.format(this.outputFormat);
 		}
 
-		const timeFormat = this.timefield ? 'TH:i' : '';
+		if(this.timeField) {
+			dateStr += "T" + this.timeField.value;
+		}
 
-		return date.format(this.outputFormat + timeFormat);
+		return dateStr;
 	}
 
 	private getValueAsDateTime() {
-		let v = super.value,
+
+		let v = this.value,
 			timeFormat = '';
-		if (this.timefield && !this.timefield.hidden) {
-			v += 'T' + this.timefield.value;
+		if (this.timeField && !this.timeField.hidden) {
+			v += 'T' + this.timeField.value;
 			timeFormat = 'TH:i';
 		}
 		let date;
-		if (!v || !(date = DateTime.createFromFormat(v, this.inputFormat + timeFormat))) {
+		if (!v || !(date = DateTime.createFromFormat(v, this.outputFormat + timeFormat))) {
 			return undefined;
 		}
 		return date;
