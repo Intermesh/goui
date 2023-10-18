@@ -292,7 +292,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 		return this._browserStore;
 	}
 
-	protected constructor(public readonly id: string) {
+	public constructor(public readonly id: string) {
 		super();
 
 		this.delayedCommit = FunctionUtil.buffer(0, () => {
