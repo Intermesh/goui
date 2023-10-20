@@ -48,6 +48,8 @@ export class RecurrenceField extends Field {
 			this.value = val;
 			input.value = this.toText(val!);
 		});
+		input.value = t('Not recurring');
+
 		return input;
 	}
 
@@ -86,6 +88,8 @@ export class RecurrenceField extends Field {
 				days = [t('Workdays')];
 			}
 			str += (' ' + t('at ') + days.join(', '));
+		} else if(rr.frequency == 'weekly') {
+			str += (' ' + t('at ') + this.picker.startDate.format('l'));
 		}
 		if (rr.byMonthDay) {
 			str += (' ' + t('at day') + ' ' + rr.byMonthDay.join(', '))

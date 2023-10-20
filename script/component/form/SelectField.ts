@@ -24,13 +24,15 @@ export class SelectField extends Field {
 	public store?: Store
 
 	public valueField = 'value';
+	protected fireChangeOnBlur = false;
 	public textRenderer?: (record: { [key: string]: any }) => string = (record: { [key: string]: any }) => record.name;
 
 	protected createControl(): undefined | HTMLElement {
 		//grab value before creating this.input otherwise it will return the input value
 		const v = this.value;
 
-		this.input = document.createElement("select");
+		this.input = document.createElement("select")
+			.on('change', _ => {this.fireChange();});
 		this.input.name = this.name;
 		if (this.required) {
 			this.input.setAttribute("required", "");
@@ -41,6 +43,13 @@ export class SelectField extends Field {
 		this.el.appendChild(this.input);
 
 		return this.input;
+	}
+
+	// turned off fireChangeOnBlur but override onFocusIn() to get the oldValue
+	protected onFocusIn(e:FocusEvent) {
+		//if(this.fireChangeOnBlur) {
+			this.captureValueForChange();
+		//}
 	}
 
 	getInput() {
@@ -75,11 +84,14 @@ export class SelectField extends Field {
 	}
 
 
-	get value() {
+	get value() : any {
 		if (!this.input) {
 			return super.value;
-		} else {
+		} else if(this.store) {
 			return this.input.value;
+		} else {
+			const v = this.options[this.input.selectedIndex];
+			return v ? v[this.valueField] : null;
 		}
 	}
 

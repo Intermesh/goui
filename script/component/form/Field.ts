@@ -455,6 +455,7 @@ export abstract class Field extends Component {
 	 */
 	protected fireChange() {
 		const v = this.value;
+		this.fire("setvalue", this, v, this.valueOnFocus);
 		this.fire("change", this, v, this.valueOnFocus);
 		this.valueOnFocus = undefined;
 	}
@@ -472,6 +473,7 @@ export abstract class Field extends Component {
 		this.value = this.resetValue;
 		this.clearInvalid();
 		this.fire("reset", this, this.resetValue, old);
+		this.fire("setvalue", this, this.resetValue, old);
 		this.fire("change", this, this.resetValue, old);
 	}
 

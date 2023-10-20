@@ -133,7 +133,8 @@ export class List<StoreType extends Store = Store> extends Component {
 	 */
 	public emptyStateHtml = `<div class="goui-empty-state"><i class="icon">article</i><p>${t("Nothing to show")}</p></div>`
 
-	private emptyStateEl?: HTMLElement;
+	protected emptyStateTag: keyof HTMLElementTagNameMap = 'li';
+	private emptyEl?: HTMLElement
 
 	private rowSelect?: RowSelect;
 
@@ -179,6 +180,7 @@ export class List<StoreType extends Store = Store> extends Component {
 		store.on("load", () => {
 			console.warn("load");
 			this.unmask();
+			this.emptyEl!.hidden = this.store.count() > 0;
 		});
 
 		store.on("loadexception", (store, reason) => {
@@ -210,7 +212,7 @@ export class List<StoreType extends Store = Store> extends Component {
 			this.onMouseEvent(e, "rowcontextmenu");
 		});
 
-		// this.renderEmptyState();
+		this.renderEmptyState();
 		this.renderBody();
 		this.initStore();
 
@@ -275,10 +277,10 @@ export class List<StoreType extends Store = Store> extends Component {
 	}
 
 	protected renderEmptyState() {
-		this.emptyStateEl = E('li');
-		this.emptyStateEl.hidden = this.store.count() > 0;
-		this.emptyStateEl.innerHTML = this.emptyStateHtml;
-		this.el.appendChild(this.emptyStateEl);
+		this.emptyEl = E(this.emptyStateTag).css({'captionSide': 'bottom', height:'100%'});
+		this.emptyEl.hidden = this.store.count() > 0;
+		this.emptyEl.innerHTML = this.emptyStateHtml;
+		this.el.appendChild(this.emptyEl);
 	}
 
 	protected renderBody() {

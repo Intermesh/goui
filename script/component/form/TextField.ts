@@ -32,7 +32,7 @@ export class TextField extends Field {
 	/**
 	 * Autocomplete value
 	 */
-	public autocomplete: AutoFill | undefined;
+	public autocomplete: string | undefined;
 
 	/**
 	 * Pattern regex for validation

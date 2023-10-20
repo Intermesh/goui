@@ -530,7 +530,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	 * @param id
 	 * @param data
 	 */
-	public update(id:EntityID, data: Partial<EntityType> & BaseEntity): Promise<EntityType> {
+	public update(id:EntityID, data: Partial<EntityType>): Promise<EntityType> {
 		const p = new Promise((resolve, reject) => {
 			this.updates[id] = {
 				data: data,

@@ -150,6 +150,7 @@ export class DateField extends TextField {
 		let dateStr;
 		if (!this.rendered) {
 			dateStr = super.value;
+			if(dateStr === undefined) return undefined;
 		} else {
 			if(!this._input!.value) {
 				return undefined;
@@ -161,7 +162,7 @@ export class DateField extends TextField {
 			dateStr = d.format(this.outputFormat);
 		}
 
-		if(this.timeField) {
+		if(dateStr && this.timeField) {
 			dateStr += "T" + this.timeField.value;
 		}
 

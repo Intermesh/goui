@@ -159,6 +159,8 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 	 */
 	public groupBy?: string;
 
+	protected emptyStateTag: keyof HTMLElementTagNameMap = 'caption'
+
 	/**
 	 * Group renderer function
 	 */
