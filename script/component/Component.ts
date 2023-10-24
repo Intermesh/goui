@@ -762,14 +762,7 @@ export class Component extends Observable {
 	protected renderItems() {
 		if (this._items) {
 			this._items.forEach((item) => {
-				// if items are hidden then defer rendering until item is shown
-				if (item.hidden) {
-					item.on("show", (item) => {
-						this.renderItem(item);
-					}, {once: true})
-				} else {
-					this.renderItem(item);
-				}
+				this.renderItem(item);
 			});
 		}
 	}

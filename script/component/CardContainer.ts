@@ -80,6 +80,21 @@ export class CardContainer extends Component {
 		return el;
 	}
 
+	protected renderItems() {
+		if (this.items) {
+			this.items.forEach((item) => {
+				// if items are hidden then defer rendering until item is shown
+				if (item.hidden) {
+					item.on("show", (item) => {
+						this.renderItem(item);
+					}, {once: true})
+				} else {
+					this.renderItem(item);
+				}
+			});
+		}
+	}
+
 	private setCardVisibilities() {
 
 		this.items.forEach((item, index) => {
