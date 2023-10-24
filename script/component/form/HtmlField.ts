@@ -350,6 +350,8 @@ export class HtmlField extends Field {
 					icon: config.icon,
 					menu: config.menu,
 					title: config.title,
+					tabIndex: 0, //needed for Safari. Otherwise the blur event doesn't have this button as relatedTarget.
+												// See in this.editor.addEventListener("blur", below
 					handler: (btn) => {
 						if (!config.applyFn) {
 							this.execCmd(btn.itemId);
@@ -423,6 +425,8 @@ export class HtmlField extends Field {
 			document.removeEventListener("selectionchange", selectionChangeFn);
 			if (!(e.relatedTarget instanceof HTMLElement) || !this.getToolbar().el.contains(e.relatedTarget)) {
 				this.hideToolbar();
+			} else {
+				this.editor!.focus();
 			}
 		});
 
@@ -540,7 +544,7 @@ export class HtmlField extends Field {
 
 		} else if (browser.isMac()) {
 
-			if (ev.ctrlKey) {
+			if (ev.ctrlKey || ev.metaKey) {
 				let cmd;
 				switch (ev.key) {
 					case "b":
