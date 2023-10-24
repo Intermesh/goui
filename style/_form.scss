@@ -180,7 +180,7 @@ $formFieldBorderRadius: dp(10);
 
 	&::placeholder {
 		transition: all 200ms linear;
-		color: transparent;
+		color: $colorTextPlaceholder;
 	}
 }
 
@@ -267,6 +267,14 @@ $formFieldBorderRadius: dp(10);
 		}
 	}
 	.wrap {
+
+		>.control {
+			//width: 100%;
+			flex: 1;
+			appearance: none;
+			-webkit-appearance: none; /*Removes default chrome and safari style*/
+			-moz-appearance: none; /* Removes Default Firefox style*/
+		}
 
 		> i {
 			width: dp(24);
@@ -406,12 +414,7 @@ $formFieldBorderRadius: dp(10);
 		}
 	}
 
-	>.control {
-		width: 100%;
-		appearance: none;
-		-webkit-appearance: none; /*Removes default chrome and safari style*/
-		-moz-appearance: none; /* Removes Default Firefox style*/
-	}
+
 
 	/** start text and textarea **/
 	input.text, textarea, select {
@@ -426,6 +429,35 @@ $formFieldBorderRadius: dp(10);
 		&:focus {
 			@extend %float-label;
 			color: $colorPrimary;
+		}
+	}
+
+	&.date {
+		.wrap {
+			line-height: dp(46);
+		}
+
+		input.text {
+			min-width: auto;
+			width: dp(22);
+			box-sizing: content-box;;
+			padding-right: dp(2);
+			padding-left: dp(2);
+		}
+		input.text:first-child {
+			padding-left: dp(11);
+		}
+
+		input.text:last-child {
+			padding-right: dp(2);
+		}
+
+		input.month:placeholder-shown {
+			width: dp(30);
+		}
+
+		input.text.year {
+			width: dp(42);
 		}
 	}
 

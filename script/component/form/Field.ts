@@ -142,12 +142,15 @@ export abstract class Field extends Component {
 	protected fireChangeOnBlur = true;
 
 	protected onFocusOut(e:FocusEvent) {
-		if(this.validateOnBlur) {
 
-			// When a user clicks a button, perhaps submit or navigates then don't validate
-			if (!e.relatedTarget || (<HTMLElement>e.relatedTarget).tagName != "BUTTON") {
-				this.validate();
-			}
+
+		if (e.relatedTarget instanceof HTMLElement && this.el.contains(e.relatedTarget)) {
+			//focus is still within this field
+			return;
+		}
+
+		if(this.validateOnBlur) {
+			this.validate();
 		}
 
 		// detect changed value. Handle objects by comparing JSON values
@@ -170,6 +173,12 @@ export abstract class Field extends Component {
 	}
 
 	protected onFocusIn(e:FocusEvent) {
+
+		if (e.relatedTarget instanceof HTMLElement && this.el.contains(e.relatedTarget)) {
+			//focus is still within this field
+			return;
+		}
+
 		if(this.fireChangeOnBlur) {
 			this.captureValueForChange();
 		}
@@ -441,7 +450,9 @@ export abstract class Field extends Component {
 	}
 
 	/**
-	 * Applies set value to the control
+	 * Applies set value to the control.
+	 *
+	 * This is also called when the control is rendered. Note that this.rendered is still false when that happens.
 	 *
 	 * @param v
 	 * @protected
