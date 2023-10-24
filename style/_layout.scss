@@ -49,7 +49,7 @@
 	align-items: stretch;
 	> *:not(.goui-form-field) {
 		//flex:none; //setting flex none prevents squishing of elements with no flex setting.
-		min-width: 0; // to prevent growing larger than container: https://stackoverflow.com/questions/36230944/prevent-flex-items-from-overflowing-a-container
+		//min-width: 0; // to prevent growing larger than container: https://stackoverflow.com/questions/36230944/prevent-flex-items-from-overflowing-a-container
 	}
 
 	> hr {
@@ -78,8 +78,8 @@
 	flex-wrap: nowrap;
 	align-items: stretch;
 	> *:not(.goui-form-field) {
-		flex:none; //setting flex none prevents squishing of elements with no flex setting.
-		min-height: 0;
+		//flex:none; //setting flex none prevents squishing of elements with no flex setting.
+		//min-height: 0;
 	}
 }
 
