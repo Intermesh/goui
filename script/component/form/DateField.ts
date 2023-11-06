@@ -146,6 +146,8 @@ export class DateField extends Field {
 			return true;
 		}
 
+		const onMouseUp = () => false;
+
 		this.dayInput = document.createElement("input");
 		this.dayInput.classList.add("text");
 		this.dayInput.classList.add("day");
@@ -153,6 +155,7 @@ export class DateField extends Field {
 		this.dayInput.pattern = "[0-9]+";
 		this.dayInput.maxLength = 2;
 		this.dayInput.onfocus = onFocus;
+		this.dayInput.onmouseup = onMouseUp;
 		this.dayInput.placeholder = "dd";
 		this.dayInput.onkeydown = onKeyDown;
 		this.dayInput.autocomplete = "off";
@@ -182,6 +185,7 @@ export class DateField extends Field {
 		this.monthInput.maxLength = 2;
 		this.monthInput.max="12";
 		this.monthInput.onfocus = onFocus;
+		this.monthInput.onmouseup = onMouseUp;
 		this.monthInput.placeholder = "mm";
 		this.monthInput.onkeydown = onKeyDown;
 		this.monthInput.autocomplete = "off";
@@ -210,6 +214,7 @@ export class DateField extends Field {
 		this.yearInput.pattern = "[0-9]+";
 		this.yearInput.maxLength = 4;
 		this.yearInput.onfocus = onFocus;
+		this.yearInput.onmouseup = onMouseUp;
 		this.yearInput.placeholder = "yyyy";
 		this.yearInput.autocomplete = "off";
 		this.yearInput.onkeydown = onKeyDown;
@@ -224,6 +229,10 @@ export class DateField extends Field {
 			//important to set value after focus so change event will fire on focusout
 			//focus is returned in {@see Field} .setupMenu()} when the picker button's menu hides.
 			super.value = val.format(this.outputFormat);
+
+			if(this.dayInput) {
+				onFocus.call(this.dayInput);
+			}
 		});
 
 		this.pickerButton.menu!.on("beforeshow", () => {
@@ -384,7 +393,6 @@ export class DateField extends Field {
 		}
 		return date;
 	}
-
 
 }
 
