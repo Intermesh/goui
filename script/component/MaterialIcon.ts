@@ -761,6 +761,7 @@ export type MaterialIcon =
 	"settings_system_daydream" |
 	"settings_voice" |
 	"share" |
+	"shield" |
 	"shop" |
 	"shop_two" |
 	"shopping_basket" |

@@ -39,6 +39,9 @@ export class TextField extends Field {
 	 */
 	public pattern: HTMLInputElement["pattern"] | undefined;
 
+	public maxDate: string | undefined;
+
+	public minDate: string | undefined;
 
 	get input() {
 		return this._input;
@@ -84,9 +87,14 @@ export class TextField extends Field {
 		if (name) {
 			this._input.name = name;
 		}
+		if(this.maxDate) {
+			this._input.attr("max", this.maxDate);
+		}
+		if(this.minDate) {
+			this._input.attr("min", this.minDate);
+		}
+
 		this._input.readOnly = this.readOnly;
-
-
 
 		if (this.invalidMsg) {
 			this.applyInvalidMsg();
