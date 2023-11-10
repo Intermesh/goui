@@ -407,6 +407,9 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 
 	private returnGet(id: EntityID) {
 		let r;
+		if(!this.getIds[id]) {
+			return;
+		}
 		while (r = this.getIds[id].resolves.shift()) {
 			// this.getIds[id].rejects.shift();
 			r.call(this, structuredClone(this.data[id]));
