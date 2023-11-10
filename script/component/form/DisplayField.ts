@@ -29,6 +29,11 @@ export class DisplayField extends Field {
 	 */
 	public renderer: DisplayFieldRenderer = (v:any, field:DisplayField) => Format.escapeHTML(v) ?? "";
 
+	/**
+	 * Hide this field when the value is empty
+	 */
+	public hideWhenEmpty = true;
+
 	protected createControl(): HTMLElement | undefined {
 		this.control = document.createElement("div");
 		return this.control;
@@ -40,9 +45,12 @@ export class DisplayField extends Field {
 			if(str instanceof Promise) {
 				str.then(r => {
 					this.control!.innerHTML = r;
+
+					this.hidden = this.hideWhenEmpty && r == "";
 				});
 			} else {
 				this.control.innerHTML = str;
+				this.hidden = this.hideWhenEmpty && str == "";
 			}
 		}
 	}
