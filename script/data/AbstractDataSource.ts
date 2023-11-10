@@ -266,9 +266,6 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	 */
 	protected async setState(state: string | undefined) {
 		this._state = state;
-
-		console.warn("set state " + this.id + ": " + state);
-
 		if(!this.persist) {
 			return;
 		}
@@ -359,7 +356,6 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 
 	protected async add(data: EntityType) {
 
-		console.debug("Adding " + this.id + ": " + data.id);
 		this.data[data.id] = data;
 
 		if (!this.persist) {
