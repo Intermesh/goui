@@ -7,7 +7,7 @@
 import {Config, Observable} from "../Observable.js";
 import {Table} from "./Table.js";
 import {Component, createComponent} from "../Component.js";
-import {Format} from "../../util";
+import {Format, FunctionUtil} from "../../util";
 import {checkbox} from "../form";
 import {btn} from "../Button";
 import {menu} from "../menu";
@@ -166,6 +166,7 @@ export class CheckboxColumn extends TableColumn {
 export const checkboxcolumn = (config: TableColumnConfig) => createComponent(new CheckboxColumn(config.id), config);
 
 
+
 export class CheckboxSelectColumn extends TableColumn {
 
 	constructor(id = "checkboxselect") {
@@ -195,10 +196,8 @@ export class CheckboxSelectColumn extends TableColumn {
 	renderer: TableColumnRenderer = (val: boolean, record, td, table, rowIndex) => {
 
 		// add to selection model if value is true
-		if(val) {
-			const selected = table.rowSelection!.selected;
-			selected.push(rowIndex);
-			table.rowSelection!.selected = selected;
+		if(val && table.rowSelection) {
+			table.rowSelection.add(rowIndex);
 		}
 
 		return checkbox({
@@ -214,13 +213,11 @@ export class CheckboxSelectColumn extends TableColumn {
 					});
 				},
 				change: (field, newValue, oldValue) => {
-
-					const index = table.store.indexOf(record), selected = table.rowSelection!.selected;
+					const index = table.store.indexOf(record);
 					if (newValue) {
-						selected.push(index);
-						table.rowSelection!.selected = selected;
+						table.rowSelection!.add(index);
 					} else {
-						table.rowSelection!.selected = selected.filter(i => i != index);
+						table.rowSelection!.remove(index);
 					}
 
 				}
