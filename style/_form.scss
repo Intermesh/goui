@@ -252,6 +252,9 @@ $formFieldBorderRadius: dp(10);
 			//outline: none;
 			color: $colorText;
 			display: block;// for text area which has inline-block by default and gets some extra margin
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
 		}
 	}
 }
@@ -487,7 +490,6 @@ $formFieldBorderRadius: dp(10);
 		.hint {
 			color: $colorError;
 		}
-
 	}
 
 	.error {
@@ -504,15 +506,11 @@ $formFieldBorderRadius: dp(10);
 		color: $colorTextSecondary;
 		line-height: dp(20); //match icon
 		padding: dp(4) dp(18) dp(4);
-		//height: dp(30);
-		flex: 1 1 100%;
 
 		&:empty {
 			padding: 0;
 		}
 	}
-
-
 
 	input.number {
 		padding-right: 0;
@@ -526,7 +524,6 @@ $formFieldBorderRadius: dp(10);
 	}
 
 	/**  end text and textarea **/
-
 
 	&.radiogroup {
 		@extend .checkbox-group;
