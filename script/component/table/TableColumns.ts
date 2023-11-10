@@ -168,8 +168,8 @@ export const checkboxcolumn = (config: TableColumnConfig) => createComponent(new
 
 export class CheckboxSelectColumn extends TableColumn {
 
-	constructor() {
-		super("checkboxselect");
+	constructor(id = "checkboxselect") {
+		super(id);
 		this.hidable = false;
 
 		this.cls = "checkbox-select-column";
@@ -193,6 +193,13 @@ export class CheckboxSelectColumn extends TableColumn {
 	}
 
 	renderer: TableColumnRenderer = (val: boolean, record, td, table, rowIndex) => {
+
+		// add to selection model if value is true
+		if(val) {
+			const selected = table.rowSelection!.selected;
+			selected.push(rowIndex);
+			table.rowSelection!.selected = selected;
+		}
 
 		return checkbox({
 			value: val,
@@ -222,7 +229,7 @@ export class CheckboxSelectColumn extends TableColumn {
 	}
 }
 
-export const checkboxselectcolumn = (config?: TableColumnConfig) => createComponent(new CheckboxSelectColumn(), config);
+export const checkboxselectcolumn = (config?: TableColumnConfig) => createComponent(new CheckboxSelectColumn(config && config.id ? config.id : "checkboxselect"), config);
 
 
 /**
