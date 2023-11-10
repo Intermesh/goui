@@ -58,7 +58,7 @@ export class RestDataSource<EntityType extends BaseEntity = DefaultEntity> exten
 
 		return fetch(this.uri + path, baseOpts).then(response => {
 			if (response.status != 200) {
-				throw response.statusText;
+				// throw response.body;//.statusText;
 			}
 
 			return response.json();
