@@ -384,7 +384,6 @@ export class DateField extends Field {
 		let v = this.value,
 			timeFormat = '';
 		if (this.timeField && !this.timeField.hidden) {
-			v += 'T' + this.timeField.value;
 			timeFormat = 'TH:i';
 		}
 		let date;
