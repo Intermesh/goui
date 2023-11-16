@@ -660,6 +660,7 @@ export type MaterialIcon =
 	"playlist_add_check" |
 	"playlist_play" |
 	"plus_one" |
+	"policy" |
 	"poll" |
 	"polymer" |
 	"pool" |

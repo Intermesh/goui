@@ -55,6 +55,15 @@ export class TextField extends Field {
 		}
 	}
 
+	public setType(t: TextFieldType) {
+		this.type = t;
+		if(this._input) {
+			// Not sure why, but TS / GOUI is setting the _input.type readonly...
+			// @ts-ignore
+			this._input.type = t;
+		}
+	}
+
 	focus(o?: FocusOptions) {
 		if (!this._input) {
 			super.focus(o);
