@@ -34,7 +34,6 @@ export class DateField extends Field {
 	 */
 	public outputFormat = "Y-m-d";
 
-	private date?: DateTime;
 
 	public timeField?: TextField
 
@@ -222,7 +221,7 @@ export class DateField extends Field {
 
 
 		this.picker.on('select', (_, val) => {
-			this.date = val;
+
 			this.pickerButton.menu!.hide();
 			this.clearInvalid();
 
@@ -294,8 +293,6 @@ export class DateField extends Field {
 					this.setInvalid(t("The date in this field must be before {maxDate}.").replace('{maxDate}', this.maxDate.format(this.inputFormat)));
 				} else if(this.minDate && dv.getTime() < this.minDate.getTime()) {
 					this.setInvalid(t("The date in this field must be after {minDate}.").replace('{minDate}', this.minDate.format(this.inputFormat)));
-				} else {
-					this.date = dv; // update date value when valid
 				}
 			}
 
@@ -379,12 +376,14 @@ export class DateField extends Field {
 		return dateStr;
 	}
 
-	private getValueAsDateTime() {
+	/**
+	 * Get the date as DateTime object
+	 */
+	public getValueAsDateTime() {
 
 		let v = this.value,
 			timeFormat = '';
 		if (this.timeField && !this.timeField.hidden) {
-			v += 'T' + this.timeField.value;
 			timeFormat = 'TH:i';
 		}
 		let date;
