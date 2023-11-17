@@ -151,20 +151,19 @@ export class Button extends Component {
 		// doesn't focus buttons on click.
 		// First menu is rendered directly in body so it's positioned absolute on the page and there's no need for overflow
 		// visible in windows. Sub menu's are rendered inside the parent menu button.
-			if (this.menu) {
+		if (this.menu) {
+			this.menu.hide();
 
-				this.menu.hide();
-
-				if (!(this.parent instanceof Menu)) {
-					// When a menu is opened. other top level will open on mouse enter
-					this.el.addEventListener("mouseenter", this.onMenuMouseEnter.bind(this));
-					this.el.addEventListener("click", this.onMenuButtonClick.bind(this));
-				} else {
-					// Setting renderTo to undefined will make it render to it's parent
-					// which is this button
-					this.menu.renderTo = undefined;
-				}
+			if (!(this.parent instanceof Menu)) {
+				// When a menu is opened. other top level will open on mouse enter
+				this.el.addEventListener("mouseenter", this.onMenuMouseEnter.bind(this));
+				this.el.addEventListener("click", this.onMenuButtonClick.bind(this));
+			} else {
+				// Setting renderTo to undefined will make it render to it's parent
+				// which is this button
+				this.menu.renderTo = undefined;
 			}
+		}
 
 		el.addEventListener("click", (e) => {
 			// check detail for being the first click. We don't want double clicks to call the handler twice.
@@ -172,7 +171,10 @@ export class Button extends Component {
 			// Michael had problems with e.detail < 2 but we don't remember why. Discuss when we run into this.
 			if (this.handler && e.button == 0 && e.detail < 2) {
 
-				// e.preventDefault(); // prevent submitting form
+				// Menus are rendered inside buttons. So buttons are inside buttons.
+				// We have to stop propagation for the click event otherwise the parent button will fire too.
+				// not sure if this will cause problems.
+				e.stopPropagation();
 
 				this.handler.call(this, this, e);
 
@@ -191,6 +193,7 @@ export class Button extends Component {
 	}
 
 	private onMenuButtonClick(ev: MouseEvent) {
+		console.log(ev);
 		if (this._menu!.hidden) {
 			this.showMenu();
 		} else {
