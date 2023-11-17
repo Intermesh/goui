@@ -72,24 +72,11 @@ export interface Field extends Component {
 	fire<K extends keyof FieldEventMap<this>>(eventName: K, ...args: Parameters<FieldEventMap<any>[K]>): boolean
 }
 
-// /**
-//  * @inheritDoc
-//  */
-// export interface FieldInterface extends Component {
-// 	readonly isFormField: true
-// 	getName():string
-// 	setName(name:string):void
-// 	getValue():any
-// 	setValue(value:any, useForReset?:boolean):any
-// 	reset():void
-// 	setInvalid(msg: string):void
-// 	clearInvalid():void
-// 	isValid():boolean,
-// 	isEmpty():boolean
-// 	on<K extends keyof FieldEventMap<FieldInterface>>(eventName: K, listener: FieldEventMap<FieldInterface>[K], options?: ObservableListenerOpts): void;
-// 	fire<K extends keyof FieldEventMap<FieldInterface>>(eventName: K, ...args: Parameters<NonNullable<FieldEventMap<FieldInterface>[K]>>): boolean
-// }
-
+/**
+ * Base class for a form field
+ *
+ * Field components should at least implement "createControl" and "internalSetValue".
+ */
 export abstract class Field extends Component {
 	private _buttons?: Button[];
 	private toolbar?: Toolbar;
@@ -104,6 +91,12 @@ export abstract class Field extends Component {
 
 	readonly isFormField = true
 
+	/**
+	 * Adds standard style. You may want to remove this if you don't want the standard
+	 * look of a form field.
+	 *
+	 * @protected
+	 */
 	protected baseCls = "goui-form-field"
 
 	private _name?: string;
@@ -142,7 +135,6 @@ export abstract class Field extends Component {
 	protected fireChangeOnBlur = true;
 
 	protected onFocusOut(e:FocusEvent) {
-
 
 		if (e.relatedTarget instanceof HTMLElement && this.el.contains(e.relatedTarget)) {
 			//focus is still within this field
@@ -234,8 +226,15 @@ export abstract class Field extends Component {
 		// }
 
 		const control = this.createControl();
-		if (control) {
-			this.wrap!.append(control.cls('+control'));
+		if (control instanceof HTMLElement) {
+			this.wrap.append(control.cls('+control'));
+
+			if (this.title) {
+				control.title = this.title;
+			}
+		} else if (control instanceof Component) {
+			control.render(this.wrap);
+			control.parent = this;
 
 			if (this.title) {
 				control.title = this.title;
@@ -299,7 +298,7 @@ export abstract class Field extends Component {
 		});
 	}
 
-	protected createControl(): HTMLElement | undefined {
+	protected createControl(): Component | HTMLElement | undefined {
 		return undefined;
 	}
 
