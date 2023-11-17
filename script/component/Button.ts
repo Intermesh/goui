@@ -151,20 +151,20 @@ export class Button extends Component {
 		// doesn't focus buttons on click.
 		// First menu is rendered directly in body so it's positioned absolute on the page and there's no need for overflow
 		// visible in windows. Sub menu's are rendered inside the parent menu button.
-		if (this.menu) {
+			if (this.menu) {
 
-			this.menu.hide();
+				this.menu.hide();
 
-			if (!(this.parent instanceof Menu)) {
-				// When a menu is opened. other top level will open on mouse enter
-				this.el.addEventListener("mouseenter", this.onMenuMouseEnter.bind(this));
-				this.el.addEventListener("click", this.onMenuButtonClick.bind(this));
-			} else {
-				this.menu.renderTo = undefined;
-				// this.menu.parent = this.parent ;
-				// this.menu.render(this.parent.el);
+				if (!(this.parent instanceof Menu)) {
+					// When a menu is opened. other top level will open on mouse enter
+					this.el.addEventListener("mouseenter", this.onMenuMouseEnter.bind(this));
+					this.el.addEventListener("click", this.onMenuButtonClick.bind(this));
+				} else {
+					// Setting renderTo to undefined will make it render to it's parent
+					// which is this button
+					this.menu.renderTo = undefined;
+				}
 			}
-		}
 
 		el.addEventListener("click", (e) => {
 			// check detail for being the first click. We don't want double clicks to call the handler twice.
