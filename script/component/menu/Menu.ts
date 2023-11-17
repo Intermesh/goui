@@ -102,7 +102,7 @@ export class Menu extends Toolbar {
 	public alignToInheritWidth = false;
 
 	/**
-	 * @inheritDoc
+	 * The element it renders to. By default it's rendered to the root element of GOUI.
 	 */
 	public renderTo? = root.el;
 
