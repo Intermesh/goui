@@ -93,6 +93,13 @@ export class Button extends Component {
 
 	private _text?: string;
 
+	/**
+	 * Turn on if you want this button to be clickable fast.
+	 * We disable this by default because some users tend to double click on all buttons and we don't
+	 * want to double submit.
+	 */
+	public allowFastClick = false;
+
 	constructor() {
 		super("button");
 		this.type = "button";
@@ -169,7 +176,7 @@ export class Button extends Component {
 			// check detail for being the first click. We don't want double clicks to call the handler twice.
 			// the detail property contains the click count. When spacebar is used it will be 0
 			// Michael had problems with e.detail < 2 but we don't remember why. Discuss when we run into this.
-			if (this.handler && e.button == 0 && e.detail < 2) {
+			if (this.handler && e.button == 0 && (this.allowFastClick || e.detail < 2)) {
 
 				// Menus are rendered inside buttons. So buttons are inside buttons.
 				// We have to stop propagation for the click event otherwise the parent button will fire too.

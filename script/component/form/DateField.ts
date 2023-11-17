@@ -124,17 +124,29 @@ export class DateField extends Field {
 			this.setSelectionRange(0, this.value.length);
 		};
 
-		const onKeyDown = function(ev:KeyboardEvent){
+		const onKeyDown = (ev:KeyboardEvent, current:string) => {
 
-			if(ev.key != "Tab" && ev.key != "Enter" && ev.key != "Backspace" && ev.key != "Delete" && !/^[0-9]$/i.test(ev.key)) {
-				//only allow numbers
-				ev.preventDefault();
 
-				return false;
-			} else
-			{
-				return true;
+			switch(ev.key) {
+				case "Tab":
+				case "Enter":
+				case "Backspace":
+				case "Delete":
+					return true;
+
+				case '-':
+				case '.':
+				case '/':
+					this.selectNextInput(current);
+					break;
+
+				default:
+					if(!/^[0-9]$/i.test(ev.key)) {
+						//only allow numbers
+						ev.preventDefault();
+					}
 			}
+
 		};
 
 		const onBlur = function(this:any) {
@@ -156,7 +168,9 @@ export class DateField extends Field {
 		this.dayInput.onfocus = onFocus;
 		this.dayInput.onmouseup = onMouseUp;
 		this.dayInput.placeholder = "dd";
-		this.dayInput.onkeydown = onKeyDown;
+		this.dayInput.onkeydown = e => {
+			onKeyDown(e, "d");
+		}
 		this.dayInput.autocomplete = "off";
 
 		this.dayInput.onkeyup = ev => {
@@ -186,7 +200,9 @@ export class DateField extends Field {
 		this.monthInput.onfocus = onFocus;
 		this.monthInput.onmouseup = onMouseUp;
 		this.monthInput.placeholder = "mm";
-		this.monthInput.onkeydown = onKeyDown;
+		this.monthInput.onkeydown = e => {
+			onKeyDown(e, "m");
+		};
 		this.monthInput.autocomplete = "off";
 		this.monthInput.onkeyup = (ev) => {
 
@@ -216,7 +232,9 @@ export class DateField extends Field {
 		this.yearInput.onmouseup = onMouseUp;
 		this.yearInput.placeholder = "yyyy";
 		this.yearInput.autocomplete = "off";
-		this.yearInput.onkeydown = onKeyDown;
+		this.yearInput.onkeydown = e => {
+			onKeyDown(e, "y");
+		};
 		this.yearInput.onblur = onBlur;
 
 
