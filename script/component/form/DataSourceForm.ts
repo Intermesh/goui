@@ -57,7 +57,7 @@ export interface DataSourceFormEventMap<Type, ValueType extends ContainerFieldVa
 	 * @param form
 	 * @param data
 	 */
-	beforesave: (form: Type, data: ValueType) => void,
+	beforesave: (form: Type, data: Partial<ValueType>) => void,
 }
 
 export interface DataSourceForm<ValueType extends BaseEntity = DefaultEntity> extends Form<ValueType> {
@@ -72,8 +72,7 @@ export class DataSourceForm<ValueType extends BaseEntity = DefaultEntity> extend
 
 		this.handler = async form1 => {
 			try {
-				this._value = {};
-				let v = this.value;
+				let v = this.currentId ? this.modified : this.value;
 				this.fire('beforesave', this, v);
 
 				let data;
