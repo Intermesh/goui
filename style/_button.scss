@@ -9,6 +9,10 @@
 	display: flex;
 	align-items: center;
 
+	&.caps {
+		text-transform: uppercase;
+	}
+
 	&.with-icon:not(.with-text) {
 		//icon only
 		padding: dp(11);
