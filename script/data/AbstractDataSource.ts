@@ -119,7 +119,7 @@ export interface CommitResponse<EntityType extends BaseEntity> {
 /**
  * @category Data
  */
-export type EntityID = string;
+export type EntityID = string|number;
 
 /**
  * @category Data
