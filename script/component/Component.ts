@@ -221,7 +221,7 @@ export class Component extends Observable {
 			item.fire("added", item, index);
 
 			if (this.rendered) {
-				item.render();
+				this.renderItem(item);
 			}
 
 		});

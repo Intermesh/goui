@@ -187,6 +187,10 @@ export class Menu extends Toolbar {
 		if(item instanceof Button && item.menu) {
 			item.menu!.render(li);
 		}
+		//cleanup li when item is removed
+		item.on("remove", () => {
+			li.remove();
+		});
 
 		return li;
 	}
