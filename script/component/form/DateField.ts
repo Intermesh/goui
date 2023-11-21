@@ -245,7 +245,7 @@ export class DateField extends Field {
 
 			//important to set value after focus so change event will fire on focusout
 			//focus is returned in {@see Field} .setupMenu()} when the picker button's menu hides.
-			super.value = val.format(this.outputFormat);
+			super.value = val ? val.format(this.outputFormat) : "";
 
 			if(this.dayInput) {
 				onFocus.call(this.dayInput);

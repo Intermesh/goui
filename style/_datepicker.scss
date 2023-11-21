@@ -115,7 +115,8 @@ menu.goui-dropdown {
 		text-transform: uppercase;
 	}
 
-	header {
+
+	header, footer {
 		display: flex;
 		> * {
 			flex: 1;
