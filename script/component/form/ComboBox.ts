@@ -1,11 +1,17 @@
 import {AutocompleteField} from "./AutocompleteField";
-import {AbstractDataSource, DataSourceStore, datasourcestore, DataSourceStoreConfig, StoreRecord} from "../../data";
+import {
+	AbstractDataSource,
+	DataSourceStore,
+	datasourcestore,
+	DataSourceStoreConfig,
+	QueryFilter,
+	StoreRecord
+} from "../../data";
 import {column, Table, table} from "../table";
 import {Config} from "../Observable";
 import {FieldEventMap} from "./Field";
 import {createComponent} from "../Component";
 import {ObjectUtil} from "../../util";
-import {FilterCondition} from "../../../../dist/groupoffice-core/script";
 
 
 /**
@@ -24,7 +30,7 @@ export class ComboBox<DS extends AbstractDataSource = AbstractDataSource> extend
 	/**
 	 * Set additional filter properties on the store.
 	 */
-	public filter?: FilterCondition;
+	public filter?: QueryFilter;
 
 	constructor(public readonly dataSource:DS, public readonly displayProperty = "name", public readonly valueProperty = "id") {
 

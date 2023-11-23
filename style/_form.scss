@@ -168,6 +168,7 @@ $formFieldBorderRadius: dp(10);
 %input {
 	background-color: transparent;
 	font: $fontBase;
+	line-height: 1;
 	min-width: dp(100); //for select element
 	margin: 0;
 	border: 0;
@@ -435,8 +436,12 @@ $formFieldBorderRadius: dp(10);
 		}
 	}
 
+	textarea {
+		line-height: $baseLineHeight;
+	}
+
 	&.date {
-		width: dp(174);
+		width: sp(192);
 		.wrap {
 			line-height: dp(46);
 		}
@@ -444,7 +449,7 @@ $formFieldBorderRadius: dp(10);
 		input.text {
 			cursor: default;
 			min-width: auto;
-			width: dp(20);
+			width: sp(22);
 			box-sizing: content-box;
 			padding-right: dp(2);
 			padding-left: dp(2);
@@ -458,11 +463,11 @@ $formFieldBorderRadius: dp(10);
 		}
 
 		input.month:placeholder-shown {
-			width: dp(30);
+			width: sp(30);
 		}
 
 		input.text.year {
-			width: dp(42);
+			width: dp(44);
 		}
 	}
 
@@ -723,6 +728,7 @@ $formFieldBorderRadius: dp(10);
 		@extend %input;
 		@extend .normalize;
 		min-height: dp(100);
+		line-height: $baseLineHeight;
 
 		img {
 			max-width: 100%;
