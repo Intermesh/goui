@@ -168,7 +168,6 @@ $formFieldBorderRadius: dp(10);
 %input {
 	background-color: transparent;
 	font: $fontBase;
-	line-height: 1;
 	min-width: dp(100); //for select element
 	margin: 0;
 	border: 0;
@@ -433,6 +432,12 @@ $formFieldBorderRadius: dp(10);
 		&:focus {
 			@extend %float-label;
 			color: $colorPrimary;
+		}
+	}
+
+	input.text {
+		&[type=time],&[type=date] {
+			line-height: 1; // for safari otherwise they get too much height
 		}
 	}
 
@@ -732,7 +737,6 @@ $formFieldBorderRadius: dp(10);
 		@extend %input;
 		@extend .normalize;
 		min-height: dp(100);
-		line-height: $baseLineHeight;
 
 		img {
 			max-width: 100%;
