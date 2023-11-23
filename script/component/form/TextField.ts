@@ -79,6 +79,10 @@ export class TextField extends Field {
 
 		if (this.placeholder) {
 			this._input.placeholder = this.placeholder;
+
+			if(this.placeholder !== " ") {
+				this.el.classList.add("no-floating-label");
+			}
 		}
 		this._input.required = this.required;
 		if (name) {
