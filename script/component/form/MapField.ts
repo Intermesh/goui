@@ -7,24 +7,21 @@
 import {Field, FieldEventMap} from "./Field.js";
 import {createComponent} from "../Component.js";
 import {btn} from "../Button.js";
-import {Config} from "../Observable";
+import {Config, Observable} from "../Observable";
 
 interface MapFieldRow {
 	field?: Field
 	key: string
-	isNew: boolean,
-	remove: () => void
+	isNew: boolean
 }
 
 type MapFieldConfig = Config<MapField, FieldEventMap<MapField>, "buildField">;
 
-type FieldBuilder = (value: MapFieldValue|undefined, row: MapFieldRow) => Field;
+type FieldBuilder = (value: MapFieldValue|undefined) => Field;
 
 type MapFieldValue = Record<string, any>;
 
 export class MapField extends Field {
-
-	private rows: MapFieldRow[] = []
 
 	/**
 	 * Set to the name of the field holding the key. If not given a key will be generated.
@@ -53,14 +50,17 @@ export class MapField extends Field {
 
 	get value(): MapFieldValue {
 		const v: MapFieldValue = {};
-		this.rows.forEach(row => {
-			const rowValue = row.field!.value;
-			let key = row.key;
-			if(this.keyFieldName && rowValue[this.keyFieldName]) {
-				key = rowValue[this.keyFieldName];
-				delete rowValue[this.keyFieldName];
+
+		this.items.forEach((field) => {
+			if(field instanceof Field) {
+				const rowValue = field.value;
+				let key = field.dataSet.key;
+				if (this.keyFieldName && rowValue[this.keyFieldName]) {
+					key = rowValue[this.keyFieldName];
+					delete rowValue[this.keyFieldName];
+				}
+				v[key] = rowValue;
 			}
-			v[key] = rowValue;
 		})
 		return v;
 	}
@@ -82,22 +82,12 @@ export class MapField extends Field {
 	}
 
 	private internalAdd(data: MapFieldValue, key?: string | undefined) {
-		const row: MapFieldRow = {
-			key: key === undefined ? this.nextKey() : key,
-			field: undefined,
-			isNew: true,
-			remove: () => {
-				this.rows.splice(this.rows.indexOf(row), 1);
-				row.field!.remove();
-			}
-		};
 
-		row.field = this.buildField(data, row);
+		const field = this.buildField(data);
+		field.dataSet.key = key === undefined ? this.nextKey() : key;
 
-
-		row.field.value = data;
-		this.rows.push(row);
-		this.items.add(row.field);
+		field.value = data;
+		this.items.add(field);
 	}
 
 	private _nextKey = 1;
@@ -110,7 +100,6 @@ export class MapField extends Field {
 
 	reset() {
 		super.reset();
-		this.rows = [];
 		this.items.clear();
 	}
 }
