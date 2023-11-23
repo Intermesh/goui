@@ -38,10 +38,20 @@ export class ArrayField extends ContainerField {
 	 */
 	constructor(public buildField: FieldBuilder) {
 		super("div");
+
+		this.items.on("datachanged", () => {
+			if(this.enableChangeEvent) {
+				this.fireChange();
+			}
+		});
 	}
+
+	private enableChangeEvent = true;
 
 	set value(v: ArrayFieldValue) {
 		super.value = v;
+
+		this.enableChangeEvent = false;
 
 		this.items.clear();
 
@@ -50,6 +60,8 @@ export class ArrayField extends ContainerField {
 				this.internalAddValue(item);
 			});
 		}
+
+		this.enableChangeEvent = true;
 	}
 
 	get value(): ArrayFieldValue {
@@ -77,7 +89,7 @@ export class ArrayField extends ContainerField {
 		}
 
 		this.internalAddValue(value);
-		this.fireChange();
+
 
 		return this;
 	}
@@ -85,24 +97,19 @@ export class ArrayField extends ContainerField {
 	private internalAddValue(value:Record<string,any>) {
 		const field = this.buildField(value);
 		field.value = value;
-		field.items.add(btn({
-				// style: {
-				// 	alignSelf: "center"
-				// },
-				icon: "delete",
-				title: "Delete",
-				handler: (btn) => {
-					btn.parent!.remove();
-					this.fireChange();
-				}
-			})
-		);
+
 		this.items.add(field);
 	}
 
 	reset() {
 		super.reset();
-		this.items.clear();
+
+		if(this.items.count()) {
+			this.enableChangeEvent = false;
+			this.items.clear();
+			this.enableChangeEvent = true;
+			this.fireChange();
+		}
 	}
 
 

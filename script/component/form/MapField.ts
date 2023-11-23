@@ -10,20 +10,26 @@ import {btn} from "../Button.js";
 import {Config} from "../Observable";
 
 interface MapFieldRow {
-	field: Field
+	field?: Field
 	key: string
-	isNew: boolean
+	isNew: boolean,
+	remove: () => void
 }
 
 type MapFieldConfig = Config<MapField, FieldEventMap<MapField>, "buildField">;
 
-type FieldBuilder = (value?: MapFieldValue) => Field;
+type FieldBuilder = (value: MapFieldValue|undefined, row: MapFieldRow) => Field;
 
 type MapFieldValue = Record<string, any>;
 
 export class MapField extends Field {
 
 	private rows: MapFieldRow[] = []
+
+	/**
+	 * Set to the name of the field holding the key. If not given a key will be generated.
+	 */
+	public keyFieldName?: string;
 
 	constructor(public buildField: FieldBuilder) {
 		super('div')
@@ -48,7 +54,13 @@ export class MapField extends Field {
 	get value(): MapFieldValue {
 		const v: MapFieldValue = {};
 		this.rows.forEach(row => {
-			v[row.key] = row.field.value;
+			const rowValue = row.field!.value;
+			let key = row.key;
+			if(this.keyFieldName && rowValue[this.keyFieldName]) {
+				key = rowValue[this.keyFieldName];
+				delete rowValue[this.keyFieldName];
+			}
+			v[key] = rowValue;
 		})
 		return v;
 	}
@@ -70,18 +82,19 @@ export class MapField extends Field {
 	}
 
 	private internalAdd(data: MapFieldValue, key?: string | undefined) {
-		const row = {
+		const row: MapFieldRow = {
 			key: key === undefined ? this.nextKey() : key,
-			field: this.buildField(data),
-			isNew: true
-		};
-		row.field.items.add(btn({
-			icon: "delete",
-			handler: button => {
+			field: undefined,
+			isNew: true,
+			remove: () => {
 				this.rows.splice(this.rows.indexOf(row), 1);
-				row.field.remove();
+				row.field!.remove();
 			}
-		}));
+		};
+
+		row.field = this.buildField(data, row);
+
+
 		row.field.value = data;
 		this.rows.push(row);
 		this.items.add(row.field);

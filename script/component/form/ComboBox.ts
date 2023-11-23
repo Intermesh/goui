@@ -5,6 +5,7 @@ import {Config} from "../Observable";
 import {FieldEventMap} from "./Field";
 import {createComponent} from "../Component";
 import {ObjectUtil} from "../../util";
+import {FilterCondition} from "../../../../dist/groupoffice-core/script";
 
 
 /**
@@ -15,7 +16,15 @@ import {ObjectUtil} from "../../util";
  */
 export class ComboBox<DS extends AbstractDataSource = AbstractDataSource> extends AutocompleteField<Table<DataSourceStore<DS>>> {
 
-	public filterName?:string;
+	/**
+	 * When autocompleting from the datasource this filter name will be used.
+	 */
+	public filterName:string = "text";
+
+	/**
+	 * Set additional filter properties on the store.
+	 */
+	public filter?: FilterCondition;
 
 	constructor(public readonly dataSource:DS, public readonly displayProperty = "name", public readonly valueProperty = "id") {
 
@@ -48,6 +57,10 @@ export class ComboBox<DS extends AbstractDataSource = AbstractDataSource> extend
 			this.list.store.queryParams.position = 0;
 			if(!this.list.store.queryParams.filter) {
 				this.list.store.queryParams.filter = {};
+			}
+
+			if(this.filter) {
+				Object.assign(this.list.store.queryParams.filter, this.filter);
 			}
 			this.list.store.queryParams.filter[this.filterName ?? this.displayProperty] = input;
 			await this.list.store.load();
