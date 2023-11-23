@@ -700,9 +700,13 @@ $formFieldBorderRadius: dp(10);
 	.legend {
 		display: block;
 		line-height:normal;
-		font-size: dp(24);
+		font-size: dp(18);
 		font-weight: 500;
 		margin: dp(8) 0 dp(24) 0;
+	}
+
+	& + .goui-fieldset {
+		border-top: $borderWidth solid $colorBorder;
 	}
 }
 

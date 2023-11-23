@@ -25,15 +25,15 @@
 	flex-flow: row wrap !important;
 	align-content: flex-start;
 	align-items: start;
-	gap: dp(8);
-	> * {
-		padding:0;
-		margin:0;
-		width:100%;
-	}
-	.goui-form-field, .goui-button {
-		margin-bottom:0;
-	}
+	gap: 0 dp(8);
+	//> * {
+	//	padding:0;
+	//	margin:0;
+	//	width:100%;
+	//}
+	//.goui-form-field, .goui-button {
+	//	margin-bottom:0;
+	//}
 }
 
 // Stack items horizontally
