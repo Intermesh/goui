@@ -34,15 +34,19 @@ export class NumberField extends TextField {
 	set value(v: number | undefined) {
 		if (isNaN(v!)) {
 			throw new Error("Invalid number");
-		} else if (v !== undefined) {
-			super.value = +v.toFixed(this.decimals);
+		} else if (!this.isEmptyNumber(v)) {
+			super.value = + v!.toFixed(this.decimals);
 		}
 
 	}
 
-	get value(): number | undefined {
+	private isEmptyNumber(v:any) {
+		return (v === undefined || v === null || v === "")
+	}
+
+	get value(): number | null {
 		const v = super.value;
-		return (v === undefined || isNaN(v)) ? undefined : +(+v).toFixed(this.decimals);
+		return (this.isEmptyNumber(v)  || isNaN(v)) ? null : +(+v).toFixed(this.decimals);
 	}
 
 	protected createControl(): undefined | HTMLElement {
