@@ -28,6 +28,8 @@ export class ContainerField<ValueType extends ContainerFieldValue = ContainerFie
 
 	constructor(tagName: keyof HTMLElementTagNameMap = "div") {
 		super(tagName);
+
+		this.cls = "flow";
 	}
 
 	protected baseCls = "";

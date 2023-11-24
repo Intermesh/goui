@@ -19,6 +19,9 @@ interface Type<T> {
 	new(...args: any[]): T
 }
 
+const html = document.querySelector('html')!;
+export const REM_UNIT_SIZE = parseFloat(window.getComputedStyle(html).fontSize);
+
 
 export interface ComponentEventMap<Type> extends ObservableEventMap<Type> {
 	/**
@@ -598,18 +601,34 @@ export class Component extends Observable {
 	}
 
 	/**
-	 * Width in pixels
+	 * Set the width in scalable pixels
+	 *
+	 * The width is applied in rem units divided by 10. Because the font-size of the html
+	 * element has a font-size of 62.5% this is equals the amount of pixels, but it can be
+	 * scaled easily for different themes.
+	 *
 	 */
 	set width(width: number) {
-		this.el.style.width = width + "px";
+		this.el.style.width = (width / 10) + "rem";
 	}
 
 	get width() {
-		return this.el.offsetWidth || parseFloat(this.el.style.width);
+		const px = this.el.offsetWidth;
+		if(px) {
+			return (px / REM_UNIT_SIZE) * 10;
+		}
+
+		const styleWidth = this.el.style.width;
+		if(styleWidth.substring(styleWidth.length - 3) == "rem") {
+			return parseFloat(styleWidth);
+		} else if(styleWidth.substring(styleWidth.length - 2) == "px") {
+			return (parseFloat(styleWidth) / REM_UNIT_SIZE) * 10;
+		}
+		return 0;
 	}
 
 	/**
-	 * Width in pixels
+	 * Set inline style
 	 */
 	set style(style: Partial<CSSStyleDeclaration>) {
 		Object.assign(this.el.style, style);
@@ -630,14 +649,27 @@ export class Component extends Observable {
 
 
 	/**
-	 * height in pixels
+	 * The height in scalable pixels
+	 *
+	 * @see width
 	 */
 	set height(height: number) {
-		this.el.style.height = height + "px";
+		this.el.style.width = (height / 10) + "rem";
 	}
 
 	get height() {
-		return this.el.offsetHeight || parseFloat(this.el.style.height);
+		const px = this.el.offsetHeight;
+		if(px) {
+			return (px / REM_UNIT_SIZE) * 10;
+		}
+
+		const styleHeight = this.el.style.height;
+		if(styleHeight.substring(styleHeight.length - 3) == "rem") {
+			return parseFloat(styleHeight);
+		} else if(styleHeight.substring(styleHeight.length - 2) == "px") {
+			return (parseFloat(styleHeight) / REM_UNIT_SIZE) * 10;
+		}
+		return 0;
 	}
 
 	/**

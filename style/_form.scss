@@ -168,15 +168,13 @@ $formFieldBorderRadius: dp(10);
 %input {
 	background-color: transparent;
 	font: $fontBase;
-	min-width: dp(100); //for select element
+	//min-width: dp(100); //for select element
 	margin: 0;
 	border: 0;
 	padding: dp(11) dp(16);
 	width: 100%;
-	//outline: none;
 	color: $colorText;
 	display: block;// for text area which has inline-block by default and gets some extra margin
-	border-radius: $formFieldBorderRadius - $borderWidth;
 
 	&::placeholder {
 		transition: all 200ms linear;
@@ -196,10 +194,8 @@ $formFieldBorderRadius: dp(10);
 }
 
 .goui-form-field, .goui-display-field {
-
 	display: block;
-	margin-bottom: dp(12);
-	margin-top: dp(4);
+	margin: 0;
 	position: relative;
 }
 
@@ -635,8 +631,8 @@ $formFieldBorderRadius: dp(10);
 			}
 			&::after { // thumb
 				position:absolute;
-				top: 0px - $borderWidth;
-				left: 0px - $borderWidth;
+				top: 0 - $borderWidth;
+				left: 0 - $borderWidth;
 				color:white;
 				font-size: .7em;
 				content: "";
@@ -699,7 +695,7 @@ $formFieldBorderRadius: dp(10);
 .goui-fieldset {
 	border: 0;
 	min-width: 0;
-	padding: dp(16) 0;
+	padding: dp(16);
 	margin: 0;
 
 	.legend {

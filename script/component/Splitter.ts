@@ -3,7 +3,7 @@
  * @copyright Copyright 2023 Intermesh BV
  * @author Merijn Schering <mschering@intermesh.nl>
  */
-import {Component, ComponentState, createComponent, FindComponentPredicate} from "./Component.js";
+import {Component, ComponentState, createComponent, FindComponentPredicate, REM_UNIT_SIZE} from "./Component.js";
 import {DraggableComponent} from "./DraggableComponent.js";
 import {Config} from "./Observable";
 
@@ -99,7 +99,7 @@ export class Splitter extends DraggableComponent {
 				this.resizeWidth = this.el.offsetHeight > this.el.offsetWidth;
 			}
 
-			// if invert is undefined then auto detect based on the component order
+			// if invert is undefined then autodetect based on the component order
 			if (this.invert === undefined) {
 				const splitterIndex = this.parent!.findItemIndex(this)!;
 				const resizeCmpIndex = this.parent!.findItemIndex(this._resizeComponent!)!;
@@ -126,8 +126,7 @@ export class Splitter extends DraggableComponent {
 				if (this.maxSize) {
 					width = Math.min(this.maxSize, width);
 				}
-
-				this._resizeComponent!.width = width;
+				this._resizeComponent!.width = width * 10 / REM_UNIT_SIZE ;
 
 			} else {
 				let offset = dragData.y - dragData.startY;
@@ -140,7 +139,7 @@ export class Splitter extends DraggableComponent {
 				if (this.maxSize) {
 					height = Math.min(this.maxSize, height);
 				}
-				this._resizeComponent!.height = height;
+				this._resizeComponent!.height = height * 10 / REM_UNIT_SIZE;
 
 			}
 		});
