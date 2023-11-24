@@ -29,7 +29,9 @@ export class MapField extends Field {
 	public keyFieldName?: string;
 
 	constructor(public buildField: FieldBuilder) {
-		super('div')
+		super('div');
+
+		this.cls = "vbox gap";
 	}
 	protected baseCls = "";
 

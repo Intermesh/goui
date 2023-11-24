@@ -150,7 +150,7 @@ export class Component extends Observable {
 	 *
 	 * @protected
 	 */
-	protected baseCls?: string;
+	protected baseCls: string = "";
 
 	/**
 	 * True when added to the DOM tree
@@ -328,6 +328,14 @@ export class Component extends Observable {
 	 *
 	 */
 	set cls(cls: string) {
+
+		//remove previously set
+		if(this._cls) {
+			this._cls.split(/\s+/).forEach(cls => {
+				this.el.classList.remove(cls);
+			})
+		}
+
 		this._cls = cls;
 		this.initClassName();
 		this.el.className += " " + cls;

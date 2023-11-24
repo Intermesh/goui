@@ -226,6 +226,7 @@ $formFieldBorderRadius: dp(10);
 
 		div.label {
 			font-size: sp(13);
+			line-height: sp(13);
 			display: flex;
 			align-items: center;
 			overflow: visible;
@@ -235,13 +236,13 @@ $formFieldBorderRadius: dp(10);
 			vertical-align: top;
 			position:absolute;
 			left: dp(18);
-			top: dp(2);
+			top: dp(-6.5);
 		}
 
 		.control {
 			font: $fontBase;
 			min-width: dp(100); //for select element
-			margin: dp(10) 0 0;
+			margin: 0;
 			border: 0;
 			padding: dp(11) dp(16);
 			width: 100%;
@@ -325,10 +326,6 @@ $formFieldBorderRadius: dp(10);
 		input {
 			padding-left: dp(10);
 		}
-	}
-
-	+ hr {
-		margin-top: 0;
 	}
 
 	&:focus-within {
@@ -788,8 +785,7 @@ form {
 
 	// to make button align with form field
 	.goui-button {
-		margin-bottom: dp(16);
-		margin-top: dp(4);
+		margin:0;
 	}
 }
 
