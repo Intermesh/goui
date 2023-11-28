@@ -30,10 +30,13 @@ export class BufferedFunction {
 	 */
 	buffer(args: any[] = []) {
 		this.cancel();
-		this.id = window.setTimeout(() => {
-			this.cancel();
-			this.fn.apply(null, args);
-		}, this.delay);
+
+		return new Promise(resolve => {
+			this.id = window.setTimeout(() => {
+				this.cancel();
+				resolve(this.fn.apply(null, args));
+			}, this.delay);
+		})
 	}
 
 	/**
@@ -71,7 +74,7 @@ export class FunctionUtil {
 	public static buffer(delay: number, fn: Function) {
 		const bf = new BufferedFunction(delay, fn);
 		return (...args: any[]) => {
-			bf.buffer(args);
+			return bf.buffer(args);
 		};
 	}
 
