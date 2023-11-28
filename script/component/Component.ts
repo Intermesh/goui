@@ -662,7 +662,7 @@ export class Component extends Observable {
 	 * @see width
 	 */
 	set height(height: number) {
-		this.el.style.width = (height / 10) + "rem";
+		this.el.style.height = (height / 10) + "rem";
 	}
 
 	get height() {
