@@ -779,9 +779,9 @@ export class Component extends Observable {
 	 * @param cls
 	 */
 	public findAncestorByType<T extends typeof Component>(cls: T): InstanceType<T> | undefined {
-		const p = this.findAncestor(Component => Component instanceof cls);
+		const p = this.findAncestor(cmp => cmp instanceof cls);
 		if (p) {
-			return <InstanceType<T>>p;
+			return p as InstanceType<T>;
 		} else {
 			return undefined;
 		}
@@ -918,7 +918,7 @@ export class Component extends Observable {
 	 * @param cls
 	 */
 	public findChildByType<T extends Component>(cls: Type<T>): T | undefined {
-		const p = this.findChild(Component => Component instanceof cls);
+		const p = this.findChild(cmp => cmp instanceof cls);
 		if (p) {
 			return p as T;
 		} else {
