@@ -77,6 +77,17 @@ export class CardMenu extends Component {
 
 			this.createMenu();
 
+			this.cardContainer.items.on("remove", (collection, item, index) => {
+				const cardMenuItem = this.findItem('card-' + index);
+				if(cardMenuItem) {
+					cardMenuItem.remove();
+				}
+			});
+
+			this.cardContainer.items.on("add", (collection, item, index) => {
+				this.createMenu();
+			})
+
 			this.cardContainer!.on("beforerender", () => {
 				this.updateActiveTab();
 			});
