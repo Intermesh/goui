@@ -612,7 +612,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 			return false;
 		}
 
-		root.mask(100);
+		root.mask(300);
 
 		return Promise.all(ids.map(id => {
 			return this.destroy(id);
