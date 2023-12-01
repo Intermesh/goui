@@ -65,6 +65,14 @@ export interface ListEventMap<Type> extends ComponentEventMap<Type> {
 	 */
 	rowdblclick: (list: Type, storeIndex: number, row: HTMLElement, ev: MouseEvent) => void
 
+
+	/**
+	 * Fires when the delete key is pressed
+	 *
+	 * @param list
+	 */
+	delete: (list: Type) => void,
+
 	/**
 	 * Fires when a row is right clicked
 	 *
@@ -210,13 +218,21 @@ export class List<StoreType extends Store = Store> extends Component {
 			this.onMouseEvent(e, "rowclick");
 		}).on("contextmenu", (e) => {
 			this.onMouseEvent(e, "rowcontextmenu");
-		});
+		}).on("keydown", (e) => {
+			this.onKeyDown(e);
+		})
 
 		this.renderEmptyState();
 		this.renderBody();
 		this.initStore();
 
 		return el;
+	}
+
+	protected onKeyDown(e:KeyboardEvent) {
+		if(e.key == "Delete" || e.metaKey && e.key =="Backspace") {
+			this.fire("delete", this);
+		}
 	}
 
 	protected initStore() {

@@ -4,10 +4,11 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {Observable, ObservableEventMap} from "../component/index.js";
+import {Component, Observable, ObservableEventMap, root, Window} from "../component/index.js";
 import {Comparator} from "./Store.js";
 import {FunctionUtil} from "../util/index.js";
 import {BrowserStore} from "../util/BrowserStorage.js";
+import {t} from "../Translate";
 
 /**
  * The response of the {@see AbstractDataSource.get()} method
@@ -119,7 +120,7 @@ export interface CommitResponse<EntityType extends BaseEntity> {
 /**
  * @category Data
  */
-export type EntityID = string|number;
+export type EntityID = string;
 
 /**
  * @category Data
@@ -573,6 +574,54 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 		return p;
 	}
 
+
+	/**
+	 * Ask for confirmation and delete entities by ID
+	 *
+	 * @example
+	 * ```
+	 * const tbl = this.projectTable!,
+	 * 	ids = tbl.rowSelection!.selected.map(index => tbl.store.get(index)!.id);
+	 *
+	 * const result = await jmapds("Project3")
+	 * 	.confirmDestroy(ids);
+	 *
+	 * if(result != false) {
+	 * 	btn.parent!.hide();
+	 * }
+	 * ```
+	 * @param ids The ID's to delete
+	 */
+	public async confirmDestroy(ids:EntityID[]) {
+
+		const count = ids.length;
+
+		if(!count) {
+			return false;
+		}
+
+		let msg;
+		if(count == 1) {
+			msg = t("Are you sure you want to delete the selected item?");
+		} else {
+			msg = t("Are you sure you want to delete {count} items?").replace('{count}', count);
+		}
+
+		const confirmed = await Window.confirm(msg);
+		if(!confirmed) {
+			return false;
+		}
+
+		root.mask(100);
+
+		return Promise.all(ids.map(id => {
+			return this.destroy(id);
+		})).finally(() => {
+			root.unmask();
+		})
+
+	}
+
 	/**
 	 * Fetch updates from remote
 	 */
@@ -604,7 +653,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 				if (changes.created) {
 					for (let id of changes.created) {
 						promises.push(this.remove(id));
-						allChanges.created!.push(id);
+						allChanges.created!.push(id + "");
 
 						hasAChange = true;
 					}
@@ -613,7 +662,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 				if (changes.updated) {
 					for (let id of changes.updated) {
 						promises.push(this.remove(id));
-						allChanges.updated!.push(id);
+						allChanges.updated!.push(id + "");
 
 						hasAChange = true;
 					}
@@ -622,7 +671,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 				if (changes.destroyed) {
 					for (let id of changes.destroyed) {
 						promises.push(this.remove(id));
-						allChanges.destroyed!.push(id);
+						allChanges.destroyed!.push(id + "");
 
 						hasAChange = true;
 					}

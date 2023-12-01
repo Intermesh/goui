@@ -12,7 +12,7 @@ import {
 	DefaultEntity,
 	QueryParams
 } from "./AbstractDataSource.js";
-import {FunctionUtil, ObjectUtil} from "../util/index.js";
+import {ObjectUtil} from "../util/index.js";
 import {Config, createComponent, ObservableListener} from "../component/index.js";
 
 type Relation<EntityType extends BaseEntity> = Partial<Record<keyof EntityType, {
@@ -53,7 +53,7 @@ export class DataSourceStore<DataSource extends AbstractDataSource = AbstractDat
 	 * @param entity
 	 */
 	public buildRecord: RecordBuilder<dataSourceEntityType<DataSource>, StoreRecord> = async (entity) => <StoreRecord><unknown>entity;
-	private bufferedLoad?: (...args:any[]) => Promise<StoreRecord[]>;
+	// private bufferedLoad?: (...args:any[]) => Promise<StoreRecord[]>;
 
 	constructor(public dataSource:DataSource) {
 		super();
@@ -206,11 +206,11 @@ export class DataSourceStore<DataSource extends AbstractDataSource = AbstractDat
 
 	public setFilter(ref: string, filter: any | undefined) {
 
-		if(!this.bufferedLoad) {
-			this.bufferedLoad = FunctionUtil.buffer(0, ()=> {
-				return this.load();
-			}) as (...args:any[]) => Promise<StoreRecord[]>;
-		}
+		// if(!this.bufferedLoad) {
+		// 	this.bufferedLoad = FunctionUtil.buffer(0, ()=> {
+		// 		return this.load();
+		// 	}) as (...args:any[]) => Promise<StoreRecord[]>;
+		// }
 
 		if (filter === undefined) {
 			delete this.filters[ref];
@@ -238,7 +238,7 @@ export class DataSourceStore<DataSource extends AbstractDataSource = AbstractDat
 				break;
 		}
 
-		return this.bufferedLoad();
+		return this;
 	}
 
 	public clearFilter(...names: string[]) {

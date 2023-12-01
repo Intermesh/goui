@@ -10,8 +10,6 @@ import {Config, ObservableListenerOpts} from "../Observable";
 import {Component, createComponent} from "../Component";
 import {ContainerFieldValue} from "./ContainerField";
 import {Window} from "../Window";
-import {Notifier} from "../../Notifier";
-import {CardContainer} from "../CardContainer";
 
 
 export interface DataSourceFormEventMap<Type, ValueType extends ContainerFieldValue = ContainerFieldValue> extends FormEventMap<Type> {
@@ -20,8 +18,9 @@ export interface DataSourceFormEventMap<Type, ValueType extends ContainerFieldVa
 	 * Fires when the entity is saved successfully
 	 * @param form
 	 * @param data
+	 * @param isNew
 	 */
-	save: (form: Type, data: ValueType) => any
+	save: (form: Type, data: ValueType, isNew:boolean) => any
 
 	/**
 	 * Fires when an error occurred when saving
@@ -75,15 +74,17 @@ export class DataSourceForm<ValueType extends BaseEntity = DefaultEntity> extend
 				let v = this.currentId ? this.modified : this.value;
 				this.fire('beforesave', this, v);
 
-				let data;
+				let data, isNew;
 				if (this.currentId) {
+					isNew = false;
 					data = await this.dataSource.update(this.currentId, v as ValueType);
 				} else {
+					isNew = true;
 					data = await this.dataSource.create(v);
 				}
 
 				if (data) {
-					this.fire('save', this, data);
+					this.fire('save', this, data, isNew);
 				}
 
 			} catch (e:any) {
@@ -93,7 +94,7 @@ export class DataSourceForm<ValueType extends BaseEntity = DefaultEntity> extend
 					return;
 				}
 
-				console.log(t("Error"), e);
+				console.error(t("Error"), e);
 				if(this.fire('saveerror', this, e) !== false) {
 					void Window.error(e.message ?? t("Unknown error"));
 				}
@@ -154,8 +155,7 @@ export class DataSourceForm<ValueType extends BaseEntity = DefaultEntity> extend
 			this.fire('load', this, entity);
 			this.value = entity as ValueType;
 		} catch (e:any) {
-			alert(t("Error") + ' ' + e);
-			console.log(t("Error"), e);
+			console.error(t("Error"), e);
 			if(this.fire('loaderror', this, e) !== false) {
 				void Window.error(e.message);
 			}
