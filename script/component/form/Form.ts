@@ -157,8 +157,11 @@ export class Form<ValueType extends ContainerFieldValue = ContainerFieldValue> e
 	 */
 	public get modified(): Partial<ValueType> {
 		const v = this.value;
+
 		for (const name in this.oldValue) {
-			if(JSON.stringify(v[name]) === JSON.stringify(this.oldValue[name])) {
+			const jsonNew = JSON.stringify(v[name]),
+				jsonOld = JSON.stringify(this.oldValue[name]);
+			if(jsonNew === jsonOld) {
 				delete v[name];
 			}
 		}
