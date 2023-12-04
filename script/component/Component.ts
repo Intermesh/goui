@@ -1000,7 +1000,7 @@ export class Component extends Observable {
 	public print() {
 		this.el.classList.add("goui-print");
 		window.print();
-		// this.el.classList.remove("goui-print");
+		this.el.classList.remove("goui-print");
 	}
 }
 

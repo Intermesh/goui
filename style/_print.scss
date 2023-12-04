@@ -8,7 +8,7 @@ All is hidden except for an element that has the "goui-print" class. It's implem
 	}
 
 	body, html {
-		background-color: transparent;
+		background-color: transparent !important;
 		margin: 0;
 		padding: 0;
 		overflow: visible !important;
@@ -20,13 +20,12 @@ All is hidden except for an element that has the "goui-print" class. It's implem
 	}
 
 	body > * {
-		display: none !important;
-
-
+		visibility: hidden;
 	}
 
 	.goui-print {
-		display: block !important;
+		visibility: visible;
+
 		overflow: visible !important;
 		position: absolute !important;
 		box-shadow: none !important;
