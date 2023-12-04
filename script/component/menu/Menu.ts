@@ -224,7 +224,7 @@ export class Menu extends Toolbar {
 		}
 		const rect = this.alignTo.getBoundingClientRect();
 
-		const x = this.expandLeft ? rect.right - this.width : rect.x;
+		const x = this.expandLeft ? rect.right - this.el.offsetWidth : rect.x;
 		const y = rect.bottom;
 
 		this.x = x;
@@ -243,7 +243,7 @@ export class Menu extends Toolbar {
 		//aligns left by default. If it runs off screen then align right
 		if(!this.expandLeft && x + this.el.offsetWidth > window.innerWidth) {
 			this.expandLeft = true;
-			this.x = rect.right - this.width;
+			this.x = rect.right - this.el.offsetWidth;
 		}
 	}
 
