@@ -147,8 +147,11 @@
 }
 
 .goui.goui-toolbar {
-	@extend .hbox;
-
+	display: flex;
+	flex-direction: row;
+	gap: dp(8);
+	justify-content: flex-start;
+	flex-wrap: nowrap;
 	position: relative;// for absolute toolbars inside
 
 	// toolbar inside a toolbar will be an overlay
@@ -205,15 +208,6 @@
 		text-overflow: ellipsis;
 		white-space: nowrap;
 	}
-	>* {
-		margin: 0 dp(12) 0 0;
-		&:last-child {
-			margin-right: 0;
-		}
-	}
-	//> button {
-	//	border: 0;
-	//}
 
 	> hr {
 		height: dp(24);
