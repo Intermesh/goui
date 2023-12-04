@@ -1,0 +1,40 @@
+/**
+All is hidden except for an element that has the "goui-print" class. It's implemented in Component.print();
+ */
+@media print {
+	@page {
+		margin: 10mm;
+		size: auto;// portrait;
+	}
+
+	body, html {
+		background-color: transparent;
+		margin: 0;
+		padding: 0;
+		overflow: visible !important;
+	}
+
+	html > body {
+		margin: 0mm !important;
+		height: auto !important;
+	}
+
+	body > * {
+		display: none !important;
+
+
+	}
+
+	.goui-print {
+		display: block !important;
+		overflow: visible !important;
+		position: absolute !important;
+		box-shadow: none !important;
+		top: 0;
+		left: 0;
+		right: 0;
+		padding: 0 !important;
+		margin: 0 !important;
+	}
+
+}

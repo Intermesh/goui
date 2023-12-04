@@ -7,7 +7,7 @@
 
 import {Config, Observable, ObservableEventMap, ObservableListener, ObservableListenerOpts,} from "./Observable.js";
 import {State} from "../State.js";
-import {Collection} from "../util";
+import {browser, Collection} from "../util";
 
 /**
  * A component identifier by id, itemId, Component instance or custom function
@@ -991,6 +991,16 @@ export class Component extends Observable {
 
 	public static uniqueID() {
 		return "goui-" + (++Component._uniqueID)
+	}
+
+
+	/**
+	 * Print this component. Everything else will be left out.
+	 */
+	public print() {
+		this.el.classList.add("goui-print");
+		window.print();
+		// this.el.classList.remove("goui-print");
 	}
 }
 
