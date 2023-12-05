@@ -998,9 +998,56 @@ export class Component extends Observable {
 	 * Print this component. Everything else will be left out.
 	 */
 	public print() {
-		this.el.classList.add("goui-print");
-		window.print();
-		this.el.classList.remove("goui-print");
+
+		// this.el.classList.add("goui-print");
+		// window.print();
+		//
+		// window.addEventListener("afterprint" , () => {
+		// 	// document.title = oldTitle;
+		// 	// this.el.classList.remove("goui-print");
+		// }, {once: true});
+
+
+		let paper = document.getElementById('paper');
+		if(!paper) {
+			paper = document.createElement("div");
+			paper.id = "paper";
+			document.body.appendChild(paper);
+		}
+
+		const style = window.getComputedStyle(this.el);
+		paper.style.cssText = style.cssText;
+
+		const size = this.el.getBoundingClientRect();
+		paper.style.width = size.width + "px";
+
+		paper.innerHTML = this.el.innerHTML;
+
+		const oldTitle = document.title;
+		if(this.title) {
+			//replace chars not valid for filenames
+			document.title = this.title.replace(':', '.').replace(/[/\\?%*|"<>]+/g, '-');;
+		}
+
+		if(!browser.isFirefox()){
+			Promise.all(Array.from(document.images).filter(img => !img.complete).map(img => new Promise(resolve => { img.onload = img.onerror = resolve; }))).then(() => {
+				browser.isSafari() ? document.execCommand('print') : window.print();
+			});
+		} else {
+			// this is not needed in firefox and somehow it also fails to resolve the promises above.
+			window.print();
+		}
+
+		window.addEventListener("afterprint" , () => {
+			if(oldTitle) {
+				document.title = oldTitle;
+			}
+
+			if(paper) {
+				paper.innerHTML = "";
+			}
+		}, {once: true});
+
 	}
 }
 
