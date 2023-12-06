@@ -25,7 +25,13 @@ $formFieldBorderRadius: dp(10);
 
 }
 
-
+%control-pit {
+	overflow:hidden;
+	transition: border-color 100ms linear;
+	border-radius: $formFieldBorderRadius;
+	background-color: $colorBackgroundInput;
+	border: $borderWidth solid $colorBorder;
+}
 // base for checkbox and radio's
 %boxgroup {
 	input {
@@ -193,6 +199,13 @@ $formFieldBorderRadius: dp(10);
 	}
 }
 
+.goui-pit {
+	@extend %control-pit;
+	> div {
+		border-bottom: $borderWidth solid $colorBorder;
+	}
+}
+
 .goui-form-field, .goui-display-field {
 	display: block;
 	margin: 0;
@@ -267,7 +280,9 @@ $formFieldBorderRadius: dp(10);
 		}
 	}
 	.wrap {
-
+		@extend %control-pit;
+		display: flex;
+		flex-flow: row nowrap;
 		>.control {
 			//width: 100%;
 			flex: 1;
@@ -281,14 +296,6 @@ $formFieldBorderRadius: dp(10);
 			height: dp(24);
 			margin: dp(11) dp(0) dp(11) dp(16);
 		}
-
-		overflow:hidden;
-		display: flex;
-		flex-flow: row nowrap;
-		transition: border-color 100ms linear;
-		border-radius: $formFieldBorderRadius;
-		background-color: $colorBackgroundInput;
-		border: $borderWidth solid $colorBorder;
 
 		menu.goui-toolbar {
 			background-color: transparent;

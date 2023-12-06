@@ -8,7 +8,7 @@ import {RecurrencePicker} from "../picker/RecurrencePicker.js";
 import {t} from "../../Translate.js";
 import {E} from "../../util/Element.js";
 import {DateTime} from "../../util/DateTime.js";
-import {RecurrenceRule} from "../../util/Recurrence.js";
+import {RecurrenceRule} from "../../util/index.js";
 import {createComponent} from "../Component.js";
 import {Field, FieldEventMap} from "./Field.js";
 import {btn, Button} from "../Button.js";
@@ -19,6 +19,8 @@ export class RecurrenceField extends Field {
 
 	private readonly picker: RecurrencePicker
 	private readonly pickerButton: Button;
+
+	private _input?: HTMLInputElement
 
 	constructor() {
 		super();
@@ -37,8 +39,13 @@ export class RecurrenceField extends Field {
 		]
 	}
 
+	protected internalSetValue(v?: any) {
+		this._input!.value = this.toText(v);
+		this.picker.setValue(v);
+	}
+
 	protected createControl() {
-		const input = E('input').attr('type', 'text').attr('readOnly', true).cls('text')
+		this._input = E('input').attr('type', 'text').attr('readOnly', true).cls('text')
 		this.picker.on('select', (_, val) => {
 
 			this.pickerButton.menu!.hide();
@@ -46,11 +53,10 @@ export class RecurrenceField extends Field {
 			this.focus();
 
 			this.value = val;
-			input.value = this.toText(val!);
+			this._input!.value = this.toText(val!);
 		});
-		input.value = t('Not recurring');
-
-		return input;
+		this._input.value = t('Not recurring');
+		return this._input;
 	}
 
 	setStartDate(date: DateTime) {
