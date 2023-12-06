@@ -22,7 +22,7 @@ export type RecurrenceRule = {
 	skip?: 'omit' | 'backward' | 'forward'
 	firstDayOfWeek?: DayOfWeek
 	count?: number
-	until?: Date
+	until?: string
 	byDay?: NDay[]
 	byMonthDay?: number[]
 	byMonth?: string[] //'1'= january
@@ -44,6 +44,7 @@ export class Recurrence {
 	completed?: boolean
 	rule: RecurrenceRule & { interval: number }
 	dtstart: Date
+	until?: Date
 	current: DateTime
 	last?: DateTime
 	occurrence: number = 0
@@ -75,6 +76,8 @@ export class Recurrence {
 		this.rule = config.rule;
 		this.dtstart = config.dtstart;
 		this.current = new DateTime(+this.dtstart);
+		if(config.rule.until)
+			this.until = new Date(config.rule.until.replace('T', ' '))
 		this.occurrence++; // i'm counting the dtstart as first occurence
 		this.validate(this.rule);
 
@@ -90,7 +93,7 @@ export class Recurrence {
 		let previous = (this.last ? this.last.clone() : null);
 
 		if ((this.rule.count && this.occurrence >= this.rule.count) ||
-			(this.rule.until && this.current.date > this.rule.until)) {
+			(this.until && this.current.date > this.until)) {
 			return null;
 		}
 
@@ -130,7 +133,7 @@ export class Recurrence {
 			throw new Error('Recursion isn\'t going anywhere');
 		}
 		this.last = this.current;
-		if (this.rule.until && this.current.date > this.rule.until) {
+		if (this.until && this.current.date > this.until) {
 			return null;
 		} else {
 			this.occurrence++;

@@ -36,6 +36,7 @@ export interface GetResponse<EntityType extends BaseEntity> {
  * @category Data
  */
 export interface SetRequest<EntityType> {
+	[key:string]: any
 	create: Record<EntityID, Partial<EntityType>>
 	update: Record<EntityID, Partial<EntityType>>
 	destroy: EntityID[],
@@ -242,9 +243,11 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	/**
 	 * Extra parameters to send to the Foo/set
 	 */
-
 	public commitBaseParams = {};
-
+	/**
+	 * Extra /set parameters that will reset after commit
+	 */
+	public setParams: {[key:string]: any} = {};
 	/**
 	 * Get the local server state ID of the store
 	 * @protected
@@ -715,7 +718,8 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 			update: {},
 			destroy: [],
 			ifInState: await this.getState(),
-		}, this.commitBaseParams);
+		}, this.commitBaseParams, this.setParams);
+		this.setParams = {}; // unset after /set is sent
 
 		for (let id in this.creates) {
 			params.create[id] = this.creates[id].data;

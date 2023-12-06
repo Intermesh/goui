@@ -151,9 +151,16 @@ export class Window extends DraggableComponent {
 
 	}
 
+	private _title!:string
+	set title(title: string) {
+		if(this.titleCmp) {
+			this.titleCmp.html = title;
+		}
+		this._title = title;
+	}
 
-	protected applyTitle() {
-		// don't set title on el
+	get title() {
+		return this._title;
 	}
 
 	protected getDragHandle() {

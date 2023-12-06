@@ -11,13 +11,13 @@ import {t} from "../../Translate.js";
 import {btn} from "../Button.js";
 import {select, SelectField} from "../form/SelectField.js";
 import {textfield} from "../form/TextField.js";
-import {datefield} from "../form/DateField.js";
+import {DateField, datefield} from "../form/DateField.js";
 import {Form, form} from "../form/Form.js";
 import {tbar} from "../Toolbar.js";
 import {CheckboxField} from "../form/CheckboxField.js";
 import {Frequency, RecurrenceRule} from "../../util/Recurrence.js";
 import {ObservableListenerOpts} from "../Observable.js";
-import {numberfield} from "../form/NumberField.js";
+import {NumberField, numberfield} from "../form/NumberField.js";
 import {Field} from "../form/Field.js";
 import {CardContainer, CardContainerEventMap} from "../CardContainer.js";
 import {Menu} from "../menu/Menu.js";
@@ -42,10 +42,12 @@ export class RecurrencePicker extends CardContainer {
 
 	form: Form
 	menu: Component
-	endAtCtr: Component
 	weekOfMonth = 1
 
 	startDate: DateTime
+
+	count: NumberField
+	until: DateField
 
 	rule!: RecurrenceRule | null
 
@@ -72,6 +74,39 @@ export class RecurrencePicker extends CardContainer {
 
 		this.menu = comp({}, ...this.quickMenuItems());
 
+		const frequencyField = select({
+			name: 'frequency',
+			itemId: 'frequency',
+			width: 120,
+			textRenderer: r => (this.form.findChild('interval')! as Field).value == 1 ? r.text : r.plural,
+			options: Object.keys(RecurrencePicker.frequencies).map(k => ({
+				value: k,
+				text: RecurrencePicker.frequencies[k as Frequency][0],
+				plural: RecurrencePicker.frequencies[k as Frequency][1]
+			})),
+			listeners: {
+				'change': (me, v) => {
+					this.changeFrequency(v);
+				}
+			}
+		});
+		this.count = numberfield({
+			itemId: 'repeatCount',
+			name: 'count',
+			hidden: true,
+			max: 1000,
+			width: 80,
+			value: 13,
+			decimals: 0,
+			hint: t('times') // should be suffix
+		});
+		this.until = datefield({
+			itemId: 'endDate',
+			name: 'until',
+			width: 160,
+			hidden: true,
+			required: false
+		});
 		this.form = form({},
 			comp({cls: 'flow'},
 				comp({text: t('Every')}),
@@ -83,28 +118,14 @@ export class RecurrencePicker extends CardContainer {
 					width: 50,
 					value: 1,
 					listeners: {
-						'change': (me, newVal, oldVal) => {
+						'setvalue': (me, newVal, oldVal) => {
 							if (oldVal == 1 && newVal != 1 || oldVal != 1 && newVal == 1) {
-								(this.form.findField('frequency')! as SelectField).drawOptions();
+								frequencyField.drawOptions();
 							}
 						}
 					}
-				}), select({
-					name: 'frequency',
-					itemId: 'frequency',
-					width: 120,
-					textRenderer: r => (this.form.findChild('interval')! as Field).value == 1 ? r.text : r.plural,
-					options: Object.keys(RecurrencePicker.frequencies).map(k => ({
-						value: k,
-						text: RecurrencePicker.frequencies[k as Frequency][0],
-						plural: RecurrencePicker.frequencies[k as Frequency][1]
-					})),
-					listeners: {
-						'change': (me, v) => {
-							this.changeFrequency(v);
-						}
-					}
 				}),
+				frequencyField,
 				select({
 					hidden: true,
 					disabled: true,
@@ -142,33 +163,15 @@ export class RecurrencePicker extends CardContainer {
 							{text: t("At"), value: 'until'}
 						],
 						listeners: {
-							'change': (me, v) => {
-								const c = this.form.findField('count')!,
-									u = this.form.findField('until')!;
-
-								c.hidden = c.disabled = (v != 'count');
-								u.hidden = u.disabled = (v != 'until');
+							'setvalue': (me, v) => {
+								this.count.hidden = this.count.disabled = (v != 'count');
+								this.until.hidden = this.until.disabled = (v != 'until');
 							}
 						}
 					})
-				), this.endAtCtr = comp({},
-					numberfield({
-						itemId: 'repeatCount',
-						name: 'count',
-						hidden: true,
-						max: 1000,
-						width: 80,
-						value: 13,
-						decimals: 0,
-						hint: t('times') // should be suffix
-					}), datefield({
-						itemId: 'endDate',
-						name: 'until',
-						width: 160,
-						hidden: true,
-						required: false
-					})
-				)
+				),
+				this.count,
+				this.until
 			),
 			tbar({},
 				btn({
@@ -271,11 +274,11 @@ export class RecurrencePicker extends CardContainer {
 		const record = RecurrencePicker.frequencies[f]; // 2 = repeat default, 3 = untildefault
 		// set defaults for endAt fields
 		(this.form.findChild('frequency')! as Field).value = f;
-		var repeat = this.endAtCtr.items.get(0) as Field;
+		var repeat = this.count
 		if (repeat.disabled) {
 			repeat.value = record[2]; // repeatDefault
 		}
-		var until = this.endAtCtr.items.get(1) as Field;
+		var until = this.until;
 		if (until.disabled) {
 			var add: string[] = record[3].split('-'); // untilDefault
 			add[1] == 'd' ? this.startDate.addDays(parseInt(add[0])) : this.startDate.addYears(parseInt(add[0]))
@@ -317,11 +320,10 @@ export class RecurrencePicker extends CardContainer {
 			this.changeFrequency(rrule.frequency);
 			if (rrule.until) {
 				form.findField('endsRadio')!.value = 'until';
-				form.value = {until: rrule.until};
-			}
-			if (rrule.count) {
+				//form.value = {until: rrule.until};
+			} else if (rrule.count) {
 				form.findField('endsRadio')!.value = 'count';
-				form.value = {count: rrule.count};
+				//form.value = {count: rrule.count};
 			}
 			if (rrule.byDay) {
 				form.findField('monthlyOptions')!.value = 'byDay';

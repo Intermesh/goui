@@ -67,6 +67,10 @@ export class MapField extends Field {
 		return v;
 	}
 
+	isEmpty(): boolean {
+		return this.items.count()===0;
+	}
+
 	/**
 	 * Add value to the map.
 	 *

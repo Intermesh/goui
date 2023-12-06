@@ -40,7 +40,7 @@ export interface AutocompleteField<T extends List> {
 export class AutocompleteField<T extends List = List> extends TextField {
 
 
-	protected readonly menu: Menu;
+	public readonly menu: Menu;
 	protected readonly menuButton: Button;
 	public readonly picker;
 

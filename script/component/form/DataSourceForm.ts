@@ -66,25 +66,25 @@ export interface DataSourceForm<ValueType extends BaseEntity = DefaultEntity> ex
 
 export class DataSourceForm<ValueType extends BaseEntity = DefaultEntity> extends Form<ValueType> {
 
+	protected currentId?: EntityID
+
 	constructor(public dataSource: AbstractDataSource<ValueType>) {
 		super();
 
 		this.handler = async form1 => {
 			try {
-				let v = this.currentId ? this.modified : this.value;
+				let data,
+					v = this.currentId ? this.modified : this.value;
 				this.fire('beforesave', this, v);
 
-				let data, isNew;
-				if (this.currentId) {
-					isNew = false;
-					data = await this.dataSource.update(this.currentId, v as ValueType);
+				if (!this.isNew) {
+					data = await this.dataSource.update(this.currentId!, v as ValueType);
 				} else {
-					isNew = true;
 					data = await this.dataSource.create(v);
 				}
 
 				if (data) {
-					this.fire('save', this, data, isNew);
+					this.fire('save', this, data, this.isNew);
 				}
 
 			} catch (e:any) {
@@ -122,8 +122,6 @@ export class DataSourceForm<ValueType extends BaseEntity = DefaultEntity> extend
 		this.setInvalid(t('You have errors in your form. The invalid fields are marked.'));
 	}
 
-	protected currentId?: EntityID
-
 	public create(data: any) {
 		this.reset();
 		//this.currentId = '_new_';
@@ -135,6 +133,10 @@ export class DataSourceForm<ValueType extends BaseEntity = DefaultEntity> extend
 	reset() {
 		super.reset();
 		delete this.currentId;
+	}
+
+	get isNew () {
+		return !this.currentId;
 	}
 
 	/**
