@@ -8,12 +8,13 @@ import {Component, ComponentEventMap, createComponent} from "../Component.js";
 import {DateTime} from "../../util/DateTime.js";
 import {E} from "../../util/Element.js";
 import {Config, ObservableListenerOpts} from "../Observable.js";
+import {t} from "../../Translate";
 
 // import {Button} from "../Button";
 export interface DatePickerEventMap<Type> extends ComponentEventMap<Type> {
 
-	'select': (datepicker: Type, date: DateTime) => false | void
-	'select-range': (datepicker: Type, start: DateTime, end: DateTime) => false | void
+	'select': (datepicker: Type, date: DateTime|undefined) => false | void
+	'select-range': (datepicker: Type, start: DateTime|undefined, end: DateTime|undefined) => false | void
 }
 
 export interface DatePicker {
@@ -48,6 +49,8 @@ export class DatePicker extends Component {
 	 * @private
 	 */
 	private renderedMonth?: string;
+	// private footer: HTMLElement;
+
 
 	constructor() {
 		super();
@@ -93,7 +96,19 @@ export class DatePicker extends Component {
 						this.months.cls('-active');
 					}
 				})
-			).cls(['cards', 'top'], true)
+			).cls(['cards', 'top'], true),
+
+			E('footer',
+				E('button', t("Clear")).cls(["goui-button", "primary"], true).on('click', _ => {
+					this.fire('select', this, undefined);
+				}),
+
+				E('div' ).attr('style', 'flex:1'),
+
+				E('button', t("Today")).cls(["goui-button", "primary"], true).on('click', _ => {
+					this.fire('select', this, new DateTime());
+				})
+			)
 		);
 
 		// minimum and maximum year

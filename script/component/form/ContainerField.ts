@@ -8,6 +8,7 @@ import {Field, FieldEventMap} from "./Field.js";
 import {Config, ObservableListenerOpts} from "../Observable.js";
 import {Component, createComponent} from "../Component.js";
 import {ObjectUtil} from "../../util/ObjectUtil.js";
+import {MapField} from "./MapField.js";
 
 
 export type ContainerFieldValue = Record<string, any>;
@@ -28,6 +29,8 @@ export class ContainerField<ValueType extends ContainerFieldValue = ContainerFie
 
 	constructor(tagName: keyof HTMLElementTagNameMap = "div") {
 		super(tagName);
+
+		this.cls = "flow";
 	}
 
 	protected baseCls = "";
@@ -101,7 +104,9 @@ export class ContainerField<ValueType extends ContainerFieldValue = ContainerFie
 
 	public get value(): ValueType {
 
-		const formProps: ValueType = super.value || {};
+		// we have to clone the value to avoid side effects when the value is modified outside the form's
+		// scope. We don't want any external modifications to leak in here because reference is a value.
+		const formProps: ValueType = structuredClone(super.value) || {};
 
 		this.findFields().forEach((field: any) => {
 			//for Extjs compat try .getName() and .getValue()
@@ -109,7 +114,8 @@ export class ContainerField<ValueType extends ContainerFieldValue = ContainerFie
 			const fieldVal = field.getValue ? field.getValue() : field.value;
 
 			if (fieldName && !field.disabled) {
-				if (!formProps[fieldName]) {
+				// deleting item from mapfield work merge with original and therefor undo
+				if (!formProps[fieldName] || field instanceof MapField) {
 					formProps[fieldName] = fieldVal;
 				} else {
 					formProps[fieldName] = ObjectUtil.merge(formProps[field.name], fieldVal);

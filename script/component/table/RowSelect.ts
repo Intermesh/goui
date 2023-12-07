@@ -8,6 +8,8 @@ import {Config, Observable, ObservableEventMap, ObservableListenerOpts} from "..
 import {List} from "../List.js";
 import {ArrayUtil} from "../../util/ArrayUtil.js";
 import {createComponent} from "../Component";
+import {Table} from "./Table";
+import {FunctionUtil} from "../../util";
 
 export interface RowSelectEventMap<Type extends Observable> extends ObservableEventMap<Type> {
 	/**
@@ -72,6 +74,7 @@ export class RowSelect extends Observable {
 
 	public multiSelect = true;
 	private hasKeyUpListener: Boolean = false;
+	private fireSelectionChange: () => void;
 
 	constructor(readonly list: List) {
 		super();
@@ -95,6 +98,13 @@ export class RowSelect extends Observable {
 				}
 			})
 		})
+
+		const fireSelectionChange = () => {
+			this.fire('selectionchange', this);
+		}
+
+		//buffer selection change so it doesn't fire many changes if rowSelection.add is called in a loop.
+		this.fireSelectionChange = FunctionUtil.buffer(0, fireSelectionChange);
 	}
 
 	public clear() {
@@ -158,7 +168,7 @@ export class RowSelect extends Observable {
 		this._selected.push(index);
 
 		this.fire('rowselect', this, index);
-		this.fire('selectionchange', this);
+		this.fireSelectionChange();
 	}
 
 
@@ -178,7 +188,7 @@ export class RowSelect extends Observable {
 
 		if(!silent) {
 			this.fire('rowdeselect', this, index);
-			this.fire('selectionchange', this);
+			this.fireSelectionChange();
 		}
 	}
 
@@ -213,7 +223,7 @@ export class RowSelect extends Observable {
 		const change = (select.length > 0 || deselect.length > 0);
 
 		if (!silent && change) {
-			this.fire('selectionchange', this);
+			this.fireSelectionChange();
 		}
 
 		return change;

@@ -7,7 +7,7 @@
 import {Field, FieldEventMap} from "./Field.js";
 import {Component, createComponent} from "../Component.js";
 import {Config} from "../Observable";
-import {Format} from "../../util";
+import {DateTime, Format} from "../../util";
 
 /**
  * Display field
@@ -29,6 +29,11 @@ export class DisplayField extends Field {
 	 */
 	public renderer: DisplayFieldRenderer = (v:any, field:DisplayField) => Format.escapeHTML(v) ?? "";
 
+	/**
+	 * Hide this field when the value is empty
+	 */
+	public hideWhenEmpty = true;
+
 	protected createControl(): HTMLElement | undefined {
 		this.control = document.createElement("div");
 		return this.control;
@@ -40,9 +45,12 @@ export class DisplayField extends Field {
 			if(str instanceof Promise) {
 				str.then(r => {
 					this.control!.innerHTML = r;
+
+					this.hidden = this.hideWhenEmpty && r == "";
 				});
 			} else {
 				this.control.innerHTML = str;
+				this.hidden = this.hideWhenEmpty && str == "";
 			}
 		}
 	}
@@ -56,4 +64,28 @@ type DisplayFieldConfig = Config<DisplayField, FieldEventMap<DisplayField>> & {
 	renderer?: DisplayFieldRenderer;
 }
 
+/**
+ * Shortcut function to create a {@see DisplayField}
+ *
+ * @param config
+ * @param items
+ */
 export const displayfield = (config: DisplayFieldConfig, ...items: Component[]) => createComponent(new DisplayField(config?.tagName), config, items);
+
+/**
+ * Create display field with date icon and renderer
+ *
+ * @param config
+ * @param items
+ */
+export const displaydatefield = (config: DisplayFieldConfig, ...items: Component[]) => {
+	if(!config.icon)
+		config.icon = "today";
+
+	if(!config.renderer)
+		config.renderer = (v) => v ? (new DateTime(v)).format(Format.dateFormat) : ""
+
+	return createComponent(new DisplayField(config?.tagName), config, items);
+}
+
+

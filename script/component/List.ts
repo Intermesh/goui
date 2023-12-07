@@ -65,6 +65,14 @@ export interface ListEventMap<Type> extends ComponentEventMap<Type> {
 	 */
 	rowdblclick: (list: Type, storeIndex: number, row: HTMLElement, ev: MouseEvent) => void
 
+
+	/**
+	 * Fires when the delete key is pressed
+	 *
+	 * @param list
+	 */
+	delete: (list: Type) => void,
+
 	/**
 	 * Fires when a row is right clicked
 	 *
@@ -174,13 +182,13 @@ export class List<StoreType extends Store = Store> extends Component {
 		this.tabIndex = 0;
 
 		store.on("beforeload", () => {
-			console.warn("beforeload");
 			this.mask()
 		});
 		store.on("load", () => {
-			console.warn("load");
 			this.unmask();
-			this.emptyEl!.hidden = this.store.count() > 0;
+			if(this.emptyEl) {
+				this.emptyEl.hidden = this.store.count() > 0;
+			}
 		});
 
 		store.on("loadexception", (store, reason) => {
@@ -210,13 +218,21 @@ export class List<StoreType extends Store = Store> extends Component {
 			this.onMouseEvent(e, "rowclick");
 		}).on("contextmenu", (e) => {
 			this.onMouseEvent(e, "rowcontextmenu");
-		});
+		}).on("keydown", (e) => {
+			this.onKeyDown(e);
+		})
 
 		this.renderEmptyState();
 		this.renderBody();
 		this.initStore();
 
 		return el;
+	}
+
+	protected onKeyDown(e:KeyboardEvent) {
+		if(e.key == "Delete" || e.metaKey && e.key =="Backspace") {
+			this.fire("delete", this);
+		}
 	}
 
 	protected initStore() {
@@ -293,7 +309,7 @@ export class List<StoreType extends Store = Store> extends Component {
 				const tr = this.getRowElements()[storeIndex];
 
 				if (!tr) {
-					console.error("No row found for selected index: " + storeIndex + ". Maybe it's not rendered yet?");
+					//row not rendered (yet?). selected class will also be addded on render
 					return;
 				}
 				tr.classList.add('selected');
@@ -349,9 +365,6 @@ export class List<StoreType extends Store = Store> extends Component {
 			row.draggable = true;
 			row.ondragstart = this.onNodeDragStart.bind(this);
 		}
-		if (this.rowSelection && this.rowSelection.selected.indexOf(storeIndex) > -1) {
-			row.classList.add("selected");
-		}
 
 		this.bindDropEvents(row);
 
@@ -364,6 +377,10 @@ export class List<StoreType extends Store = Store> extends Component {
 				c.render(row)
 			});
 		} // else NO-OP renderder will be responsible for appending html to the row @see Table
+
+		if (this.rowSelection && this.rowSelection.selected.indexOf(storeIndex) > -1) {
+			row.classList.add("selected");
+		}
 		return row;
 	}
 

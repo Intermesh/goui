@@ -120,7 +120,7 @@ export class RestDataSource<EntityType extends BaseEntity = DefaultEntity> exten
 		for(let id of params.destroy) {
 
 			promises.push(
-				this.request(id, {
+				this.request(id + "", {
 					method: "DELETE"
 				})
 					.then(() => {
@@ -148,7 +148,7 @@ export class RestDataSource<EntityType extends BaseEntity = DefaultEntity> exten
 		const promises: Promise<EntityType>[] = [];
 		ids.forEach((id) => {
 			promises.push(
-				this.request(id).then((data:any):EntityType => {
+				this.request(id + "").then((data:any):EntityType => {
 					return data.data;
 				})
 			)

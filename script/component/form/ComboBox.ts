@@ -1,5 +1,12 @@
 import {AutocompleteField} from "./AutocompleteField";
-import {AbstractDataSource, DataSourceStore, datasourcestore, DataSourceStoreConfig, StoreRecord} from "../../data";
+import {
+	AbstractDataSource,
+	DataSourceStore,
+	datasourcestore,
+	DataSourceStoreConfig,
+	QueryFilter,
+	StoreRecord
+} from "../../data";
 import {column, Table, table} from "../table";
 import {Config} from "../Observable";
 import {FieldEventMap} from "./Field";
@@ -15,7 +22,15 @@ import {ObjectUtil} from "../../util";
  */
 export class ComboBox<DS extends AbstractDataSource = AbstractDataSource> extends AutocompleteField<Table<DataSourceStore<DS>>> {
 
-	public filterName?:string;
+	/**
+	 * When autocompleting from the datasource this filter name will be used.
+	 */
+	public filterName:string = "text";
+
+	/**
+	 * Set additional filter properties on the store.
+	 */
+	public filter?: QueryFilter;
 
 	constructor(public readonly dataSource:DS, public readonly displayProperty = "name", public readonly valueProperty = "id") {
 
@@ -48,6 +63,10 @@ export class ComboBox<DS extends AbstractDataSource = AbstractDataSource> extend
 			this.list.store.queryParams.position = 0;
 			if(!this.list.store.queryParams.filter) {
 				this.list.store.queryParams.filter = {};
+			}
+
+			if(this.filter) {
+				Object.assign(this.list.store.queryParams.filter, this.filter);
 			}
 			this.list.store.queryParams.filter[this.filterName ?? this.displayProperty] = input;
 			await this.list.store.load();

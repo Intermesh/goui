@@ -53,6 +53,7 @@ export class DataSourceStore<DataSource extends AbstractDataSource = AbstractDat
 	 * @param entity
 	 */
 	public buildRecord: RecordBuilder<dataSourceEntityType<DataSource>, StoreRecord> = async (entity) => <StoreRecord><unknown>entity;
+	// private bufferedLoad?: (...args:any[]) => Promise<StoreRecord[]>;
 
 	constructor(public dataSource:DataSource) {
 		super();
@@ -193,6 +194,59 @@ export class DataSourceStore<DataSource extends AbstractDataSource = AbstractDat
 		});
 
 		return onScroll;
+	}
+
+	public patchFilter(ref: string, filter:any | undefined) {
+		const f = this.getFilter(ref) ?? {};
+
+		return this.setFilter(ref, Object.assign(f, filter));
+	}
+
+	private filters: Record<string, any> = {};
+
+	public setFilter(ref: string, filter: any | undefined) {
+
+		// if(!this.bufferedLoad) {
+		// 	this.bufferedLoad = FunctionUtil.buffer(0, ()=> {
+		// 		return this.load();
+		// 	}) as (...args:any[]) => Promise<StoreRecord[]>;
+		// }
+
+		if (filter === undefined) {
+			delete this.filters[ref];
+		} else {
+			this.filters[ref] = filter;
+		}
+
+		const conditions = [];
+		for (const k in this.filters) {
+			conditions.push(this.filters[k]);
+		}
+
+		switch (conditions.length) {
+			case 0:
+				delete this.queryParams.filter;
+				break;
+			case 1:
+				this.queryParams.filter = conditions[0];
+				break;
+			default:
+				this.queryParams.filter = {
+					operator: "AND",
+					conditions: conditions
+				};
+				break;
+		}
+
+		return this;
+	}
+
+	public clearFilter(...names: string[]) {
+		names.forEach(n => this.setFilter(n, undefined));
+	}
+
+	public getFilter(name: string) {
+		return this.filters[name];
 	}
 }
 

@@ -9,6 +9,10 @@
 	display: flex;
 	align-items: center;
 
+	&.caps {
+		text-transform: uppercase;
+	}
+
 	&.with-icon:not(.with-text) {
 		//icon only
 		padding: dp(11);
@@ -133,9 +137,7 @@
 	> * {
 		box-shadow: none; border: 1px solid $colorBorder;
 		&.active {
-			box-shadow: inset 0 1px rgba(black, .08);
 			background-color: $colorFocus;
-			border-bottom-color:rgba(black, .08);
 		}
 	}
 	&>:not(:first-child) { border-top-left-radius:0; border-bottom-left-radius:0; border-left:0;  }
@@ -143,8 +145,11 @@
 }
 
 .goui.goui-toolbar {
-	@extend .hbox;
-
+	display: flex;
+	flex-direction: row;
+	gap: dp(8);
+	justify-content: flex-start;
+	flex-wrap: nowrap;
 	position: relative;// for absolute toolbars inside
 
 	// toolbar inside a toolbar will be an overlay
@@ -195,21 +200,12 @@
 		color: inherit;
 		font-size: sp(18);
 		line-height: normal;
-		font-weight: normal;
+		font-weight: 700;
 		padding: 0;
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
 	}
-	>* {
-		margin: 0 dp(12) 0 0;
-		&:last-child {
-			margin-right: 0;
-		}
-	}
-	//> button {
-	//	border: 0;
-	//}
 
 	> hr {
 		height: dp(24);

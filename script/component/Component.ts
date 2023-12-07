@@ -7,7 +7,7 @@
 
 import {Config, Observable, ObservableEventMap, ObservableListener, ObservableListenerOpts,} from "./Observable.js";
 import {State} from "../State.js";
-import {Collection} from "../util";
+import {browser, Collection} from "../util";
 
 /**
  * A component identifier by id, itemId, Component instance or custom function
@@ -18,6 +18,9 @@ export type FindComponentPredicate = string | Component | ((comp: Component) => 
 interface Type<T> {
 	new(...args: any[]): T
 }
+
+const html = document.querySelector('html')!;
+export const REM_UNIT_SIZE = parseFloat(window.getComputedStyle(html).fontSize);
 
 
 export interface ComponentEventMap<Type> extends ObservableEventMap<Type> {
@@ -147,7 +150,7 @@ export class Component extends Observable {
 	 *
 	 * @protected
 	 */
-	protected baseCls?: string;
+	protected baseCls: string = "";
 
 	/**
 	 * True when added to the DOM tree
@@ -221,7 +224,7 @@ export class Component extends Observable {
 			item.fire("added", item, index);
 
 			if (this.rendered) {
-				item.render();
+				this.renderItem(item);
 			}
 
 		});
@@ -325,6 +328,14 @@ export class Component extends Observable {
 	 *
 	 */
 	set cls(cls: string) {
+
+		//remove previously set
+		if(this._cls) {
+			this._cls.split(/\s+/).forEach(cls => {
+				this.el.classList.remove(cls);
+			})
+		}
+
 		this._cls = cls;
 		this.initClassName();
 		this.el.className += " " + cls;
@@ -598,18 +609,34 @@ export class Component extends Observable {
 	}
 
 	/**
-	 * Width in pixels
+	 * Set the width in scalable pixels
+	 *
+	 * The width is applied in rem units divided by 10. Because the font-size of the html
+	 * element has a font-size of 62.5% this is equals the amount of pixels, but it can be
+	 * scaled easily for different themes.
+	 *
 	 */
 	set width(width: number) {
-		this.el.style.width = width + "px";
+		this.el.style.width = (width / 10) + "rem";
 	}
 
 	get width() {
-		return this.el.offsetWidth || parseFloat(this.el.style.width);
+		const px = this.el.offsetWidth;
+		if(px) {
+			return (px / REM_UNIT_SIZE) * 10;
+		}
+
+		const styleWidth = this.el.style.width;
+		if(styleWidth.substring(styleWidth.length - 3) == "rem") {
+			return parseFloat(styleWidth);
+		} else if(styleWidth.substring(styleWidth.length - 2) == "px") {
+			return (parseFloat(styleWidth) / REM_UNIT_SIZE) * 10;
+		}
+		return 0;
 	}
 
 	/**
-	 * Width in pixels
+	 * Set inline style
 	 */
 	set style(style: Partial<CSSStyleDeclaration>) {
 		Object.assign(this.el.style, style);
@@ -630,14 +657,27 @@ export class Component extends Observable {
 
 
 	/**
-	 * height in pixels
+	 * The height in scalable pixels
+	 *
+	 * @see width
 	 */
 	set height(height: number) {
-		this.el.style.height = height + "px";
+		this.el.style.height = (height / 10) + "rem";
 	}
 
 	get height() {
-		return this.el.offsetHeight || parseFloat(this.el.style.height);
+		const px = this.el.offsetHeight;
+		if(px) {
+			return (px / REM_UNIT_SIZE) * 10;
+		}
+
+		const styleHeight = this.el.style.height;
+		if(styleHeight.substring(styleHeight.length - 3) == "rem") {
+			return parseFloat(styleHeight);
+		} else if(styleHeight.substring(styleHeight.length - 2) == "px") {
+			return (parseFloat(styleHeight) / REM_UNIT_SIZE) * 10;
+		}
+		return 0;
 	}
 
 	/**
@@ -739,9 +779,9 @@ export class Component extends Observable {
 	 * @param cls
 	 */
 	public findAncestorByType<T extends typeof Component>(cls: T): InstanceType<T> | undefined {
-		const p = this.findAncestor(Component => Component instanceof cls);
+		const p = this.findAncestor(cmp => cmp instanceof cls);
 		if (p) {
-			return <InstanceType<T>>p;
+			return p as InstanceType<T>;
 		} else {
 			return undefined;
 		}
@@ -878,7 +918,7 @@ export class Component extends Observable {
 	 * @param cls
 	 */
 	public findChildByType<T extends Component>(cls: Type<T>): T | undefined {
-		const p = this.findChild(Component => Component instanceof cls);
+		const p = this.findChild(cmp => cmp instanceof cls);
 		if (p) {
 			return p as T;
 		} else {
@@ -951,6 +991,63 @@ export class Component extends Observable {
 
 	public static uniqueID() {
 		return "goui-" + (++Component._uniqueID)
+	}
+
+
+	/**
+	 * Print this component. Everything else will be left out.
+	 */
+	public print() {
+
+		// this.el.classList.add("goui-print");
+		// window.print();
+		//
+		// window.addEventListener("afterprint" , () => {
+		// 	// document.title = oldTitle;
+		// 	// this.el.classList.remove("goui-print");
+		// }, {once: true});
+
+
+		let paper = document.getElementById('paper');
+		if(!paper) {
+			paper = document.createElement("div");
+			paper.id = "paper";
+			document.body.appendChild(paper);
+		}
+
+		const style = window.getComputedStyle(this.el);
+		paper.style.cssText = style.cssText;
+
+		const size = this.el.getBoundingClientRect();
+		paper.style.width = size.width + "px";
+
+		paper.innerHTML = this.el.innerHTML;
+
+		const oldTitle = document.title;
+		if(this.title) {
+			//replace chars not valid for filenames
+			document.title = this.title.replace(':', '.').replace(/[/\\?%*|"<>]+/g, '-');;
+		}
+
+		if(!browser.isFirefox()){
+			Promise.all(Array.from(document.images).filter(img => !img.complete).map(img => new Promise(resolve => { img.onload = img.onerror = resolve; }))).then(() => {
+				browser.isSafari() ? document.execCommand('print') : window.print();
+			});
+		} else {
+			// this is not needed in firefox and somehow it also fails to resolve the promises above.
+			window.print();
+		}
+
+		window.addEventListener("afterprint" , () => {
+			if(oldTitle) {
+				document.title = oldTitle;
+			}
+
+			if(paper) {
+				paper.innerHTML = "";
+			}
+		}, {once: true});
+
 	}
 }
 

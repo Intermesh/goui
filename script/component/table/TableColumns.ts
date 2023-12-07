@@ -7,7 +7,7 @@
 import {Config, Observable} from "../Observable.js";
 import {Table} from "./Table.js";
 import {Component, createComponent} from "../Component.js";
-import {Format} from "../../util";
+import {Format, FunctionUtil} from "../../util";
 import {checkbox} from "../form";
 import {btn} from "../Button";
 import {menu} from "../menu";
@@ -166,10 +166,11 @@ export class CheckboxColumn extends TableColumn {
 export const checkboxcolumn = (config: TableColumnConfig) => createComponent(new CheckboxColumn(config.id), config);
 
 
+
 export class CheckboxSelectColumn extends TableColumn {
 
-	constructor() {
-		super("checkboxselect");
+	constructor(id = "checkboxselect") {
+		super(id);
 		this.hidable = false;
 
 		this.cls = "checkbox-select-column";
@@ -194,6 +195,11 @@ export class CheckboxSelectColumn extends TableColumn {
 
 	renderer: TableColumnRenderer = (val: boolean, record, td, table, rowIndex) => {
 
+		// add to selection model if value is true
+		if(val && table.rowSelection) {
+			table.rowSelection.add(rowIndex);
+		}
+
 		return checkbox({
 			value: val,
 			listeners: {
@@ -207,13 +213,11 @@ export class CheckboxSelectColumn extends TableColumn {
 					});
 				},
 				change: (field, newValue, oldValue) => {
-
-					const index = table.store.indexOf(record), selected = table.rowSelection!.selected;
+					const index = table.store.indexOf(record);
 					if (newValue) {
-						selected.push(index);
-						table.rowSelection!.selected = selected;
+						table.rowSelection!.add(index);
 					} else {
-						table.rowSelection!.selected = selected.filter(i => i != index);
+						table.rowSelection!.remove(index);
 					}
 
 				}
@@ -222,7 +226,7 @@ export class CheckboxSelectColumn extends TableColumn {
 	}
 }
 
-export const checkboxselectcolumn = (config?: TableColumnConfig) => createComponent(new CheckboxSelectColumn(), config);
+export const checkboxselectcolumn = (config?: TableColumnConfig) => createComponent(new CheckboxSelectColumn(config && config.id ? config.id : "checkboxselect"), config);
 
 
 /**

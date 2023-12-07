@@ -111,12 +111,24 @@ export class Observable {
 			}
 		}
 		this.lisnrs = this.lisnrs || {};
-		this.lisnrs[eventName] = this.lisnrs[eventName] || [];
+		if(!this.lisnrs[eventName]) {
+			this.lisnrs[eventName] = [];
+			this.onFirstListenerAdded(eventName);
+		}
 		if (options?.unshift) {
 			this.lisnrs[eventName].unshift({listener: listener!, options: options, unbindkey: unbindkey});
 		} else {
 			this.lisnrs[eventName].push({listener: listener!, options: options, unbindkey: unbindkey});
 		}
+
+	}
+
+	/**
+	 * Override this function to lazily initialize events
+	 * @param eventName
+	 * @protected
+	 */
+	protected onFirstListenerAdded(eventName: string) {
 
 	}
 

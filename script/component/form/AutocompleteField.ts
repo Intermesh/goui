@@ -22,6 +22,10 @@ export interface AutocompleteEventMap<Type> extends FieldEventMap<Type> {
 	 * @param form
 	 */
 	autocomplete: (field: Type, input: string) => any
+	/**
+	 * Fires when an item is selected from the list
+	 */
+	select: (field: Type, record: any) => any
 }
 
 export interface AutocompleteField<T extends List> {
@@ -36,7 +40,7 @@ export interface AutocompleteField<T extends List> {
 export class AutocompleteField<T extends List = List> extends TextField {
 
 
-	protected readonly menu: Menu;
+	public readonly menu: Menu;
 	protected readonly menuButton: Button;
 	public readonly picker;
 
@@ -63,6 +67,8 @@ export class AutocompleteField<T extends List = List> extends TextField {
 
 			//set value after focus for change event
 			this.value = this.pickerRecordToValue(this, record);
+
+			this.fire('select', this, record);
 		});
 
 		this.menu = menu({

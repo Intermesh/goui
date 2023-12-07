@@ -93,6 +93,13 @@ export class Button extends Component {
 
 	private _text?: string;
 
+	/**
+	 * Turn on if you want this button to be clickable fast.
+	 * We disable this by default because some users tend to double click on all buttons and we don't
+	 * want to double submit.
+	 */
+	public allowFastClick = false;
+
 	constructor() {
 		super("button");
 		this.type = "button";
@@ -152,7 +159,6 @@ export class Button extends Component {
 		// First menu is rendered directly in body so it's positioned absolute on the page and there's no need for overflow
 		// visible in windows. Sub menu's are rendered inside the parent menu button.
 		if (this.menu) {
-
 			this.menu.hide();
 
 			if (!(this.parent instanceof Menu)) {
@@ -160,9 +166,9 @@ export class Button extends Component {
 				this.el.addEventListener("mouseenter", this.onMenuMouseEnter.bind(this));
 				this.el.addEventListener("click", this.onMenuButtonClick.bind(this));
 			} else {
+				// Setting renderTo to undefined will make it render to it's parent
+				// which is this button
 				this.menu.renderTo = undefined;
-				// this.menu.parent = this.parent ;
-				// this.menu.render(this.parent.el);
 			}
 		}
 
@@ -170,9 +176,12 @@ export class Button extends Component {
 			// check detail for being the first click. We don't want double clicks to call the handler twice.
 			// the detail property contains the click count. When spacebar is used it will be 0
 			// Michael had problems with e.detail < 2 but we don't remember why. Discuss when we run into this.
-			if (this.handler && e.button == 0 && e.detail < 2) {
+			if (this.handler && e.button == 0 && (this.allowFastClick || e.detail < 2)) {
 
-				// e.preventDefault(); // prevent submitting form
+				// Menus are rendered inside buttons. So buttons are inside buttons.
+				// We have to stop propagation for the click event otherwise the parent button will fire too.
+				// not sure if this will cause problems.
+				e.stopPropagation();
 
 				this.handler.call(this, this, e);
 
@@ -191,6 +200,7 @@ export class Button extends Component {
 	}
 
 	private onMenuButtonClick(ev: MouseEvent) {
+		console.log(ev);
 		if (this._menu!.hidden) {
 			this.showMenu();
 		} else {

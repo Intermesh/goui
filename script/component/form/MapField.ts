@@ -7,26 +7,31 @@
 import {Field, FieldEventMap} from "./Field.js";
 import {createComponent} from "../Component.js";
 import {btn} from "../Button.js";
-import {Config} from "../Observable";
+import {Config, Observable} from "../Observable";
 
 interface MapFieldRow {
-	field: Field
+	field?: Field
 	key: string
 	isNew: boolean
 }
 
 type MapFieldConfig = Config<MapField, FieldEventMap<MapField>, "buildField">;
 
-type FieldBuilder = (value?: MapFieldValue) => Field;
+type FieldBuilder = (value: MapFieldValue|undefined) => Field;
 
 type MapFieldValue = Record<string, any>;
 
 export class MapField extends Field {
 
-	private rows: MapFieldRow[] = []
+	/**
+	 * Set to the name of the field holding the key. If not given a key will be generated.
+	 */
+	public keyFieldName?: string;
 
 	constructor(public buildField: FieldBuilder) {
-		super('div')
+		super('div');
+
+		this.cls = "vbox gap";
 	}
 	protected baseCls = "";
 
@@ -47,10 +52,23 @@ export class MapField extends Field {
 
 	get value(): MapFieldValue {
 		const v: MapFieldValue = {};
-		this.rows.forEach(row => {
-			v[row.key] = row.field.value;
+
+		this.items.forEach((field) => {
+			if(field instanceof Field) {
+				const rowValue = field.value;
+				let key = field.dataSet.key;
+				if (this.keyFieldName && rowValue[this.keyFieldName]) {
+					key = rowValue[this.keyFieldName];
+					delete rowValue[this.keyFieldName];
+				}
+				v[key] = rowValue;
+			}
 		})
 		return v;
+	}
+
+	isEmpty(): boolean {
+		return this.items.count()===0;
 	}
 
 	/**
@@ -70,21 +88,12 @@ export class MapField extends Field {
 	}
 
 	private internalAdd(data: MapFieldValue, key?: string | undefined) {
-		const row = {
-			key: key === undefined ? this.nextKey() : key,
-			field: this.buildField(data),
-			isNew: true
-		};
-		row.field.items.add(btn({
-			icon: "delete",
-			handler: button => {
-				this.rows.splice(this.rows.indexOf(row), 1);
-				row.field.remove();
-			}
-		}));
-		row.field.value = data;
-		this.rows.push(row);
-		this.items.add(row.field);
+
+		const field = this.buildField(data);
+		field.dataSet.key = key === undefined ? this.nextKey() : key;
+
+		field.value = data;
+		this.items.add(field);
 	}
 
 	private _nextKey = 1;
@@ -97,7 +106,6 @@ export class MapField extends Field {
 
 	reset() {
 		super.reset();
-		this.rows = [];
 		this.items.clear();
 	}
 }

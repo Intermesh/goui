@@ -18,6 +18,8 @@ export class Fieldset extends Component {
 
 	constructor() {
 		super("fieldset");
+
+		this.cls = "flow";
 	}
 
 	protected baseCls = "goui-fieldset";
