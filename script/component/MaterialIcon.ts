@@ -202,6 +202,7 @@ export type MaterialIcon =
 	"control_point" |
 	"control_point_duplicate" |
 	"copyright" |
+	"coronavirus" |
 	"create" |
 	"create_new_folder" |
 	"credit_card" |
