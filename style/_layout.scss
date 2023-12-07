@@ -1,6 +1,12 @@
 html {
-	font-size: 62.5% * $scale;
-	/* changes a default 16px font size to 10px */
+	font-size: $density; //makes everying smaller on desktop
+}
+
+@media (max-device-width:1200px) {
+	html {
+		font-size: $mobileDensity;
+		/* changes a default 16px font size to 10px */
+	}
 }
 
 .goui {

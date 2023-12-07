@@ -1,3 +1,7 @@
+$font-scale: 1 !default;
+$density: 54% !default;
+$mobileDensity: 62.5% !default;
+
 @mixin light-theme {
 
 	--fg-border:			rgba(68, 68, 68, 0.26);
