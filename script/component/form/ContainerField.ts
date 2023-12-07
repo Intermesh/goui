@@ -114,12 +114,7 @@ export class ContainerField<ValueType extends ContainerFieldValue = ContainerFie
 			const fieldVal = field.getValue ? field.getValue() : field.value;
 
 			if (fieldName && !field.disabled) {
-				// deleting item from mapfield work merge with original and therefor undo
-				if (!formProps[fieldName] || field instanceof MapField) {
-					formProps[fieldName] = fieldVal;
-				} else {
-					formProps[fieldName] = ObjectUtil.merge(formProps[field.name], fieldVal);
-				}
+				formProps[fieldName] = fieldVal;
 			}
 		});
 
