@@ -286,8 +286,8 @@ export class Window extends DraggableComponent {
 			return s;
 		} else {
 			return {
-				width: this.el.offsetWidth,
-				height: this.el.offsetHeight,
+				width: this.width,
+				height: this.height,
 				left: this.el.offsetLeft,
 				top: this.el.offsetTop
 			};

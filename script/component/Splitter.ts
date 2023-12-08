@@ -87,7 +87,7 @@ export class Splitter extends DraggableComponent {
 	}
 
 	protected buildState() {
-		return this.resizeWidth ? {width: this._resizeComponent!.el.offsetWidth} : {height: this._resizeComponent!.el.offsetHeight};
+		return this.resizeWidth ? {width: this._resizeComponent!.width} : {height: this._resizeComponent!.height};
 	}
 
 	protected internalRender(): HTMLElement {

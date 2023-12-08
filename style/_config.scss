@@ -67,9 +67,9 @@ $fontFamily: Lato, Arial, Helvetica;
 $fontBase: #{$fontSize}/$baseLineHeight $fontFamily !default;
 
 $zIndexWindow: 200 !default;
-$zIndexAlert: 400 !default;
-$zIndexMenu: 500 !default;
-$zIndexMask: 300;
+$zIndexAlert: 40000 !default;
+$zIndexMenu: 50000 !default;
+$zIndexMask: 30000;
 
 $breakpointXL: 1200px !default;
 $breakpointLarge: 992px !default;
