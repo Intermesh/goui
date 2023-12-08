@@ -9,16 +9,8 @@ import {createComponent} from "../Component.js";
 import {btn} from "../Button.js";
 import {Config, Observable} from "../Observable";
 
-interface MapFieldRow {
-	field?: Field
-	key: string
-	isNew: boolean
-}
-
 type MapFieldConfig = Config<MapField, FieldEventMap<MapField>, "buildField">;
-
 type FieldBuilder = (value: MapFieldValue|undefined) => Field;
-
 type MapFieldValue = Record<string, any>;
 
 export class MapField extends Field {
