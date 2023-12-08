@@ -118,7 +118,7 @@ export interface ListEventMap<Type> extends ComponentEventMap<Type> {
 export type DROP_POSITION = "before" | "after" | "on";
 
 export interface List<StoreType extends Store = Store> extends Component {
-	on<K extends keyof ListEventMap<this>>(eventName: K, listener: Partial<ListEventMap<this>>[K], options?: ObservableListenerOpts): void;
+	on<K extends keyof ListEventMap<this>, L extends Function>(eventName: K, listener: Partial<ListEventMap<this>>[K], options?: ObservableListenerOpts): L;
 
 	fire<K extends keyof ListEventMap<this>>(eventName: K, ...args: Parameters<ListEventMap<any>[K]>): boolean
 }

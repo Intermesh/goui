@@ -29,7 +29,7 @@ export interface RecurrencePickerEventMap<Type> extends CardContainerEventMap<Ty
 }
 
 export interface RecurrencePicker {
-	on<K extends keyof RecurrencePickerEventMap<this>>(eventName: K, listener: Partial<RecurrencePickerEventMap<this>>[K], options?: ObservableListenerOpts): void;
+	on<K extends keyof RecurrencePickerEventMap<this>, L extends Function>(eventName: K, listener: Partial<RecurrencePickerEventMap<this>>[K], options?: ObservableListenerOpts): L;
 
 	fire<K extends keyof RecurrencePickerEventMap<this>>(eventName: K, ...args: Parameters<RecurrencePickerEventMap<Component>[K]>): boolean;
 }

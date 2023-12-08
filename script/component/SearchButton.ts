@@ -23,8 +23,8 @@ export interface SearchButtonEventMap<Type> extends ButtonEventMap<Type> {
 	reset: (searchBtn: Type) => void
 }
 
-export interface SearchButton {
-	on<K extends keyof SearchButtonEventMap<this>>(eventName: K, listener: Partial<SearchButtonEventMap<this>>[K], options?: ObservableListenerOpts): void;
+export interface SearchButton extends Button {
+	on<K extends keyof SearchButtonEventMap<this>, L extends Function>(eventName: K, listener: Partial<SearchButtonEventMap<this>>[K], options?: ObservableListenerOpts): L;
 
 	fire<K extends keyof SearchButtonEventMap<this>>(eventName: K, ...args: Parameters<SearchButtonEventMap<Component>[K]>): boolean
 }

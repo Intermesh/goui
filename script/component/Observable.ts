@@ -92,7 +92,7 @@ export class Observable {
 	 * @param listener
 	 * @param options
 	 */
-	public on<key extends keyof ObservableEventMap<this>>(eventName: keyof ObservableEventMap<this>, listener: ObservableEventMap<this>[key], options?: ObservableListenerOpts) {
+	public on<key extends keyof ObservableEventMap<this>, L extends Function>(eventName: keyof ObservableEventMap<this>, listener: ObservableEventMap<this>[key], options?: ObservableListenerOpts) : L {
 
 		//store original listener for the un() method. Because options may change the function
 		const unbindkey = listener!;
@@ -120,6 +120,8 @@ export class Observable {
 		} else {
 			this.lisnrs[eventName].push({listener: listener!, options: options, unbindkey: unbindkey});
 		}
+
+		return unbindkey;
 
 	}
 

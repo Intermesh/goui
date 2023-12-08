@@ -56,7 +56,7 @@ export interface StoreEventMap<Type, RecordType> extends CollectionEventMap<Type
 }
 
 export interface Store<RecordType = StoreRecord> {
-	on<K extends keyof StoreEventMap<this, RecordType>>(eventName: K, listener: Partial<StoreEventMap<this, RecordType>>[K], options?: ObservableListenerOpts): void
+	on<K extends keyof StoreEventMap<this, RecordType>, L extends Function>(eventName: K, listener: Partial<StoreEventMap<this, RecordType>>[K], options?: ObservableListenerOpts): L
 
 	fire<K extends keyof StoreEventMap<this, RecordType>>(eventName: K, ...args: Parameters<StoreEventMap<any, RecordType>[K]>): boolean
 

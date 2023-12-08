@@ -23,7 +23,7 @@ export interface ColorMenuEventMap<Type> extends ComponentEventMap<Type> {
 }
 
 export interface ColorMenu {
-	on<K extends keyof ColorMenuEventMap<ColorMenu>>(eventName: K, listener: Partial<ColorMenuEventMap<ColorMenu>>[K], options?: ObservableListenerOpts): void
+	on<K extends keyof ColorMenuEventMap<ColorMenu>, L extends Function>(eventName: K, listener: Partial<ColorMenuEventMap<ColorMenu>>[K], options?: ObservableListenerOpts): L
 
 	fire<K extends keyof ColorMenuEventMap<ColorMenu>>(eventName: K, ...args: Parameters<ColorMenuEventMap<Component>[K]>): boolean
 

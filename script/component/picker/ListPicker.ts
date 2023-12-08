@@ -13,7 +13,7 @@ export interface ListPickerEventMap<Type extends ListPicker<List>> extends Compo
 }
 
 export interface ListPicker<ListType extends List> extends Component {
-	on<K extends keyof ListPickerEventMap<this>>(eventName: K, listener: Partial<ListPickerEventMap<this>>[K], options?: ObservableListenerOpts): void;
+	on<K extends keyof ListPickerEventMap<this>, L extends Function>(eventName: K, listener: Partial<ListPickerEventMap<this>>[K], options?: ObservableListenerOpts): L;
 	fire<K extends keyof ListPickerEventMap<this>>(eventName: K, ...args: Parameters<ListPickerEventMap<any>[K]>): boolean
 }
 

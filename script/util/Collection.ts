@@ -61,7 +61,7 @@ export interface CollectionEventMap<Type, CollectionItem> extends ObservableEven
  * @category Utility
  */
 export interface Collection<CollectionItem> extends Observable {
-	on<K extends keyof CollectionEventMap<this, CollectionItem>>(eventName: K, listener: CollectionEventMap<this, CollectionItem>[K], options?: ObservableListenerOpts): void;
+	on<K extends keyof CollectionEventMap<this, CollectionItem>, L extends Function>(eventName: K, listener: CollectionEventMap<this, CollectionItem>[K], options?: ObservableListenerOpts): L;
 
 	fire<K extends keyof CollectionEventMap<this, CollectionItem>>(eventName: K, ...args: Parameters<CollectionEventMap<Collection<CollectionItem>, CollectionItem>[K]>): boolean
 }

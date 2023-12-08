@@ -21,7 +21,7 @@ export interface CardContainerEventMap<Type> extends ComponentEventMap<Type> {
 }
 
 export interface CardContainer extends Component {
-	on<K extends keyof CardContainerEventMap<this>>(eventName: K, listener: Partial<CardContainerEventMap<this>>[K], options?: ObservableListenerOpts): void;
+	on<K extends keyof CardContainerEventMap<this>, L extends Function>(eventName: K, listener: Partial<CardContainerEventMap<this>>[K], options?: ObservableListenerOpts): L
 
 	fire<K extends keyof CardContainerEventMap<this>>(eventName: K, ...args: Parameters<CardContainerEventMap<any>[K]>): boolean;
 }

@@ -31,7 +31,7 @@ export interface FormEventMap<Type, ValueType extends ContainerFieldValue = Cont
 }
 
 export interface Form<ValueType extends ContainerFieldValue = ContainerFieldValue> extends ContainerField<ValueType> {
-	on<K extends keyof FormEventMap<this, ValueType>>(eventName: K, listener: Partial<FormEventMap<this,ValueType>>[K], options?: ObservableListenerOpts): void
+	on<K extends keyof FormEventMap<this, ValueType>, L extends Function>(eventName: K, listener: Partial<FormEventMap<this,ValueType>>[K], options?: ObservableListenerOpts): L
 
 	fire<K extends keyof FormEventMap<this, ValueType>>(eventName: K, ...args: Parameters<FormEventMap<any, ValueType>[K]>): boolean
 

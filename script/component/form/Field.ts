@@ -67,7 +67,7 @@ export interface FieldEventMap<Type> extends ComponentEventMap<Type> {
 
 
 export interface Field extends Component {
-	on<K extends keyof FieldEventMap<this>>(eventName: K, listener: Partial<FieldEventMap<this>>[K], options?: ObservableListenerOpts): void;
+	on<K extends keyof FieldEventMap<this>, L extends Function>(eventName: K, listener: Partial<FieldEventMap<this>>[K], options?: ObservableListenerOpts): L;
 
 	fire<K extends keyof FieldEventMap<this>>(eventName: K, ...args: Parameters<FieldEventMap<any>[K]>): boolean
 }

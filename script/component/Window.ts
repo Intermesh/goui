@@ -45,8 +45,8 @@ export interface WindowEventMap<Type> extends DraggableComponentEventMap<Type> {
 	unmaximize: (window: Type) => void
 }
 
-export interface Window {
-	on<K extends keyof WindowEventMap<this>>(eventName: K, listener: Partial<WindowEventMap<this>>[K], options?: ObservableListenerOpts): void;
+export interface Window extends DraggableComponent{
+	on<K extends keyof WindowEventMap<this>, L extends Function>(eventName: K, listener: Partial<WindowEventMap<this>>[K], options?: ObservableListenerOpts): L;
 
 	fire<K extends keyof WindowEventMap<this>>(eventName: K, ...args: Parameters<WindowEventMap<any>[K]>): boolean
 }

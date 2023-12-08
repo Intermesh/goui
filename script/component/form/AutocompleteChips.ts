@@ -16,8 +16,8 @@ export interface AutocompleteChipsEventMap<Type> extends FieldEventMap<Type> {
 	autocomplete: (field: Type, input: string) => any
 }
 
-export interface AutocompleteChips<T extends List> {
-	on<K extends keyof AutocompleteChipsEventMap<this>>(eventName: K, listener: Partial<AutocompleteChipsEventMap<this>>[K], options?: ObservableListenerOpts): void
+export interface AutocompleteChips<T extends List> extends ChipsField{
+	on<K extends keyof AutocompleteChipsEventMap<this>, L extends Function>(eventName: K, listener: Partial<AutocompleteChipsEventMap<this>>[K], options?: ObservableListenerOpts): L
 
 	fire<K extends keyof AutocompleteChipsEventMap<this>>(eventName: K, ...args: Parameters<AutocompleteChipsEventMap<Component>[K]>): boolean
 }

@@ -15,7 +15,7 @@ export type ContainerFieldValue = Record<string, any>;
 
 
 export interface ContainerField extends Field {
-	on<K extends keyof FieldEventMap<this>>(eventName: K, listener: Partial<FieldEventMap<ContainerField>>[K], options?: ObservableListenerOpts): void;
+	on<K extends keyof FieldEventMap<this>, L extends Function>(eventName: K, listener: Partial<FieldEventMap<ContainerField>>[K], options?: ObservableListenerOpts): L;
 
 	fire<K extends keyof FieldEventMap<this>>(eventName: K, ...args: Parameters<FieldEventMap<Component>[K]>): boolean
 }

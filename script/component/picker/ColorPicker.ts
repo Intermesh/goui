@@ -21,8 +21,8 @@ export interface ColorPickerEventMap<Type> extends ComponentEventMap<Type> {
 	select: (colorPicker: Type, color: string) => void
 }
 
-export interface ColorPicker {
-	on<K extends keyof ColorPickerEventMap<ColorPicker>>(eventName: K, listener: Partial<ColorPickerEventMap<ColorPicker>>[K], options?: ObservableListenerOpts): void
+export interface ColorPicker extends Component {
+	on<K extends keyof ColorPickerEventMap<ColorPicker>, L extends Function>(eventName: K, listener: Partial<ColorPickerEventMap<ColorPicker>>[K], options?: ObservableListenerOpts): L
 
 	fire<K extends keyof ColorPickerEventMap<ColorPicker>>(eventName: K, ...args: Parameters<ColorPickerEventMap<Component>[K]>): boolean
 }

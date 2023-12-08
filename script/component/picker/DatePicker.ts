@@ -17,8 +17,8 @@ export interface DatePickerEventMap<Type> extends ComponentEventMap<Type> {
 	'select-range': (datepicker: Type, start: DateTime|undefined, end: DateTime|undefined) => false | void
 }
 
-export interface DatePicker {
-	on<K extends keyof DatePickerEventMap<this>>(eventName: K, listener: Partial<DatePickerEventMap<this>>[K], options?: ObservableListenerOpts): void;
+export interface DatePicker extends Component{
+	on<K extends keyof DatePickerEventMap<this>, L extends Function>(eventName: K, listener: Partial<DatePickerEventMap<this>>[K], options?: ObservableListenerOpts): L;
 
 	fire<K extends keyof DatePickerEventMap<this>>(eventName: K, ...args: Parameters<DatePickerEventMap<Component>[K]>): boolean;
 
