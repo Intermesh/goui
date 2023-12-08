@@ -485,6 +485,12 @@ export class Window extends DraggableComponent {
 	}
 
 
+	/**
+	 * Display an error message
+	 *
+	 * @param {string} msg - The error message to be displayed.
+	 * @return {undefined} - This method does not return a value.
+	 */
 	public static error(msg:string) {
 		return Window.alert(msg, t("Error") + " - " + (new DateTime).format("Y-m-d H:i:s"));
 	}
@@ -492,13 +498,17 @@ export class Window extends DraggableComponent {
 	/**
 	 * Show modal alert window
 	 *
+	 * @param {any} text - The alert message or an object with a 'message' property
+	 * @param {string} [title="Alert"] - The title of the alert window
+	 * @return {Promise<void>} - A promise that resolves when the alert window is closed
 	 */
 	public static alert(text: any, title: string = t("Alert")): Promise<void> {
 
-		if (text.message) {
+		if (text && text.message) {
 			console.error(text);
 			text = text.message;
 		}
+		
 		return new Promise((resolve, reject) => {
 			win({
 					modal: true,
@@ -522,8 +532,11 @@ export class Window extends DraggableComponent {
 	/**
 	 * Prompt the user for a text input value.
 	 *
-	 * Returns a promise with the input or undefined if the user cancelled
-	 *
+	 * @param {string} text - The message to display to the user.
+	 * @param {string} inputLabel - The label for the input field.
+	 * @param {string} [defaultValue=""] - The default value for the input field.
+	 * @param {string} [title="Please enter"] - The title for the prompt window.
+	 * @returns {Promise<string | undefined>} - A promise that resolves with the input value or undefined if the user cancelled.
 	 */
 	public static prompt(text: string, inputLabel: string, defaultValue = "", title: string = t("Please enter")): Promise<string | undefined> {
 
@@ -587,7 +600,10 @@ export class Window extends DraggableComponent {
 	}
 
 	/**
-	 * Ask the user for confirmation
+	 * Asks the user for confirmation.
+	 * @param {string} text - The text to display in the confirmation dialog.
+	 * @param {string} [title=t("Please confirm")] - The title of the confirmation dialog.
+	 * @return {Promise<boolean>} - A promise that resolves to `true` if the user confirms, or `false` if the user cancels.
 	 */
 	public static confirm(text: string, title: string = t("Please confirm")): Promise<boolean> {
 
