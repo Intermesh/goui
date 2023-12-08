@@ -171,6 +171,7 @@ export class AutocompleteField<T extends List = List> extends TextField {
 
 				case 'ArrowDown':
 					ev.preventDefault();
+					this.fire("autocomplete", this, this._input!.value);
 					this.menuButton.showMenu();
 					this.list.focus();
 					break;
