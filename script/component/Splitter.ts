@@ -49,39 +49,42 @@ export class Splitter extends DraggableComponent {
 	constructor(private resizeComponentPredicate: FindComponentPredicate) {
 		super("hr");
 
-		this.on("beforerender", () => {
-			// find component to resize if it's an id string
-			if (!(resizeComponentPredicate instanceof Component)) {
-				this._resizeComponent = this.parent!.findChild(this.resizeComponentPredicate)!;
-
-				if (!this._resizeComponent) {
-					console.warn(this.resizeComponentPredicate);
-					throw "Could not find component to resize!";
-				}
-			} else {
-				this._resizeComponent = resizeComponentPredicate;
-			}
-
-			if (this._state) {
-				this.restoreState(this._state);
-			}
+		// determine resize component as early as possible. This is just before the parent component renders.
+		// Then the sizes can be set before the resizeComponent renders itself.
+		this.on("added", (comp, index, parent) => {
+			parent.on("beforerender", () => {
+				this.findResizeComponent(resizeComponentPredicate);
+			});
 		});
 	}
 
-	private _state?: ComponentState;
+	private findResizeComponent(resizeComponentPredicate:FindComponentPredicate) {
+		// find component to resize if it's an id string
+		if (!(resizeComponentPredicate instanceof Component)) {
+			this._resizeComponent = this.parent!.findChild(this.resizeComponentPredicate)!;
 
-	protected restoreState(state: ComponentState) {
-		// we don't know the component to resize yet so store the state until
-		// this component is added to a parent.
-		this._state = state;
+			if (!this._resizeComponent) {
+				console.warn(this.resizeComponentPredicate);
+				throw "Could not find component to resize!";
+			}
+		} else {
+			this._resizeComponent = resizeComponentPredicate;
+		}
 
+		const state = this.getState();
+		if (state) {
+			this.applyStateToResizeComp(state);
+		}
+	}
+
+	private applyStateToResizeComp(state: ComponentState) {
 		if (this._resizeComponent) {
-			if (this._state) {
-				if (this._state.width)
-					this._resizeComponent.width = this._state.width;
+			if (state) {
+				if (state.width)
+					this._resizeComponent.width = state.width;
 
-				if (this._state.height)
-					this._resizeComponent.height = this._state.height;
+				if (state.height)
+					this._resizeComponent.height = state.height;
 			}
 		}
 	}
