@@ -18,8 +18,8 @@ export interface RouterEventMap<Type extends Observable> extends ObservableEvent
 	change: (path: string, oldPath: string) => void
 }
 
-export interface Router {
-	on<K extends keyof RouterEventMap<Router>>(eventName: K, listener: RouterEventMap<Router>[K], options?: ObservableListenerOpts): void
+export interface Router extends Observable {
+	on<K extends keyof RouterEventMap<Router>, L extends Function>(eventName: K, listener: RouterEventMap<Router>[K], options?: ObservableListenerOpts): L
 
 	fire<K extends keyof RouterEventMap<Router>>(eventName: K, ...args: Parameters<RouterEventMap<any>[K]>): boolean
 }
