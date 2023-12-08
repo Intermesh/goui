@@ -102,7 +102,7 @@ export interface ComponentEventMap<Type> extends ObservableEventMap<Type> {
 	 * @param me
 	 * @param index the index in the parents' items
 	 */
-	added: (comp: Type, index: number) => void
+	added: (comp: Type, index: number, parent: Component) => void
 }
 
 export interface Component extends Observable {
@@ -221,7 +221,7 @@ export class Component extends Observable {
 			item.parent = this;
 
 			// fires before render! Menu uses this to modify item.parent
-			item.fire("added", item, index);
+			item.fire("added", item, index, this);
 
 			if (this.rendered) {
 				this.renderItem(item);
