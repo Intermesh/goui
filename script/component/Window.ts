@@ -17,6 +17,7 @@ import {textfield} from "./form/TextField.js";
 import {t} from "../Translate.js";
 import {DateTime} from "../util";
 import {Menu} from "./menu";
+import {TreeEventMap} from "./Tree";
 
 
 /**
@@ -47,7 +48,7 @@ export interface WindowEventMap<Type> extends DraggableComponentEventMap<Type> {
 
 export interface Window extends DraggableComponent{
 	on<K extends keyof WindowEventMap<this>, L extends Function>(eventName: K, listener: Partial<WindowEventMap<this>>[K], options?: ObservableListenerOpts): L;
-
+	un<K extends keyof WindowEventMap<this>>(eventName: K, listener: Partial<WindowEventMap<this>>[K]): boolean
 	fire<K extends keyof WindowEventMap<this>>(eventName: K, ...args: Parameters<WindowEventMap<any>[K]>): boolean
 }
 

@@ -6,6 +6,7 @@
 
 import {Component, ComponentEventMap, createComponent} from "./Component.js";
 import {Config, ObservableListenerOpts} from "./Observable.js";
+import {ButtonEventMap} from "./Button";
 
 
 export interface CardContainerEventMap<Type> extends ComponentEventMap<Type> {
@@ -22,7 +23,7 @@ export interface CardContainerEventMap<Type> extends ComponentEventMap<Type> {
 
 export interface CardContainer extends Component {
 	on<K extends keyof CardContainerEventMap<this>, L extends Function>(eventName: K, listener: Partial<CardContainerEventMap<this>>[K], options?: ObservableListenerOpts): L
-
+	un<K extends keyof CardContainerEventMap<this>>(eventName: K, listener: Partial<CardContainerEventMap<this>>[K]): boolean
 	fire<K extends keyof CardContainerEventMap<this>>(eventName: K, ...args: Parameters<CardContainerEventMap<any>[K]>): boolean;
 }
 

@@ -14,6 +14,7 @@ import {BufferedFunction, FunctionUtil} from "../util";
 import {dragData} from "../DragData";
 import {root} from "./Root";
 import {Window} from "./Window";
+import {HtmlFieldEventMap} from "./form";
 
 export type RowRenderer = (record: any, row: HTMLElement, list: any, storeIndex: number) => string | Component[] | void;
 
@@ -119,7 +120,7 @@ export type DROP_POSITION = "before" | "after" | "on";
 
 export interface List<StoreType extends Store = Store> extends Component {
 	on<K extends keyof ListEventMap<this>, L extends Function>(eventName: K, listener: Partial<ListEventMap<this>>[K], options?: ObservableListenerOpts): L;
-
+	un<K extends keyof ListEventMap<this>>(eventName: K, listener: Partial<ListEventMap<this>>[K]): boolean
 	fire<K extends keyof ListEventMap<this>>(eventName: K, ...args: Parameters<ListEventMap<any>[K]>): boolean
 }
 

@@ -19,9 +19,9 @@ export interface RouterEventMap<Type extends Observable> extends ObservableEvent
 }
 
 export interface Router extends Observable {
-	on<K extends keyof RouterEventMap<Router>, L extends Function>(eventName: K, listener: RouterEventMap<Router>[K], options?: ObservableListenerOpts): L
-
-	fire<K extends keyof RouterEventMap<Router>>(eventName: K, ...args: Parameters<RouterEventMap<any>[K]>): boolean
+	on<K extends keyof RouterEventMap<this>, L extends Function>(eventName: K, listener: RouterEventMap<this>[K], options?: ObservableListenerOpts): L
+	un<K extends keyof RouterEventMap<this>>(eventName: K, listener: RouterEventMap<this>[K]): boolean
+	fire<K extends keyof RouterEventMap<this>>(eventName: K, ...args: Parameters<RouterEventMap<any>[K]>): boolean
 }
 
 export type RouterMethod = (...args: string[]) => Promise<any> | any;

@@ -84,7 +84,7 @@ export interface TreeEventMap<Type> extends ListEventMap<Type> {
 
 export interface Tree extends List<Store<TreeRecord>> {
 	on<K extends keyof TreeEventMap<this>, L extends Function>(eventName: K, listener: Partial<TreeEventMap<this>>[K], options?: ObservableListenerOpts): L;
-
+	un<K extends keyof TreeEventMap<this>>(eventName: K, listener: Partial<TreeEventMap<this>>[K]): boolean
 	fire<K extends keyof TreeEventMap<this>>(eventName: K, ...args: Parameters<TreeEventMap<any>[K]>): boolean
 }
 

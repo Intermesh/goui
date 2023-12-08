@@ -13,7 +13,7 @@ import {Config, ObservableListenerOpts} from "../Observable.js";
 import {browser} from "../../util/Browser.js";
 import {colormenu, ColorMenu} from "../menu/ColorMenu.js";
 import {Menu} from "../menu/Menu.js";
-import {comp, Component, createComponent} from "../Component.js";
+import {comp, Component, ComponentEventMap, createComponent} from "../Component.js";
 import {FunctionUtil} from "../../util/FunctionUtil.js";
 import {root} from "../Root.js";
 import {MaterialIcon} from "../MaterialIcon.js";
@@ -54,9 +54,8 @@ export interface HtmlFieldEventMap<Type> extends FieldEventMap<Type> {
 
 export interface HtmlField extends Field {
 	on<K extends keyof HtmlFieldEventMap<HtmlField>, L extends Function>(eventName: K, listener: Partial<HtmlFieldEventMap<HtmlField>>[K], options?: ObservableListenerOpts): L
-
+	un<K extends keyof HtmlFieldEventMap<this>>(eventName: K, listener: Partial<HtmlFieldEventMap<this>>[K]): boolean
 	fire<K extends keyof HtmlFieldEventMap<HtmlField>>(eventName: K, ...args: Parameters<HtmlFieldEventMap<Component>[K]>): boolean
-
 }
 
 interface CmdConfig {

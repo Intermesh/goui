@@ -61,6 +61,7 @@ export interface DataSourceFormEventMap<Type, ValueType extends ContainerFieldVa
 
 export interface DataSourceForm<ValueType extends BaseEntity = DefaultEntity> extends Form<ValueType> {
 	on<K extends keyof DataSourceFormEventMap<this, ValueType>, L extends Function>(eventName: K, listener: Partial<DataSourceFormEventMap<this,ValueType>>[K], options?: ObservableListenerOpts): L
+	un<K extends keyof DataSourceFormEventMap<this, ValueType>, L extends Function>(eventName: K, listener: Partial<DataSourceFormEventMap<this,ValueType>>[K]): boolean
 	fire<K extends keyof DataSourceFormEventMap<this, ValueType>>(eventName: K, ...args: Parameters<DataSourceFormEventMap<any, ValueType>[K]>): boolean
 }
 

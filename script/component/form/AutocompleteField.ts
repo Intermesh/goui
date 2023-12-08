@@ -14,6 +14,7 @@ import {List, listStoreType} from "../List";
 import {listpicker} from "../picker";
 import {Menu, menu} from "../menu";
 import {storeRecordType} from "../../data";
+import {AutocompleteChipsEventMap} from "./AutocompleteChips";
 
 export interface AutocompleteEventMap<Type> extends FieldEventMap<Type> {
 	/**
@@ -30,7 +31,7 @@ export interface AutocompleteEventMap<Type> extends FieldEventMap<Type> {
 
 export interface AutocompleteField<T extends List> extends TextField {
 	on<K extends keyof AutocompleteEventMap<this>, L extends Function>(eventName: K, listener: Partial<AutocompleteEventMap<this>>[K], options?: ObservableListenerOpts): L
-
+	un<K extends keyof AutocompleteEventMap<this>>(eventName: K, listener: Partial<AutocompleteEventMap<this>>[K]): boolean
 	fire<K extends keyof AutocompleteEventMap<this>>(eventName: K, ...args: Parameters<AutocompleteEventMap<Component>[K]>): boolean
 }
 

@@ -6,7 +6,7 @@
 
 import {Field, FieldEventMap} from "./Field.js";
 import {Config, ObservableListenerOpts} from "../Observable.js";
-import {Component, createComponent} from "../Component.js";
+import {Component, ComponentEventMap, createComponent} from "../Component.js";
 import {ObjectUtil} from "../../util/ObjectUtil.js";
 import {MapField} from "./MapField.js";
 
@@ -15,8 +15,8 @@ export type ContainerFieldValue = Record<string, any>;
 
 
 export interface ContainerField extends Field {
-	on<K extends keyof FieldEventMap<this>, L extends Function>(eventName: K, listener: Partial<FieldEventMap<ContainerField>>[K], options?: ObservableListenerOpts): L;
-
+	on<K extends keyof FieldEventMap<this>, L extends Function>(eventName: K, listener: Partial<FieldEventMap<this>>[K], options?: ObservableListenerOpts): L;
+	un<K extends keyof FieldEventMap<this>>(eventName: K, listener: Partial<FieldEventMap<this>>[K]): boolean
 	fire<K extends keyof FieldEventMap<this>>(eventName: K, ...args: Parameters<FieldEventMap<Component>[K]>): boolean
 }
 
