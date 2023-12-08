@@ -201,8 +201,8 @@ $formFieldBorderRadius: dp(10);
 
 .goui-pit {
 	@extend %control-pit;
-	> div {
-		border-bottom: $borderWidth solid $colorBorder;
+	> div + div {
+		border-top: $borderWidth solid $colorBorder;
 	}
 }
 
@@ -718,7 +718,7 @@ $formFieldBorderRadius: dp(10);
 .textarea {
 	textarea
 	{
-		min-height: dp(100);
+		min-height: dp(42);
 	}
 }
 
