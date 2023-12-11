@@ -200,7 +200,6 @@ export class Button extends Component {
 	}
 
 	private onMenuButtonClick(ev: MouseEvent) {
-		console.log(ev);
 		if (this._menu!.hidden) {
 			this.showMenu();
 		} else {
