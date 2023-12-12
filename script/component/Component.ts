@@ -23,7 +23,7 @@ import {ColorPickerEventMap} from "./picker";
 export type FindComponentPredicate = string | Component | ((comp: Component) => boolean | void);
 
 
-interface Type<T> {
+interface ClassTypeOf<T> {
 	new(...args: any[]): T
 }
 
@@ -786,7 +786,7 @@ export class Component extends Observable {
 	 * ```
 	 * @param cls
 	 */
-	public findAncestorByType<T extends typeof Component>(cls: T): InstanceType<T> | undefined {
+	public findAncestorByType<T extends ClassTypeOf<Component>>(cls: T): InstanceType<T> | undefined {
 		const p = this.findAncestor(cmp => cmp instanceof cls);
 		if (p) {
 			return p as InstanceType<T>;
@@ -925,7 +925,7 @@ export class Component extends Observable {
 	 * ```
 	 * @param cls
 	 */
-	public findChildByType<T extends Component>(cls: Type<T>): T | undefined {
+	public findChildByType<T extends Component>(cls: ClassTypeOf<T>): T | undefined {
 		const p = this.findChild(cmp => cmp instanceof cls);
 		if (p) {
 			return p as T;
@@ -943,7 +943,7 @@ export class Component extends Observable {
 	 * ```
 	 * @param cls
 	 */
-	public findChildrenByType<T extends Component>(cls: Type<T>): T[] {
+	public findChildrenByType<T extends Component>(cls: ClassTypeOf<T>): T[] {
 		return this.findChildren(Component => Component instanceof cls) as T[];
 	}
 
