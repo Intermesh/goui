@@ -184,14 +184,16 @@ export class Observable {
 			return true;
 		}
 
+		let ret = true;
+
 		for (let l of this.lisnrs[eventName]) {
 
 			if (l.listener.apply(null, args) === false) {
-				return false;
+				ret = false;
 			}
 		}
 
-		return true;
+		return ret;
 	}
 
 	protected relayEvent(comp:Observable, type: any) {
