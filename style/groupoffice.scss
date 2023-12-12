@@ -1,14 +1,15 @@
-$scale: 0.875;
+//compact
+//$density: 46%;
+//$font-scale: 1.1;
+
+@import 'theme';
 @import 'util';
 
 $borderWidth: 1px;
 $baseLineHeight: dp(20);
 $fontSize: sp(16);
 
-
 @import 'config';
-@import 'theme';
-
 @import 'icons';
 @import 'shadows';
 @import 'general';
@@ -26,4 +27,3 @@ $fontSize: sp(16);
 @import 'description_list';
 @import 'tree';
 @import 'print';
-@import '_groupoffice';

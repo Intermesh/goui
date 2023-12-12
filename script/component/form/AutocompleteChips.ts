@@ -6,7 +6,8 @@ import {FieldEventMap} from "./Field";
 import {Config, ObservableListenerOpts} from "../Observable";
 import {Component, createComponent} from "../Component";
 import {FunctionUtil} from "../../util";
-import {storeRecordType} from "../../data";
+import {DataSourceEventMap, storeRecordType} from "../../data";
+import {RouterEventMap} from "../../Router";
 export interface AutocompleteChipsEventMap<Type> extends FieldEventMap<Type> {
 	/**
 	 * Fires when suggestions need to load
@@ -16,9 +17,9 @@ export interface AutocompleteChipsEventMap<Type> extends FieldEventMap<Type> {
 	autocomplete: (field: Type, input: string) => any
 }
 
-export interface AutocompleteChips<T extends List> {
-	on<K extends keyof AutocompleteChipsEventMap<this>>(eventName: K, listener: Partial<AutocompleteChipsEventMap<this>>[K], options?: ObservableListenerOpts): void
-
+export interface AutocompleteChips<T extends List> extends ChipsField {
+	on<K extends keyof AutocompleteChipsEventMap<this>, L extends Function>(eventName: K, listener: Partial<AutocompleteChipsEventMap<this>>[K], options?: ObservableListenerOpts): L
+	un<K extends keyof AutocompleteChipsEventMap<this>>(eventName: K, listener: Partial<AutocompleteChipsEventMap<this>>[K]): boolean
 	fire<K extends keyof AutocompleteChipsEventMap<this>>(eventName: K, ...args: Parameters<AutocompleteChipsEventMap<Component>[K]>): boolean
 }
 

@@ -4,7 +4,7 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {btn} from "../Button.js";
+import {btn, ButtonEventMap} from "../Button.js";
 import {Config, ObservableListenerOpts} from "../Observable.js";
 import {comp, Component, ComponentEventMap, createComponent} from "../Component.js";
 
@@ -21,9 +21,9 @@ export interface ColorPickerEventMap<Type> extends ComponentEventMap<Type> {
 	select: (colorPicker: Type, color: string) => void
 }
 
-export interface ColorPicker {
-	on<K extends keyof ColorPickerEventMap<ColorPicker>>(eventName: K, listener: Partial<ColorPickerEventMap<ColorPicker>>[K], options?: ObservableListenerOpts): void
-
+export interface ColorPicker extends Component {
+	on<K extends keyof ColorPickerEventMap<ColorPicker>, L extends Function>(eventName: K, listener: Partial<ColorPickerEventMap<ColorPicker>>[K], options?: ObservableListenerOpts): L
+	un<K extends keyof ColorPickerEventMap<this>>(eventName: K, listener: Partial<ColorPickerEventMap<this>>[K]): boolean
 	fire<K extends keyof ColorPickerEventMap<ColorPicker>>(eventName: K, ...args: Parameters<ColorPickerEventMap<Component>[K]>): boolean
 }
 

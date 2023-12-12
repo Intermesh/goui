@@ -50,8 +50,8 @@ export interface RowSelectEventMap<Type extends Observable> extends ObservableEv
 	rowdeselect: (rowSelect: Type, storeIndex: number) => void
 }
 
-export interface RowSelect {
-	on<K extends keyof RowSelectEventMap<this>>(eventName: K, listener: Partial<RowSelectEventMap<this>>[K], options?: ObservableListenerOpts): void
+export interface RowSelect{
+	on<K extends keyof RowSelectEventMap<this>, L extends Function>(eventName: K, listener: Partial<RowSelectEventMap<this>>[K], options?: ObservableListenerOpts): L
 
 	fire<K extends keyof RowSelectEventMap<this>>(eventName: K, ...args: Parameters<RowSelectEventMap<any>[K]>): boolean
 

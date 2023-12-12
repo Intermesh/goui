@@ -4,60 +4,33 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
+//Set before util and theme:
+//$density: 54%;
+//$mobileDensity: 62.5%;
+//$font-scale: 1;
+
 @import 'util';
-@import 'config';
 @import 'theme';
+
+//Override defaults from _config.scss:
+//$borderWidth: 1px;
+//$baseLineHeight: dp(20);
+//$fontSize: sp(16);
+
+@import 'config';
 @import 'icons';
-//@import 'lato';
-
-//.goui {
-//
-//
-//	&.fit {
-//		width: 100%;
-//		height: 100%;
-//	}
-//
-//	&.fullscreen {
-//		top: 0;
-//		left: 0;
-//		margin: 0;
-//		padding: 0;
-//		position: fixed;
-//		overflow: hidden;
-//		width: 100%;
-//		max-width: 100%;
-//		height: 100%;
-//		max-height: 100%;
-//		-webkit-user-drag: none;
-//		-ms-content-zooming: none;
-//		-ms-touch-action: manipulation;
-//		touch-action: manipulation;
-//		word-wrap: break-word;
-//		-webkit-text-size-adjust: none;
-//		-moz-text-size-adjust: none;
-//		-ms-text-size-adjust: none;
-//		text-size-adjust: none;
-//		-webkit-user-select: none;
-//		-moz-user-select: none;
-//		-ms-user-select: none;
-//		user-select: none;
-//	}
-
-	@import 'shadows';
-	@import 'general';
-	@import 'normalize';
+@import 'shadows';
+@import 'general';
+@import 'normalize';
 @import 'print';
-
-	@import 'tree';
-	@import 'layout';
-	@import 'alert';
-	@import 'mask';
-	@import 'form';
-	@import 'button';
-	@import 'table';
-	@import 'menu';
-	@import 'window';
-	@import 'datepicker';
-	@import 'description_list';
-//}
+@import 'tree';
+@import 'layout';
+@import 'alert';
+@import 'mask';
+@import 'form';
+@import 'button';
+@import 'table';
+@import 'menu';
+@import 'window';
+@import 'datepicker';
+@import 'description_list';

@@ -11,6 +11,7 @@ import {TextField, textfield} from "./form/TextField.js";
 import {Component, createComponent} from "./Component.js";
 import {FunctionUtil} from "../util/FunctionUtil.js";
 import {Config, ObservableListenerOpts} from "./Observable.js";
+import {ListPickerEventMap} from "./picker";
 
 
 /**
@@ -23,9 +24,9 @@ export interface SearchButtonEventMap<Type> extends ButtonEventMap<Type> {
 	reset: (searchBtn: Type) => void
 }
 
-export interface SearchButton {
-	on<K extends keyof SearchButtonEventMap<this>>(eventName: K, listener: Partial<SearchButtonEventMap<this>>[K], options?: ObservableListenerOpts): void;
-
+export interface SearchButton extends Button {
+	on<K extends keyof SearchButtonEventMap<this>, L extends Function>(eventName: K, listener: Partial<SearchButtonEventMap<this>>[K], options?: ObservableListenerOpts): L;
+	un<K extends keyof SearchButtonEventMap<this>>(eventName: K, listener: Partial<SearchButtonEventMap<this>>[K]): boolean
 	fire<K extends keyof SearchButtonEventMap<this>>(eventName: K, ...args: Parameters<SearchButtonEventMap<Component>[K]>): boolean
 }
 

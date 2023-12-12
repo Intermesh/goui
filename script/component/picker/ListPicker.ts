@@ -1,7 +1,7 @@
 import {Table} from "../table";
 import {storeRecordType} from "../../data";
 import {Component, ComponentEventMap, createComponent} from "../Component";
-import {List, listStoreType} from "../List";
+import {List, ListEventMap, listStoreType} from "../List";
 import {Config, ObservableListener, ObservableListenerOpts} from "../Observable";
 
 
@@ -13,7 +13,8 @@ export interface ListPickerEventMap<Type extends ListPicker<List>> extends Compo
 }
 
 export interface ListPicker<ListType extends List> extends Component {
-	on<K extends keyof ListPickerEventMap<this>>(eventName: K, listener: Partial<ListPickerEventMap<this>>[K], options?: ObservableListenerOpts): void;
+	on<K extends keyof ListPickerEventMap<this>, L extends Function>(eventName: K, listener: Partial<ListPickerEventMap<this>>[K], options?: ObservableListenerOpts): L;
+	un<K extends keyof ListPickerEventMap<this>>(eventName: K, listener: Partial<ListPickerEventMap<this>>[K]): boolean
 	fire<K extends keyof ListPickerEventMap<this>>(eventName: K, ...args: Parameters<ListPickerEventMap<any>[K]>): boolean
 }
 

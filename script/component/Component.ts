@@ -8,6 +8,7 @@
 import {Config, Observable, ObservableEventMap, ObservableListener, ObservableListenerOpts,} from "./Observable.js";
 import {State} from "../State.js";
 import {browser, Collection} from "../util";
+import {ColorPickerEventMap} from "./picker";
 
 /**
  * A component identifier by id, itemId, Component instance or custom function
@@ -102,12 +103,12 @@ export interface ComponentEventMap<Type> extends ObservableEventMap<Type> {
 	 * @param me
 	 * @param index the index in the parents' items
 	 */
-	added: (comp: Type, index: number) => void
+	added: (comp: Type, index: number, parent: Component) => void
 }
 
 export interface Component extends Observable {
-	on<K extends keyof ComponentEventMap<Component>>(eventName: K, listener: Partial<ComponentEventMap<Component>>[K], options?: ObservableListenerOpts): void
-
+	on<K extends keyof ComponentEventMap<Component>, L extends Function>(eventName: K, listener: Partial<ComponentEventMap<Component>>[K], options?: ObservableListenerOpts): L
+	un<K extends keyof ComponentEventMap<this>>(eventName: K, listener: Partial<ComponentEventMap<this>>[K]): boolean
 	fire<K extends keyof ComponentEventMap<Component>>(eventName: K, ...args: Parameters<ComponentEventMap<any>[K]>): boolean
 }
 
@@ -221,7 +222,7 @@ export class Component extends Observable {
 			item.parent = this;
 
 			// fires before render! Menu uses this to modify item.parent
-			item.fire("added", item, index);
+			item.fire("added", item, index, this);
 
 			if (this.rendered) {
 				this.renderItem(item);

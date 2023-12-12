@@ -1,6 +1,5 @@
 @use "sass:math";
 
-$scale: 1 !default;
 $font-scale: 1 !default;
 
 @function dp($width) {

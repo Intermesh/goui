@@ -94,7 +94,7 @@ export interface DraggableComponentEventMap<Type> extends ComponentEventMap<Type
 
 
 export interface DraggableComponent {
-	on<K extends keyof DraggableComponentEventMap<this>>(eventName: K, listener: Partial<DraggableComponentEventMap<this>>[K], options?: ObservableListenerOpts): void;
+	on<K extends keyof DraggableComponentEventMap<this>, L extends Function>(eventName: K, listener: Partial<DraggableComponentEventMap<this>>[K], options?: ObservableListenerOpts): L;
 
 	fire<K extends keyof DraggableComponentEventMap<this>>(eventName: K, ...args: Parameters<DraggableComponentEventMap<any>[K]>): boolean
 }

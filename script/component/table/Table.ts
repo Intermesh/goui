@@ -16,13 +16,15 @@ import {List, ListEventMap} from "../List.js";
 import {Config, ObservableListenerOpts} from "../Observable";
 import {t} from "../../Translate";
 import {index} from "typedoc/dist/lib/output/themes/default/partials";
+import {SearchButtonEventMap} from "../SearchButton";
 
 
 type GroupByRenderer = (groupBy: any, record: any, thEl: HTMLTableCellElement, table: Table) => string | Promise<string> | Component | Promise<Component>;
 
 
 export interface Table<StoreType extends Store = Store> extends List<StoreType>  {
-	on<K extends keyof ListEventMap<this>>(eventName: K, listener: Partial<ListEventMap<this>>[K], options?: ObservableListenerOpts): void;
+	on<K extends keyof ListEventMap<this>, L extends Function>(eventName: K, listener: Partial<ListEventMap<this>>[K], options?: ObservableListenerOpts): L;
+	un<K extends keyof ListEventMap<this>>(eventName: K, listener: Partial<ListEventMap<this>>[K]): boolean
 	fire<K extends keyof ListEventMap<this>>(eventName: K, ...args: Parameters<ListEventMap<any>[K]>): boolean
 }
 

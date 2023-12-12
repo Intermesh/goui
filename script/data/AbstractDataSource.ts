@@ -4,11 +4,12 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {Component, Observable, ObservableEventMap, root, Window} from "../component/index.js";
+import {Component, Observable, ObservableEventMap, ObservableListenerOpts, root, Window} from "../component/index.js";
 import {Comparator} from "./Store.js";
 import {FunctionUtil} from "../util/index.js";
 import {BrowserStore} from "../util/BrowserStorage.js";
 import {t} from "../Translate";
+import {Router, RouterEventMap} from "../Router";
 
 /**
  * The response of the {@see AbstractDataSource.get()} method
@@ -190,8 +191,8 @@ export type dataSourceEntityType<DS> = DS extends AbstractDataSource<infer Entit
 
 
 export interface AbstractDataSource<EntityType extends BaseEntity = DefaultEntity>  extends Observable {
-	on<K extends keyof DataSourceEventMap<this>>(eventName: K, listener: DataSourceEventMap<this>[K]): void
-
+	on<K extends keyof DataSourceEventMap<this>>(eventName: K, listener: DataSourceEventMap<this>[K], options?: ObservableListenerOpts): DataSourceEventMap<this>[K]
+	un<K extends keyof DataSourceEventMap<this>>(eventName: K, listener: RouterEventMap<this>[K]): boolean
 	fire<K extends keyof DataSourceEventMap<this>>(eventName: K, ...args: Parameters<DataSourceEventMap<this>[K]>): boolean
 }
 
