@@ -16,7 +16,7 @@ import {Form, form} from "../form/Form.js";
 import {tbar} from "../Toolbar.js";
 import {CheckboxField} from "../form/CheckboxField.js";
 import {Frequency, RecurrenceRule} from "../../util/Recurrence.js";
-import {ObservableListenerOpts} from "../Observable.js";
+import {Listener, ObservableListenerOpts} from "../Observable.js";
 import {NumberField, numberfield} from "../form/NumberField.js";
 import {Field} from "../form/Field.js";
 import {CardContainer, CardContainerEventMap} from "../CardContainer.js";
@@ -29,7 +29,7 @@ export interface RecurrencePickerEventMap<Type> extends CardContainerEventMap<Ty
 }
 
 export interface RecurrencePicker {
-	on<K extends keyof RecurrencePickerEventMap<this>, L extends Function>(eventName: K, listener: Partial<RecurrencePickerEventMap<this>>[K], options?: ObservableListenerOpts): L;
+	on<K extends keyof RecurrencePickerEventMap<this>, L extends Listener>(eventName: K, listener: Partial<RecurrencePickerEventMap<this>>[K], options?: ObservableListenerOpts): L;
 
 	fire<K extends keyof RecurrencePickerEventMap<this>>(eventName: K, ...args: Parameters<RecurrencePickerEventMap<Component>[K]>): boolean;
 }

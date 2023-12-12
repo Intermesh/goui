@@ -5,7 +5,7 @@
  */
 
 import {ContainerField, ContainerFieldValue} from "./ContainerField.js";
-import {Config, ObservableListenerOpts} from "../Observable.js";
+import {Config, Listener, ObservableListenerOpts} from "../Observable.js";
 import {Notifier} from "../../Notifier.js";
 import {Component, createComponent} from "../Component.js";
 import {FieldEventMap} from "./Field.js";
@@ -32,7 +32,7 @@ export interface FormEventMap<Type, ValueType extends ContainerFieldValue = Cont
 }
 
 export interface Form<ValueType extends ContainerFieldValue = ContainerFieldValue> extends ContainerField<ValueType> {
-	on<K extends keyof FormEventMap<this, ValueType>, L extends Function>(eventName: K, listener: Partial<FormEventMap<this,ValueType>>[K], options?: ObservableListenerOpts): L
+	on<K extends keyof FormEventMap<this, ValueType>, L extends Listener>(eventName: K, listener: Partial<FormEventMap<this,ValueType>>[K], options?: ObservableListenerOpts): L
 	un<K extends keyof FormEventMap<this, ValueType>>(eventName: K, listener: Partial<FormEventMap<this, ValueType>>[K]): boolean
 	fire<K extends keyof FormEventMap<this, ValueType>>(eventName: K, ...args: Parameters<FormEventMap<any, ValueType>[K]>): boolean
 

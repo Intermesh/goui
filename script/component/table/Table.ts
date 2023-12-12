@@ -13,7 +13,7 @@ import {Notifier} from "../../Notifier.js";
 import {draggable} from "../DraggableComponent.js";
 import {TableColumn} from "./TableColumns.js";
 import {List, ListEventMap} from "../List.js";
-import {Config, ObservableListenerOpts} from "../Observable";
+import {Config, Listener, ObservableListenerOpts} from "../Observable";
 import {t} from "../../Translate";
 import {index} from "typedoc/dist/lib/output/themes/default/partials";
 import {SearchButtonEventMap} from "../SearchButton";
@@ -23,7 +23,7 @@ type GroupByRenderer = (groupBy: any, record: any, thEl: HTMLTableCellElement, t
 
 
 export interface Table<StoreType extends Store = Store> extends List<StoreType>  {
-	on<K extends keyof ListEventMap<this>, L extends Function>(eventName: K, listener: Partial<ListEventMap<this>>[K], options?: ObservableListenerOpts): L;
+	on<K extends keyof ListEventMap<this>, L extends Listener>(eventName: K, listener: Partial<ListEventMap<this>>[K], options?: ObservableListenerOpts): L;
 	un<K extends keyof ListEventMap<this>>(eventName: K, listener: Partial<ListEventMap<this>>[K]): boolean
 	fire<K extends keyof ListEventMap<this>>(eventName: K, ...args: Parameters<ListEventMap<any>[K]>): boolean
 }

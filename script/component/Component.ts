@@ -5,7 +5,14 @@
  */
 
 
-import {Config, Observable, ObservableEventMap, ObservableListener, ObservableListenerOpts,} from "./Observable.js";
+import {
+	Config,
+	Listener,
+	Observable,
+	ObservableEventMap,
+	ObservableListener,
+	ObservableListenerOpts,
+} from "./Observable.js";
 import {State} from "../State.js";
 import {browser, Collection} from "../util";
 import {ColorPickerEventMap} from "./picker";
@@ -107,7 +114,7 @@ export interface ComponentEventMap<Type> extends ObservableEventMap<Type> {
 }
 
 export interface Component extends Observable {
-	on<K extends keyof ComponentEventMap<Component>, L extends Function>(eventName: K, listener: Partial<ComponentEventMap<Component>>[K], options?: ObservableListenerOpts): L
+	on<K extends keyof ComponentEventMap<Component>, L extends Listener>(eventName: K, listener: Partial<ComponentEventMap<Component>>[K], options?: ObservableListenerOpts): L
 	un<K extends keyof ComponentEventMap<this>>(eventName: K, listener: Partial<ComponentEventMap<this>>[K]): boolean
 	fire<K extends keyof ComponentEventMap<Component>>(eventName: K, ...args: Parameters<ComponentEventMap<any>[K]>): boolean
 }

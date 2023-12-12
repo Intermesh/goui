@@ -8,7 +8,7 @@ import {comp, Component, createComponent} from "./Component.js";
 import {tbar, Toolbar} from "./Toolbar.js";
 import {btn} from "./Button.js";
 import {DraggableComponent, DraggableComponentEventMap} from "./DraggableComponent.js";
-import {Config, ObservableListenerOpts} from "./Observable.js";
+import {Config, Listener, ObservableListenerOpts} from "./Observable.js";
 import {root} from "./Root.js";
 import {FunctionUtil} from "../util/FunctionUtil.js";
 import {form} from "./form/Form.js";
@@ -47,7 +47,7 @@ export interface WindowEventMap<Type> extends DraggableComponentEventMap<Type> {
 }
 
 export interface Window extends DraggableComponent{
-	on<K extends keyof WindowEventMap<this>, L extends Function>(eventName: K, listener: Partial<WindowEventMap<this>>[K], options?: ObservableListenerOpts): L;
+	on<K extends keyof WindowEventMap<this>, L extends Listener>(eventName: K, listener: Partial<WindowEventMap<this>>[K], options?: ObservableListenerOpts): L;
 	un<K extends keyof WindowEventMap<this>>(eventName: K, listener: Partial<WindowEventMap<this>>[K]): boolean
 	fire<K extends keyof WindowEventMap<this>>(eventName: K, ...args: Parameters<WindowEventMap<any>[K]>): boolean
 }

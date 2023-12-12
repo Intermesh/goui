@@ -5,7 +5,7 @@
  */
 
 import {TextField} from "./TextField.js";
-import {Config, ObservableEventMap, ObservableListenerOpts} from "../Observable.js";
+import {Config, Listener, ObservableEventMap, ObservableListenerOpts} from "../Observable.js";
 import {FunctionUtil} from "../../util/FunctionUtil.js";
 import {FieldEventMap} from "./Field.js";
 import {btn, Button} from "../Button.js";
@@ -30,7 +30,7 @@ export interface AutocompleteEventMap<Type> extends FieldEventMap<Type> {
 }
 
 export interface AutocompleteField<T extends List> extends TextField {
-	on<K extends keyof AutocompleteEventMap<this>, L extends Function>(eventName: K, listener: Partial<AutocompleteEventMap<this>>[K], options?: ObservableListenerOpts): L
+	on<K extends keyof AutocompleteEventMap<this>, L extends Listener>(eventName: K, listener: Partial<AutocompleteEventMap<this>>[K], options?: ObservableListenerOpts): L
 	un<K extends keyof AutocompleteEventMap<this>>(eventName: K, listener: Partial<AutocompleteEventMap<this>>[K]): boolean
 	fire<K extends keyof AutocompleteEventMap<this>>(eventName: K, ...args: Parameters<AutocompleteEventMap<Component>[K]>): boolean
 }

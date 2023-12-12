@@ -4,7 +4,7 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {Config, Observable, ObservableEventMap, ObservableListenerOpts} from "../Observable.js";
+import {Config, Listener, Observable, ObservableEventMap, ObservableListenerOpts} from "../Observable.js";
 import {List} from "../List.js";
 import {ArrayUtil} from "../../util/ArrayUtil.js";
 import {createComponent} from "../Component";
@@ -51,7 +51,7 @@ export interface RowSelectEventMap<Type extends Observable> extends ObservableEv
 }
 
 export interface RowSelect{
-	on<K extends keyof RowSelectEventMap<this>, L extends Function>(eventName: K, listener: Partial<RowSelectEventMap<this>>[K], options?: ObservableListenerOpts): L
+	on<K extends keyof RowSelectEventMap<this>, L extends Listener>(eventName: K, listener: Partial<RowSelectEventMap<this>>[K], options?: ObservableListenerOpts): L
 
 	fire<K extends keyof RowSelectEventMap<this>>(eventName: K, ...args: Parameters<RowSelectEventMap<any>[K]>): boolean
 

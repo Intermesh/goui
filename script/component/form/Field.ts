@@ -5,7 +5,7 @@
  */
 
 import {Component, ComponentEventMap} from "../Component.js";
-import {ObservableListenerOpts} from "../Observable.js";
+import {Listener, ObservableListenerOpts} from "../Observable.js";
 import {Button} from "../Button.js";
 import {tbar, Toolbar} from "../Toolbar.js";
 import {t} from "../../Translate.js";
@@ -67,7 +67,7 @@ export interface FieldEventMap<Type> extends ComponentEventMap<Type> {
 
 
 export interface Field extends Component {
-	on<K extends keyof FieldEventMap<this>, L extends Function>(eventName: K, listener: Partial<FieldEventMap<this>>[K], options?: ObservableListenerOpts): L;
+	on<K extends keyof FieldEventMap<this>, L extends Listener>(eventName: K, listener: Partial<FieldEventMap<this>>[K], options?: ObservableListenerOpts): L;
 	un<K extends keyof FieldEventMap<this>>(eventName: K, listener: Partial<FieldEventMap<this>>[K]): boolean
 	fire<K extends keyof FieldEventMap<this>>(eventName: K, ...args: Parameters<FieldEventMap<any>[K]>): boolean
 }

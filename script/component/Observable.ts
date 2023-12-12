@@ -31,7 +31,7 @@ export type ObservableListener<Map extends ObservableEventMap<Observable>> = {
 	[P in keyof Map]?: ObservableListenerWithOpts<Map[P]> | Map[P]
 };
 
-// type Listener<Comp, EventParams extends any[]> = (sender: Comp, ...args: EventParams) => false|void
+export type Listener<Comp extends Observable = Observable> = (sender: Comp, ...args: any[]) => false|void
 //
 // export type ObservableListener2<Comp extends Observable<Map>, Map extends ObservableEventMap2> =  {
 // 	[P in keyof Map]?: Map[P] extends Func ? ObservableListenerWithOpts<Map[P]> | Listener<Comp, Parameters<Map[P]>> : never
@@ -82,7 +82,7 @@ interface ObservableListenerWithOpts<fn> extends ObservableListenerOpts {
 export class Observable {
 
 	private lisnrs: {
-		[key: string]: { listener: Function, unbindkey: Function, options?: ObservableListenerOpts }[]
+		[key: string]: { listener: Function, unbindkey: Listener, options?: ObservableListenerOpts }[]
 	} | undefined;
 
 	/**
@@ -92,7 +92,7 @@ export class Observable {
 	 * @param listener
 	 * @param options
 	 */
-	public on<key extends keyof ObservableEventMap<this>, L extends Function>(eventName: keyof ObservableEventMap<this>, listener: ObservableEventMap<this>[key], options?: ObservableListenerOpts) : L {
+	public on<key extends keyof ObservableEventMap<this>, L extends Listener>(eventName: keyof ObservableEventMap<this>, listener: ObservableEventMap<this>[key], options?: ObservableListenerOpts) : L {
 
 		//store original listener for the un() method. Because options may change the function
 		const unbindkey = listener!;

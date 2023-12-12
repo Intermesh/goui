@@ -7,7 +7,7 @@
 import {Component, ComponentEventMap, createComponent} from "../Component.js";
 import {DateTime} from "../../util/DateTime.js";
 import {E} from "../../util/Element.js";
-import {Config, ObservableListenerOpts} from "../Observable.js";
+import {Config, Listener, ObservableListenerOpts} from "../Observable.js";
 import {t} from "../../Translate";
 
 // import {Button} from "../Button";
@@ -18,7 +18,7 @@ export interface DatePickerEventMap<Type> extends ComponentEventMap<Type> {
 }
 
 export interface DatePicker extends Component{
-	on<K extends keyof DatePickerEventMap<this>, L extends Function>(eventName: K, listener: Partial<DatePickerEventMap<this>>[K], options?: ObservableListenerOpts): L;
+	on<K extends keyof DatePickerEventMap<this>, L extends Listener>(eventName: K, listener: Partial<DatePickerEventMap<this>>[K], options?: ObservableListenerOpts): L;
 	un<K extends keyof DatePickerEventMap<this>>(eventName: K, listener: Partial<DatePickerEventMap<this>>[K]): boolean
 	fire<K extends keyof DatePickerEventMap<this>>(eventName: K, ...args: Parameters<DatePickerEventMap<Component>[K]>): boolean;
 }

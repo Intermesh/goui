@@ -9,7 +9,7 @@ import {Store, StoreRecord} from "../data/Store.js";
 import {t} from "../Translate.js";
 import {E} from "../util/Element.js";
 import {rowselect, RowSelect, RowSelectConfig} from "./table/RowSelect.js";
-import {Config, ObservableListenerOpts} from "./Observable.js";
+import {Config, Listener, ObservableListenerOpts} from "./Observable.js";
 import {BufferedFunction, FunctionUtil} from "../util";
 import {dragData} from "../DragData";
 import {root} from "./Root";
@@ -119,7 +119,7 @@ export interface ListEventMap<Type> extends ComponentEventMap<Type> {
 export type DROP_POSITION = "before" | "after" | "on";
 
 export interface List<StoreType extends Store = Store> extends Component {
-	on<K extends keyof ListEventMap<this>, L extends Function>(eventName: K, listener: Partial<ListEventMap<this>>[K], options?: ObservableListenerOpts): L;
+	on<K extends keyof ListEventMap<this>, L extends Listener>(eventName: K, listener: Partial<ListEventMap<this>>[K], options?: ObservableListenerOpts): L;
 	un<K extends keyof ListEventMap<this>>(eventName: K, listener: Partial<ListEventMap<this>>[K]): boolean
 	fire<K extends keyof ListEventMap<this>>(eventName: K, ...args: Parameters<ListEventMap<any>[K]>): boolean
 }

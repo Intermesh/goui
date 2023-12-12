@@ -6,7 +6,7 @@
 import {Form, FormEventMap} from "./Form";
 import {AbstractDataSource, BaseEntity, DefaultEntity, EntityID} from "../../data";
 import {t} from "../../Translate";
-import {Config, ObservableListenerOpts} from "../Observable";
+import {Config, Listener, ObservableListenerOpts} from "../Observable";
 import {Component, createComponent} from "../Component";
 import {ContainerFieldValue} from "./ContainerField";
 import {Window} from "../Window";
@@ -60,8 +60,8 @@ export interface DataSourceFormEventMap<Type, ValueType extends ContainerFieldVa
 }
 
 export interface DataSourceForm<ValueType extends BaseEntity = DefaultEntity> extends Form<ValueType> {
-	on<K extends keyof DataSourceFormEventMap<this, ValueType>, L extends Function>(eventName: K, listener: Partial<DataSourceFormEventMap<this,ValueType>>[K], options?: ObservableListenerOpts): L
-	un<K extends keyof DataSourceFormEventMap<this, ValueType>, L extends Function>(eventName: K, listener: Partial<DataSourceFormEventMap<this,ValueType>>[K]): boolean
+	on<K extends keyof DataSourceFormEventMap<this, ValueType>, L extends Listener>(eventName: K, listener: Partial<DataSourceFormEventMap<this,ValueType>>[K], options?: ObservableListenerOpts): L
+	un<K extends keyof DataSourceFormEventMap<this, ValueType>>(eventName: K, listener: Partial<DataSourceFormEventMap<this,ValueType>>[K]): boolean
 	fire<K extends keyof DataSourceFormEventMap<this, ValueType>>(eventName: K, ...args: Parameters<DataSourceFormEventMap<any, ValueType>[K]>): boolean
 }
 
