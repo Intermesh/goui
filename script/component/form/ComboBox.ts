@@ -5,14 +5,10 @@ import {
 	datasourcestore,
 	DataSourceStoreConfig,
 	QueryFilter,
-	StoreRecord
 } from "../../data";
 import {column, Table, table} from "../table";
 import {Config} from "../Observable";
-import {FieldEventMap} from "./Field";
 import {createComponent} from "../Component";
-import {ObjectUtil} from "../../util";
-import {JmapDataSource} from "../../../../dist/groupoffice-core/script";
 
 export type ComboBoxStoreConfig<DS extends AbstractDataSource = AbstractDataSource> = Partial<DataSourceStoreConfig<DS, any>>
 
