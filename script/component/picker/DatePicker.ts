@@ -39,6 +39,7 @@ export class DatePicker extends Component {
 	protected grid: HTMLElement
 	protected menu: HTMLElement
 
+	withoutFooter?: boolean
 	minDate?: DateTime;
 
 	maxDate?: DateTime;
@@ -95,19 +96,7 @@ export class DatePicker extends Component {
 						this.months.cls('-active');
 					}
 				})
-			).cls(['cards', 'top'], true),
-
-			E('footer',
-				E('button', t("Clear")).cls(["goui-button", "primary"], true).on('click', _ => {
-					this.fire('select', this, undefined);
-				}),
-
-				E('div' ).attr('style', 'flex:1'),
-
-				E('button', t("Today")).cls(["goui-button", "primary"], true).on('click', _ => {
-					this.fire('select', this, new DateTime());
-				})
-			)
+			).cls(['cards', 'top'], true)
 		);
 
 		// minimum and maximum year
@@ -125,6 +114,25 @@ export class DatePicker extends Component {
 		this.value.addMonths(amount);
 
 		this.internalRender();
+	}
+
+	public render(parentEl?: Node, insertBefore?: Node) {
+		if(!this.withoutFooter) {
+			this.el.append(
+				E('footer',
+					E('button', t("Clear")).cls(["goui-button", "primary"], true).on('click', _ => {
+						this.fire('select', this, undefined);
+					}),
+
+					E('div').attr('style', 'flex:1'),
+
+					E('button', t("Today")).cls(["goui-button", "primary"], true).on('click', _ => {
+						this.fire('select', this, new DateTime());
+					})
+				)
+			);
+		}
+		return super.render(parentEl, insertBefore);
 	}
 
 	/**

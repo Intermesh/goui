@@ -41,17 +41,13 @@ export class DisplayField extends Field {
 
 	protected internalSetValue(v?: any) {
 		if(this.control) {
-			const str = this.renderer(v, this);
-			if(str instanceof Promise) {
-				str.then(r => {
-					this.control!.innerHTML = r;
+			const setFn = (str:string) => {
+				this.control!.innerHTML = str;
+				if(this.hideWhenEmpty)
+					this.hidden = str == "";
+			}, str = this.renderer(v, this);
 
-					this.hidden = this.hideWhenEmpty && r == "";
-				});
-			} else {
-				this.control.innerHTML = str;
-				this.hidden = this.hideWhenEmpty && str == "";
-			}
+			str instanceof Promise ? str.then(setFn) : setFn(str);
 		}
 	}
 }

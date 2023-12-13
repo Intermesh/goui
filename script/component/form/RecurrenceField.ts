@@ -40,7 +40,7 @@ export class RecurrenceField extends Field {
 	}
 
 	protected internalSetValue(v?: any) {
-		this._input!.value = this.toText(v);
+		this._input!.value = RecurrenceField.toText(v, this.picker.startDate);
 		this.picker.setValue(v);
 	}
 
@@ -53,7 +53,7 @@ export class RecurrenceField extends Field {
 			this.focus();
 
 			this.value = val;
-			this._input!.value = this.toText(val!);
+			this._input!.value = RecurrenceField.toText(val!, this.picker.startDate);
 		});
 		this._input.value = t('Not recurring');
 		return this._input;
@@ -63,7 +63,7 @@ export class RecurrenceField extends Field {
 		this.picker.setStartDate(date);
 	}
 
-	private toText(rule: RecurrenceRule) {
+	static toText(rule: RecurrenceRule, start: DateTime) {
 		const rr = rule;
 		if (!rr || !rr.frequency) {
 			return t('Not recurring');
@@ -86,7 +86,7 @@ export class RecurrenceField extends Field {
 				}
 				var nthDay = '';
 				if (rr.byDay[i].nthOfPeriod) {
-					nthDay = t('the') + ' ' + this.getSuffix(rr.byDay[i].nthOfPeriod!) + ' ';
+					nthDay = t('the') + ' ' + RecurrenceField.getSuffix(rr.byDay[i].nthOfPeriod!) + ' ';
 				}
 				days.push(nthDay + DateTime.dayNames[rr.byDay[i].day]);
 			}
@@ -95,7 +95,7 @@ export class RecurrenceField extends Field {
 			}
 			str += (' ' + t('at ') + days.join(', '));
 		} else if(rr.frequency == 'weekly') {
-			str += (' ' + t('at ') + this.picker.startDate.format('l'));
+			str += (' ' + t('at ') + start.format('l'));
 		}
 		if (rr.byMonthDay) {
 			str += (' ' + t('at day') + ' ' + rr.byMonthDay.join(', '))
@@ -110,7 +110,7 @@ export class RecurrenceField extends Field {
 		return str;
 	}
 
-	private getSuffix(week: number) {
+	private static getSuffix(week: number) {
 		switch (week) {
 			case 1:
 				return t("first");

@@ -197,14 +197,14 @@ export abstract class Field extends Component {
 		return !this.hidden;
 	}
 
-	get el(): HTMLElement {
-		const el = super.el;
-
-		// if(!this.wrap) {
-		// 	el.append(this.wrap = E("div").cls('+wrap'));
-		// }
-		return el;
-	}
+	// get el(): HTMLElement {
+	// 	const el = super.el;
+	//
+	// 	// if(!this.wrap) {
+	// 	// 	el.append(this.wrap = E("div").cls('+wrap'));
+	// 	// }
+	// 	return el;
+	// }
 
 	/**
 	 * A wrapper DIV element that contains input and toolbar for input buttons like an expand button for a drop down
