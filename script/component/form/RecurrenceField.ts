@@ -40,7 +40,9 @@ export class RecurrenceField extends Field {
 	}
 
 	protected internalSetValue(v?: any) {
-		this._input!.value = RecurrenceField.toText(v, this.picker.startDate);
+		if(this._input) {
+			this._input.value = RecurrenceField.toText(v, this.picker.startDate);
+		}
 		this.picker.setValue(v);
 	}
 
@@ -55,8 +57,14 @@ export class RecurrenceField extends Field {
 			this.value = val;
 			this._input!.value = RecurrenceField.toText(val!, this.picker.startDate);
 		});
-		this._input.value = t('Not recurring');
+
+		this._input.value = RecurrenceField.toText(this.value, this.picker.startDate);
+
 		return this._input;
+	}
+
+	isModified(): boolean {
+		return JSON.stringify(this.resetValue) != JSON.stringify(this.value);
 	}
 
 	setStartDate(date: DateTime) {
