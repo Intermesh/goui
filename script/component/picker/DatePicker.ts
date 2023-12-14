@@ -85,14 +85,14 @@ export class DatePicker extends Component {
 					const year = +target.textContent!;
 					if (!isNaN(year)) {
 						this.value.setYear(year);
-						this.internalRender();
+						this.setValue(this.value);
 						this.years.cls('-active');
 					}
 				}),
 				this.months = E('ul').on('click', ({target}) => {
 					if (target.dataset.nb) {
 						this.value.setMonth(+target.dataset.nb);
-						this.internalRender();
+						this.setValue(this.value);
 						this.months.cls('-active');
 					}
 				})
@@ -112,8 +112,7 @@ export class DatePicker extends Component {
 		this.grid.cls('reverse', amount > 0);
 		this.grid.offsetHeight; // will reflow layout
 		this.value.addMonths(amount);
-
-		this.internalRender();
+		this.setValue(this.value);
 	}
 
 	public render(parentEl?: Node, insertBefore?: Node) {
@@ -140,12 +139,8 @@ export class DatePicker extends Component {
 	 */
 	public refresh() {
 		this.el.cls('+preload');
-		this.internalRender();
 		if(this.value) {
-			const startEl = this.grid.querySelector<HTMLElement>('dd[data-date="' + this.value.format('Y-m-d') + '"]')!;
-			if (startEl) {
-				this.markSelected(startEl, startEl)
-			}
+			this.setValue(this.value);
 		}
 	}
 
@@ -204,7 +199,8 @@ export class DatePicker extends Component {
 
 		const el = super.internalRender();
 
-		const year = this.value.format('Y'), month = this.value.format("M");
+		const year = this.value.format('Y'),
+			month = this.value.format("M");
 
 		this.renderedMonth = year+month;
 		this.yearEl.innerHTML = year + '<i class="icon">arrow_drop_down</i>';
@@ -223,8 +219,8 @@ export class DatePicker extends Component {
 		//header with day names
 		dl.append(...Object.values(DateTime.dayNames).map(s => E('dt', s.substring(0, 2))));
 
-		const valueStr = this.value.format("Ymd");
-
+		const minStr = this.minDate ? this.minDate.format('Ymd') : '00000101',
+			maxStr = this.maxDate ? this.maxDate.format('Ymd') : '99991231';
 		// dates and week nbs
 		for (let i = 0; i < 42; i++) {
 			const itrStr = itr.format("Ymd");
@@ -232,22 +228,14 @@ export class DatePicker extends Component {
 			if (this.showWeekNbs && i % 7 == 0) {
 				weekNbs.append(E('li', itr.format('W')));
 			}
-			const disabled =
-				(!!this.minDate && (this.minDate.format("Ymd") > itrStr))
-					||
-				(!!this.maxDate && (this.maxDate.format("Ymd") < itrStr));
-
-			const selected = itrStr == valueStr;
 
 			dl.append(E('dd', itr.format('j')).attr('data-date', itr.format('Y-m-d'))
-				.cls('disabled', disabled)
+				.cls('disabled', minStr > itrStr || maxStr < itrStr)
 				.cls('off', itr.format('Ym') !== this.value.format('Ym'))
 				.cls('today', itr.format(`Ymd`) === this.now.format("Ymd"))
-				.cls('selected', selected)
 			);
 			itr.addDays(1);
 		}
-
 		if (this.showWeekNbs) {
 			cal.append(weekNbs);
 		}
@@ -269,17 +257,15 @@ export class DatePicker extends Component {
 	setValue(start: DateTime, end?: DateTime) {
 
 		this.value = start;
-
-		if (this.rendered && start.format('Ym') != this.renderedMonth) {
+		if (this.rendered && start.format('YM') !== this.renderedMonth) {
 			this.el.cls('+preload');
 			this.internalRender();
-		} else {
+		}
 
-			const startEl = this.grid.querySelector<HTMLElement>('dd[data-date="' + start.format('Y-m-d') + '"]')!,
-				endEl = !end ? startEl : this.grid.querySelector<HTMLElement>('dd[data-date="' + end.format('Y-m-d') + '"]')!;
-			if (startEl && endEl) {
-				this.markSelected(startEl, endEl)
-			}
+		const startEl = this.grid.querySelector<HTMLElement>('dd[data-date="' + start.format('Y-m-d') + '"]')!,
+			endEl = !end ? startEl : this.grid.querySelector<HTMLElement>('dd[data-date="' + end.format('Y-m-d') + '"]')!;
+		if (startEl && endEl) {
+			this.markSelected(startEl, endEl)
 		}
 	}
 

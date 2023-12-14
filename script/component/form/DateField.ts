@@ -333,8 +333,7 @@ export class DateField extends Field {
 		const [date, time] = v.split('T');
 
 		if (this.timeField && time) {
-			this.timeField.value = time.substring(0, 5);
-
+			this.timeField.value = time.substring(0, 5); // = HH:ii
 		}
 
 		const d = DateTime.createFromFormat(date, this.outputFormat);
