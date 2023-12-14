@@ -8,7 +8,7 @@ import {ContainerField, ContainerFieldValue} from "./ContainerField.js";
 import {Config, Listener, ObservableListenerOpts} from "../Observable.js";
 import {Notifier} from "../../Notifier.js";
 import {Component, createComponent} from "../Component.js";
-import {FieldEventMap} from "./Field.js";
+import {Field, FieldEventMap} from "./Field.js";
 import {t} from "../../Translate.js";
 import {DatePickerEventMap} from "../picker";
 
@@ -73,9 +73,15 @@ export interface Form<ValueType extends ContainerFieldValue = ContainerFieldValu
  *
  */
 export class Form<ValueType extends ContainerFieldValue = ContainerFieldValue> extends ContainerField<ValueType> {
+
+	/**
+	 * When this is set to true, the field will use the values set as their original value, used for resetting and
+	 * determining if the field was modified.
+	 */
+	public static TRACK_RESET_VALUES = false;
+
 	protected baseCls = "goui-form"
 	public hideLabel = true;
-	private oldValue?: ValueType;
 
 	constructor() {
 		super("form");
@@ -118,8 +124,6 @@ export class Form<ValueType extends ContainerFieldValue = ContainerFieldValue> e
 			}
 		})
 
-		this.trackModifications();
-
 		return el;
 	}
 
@@ -132,17 +136,9 @@ export class Form<ValueType extends ContainerFieldValue = ContainerFieldValue> e
 		})
 	}
 
-
-	/**
-	 * Capture snapshot for tracking changes so getModified() can return modifications.
-	 */
-	protected trackModifications() {
-		this.oldValue = structuredClone(this.value);
-	}
-
 	set value(v: Partial<ValueType>) {
 		super.value = v;
-		this.trackModifications();
+		this.trackReset();
 	}
 
 	get value(): ValueType {
@@ -157,15 +153,22 @@ export class Form<ValueType extends ContainerFieldValue = ContainerFieldValue> e
 	 * - submitted
 	 */
 	public get modified(): Partial<ValueType> {
-		const v = this.value;
+		const v:Partial<ValueType> = {};
 
-		for (const name in this.oldValue) {
-			const jsonNew = JSON.stringify(v[name]),
-				jsonOld = JSON.stringify(this.oldValue[name]);
-			if(jsonNew === jsonOld) {
-				delete v[name];
+		this.findFields().forEach((field: any) => {
+			if(field instanceof Field) {
+				if (field.name && !field.disabled && field.isModified()) {
+					v[field.name as keyof ValueType] = field.value;
+				}
+			} else
+			{
+				//for Extjs compat try .getName() and .getValue()
+				const fieldName = field.getName()  as keyof ValueType;
+				if (fieldName && !field.disabled && field.isDirty()) {
+					v[fieldName] = field.getValue();
+				}
 			}
-		}
+		});
 
 		return v;
 	}
@@ -197,7 +200,7 @@ export class Form<ValueType extends ContainerFieldValue = ContainerFieldValue> e
 			}
 			this.fire("submit", this, handlerResponse);
 
-			this.trackModifications();
+			this.trackReset();
 
 		} else {
 			el.cls(['-valid', '+invalid']);

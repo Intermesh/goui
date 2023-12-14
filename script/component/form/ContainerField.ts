@@ -89,6 +89,27 @@ export class ContainerField<ValueType extends ContainerFieldValue = ContainerFie
 		return field;
 	}
 
+	/**
+	 * Copies the current value to the reset value. Typically happens when this component was added to a parent and
+	 * when the form it belongs too loads.
+	 */
+	public trackReset() {
+		this.findFields().forEach((field) => {
+			field.trackReset();
+		})
+	}
+
+	isModified(): boolean {
+		const f = this.findFields();
+
+		for(let i =0,l=f.length; i < l; i++) {
+			if(f[i].isModified()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	set value(v: Partial<ValueType>) {
 
 		for (let name in v) {

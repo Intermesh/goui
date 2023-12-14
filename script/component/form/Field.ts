@@ -87,6 +87,8 @@ export abstract class Field extends Component {
 
 	constructor(tagName: keyof HTMLElementTagNameMap = "label") {
 		super(tagName);
+
+		this.on("added", this.onAdded , {once: true});
 	}
 
 	readonly isFormField = true
@@ -109,7 +111,19 @@ export abstract class Field extends Component {
 
 	protected _value: any;
 
+	/**
+	 * The value this field resets to when a form is reset.
+	 * Changes when a form loads.
+	 * @protected
+	 */
 	protected resetValue: any;
+
+	/**
+	 * The value that was set before adding this component to a parent.
+	 *
+	 * @protected
+	 */
+	protected defaultValue: any;
 
 	public invalidMsg = "";
 
@@ -133,6 +147,11 @@ export abstract class Field extends Component {
 	 * @protected
 	 */
 	protected fireChangeOnBlur = true;
+
+	protected onAdded = (comp:Field, index:number, parent:Component) =>{
+		this.trackReset();
+		this.defaultValue = this.value;
+	}
 
 	protected onFocusOut(e:FocusEvent) {
 
@@ -430,20 +449,30 @@ export abstract class Field extends Component {
 		this._readOnly = readOnly;
 	}
 
+
+	/**
+	 * Check if the field was modified since create or when a form was loaded and @see trackReset() was called.
+	 */
+	public isModified() : boolean {
+		return this.resetValue != this.value;
+	}
+
+	/**
+	 * Copies the current value to the reset value. Typically happens when this component was added to a parent and
+	 * when the form it belongs too loads.
+	 *
+	 * @see Form in the trackModifications method
+	 */
+	public trackReset(){
+		this.resetValue = this.value;
+	}
+
 	/**
 	 * Set the field value
 	 */
 	public set value(v: any) {
 		const old = this._value;
 		this._value = v;
-
-		// not sure if this is allright. We track the value to reset if it's set while not added to a parent yet.
-		// it should be the value it gets when configured logically and not loaded or changed by the user. AFAIK
-		// this is the easiest way to do it.
-		if(!this.parent && !this.resetValue) {
-			this.resetValue = v;
-		}
-
 		this.internalSetValue(v);
 		this.fire("setvalue", this, this._value, old);
 	}

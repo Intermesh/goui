@@ -125,7 +125,7 @@ export class TextField extends Field {
 
 	get value() {
 		if (!this.rendered) {
-			return super.value;
+			return super.value ?? "";
 		} else {
 			return this._input!.value;
 		}

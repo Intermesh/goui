@@ -99,12 +99,14 @@ export class RadioField extends Field {
 	}
 
 	get value() {
-		for (let v in this.inputs) {
-			if (this.inputs[v].checked) {
-				return v;
+		if(this.rendered) {
+			for (let v in this.inputs) {
+				if (this.inputs[v].checked) {
+					return v;
+				}
 			}
 		}
-		return undefined;
+		return super.value;
 	}
 
 }
