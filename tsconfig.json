@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
     "strict" : true,
-    "target": "es2020",
+    "target": "es2018",
     "sourceMap": true,
-    "lib": ["es2020", "dom"],
+    "lib": ["es2018", "dom"],
     "moduleResolution": "node",
     "esModuleInterop": true,
     "isolatedModules": true, // important for tree shaking in esbuild
