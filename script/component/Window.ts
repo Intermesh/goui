@@ -17,7 +17,6 @@ import {textfield} from "./form/TextField.js";
 import {t} from "../Translate.js";
 import {DateTime} from "../util";
 import {Menu} from "./menu";
-import {TreeEventMap} from "./Tree";
 
 
 /**
