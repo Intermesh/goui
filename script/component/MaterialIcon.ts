@@ -616,6 +616,9 @@ export type MaterialIcon =
 	"perm_phone_msg" |
 	"perm_scan_wifi" |
 	"person" |
+	"person_2" |
+	"person_3" |
+	"person_4" |
 	"person_add" |
 	"person_outline" |
 	"person_pin" |

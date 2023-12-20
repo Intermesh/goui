@@ -3,7 +3,7 @@
  * @copyright Copyright 2023 Intermesh BV
  * @author Merijn Schering <mschering@intermesh.nl>
  */
-import {Config, ObservableListenerOpts} from "../component/Observable.js";
+import {Config, Listener, ObservableListenerOpts} from "../component/Observable.js";
 import {ArrayUtil} from "../util/ArrayUtil.js";
 import {Collection, CollectionEventMap} from "../util/Collection.js";
 import {createComponent} from "../component/Component.js";
@@ -56,7 +56,7 @@ export interface StoreEventMap<Type, RecordType> extends CollectionEventMap<Type
 }
 
 export interface Store<RecordType = StoreRecord> {
-	on<K extends keyof StoreEventMap<this, RecordType>, L extends Function>(eventName: K, listener: Partial<StoreEventMap<this, RecordType>>[K], options?: ObservableListenerOpts): L
+	on<K extends keyof StoreEventMap<this, RecordType>, L extends Listener>(eventName: K, listener: Partial<StoreEventMap<this, RecordType>>[K], options?: ObservableListenerOpts): L
 
 	fire<K extends keyof StoreEventMap<this, RecordType>>(eventName: K, ...args: Parameters<StoreEventMap<any, RecordType>[K]>): boolean
 

@@ -303,7 +303,7 @@ export class DateField extends Field {
 					this.setInvalid(t("This field is required"));
 				}
 			} else {
-				const dv = DateTime.createFromFormat(dateInputStr , "Ymd")!;
+				const dv = this.getValueAsDateTime();
 
 				if(!dv || !this.dayInput!.value || !this.monthInput!.value || !this.yearInput!.value) {
 					this.setInvalid(t("Please enter a valid date"))
@@ -333,7 +333,7 @@ export class DateField extends Field {
 		const [date, time] = v.split('T');
 
 		if (this.timeField && time) {
-			this.timeField.value = time.substring(0, 5);
+			this.timeField.value = time.substring(0, 5); // = HH:ii
 		}
 
 		const d = DateTime.createFromFormat(date, this.outputFormat);
@@ -368,6 +368,17 @@ export class DateField extends Field {
 		this.monthInput!.value = d.format("m");
 		this.yearInput!.value = d.format("Y");
 
+	}
+
+	protected internalRender() {
+
+		const el = super.internalRender();
+
+		if(this.timeField) {
+			this.timeField.el.on("change",() => {this.fireChange()});
+		}
+
+		return el;
 	}
 
 	get value() {

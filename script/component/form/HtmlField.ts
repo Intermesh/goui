@@ -9,7 +9,7 @@
 import {Field, FieldEventMap} from "./Field.js";
 import {tbar, Toolbar} from "../Toolbar.js";
 import {btn, Button} from "../Button.js";
-import {Config, ObservableListenerOpts} from "../Observable.js";
+import {Config, Listener, ObservableListenerOpts} from "../Observable.js";
 import {browser} from "../../util/Browser.js";
 import {colormenu, ColorMenu} from "../menu/ColorMenu.js";
 import {Menu} from "../menu/Menu.js";
@@ -53,7 +53,7 @@ export interface HtmlFieldEventMap<Type> extends FieldEventMap<Type> {
 
 
 export interface HtmlField extends Field {
-	on<K extends keyof HtmlFieldEventMap<HtmlField>, L extends Function>(eventName: K, listener: Partial<HtmlFieldEventMap<HtmlField>>[K], options?: ObservableListenerOpts): L
+	on<K extends keyof HtmlFieldEventMap<HtmlField>, L extends Listener>(eventName: K, listener: Partial<HtmlFieldEventMap<HtmlField>>[K], options?: ObservableListenerOpts): L
 	un<K extends keyof HtmlFieldEventMap<this>>(eventName: K, listener: Partial<HtmlFieldEventMap<this>>[K]): boolean
 	fire<K extends keyof HtmlFieldEventMap<HtmlField>>(eventName: K, ...args: Parameters<HtmlFieldEventMap<Component>[K]>): boolean
 }

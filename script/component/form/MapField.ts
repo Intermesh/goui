@@ -96,6 +96,10 @@ export class MapField extends Field {
 		return "_new_" + this._nextKey++;
 	}
 
+	public isModified(): boolean {
+		return JSON.stringify(this.resetValue) !== JSON.stringify(this.value);
+	}
+
 	reset() {
 		super.reset();
 		this.items.clear();

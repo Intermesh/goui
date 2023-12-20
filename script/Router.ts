@@ -3,7 +3,7 @@
  * @copyright Copyright 2023 Intermesh BV
  * @author Merijn Schering <mschering@intermesh.nl>
  */
-import {Observable, ObservableEventMap, ObservableListenerOpts} from "./component/Observable.js";
+import {Listener, Observable, ObservableEventMap, ObservableListenerOpts} from "./component/Observable.js";
 
 export interface Route {
 	re: RegExp
@@ -19,7 +19,7 @@ export interface RouterEventMap<Type extends Observable> extends ObservableEvent
 }
 
 export interface Router extends Observable {
-	on<K extends keyof RouterEventMap<this>, L extends Function>(eventName: K, listener: RouterEventMap<this>[K], options?: ObservableListenerOpts): L
+	on<K extends keyof RouterEventMap<this>, L extends Listener>(eventName: K, listener: RouterEventMap<this>[K], options?: ObservableListenerOpts): L
 	un<K extends keyof RouterEventMap<this>>(eventName: K, listener: RouterEventMap<this>[K]): boolean
 	fire<K extends keyof RouterEventMap<this>>(eventName: K, ...args: Parameters<RouterEventMap<any>[K]>): boolean
 }

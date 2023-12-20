@@ -1,18 +1,16 @@
-import {AutocompleteField} from "./AutocompleteField";
+import {AutocompleteEventMap, AutocompleteField} from "./AutocompleteField";
 import {
 	AbstractDataSource,
 	DataSourceStore,
 	datasourcestore,
 	DataSourceStoreConfig,
 	QueryFilter,
-	StoreRecord
 } from "../../data";
 import {column, Table, table} from "../table";
 import {Config} from "../Observable";
-import {FieldEventMap} from "./Field";
 import {createComponent} from "../Component";
-import {ObjectUtil} from "../../util";
 
+export type ComboBoxStoreConfig<DS extends AbstractDataSource = AbstractDataSource> = Partial<DataSourceStoreConfig<DS, any>>
 
 /**
  * Combo box
@@ -32,18 +30,18 @@ export class ComboBox<DS extends AbstractDataSource = AbstractDataSource> extend
 	 */
 	public filter?: QueryFilter;
 
-	constructor(public readonly dataSource:DS, public readonly displayProperty = "name", public readonly valueProperty = "id") {
+	constructor(public readonly dataSource:DS, public readonly displayProperty = "name", public readonly valueProperty = "id", storeConfig:ComboBoxStoreConfig<DS> = {
+		queryParams: {
+			limit: 50
+		}
+	}) {
+
+		storeConfig.dataSource = dataSource;
 
 		const dropDownTable = table({
 			headers: false,
 			fitParent: true,
-			store: datasourcestore({
-				dataSource: dataSource,
-				queryParams: {
-					limit: 50
-				}
-
-			}),
+			store: datasourcestore(storeConfig as DataSourceStoreConfig<any, any>),
 			columns:[
 				column({
 					id:displayProperty,
@@ -73,15 +71,6 @@ export class ComboBox<DS extends AbstractDataSource = AbstractDataSource> extend
 		});
 	}
 
-	/**
-	 * Pass config options for the underlying dropdown table store
-	 * @param storeConfig
-	 */
-	set storeConfig(storeConfig:Omit<DataSourceStoreConfig<DS, StoreRecord>, "dataSource">) {
-		ObjectUtil.merge(this.picker.list.store, storeConfig);
-	}
-
-
 	pickerRecordToValue(_field: this, record: any): string {
 		return record[this.valueProperty];
 	}
@@ -95,12 +84,17 @@ export class ComboBox<DS extends AbstractDataSource = AbstractDataSource> extend
 	}
 }
 
-
-type ComboBoxConfig = Config<ComboBox, FieldEventMap<ComboBox>, "dataSource">;
+export type ComboBoxConfig<Type extends ComboBox = ComboBox> = Config<Type, AutocompleteEventMap<Type>, "dataSource"> & {
+	storeConfig?:ComboBoxStoreConfig
+};
 
 /**
  * Shorthand function to create {@see DateField}
  *
  * @param config
  */
-export const combobox = (config: ComboBoxConfig) => createComponent(new ComboBox(config.dataSource, config.displayProperty ?? "name", config.valueProperty ?? "id"), config);
+export const combobox = (config: ComboBoxConfig) => createComponent(new ComboBox(config.dataSource, config.displayProperty ?? "name", config.valueProperty ?? "id", config.storeConfig ?? {
+	queryParams: {
+		limit: 50
+	}
+}), config);

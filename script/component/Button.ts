@@ -6,10 +6,9 @@
 
 import {Component, ComponentEventMap, createComponent} from "./Component.js";
 import {Menu} from "./menu/Menu.js";
-import {Config, ObservableListenerOpts} from "./Observable.js";
+import {Config, Listener, ObservableListenerOpts} from "./Observable.js";
 import {MaterialIcon} from "./MaterialIcon.js";
 import {router} from "../Router.js";
-import {AutocompleteEventMap} from "./form";
 
 type ButtonType = "button" | "submit" | "reset";
 
@@ -48,7 +47,7 @@ export interface ButtonEventMap<Type> extends ComponentEventMap<Type> {
 }
 
 export interface Button extends Component {
-	on<K extends keyof ButtonEventMap<this>, L extends Function>(eventName: K, listener: Partial<ButtonEventMap<this>>[K], options?: ObservableListenerOpts): L
+	on<K extends keyof ButtonEventMap<this>, L extends Listener>(eventName: K, listener: Partial<ButtonEventMap<this>>[K], options?: ObservableListenerOpts): L
 	un<K extends keyof ButtonEventMap<this>>(eventName: K, listener: Partial<ButtonEventMap<this>>[K]): boolean
 	fire<K extends keyof ButtonEventMap<this>>(eventName: K, ...args: Parameters<ButtonEventMap<any>[K]>): boolean
 	get el(): HTMLButtonElement

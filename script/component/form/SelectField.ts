@@ -86,7 +86,16 @@ export class SelectField extends Field {
 
 	get value() : any {
 		if (!this.input) {
-			return super.value;
+			let v = super.value;
+			if(v == undefined) {
+				// HTML select fields return the first option value as value when no value is set.
+				// We need to be consistent otherwise the value result will modify after render.
+				const opts = (this.store ? this.store.items : this.options)
+				if(opts.length) {
+					v = opts[0][this.valueField];
+				}
+			}
+			return v;
 		} else if(this.store) {
 			return this.input.value;
 		} else {

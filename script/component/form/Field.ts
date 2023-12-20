@@ -5,7 +5,7 @@
  */
 
 import {Component, ComponentEventMap} from "../Component.js";
-import {ObservableListenerOpts} from "../Observable.js";
+import {Listener, ObservableListenerOpts} from "../Observable.js";
 import {Button} from "../Button.js";
 import {tbar, Toolbar} from "../Toolbar.js";
 import {t} from "../../Translate.js";
@@ -67,7 +67,7 @@ export interface FieldEventMap<Type> extends ComponentEventMap<Type> {
 
 
 export interface Field extends Component {
-	on<K extends keyof FieldEventMap<this>, L extends Function>(eventName: K, listener: Partial<FieldEventMap<this>>[K], options?: ObservableListenerOpts): L;
+	on<K extends keyof FieldEventMap<this>, L extends Listener>(eventName: K, listener: Partial<FieldEventMap<this>>[K], options?: ObservableListenerOpts): L;
 	un<K extends keyof FieldEventMap<this>>(eventName: K, listener: Partial<FieldEventMap<this>>[K]): boolean
 	fire<K extends keyof FieldEventMap<this>>(eventName: K, ...args: Parameters<FieldEventMap<any>[K]>): boolean
 }
@@ -87,6 +87,8 @@ export abstract class Field extends Component {
 
 	constructor(tagName: keyof HTMLElementTagNameMap = "label") {
 		super(tagName);
+
+		this.on("added", this.onAdded , {once: true});
 	}
 
 	readonly isFormField = true
@@ -109,7 +111,19 @@ export abstract class Field extends Component {
 
 	protected _value: any;
 
+	/**
+	 * The value this field resets to when a form is reset.
+	 * Changes when a form loads.
+	 * @protected
+	 */
 	protected resetValue: any;
+
+	/**
+	 * The value that was set before adding this component to a parent.
+	 *
+	 * @protected
+	 */
+	protected defaultValue: any;
 
 	public invalidMsg = "";
 
@@ -133,6 +147,11 @@ export abstract class Field extends Component {
 	 * @protected
 	 */
 	protected fireChangeOnBlur = true;
+
+	protected onAdded = (comp:Field, index:number, parent:Component) =>{
+		this.trackReset();
+		this.defaultValue = this.value;
+	}
 
 	protected onFocusOut(e:FocusEvent) {
 
@@ -197,14 +216,14 @@ export abstract class Field extends Component {
 		return !this.hidden;
 	}
 
-	get el(): HTMLElement {
-		const el = super.el;
-
-		// if(!this.wrap) {
-		// 	el.append(this.wrap = E("div").cls('+wrap'));
-		// }
-		return el;
-	}
+	// get el(): HTMLElement {
+	// 	const el = super.el;
+	//
+	// 	// if(!this.wrap) {
+	// 	// 	el.append(this.wrap = E("div").cls('+wrap'));
+	// 	// }
+	// 	return el;
+	// }
 
 	/**
 	 * A wrapper DIV element that contains input and toolbar for input buttons like an expand button for a drop down
@@ -430,20 +449,30 @@ export abstract class Field extends Component {
 		this._readOnly = readOnly;
 	}
 
+
+	/**
+	 * Check if the field was modified since create or when a form was loaded and @see trackReset() was called.
+	 */
+	public isModified() : boolean {
+		return this.resetValue != this.value;
+	}
+
+	/**
+	 * Copies the current value to the reset value. Typically happens when this component was added to a parent and
+	 * when the form it belongs too loads.
+	 *
+	 * @see Form in the trackModifications method
+	 */
+	public trackReset(){
+		this.resetValue = this.value;
+	}
+
 	/**
 	 * Set the field value
 	 */
 	public set value(v: any) {
 		const old = this._value;
 		this._value = v;
-
-		// not sure if this is allright. We track the value to reset if it's set while not added to a parent yet.
-		// it should be the value it gets when configured logically and not loaded or changed by the user. AFAIK
-		// this is the easiest way to do it.
-		if(!this.parent && !this.resetValue) {
-			this.resetValue = v;
-		}
-
 		this.internalSetValue(v);
 		this.fire("setvalue", this, this._value, old);
 	}

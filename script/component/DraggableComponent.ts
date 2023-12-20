@@ -5,7 +5,7 @@
  */
 
 import {Component, ComponentEventMap, createComponent} from "./Component.js";
-import {Config, ObservableListenerOpts} from "./Observable.js";
+import {Config, Listener, ObservableListenerOpts} from "./Observable.js";
 import {FunctionUtil} from "../util/FunctionUtil.js";
 
 
@@ -94,7 +94,7 @@ export interface DraggableComponentEventMap<Type> extends ComponentEventMap<Type
 
 
 export interface DraggableComponent {
-	on<K extends keyof DraggableComponentEventMap<this>, L extends Function>(eventName: K, listener: Partial<DraggableComponentEventMap<this>>[K], options?: ObservableListenerOpts): L;
+	on<K extends keyof DraggableComponentEventMap<this>, L extends Listener>(eventName: K, listener: Partial<DraggableComponentEventMap<this>>[K], options?: ObservableListenerOpts): L;
 
 	fire<K extends keyof DraggableComponentEventMap<this>>(eventName: K, ...args: Parameters<DraggableComponentEventMap<any>[K]>): boolean
 }

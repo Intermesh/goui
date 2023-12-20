@@ -5,7 +5,14 @@
  */
 
 
-import {Config, Observable, ObservableEventMap, ObservableListener, ObservableListenerOpts,} from "./Observable.js";
+import {
+	Config,
+	Listener,
+	Observable,
+	ObservableEventMap,
+	ObservableListener,
+	ObservableListenerOpts,
+} from "./Observable.js";
 import {State} from "../State.js";
 import {browser, Collection} from "../util";
 import {ColorPickerEventMap} from "./picker";
@@ -16,7 +23,7 @@ import {ColorPickerEventMap} from "./picker";
 export type FindComponentPredicate = string | Component | ((comp: Component) => boolean | void);
 
 
-interface Type<T> {
+interface ClassTypeOf<T> {
 	new(...args: any[]): T
 }
 
@@ -107,7 +114,7 @@ export interface ComponentEventMap<Type> extends ObservableEventMap<Type> {
 }
 
 export interface Component extends Observable {
-	on<K extends keyof ComponentEventMap<Component>, L extends Function>(eventName: K, listener: Partial<ComponentEventMap<Component>>[K], options?: ObservableListenerOpts): L
+	on<K extends keyof ComponentEventMap<Component>, L extends Listener>(eventName: K, listener: Partial<ComponentEventMap<Component>>[K], options?: ObservableListenerOpts): L
 	un<K extends keyof ComponentEventMap<this>>(eventName: K, listener: Partial<ComponentEventMap<this>>[K]): boolean
 	fire<K extends keyof ComponentEventMap<Component>>(eventName: K, ...args: Parameters<ComponentEventMap<any>[K]>): boolean
 }
@@ -779,7 +786,7 @@ export class Component extends Observable {
 	 * ```
 	 * @param cls
 	 */
-	public findAncestorByType<T extends typeof Component>(cls: T): InstanceType<T> | undefined {
+	public findAncestorByType<T extends ClassTypeOf<Component>>(cls: T): InstanceType<T> | undefined {
 		const p = this.findAncestor(cmp => cmp instanceof cls);
 		if (p) {
 			return p as InstanceType<T>;
@@ -918,7 +925,7 @@ export class Component extends Observable {
 	 * ```
 	 * @param cls
 	 */
-	public findChildByType<T extends Component>(cls: Type<T>): T | undefined {
+	public findChildByType<T extends Component>(cls: ClassTypeOf<T>): T | undefined {
 		const p = this.findChild(cmp => cmp instanceof cls);
 		if (p) {
 			return p as T;
@@ -936,7 +943,7 @@ export class Component extends Observable {
 	 * ```
 	 * @param cls
 	 */
-	public findChildrenByType<T extends Component>(cls: Type<T>): T[] {
+	public findChildrenByType<T extends Component>(cls: ClassTypeOf<T>): T[] {
 		return this.findChildren(Component => Component instanceof cls) as T[];
 	}
 

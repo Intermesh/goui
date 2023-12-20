@@ -74,7 +74,7 @@ menu.goui-dropdown {
 		-webkit-user-select: none;
 		color: $colorText;
 		&.selected {
-			//border-radius: 0;
+			border-radius: 0;
 			&.head {
 				border-top-left-radius: 50%;
 				border-bottom-left-radius: 50%;

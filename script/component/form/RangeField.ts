@@ -17,6 +17,11 @@ export class RangeField extends TextField {
     min: number = 0;
     max: number = 100;
 
+		constructor() {
+			super();
+			this.value = 50;
+		}
+
     protected validate() {
         super.validate();
         const v = super.value;

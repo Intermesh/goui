@@ -3,7 +3,7 @@
  * @copyright Copyright 2023 Intermesh BV
  * @author Merijn Schering <mschering@intermesh.nl>
  */
-import {Store, StoreEventMap} from "../data/Store.js";
+import {store, Store, StoreEventMap} from "../data/Store.js";
 import {
 	AbstractDataSource,
 	BaseEntity,
@@ -14,6 +14,7 @@ import {
 } from "./AbstractDataSource.js";
 import {ObjectUtil} from "../util/index.js";
 import {Config, createComponent, ObservableListener} from "../component/index.js";
+import {config} from "chai";
 
 type Relation<EntityType extends BaseEntity> = Partial<Record<keyof EntityType, {
 	dataSource: AbstractDataSource<EntityType>,
@@ -206,12 +207,6 @@ export class DataSourceStore<DataSource extends AbstractDataSource = AbstractDat
 
 	public setFilter(ref: string, filter: any | undefined) {
 
-		// if(!this.bufferedLoad) {
-		// 	this.bufferedLoad = FunctionUtil.buffer(0, ()=> {
-		// 		return this.load();
-		// 	}) as (...args:any[]) => Promise<StoreRecord[]>;
-		// }
-
 		if (filter === undefined) {
 			delete this.filters[ref];
 		} else {
@@ -271,6 +266,8 @@ export type DataSourceStoreConfig<DataSource extends AbstractDataSource, RecordT
 		relations?: Relation<DefaultEntity>,
 
 		listeners?: ObservableListener<StoreEventMap<DataSourceStore<DataSource, RecordType>,RecordType>>
+
+		filters?: Record<string, any>
 	}
 
 
@@ -283,4 +280,21 @@ export type DataSourceStoreConfig<DataSource extends AbstractDataSource, RecordT
  * @param config
  */
 export const datasourcestore =
-	<DataSource extends AbstractDataSource = AbstractDataSource, RecordType = dataSourceEntityType<DataSource>>(config: DataSourceStoreConfig<DataSource, RecordType>) => createComponent(new DataSourceStore<DataSource, RecordType>(config.dataSource), config);
+	<DataSource extends AbstractDataSource = AbstractDataSource, RecordType = dataSourceEntityType<DataSource>>(config: DataSourceStoreConfig<DataSource, RecordType>) => {
+
+		let f;
+		if(config.filters) {
+			f = config.filters;
+			delete config.filters;
+		}
+	  const store = createComponent(new DataSourceStore<DataSource, RecordType>(config.dataSource), config);
+
+		if(f) {
+			for (const filterName in f) {
+        store.setFilter(filterName, f[filterName]);
+      }
+		}
+
+
+		return store;
+	}

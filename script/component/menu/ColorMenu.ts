@@ -6,7 +6,7 @@
 
 import {Menu} from "./Menu.js";
 import {btn} from "../Button.js";
-import {Config, ObservableListenerOpts} from "../Observable.js";
+import {Config, Listener, ObservableListenerOpts} from "../Observable.js";
 import {Component, ComponentEventMap, createComponent} from "../Component.js";
 
 /**
@@ -23,7 +23,7 @@ export interface ColorMenuEventMap<Type> extends ComponentEventMap<Type> {
 }
 
 export interface ColorMenu {
-	on<K extends keyof ColorMenuEventMap<ColorMenu>, L extends Function>(eventName: K, listener: Partial<ColorMenuEventMap<ColorMenu>>[K], options?: ObservableListenerOpts): L
+	on<K extends keyof ColorMenuEventMap<ColorMenu>, L extends Listener>(eventName: K, listener: Partial<ColorMenuEventMap<ColorMenu>>[K], options?: ObservableListenerOpts): L
 
 	fire<K extends keyof ColorMenuEventMap<ColorMenu>>(eventName: K, ...args: Parameters<ColorMenuEventMap<Component>[K]>): boolean
 

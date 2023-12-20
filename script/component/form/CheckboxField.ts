@@ -164,7 +164,8 @@ export class CheckboxField extends Field {
 
 	get value() {
 		if (!this.input) {
-			return super.value;
+			//always return bool
+			return !!super.value;
 		} else {
 			return this.input.checked;
 		}

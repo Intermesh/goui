@@ -2,7 +2,7 @@ import {List, ListEventMap, RowRenderer} from "./List";
 import {store, Store, StoreRecord} from "../data";
 import {Component, createComponent} from "./Component";
 import {E} from "../util";
-import {Config, ObservableListenerOpts} from "./Observable";
+import {Config, Listener, ObservableListenerOpts} from "./Observable";
 import {dragData} from "../DragData";
 import {MaterialIcon} from "./MaterialIcon";
 import {checkbox} from "./form";
@@ -83,7 +83,7 @@ export interface TreeEventMap<Type> extends ListEventMap<Type> {
 }
 
 export interface Tree extends List<Store<TreeRecord>> {
-	on<K extends keyof TreeEventMap<this>, L extends Function>(eventName: K, listener: Partial<TreeEventMap<this>>[K], options?: ObservableListenerOpts): L;
+	on<K extends keyof TreeEventMap<this>, L extends Listener>(eventName: K, listener: Partial<TreeEventMap<this>>[K], options?: ObservableListenerOpts): L;
 	un<K extends keyof TreeEventMap<this>>(eventName: K, listener: Partial<TreeEventMap<this>>[K]): boolean
 	fire<K extends keyof TreeEventMap<this>>(eventName: K, ...args: Parameters<TreeEventMap<any>[K]>): boolean
 }

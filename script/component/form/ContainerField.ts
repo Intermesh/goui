@@ -5,17 +5,15 @@
  */
 
 import {Field, FieldEventMap} from "./Field.js";
-import {Config, ObservableListenerOpts} from "../Observable.js";
-import {Component, ComponentEventMap, createComponent} from "../Component.js";
-import {ObjectUtil} from "../../util/ObjectUtil.js";
-import {MapField} from "./MapField.js";
+import {Config, Listener, ObservableListenerOpts} from "../Observable.js";
+import {Component, createComponent} from "../Component.js";
 
 
 export type ContainerFieldValue = Record<string, any>;
 
 
 export interface ContainerField extends Field {
-	on<K extends keyof FieldEventMap<this>, L extends Function>(eventName: K, listener: Partial<FieldEventMap<this>>[K], options?: ObservableListenerOpts): L;
+	on<K extends keyof FieldEventMap<this>, L extends Listener>(eventName: K, listener: Partial<FieldEventMap<this>>[K], options?: ObservableListenerOpts): L;
 	un<K extends keyof FieldEventMap<this>>(eventName: K, listener: Partial<FieldEventMap<this>>[K]): boolean
 	fire<K extends keyof FieldEventMap<this>>(eventName: K, ...args: Parameters<FieldEventMap<Component>[K]>): boolean
 }
@@ -89,6 +87,27 @@ export class ContainerField<ValueType extends ContainerFieldValue = ContainerFie
 
 
 		return field;
+	}
+
+	/**
+	 * Copies the current value to the reset value. Typically happens when this component was added to a parent and
+	 * when the form it belongs too loads.
+	 */
+	public trackReset() {
+		this.findFields().forEach((field) => {
+			field.trackReset();
+		})
+	}
+
+	isModified(): boolean {
+		const f = this.findFields();
+
+		for(let i =0,l=f.length; i < l; i++) {
+			if(f[i].isModified()) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	set value(v: Partial<ValueType>) {

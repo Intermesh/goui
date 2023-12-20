@@ -30,7 +30,7 @@ export interface ArrayField {
  *
  * @see Form
  */
-export class ArrayField extends ContainerField {
+export class ArrayField extends Field {
 
 	/**
 	 *
@@ -39,11 +39,17 @@ export class ArrayField extends ContainerField {
 	constructor(public buildField: FieldBuilder) {
 		super("div");
 
+		this.baseCls = "flow";
+
 		this.items.on("datachanged", () => {
 			if(this.enableChangeEvent) {
 				this.fireChange();
 			}
 		});
+	}
+
+	protected renderControl() {
+		// empty
 	}
 
 	private enableChangeEvent = true;
@@ -99,6 +105,11 @@ export class ArrayField extends ContainerField {
 		field.value = value;
 
 		this.items.add(field);
+	}
+
+	public isModified(): boolean {
+		console.log(JSON.stringify(this.resetValue),JSON.stringify(this.value));
+		return JSON.stringify(this.resetValue) !== JSON.stringify(this.value);
 	}
 
 	reset() {

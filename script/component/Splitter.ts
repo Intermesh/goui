@@ -65,7 +65,7 @@ export class Splitter extends DraggableComponent {
 
 			if (!this._resizeComponent) {
 				console.warn(this.resizeComponentPredicate);
-				throw "Could not find component to resize!";
+				throw "Splitter could not find component to resize!";
 			}
 		} else {
 			this._resizeComponent = resizeComponentPredicate;
