@@ -1,21 +1,24 @@
 import {TextField, TextFieldType} from "./TextField";
 import {Config} from "../Observable";
-import {FieldEventMap} from "./Field";
+import {Field, FieldEventMap} from "./Field";
 import {createComponent} from "../Component";
-import {Format} from "../../util";
+import {E, Format} from "../../util";
 import {DateInterval} from "../../util/DateInterval";
 
-export class DurationField extends TextField {
+export class DurationField extends Field {
 
-    public type: TextFieldType = "time";
 
-    interval?: number;
-    // min: number = 0;
-    // max: number = 1440;
 
-    inMinutes: boolean = true;
+	private hoursInput?: HTMLInputElement;
+	private minutesInput?: HTMLInputElement;
 
-		private dateInterval?: DateInterval;
+
+	inMinutes: boolean = true;
+
+	min = "0:00";
+
+	max = "100:00";
+
 
     // protected validate() {
     //     super.validate();
@@ -31,65 +34,97 @@ export class DurationField extends TextField {
     //     }
     // }
 
-    set value(v: string | undefined) {
-       if(!v) {
-				 super.value = v;
-       } else {
-				 this.dateInterval = new DateInterval(v);
-       }
 
-    }
+	public getValueAsDateInterval() {
+		const di = new DateInterval();
+		di.hours = parseInt(this.hoursInput!.value);
+	}
 
-    get value(): string | undefined {
+	protected createControl(): HTMLElement | undefined {
+		const ctrl = E("div").cls("goui hbox");
 
-	    this.dateInterval ??= new DateInterval();
 
-	    const parts = super.value.split(':');
+		const onBlur = function(this:any) {
+			if(!this.value) {
+				return;
+			}
+			this.value = this.value.padStart(2, "0")
+			return true;
+		}
 
-			this.dateInterval.hours = parseInt(parts[0]);
-	    this.dateInterval.minutes = parseInt(parts[1]);
+		const onFocus = function(this:any) {
+			this.setSelectionRange(0, this.value.length);
+		};
 
-	    return this.dateInterval?.toString();
-    }
-		//
-    // protected createControl(): undefined | HTMLElement {
-    //     const v = this.value,
-    //         name = this.name;
-		//
-    //     this._input = document.createElement("input");
-    //     this._input.classList.add("text");
-    //     this._input.type = "time";
-		//
-    //     this._input.required = this.required;
-    //     if (name) {
-    //         this._input.name = name;
-    //     }
-    //     this._input.readOnly = this.readOnly;
-		//
-    //     if (this.title) {
-    //         this._input.title = this.title;
-    //     }
-		//
-    //     if (this.invalidMsg) {
-    //         this.applyInvalidMsg();
-    //     }
-		//
-    //     if (this.min !== undefined) {
-    //         this._input!.attr('min', this.min);
-    //     }
-    //     if (this.max !== undefined) {
-    //         this._input!.attr('max', this.max);
-    //     }
-    //     if(this.interval) {
-    //         this._input!.attr('step', this.interval);
-    //     }
-    //     if(v!==undefined) {
-    //         this._input!.attr('value', Format.duration(v, true));
-    //     }
-		//
-		//
-    //     return this._input;
-    // }
+		this.hoursInput = document.createElement("input");
+		this.hoursInput.classList.add("text");
+		this.hoursInput.classList.add("hour");
+		this.hoursInput.type = "text";
+		this.hoursInput.pattern = "[0-9]+";
+		this.hoursInput.maxLength = 2;
+		this.hoursInput.onblur = onBlur;
+		this.hoursInput.onfocus = onFocus;
+		// this.hoursInput.onmouseup = onMouseUp;
+		this.hoursInput.placeholder = "--";
+		this.hoursInput.autocomplete = "off";
+		this.hoursInput.onkeyup = ev => {
+
+			if(!/^[0-9]$/i.test(ev.key)) {
+				return;
+			}
+		}
+
+		this.minutesInput = document.createElement("input");
+		this.minutesInput.classList.add("text");
+		this.minutesInput.classList.add("minute");
+		this.minutesInput.type = "text";
+		this.minutesInput.pattern = "[0-9]+";
+		this.minutesInput.maxLength = 2;
+		const hoursInput = this.hoursInput!;
+		this.minutesInput.onblur = function(this:any) {
+			onBlur.call(this);
+			if(!this.value && hoursInput.value) {
+				this.value = "00";
+			}
+		};
+		this.minutesInput.onfocus = onFocus;
+		this.minutesInput.onkeyup = ev => {
+
+			if(!/^[0-9]$/i.test(ev.key)) {
+				return;
+			}
+
+			if(parseInt(this.minutesInput!.value) > 59) {
+				this.minutesInput!.value = "59";
+			}
+
+		}
+		this.minutesInput.placeholder = "--";
+		this.minutesInput.autocomplete = "off";
+
+		ctrl.append(this.hoursInput, ":", this.minutesInput);
+
+		return ctrl;
+	}
+
+	set value(v: any) {
+		super.value = v;
+	}
+
+	get value(): any {
+		if(this.hoursInput && this.minutesInput) {
+
+			if(!this.hoursInput.value) {
+				return undefined;
+			}
+
+			let hours = parseInt(this.hoursInput.value);
+
+			return hours + ":" + (this.minutesInput.value ?? "0").padStart(2, "0");
+		} else {
+			return super.value;
+		}
+	}
 }
 
 export const durationfield = (config?: Config<DurationField, FieldEventMap<DurationField>>) => createComponent(new DurationField(), config);

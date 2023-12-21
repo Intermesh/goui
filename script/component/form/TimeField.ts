@@ -37,6 +37,12 @@ export class TimeField extends Field {
 			this.setSelectionRange(0, this.value.length);
 		};
 
+		const onKeyDown = (ev:KeyboardEvent) => {
+			if(ev.key != "Tab" && ev.key != "Delete" && ev.key != "Backspace" && ev.key != "Enter" && !/^[0-9]$/i.test(ev.key)) {
+				ev.preventDefault();
+			}
+		}
+
 		this.hoursInput = document.createElement("input");
 		this.hoursInput.classList.add("text");
 		this.hoursInput.classList.add("hour");
@@ -48,20 +54,20 @@ export class TimeField extends Field {
 		// this.hoursInput.onmouseup = onMouseUp;
 		this.hoursInput.placeholder = "--";
 		this.hoursInput.autocomplete = "off";
-		this.hoursInput.onkeyup = ev => {
 
-			if(!/^[0-9]$/i.test(ev.key)) {
-				return;
-			}
+		this.hoursInput.onkeydown =onKeyDown
 
-			const max = this.input12hr ? "11" : "23";
+		this.hoursInput.oninput = ev => {
 
-			if(this.hoursInput!.value > max) {
-				this.hoursInput!.value = max;
+			const max = this.input12hr ? 11 : 23;
+
+			if(parseInt(this.hoursInput!.value) > max) {
+				this.hoursInput!.value = max.toString();
 				this.hoursInput!.setSelectionRange(0,2);
 			} else {
 
 				if (this.hoursInput!.value.length == 2) {
+					console.warn(this.hoursInput!.value);
 					this.minutesInput!.focus();
 				}
 			}
@@ -81,13 +87,11 @@ export class TimeField extends Field {
 			}
 		};
 		this.minutesInput.onfocus = onFocus;
-		this.minutesInput.onkeyup = ev => {
+		this.minutesInput.onkeydown = onKeyDown;
 
-			if(!/^[0-9]$/i.test(ev.key)) {
-				return;
-			}
+		this.minutesInput.oninput = ev => {
 
-			if(this.minutesInput!.value > "59") {
+			if(parseInt(this.minutesInput!.value) > 59) {
 				this.minutesInput!.value = "59";
 			}
 
@@ -122,23 +126,50 @@ export class TimeField extends Field {
 		return ctrl;
 	}
 
+
+
+	protected internalSetValue(v?: any) {
+
+		if(v && this.hoursInput && this.minutesInput) {
+			const parts = v.split(":");
+			if (this.input12hr) {
+				let hours = parts[0];
+				if (hours > "12") {
+					this.AMPMInput!.value = "pm";
+					hours -= 12;
+				}
+				this.hoursInput.value = hours.toString().padStart(2, "0");
+
+			} else {
+				this.hoursInput.value = parts[0].padStart(2, "0");
+			}
+
+			if (parts[1]) {
+				this.minutesInput.value = parts[1].padStart(2, "0");
+			} else {
+				this.minutesInput.value = "00";
+			}
+		}
+	}
+
 	set value(v: any) {
 		super.value = v;
 	}
 
 	get value(): any {
-		if(this.hoursInput && this.minutesInput) {
+		if(this.rendered) {
 
-			if(!this.hoursInput.value) {
+			if(!this.hoursInput!.value) {
 				return undefined;
 			}
 
-			let hours = parseInt(this.hoursInput.value);
+			let hours = parseInt(this.hoursInput!.value);
+
 			if(this.input12hr && this.AMPMInput!.value == "pm") {
-				hours *= 2;
+				hours += 12;
 			}
 
-			return hours.toString().padStart(2, "0") + ":" + (this.minutesInput.value ?? "0").padStart(2, "0");
+			return hours.toString().padStart(2, "0") + ":" + (this.minutesInput!.value ?? "0").padStart(2, "0");
 		} else {
 			return super.value;
 		}
