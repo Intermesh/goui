@@ -38,10 +38,25 @@ export class TimeField extends Field {
 		};
 
 		const onKeyDown = (ev:KeyboardEvent) => {
-			if(ev.key != "Tab" && ev.key != "Delete" && ev.key != "Backspace" && ev.key != "Enter" && !/^[0-9]$/i.test(ev.key)) {
-				ev.preventDefault();
+			switch(ev.key) {
+				case "Tab":
+				case "Enter":
+				case "Backspace":
+				case "Delete":
+					return true;
+
+				case ':':
+					this.minutesInput!.focus();
+					ev.preventDefault();
+					break;
+
+				default:
+					if(!/^[0-9]$/i.test(ev.key)) {
+						//only allow numbers
+						ev.preventDefault();
+					}
 			}
-		}
+		};
 
 		this.hoursInput = document.createElement("input");
 		this.hoursInput.classList.add("text");
@@ -55,7 +70,7 @@ export class TimeField extends Field {
 		this.hoursInput.placeholder = "--";
 		this.hoursInput.autocomplete = "off";
 
-		this.hoursInput.onkeydown =onKeyDown
+		this.hoursInput.onkeydown = onKeyDown;
 
 		this.hoursInput.oninput = ev => {
 

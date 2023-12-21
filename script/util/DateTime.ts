@@ -364,7 +364,7 @@ export type Timezone =
 const SystemTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone.toLowerCase() as Timezone;
 
 function pad(n: any): string {
-	return (n < 10 ? '0' : '') + n;
+	return n.toString().padStart(2, "0");
 }
 
 /**
@@ -470,7 +470,7 @@ export class DateTime {
 	 *
 	 * @param timezone eg. europe/amsterdam
 	 */
-	toTimezone<T extends string>(timezone: Timezone) {
+	public toTimezone<T extends string>(timezone: Timezone) {
 
 		if (this.timezone == timezone) {
 			return this.clone();
@@ -487,7 +487,12 @@ export class DateTime {
 		return d;
 	}
 
-	diff(end: DateTime) {
+	/**
+	 * Calculate difference between this and the given date
+	 *
+	 * @param end
+	 */
+	public diff(end: DateTime) {
 
 		const di = new DateInterval();
 
@@ -513,21 +518,18 @@ export class DateTime {
 		di.months = sihdmy[4];
 		di.years = sihdmy[5];
 
-		// // sec, min, hour, day, month, year
-		// const [s, i, h, d, m, y] = sihdmy;
-		// return 'P' + (y > 0 ? y + 'Y' : '') +
-		// 	(m > 0 ? m + 'M' : '') +
-		// 	(d > 0 ? d + 'D' : '') +
-		// 	((h || i || s) ? 'T' +
-		// 		(h > 0 ? h + 'H' : '') +
-		// 		(i > 0 ? i + 'M' : '') +
-		// 		(s > 0 ? s + 'S' : '') : '');
-
+		di.totalDaysBetween = this.diffInDays(end);
 		return di;
-
 	}
 
-	diffInDays(other: DateTime) {
+
+	/**
+	 * Calculates total number of dates that have ellapsed between two dates
+	 *
+	 * @param other
+	 * @private
+	 */
+	private diffInDays(other: DateTime) {
 		return Math.floor((
 			Date.UTC(other.getYear(), other.date.getMonth(), other.getDate()) -
 			Date.UTC(this.getYear(), this.date.getMonth(), this.getDate())
@@ -770,13 +772,21 @@ export class DateTime {
 		return this;
 	}
 
-	addDuration(d: DateInterval) {
-		this.setYear(this.getYear() + d.years);
-		this.setMonth(this.getMonth() + d.months);
-		this.setDay(this.getDay() + d.days + (d.weeks * 7));
-		this.setHours(this.getHours() + d.hours);
-		this.setMinutes(this.getMinutes() + d.minutes);
-		this.setSeconds(this.getSeconds() + d.seconds);
+	/**
+	 * Add a date interval
+	 *
+	 * @param dateInterval
+	 */
+	add(dateInterval: DateInterval) {
+
+		const inv = dateInterval.invert ? -1 : 1;
+
+		this.setYear(this.getYear() + dateInterval.years * inv);
+		this.setMonth(this.getMonth() + dateInterval.months * inv);
+		this.setDay(this.getDay() + dateInterval.days + (dateInterval.weeks * 7 * inv));
+		this.setHours(this.getHours() + dateInterval.hours * inv);
+		this.setMinutes(this.getMinutes() + dateInterval.minutes * inv);
+		this.setSeconds(this.getSeconds() + dateInterval.seconds * inv);
 		return this;
 	}
 
@@ -803,28 +813,28 @@ export class DateTime {
 		return (tzo > 0 ? "-" : "+") + pad(Math.floor(Math.abs(tzo) / 60)) + colon + pad(Math.abs(tzo % 60));
 	}
 
-	private static converters: { [key: string]: (date: DateTime) => string | number } = {
+	private static converters: { [key: string]: (date: DateTime) => string } = {
 		'd': date => pad(date.getMonthDay()),
 		'D': date => DateTime.dayNames[DateTime.dayMap[date.getWeekDay()]].substring(0, 3),
-		'j': date => date.getMonthDay(),
+		'j': date => date.getMonthDay().toString(),
 		'l': date => DateTime.dayNames[DateTime.dayMap[date.getWeekDay()]],
 		'S': date => ["st", "nd", "rd"][((date.getMonthDay() + 90) % 100 - 10) % 10 - 1] || "th",
 
-		'w': date => date.getDay(),
-		'z': date => date.getDayOfYear(),
-		'W': date => date.getWeekOfYear(),
+		'w': date => date.getDay().toString(),
+		'z': date => date.getDayOfYear().toString(),
+		'W': date => date.getWeekOfYear().toString(),
 		'F': date => DateTime.monthNames[date.getMonth() - 1],
 		'm': date => pad(date.getMonth()),
 		'M': date => DateTime.monthNames[date.getMonth() - 1].substring(0, 3),
-		'n': date => date.getMonth(),
+		'n': date => date.getMonth().toString(),
 
-		'Y': date => date.getYear(),
+		'Y': date => date.getYear().toString(),
 		'y': date => (date.getYear() + "").substr(-2),
 		'a': date => date.getHours() > 12 ? 'pm' : 'am',
 		'A': date => date.getHours() > 12 ? 'PM' : 'AM',
 
-		'g': date => date.getHours() % 12,
-		'G': date => date.getHours(),
+		'g': date => (date.getHours() % 12).toString(),
+		'G': date => date.getHours().toString(),
 		'h': date => pad(date.getHours() % 12),
 		'H': date => pad(date.getHours()),
 		'i': date => pad(date.getMinutes()),
@@ -832,7 +842,7 @@ export class DateTime {
 
 		'O': date => date.getGMTOffset(""),
 		'P': date => date.getGMTOffset(),
-		'U': date => Math.floor(date.getTime() / 1000),
+		'U': date => Math.floor(date.getTime() / 1000).toString(),
 		'c': date => date.format("Y-m-d\TH:i:sP")
 	};
 
@@ -899,7 +909,7 @@ export class DateTime {
 	}
 
 
-	public static createFormatRegex(format: string) {
+	private static createFormatRegex(format: string) {
 		const chars = format.split("");
 		let output = "";
 
@@ -975,13 +985,13 @@ export class DateTime {
 	 * const date = console.log(Date.createFromFormat("10/12/2021 9:09am", "m/d/Y g:ia", "America/New_York));
 	 * ```
 	 */
-	public static createFromFormat(dateStr: string, format: string = "c", timezone?: Timezone): DateTime | null {
+	public static createFromFormat(dateStr: string, format: string = "c", timezone?: Timezone): DateTime | undefined {
 
 		const regex = new RegExp(DateTime.createFormatRegex(format), 'u');
 		const result = regex.exec(dateStr);
 
 		if (!result) {
-			return null;
+			return undefined;
 		}
 
 		const date = new DateTime();
