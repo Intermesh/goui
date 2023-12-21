@@ -4,6 +4,8 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
+import {DateInterval} from "./DateInterval";
+
 /**
  * @category Utility
  */
@@ -365,8 +367,6 @@ function pad(n: any): string {
 	return (n < 10 ? '0' : '') + n;
 }
 
-const durationRegex = /(-)?P(?:([.,\d]+)Y)?(?:([.,\d]+)M)?(?:([.,\d]+)W)?(?:([.,\d]+)D)?(?:T(?:([.,\d]+)H)?(?:([.,\d]+)M)?(?:([.,\d]+)S)?)?/;
-
 /**
  * DateTime object
  *
@@ -488,6 +488,9 @@ export class DateTime {
 	}
 
 	diff(end: DateTime) {
+
+		const di = new DateInterval();
+
 		let monthDays = end.clone().setDate(0).getDate(),
 			sihdmy = [0, 0, 0, 0, 0, end.getYear() - this.getYear()],
 			it = 0,
@@ -502,15 +505,25 @@ export class DateTime {
 			}
 			it++;
 		}
-		// sec, min, hour, day, month, year
-		const [s, i, h, d, m, y] = sihdmy;
-		return 'P' + (y > 0 ? y + 'Y' : '') +
-			(m > 0 ? m + 'M' : '') +
-			(d > 0 ? d + 'D' : '') +
-			((h || i || s) ? 'T' +
-				(h > 0 ? h + 'H' : '') +
-				(i > 0 ? i + 'M' : '') +
-				(s > 0 ? s + 'S' : '') : '');
+
+		di.seconds = sihdmy[0];
+		di.minutes = sihdmy[1];
+		di.hours = sihdmy[2];
+		di.days = sihdmy[3];
+		di.months = sihdmy[4];
+		di.years = sihdmy[5];
+
+		// // sec, min, hour, day, month, year
+		// const [s, i, h, d, m, y] = sihdmy;
+		// return 'P' + (y > 0 ? y + 'Y' : '') +
+		// 	(m > 0 ? m + 'M' : '') +
+		// 	(d > 0 ? d + 'D' : '') +
+		// 	((h || i || s) ? 'T' +
+		// 		(h > 0 ? h + 'H' : '') +
+		// 		(i > 0 ? i + 'M' : '') +
+		// 		(s > 0 ? s + 'S' : '') : '');
+
+		return di;
 
 	}
 
@@ -757,20 +770,13 @@ export class DateTime {
 		return this;
 	}
 
-	addDuration(iso8601: string) {
-		let p: any,
-			matches = iso8601.match(durationRegex)!;
-		matches.shift(); // full match
-		const sign = matches.shift() || '';
-		for (let o of ['FullYear', 'Month', 'Week', 'Date', 'Hours', 'Minutes', 'Seconds']) {
-			if (p = matches.shift()) { // p= amount to add
-				if (o === 'Week') {
-					p *= 7;
-					o = 'Date';
-				}
-				this.date['set' + o as 'setDate'](this.date['get' + o as 'getDate']() + parseInt(sign + p))
-			}
-		}
+	addDuration(d: DateInterval) {
+		this.setYear(this.getYear() + d.years);
+		this.setMonth(this.getMonth() + d.months);
+		this.setDay(this.getDay() + d.days + (d.weeks * 7));
+		this.setHours(this.getHours() + d.hours);
+		this.setMinutes(this.getMinutes() + d.minutes);
+		this.setSeconds(this.getSeconds() + d.seconds);
 		return this;
 	}
 
