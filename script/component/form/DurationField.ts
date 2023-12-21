@@ -4,35 +4,35 @@ import {Field, FieldEventMap} from "./Field";
 import {createComponent} from "../Component";
 import {E, Format} from "../../util";
 import {DateInterval} from "../../util/DateInterval";
+import {t} from "../../Translate";
 
 export class DurationField extends Field {
 
 
+	protected baseCls = "goui-form-field duration no-floating-label";
 
 	private hoursInput?: HTMLInputElement;
 	private minutesInput?: HTMLInputElement;
 
+	public outputFormat = "h:I";
 
-	inMinutes: boolean = true;
-
-	min = "0:00";
-
-	max = "100:00";
+	public min : DateInterval|undefined = undefined;
+	public max : DateInterval|undefined = undefined;
 
 
-    // protected validate() {
-    //     super.validate();
-    //     const v = Format.minutes(super.value);
-    //     if (v && isNaN(v)) {
-    //         this.setInvalid("Incorrect number format");
-    //     }
-    //     if (this.max !== undefined && v > this.max) {
-    //         this.setInvalid("Number is too big");
-    //     }
-    //     if (this.min !== undefined && v < this.min) {
-    //         this.setInvalid("Number is too small");
-    //     }
-    // }
+    protected validate() {
+      super.validate();
+
+			const v = this.getValueAsDateInterval();
+
+      if (this.max !== undefined && v.compare(this.max) == 1) {
+	      this.setInvalid(t("The maximum duration is {duration}").replace("{duration}", this.max.format("h:I")));
+      }
+      if (this.min !== undefined && v.compare(this.min) == -1) {
+
+	      this.setInvalid(t("The minimum duration is {duration}").replace("{duration}", this.min.format("h:I")));
+      }
+    }
 
 
 	public getValueAsDateInterval() {
@@ -86,7 +86,6 @@ export class DurationField extends Field {
 		this.hoursInput.classList.add("hour");
 		this.hoursInput.type = "text";
 		this.hoursInput.pattern = "[0-9]+";
-		this.hoursInput.maxLength = 2;
 		this.hoursInput.onblur = onBlur;
 		this.hoursInput.onfocus = onFocus;
 		this.hoursInput.placeholder = "--";
@@ -125,12 +124,12 @@ export class DurationField extends Field {
 	}
 
 	protected internalSetValue(v?: any) {
-
 		if(v && this.hoursInput && this.minutesInput) {
-			const parts = v.split(":");
-			this.hoursInput.value = parts[0].padStart(2, "0");
-			if (parts[1]) {
-				this.minutesInput.value = parts[1].padStart(2, "0");
+
+			const dateInterval = DateInterval.createFromFormat(v, this.outputFormat);
+			if (dateInterval) {
+				this.hoursInput.value = dateInterval.hours.toString();
+				this.minutesInput.value = dateInterval.minutes.toString();
 			} else {
 				this.minutesInput.value = "00";
 			}
@@ -142,15 +141,17 @@ export class DurationField extends Field {
 	}
 
 	get value(): any {
-		if(this.hoursInput && this.minutesInput) {
+		if(this.rendered) {
 
-			if(!this.hoursInput.value) {
+			if(!this.hoursInput!.value) {
 				return undefined;
 			}
 
-			let hours = parseInt(this.hoursInput.value);
+			const dateInterval = new DateInterval();
+			dateInterval.hours = parseInt(this.hoursInput!.value);
+			dateInterval.minutes = parseInt(this.minutesInput!.value);
 
-			return hours + ":" + (this.minutesInput.value ?? "0").padStart(2, "0");
+			return dateInterval.format(this.outputFormat);
 		} else {
 			return super.value;
 		}

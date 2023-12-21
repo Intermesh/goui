@@ -1054,9 +1054,9 @@ export class DateTime {
 	 *
 	 * Returns:
 	 *
-	 * - -1 if this date is before the given date
-	 * - 0 if dates are equal
-	 * - 1 if this date is after the given date
+	 * - -1 if this interval is smaller than the other
+	 * - 0 if intervals are equal
+	 * - 1 if this interval is greater than the other
 	 *
 	 * @param date
 	 * @return number

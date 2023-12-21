@@ -445,9 +445,6 @@ $formFieldBorderRadius: dp(10);
 		line-height: $baseLineHeight;
 	}
 
-	&.date {
-		width: sp(192);
-	}
 
 	&.time {
 		width: sp(90);
@@ -455,6 +452,10 @@ $formFieldBorderRadius: dp(10);
 		&.input12hr {
 			width: sp(110);
 		}
+	}
+
+	&.time, &.duration {
+
 
 		select {
 			appearance: none;
@@ -471,7 +472,14 @@ $formFieldBorderRadius: dp(10);
 		}
 	}
 
-	&.date,&.time {
+	&.duration {
+		input.hour {
+			width: auto;
+			flex: 1;
+		}
+	}
+
+	&.date,&.time, &.duration {
 
 		.wrap {
 			line-height: dp(46);
@@ -490,7 +498,7 @@ $formFieldBorderRadius: dp(10);
 		}
 
 		input.text:last-child {
-			padding-right: dp(2);
+			padding-right: dp(16);
 		}
 
 		input.month:placeholder-shown {
@@ -501,6 +509,14 @@ $formFieldBorderRadius: dp(10);
 			width: dp(44);
 		}
 	}
+
+	&.date {
+		width: sp(192);
+		input.text:last-child {
+			padding-right: dp(2);
+		}
+	}
+
 
 	&.invalid {
 		.wrap {

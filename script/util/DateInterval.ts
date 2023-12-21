@@ -234,4 +234,27 @@ export class DateInterval {
 		return date;
 	}
 
+	/**
+	 * Compare with given interval
+	 *
+	 * Returns:
+	 *
+	 * - -1 if this date is before the given date
+	 * - 0 if dates are equal
+	 * - 1 if this date is after the given date
+	 *
+	 * @param date
+	 * @return number
+	 */
+	public compare(other: DateInterval): number {
+
+		const thisDuration = parseInt(this.format("rYMDHISF"));
+		const otherDuration = parseInt(other.format("rYMDHISF"));
+
+		const result = (thisDuration > otherDuration ? 1 : 0) - (thisDuration < otherDuration ? 1 : 0);
+
+		console.log(thisDuration, otherDuration, result);
+		return result;
+	}
+
 }
