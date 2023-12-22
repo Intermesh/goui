@@ -1001,6 +1001,9 @@ div.color-dot {
 	.control {
 		padding: dp(11) dp(16);
 		min-height: dp(46);
+		&:not(:empty) {
+			@extend %float-label;
+		}
 	}
 }
 
