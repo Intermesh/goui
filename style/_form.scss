@@ -995,3 +995,30 @@ div.color-dot {
 		transition: background .3s ease-in-out;
 	}
 }
+
+
+.listfield {
+	.control {
+		padding: dp(11) dp(16);
+		min-height: dp(46);
+	}
+}
+
+.listfield-list{
+	margin:0;
+	padding: 0;
+	list-style: none;
+
+	li {
+		margin: 0;
+		padding: dp(8) dp(4);
+		cursor: default;
+		user-select: none;
+		-webkit-user-select: none;
+		-moz-user-select: none;
+
+		&:hover {
+			background-color: $colorHover;
+		}
+	}
+}
