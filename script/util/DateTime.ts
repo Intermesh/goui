@@ -493,49 +493,10 @@ export class DateTime {
 	 * @param end
 	 */
 	public diff(end: DateTime) {
-
 		const di = new DateInterval();
-
-		let monthDays = end.clone().setDate(0).getDate(),
-			sihdmy = [0, 0, 0, 0, 0, end.getYear() - this.getYear()],
-			it = 0,
-			map = {getSeconds: 60, getMinutes: 60, getHours: 24, getDate: monthDays, getMonth: 12};
-		for (let i in map) {
-			let fn = i as 'getSeconds' | 'getMinutes' | 'getHours' | 'getDate' | 'getMonth';
-			if (sihdmy[it] + end[fn]() < this[fn]()) {
-				sihdmy[it + 1]--;
-				sihdmy[it] += map[fn] - this[fn]() + end[fn]();
-			} else if (sihdmy[it] + end[fn]() > this[fn]()) {
-				sihdmy[it] += end[fn]() - this[fn]();
-			}
-			it++;
-		}
-
-		di.seconds = sihdmy[0];
-		di.minutes = sihdmy[1];
-		di.hours = sihdmy[2];
-		di.days = sihdmy[3];
-		di.months = sihdmy[4];
-		di.years = sihdmy[5];
-
-		di.totalDaysBetween = this.diffInDays(end);
+		di.setFromDates(this, end);
 		return di;
 	}
-
-
-	/**
-	 * Calculates total number of dates that have ellapsed between two dates
-	 *
-	 * @param other
-	 * @private
-	 */
-	private diffInDays(other: DateTime) {
-		return Math.floor((
-			Date.UTC(other.getYear(), other.date.getMonth(), other.getDate()) -
-			Date.UTC(this.getYear(), this.date.getMonth(), this.getDate())
-		) / 86400000);
-	}
-
 
 	/**
 	 * Create a copy of this object without reference
@@ -783,7 +744,7 @@ export class DateTime {
 
 		this.setYear(this.getYear() + dateInterval.years * inv);
 		this.setMonth(this.getMonth() + dateInterval.months * inv);
-		this.setDay(this.getDay() + dateInterval.days + (dateInterval.weeks * 7 * inv));
+		this.setDay(this.getDay() + dateInterval.days  * inv);
 		this.setHours(this.getHours() + dateInterval.hours * inv);
 		this.setMinutes(this.getMinutes() + dateInterval.minutes * inv);
 		this.setSeconds(this.getSeconds() + dateInterval.seconds * inv);
@@ -847,9 +808,9 @@ export class DateTime {
 	};
 
 	/**
-	 * Format date similar to PHP's date function
+	 * Format the date into a string
 	 *
-	 * Note: indented options are NOT supported.
+	 * You can use the following characters. You can escape a character with a \ to output it as given.
 	 *
 	 * d - The day of the month (from 01 to 31)
 	 * D - A textual representation of a day (three letters)
@@ -888,6 +849,7 @@ export class DateTime {
 	 * c - The ISO-8601 date (e.g. 2013-05-05T16:34:42+00:00)
 	 * r - The RFC 2822 formatted date (e.g. Fri, 12 Apr 2013 12:01:05 +0200)
 	 * U - The seconds since the Unix Epoch (January 1 1970 00:00:00 GMT)
+	 *
 	 */
 	format(format: string): string {
 
@@ -973,8 +935,7 @@ export class DateTime {
 
 
 	/**
-	 * Create date by given format
-	 * See Date.format()
+	 * Create date by given format. See {@link DateTime.format}.
 	 * Supports:
 	 * Y, y, m, n, d, j, H, h, G, g, i, s, a, A
 	 *

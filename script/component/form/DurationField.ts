@@ -1,40 +1,58 @@
-import {TextField, TextFieldType} from "./TextField";
 import {Config} from "../Observable";
 import {Field, FieldEventMap} from "./Field";
 import {createComponent} from "../Component";
-import {E, Format} from "../../util";
+import {E} from "../../util";
 import {DateInterval} from "../../util/DateInterval";
 import {t} from "../../Translate";
 
+/**
+ * Duration field
+ *
+ * Represents a period of time
+ */
 export class DurationField extends Field {
-
 
 	protected baseCls = "goui-form-field duration no-floating-label";
 
 	private hoursInput?: HTMLInputElement;
 	private minutesInput?: HTMLInputElement;
 
+	/**
+	 * Format it will as value
+	 *
+	 * {@link DurationField.value}
+	 *
+	 * It can be any string format supported by {@link DateInterval.format}
+	 */
 	public outputFormat = "h:I";
 
+	/**
+	 * Minimum allowed duration to be entered
+	 */
 	public min : DateInterval|undefined = undefined;
+
+	/**
+	 * Maximum allowed duration to be entered
+	 */
 	public max : DateInterval|undefined = undefined;
 
+  protected validate() {
+    super.validate();
 
-    protected validate() {
-      super.validate();
+		const v = this.getValueAsDateInterval();
 
-			const v = this.getValueAsDateInterval();
-
-      if (this.max !== undefined && v.compare(this.max) == 1) {
-	      this.setInvalid(t("The maximum duration is {duration}").replace("{duration}", this.max.format("h:I")));
-      }
-      if (this.min !== undefined && v.compare(this.min) == -1) {
-
-	      this.setInvalid(t("The minimum duration is {duration}").replace("{duration}", this.min.format("h:I")));
-      }
+    if (this.max !== undefined && v.compare(this.max) == 1) {
+      this.setInvalid(t("The maximum duration is {duration}").replace("{duration}", this.max.format("h:I")));
     }
+    if (this.min !== undefined && v.compare(this.min) == -1) {
 
+      this.setInvalid(t("The minimum duration is {duration}").replace("{duration}", this.min.format("h:I")));
+    }
+  }
 
+	/**
+	 * Get the value DateInterval object
+	 */
 	public getValueAsDateInterval() {
 		const di = new DateInterval();
 		di.hours = parseInt(this.hoursInput!.value);
@@ -125,11 +143,10 @@ export class DurationField extends Field {
 
 	protected internalSetValue(v?: any) {
 		if(v && this.hoursInput && this.minutesInput) {
-
 			const dateInterval = DateInterval.createFromFormat(v, this.outputFormat);
 			if (dateInterval) {
-				this.hoursInput.value = dateInterval.hours.toString();
-				this.minutesInput.value = dateInterval.minutes.toString();
+				this.hoursInput.value = dateInterval.format("h");
+				this.minutesInput.value = dateInterval.format("I");
 			} else {
 				this.minutesInput.value = "00";
 			}
@@ -150,7 +167,6 @@ export class DurationField extends Field {
 			const dateInterval = new DateInterval();
 			dateInterval.hours = parseInt(this.hoursInput!.value);
 			dateInterval.minutes = parseInt(this.minutesInput!.value);
-
 			return dateInterval.format(this.outputFormat);
 		} else {
 			return super.value;

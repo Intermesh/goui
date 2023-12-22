@@ -24,17 +24,22 @@ export class DateField extends Field {
 
 	/**
 	 * The input format must contain the chars d, m and Y but may be in any order.
+	 *
+	 * See also {@link DateTime.format}
 	 */
 	public inputFormat = "d-m-Y";
 
 	/**
 	 * A valid date format.
 	 *
-	 * @see DateTime.format()
+	 * ee also {@link DateTime.format}
 	 */
 	public outputFormat = "Y-m-d";
 
 
+	/**
+	 * Link a time field
+	 */
 	public timeField?: TextField
 
 	/**
