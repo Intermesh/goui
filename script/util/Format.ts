@@ -175,5 +175,27 @@ export class Format {
 		return parseInt(parts[0]) * 60 + parseInt(parts[1]);
 	}
 
+
+	// /**
+	//  * Pass a javascript template as literals to compile at runtime
+	//  *
+	//  * @param template
+	//  * @param vars
+	//  */
+	// public static template(template:string, vars: Record<string, any> = {}): string {
+	//
+	// 	const fn = [
+	// 		'const tagged = ( ' + Object.keys(vars).join(', ') + ' ) =>',
+	// 		'`' + template + '`',
+	// 		'return tagged(...Object.values(vars))'
+	// 	].join('\n');
+	//
+	// 	console.log(fn);
+	//
+	// 	const handler = new Function('vars', fn)
+	//
+	// 	return handler(vars);
+	// }
+
 }
 
