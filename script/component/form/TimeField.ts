@@ -1,69 +1,29 @@
+import {TextField, TextFieldType} from "./TextField";
 import {Config} from "../Observable";
 import {Field, FieldEventMap} from "./Field";
 import {createComponent} from "../Component";
-import {E} from "../../util";
-import {DateInterval} from "../../util/DateInterval";
-import {t} from "../../Translate";
+import {DateTime, E} from "../../util";
 
-/**
- * Duration field
- *
- * Represents a period of time
- */
-export class DurationField extends Field {
+export class TimeField extends Field {
 
-	protected baseCls = "goui-form-field duration no-floating-label";
+	public input12hr = false;
 
 	private hoursInput?: HTMLInputElement;
 	private minutesInput?: HTMLInputElement;
 
-	/**
-	 * Format it will as value
-	 *
-	 * {@link DurationField.value}
-	 *
-	 * It can be any string format supported by {@link DateInterval.format}
-	 */
-	public outputFormat = "h:I";
+	protected baseCls = "goui-form-field time no-floating-label";
+	private AMPMInput?: HTMLSelectElement;
 
-	/**
-	 * Minimum allowed duration to be entered
-	 */
-	public min : DateInterval|undefined = undefined;
-
-	/**
-	 * Maximum allowed duration to be entered
-	 */
-	public max : DateInterval|undefined = undefined;
-
-  protected validate() {
-    super.validate();
-
-		const v = this.getValueAsDateInterval();
-
-    if (this.max !== undefined && v.compare(this.max) == 1) {
-      this.setInvalid(t("The maximum duration is {duration}").replace("{duration}", this.max.format("h:I")));
-    }
-    if (this.min !== undefined && v.compare(this.min) == -1) {
-
-      this.setInvalid(t("The minimum duration is {duration}").replace("{duration}", this.min.format("h:I")));
-    }
-  }
-
-	/**
-	 * Get the value DateInterval object
-	 */
-	public getValueAsDateInterval() {
-		const di = new DateInterval();
-		di.hours = parseInt(this.hoursInput!.value);
-		di.minutes = parseInt(this.minutesInput!.value);
-
-		return di;
+	public getValueAsDateTime() {
+		return DateTime.createFromFormat(this.value, "H:i");
 	}
 
 	protected createControl(): HTMLElement | undefined {
 		const ctrl = E("div").cls("goui hbox");
 
+		if(this.input12hr) {
+			this.el.classList.add('input12hr');
+		}
 
 		const onBlur = function(this:any) {
 			if(!this.value) {
@@ -98,17 +58,35 @@ export class DurationField extends Field {
 			}
 		};
 
-
 		this.hoursInput = document.createElement("input");
 		this.hoursInput.classList.add("text");
 		this.hoursInput.classList.add("hour");
 		this.hoursInput.type = "text";
 		this.hoursInput.pattern = "[0-9]+";
+		this.hoursInput.maxLength = 2;
 		this.hoursInput.onblur = onBlur;
 		this.hoursInput.onfocus = onFocus;
+		// this.hoursInput.onmouseup = onMouseUp;
 		this.hoursInput.placeholder = "--";
 		this.hoursInput.autocomplete = "off";
+
 		this.hoursInput.onkeydown = onKeyDown;
+
+		this.hoursInput.oninput = ev => {
+
+			const max = this.input12hr ? 11 : 23;
+
+			if(parseInt(this.hoursInput!.value) > max) {
+				this.hoursInput!.value = max.toString();
+				this.hoursInput!.setSelectionRange(0,2);
+			} else {
+
+				if (this.hoursInput!.value.length == 2) {
+					console.warn(this.hoursInput!.value);
+					this.minutesInput!.focus();
+				}
+			}
+		}
 
 		this.minutesInput = document.createElement("input");
 		this.minutesInput.classList.add("text");
@@ -124,12 +102,16 @@ export class DurationField extends Field {
 			}
 		};
 		this.minutesInput.onfocus = onFocus;
+		this.minutesInput.onkeydown = onKeyDown;
 
-		this.hoursInput.onkeydown = onKeyDown;
 		this.minutesInput.oninput = ev => {
 
 			if(parseInt(this.minutesInput!.value) > 59) {
 				this.minutesInput!.value = "59";
+			}
+
+			if(this.input12hr && this.minutesInput!.value.length == 2) {
+				this.AMPMInput!.focus();
 			}
 
 		}
@@ -138,15 +120,47 @@ export class DurationField extends Field {
 
 		ctrl.append(this.hoursInput, ":", this.minutesInput);
 
+		if(this.input12hr) {
+			this.AMPMInput = document.createElement("select");
+
+			const amOpt = new Option();
+			amOpt.value = "am";
+			amOpt.innerHTML = "am";
+			amOpt.selected = true;
+			this.AMPMInput.appendChild(amOpt);
+
+
+			const pmOpt = new Option();
+			pmOpt.value = "pm";
+			pmOpt.innerHTML = "pm";
+			this.AMPMInput.appendChild(pmOpt);
+
+			ctrl.append(this.AMPMInput);
+		}
+
 		return ctrl;
 	}
 
+
+
 	protected internalSetValue(v?: any) {
+
 		if(v && this.hoursInput && this.minutesInput) {
-			const dateInterval = DateInterval.createFromFormat(v, this.outputFormat);
-			if (dateInterval) {
-				this.hoursInput.value = dateInterval.format("h");
-				this.minutesInput.value = dateInterval.format("I");
+			const parts = v.split(":");
+			if (this.input12hr) {
+				let hours = parts[0];
+				if (hours > "12") {
+					this.AMPMInput!.value = "pm";
+					hours -= 12;
+				}
+				this.hoursInput.value = hours.toString().padStart(2, "0");
+
+			} else {
+				this.hoursInput.value = parts[0].padStart(2, "0");
+			}
+
+			if (parts[1]) {
+				this.minutesInput.value = parts[1].padStart(2, "0");
 			} else {
 				this.minutesInput.value = "00";
 			}
@@ -164,14 +178,23 @@ export class DurationField extends Field {
 				return undefined;
 			}
 
-			const dateInterval = new DateInterval();
-			dateInterval.hours = parseInt(this.hoursInput!.value);
-			dateInterval.minutes = parseInt(this.minutesInput!.value);
-			return dateInterval.format(this.outputFormat);
+			let hours = parseInt(this.hoursInput!.value);
+
+			if(this.input12hr && this.AMPMInput!.value == "pm") {
+				hours += 12;
+			}
+
+			return hours.toString().padStart(2, "0") + ":" + (this.minutesInput!.value ?? "0").padStart(2, "0");
 		} else {
 			return super.value;
 		}
 	}
 }
 
-export const durationfield = (config?: Config<DurationField, FieldEventMap<DurationField>>) => createComponent(new DurationField(), config);
+
+/**
+ * Shorthand function to create {@see TextField}
+ *
+ * @param config
+ */
+export const timefield = (config?: Config<TimeField, FieldEventMap<TextField>>) => createComponent(new TimeField(), config);

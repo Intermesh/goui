@@ -43,8 +43,8 @@ describe('Collection class', () => {
 
 		expect(c.count()).to.equal(2);
 
-		expect(c.get(0).text).to.equal("test2");
-		expect(c.get(1).text).to.equal("test1");
+		expect(c.get(0)!.text).to.equal("test2");
+		expect(c.get(1)!.text).to.equal("test1");
 
 	});
 

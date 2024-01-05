@@ -5,6 +5,7 @@ export * from './Browser.js';
 export * from './Collection.js';
 export * from './Cookies.js';
 export * from './DateTime.js';
+export * from './DateInterval.js';
 export * from './Element.js';
 export * from './Format.js';
 export * from './FunctionUtil.js';

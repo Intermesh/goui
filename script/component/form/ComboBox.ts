@@ -9,8 +9,13 @@ import {
 import {column, Table, table} from "../table";
 import {Config} from "../Observable";
 import {createComponent} from "../Component";
+import {Format} from "../../util";
 
 export type ComboBoxStoreConfig<DS extends AbstractDataSource = AbstractDataSource> = Partial<DataSourceStoreConfig<DS, any>>
+
+export type ComboRenderer = (field:ComboBox, record:any) => string;
+
+const defaultRenderer:ComboRenderer = (field,r)=> r[field.displayProperty];
 
 /**
  * Combo box
@@ -30,7 +35,7 @@ export class ComboBox<DS extends AbstractDataSource = AbstractDataSource> extend
 	 */
 	public filter?: QueryFilter;
 
-	constructor(public readonly dataSource:DS, public readonly displayProperty = "name", public readonly valueProperty = "id", storeConfig:ComboBoxStoreConfig<DS> = {
+	constructor(public readonly dataSource:DS, public readonly displayProperty = "name", public readonly valueProperty = "id", protected renderer:ComboRenderer = defaultRenderer, storeConfig:ComboBoxStoreConfig<DS> = {
 		queryParams: {
 			limit: 50
 		}
@@ -44,10 +49,13 @@ export class ComboBox<DS extends AbstractDataSource = AbstractDataSource> extend
 			store: datasourcestore(storeConfig as DataSourceStoreConfig<any, any>),
 			columns:[
 				column({
-					id:displayProperty,
+					id: displayProperty,
 					resizable: true,
 					width: 312,
-					sortable: true
+					sortable: true,
+					renderer:(columnValue, record, td, table1) => {
+						return Format.escapeHTML(renderer(this, record));
+					}
 				})
 			]
 		})
@@ -79,13 +87,21 @@ export class ComboBox<DS extends AbstractDataSource = AbstractDataSource> extend
 		if(value === "") {
 			return "";
 		}
-		const nb = await this.dataSource.single(value);
-		return nb ? nb[this.displayProperty] : "?";
+		const record = await this.dataSource.single(value);
+
+		return this.renderer(_field, record);
 	}
 }
 
 export type ComboBoxConfig<Type extends ComboBox = ComboBox> = Config<Type, AutocompleteEventMap<Type>, "dataSource"> & {
-	storeConfig?:ComboBoxStoreConfig
+	/**
+	 * Config for the {@link DataSourceStore}
+	 */
+	storeConfig?:ComboBoxStoreConfig,
+	/**
+	 * Renders the value in the list and input field. Must return plain text.
+	 */
+	renderer?:ComboRenderer
 };
 
 /**
@@ -93,7 +109,7 @@ export type ComboBoxConfig<Type extends ComboBox = ComboBox> = Config<Type, Auto
  *
  * @param config
  */
-export const combobox = (config: ComboBoxConfig) => createComponent(new ComboBox(config.dataSource, config.displayProperty ?? "name", config.valueProperty ?? "id", config.storeConfig ?? {
+export const combobox = (config: ComboBoxConfig) => createComponent(new ComboBox(config.dataSource, config.displayProperty ?? "name", config.valueProperty ?? "id", config.renderer ?? defaultRenderer, config.storeConfig ?? {
 	queryParams: {
 		limit: 50
 	}

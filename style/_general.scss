@@ -18,6 +18,11 @@
 }
 .goui {
 	@include light-theme;
+
+	::selection {
+		background: var(--bg-selection);
+		color: var(--fg-selection);
+	}
 }
 
 

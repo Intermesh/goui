@@ -24,6 +24,8 @@ $mobileDensity: 62.5% !default;
 
 //not in GO
 	--bg-focus: 		rgba(2, 119, 189, 0.16);
+	--fg-selection: 		rgb(1, 4, 10);
+	--bg-selection: 		rgba(2, 119, 189, 0.16);
 	--bg-read-only: #f1f1f1;
 	--bg-input: white;
 //not in GO
@@ -72,6 +74,8 @@ $mobileDensity: 62.5% !default;
 
 	//not in GO
 	--bg-focus: 		rgba(2, 119, 189, 0.16);
+	--fg-selection: 		white;
+	--bg-selection: 		rgba(2, 119, 189);
 	--bg-read-only: #1b1b1b;
 	--bg-input: #272727;
 	//not in GO

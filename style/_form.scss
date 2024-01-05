@@ -420,7 +420,7 @@ $formFieldBorderRadius: dp(10);
 
 
 	/** start text and textarea **/
-	input.text, textarea, select {
+	input.text, textarea, .wrap > select {
 		@extend %input;
 		&:not(:placeholder-shown) {
 			@extend %float-label;
@@ -445,8 +445,42 @@ $formFieldBorderRadius: dp(10);
 		line-height: $baseLineHeight;
 	}
 
-	&.date {
-		width: sp(192);
+
+	&.time {
+		width: sp(90);
+
+		&.input12hr {
+			width: sp(110);
+		}
+	}
+
+	&.time, &.duration {
+
+
+		select {
+			appearance: none;
+			border:0;
+			height: dp(24);
+			align-self: center;
+			&:focus {
+				background: var(--bg-selection);
+			}
+		}
+
+		input.hour {
+			text-align: right;
+		}
+	}
+
+	&.duration {
+		input.hour {
+			width: auto;
+			flex: 1;
+		}
+	}
+
+	&.date,&.time, &.duration {
+
 		.wrap {
 			line-height: dp(46);
 		}
@@ -464,7 +498,7 @@ $formFieldBorderRadius: dp(10);
 		}
 
 		input.text:last-child {
-			padding-right: dp(2);
+			padding-right: dp(16);
 		}
 
 		input.month:placeholder-shown {
@@ -475,6 +509,14 @@ $formFieldBorderRadius: dp(10);
 			width: dp(44);
 		}
 	}
+
+	&.date {
+		width: sp(192);
+		input.text:last-child {
+			padding-right: dp(2);
+		}
+	}
+
 
 	&.invalid {
 		.wrap {
@@ -951,5 +993,35 @@ div.color-dot {
 		cursor: ew-resize;
 		box-shadow: 0 0 2px 0 #555;
 		transition: background .3s ease-in-out;
+	}
+}
+
+
+.listfield {
+	.control {
+		padding: dp(11) dp(16);
+		min-height: dp(46);
+		&:not(:empty) {
+			@extend %float-label;
+		}
+	}
+}
+
+.listfield-list{
+	margin:0;
+	padding: 0;
+	list-style: none;
+
+	li {
+		margin: 0;
+		padding: dp(8) dp(4);
+		cursor: default;
+		user-select: none;
+		-webkit-user-select: none;
+		-moz-user-select: none;
+
+		&:hover {
+			background-color: $colorHover;
+		}
 	}
 }

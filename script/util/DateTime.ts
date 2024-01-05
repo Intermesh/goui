@@ -4,6 +4,8 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
+import {DateInterval} from "./DateInterval";
+
 /**
  * @category Utility
  */
@@ -362,10 +364,8 @@ export type Timezone =
 const SystemTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone.toLowerCase() as Timezone;
 
 function pad(n: any): string {
-	return (n < 10 ? '0' : '') + n;
+	return n.toString().padStart(2, "0");
 }
-
-const durationRegex = /(-)?P(?:([.,\d]+)Y)?(?:([.,\d]+)M)?(?:([.,\d]+)W)?(?:([.,\d]+)D)?(?:T(?:([.,\d]+)H)?(?:([.,\d]+)M)?(?:([.,\d]+)S)?)?/;
 
 /**
  * DateTime object
@@ -470,7 +470,7 @@ export class DateTime {
 	 *
 	 * @param timezone eg. europe/amsterdam
 	 */
-	toTimezone<T extends string>(timezone: Timezone) {
+	public toTimezone<T extends string>(timezone: Timezone) {
 
 		if (this.timezone == timezone) {
 			return this.clone();
@@ -487,40 +487,16 @@ export class DateTime {
 		return d;
 	}
 
-	diff(end: DateTime) {
-		let monthDays = end.clone().setDate(0).getDate(),
-			sihdmy = [0, 0, 0, 0, 0, end.getYear() - this.getYear()],
-			it = 0,
-			map = {getSeconds: 60, getMinutes: 60, getHours: 24, getDate: monthDays, getMonth: 12};
-		for (let i in map) {
-			let fn = i as 'getSeconds' | 'getMinutes' | 'getHours' | 'getDate' | 'getMonth';
-			if (sihdmy[it] + end[fn]() < this[fn]()) {
-				sihdmy[it + 1]--;
-				sihdmy[it] += map[fn] - this[fn]() + end[fn]();
-			} else if (sihdmy[it] + end[fn]() > this[fn]()) {
-				sihdmy[it] += end[fn]() - this[fn]();
-			}
-			it++;
-		}
-		// sec, min, hour, day, month, year
-		const [s, i, h, d, m, y] = sihdmy;
-		return 'P' + (y > 0 ? y + 'Y' : '') +
-			(m > 0 ? m + 'M' : '') +
-			(d > 0 ? d + 'D' : '') +
-			((h || i || s) ? 'T' +
-				(h > 0 ? h + 'H' : '') +
-				(i > 0 ? i + 'M' : '') +
-				(s > 0 ? s + 'S' : '') : '');
-
+	/**
+	 * Calculate difference between this and the given date
+	 *
+	 * @param end
+	 */
+	public diff(end: DateTime) {
+		const di = new DateInterval();
+		di.setFromDates(this, end);
+		return di;
 	}
-
-	diffInDays(other: DateTime) {
-		return Math.floor((
-			Date.UTC(other.getYear(), other.date.getMonth(), other.getDate()) -
-			Date.UTC(this.getYear(), this.date.getMonth(), this.getDate())
-		) / 86400000);
-	}
-
 
 	/**
 	 * Create a copy of this object without reference
@@ -757,20 +733,21 @@ export class DateTime {
 		return this;
 	}
 
-	addDuration(iso8601: string) {
-		let p: any,
-			matches = iso8601.match(durationRegex)!;
-		matches.shift(); // full match
-		const sign = matches.shift() || '';
-		for (let o of ['FullYear', 'Month', 'Week', 'Date', 'Hours', 'Minutes', 'Seconds']) {
-			if (p = matches.shift()) { // p= amount to add
-				if (o === 'Week') {
-					p *= 7;
-					o = 'Date';
-				}
-				this.date['set' + o as 'setDate'](this.date['get' + o as 'getDate']() + parseInt(sign + p))
-			}
-		}
+	/**
+	 * Add a date interval
+	 *
+	 * @param dateInterval
+	 */
+	add(dateInterval: DateInterval) {
+
+		const inv = dateInterval.invert ? -1 : 1;
+
+		this.setYear(this.getYear() + dateInterval.years * inv);
+		this.setMonth(this.getMonth() + dateInterval.months * inv);
+		this.setDay(this.getDay() + dateInterval.days  * inv);
+		this.setHours(this.getHours() + dateInterval.hours * inv);
+		this.setMinutes(this.getMinutes() + dateInterval.minutes * inv);
+		this.setSeconds(this.getSeconds() + dateInterval.seconds * inv);
 		return this;
 	}
 
@@ -797,28 +774,28 @@ export class DateTime {
 		return (tzo > 0 ? "-" : "+") + pad(Math.floor(Math.abs(tzo) / 60)) + colon + pad(Math.abs(tzo % 60));
 	}
 
-	private static converters: { [key: string]: (date: DateTime) => string | number } = {
+	private static converters: { [key: string]: (date: DateTime) => string } = {
 		'd': date => pad(date.getMonthDay()),
 		'D': date => DateTime.dayNames[DateTime.dayMap[date.getWeekDay()]].substring(0, 3),
-		'j': date => date.getMonthDay(),
+		'j': date => date.getMonthDay().toString(),
 		'l': date => DateTime.dayNames[DateTime.dayMap[date.getWeekDay()]],
 		'S': date => ["st", "nd", "rd"][((date.getMonthDay() + 90) % 100 - 10) % 10 - 1] || "th",
 
-		'w': date => date.getDay(),
-		'z': date => date.getDayOfYear(),
-		'W': date => date.getWeekOfYear(),
+		'w': date => date.getDay().toString(),
+		'z': date => date.getDayOfYear().toString(),
+		'W': date => date.getWeekOfYear().toString(),
 		'F': date => DateTime.monthNames[date.getMonth() - 1],
 		'm': date => pad(date.getMonth()),
 		'M': date => DateTime.monthNames[date.getMonth() - 1].substring(0, 3),
-		'n': date => date.getMonth(),
+		'n': date => date.getMonth().toString(),
 
-		'Y': date => date.getYear(),
+		'Y': date => date.getYear().toString(),
 		'y': date => (date.getYear() + "").substr(-2),
 		'a': date => date.getHours() > 12 ? 'pm' : 'am',
 		'A': date => date.getHours() > 12 ? 'PM' : 'AM',
 
-		'g': date => date.getHours() % 12,
-		'G': date => date.getHours(),
+		'g': date => (date.getHours() % 12).toString(),
+		'G': date => date.getHours().toString(),
 		'h': date => pad(date.getHours() % 12),
 		'H': date => pad(date.getHours()),
 		'i': date => pad(date.getMinutes()),
@@ -826,14 +803,14 @@ export class DateTime {
 
 		'O': date => date.getGMTOffset(""),
 		'P': date => date.getGMTOffset(),
-		'U': date => Math.floor(date.getTime() / 1000),
+		'U': date => Math.floor(date.getTime() / 1000).toString(),
 		'c': date => date.format("Y-m-d\TH:i:sP")
 	};
 
 	/**
-	 * Format date similar to PHP's date function
+	 * Format the date into a string
 	 *
-	 * Note: indented options are NOT supported.
+	 * You can use the following characters. You can escape a character with a \ to output it as given.
 	 *
 	 * d - The day of the month (from 01 to 31)
 	 * D - A textual representation of a day (three letters)
@@ -872,6 +849,7 @@ export class DateTime {
 	 * c - The ISO-8601 date (e.g. 2013-05-05T16:34:42+00:00)
 	 * r - The RFC 2822 formatted date (e.g. Fri, 12 Apr 2013 12:01:05 +0200)
 	 * U - The seconds since the Unix Epoch (January 1 1970 00:00:00 GMT)
+	 *
 	 */
 	format(format: string): string {
 
@@ -893,7 +871,7 @@ export class DateTime {
 	}
 
 
-	public static createFormatRegex(format: string) {
+	private static createFormatRegex(format: string) {
 		const chars = format.split("");
 		let output = "";
 
@@ -957,8 +935,7 @@ export class DateTime {
 
 
 	/**
-	 * Create date by given format
-	 * See Date.format()
+	 * Create date by given format. See {@link DateTime.format}.
 	 * Supports:
 	 * Y, y, m, n, d, j, H, h, G, g, i, s, a, A
 	 *
@@ -969,13 +946,13 @@ export class DateTime {
 	 * const date = console.log(Date.createFromFormat("10/12/2021 9:09am", "m/d/Y g:ia", "America/New_York));
 	 * ```
 	 */
-	public static createFromFormat(dateStr: string, format: string = "c", timezone?: Timezone): DateTime | null {
+	public static createFromFormat(dateStr: string, format: string = "c", timezone?: Timezone): DateTime | undefined {
 
 		const regex = new RegExp(DateTime.createFormatRegex(format), 'u');
 		const result = regex.exec(dateStr);
 
 		if (!result) {
-			return null;
+			return undefined;
 		}
 
 		const date = new DateTime();
@@ -1038,9 +1015,9 @@ export class DateTime {
 	 *
 	 * Returns:
 	 *
-	 * - -1 if this date is before the given date
-	 * - 0 if dates are equal
-	 * - 1 if this date is after the given date
+	 * - -1 if this interval is smaller than the other
+	 * - 0 if intervals are equal
+	 * - 1 if this interval is greater than the other
 	 *
 	 * @param date
 	 * @return number

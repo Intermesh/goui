@@ -454,6 +454,8 @@ export abstract class Field extends Component {
 	 * Check if the field was modified since create or when a form was loaded and @see trackReset() was called.
 	 */
 	public isModified() : boolean {
+		if(this.resetValue != this.value)
+		console.log(this.resetValue,this.value);
 		return this.resetValue != this.value;
 	}
 
