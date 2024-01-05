@@ -62,6 +62,7 @@ export class TimeField extends Field {
 		this.hoursInput.classList.add("text");
 		this.hoursInput.classList.add("hour");
 		this.hoursInput.type = "text";
+		this.hoursInput.inputMode = "numeric";
 		this.hoursInput.pattern = "[0-9]+";
 		this.hoursInput.maxLength = 2;
 		this.hoursInput.onblur = onBlur;
@@ -92,6 +93,7 @@ export class TimeField extends Field {
 		this.minutesInput.classList.add("text");
 		this.minutesInput.classList.add("minute");
 		this.minutesInput.type = "text";
+		this.minutesInput.inputMode = "numeric";
 		this.minutesInput.pattern = "[0-9]+";
 		this.minutesInput.maxLength = 2;
 		const hoursInput = this.hoursInput!;

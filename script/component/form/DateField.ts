@@ -172,6 +172,7 @@ export class DateField extends Field {
 		this.dayInput.classList.add("text");
 		this.dayInput.classList.add("day");
 		this.dayInput.type="text";
+		this.dayInput.inputMode = "numeric";
 		this.dayInput.pattern = "[0-9]+";
 		this.dayInput.maxLength = 2;
 		this.dayInput.onfocus = onFocus;
@@ -199,6 +200,7 @@ export class DateField extends Field {
 		this.monthInput.classList.add("text");
 		this.monthInput.classList.add("month");
 		this.monthInput.type="text";
+		this.monthInput.inputMode = "numeric";
 		this.monthInput.pattern = "[0-9]+";
 		this.monthInput.maxLength = 2;
 		this.monthInput.max="12";
@@ -226,6 +228,7 @@ export class DateField extends Field {
 		this.yearInput = document.createElement("input");
 		this.yearInput.classList.add("text");
 		this.yearInput.classList.add("year");
+		this.yearInput.inputMode = "numeric";
 		this.yearInput.type="text";
 		this.yearInput.pattern = "[0-9]+";
 		this.yearInput.maxLength = 4;
