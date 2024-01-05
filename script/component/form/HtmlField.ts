@@ -253,7 +253,7 @@ export class HtmlField extends Field {
 			icon: "link",
 			title: "Create link",
 			applyFn: () => {
-				const url = prompt(t("Enter URL"));
+				const url = prompt(t("Enter URL"), "https://");
 				if(url)
 					this.execCmd("createLink", url);
 			}
