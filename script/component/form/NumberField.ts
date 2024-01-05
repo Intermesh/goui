@@ -51,7 +51,8 @@ export class NumberField extends TextField {
 
 	protected createControl(): undefined | HTMLElement {
 		super.createControl();
-		this._input!.cls('+number')
+		this._input!.cls('+number');
+		this._input!.inputMode = "numeric";
 		// this._input!.attr('type','number');
 		if (this.min !== undefined) {
 			this._input!.attr('min', this.min);
