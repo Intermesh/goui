@@ -195,6 +195,7 @@ export type MaterialIcon =
 	"confirmation_number" |
 	"contact_mail" |
 	"contact_phone" |
+	"contact_support" |
 	"contacts" |
 	"content_copy" |
 	"content_cut" |
@@ -605,6 +606,7 @@ export type MaterialIcon =
 	"pause_circle_filled" |
 	"pause_circle_outline" |
 	"payment" |
+	"pending_actions" |
 	"people" |
 	"people_outline" |
 	"perm_camera_mic" |
@@ -724,6 +726,7 @@ export type MaterialIcon =
 	"router" |
 	"rowing" |
 	"rss_feed" |
+	"rsvp" |
 	"rv_hookup" |
 	"satellite" |
 	"save" |
