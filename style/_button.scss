@@ -210,6 +210,11 @@
 	> hr {
 		height: dp(24);
 		//margin: 0px dp(12) 0px 0;
+		border-top: 0;
+		border-right: $borderWidth solid $colorBorder;
+		border-color: currentColor;
+		margin: 0 dp(16);
+		opacity: .2
 	}
 
 	.goui-form-field {
