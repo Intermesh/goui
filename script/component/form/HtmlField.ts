@@ -69,7 +69,7 @@ interface CmdConfig {
 /**
  * Available toolbar items
  */
-type ToolbarItems = "-" | "bold" | "italic" | "underline" |
+type ToolbarItems = "-" | "bold" | "italic" | "underline" | "strikeThrough" |
 	"foreColor" | "backColor" | "removeFormat" |
 	"justifyLeft" | "justifyCenter" | "justifyRight" |
 	"insertOrderedList" |
@@ -149,7 +149,7 @@ export class HtmlField extends Field {
 	 * ```
 	 */
 	public toolbarItems: ToolbarItems[] = [
-		"bold", "italic", "underline",
+		"bold", "italic", "underline", "strikeThrough",
 		"-",
 		"foreColor", "backColor", "removeFormat",
 		"-",
