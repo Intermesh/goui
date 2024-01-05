@@ -177,11 +177,6 @@ export class Button extends Component {
 			// Michael had problems with e.detail < 2 but we don't remember why. Discuss when we run into this.
 			if (this.handler && e.button == 0 && (this.allowFastClick || e.detail < 2)) {
 
-				// Menus are rendered inside buttons. So buttons are inside buttons.
-				// We have to stop propagation for the click event otherwise the parent button will fire too.
-				// not sure if this will cause problems.
-				e.stopPropagation();
-
 				this.handler.call(this, this, e);
 
 				// close dropdown menu if handler is set

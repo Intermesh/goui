@@ -138,6 +138,13 @@ export class Menu extends Toolbar {
 
 		this.on("hide", onClose);
 		this.on("remove", onClose);
+
+		this.el.addEventListener("click", e => {
+			// Menus are rendered inside buttons. So buttons are inside buttons.
+			// We have to stop propagation for the click event otherwise the parent button will fire too.
+			// not sure if this will cause problems.
+			e.stopPropagation();
+		})
 		return el;
 	}
 
