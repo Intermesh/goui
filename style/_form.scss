@@ -648,6 +648,29 @@ $formFieldBorderRadius: dp(10);
 	/** start checkbox **/
 	&.check {
 
+		&.invalid {
+			.wrap {
+				background-color: transparent;
+			}
+
+			input, &.switch input, &.button input + span.outlined   {
+				background-color: $colorErrorBg;
+				border-color: $colorError;
+				color: $colorError;
+			}
+
+			&.switch input {
+				&::after {
+					background-color: $colorError;
+				}
+			}
+
+			.box-label {
+				color: $colorError;
+			}
+
+		}
+
 		@extend %boxgroup;
 
 		&.box input {

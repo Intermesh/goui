@@ -102,6 +102,7 @@ export class DurationField extends Field {
 		this.hoursInput = document.createElement("input");
 		this.hoursInput.classList.add("text");
 		this.hoursInput.classList.add("hour");
+		this.hoursInput.inputMode = "numeric";
 		this.hoursInput.type = "text";
 		this.hoursInput.pattern = "[0-9]+";
 		this.hoursInput.onblur = onBlur;
@@ -113,6 +114,7 @@ export class DurationField extends Field {
 		this.minutesInput = document.createElement("input");
 		this.minutesInput.classList.add("text");
 		this.minutesInput.classList.add("minute");
+		this.minutesInput.inputMode = "numeric";
 		this.minutesInput.type = "text";
 		this.minutesInput.pattern = "[0-9]+";
 		this.minutesInput.maxLength = 2;

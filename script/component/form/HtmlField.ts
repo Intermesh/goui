@@ -17,6 +17,8 @@ import {comp, Component, ComponentEventMap, createComponent} from "../Component.
 import {FunctionUtil} from "../../util/FunctionUtil.js";
 import {root} from "../Root.js";
 import {MaterialIcon} from "../MaterialIcon.js";
+import {Window} from "../Window";
+import {t} from "../../Translate";
 
 
 /**
@@ -69,14 +71,15 @@ interface CmdConfig {
 /**
  * Available toolbar items
  */
-type ToolbarItems = "-" | "bold" | "italic" | "underline" |
+type ToolbarItems = "-" | "bold" | "italic" | "underline" | "strikeThrough" |
 	"foreColor" | "backColor" | "removeFormat" |
 	"justifyLeft" | "justifyCenter" | "justifyRight" |
 	"insertOrderedList" |
 	"insertUnorderedList" |
 	"indent" |
 	"outdent" |
-	"image"
+	"image" |
+	"createLink"
 
 
 /**
@@ -149,7 +152,7 @@ export class HtmlField extends Field {
 	 * ```
 	 */
 	public toolbarItems: ToolbarItems[] = [
-		"bold", "italic", "underline",
+		"bold", "italic", "underline", "strikeThrough",
 		"-",
 		"foreColor", "backColor", "removeFormat",
 		"-",
@@ -161,7 +164,8 @@ export class HtmlField extends Field {
 		"indent",
 		"outdent",
 		"-",
-		"image"
+		"image",
+		"createLink"
 	];
 
 	private commands: Record<string, CmdConfig> = {
@@ -245,6 +249,15 @@ export class HtmlField extends Field {
 		insertUnorderedList: {icon: 'format_list_bulleted', title: "Bullet list"},
 		indent: {icon: 'format_indent_increase', title: "Indent"},
 		outdent: {icon: 'format_indent_decrease', title: "Outdent"},
+		createLink: {
+			icon: "link",
+			title: "Create link",
+			applyFn: () => {
+				const url = prompt(t("Enter URL"), "https://");
+				if(url)
+					this.execCmd("createLink", url);
+			}
+		},
 		image: {
 			icon: "image",
 			title: "Image",
