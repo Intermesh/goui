@@ -83,7 +83,8 @@ export class CheckboxField extends Field {
 		);
 
 		if(this.label) {
-			const lbl = E('span', this.label).cls('box-label');
+			const lbl = E('span').cls('box-label');
+			lbl.innerHTML = this.label;
 
 			if (this._cls) {
 				lbl.cls("+" + this._cls);
@@ -105,38 +106,38 @@ export class CheckboxField extends Field {
 		return super.readOnly;
 	}
 
-	setInvalid(msg: string) {
+	// setInvalid(msg: string) {
+	//
+	// 	super.setInvalid(msg);
+	//
+	// 	if (this.rendered) {
+	// 		this.applyInvalidMsg();
+	// 	}
+	// }
 
-		super.setInvalid(msg);
-
-		if (this.rendered) {
-			this.applyInvalidMsg();
-		}
-	}
-
-	protected applyInvalidMsg() {
-		super.applyInvalidMsg();
-
-		this.input!.setCustomValidity(this.invalidMsg);
-
-		//check if el is visible (https://stackoverflow.com/questions/19669786/check-if-element-is-visible-in-dom)
-		if (this.input!.offsetParent) {
-			this.input!.reportValidity();
-		}
-
-
-		if (this.invalidMsg != "") {
-			//clear the field on change
-			this.input!.addEventListener('input', () => {
-				this.clearInvalid();
-			}, {once: true});
-		}
-	}
-
-	clearInvalid() {
-		super.clearInvalid();
-		this.applyInvalidMsg();
-	}
+	// protected applyInvalidMsg() {
+	// 	super.applyInvalidMsg();
+	//
+	// 	this.input!.setCustomValidity(this.invalidMsg);
+	//
+	// 	//check if el is visible (https://stackoverflow.com/questions/19669786/check-if-element-is-visible-in-dom)
+	// 	if (this.input!.offsetParent) {
+	// 		this.input!.reportValidity();
+	// 	}
+	//
+	//
+	// 	if (this.invalidMsg != "") {
+	// 		//clear the field on change
+	// 		this.input!.addEventListener('input', () => {
+	// 			this.clearInvalid();
+	// 		}, {once: true});
+	// 	}
+	// }
+	//
+	// clearInvalid() {
+	// 	super.clearInvalid();
+	// 	this.applyInvalidMsg();
+	// }
 
 	getInput() {
 		return this.input;
