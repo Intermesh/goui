@@ -61,6 +61,8 @@ export class CheckboxField extends Field {
 
 		const el = E('input').on("change", () => {
 			this.fireChange();
+		}).on("click", () => {
+			this.validate();
 		});
 		el.type = "checkbox";
 		el.required = this.required;
