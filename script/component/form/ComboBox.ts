@@ -15,7 +15,7 @@ export type ComboBoxStoreConfig<DS extends AbstractDataSource = AbstractDataSour
 
 export type ComboRenderer = (field:ComboBox, record:any) => string;
 
-const defaultRenderer:ComboRenderer = (field,r)=> r[field.displayProperty];
+export const ComboBoxDefaultRenderer:ComboRenderer = (field,r)=> r[field.displayProperty];
 
 /**
  * Combo box
@@ -35,7 +35,7 @@ export class ComboBox<DS extends AbstractDataSource = AbstractDataSource> extend
 	 */
 	public filter?: QueryFilter;
 
-	constructor(public readonly dataSource:DS, public readonly displayProperty = "name", public readonly valueProperty = "id", protected renderer:ComboRenderer = defaultRenderer, storeConfig:ComboBoxStoreConfig<DS> = {
+	constructor(public readonly dataSource:DS, public readonly displayProperty = "name", public readonly valueProperty = "id", protected renderer:ComboRenderer = ComboBoxDefaultRenderer, storeConfig:ComboBoxStoreConfig<DS> = {
 		queryParams: {
 			limit: 50
 		}
@@ -109,7 +109,7 @@ export type ComboBoxConfig<Type extends ComboBox = ComboBox> = Config<Type, Auto
  *
  * @param config
  */
-export const combobox = (config: ComboBoxConfig) => createComponent(new ComboBox(config.dataSource, config.displayProperty ?? "name", config.valueProperty ?? "id", config.renderer ?? defaultRenderer, config.storeConfig ?? {
+export const combobox = (config: ComboBoxConfig) => createComponent(new ComboBox(config.dataSource, config.displayProperty ?? "name", config.valueProperty ?? "id", config.renderer ?? ComboBoxDefaultRenderer, config.storeConfig ?? {
 	queryParams: {
 		limit: 50
 	}

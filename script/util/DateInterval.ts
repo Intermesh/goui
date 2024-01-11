@@ -80,14 +80,14 @@ export class DateInterval {
 		'D': dateInterval => pad(dateInterval.days),
 		'd': dateInterval => dateInterval.days.toString(),
 
-		'a': dateInterval => (dateInterval.diffTotalDays() ?? "") + "",
+		'a': dateInterval => (dateInterval.getTotalDays() ?? "") + "",
 
 		'H': dateInterval => pad(dateInterval.hours),
 		'h': dateInterval => dateInterval.hours.toString(),
 
 		'I': dateInterval => pad(dateInterval.minutes),
 		'i': dateInterval => dateInterval.minutes.toString(),
-		'j': dateInterval => (dateInterval.diffTotalMinutes() ?? "") + "",
+		'j': dateInterval => (dateInterval.getTotalMinutes() ?? "") + "",
 
 		'S': dateInterval => pad(dateInterval.seconds),
 		's': dateInterval => dateInterval.seconds.toString(),
@@ -136,12 +136,11 @@ export class DateInterval {
 	}
 
 	/**
-	 * Calculates total number of dates that have ellapsed between two dates
+	 * Calculates total number of days that have elapsed between two dates.
 	 *
-	 * @param other
-	 * @private
+	 * Only available if this diff was created using {@link DateTime.diff}
 	 */
-	private diffTotalDays() {
+	public getTotalDays() {
 		if(!this._start || !this._end) {
 			return undefined;
 		}
@@ -152,7 +151,12 @@ export class DateInterval {
 	}
 
 
-	private diffTotalMinutes(){
+	/**
+	 * Calculates total number of minutes that have elapsed between two dates.
+	 *
+	 * Only available if this diff was created using {@link DateTime.diff}
+	 */
+	public getTotalMinutes(){
 
 		if(this._start && this._end) {
 			return Math.abs(this._start.getTime() - this._end.getTime()) / 60000;

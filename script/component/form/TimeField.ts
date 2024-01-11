@@ -4,6 +4,11 @@ import {Field, FieldEventMap} from "./Field";
 import {createComponent} from "../Component";
 import {DateTime, E} from "../../util";
 
+/**
+ * Timefield component
+ *
+ * Outputs time in "H:i" format. eg. 09:30 or 15:30 {@link DateTime.format}
+ */
 export class TimeField extends Field {
 
 	public input12hr = false;
