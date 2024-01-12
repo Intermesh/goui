@@ -534,6 +534,7 @@ export type MaterialIcon =
 	"maximize" |
 	"minimize" |
 	"markunread_mailbox" |
+	"meeting_room" |
 	"memory" |
 	"menu" |
 	"merge_type" |

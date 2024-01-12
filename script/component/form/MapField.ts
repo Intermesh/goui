@@ -80,21 +80,24 @@ export class MapField extends Field {
 		this.fireChange();
 	}
 
-	private internalAdd(data: MapFieldValue, key?: string | undefined) {
+	private internalAdd(data: MapFieldValue, key?: string | number) {
+
+		if(typeof key === 'number') {
+			this._nextKey = Math.max(this._nextKey, key);
+		}
 
 		const field = this.buildField(data);
-		field.dataSet.key = key === undefined ? this.nextKey() : key;
-
+		field.dataSet.key = key || this.nextKey();
 		field.value = data;
 		this.items.add(field);
 	}
 
-	private _nextKey = 1;
+	private _nextKey = 0;
 
 	protected nextKey() {
 		// only works if sorted by key
 		// todo: maybe use GUID for item with sortOrder?
-		return "_new_" + this._nextKey++;
+		return ++this._nextKey;
 	}
 
 	reset() {
