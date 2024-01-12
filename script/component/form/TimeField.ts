@@ -5,6 +5,10 @@ import {createComponent} from "../Component";
 import {DateTime, E} from "../../util";
 import {InputField} from "./InputField";
 
+
+export interface TimeField {
+	get input(): HTMLInputElement
+}
 /**
  * Timefield component
  *
@@ -12,7 +16,6 @@ import {InputField} from "./InputField";
  */
 export class TimeField extends InputField {
 
-	protected input: HTMLInputElement | undefined
 
 	protected baseCls = "goui-form-field time no-floating-label";
 

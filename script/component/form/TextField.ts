@@ -12,6 +12,10 @@ import {InputField} from "./InputField";
 
 export type TextFieldType = ("text" | "password" | "email" | "url" | "tel" | "search" );
 
+export interface TextField {
+	get input(): HTMLInputElement
+}
+
 /**
  * TextField component
  *
@@ -34,8 +38,6 @@ export class TextField extends InputField {
 	get type(): TextFieldType {
 		return super.type as TextFieldType;
 	}
-
-	protected input: HTMLInputElement | undefined;
 
 	/**
 	 * Pattern regex for validation

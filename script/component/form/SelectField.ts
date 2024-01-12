@@ -11,6 +11,10 @@ import {Config} from "../Observable";
 import {InputField} from "./InputField";
 
 type SelectOption = { [key: string]: any };
+
+export interface SelectField {
+	get input(): HTMLSelectElement
+}
 /**
  * Select field
  *
@@ -20,7 +24,6 @@ export class SelectField extends InputField {
 
 	public baseCls = "goui-form-field select";
 
-	protected input: HTMLSelectElement | undefined;
 
 	public valueField = 'value';
 	protected fireChangeOnBlur = false;

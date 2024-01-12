@@ -3,27 +3,30 @@ import {Field} from "./Field";
 
 export abstract class InputField extends Field {
 
+	protected _input: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement | undefined;
 
-	protected input: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement | undefined;
+	public get input() {
+		return this._input;
+	}
 
 	set title(title: string) {
 		super.title = title;
 
-		if (this.input) {
-			this.input.title = this.title;
+		if (this._input) {
+			this._input.title = this.title;
 		}
 	}
 
 	public focus(o?: FocusOptions) {
-		if (!this.input) {
+		if (!this._input) {
 			super.focus(o);
 		}
-		this.input?.focus(o);
+		this._input?.focus(o);
 	}
 
 	protected createControl() : HTMLElement {
-		this.input = this.createInput();
-		return this.input;
+		this._input = this.createInput();
+		return this._input;
 	}
 
 	protected createInput() : HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement{
@@ -50,7 +53,7 @@ export abstract class InputField extends Field {
 	}
 
 	protected internalSetValue(v?: string) {
-		this.input!.value = v ?? "";
+		this._input!.value = v ?? "";
 	}
 
 	set value(v: any) {
@@ -58,12 +61,12 @@ export abstract class InputField extends Field {
 	}
 
 	get value() {
-		return this.input!.value;
+		return this._input!.value;
 	}
 
 	set name(name: string) {
 		super.name = name;
-		this.input!.name = this.name;
+		this._input!.name = this.name;
 	}
 
 	get name() {
@@ -71,12 +74,12 @@ export abstract class InputField extends Field {
 	}
 
 	set type(type: string) {
-		if(this.input instanceof HTMLInputElement)
-			this.input!.type = type;
+		if(this._input instanceof HTMLInputElement)
+			this._input!.type = type;
 	}
 
 	get type() {
-		return this.input!.type;
+		return this._input!.type;
 	}
 
 	/**
@@ -88,11 +91,11 @@ export abstract class InputField extends Field {
 	 */
 
 	set autocomplete(autocomplete: AutoFill) {
-		this.input!.autocomplete = this.autocomplete;
+		this._input!.autocomplete = this.autocomplete;
 	}
 
 	get autocomplete() {
-		return this.input!.autocomplete;
+		return this._input!.autocomplete;
 	}
 
 	/**
@@ -103,8 +106,8 @@ export abstract class InputField extends Field {
 	 * @param placeholder
 	 */
 	set placeholder(placeholder: string) {
-		if(!(this.input instanceof HTMLSelectElement))
-			this.input!.placeholder = this.placeholder;
+		if(!(this._input instanceof HTMLSelectElement))
+			this._input!.placeholder = this.placeholder;
 
 		if(this.placeholder !== " ") {
 			this.el.classList.add("no-floating-label");
@@ -112,8 +115,8 @@ export abstract class InputField extends Field {
 	}
 
 	get placeholder() {
-		if(!(this.input instanceof HTMLSelectElement))
-			return this.input!.placeholder;
+		if(!(this._input instanceof HTMLSelectElement))
+			return this._input!.placeholder;
 		else
 			return "";
 	}
@@ -129,8 +132,8 @@ export abstract class InputField extends Field {
 	set readOnly(readOnly: boolean) {
 		super.readOnly = readOnly;
 
-		if(!(this.input instanceof HTMLSelectElement))
-			this.input!.readOnly = this.readOnly;
+		if(!(this._input instanceof HTMLSelectElement))
+			this._input!.readOnly = this.readOnly;
 	}
 
 	get readOnly() {
@@ -146,16 +149,16 @@ export abstract class InputField extends Field {
 
 	set required(required: boolean) {
 		super.required = required;
-		this.input!.required = this.required;
+		this._input!.required = this.required;
 	}
 
 	protected validate() {
 		super.validate();
 
 		//this implements the native browser validation
-		if (this.input) {
+		if (this._input) {
 
-			this.setValidityState(this.input);
+			this.setValidityState(this._input);
 		}
 	}
 

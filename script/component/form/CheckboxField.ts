@@ -12,6 +12,10 @@ import {InputField} from "./InputField";
 
 type CheckBoxType = 'box' | 'switch' | 'button';
 
+export interface CheckboxField {
+	get input(): HTMLInputElement
+}
+
 /**
  * Checkbox field
  *
@@ -30,7 +34,6 @@ export class CheckboxField extends InputField {
 		this.type = "checkbox";
 	}
 
-	protected input: HTMLInputElement | undefined;
 
 	protected baseCls = 'goui-form-field check';
 
@@ -65,11 +68,11 @@ export class CheckboxField extends InputField {
 
 	protected createControl() {
 
-		this.input = this.createInput() as HTMLInputElement;
-		this.input.on("change", ()=> this.fireChange());
+		this._input = this.createInput() as HTMLInputElement;
+		this._input.on("change", ()=> this.fireChange());
 
 		const control = E('div',
-			this.input
+			this._input
 		);
 
 		return control;

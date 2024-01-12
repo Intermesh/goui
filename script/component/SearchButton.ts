@@ -60,7 +60,7 @@ export class SearchButton extends Button {
 		});
 
 		this.searchField.on("render", () => {
-			this.searchField.input!.addEventListener('input', FunctionUtil.buffer(this.buffer, this.onInput.bind(this)))
+			this.searchField.input.addEventListener('input', FunctionUtil.buffer(this.buffer, this.onInput.bind(this)))
 
 			this.searchField.el.addEventListener('keydown', (e:KeyboardEvent) => {
 				if(e.key == "Enter") {
