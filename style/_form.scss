@@ -172,7 +172,7 @@ $formFieldBorderRadius: dp(10);
 
 
 %input {
-	background-color: transparent;
+	//background-color: transparent; // Makes date field in safari unusable
 	font: $fontBase;
 	//min-width: dp(100); //for select element
 	margin: 0;
