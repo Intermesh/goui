@@ -22,8 +22,7 @@ menu.goui-dropdown {
 	background-color: $colorBackgroundDarker;//rgba(232,232,232,0.95);
 	backdrop-filter: blur(5px);
 	-webkit-backdrop-filter: blur(5px);
-
-	padding: dp(12);
+	padding: dp(6);
 
 	> li {
 		display:block;
@@ -32,12 +31,12 @@ menu.goui-dropdown {
 		margin: 0;
 
 		> button.goui-button {
-
 			font-weight: normal;
 			border: 0;
+			border-radius: dp(6);
 			width: 100%;
 			text-align: start;
-			//padding: 2px dp(8);
+			padding: dp(8) dp(16);
 
 			&:hover {
 				color: $colorText;

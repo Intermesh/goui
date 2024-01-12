@@ -103,13 +103,13 @@ export class RecurrencePicker extends CardContainer {
 		this.until = datefield({
 			itemId: 'endDate',
 			name: 'until',
-			width: 160,
+			width: 180,
 			hidden: true,
 			required: false
 		});
 		this.form = form({},
-			comp({cls: 'flow'},
-				comp({text: t('Every')}),
+			comp({cls: 'flow pad'},
+				comp({text: t('Every'), width:50, style:{alignSelf: 'center'}}),
 				numberfield({
 					decimals: 0,
 					name: 'interval',
@@ -126,13 +126,14 @@ export class RecurrencePicker extends CardContainer {
 					}
 				}),
 				frequencyField,
+
 				select({
 					hidden: true,
 					disabled: true,
 					name: 'monthlyType',
 					itemId: 'monthlyOptions',
 					label: t('at the'),
-					width: 120,
+					width: 160,
 					value: 'byMonthDay',
 					options: [
 						{value: 'byMonthDay', name: this.startDate.format('jS')},
@@ -151,7 +152,7 @@ export class RecurrencePicker extends CardContainer {
 					}
 				}),
 				comp({cls: 'flow'},
-					comp({html: t("Ends")}),
+					comp({html: t("Ends"), width:50, style:{alignSelf: 'center'} }),
 					select({
 						width: 100,
 						name: 'endsRadio',
@@ -168,10 +169,11 @@ export class RecurrencePicker extends CardContainer {
 								this.until.hidden = this.until.disabled = (v != 'until');
 							}
 						}
-					})
-				),
-				this.count,
-				this.until
+					}),
+					this.count,
+					this.until
+				)
+
 			),
 			tbar({},
 				btn({
@@ -243,8 +245,8 @@ export class RecurrencePicker extends CardContainer {
 	createCustomRule(values: any) {
 		const rule = {frequency: values.frequency} as RecurrenceRule;
 		if (values.interval != 1) rule.interval = values.interval;
-		if (values.until) rule.until = values.until;
-		if (values.count) rule.count = values.count;
+		if (values.until && values.endsRadio === 'until') rule.until = values.until
+		if (values.count && values.endsRadio === 'count') rule.count = values.count;
 		if (values.monthlyType) {
 			switch (values.monthlyType) {
 				case 'byMonthDay':
@@ -258,6 +260,13 @@ export class RecurrencePicker extends CardContainer {
 					break;
 			}
 		}
+		if(rule.frequency === 'weekly') {
+			['mo', 'tu', 'we', 'th', 'fr', 'sa', 'su'].forEach(day => {
+				if(values[day])
+					(rule.byDay ??= []).push({day});
+			});
+		}
+
 		return rule;
 	}
 
@@ -320,13 +329,24 @@ export class RecurrencePicker extends CardContainer {
 			this.changeFrequency(rrule.frequency);
 			if (rrule.until) {
 				form.findField('endsRadio')!.value = 'until';
-				//form.value = {until: rrule.until};
+				this.until.value = rrule.until;
 			} else if (rrule.count) {
 				form.findField('endsRadio')!.value = 'count';
-				//form.value = {count: rrule.count};
+				this.count.value = rrule.count;
 			}
 			if (rrule.byDay) {
-				form.findField('monthlyOptions')!.value = 'byDay';
+				if(rrule.frequency === 'weekly') {
+					rrule.byDay.forEach(nDay => {
+						form.findField(nDay.day)!.value = true;
+					});
+					// ['mo', 'tu', 'we', 'th', 'fr', 'sa', 'su'].forEach(day => {
+					// 	if(values[day])
+					// 		(rule.byDay ??= []).push({day});
+					// });
+					//form.findField('weeklyOptions')!.value = rrule.byDay;
+				} else if(rrule.frequency === 'monthly') {
+					form.findField('monthlyOptions')!.value = 'byDay';
+				}
 			}
 			if (rrule.byMonthDay) {
 				form.findField('monthlyOptions')!.value = 'byMonthDay';

@@ -69,6 +69,8 @@ export class RecurrenceField extends Field {
 
 	setStartDate(date: DateTime) {
 		this.picker.setStartDate(date);
+		if(this._input)
+			this._input.value = RecurrenceField.toText(this.value, this.picker.startDate);
 	}
 
 	static toText(rule: RecurrenceRule, start: DateTime) {
