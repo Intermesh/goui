@@ -1,9 +1,14 @@
-import {TextField, TextFieldType} from "./TextField";
+import {TextField} from "./TextField";
 import {Config} from "../Observable";
 import {Field, FieldEventMap} from "./Field";
 import {createComponent} from "../Component";
 import {DateTime, E} from "../../util";
 
+/**
+ * Timefield component
+ *
+ * Outputs time in "H:i" format. eg. 09:30 or 15:30 {@link DateTime.format}
+ */
 export class TimeField extends Field {
 
 	public input12hr = false;
@@ -73,7 +78,7 @@ export class TimeField extends Field {
 
 		this.hoursInput.onkeydown = onKeyDown;
 
-		this.hoursInput.oninput = ev => {
+		this.hoursInput.oninput = _ev => {
 
 			const max = this.input12hr ? 11 : 23;
 
@@ -83,7 +88,6 @@ export class TimeField extends Field {
 			} else {
 
 				if (this.hoursInput!.value.length == 2) {
-					console.warn(this.hoursInput!.value);
 					this.minutesInput!.focus();
 				}
 			}
@@ -106,7 +110,7 @@ export class TimeField extends Field {
 		this.minutesInput.onfocus = onFocus;
 		this.minutesInput.onkeydown = onKeyDown;
 
-		this.minutesInput.oninput = ev => {
+		this.minutesInput.oninput = _ev => {
 
 			if(parseInt(this.minutesInput!.value) > 59) {
 				this.minutesInput!.value = "59";

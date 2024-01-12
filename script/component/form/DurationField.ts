@@ -1,8 +1,7 @@
 import {Config} from "../Observable";
 import {Field, FieldEventMap} from "./Field";
 import {createComponent} from "../Component";
-import {E} from "../../util";
-import {DateInterval} from "../../util/DateInterval";
+import {DateInterval, E} from "../../util";
 import {t} from "../../Translate";
 
 /**
@@ -128,7 +127,7 @@ export class DurationField extends Field {
 		this.minutesInput.onfocus = onFocus;
 
 		this.hoursInput.onkeydown = onKeyDown;
-		this.minutesInput.oninput = ev => {
+		this.minutesInput.oninput = _ev => {
 
 			if(parseInt(this.minutesInput!.value) > 59) {
 				this.minutesInput!.value = "59";
