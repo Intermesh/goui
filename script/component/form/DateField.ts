@@ -25,6 +25,7 @@ import {InputField} from "./InputField";
 export class DateField extends TimeField {
 
 	protected baseCls = "goui-form-field date no-floating-label";
+	private oldTime: string = "00:00";
 
 	constructor() {
 		super();
@@ -37,7 +38,21 @@ export class DateField extends TimeField {
 	 * @param withTime
 	 */
 	public set withTime(withTime: boolean) {
-		this.type = withTime ? "datetime-local" : "date";
+
+		let v = this.value, newType = withTime ? "datetime-local" : "date";
+
+		if(newType != this.input.type) {
+			this.input.type = newType;
+
+			if(withTime) {
+				v += "T" + this.oldTime;
+			} else {
+				const parts = v.split("T");
+				v = parts[0];
+				this.oldTime = parts[1];
+			}
+			this.input.value = v;
+		}
 	}
 
 	public get withTime() {
