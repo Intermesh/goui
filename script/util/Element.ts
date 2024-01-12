@@ -77,6 +77,11 @@ declare global {
 		 * @param until and the highest element to look bot. (dofault <body>)
 		 */
 		up(selector: string, until?: Element): HTMLElement | null
+
+		/**
+		 * Clear all child nodes
+		 */
+		empty(): void
 	}
 }
 /**
@@ -151,4 +156,10 @@ Object.assign(Element.prototype, {
 				return curr;
 		} while (curr = curr.parentElement!)
 	},
+
+	empty() {
+		while(this.firstChild){
+			this.removeChild(this.firstChild);
+		}
+	}
 } as Element);

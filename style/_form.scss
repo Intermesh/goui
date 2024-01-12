@@ -418,68 +418,32 @@ $formFieldBorderRadius: dp(10);
 	}
 
 
+	&.text, &.number, &.date, &.time, &.textarea, &.select, &.duration, &.recurrence {
+		input, textarea, .wrap > select {
+			@extend %input;
+			&:not(:placeholder-shown) {
+				@extend %float-label;
+				&+div.label, &+.goui-toolbar+div.label {
+					transition: none;
+				}
+			}
 
-	/** start text and textarea **/
-	input.text, textarea, .wrap > select {
-		@extend %input;
-		&:not(:placeholder-shown) {
-			@extend %float-label;
-			&+div.label, &+.goui-toolbar+div.label {
-				transition: none;
+			&:focus {
+				@extend %float-label;
+				color: $colorPrimary;
 			}
 		}
-
-		&:focus {
-			@extend %float-label;
-			color: $colorPrimary;
-		}
 	}
-
-	input.text {
-		&[type=time],&[type=date] {
-			line-height: 1; // for safari otherwise they get too much height
-		}
-	}
-
 	textarea {
 		line-height: $baseLineHeight;
-	}
-
-
-	&.time {
-		width: sp(90);
-
-		&.input12hr {
-			width: sp(110);
-		}
-	}
-
-	&.time, &.duration {
-
-
-		select {
-			appearance: none;
-			border:0;
-			height: dp(24);
-			align-self: center;
-			&:focus {
-				background: var(--bg-selection);
-			}
-		}
-
-		input.hour {
-			text-align: right;
-		}
 	}
 
 	&.duration {
 		input.hour {
 			width: auto;
 			flex: 1;
+			text-align: right;
 		}
-	}
-
-	&.date,&.time, &.duration {
 
 		.wrap {
 			line-height: dp(46);
@@ -510,12 +474,7 @@ $formFieldBorderRadius: dp(10);
 		}
 	}
 
-	&.date {
-		width: sp(192);
-		input.text:last-child {
-			padding-right: dp(2);
-		}
-	}
+
 
 
 	&.invalid {

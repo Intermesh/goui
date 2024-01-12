@@ -40,14 +40,10 @@ export class ChipsField extends Field {
 
 		this.items.on("datachanged", collection => {
 			this.el.classList.toggle("has-chips", this.items.count() > 1)
-		})
-
+		});
 
 		this.chipsContainer = document.createElement("div");
 		this.chipsContainer.classList.add("control-wrap");
-
-		this.wrap!.append(this.chipsContainer);
-
 
 		this._editor = comp({
 			id: Component.uniqueID(),
@@ -72,12 +68,11 @@ export class ChipsField extends Field {
 		this._editor!.el.addEventListener("focus", (ev) => {
 			this.clearSelection();
 		})
-
-		this._editor.render(this.chipsContainer!);
+		//this._editor.render(this.chipsContainer!);
 
 		this.items.add(this._editor);
 
-		return undefined;
+		return this.chipsContainer;
 	}
 
 	private onEditorKeyDown(ev: KeyboardEvent) {
@@ -233,6 +228,8 @@ export class ChipsField extends Field {
 	focus(o?: FocusOptions) {
 		this.editor.focus(o);
 	}
+
+
 }
 
 type ChipsConfig = Config<ChipsField, FieldEventMap<ChipsField>> &

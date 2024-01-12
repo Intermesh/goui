@@ -58,6 +58,7 @@ export class RecurrencePicker extends CardContainer {
 		'yearly': [t("year"), t('years'), 5, '5-y', t('Annually')]
 	}
 
+
 	constructor(startDate: DateTime) {
 		super();
 		this.startDate = startDate;
@@ -74,11 +75,20 @@ export class RecurrencePicker extends CardContainer {
 
 		this.menu = comp({}, ...this.quickMenuItems());
 
+		const intervalField =  numberfield({
+			decimals: 0,
+			name: 'interval',
+			itemId: 'interval',
+			min: 1,
+			width: 70,
+			value: 1
+		});
+
 		const frequencyField = select({
 			name: 'frequency',
 			itemId: 'frequency',
-			width: 120,
-			textRenderer: r => (this.form.findChild('interval')! as Field).value == 1 ? r.text : r.plural,
+			width: 140,
+			textRenderer: r => intervalField.value == 1 ? r.text : r.plural,
 			options: Object.keys(RecurrencePicker.frequencies).map(k => ({
 				value: k,
 				text: RecurrencePicker.frequencies[k as Frequency][0],
@@ -90,6 +100,14 @@ export class RecurrencePicker extends CardContainer {
 				}
 			}
 		});
+
+		intervalField.on('setvalue', (me, newVal, oldVal) => {
+			if (oldVal == 1 && newVal != 1 || oldVal != 1 && newVal == 1) {
+				frequencyField.drawOptions();
+			}
+		});
+
+
 		this.count = numberfield({
 			itemId: 'repeatCount',
 			name: 'count',
@@ -110,21 +128,7 @@ export class RecurrencePicker extends CardContainer {
 		this.form = form({},
 			comp({cls: 'flow pad'},
 				comp({text: t('Every'), width:50, style:{alignSelf: 'center'}}),
-				numberfield({
-					decimals: 0,
-					name: 'interval',
-					itemId: 'interval',
-					min: 1,
-					width: 50,
-					value: 1,
-					listeners: {
-						'setvalue': (me, newVal, oldVal) => {
-							if (oldVal == 1 && newVal != 1 || oldVal != 1 && newVal == 1) {
-								frequencyField.drawOptions();
-							}
-						}
-					}
-				}),
+				intervalField,
 				frequencyField,
 
 				select({

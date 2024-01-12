@@ -81,7 +81,7 @@ export abstract class Field extends Component {
 	private _buttons?: Button[];
 	private toolbar?: Toolbar;
 	private _wrap?: HTMLDivElement;
-	private _labelEl?: HTMLElement;
+	protected _labelEl?: HTMLElement;
 	private _icon: MaterialIcon | "" | undefined;
 	private iconEl?: HTMLElement;
 
@@ -89,6 +89,8 @@ export abstract class Field extends Component {
 		super(tagName);
 
 		this.on("added", this.onAdded , {once: true});
+
+		this.control = this.createControl();
 	}
 
 	readonly isFormField = true
@@ -110,6 +112,8 @@ export abstract class Field extends Component {
 	private _label = ""
 
 	protected _value: any;
+
+	protected control: HTMLElement | undefined;
 
 	/**
 	 * The value this field resets to when a form is reset.
@@ -239,24 +243,11 @@ export abstract class Field extends Component {
 
 	protected renderControl() {
 
-		// const icon = this.createIcon();
-		// if(icon) {
-		// 	this.wrap.append(icon);
-		// }
-
-		const control = this.createControl();
-		if (control instanceof HTMLElement) {
-			this.wrap.append(control.cls('+control'));
+		if (this.control) {
+			this.wrap.append(this.control.cls('+control'));
 
 			if (this.title) {
-				control.title = this.title;
-			}
-		} else if (control instanceof Component) {
-			control.render(this.wrap);
-			control.parent = this;
-
-			if (this.title) {
-				control.title = this.title;
+				this.control.title = this.title;
 			}
 		}
 
@@ -273,7 +264,7 @@ export abstract class Field extends Component {
 			this.el.appendChild(hint);
 		}
 
-		this.internalSetValue(this.value);
+//		this.internalSetValue(this.value);
 	}
 
 	private renderButtons() {
@@ -317,7 +308,7 @@ export abstract class Field extends Component {
 		});
 	}
 
-	protected createControl(): Component | HTMLElement | undefined {
+	protected createControl(): HTMLElement | undefined {
 		return undefined;
 	}
 
@@ -409,19 +400,16 @@ export abstract class Field extends Component {
 		}
 	}
 
-
 	public get icon() {
 		return this._icon;
 	}
 
 	/**
-	 * The field's label
+	 * The field's icon rendered at the left inside the field
 	 */
 	public set icon(icon: MaterialIcon | "" | undefined) {
 		this._icon = icon;
-
-		this.createIcon()
-
+		this.createIcon();
 	}
 
 	public get hint() {
@@ -434,7 +422,6 @@ export abstract class Field extends Component {
 	public set hint(hint: string) {
 		this._hint = hint;
 	}
-
 
 	public get readOnly() {
 		return this._readOnly;
@@ -449,14 +436,12 @@ export abstract class Field extends Component {
 		this._readOnly = readOnly;
 	}
 
-
 	/**
 	 * Check if the field was modified since create or when a form was loaded and @see trackReset() was called.
 	 */
 	public isModified() : boolean {
-		if(this.resetValue != this.value)
-		console.log(this.resetValue,this.value);
-		return this.resetValue != this.value;
+		// We use stringify to support object and array values
+		return JSON.stringify(this.resetValue) !== JSON.stringify(this.value);
 	}
 
 	/**
@@ -466,7 +451,8 @@ export abstract class Field extends Component {
 	 * @see Form in the trackModifications method
 	 */
 	public trackReset(){
-		this.resetValue = this.value;
+		// use structuredclone to support arrays and objects
+		this.resetValue = structuredClone(this.value);
 	}
 
 	/**

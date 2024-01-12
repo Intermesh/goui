@@ -8,26 +8,30 @@ import {TextField, TextFieldType} from "./TextField.js";
 import {createComponent} from "../Component.js";
 import {Config} from "../Observable";
 import {FieldEventMap} from "./Field";
+import {t} from "../../Translate";
+import {InputField} from "./InputField";
 
-export class NumberField extends TextField {
+export class NumberField extends InputField {
 
-	public type: TextFieldType = "number" as TextFieldType;
+	protected baseCls = 'goui-form-field number';
 
-	decimals: number = 2
-	min?: number
-	max?: number
+	constructor() {
+		super();
+
+		this.type = "number";
+	}
 
 	protected validate() {
 		super.validate();
-		const v = super.value;
+		const v = this.value;
 		if (v && isNaN(v)) {
 			this.setInvalid("Incorrect number format");
 		}
-		if (this.max !== undefined && v > this.max) {
-			this.setInvalid("Number is too big");
+		if (this.max !== undefined && v && v > this.max) {
+			this.setInvalid(t("Number is too big"));
 		}
-		if (this.min !== undefined && v < this.min) {
-			this.setInvalid("Number is too small");
+		if (this.min !== undefined &&  (!v || v < this.min)) {
+			this.setInvalid(t("Number is too small"));
 		}
 	}
 
@@ -37,33 +41,56 @@ export class NumberField extends TextField {
 		} else if (!this.isEmptyNumber(v)) {
 			super.value = + v!.toFixed(this.decimals);
 		}
-
 	}
 
 	private isEmptyNumber(v:any) {
 		return (v === undefined || v === null || v === "")
 	}
 
-	get value(): number | null {
+	get value(): number | undefined {
 		const v = super.value;
-		return (this.isEmptyNumber(v)  || isNaN(v)) ? null : +(+v).toFixed(this.decimals);
+		return (this.isEmptyNumber(v)  || isNaN(v)) ? undefined : +(+v).toFixed(this.decimals);
 	}
 
-	protected createControl(): undefined | HTMLElement {
-		super.createControl();
-		this._input!.cls('+number');
-		this._input!.inputMode = "numeric";
-		// this._input!.attr('type','number');
-		if (this.min !== undefined) {
-			this._input!.attr('min', this.min);
+	public set decimals(decimals:number|undefined) {
+		if(!this.decimals) {
+			this.input!.attr('step', undefined);
+		} else {
+			this.input!.attr('step', '0.'.padEnd(this.decimals + 1, "0") + "1")
 		}
-		if (this.max !== undefined) {
-			this._input!.attr('max', this.max);
+	}
+
+	public get decimals() {
+		const step= this.input!.attr('step');
+		if(!step) {
+			return undefined;
 		}
-		if(this.decimals) {
-			this._input!.attr('step', '0.'.padEnd(this.decimals + 1, "0") + "1")
-		}
-		return this._input;
+
+		return step.length - 2;
+	}
+
+	/**
+	 * The minimum number allowed
+	 * @param min
+	 */
+	public set min(min:number) {
+		this.input!.attr('min', min);
+	}
+
+	public get min() {
+		return parseInt(this.input!.attr('min'));
+	}
+
+	/**
+	 * The maximum number allowed
+	 * @param max
+	 */
+	public set max(max:number) {
+		this.input!.attr('max', max);
+	}
+
+	public get max() {
+		return parseInt(this.input!.attr('max'));
 	}
 }
 

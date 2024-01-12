@@ -17,15 +17,6 @@ export class DurationField extends Field {
 	private minutesInput?: HTMLInputElement;
 
 	/**
-	 * Format it will as value
-	 *
-	 * {@link DurationField.value}
-	 *
-	 * It can be any string format supported by {@link DateInterval.format}
-	 */
-	public outputFormat = "h:I";
-
-	/**
 	 * Minimum allowed duration to be entered
 	 */
 	public min : DateInterval|undefined = undefined;
@@ -34,6 +25,18 @@ export class DurationField extends Field {
 	 * Maximum allowed duration to be entered
 	 */
 	public max : DateInterval|undefined = undefined;
+
+	/**
+	 *
+	 * @param outputFormat Format it will as value
+	 *
+	 * {@link DurationField.value}
+	 *
+	 * It can be any string format supported by {@link DateInterval.format}
+	 */
+	constructor(public outputFormat = "h:I") {
+		super();
+	}
 
   protected validate() {
     super.validate();
@@ -159,20 +162,17 @@ export class DurationField extends Field {
 	}
 
 	get value(): any {
-		if(this.rendered) {
 
-			if(!this.hoursInput!.value) {
-				return undefined;
-			}
-
-			const dateInterval = new DateInterval();
-			dateInterval.hours = parseInt(this.hoursInput!.value);
-			dateInterval.minutes = parseInt(this.minutesInput!.value);
-			return dateInterval.format(this.outputFormat);
-		} else {
-			return super.value;
+		if(!this.hoursInput!.value) {
+			return undefined;
 		}
+
+		const dateInterval = new DateInterval();
+		dateInterval.hours = parseInt(this.hoursInput!.value);
+		dateInterval.minutes = parseInt(this.minutesInput!.value);
+		return dateInterval.format(this.outputFormat);
+
 	}
 }
 
-export const durationfield = (config?: Config<DurationField, FieldEventMap<DurationField>>) => createComponent(new DurationField(), config);
+export const durationfield = (config?: Config<DurationField, FieldEventMap<DurationField>>) => createComponent(new DurationField(config?.outputFormat ?? "h:I"), config);

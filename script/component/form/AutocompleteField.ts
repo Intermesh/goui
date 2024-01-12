@@ -128,7 +128,7 @@ export class AutocompleteField<T extends List = List> extends TextField {
 
 		this.valueToTextField(this, v+"").then(v => {
 
-			if(this._input) {
+			if(this.input) {
 				super.internalSetValue(v);
 			} else {
 				this.on("render", () => {
@@ -156,9 +156,9 @@ export class AutocompleteField<T extends List = List> extends TextField {
 		this.menu.alignTo = this.wrap;
 		this.menu.alignToInheritWidth = true;
 
-		this._input!.addEventListener('input', FunctionUtil.buffer(this.buffer, this.onInput.bind(this)))
+		this.input!.addEventListener('input', FunctionUtil.buffer(this.buffer, this.onInput.bind(this)))
 
-		this._input!.addEventListener('keydown', (ev) => {
+		this.input!.addEventListener('keydown', (ev) => {
 
 			switch ((ev as KeyboardEvent).key) {
 
@@ -171,7 +171,7 @@ export class AutocompleteField<T extends List = List> extends TextField {
 
 				case 'ArrowDown':
 					ev.preventDefault();
-					this.fire("autocomplete", this, this._input!.value);
+					this.fire("autocomplete", this, this.input!.value);
 					this.menuButton.showMenu();
 					this.list.focus();
 					break;
@@ -192,7 +192,7 @@ export class AutocompleteField<T extends List = List> extends TextField {
 
 	private onInput(ev: KeyboardEvent) {
 		this.menuButton.showMenu();
-		this.fire("autocomplete", this, this._input!.value);
+		this.fire("autocomplete", this, this.input!.value);
 	}
 
 }

@@ -42,6 +42,7 @@ export class MapField extends Field {
 		}
 	}
 
+
 	get value(): MapFieldValue {
 		const v: MapFieldValue = {};
 
@@ -94,10 +95,6 @@ export class MapField extends Field {
 		// only works if sorted by key
 		// todo: maybe use GUID for item with sortOrder?
 		return "_new_" + this._nextKey++;
-	}
-
-	public isModified(): boolean {
-		return JSON.stringify(this.resetValue) !== JSON.stringify(this.value);
 	}
 
 	reset() {

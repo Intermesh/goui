@@ -200,7 +200,6 @@ export class RowSelect extends Observable {
 	 * @param silent Suspends 'selectionchange' event
 	 */
 	private setSelected(newSelection: number[], silent = false) {
-
 		const old = this._selected;
 
 		this._selected = newSelection;

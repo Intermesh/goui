@@ -25,3 +25,4 @@ export * from './ComboBox.js';
 export * from './DurationField.js';
 export * from './TimeField.js';
 export * from './ListField.js';
+export * from './InputField.js';

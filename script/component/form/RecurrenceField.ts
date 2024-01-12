@@ -20,11 +20,24 @@ export class RecurrenceField extends Field {
 	private readonly picker: RecurrencePicker
 	private readonly pickerButton: Button;
 
-	private _input?: HTMLInputElement
+	protected control: HTMLInputElement | undefined
+
+	protected baseCls = 'goui-form-field recurrence';
 
 	constructor() {
 		super();
+
 		this.picker = new RecurrencePicker(new DateTime());
+		this.picker.on('select', (_, val) => {
+
+			this.pickerButton.menu!.hide();
+			this.clearInvalid();
+			this.focus();
+
+			this.value = val;
+			this.control!.value = RecurrenceField.toText(val!, this.picker.startDate);
+		});
+
 		this.buttons = [
 			this.pickerButton = btn({
 				icon: "expand_more",
@@ -40,37 +53,20 @@ export class RecurrenceField extends Field {
 	}
 
 	protected internalSetValue(v?: any) {
-		if(this._input) {
-			this._input.value = RecurrenceField.toText(v, this.picker.startDate);
+		if(this.control) {
+			this.control.value = RecurrenceField.toText(v, this.picker.startDate);
 		}
 		this.picker.setValue(v);
 	}
 
 	protected createControl() {
-		this._input = E('input').attr('type', 'text').attr('readOnly', true).cls('text')
-		this.picker.on('select', (_, val) => {
-
-			this.pickerButton.menu!.hide();
-			this.clearInvalid();
-			this.focus();
-
-			this.value = val;
-			this._input!.value = RecurrenceField.toText(val!, this.picker.startDate);
-		});
-
-		this._input.value = RecurrenceField.toText(this.value, this.picker.startDate);
-
-		return this._input;
+		this.control = E('input').attr('type', 'text').attr('readOnly', true).cls('text');
+		return this.control;
 	}
-
-	isModified(): boolean {
-		return JSON.stringify(this.resetValue) != JSON.stringify(this.value);
-	}
-
 	setStartDate(date: DateTime) {
 		this.picker.setStartDate(date);
-		if(this._input)
-			this._input.value = RecurrenceField.toText(this.value, this.picker.startDate);
+		if(this.control)
+			this.control.value = RecurrenceField.toText(this.value, this.picker.startDate);
 	}
 
 	static toText(rule: RecurrenceRule, start: DateTime) {

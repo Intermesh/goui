@@ -36,8 +36,8 @@ type RadioType = 'box' | 'button';
  */
 export class RadioField extends Field {
 
-	options: RadioOption[] = [];
-	inputs: { [key: string]: HTMLInputElement } = {};
+	private inputs: { [key: string]: HTMLInputElement } = {};
+	private _options?: RadioOption[];
 
 	readonly type: RadioType;
 	protected baseCls = 'goui-form-field radiogroup';
@@ -64,7 +64,21 @@ export class RadioField extends Field {
 
 		const radio = E('div').cls('radio');
 
-		this.options.forEach((o) => {
+		if (this.invalidMsg) {
+			this.applyInvalidMsg();
+		}
+
+		return radio;
+	}
+
+	public set options(options:RadioOption[]) {
+
+		if(this._options) {
+			this.control!.empty();
+			this.inputs = {};
+		}
+
+		options.forEach((o) => {
 			const btn = E('input').on("change", () => {
 				this.fireChange();
 			});
@@ -79,17 +93,15 @@ export class RadioField extends Field {
 				this.inputs[o.value] = btn;
 			}
 
-			radio.append(E('label',
+			this.control!.append(E('label',
 				btn,
 				E('span', o.text).cls('box-label')
 			).cls('control'));
 		});
+	}
 
-		if (this.invalidMsg) {
-			this.applyInvalidMsg();
-		}
-
-		return radio
+	public get options() {
+		return this._options ?? [];
 	}
 
 	set value(v: string | undefined) {

@@ -3,197 +3,65 @@ import {Config} from "../Observable";
 import {Field, FieldEventMap} from "./Field";
 import {createComponent} from "../Component";
 import {DateTime, E} from "../../util";
+import {InputField} from "./InputField";
 
 /**
  * Timefield component
  *
  * Outputs time in "H:i" format. eg. 09:30 or 15:30 {@link DateTime.format}
  */
-export class TimeField extends Field {
+export class TimeField extends InputField {
 
-	public input12hr = false;
-
-	private hoursInput?: HTMLInputElement;
-	private minutesInput?: HTMLInputElement;
+	protected input: HTMLInputElement | undefined
 
 	protected baseCls = "goui-form-field time no-floating-label";
-	private AMPMInput?: HTMLSelectElement;
 
+	constructor() {
+		super();
+
+		this.type = "time";
+	}
+
+	public set step(v:number) {
+		this.input!.step = v.toString();
+	}
+
+	public get step() {
+		return parseInt(this.input!.step);
+	}
+
+	/**
+	 * The minimum number allowed
+	 * @param min
+	 */
+	public set min(min:string) {
+		this.input!.attr('min', min);
+	}
+
+	public get min() {
+		return this.input!.attr('min');
+	}
+
+	/**
+	 * The maximum number allowed
+	 *
+	 * @param max
+	 */
+	public set max(max:string) {
+		this.input!.attr('max', max);
+	}
+
+	/**
+	 * Get the date as DateTime object
+	 */
 	public getValueAsDateTime() {
-		return DateTime.createFromFormat(this.value, "H:i");
-	}
 
-	protected createControl(): HTMLElement | undefined {
-		const ctrl = E("div").cls("goui hbox");
-
-		if(this.input12hr) {
-			this.el.classList.add('input12hr');
+		let v = this.value;
+		let date;
+		if (!v || !(date = DateTime.createFromFormat(v, "Y-m-dTH:i"))) {
+			return undefined;
 		}
-
-		const onBlur = function(this:any) {
-			if(!this.value) {
-				return;
-			}
-			this.value = this.value.padStart(2, "0")
-			return true;
-		}
-
-		const onFocus = function(this:any) {
-			this.setSelectionRange(0, this.value.length);
-		};
-
-		const onKeyDown = (ev:KeyboardEvent) => {
-			switch(ev.key) {
-				case "Tab":
-				case "Enter":
-				case "Backspace":
-				case "Delete":
-					return true;
-
-				case ':':
-					this.minutesInput!.focus();
-					ev.preventDefault();
-					break;
-
-				default:
-					if(!/^[0-9]$/i.test(ev.key)) {
-						//only allow numbers
-						ev.preventDefault();
-					}
-			}
-		};
-
-		this.hoursInput = document.createElement("input");
-		this.hoursInput.classList.add("text");
-		this.hoursInput.classList.add("hour");
-		this.hoursInput.type = "text";
-		this.hoursInput.inputMode = "numeric";
-		this.hoursInput.pattern = "[0-9]+";
-		this.hoursInput.maxLength = 2;
-		this.hoursInput.onblur = onBlur;
-		this.hoursInput.onfocus = onFocus;
-		// this.hoursInput.onmouseup = onMouseUp;
-		this.hoursInput.placeholder = "--";
-		this.hoursInput.autocomplete = "off";
-
-		this.hoursInput.onkeydown = onKeyDown;
-
-		this.hoursInput.oninput = _ev => {
-
-			const max = this.input12hr ? 11 : 23;
-
-			if(parseInt(this.hoursInput!.value) > max) {
-				this.hoursInput!.value = max.toString();
-				this.hoursInput!.setSelectionRange(0,2);
-			} else {
-
-				if (this.hoursInput!.value.length == 2) {
-					this.minutesInput!.focus();
-				}
-			}
-		}
-
-		this.minutesInput = document.createElement("input");
-		this.minutesInput.classList.add("text");
-		this.minutesInput.classList.add("minute");
-		this.minutesInput.type = "text";
-		this.minutesInput.inputMode = "numeric";
-		this.minutesInput.pattern = "[0-9]+";
-		this.minutesInput.maxLength = 2;
-		const hoursInput = this.hoursInput!;
-		this.minutesInput.onblur = function(this:any) {
-			onBlur.call(this);
-			if(!this.value && hoursInput.value) {
-				this.value = "00";
-			}
-		};
-		this.minutesInput.onfocus = onFocus;
-		this.minutesInput.onkeydown = onKeyDown;
-
-		this.minutesInput.oninput = _ev => {
-
-			if(parseInt(this.minutesInput!.value) > 59) {
-				this.minutesInput!.value = "59";
-			}
-
-			if(this.input12hr && this.minutesInput!.value.length == 2) {
-				this.AMPMInput!.focus();
-			}
-
-		}
-		this.minutesInput.placeholder = "--";
-		this.minutesInput.autocomplete = "off";
-
-		ctrl.append(this.hoursInput, ":", this.minutesInput);
-
-		if(this.input12hr) {
-			this.AMPMInput = document.createElement("select");
-
-			const amOpt = new Option();
-			amOpt.value = "am";
-			amOpt.innerHTML = "am";
-			amOpt.selected = true;
-			this.AMPMInput.appendChild(amOpt);
-
-
-			const pmOpt = new Option();
-			pmOpt.value = "pm";
-			pmOpt.innerHTML = "pm";
-			this.AMPMInput.appendChild(pmOpt);
-
-			ctrl.append(this.AMPMInput);
-		}
-
-		return ctrl;
-	}
-
-
-
-	protected internalSetValue(v?: any) {
-
-		if(v && this.hoursInput && this.minutesInput) {
-			const parts = v.split(":");
-			if (this.input12hr) {
-				let hours = parts[0];
-				if (hours > "12") {
-					this.AMPMInput!.value = "pm";
-					hours -= 12;
-				}
-				this.hoursInput.value = hours.toString().padStart(2, "0");
-
-			} else {
-				this.hoursInput.value = parts[0].padStart(2, "0");
-			}
-
-			if (parts[1]) {
-				this.minutesInput.value = parts[1].padStart(2, "0");
-			} else {
-				this.minutesInput.value = "00";
-			}
-		}
-	}
-
-	set value(v: any) {
-		super.value = v;
-	}
-
-	get value(): any {
-		if(this.rendered) {
-
-			if(!this.hoursInput!.value) {
-				return undefined;
-			}
-
-			let hours = parseInt(this.hoursInput!.value);
-
-			if(this.input12hr && this.AMPMInput!.value == "pm") {
-				hours += 12;
-			}
-
-			return hours.toString().padStart(2, "0") + ":" + (this.minutesInput!.value ?? "0").padStart(2, "0");
-		} else {
-			return super.value;
-		}
+		return date;
 	}
 }
 

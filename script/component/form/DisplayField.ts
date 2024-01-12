@@ -17,7 +17,6 @@ import {DateTime, Format} from "../../util";
  * A {@see Form} can be used to edit data but also to present data using display fields
  */
 export class DisplayField extends Field {
-	private control?: HTMLDivElement;
 
 	protected baseCls = 'goui-display-field'
 
@@ -35,8 +34,7 @@ export class DisplayField extends Field {
 	public hideWhenEmpty = true;
 
 	protected createControl(): HTMLElement | undefined {
-		this.control = document.createElement("div");
-		return this.control;
+		return document.createElement("div");
 	}
 
 	protected internalSetValue(v?: any) {

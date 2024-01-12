@@ -92,7 +92,7 @@ export class AutocompleteChips<T extends List = List> extends ChipsField {
 
 			this.list.store.on("datachanged", () => {
 				this.list.rowSelection!.selected = [0];
-			});
+			}, {buffer: 0});
 		} else {
 			this.list.store.on("datachanged", () => {
 
@@ -103,7 +103,7 @@ export class AutocompleteChips<T extends List = List> extends ChipsField {
 					}
 				})
 
-			});
+			}, {buffer: 0});
 		}
 
 
@@ -184,7 +184,6 @@ export class AutocompleteChips<T extends List = List> extends ChipsField {
 	}
 
 	private onInput(ev: KeyboardEvent) {
-		console.warn('onInput');
 		this.menuButton.showMenu();
 		this.fire("autocomplete", this, this.editor.el.innerText);
 	}
@@ -193,7 +192,6 @@ export class AutocompleteChips<T extends List = List> extends ChipsField {
 		if(!this.menu.rendered) {
 			return;
 		}
-		const keys : Record<string, boolean> = {};
 
 		const newValues = this.list.rowSelection!.selected.map((index) => {
 			const record = this.list.store.get(index) as storeRecordType<listStoreType<T>>;
@@ -204,12 +202,12 @@ export class AutocompleteChips<T extends List = List> extends ChipsField {
 		this.editor.el.innerText = "";
 		this.focus();
 
-
 		// set value after focus as this will start tracking for the change event
 		if(this.list.rowSelection!.multiSelect) {
 			this.value = newValues;
 		} else
 		{
+
 			if(!this.value) {
 				this.value = [];
 			}

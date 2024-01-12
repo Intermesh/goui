@@ -4,67 +4,23 @@
  * @author Joachim van de Haterd <jhaterd@intermesh.nl>
  */
 
-import {TextField, TextFieldType} from "./TextField.js";
 import {createComponent} from "../Component.js";
 import {Config} from "../Observable";
 import {FieldEventMap} from "./Field";
+import {NumberField} from "./NumberField";
 
-export class RangeField extends TextField {
+export class RangeField extends NumberField {
 
-    public type: TextFieldType = "range" as TextFieldType;
+	protected baseCls = 'goui-form-field range no-floating-label';
+	constructor() {
+		super();
+		this.type = "range";
 
-    decimals: number = 0;
-    min: number = 0;
-    max: number = 100;
-
-		constructor() {
-			super();
-			this.value = 50;
-		}
-
-    protected validate() {
-        super.validate();
-        const v = super.value;
-        if (v && isNaN(v)) {
-            this.setInvalid("Incorrect number format");
-        }
-        if (this.max !== undefined && v > this.max) {
-            this.setInvalid("Number is too big");
-        }
-        if (this.min !== undefined && v < this.min) {
-            this.setInvalid("Number is too small");
-        }
-    }
-
-    set value(v: number | undefined) {
-        if (isNaN(v!)) {
-            throw new Error("Invalid number");
-        } else if (v) {
-            super.value = +v.toFixed(this.decimals);
-        }
-
-    }
-
-    get value(): number | undefined {
-        const v = super.value;
-        return (v === undefined || isNaN(v)) ? undefined : +(+v).toFixed(this.decimals);
-    }
-
-    protected createControl(): undefined | HTMLElement {
-        super.createControl();
-        this.el.cls('+range')
-        // this._input!.attr('type','number');
-        if (this.min !== undefined) {
-            this._input!.attr('min', this.min);
-        }
-        if (this.max !== undefined) {
-            this._input!.attr('max', this.max);
-        }
-        if(this.decimals) {
-            this._input!.attr('step', '0.'.padEnd(this.decimals + 1, "0") + "1")
-        }
-        return this._input;
-    }
+		// set the navigator defaults
+		this.value = 50;
+		this.min = 0;
+		this.max = 100;
+	}
 }
 
 export const rangefield = (config?: Config<RangeField, FieldEventMap<RangeField>>) => createComponent(new RangeField(), config);
