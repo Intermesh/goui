@@ -4,6 +4,13 @@ export abstract class InputField extends Field {
 
 	protected _input: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement | undefined;
 
+	constructor() {
+		super();
+
+		// so we can float the label using CSS with ::placeholder-shown
+		this.placeholder = " ";
+	}
+
 	/**
 	 * Get the DOM HTMLInputElement
 	 */
@@ -109,7 +116,7 @@ export abstract class InputField extends Field {
 	 */
 	set placeholder(placeholder: string) {
 		if(!(this._input instanceof HTMLSelectElement))
-			this._input!.placeholder = this.placeholder;
+			this._input!.placeholder = placeholder;
 
 		if(this.placeholder !== " ") {
 			this.el.classList.add("no-floating-label");
