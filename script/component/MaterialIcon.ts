@@ -195,6 +195,7 @@ export type MaterialIcon =
 	"confirmation_number" |
 	"contact_mail" |
 	"contact_phone" |
+	"contact_support" |
 	"contacts" |
 	"content_copy" |
 	"content_cut" |
@@ -534,7 +535,6 @@ export type MaterialIcon =
 	"maximize" |
 	"minimize" |
 	"markunread_mailbox" |
-	"meeting_room" |
 	"memory" |
 	"menu" |
 	"merge_type" |
@@ -606,6 +606,7 @@ export type MaterialIcon =
 	"pause_circle_filled" |
 	"pause_circle_outline" |
 	"payment" |
+	"pending_actions" |
 	"people" |
 	"people_outline" |
 	"perm_camera_mic" |
@@ -664,6 +665,7 @@ export type MaterialIcon =
 	"playlist_add_check" |
 	"playlist_play" |
 	"plus_one" |
+	"policy" |
 	"poll" |
 	"polymer" |
 	"pool" |
@@ -724,6 +726,7 @@ export type MaterialIcon =
 	"router" |
 	"rowing" |
 	"rss_feed" |
+	"rsvp" |
 	"rv_hookup" |
 	"satellite" |
 	"save" |
@@ -765,6 +768,7 @@ export type MaterialIcon =
 	"settings_system_daydream" |
 	"settings_voice" |
 	"share" |
+	"shield" |
 	"shop" |
 	"shop_two" |
 	"shopping_basket" |
