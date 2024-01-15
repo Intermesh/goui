@@ -4,12 +4,18 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {Field, FieldEventMap} from "./Field.js";
+import {FieldEventMap} from "./Field.js";
 import {createComponent} from "../Component.js";
 import {Store} from "../../data/index.js";
 import {Config} from "../Observable";
 import {InputField} from "./InputField";
 
+/**
+ * Select component option
+ *
+ * By default, it should have a "value" and "name" property. This can be changed with the {@link Select.valueField} and
+ * {@link Select.textRenderer}.
+ */
 type SelectOption = { [key: string]: any };
 
 export interface SelectField {
@@ -25,8 +31,18 @@ export class SelectField extends InputField {
 	public baseCls = "goui-form-field select";
 
 
+	/**
+	 * The field of the select options that is used as value
+	 */
 	public valueField = 'value';
+
 	protected fireChangeOnBlur = false;
+
+	/**
+	 * Renderer function. Defaults to returning a 'name' property.
+	 *
+	 * @param record
+	 */
 	public textRenderer?: (record: { [key: string]: any }) => string = (record: { [key: string]: any }) => record.name;
 	private _store?: Store;
 	private _options?: SelectOption[];
@@ -49,6 +65,16 @@ export class SelectField extends InputField {
 		this.value = v;
 	}
 
+	/**
+	 * Provide select input with options
+	 *
+	 * It should have at least have a field that corresponds with {@link Select.valueField}
+	 *
+	 * By default, it should have a "value" and "name" property. This can be changed with the {@link Select.valueField} and
+	 * {@link Select.textRenderer}.
+	 *
+	 * @param opts
+	 */
 	public set options(opts:SelectOption[]) {
 		this._options = opts;
 		this.input!.empty();
@@ -67,6 +93,10 @@ export class SelectField extends InputField {
 		return this._options ?? [];
 	}
 
+	/**
+	 * A store to provide the {@link Select.options}.
+	 * @param store
+	 */
 	public set store(store: Store) {
 		this._store = store;
 		this.options = store.items;

@@ -14,7 +14,6 @@ import {List, listStoreType} from "../List";
 import {listpicker} from "../picker";
 import {Menu, menu} from "../menu";
 import {storeRecordType} from "../../data";
-import {AutocompleteChipsEventMap} from "./AutocompleteChips";
 
 export interface AutocompleteEventMap<Type> extends FieldEventMap<Type> {
 	/**
@@ -59,7 +58,6 @@ export class AutocompleteField<T extends List = List> extends TextField {
 		this.picker = listpicker({
 			list: list
 		});
-
 
 		this.picker.on("select", (tablePicker, record) => {
 

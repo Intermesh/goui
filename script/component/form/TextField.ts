@@ -4,7 +4,7 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {Field, FieldEventMap} from "./Field.js";
+import {FieldEventMap} from "./Field.js";
 import {createComponent} from "../Component.js";
 import {Config} from "../Observable";
 import {InputField} from "./InputField";
@@ -31,6 +31,12 @@ export class TextField extends InputField {
 		this.type = "text";
 	}
 
+	/**
+	 * The input type
+	 *
+	 * @link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/text
+	 * @param type
+	 */
 	public set type(type:TextFieldType) {
 		super.type = type;
 	}

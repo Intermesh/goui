@@ -1,8 +1,8 @@
 import {TextField} from "./TextField";
 import {Config} from "../Observable";
-import {Field, FieldEventMap} from "./Field";
+import {FieldEventMap} from "./Field";
 import {createComponent} from "../Component";
-import {DateTime, E} from "../../util";
+import {DateTime} from "../../util";
 import {InputField} from "./InputField";
 
 
@@ -10,9 +10,11 @@ export interface TimeField {
 	get input(): HTMLInputElement
 }
 /**
- * Timefield component
+ * TimeField component
  *
- * Outputs time in "H:i" format. eg. 09:30 or 15:30 {@link DateTime.format}
+ * Time input based on the browsers locale. Outputs time in "H:i" format. eg. 09:30 or 15:30 {@link DateTime.format}
+ *
+ * @link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/time
  */
 export class TimeField extends InputField {
 

@@ -4,18 +4,10 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {TextField} from "./TextField.js";
-import {DateTime, E} from "../../util";
-import {createComponent, FindComponentPredicate} from "../Component.js";
-import {datepicker, DatePicker} from "../picker";
-import {btn} from "../Button.js";
-import {menu} from "../menu";
+import {createComponent} from "../Component.js";
 import {Config} from "../Observable";
-import {Field, FieldEventMap} from "./Field";
-import {t} from "../../Translate";
+import {FieldEventMap} from "./Field";
 import {TimeField} from "./TimeField";
-import {InputField} from "./InputField";
-
 
 /**
  * Date field
@@ -43,6 +35,10 @@ export class DateField extends TimeField {
 
 		if(newType != this.input.type) {
 			this.input.type = newType;
+
+			if(!v) {
+				return;
+			}
 
 			if(withTime) {
 				v += "T" + this.oldTime;

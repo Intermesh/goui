@@ -1,10 +1,12 @@
 import {Field} from "./Field";
 
-
 export abstract class InputField extends Field {
 
 	protected _input: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement | undefined;
 
+	/**
+	 * Get the DOM HTMLInputElement
+	 */
 	public get input() {
 		return this._input;
 	}

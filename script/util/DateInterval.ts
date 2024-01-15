@@ -399,13 +399,9 @@ export class DateInterval {
 	 * @return number
 	 */
 	public compare(other: DateInterval): number {
-
 		const thisDuration = parseInt(this.format("rYMDHISF"));
 		const otherDuration = parseInt(other.format("rYMDHISF"));
-
 		const result = (thisDuration > otherDuration ? 1 : 0) - (thisDuration < otherDuration ? 1 : 0);
-
-		console.log(thisDuration, otherDuration, result);
 		return result;
 	}
 
