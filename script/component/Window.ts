@@ -510,6 +510,7 @@ export class Window extends DraggableComponent {
 		
 		return new Promise((resolve, reject) => {
 			win({
+					width: 600,
 					modal: true,
 					title: title,
 					listeners: {
@@ -546,6 +547,7 @@ export class Window extends DraggableComponent {
 			const w = win({
 					modal: true,
 					title: title,
+					width: 600,
 					listeners: {
 						focus: () => {
 							w.items.get(0)!.focus();
@@ -620,6 +622,7 @@ export class Window extends DraggableComponent {
 						modal: true,
 						title: title,
 						closable: false,
+						width: 600,
 						listeners: {
 							focus: () => {
 								yesBtn.focus();
