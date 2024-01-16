@@ -200,8 +200,6 @@ export class Form<ValueType extends ContainerFieldValue = ContainerFieldValue> e
 			}
 			this.fire("submit", this, handlerResponse);
 
-			this.trackReset();
-
 		} else {
 			el.cls(['-valid', '+invalid']);
 

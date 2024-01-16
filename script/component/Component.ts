@@ -81,7 +81,7 @@ export interface ComponentEventMap<Type> extends ObservableEventMap<Type> {
 	show: (comp: Type) => void
 
 	/**
-	 * Fires before hide. You can cancel the hide by returning false
+	 * Fires before hide. You can cancel the hide by returning false.
 	 *
 	 * @see Component.hide()
 	 * @param comp

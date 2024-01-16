@@ -803,6 +803,8 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 				for (let clientId in this.destroys) {
 					this.destroys[clientId].reject(e);
 				}
+
+				throw e;
 			})
 
 			.finally(() => {

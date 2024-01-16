@@ -4,173 +4,61 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {Field, FieldEventMap} from "./Field.js";
+import {FieldEventMap} from "./Field.js";
 import {createComponent} from "../Component.js";
 import {Config} from "../Observable";
+import {InputField} from "./InputField";
 
 
-export type TextFieldType = ("text" | "password" | "email" | "url" | "tel" | "search" | "time" | "date" | "datetime-local");
+export type TextFieldType = ("text" | "password" | "email" | "url" | "tel" | "search" );
+
+export interface TextField {
+	get input(): HTMLInputElement
+}
 
 /**
  * TextField component
  *
  * @see Form
  */
-export class TextField extends Field {
+export class TextField extends InputField {
 
-	protected _input: HTMLInputElement | HTMLTextAreaElement | undefined;
+	protected baseCls = 'goui-form-field text';
 
-	/**
-	 * input type. text, password, email etc.
-	 */
-	public type: TextFieldType = "text";
-	/**
-	 * When the field is empty this will be displayed inside the field
-	 */
-	public placeholder: string = " ";
+	constructor() {
+		super();
+
+		this.type = "text";
+	}
 
 	/**
-	 * Autocomplete value
+	 * The input type
+	 *
+	 * @link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/text
+	 * @param type
 	 */
-	public autocomplete: AutoFill | undefined;
+	public set type(type:TextFieldType) {
+		super.type = type;
+	}
+
+	get type(): TextFieldType {
+		return super.type as TextFieldType;
+	}
 
 	/**
 	 * Pattern regex for validation
+	 *
+	 * @link https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/pattern
+	 *
+	 * @param pattern
 	 */
-	public pattern: HTMLInputElement["pattern"] | undefined;
-
-	get input() {
-		return this._input;
+	set pattern(pattern: HTMLInputElement["pattern"]) {
+		this.input!.pattern = pattern;
 	}
 
-	set title(title: string) {
-		super.title = title;
-
-		if (this._input) {
-			this._input.title = this.title;
-		}
+	get pattern() {
+		return this.input!.pattern
 	}
-
-	public setType(t: TextFieldType) {
-		this.type = t;
-		if(this._input) {
-			// Not sure why, but TS / GOUI is setting the _input.type readonly...
-			// @ts-ignore
-			this._input.type = t;
-		}
-	}
-
-	focus(o?: FocusOptions) {
-		if (!this._input) {
-			super.focus(o);
-		}
-		this._input?.focus(o);
-	}
-
-	protected createControl(): undefined | HTMLElement {
-
-		//grab value before creating this.input otherwise it will return the input value
-		const v = this.value,
-			name = this.name;
-
-		this._input = document.createElement("input");
-		this._input.classList.add("text");
-		this._input.type = this.type;
-
-		if (this.pattern) {
-			this._input.pattern = this.pattern;
-		}
-
-		if (this.autocomplete) {
-			this._input.autocomplete = this.autocomplete;
-		}
-
-		if (this.placeholder) {
-			this._input.placeholder = this.placeholder;
-
-			if(this.placeholder !== " ") {
-				this.el.classList.add("no-floating-label");
-			}
-		}
-		this._input.required = this.required;
-		if (name) {
-			this._input.name = name;
-		}
-
-		this._input.readOnly = this.readOnly;
-
-		if (this.invalidMsg) {
-			this.applyInvalidMsg();
-		}
-
-		return this._input;
-	}
-
-	setInvalid(msg: string) {
-
-		super.setInvalid(msg);
-
-		if (this.rendered) {
-			this.applyInvalidMsg();
-		}
-	}
-
-	clearInvalid() {
-		super.clearInvalid();
-		this.applyInvalidMsg();
-	}
-
-	protected internalSetValue(v?: string) {
-		if (this._input) {
-			this._input.value = v ?? "";
-		}
-	}
-
-	set value(v: any) {
-		super.value = v;
-	}
-
-	get value() {
-		if (!this.rendered) {
-			return super.value ?? "";
-		} else {
-			return this._input!.value;
-		}
-	}
-
-	set name(name: string) {
-		super.name = name;
-
-		if (this._input) {
-			this._input.name = this.name;
-		}
-	}
-
-	get name() {
-		return super.name;
-	}
-
-	set readOnly(readOnly: boolean) {
-		super.readOnly = readOnly;
-		if(this._input) {
-			this._input.readOnly = this.readOnly;
-		}
-	}
-
-	get readOnly() {
-		return super.readOnly;
-	}
-
-	protected validate() {
-		super.validate();
-
-		//this implements the native browser validation
-		if (this._input) {
-
-			this.setValidityState(this._input);
-		}
-	}
-
 }
 
 /**

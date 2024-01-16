@@ -19,13 +19,14 @@ import {Config} from "../Observable";
  */
 export class ColorField extends Field {
 
-	protected colorDot: HTMLElement | undefined;
 	private readonly picker;
 	private readonly pickerButton: Button;
 
 	constructor() {
 		super();
-		this.picker = new ColorPicker();
+
+		this.picker = this.createPicker();
+
 		this.buttons = [
 			this.pickerButton = btn({
 				icon: "expand_more",
@@ -39,14 +40,9 @@ export class ColorField extends Field {
 			})];
 	}
 
-	protected createControl(): undefined | HTMLElement {
-		this.colorDot = E('div').cls('+color-dot');
-		if(this.value) {
-			this.colorDot.style.backgroundColor = "#" + this.value;
-		}
-		this.el.cls("+no-floating-label");
-
-		this.picker.on('select', (colorPicker, val) => {
+	private createPicker() {
+		const picker = new ColorPicker();
+		picker.on('select', (colorPicker, val) => {
 
 			this.pickerButton.menu!.hide();
 			this.clearInvalid();
@@ -56,7 +52,14 @@ export class ColorField extends Field {
 			this.value = val;
 		});
 
-		return this.colorDot;
+		return picker;
+	}
+
+	protected createControl(): undefined | HTMLElement {
+		const ctrl = E('div').cls('+color-dot');
+		this.el.cls("+no-floating-label");
+
+		return ctrl;
 	}
 
 	setInvalid(msg: string) {
@@ -74,9 +77,7 @@ export class ColorField extends Field {
 	}
 
 	set value(v: any) {
-		if (this.colorDot) {
-			this.colorDot.style.backgroundColor = "#" + v;
-		}
+		this.control!.style.backgroundColor = "#" + v;
 		super.value = v;
 	}
 

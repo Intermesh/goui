@@ -4,130 +4,126 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {Field, FieldEventMap} from "./Field.js";
+import {FieldEventMap} from "./Field.js";
 import {createComponent} from "../Component.js";
 import {Store} from "../../data/index.js";
 import {Config} from "../Observable";
+import {InputField} from "./InputField";
 
+/**
+ * Select component option
+ *
+ * By default, it should have a "value" and "name" property. This can be changed with the {@link Select.valueField} and
+ * {@link Select.textRenderer}.
+ */
+type SelectOption = { [key: string]: any };
+
+export interface SelectField {
+	get input(): HTMLSelectElement
+}
 /**
  * Select field
  *
  * @see Form
  */
-export class SelectField extends Field {
+export class SelectField extends InputField {
 
-	public baseCls = "goui-form-field select"
+	public baseCls = "goui-form-field select";
 
-	protected input: HTMLSelectElement | undefined;
 
-	public options: { [key: string]: any }[] = [];
-	public store?: Store
-
+	/**
+	 * The field of the select options that is used as value
+	 */
 	public valueField = 'value';
+
 	protected fireChangeOnBlur = false;
+
+	/**
+	 * Renderer function. Defaults to returning a 'name' property.
+	 *
+	 * @param record
+	 */
 	public textRenderer?: (record: { [key: string]: any }) => string = (record: { [key: string]: any }) => record.name;
+	private _store?: Store;
+	private _options?: SelectOption[];
 
-	protected createControl(): undefined | HTMLElement {
-		//grab value before creating this.input otherwise it will return the input value
-		const v = this.value;
-
-		this.input = document.createElement("select")
-			.on('change', _ => {this.fireChange();});
-		this.input.name = this.name;
-		if (this.required) {
-			this.input.setAttribute("required", "");
-		}
-
-		this.drawOptions();
-
-		this.el.appendChild(this.input);
-
-		return this.input;
+	protected createInput() {
+		return document.createElement("select")
+			.on('change', _ => this.fireChange());
 	}
 
 	// turned off fireChangeOnBlur but override onFocusIn() to get the oldValue
 	protected onFocusIn(e:FocusEvent) {
-		//if(this.fireChangeOnBlur) {
-			this.captureValueForChange();
-		//}
+		this.captureValueForChange();
+	}
+	/**
+	 * Redraw the options. Can be useful when this.textRenderer() produces another result
+	 */
+	public drawOptions() {
+		const v = this.value;
+		this.options = this.options;
+		this.value = v;
 	}
 
-	getInput() {
-		return this.input;
-	}
-
-	drawOptions() {
-		if (!this.input) return;
-		this.input.innerHTML = ''; // redraw
-		(this.store ? this.store.items : this.options).forEach((o: any) => {
+	/**
+	 * Provide select input with options
+	 *
+	 * It should have at least have a field that corresponds with {@link Select.valueField}
+	 *
+	 * By default, it should have a "value" and "name" property. This can be changed with the {@link Select.valueField} and
+	 * {@link Select.textRenderer}.
+	 *
+	 * @param opts
+	 */
+	public set options(opts:SelectOption[]) {
+		this._options = opts;
+		this.input!.empty();
+		opts.forEach((o: any) => {
 			const opt = new Option();
 			if (o[this.valueField]) {
 				opt.value = o[this.valueField];
 			}
 			opt.innerHTML = this.textRenderer!(o);
 
-			this.input?.appendChild(opt);
+			this.input!.appendChild(opt);
 		});
-		if (this._value) {
-			// for updating this.input.selectIndex
-			this.value = this._value;
-		}
 	}
 
-	set value(v: string) {
+	public get options() {
+		return this._options ?? [];
+	}
 
-		if (this.input) {
-			this.input.value = v;
-		}
+	/**
+	 * A store to provide the {@link Select.options}.
+	 * @param store
+	 */
+	public set store(store: Store) {
+		this._store = store;
+		this.options = store.items;
+		store.on("datachanged", () => this.options = store.items);
+	}
 
+	public get store(): Store|undefined {
+		return this._store;
+	}
+
+	set value(v: string|undefined) {
 		super.value = v;
 	}
 
+	get value() : string | undefined {
+		const opts = (this.store ? this.store.items : this.options);
 
-	get value() : any {
-		if (!this.input) {
-			let v = super.value;
-			if(v == undefined) {
-				// HTML select fields return the first option value as value when no value is set.
-				// We need to be consistent otherwise the value result will modify after render.
-				const opts = (this.store ? this.store.items : this.options)
-				if(opts.length) {
-					v = opts[0][this.valueField];
-				}
-			}
-			return v;
-		} else if(this.store) {
-			return this.input.value;
+		let index = this.input!.selectedIndex;
+
+		let v;
+		if(opts[index]) {
+			v = opts[index][this.valueField]
 		} else {
-			const v = this.options[this.input.selectedIndex];
-			return v ? v[this.valueField] : null;
+			v = undefined;
 		}
+		return v;
 	}
-
-
-	set name(name: string) {
-		super.name = (name);
-
-		if (this.input) {
-			this.input.name = this.name
-		}
-	}
-
-	get name() {
-		return super.name;
-	}
-
-	protected validate() {
-		super.validate();
-
-		//this implements the native browser validation
-
-		if(this.input)
-			this.setValidityState(this.input);
-
-	}
-
-
 }
 
 /**

@@ -107,11 +107,6 @@ export class ArrayField extends Field {
 		this.items.add(field);
 	}
 
-	public isModified(): boolean {
-		console.log(JSON.stringify(this.resetValue),JSON.stringify(this.value));
-		return JSON.stringify(this.resetValue) !== JSON.stringify(this.value);
-	}
-
 	reset() {
 		super.reset();
 

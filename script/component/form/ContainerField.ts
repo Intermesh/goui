@@ -99,7 +99,7 @@ export class ContainerField<ValueType extends ContainerFieldValue = ContainerFie
 		})
 	}
 
-	isModified(): boolean {
+	public isModified(): boolean {
 		const f = this.findFields();
 
 		for(let i =0,l=f.length; i < l; i++) {

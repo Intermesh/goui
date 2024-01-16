@@ -31,6 +31,14 @@ export interface WindowEventMap<Type> extends DraggableComponentEventMap<Type> {
 	close: (window: Type) => void
 
 	/**
+	 * Fires before closing window
+	 * return false to cancel close
+	 *
+	 * @param window
+	 */
+	beforeclose: (window: Type) => void
+
+	/**
 	 * Fires when the window is maximized
 	 *
 	 * @param window
@@ -259,14 +267,14 @@ export class Window extends DraggableComponent {
 	private observerResize() {
 
 		const saveState = FunctionUtil.buffer(200, () => {
-			this.saveState();
+			void this.saveState();
 		});
 
 		// observer callback always fires inititally and we don't want to save state on init. ONly on resize.
 		// See: https://github.com/WICG/resize-observer/issues/8
 		let init = false;
 
-		this.resizeObserver = new ResizeObserver(entries => {
+		this.resizeObserver = new ResizeObserver(() => {
 
 			if (init) {
 				saveState();
@@ -334,8 +342,6 @@ export class Window extends DraggableComponent {
 
 			this.focussedBeforeOpen = document.activeElement || undefined;
 
-			let ret;
-
 			if (!this.rendered) {
 
 				root.items.add(this);
@@ -352,7 +358,7 @@ export class Window extends DraggableComponent {
 
 					this.disableBodyScroll();
 
-					this.modalOverlay.el.addEventListener("click", (ev) => {
+					this.modalOverlay.el.addEventListener("click", () => {
 						this.focus();
 					});
 
@@ -438,8 +444,13 @@ export class Window extends DraggableComponent {
 	 * Close the window by removing it
 	 */
 	public close() {
-		this.fire("close", this);
+
+		if(this.fire("beforeclose", this) === false) {
+			return;
+		}
 		this.remove();
+		this.fire("close", this);
+
 	}
 
 	/**
@@ -487,8 +498,8 @@ export class Window extends DraggableComponent {
 	/**
 	 * Display an error message
 	 *
-	 * @param {string} msg - The error message to be displayed.
-	 * @return {undefined} - This method does not return a value.
+	 * @param msg - The error message to be displayed.
+	 * @return Promise<void> - A promise that resolves when the alert window is closed
 	 */
 	public static error(msg:string) {
 		return Window.alert(msg, t("Error") + " - " + (new DateTime).format("Y-m-d H:i:s"));
@@ -497,9 +508,9 @@ export class Window extends DraggableComponent {
 	/**
 	 * Show modal alert window
 	 *
-	 * @param {any} text - The alert message or an object with a 'message' property
-	 * @param {string} [title="Alert"] - The title of the alert window
-	 * @return {Promise<void>} - A promise that resolves when the alert window is closed
+	 * @param text - The alert message or an object with a 'message' property
+	 * @param [title="Alert"] - The title of the alert window
+	 * @return Promise<void> - A promise that resolves when the alert window is closed
 	 */
 	public static alert(text: any, title: string = t("Alert")): Promise<void> {
 
@@ -508,8 +519,9 @@ export class Window extends DraggableComponent {
 			text = text.message;
 		}
 		
-		return new Promise((resolve, reject) => {
+		return new Promise((resolve) => {
 			win({
+					width: 600,
 					modal: true,
 					title: title,
 					listeners: {
@@ -531,21 +543,22 @@ export class Window extends DraggableComponent {
 	/**
 	 * Prompt the user for a text input value.
 	 *
-	 * @param {string} text - The message to display to the user.
-	 * @param {string} inputLabel - The label for the input field.
-	 * @param {string} [defaultValue=""] - The default value for the input field.
-	 * @param {string} [title="Please enter"] - The title for the prompt window.
+	 * @param text - The message to display to the user.
+	 * @param inputLabel - The label for the input field.
+	 * @param [defaultValue=""] - The default value for the input field.
+	 * @param [title="Please enter"] - The title for the prompt window.
 	 * @returns {Promise<string | undefined>} - A promise that resolves with the input value or undefined if the user cancelled.
 	 */
 	public static prompt(text: string, inputLabel: string, defaultValue = "", title: string = t("Please enter")): Promise<string | undefined> {
 
-		return new Promise((resolve, reject) => {
+		return new Promise((resolve) => {
 
 			let cancelled = true;
 
 			const w = win({
 					modal: true,
 					title: title,
+					width: 600,
 					listeners: {
 						focus: () => {
 							w.items.get(0)!.focus();
@@ -606,23 +619,16 @@ export class Window extends DraggableComponent {
 	 */
 	public static confirm(text: string, title: string = t("Please confirm")): Promise<boolean> {
 
-		return new Promise((resolve, reject) => {
+		return new Promise((resolve) => {
 
-			const yesBtn = btn({
-					text: t("Yes"),
-					cls: "filled primary",
-					handler: () => {
-						resolve(true);
-						w.close();
-					}
-				}),
-				w = win({
+				const w = win({
 						modal: true,
 						title: title,
 						closable: false,
+						width: 600,
 						listeners: {
-							focus: () => {
-								yesBtn.focus();
+							focus: (w) => {
+								w.findChild("no")!.focus();
 							}
 						}
 					},
@@ -635,6 +641,7 @@ export class Window extends DraggableComponent {
 					tbar({},
 						'->',
 						btn({
+							itemId: "no",
 							text: t("No"),
 							handler: () => {
 								resolve(false);
@@ -642,7 +649,15 @@ export class Window extends DraggableComponent {
 							}
 						}),
 
-						yesBtn
+						btn({
+							itemId: "yes",
+							text: t("Yes"),
+							cls: "filled primary",
+							handler: () => {
+								resolve(true);
+								w.close();
+							}
+						})
 					)
 				);
 

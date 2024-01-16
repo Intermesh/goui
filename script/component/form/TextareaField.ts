@@ -7,38 +7,21 @@ import {TextField} from "./TextField.js";
 import {createComponent} from "../Component.js";
 import {Config} from "../Observable";
 import {FieldEventMap} from "./Field";
+import {InputField} from "./InputField";
 
 /**
  * Text Area component
  *
  * @see Form
  */
-export class TextAreaField extends TextField {
+export class TextAreaField extends InputField {
 
 	protected baseCls = 'goui-form-field textarea'
 	public autoHeight?: boolean
 
-	protected createControl(): undefined | HTMLElement {
-
+	protected createInput() {
 		//grab value before creating this.input otherwise it will return the input value
-		const v = this.value,
-			input = document.createElement("textarea");
-
-
-		if (this.autocomplete) {
-			input.autocomplete = this.autocomplete;
-		}
-
-		if (this.placeholder) {
-			input.placeholder = this.placeholder;
-		}
-
-		input.required = this.required;
-		input.name = this.name;
-
-		if (v) {
-			input.value = v;
-		}
+		const input = document.createElement("textarea");
 
 		if(this.autoHeight) {
 			input.rows = 1;
@@ -49,7 +32,6 @@ export class TextAreaField extends TextField {
 			this.on('setvalue', ()=>{this.resize(input);});
 		}
 
-		this._input = input;
 		return input;
 	}
 

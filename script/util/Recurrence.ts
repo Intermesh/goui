@@ -59,15 +59,7 @@ export class Recurrence {
 	}
 
 	private dayNb(shortName: string) {
-		return {'mo': 1, 'tu': 2, 'wo': 3, 'th': 4, 'fr': 5, 'sa': 6, 'su': 0}[shortName];
-	}
-
-	private nDayHas(date: DateTime) {
-		// todo: change date.getDay() to 'mo' or 'su' and find period type in rrule and nthOfPeriod in date
-		for (const d of this.rule.byDay!) {
-			if (this.dayNb(d.day) === date.getDay() && d.nthOfPeriod == 1) return true;
-		}
-		return false;
+		return {'mo': 1, 'tu': 2, 'we': 3, 'th': 4, 'fr': 5, 'sa': 6, 'su': 0}[shortName];
 	}
 
 	constructor(config: RecurrenceConfig) {
@@ -76,8 +68,13 @@ export class Recurrence {
 		this.rule = config.rule;
 		this.dtstart = config.dtstart;
 		this.current = new DateTime(+this.dtstart);
-		if(config.rule.until)
-			this.until = new Date(config.rule.until.replace('T', ' '))
+		if(config.rule.until) {
+			if(config.rule.until.length == 10) { // is date-only
+				this.until = new Date(config.rule.until+' 23:59:59');
+			} else {
+				this.until = new Date(config.rule.until.replace('T', ' '))
+			}
+		}
 		this.occurrence++; // i'm counting the dtstart as first occurence
 		this.validate(this.rule);
 
@@ -142,6 +139,14 @@ export class Recurrence {
 		}
 	}
 
+	private nDayHas(date: DateTime) {
+		// todo: change date.getDay() to 'mo' or 'su' and find period type in rrule and nthOfPeriod in date
+		for (const d of this.rule.byDay!) {
+			if (this.dayNb(d.day) === date.getDay() ) return true;
+		}
+		return false;
+	}
+
 	// private nextHourly() {
 	// 	this.current.setHours(this.current.getHours() + this.rule.interval);
 	// }
@@ -174,7 +179,12 @@ export class Recurrence {
 	}
 
 	private nextMonthly() {
-		this.current.addMonths(this.rule.interval);
+		if (!this.rule.byDay) {
+			this.current.addMonths(this.rule.interval);
+		} else {
+			throw new Error('Not yet supported')
+		}
+
 	}
 
 	private nextYearly() {
