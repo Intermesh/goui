@@ -8,6 +8,7 @@ import {createComponent} from "../Component.js";
 import {Config} from "../Observable";
 import {FieldEventMap} from "./Field";
 import {TimeField} from "./TimeField";
+import {DateTime} from "../../util";
 
 /**
  * Date field
@@ -17,7 +18,13 @@ import {TimeField} from "./TimeField";
 export class DateField extends TimeField {
 
 	protected baseCls = "goui-form-field date no-floating-label";
-	private oldTime: string = "00:00";
+
+	/**
+	 * When switching the "withTime" property, this default time will be used.
+	 *
+	 * Use H:i format see {@link DateField.format}
+	 */
+	public defaultTime?: string;
 
 	constructor() {
 		super();
@@ -41,11 +48,11 @@ export class DateField extends TimeField {
 			}
 
 			if(withTime) {
-				v += "T" + this.oldTime;
+				v += "T" + (this.defaultTime ?? (new DateTime()).format("H:i"));
 			} else {
 				const parts = v.split("T");
 				v = parts[0];
-				this.oldTime = parts[1];
+				this.defaultTime = parts[1];
 			}
 			this.input.value = v;
 		}
