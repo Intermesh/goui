@@ -71,19 +71,20 @@ export class DateField extends TimeField {
 	}
 
 	set value(v: string) {
-		const Tindex = v.indexOf("T");
-		if(this.withTime) {
-			if(Tindex == -1) {
-				v = this.appendTime(v);
-			}
-		} else {
-			if(Tindex != -1) {
-				const parts = v.split("T");
-				v = parts[0];
-				this.defaultTime = parts[1];
+		if(v) {
+			const Tindex = v.indexOf("T");
+			if (this.withTime) {
+				if (Tindex == -1) {
+					v = this.appendTime(v);
+				}
+			} else {
+				if (Tindex != -1) {
+					const parts = v.split("T");
+					v = parts[0];
+					this.defaultTime = parts[1];
+				}
 			}
 		}
-
 		super.value = v;
 	}
 
