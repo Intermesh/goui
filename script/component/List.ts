@@ -256,13 +256,16 @@ export class List<StoreType extends Store = Store> extends Component {
 
 		const container = this.renderGroup(item)
 
+		const row = this.renderRow(item, index);
 		if(index == collection.count() -1) {
-			container.append(this.renderRow(item, index));
+			container.append(row);
 		} else
 		{
 			const before = container.children[index];
-			container.insertBefore(this.renderRow(item, index), before);
+			container.insertBefore(row, before);
 		}
+
+		this.onRowAppend(row, item, index);
 	}
 
 	protected getRowElements(): HTMLElement[] {
@@ -346,9 +349,14 @@ export class List<StoreType extends Store = Store> extends Component {
 				row.cls("+selected");
 			}
 			container.append(row);
+			this.onRowAppend(row, records[i], i);
 		}
 
 		this.fire("renderrows", this, records);
+	}
+
+	protected onRowAppend(row:HTMLElement, record: any, index:number) {
+
 	}
 
 	protected renderGroup(record: any): HTMLElement|DocumentFragment {

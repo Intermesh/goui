@@ -79,6 +79,7 @@ export class Store<RecordType = StoreRecord> extends Collection<RecordType> {
 	// public id?: string;
 
 	private _loading = false;
+	private _loaded = false;
 
 	/**
 	 * Sort the data on field and direction
@@ -93,6 +94,13 @@ export class Store<RecordType = StoreRecord> extends Collection<RecordType> {
 	}
 
 	/**
+	 * True when data has been loaded at least once
+	 */
+	get loaded() {
+		return this._loaded;
+	}
+
+	/**
 	 * Load a set of records
 	 *
 	 * @param records
@@ -100,6 +108,7 @@ export class Store<RecordType = StoreRecord> extends Collection<RecordType> {
 	 */
 	public loadData(records: RecordType[], append = true) {
 		append ? this.add(...records) : this.replace(...records);
+		this._loaded = true;
 		this.fire("load", this, records, append);
 	}
 
@@ -115,7 +124,13 @@ export class Store<RecordType = StoreRecord> extends Collection<RecordType> {
 	 * Reload the data from the source
 	 */
 	public async reload() {
+		this._loaded = false;
 		return this.load();
+	}
+
+	clear() {
+		this._loaded = false;
+		return super.clear();
 	}
 
 	/**
