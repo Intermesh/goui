@@ -6,6 +6,12 @@ ul.goui-tree {
 	margin: 0;
 	padding: 0;
 
+	&.no-icons {
+		.node i.icon {
+			display:none;
+		}
+	}
+
 	ul {
 		display:none;
 		> li{
@@ -49,12 +55,15 @@ ul.goui-tree {
 			padding: dp(4) 0;
 			display: flex;
 			align-content: center;
-			label {
+			align-items: center;
+			a, label {
+				color: $colorText;
 				margin-left: dp(8);
 				cursor: pointer;
 				white-space: nowrap;
 				overflow: hidden;
 				text-overflow: ellipsis;
+				text-decoration: none;
 			}
 
 			i {

@@ -13,10 +13,14 @@ export const TreeRowRenderer: RowRenderer = (record, row, me:Tree, storeIndex) =
 	const node = E("div").cls("node"),
 		caret = E("span").cls("caret"),
 		icon = E("i").cls("icon"),
-		label = E("label");
+		label = E("a");
 
 	icon.innerText = record.icon || "folder";
 	label.innerText = record.text;
+
+	if(record.href) {
+		label.href = record.href;
+	}
 
 	if (record.children && record.children.length == 0) {
 		row.cls("+no-children");
@@ -92,7 +96,7 @@ export type TreeRecord = {
 	/**
 	 * Unique ID of the node
 	 */
-	id: string,
+	id?: string,
 
 	/**
 	 * Text of the node
@@ -117,7 +121,14 @@ export type TreeRecord = {
 	/**
 	 * If set a checkbox will render
 	 */
-	check?: boolean
+	check?: boolean,
+
+	/**
+	 * Arbitrary node data
+	 */
+	dataSet?: any
+
+	href?:string
 }
 
 export class Tree extends List<Store<TreeRecord>> {
@@ -223,6 +234,14 @@ export class Tree extends List<Store<TreeRecord>> {
 	private renderSubTree(row: HTMLElement, record:TreeRecord, storeIndex:number): Tree {
 
 		row.cls("+expanded");
+
+		if(!record.id) {
+			if(this.parentStoreIndex > -1) {
+				record.id = (this.parent as Tree).store.get(this.parentStoreIndex)!.id + "-" + storeIndex;
+			} else {
+				record.id = storeIndex + "";
+			}
+		}
 
 		this.findTopTree().expandedIds[record.id] = true;
 

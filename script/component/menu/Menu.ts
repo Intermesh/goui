@@ -225,14 +225,17 @@ export class Menu extends Toolbar {
 		this.show();
 	}
 
-	private setAlignTo() {
+	/**
+	 * Align the menu with it's "alignTo" element.
+	 */
+	public align() {
 		if(!this.alignTo) {
 			return;
 		}
 		const rect = this.alignTo.getBoundingClientRect();
 
-		const x = this.expandLeft ? rect.right - this.el.offsetWidth : rect.x;
-		const y = rect.bottom;
+		const x = Math.max(0, this.expandLeft ? rect.right - this.el.offsetWidth : rect.x);
+		const y = Math.max(0, rect.bottom);
 
 		this.x = x;
 		this.y = y;
@@ -242,15 +245,24 @@ export class Menu extends Toolbar {
 			this.el.style.minWidth = rect.width + "px";
 		}
 
+		// make sure menu is not wider than screen
+		if(this.el.offsetWidth > window.innerWidth) {
+			this.el.style.width = window.innerWidth + "px";
+		}
+
+		if(this.el.offsetHeight > window.innerHeight) {
+			this.el.style.height = window.innerHeight + "px";
+		}
+
 		//aligns down by default. If it runs off screen then align on top
 		if(y + this.el.offsetHeight > window.innerHeight) {
-			this.y = rect.top - this.el.offsetHeight;
+			this.y = Math.max(0, rect.top - this.el.offsetHeight);
 		}
 
 		//aligns left by default. If it runs off screen then align right
 		if(!this.expandLeft && x + this.el.offsetWidth > window.innerWidth) {
 			this.expandLeft = true;
-			this.x = rect.right - this.el.offsetWidth;
+			this.x = Math.max(0, rect.right - this.el.offsetWidth);
 		}
 	}
 
@@ -294,7 +306,7 @@ export class Menu extends Toolbar {
 				this.render();
 			}
 
-			this.setAlignTo();
+			this.align();
 
 			if (Menu.openedMenu == this) {
 				return true;
