@@ -17,22 +17,24 @@ import {InputField} from "./InputField";
 export class TextAreaField extends InputField {
 
 	protected baseCls = 'goui-form-field textarea'
-	public autoHeight?: boolean
+	public _autoHeight?: boolean
+
 
 	protected createInput() {
-		//grab value before creating this.input otherwise it will return the input value
-		const input = document.createElement("textarea");
+		return document.createElement("textarea");
+	}
 
-		if(this.autoHeight) {
-			input.rows = 1;
-			input.style.overflowY = 'hidden';
-			input.on('input',(ev) => {
-				this.resize(input);
-			});
-			this.on('setvalue', ()=>{this.resize(input);});
-		}
-
-		return input;
+	set autoHeight(v: boolean) {
+		if(this._autoHeight)
+			return
+		this._autoHeight = true;
+		const input = this._input as HTMLTextAreaElement;
+		input.rows = 1;
+		input.style.overflowY = 'hidden';
+		input.on('input',(ev) => {
+			this.resize(input);
+		});
+		this.on('setvalue', ()=>{this.resize(input);});
 	}
 
 	private resize(input: HTMLTextAreaElement) {
