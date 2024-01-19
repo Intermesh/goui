@@ -61,9 +61,10 @@ export class TimeField extends InputField {
 	 */
 	public getValueAsDateTime() {
 
-		let v = this.value;
-		let date;
-		if (!v || !(date = DateTime.createFromFormat(v, "Y-m-dTH:i"))) {
+		let v = this.value,
+			date,
+			format = (v.length===10)? 'Y-m-d' : "Y-m-dTH:i";
+		if (!v || !(date = DateTime.createFromFormat(v, format))) {
 			return undefined;
 		}
 		return date;
