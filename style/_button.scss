@@ -134,7 +134,7 @@
 	display:flex;
 	overflow: hidden;
 //	> button {box-shadow: none; border: 1px solid $colorBorder;}
-	> * {
+	> .goui-button {
 		box-shadow: none; border: 1px solid $colorBorder;
 		&.active {
 			background-color: $colorFocus;
