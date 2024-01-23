@@ -39,10 +39,6 @@ export class DataSourceStore<DataSource extends AbstractDataSource = AbstractDat
 
 	// public properties?: string[] = [];
 
-	/**
-	 * True when loaded at least once.
-	 */
-	private loaded = false;
 
 	/**
 	 * Reload when the datasource changes
@@ -102,7 +98,6 @@ export class DataSourceStore<DataSource extends AbstractDataSource = AbstractDat
 			records = await Promise.all(entities.map(this.buildRecord));
 
 		this.loadData(records, append);
-		this.loaded = true;
 
 		return records;
 	}

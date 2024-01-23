@@ -259,7 +259,7 @@ hr.goui {
 
 
 .goui.drop-pin {
-	position:absolute;
+	position:fixed;
 	height: 1px;
 	background-color: $colorPrimary;
 	pointer-events: none;

@@ -13,10 +13,14 @@ export const TreeRowRenderer: RowRenderer = (record, row, me:Tree, storeIndex) =
 	const node = E("div").cls("node"),
 		caret = E("span").cls("caret"),
 		icon = E("i").cls("icon"),
-		label = E("label");
+		label = E("a");
 
 	icon.innerText = record.icon || "folder";
 	label.innerText = record.text;
+
+	if(record.href) {
+		label.href = record.href;
+	}
 
 	if (record.children && record.children.length == 0) {
 		row.cls("+no-children");
@@ -51,6 +55,19 @@ export const TreeRowRenderer: RowRenderer = (record, row, me:Tree, storeIndex) =
 type extractRecordType<Type> = Type extends Store<infer RecordType> ? RecordType : never
 
 export interface TreeEventMap<Type> extends ListEventMap<Type> {
+	/**
+	 * Fires before a node expands
+	 *
+	 * You can cancel the expand by returning false.
+	 *
+	 * Could be useful to populate the tree.
+	 *
+	 * @param tree The main tree
+	 * @param childrenTree The tree component that will load the children of the expanding ndoe
+	 * @param record The record of the expanding node
+	 * @param storeIndex The index of the record in the store
+	 */
+	beforeexpand: (tree:Type, childrenTree: Type, record:StoreRecord | undefined, storeIndex: number) => void|boolean;
 	/**
 	 * Fires when a node expands
 	 *
@@ -92,7 +109,7 @@ export type TreeRecord = {
 	/**
 	 * Unique ID of the node
 	 */
-	id: string,
+	id?: string,
 
 	/**
 	 * Text of the node
@@ -117,7 +134,14 @@ export type TreeRecord = {
 	/**
 	 * If set a checkbox will render
 	 */
-	check?: boolean
+	check?: boolean,
+
+	/**
+	 * Arbitrary node data
+	 */
+	dataSet?: any
+
+	href?:string
 }
 
 export class Tree extends List<Store<TreeRecord>> {
@@ -138,7 +162,7 @@ export class Tree extends List<Store<TreeRecord>> {
 
 		this.on("rowclick", (list, storeIndex, row, ev) => {
 			if(list == this) {
-				void this.expand(row);
+				void this._expand(row);
 			}
 		});
 
@@ -147,6 +171,11 @@ export class Tree extends List<Store<TreeRecord>> {
 		});
 
 		if (!(this.parent instanceof Tree)) {
+
+			this.on("beforerender", () => {
+				this.fire("beforeexpand", this, this, undefined, -1);
+			});
+
 			this.on("render", () => {
 				this.fire("expand", this, this, undefined, -1);
 			});
@@ -171,7 +200,7 @@ export class Tree extends List<Store<TreeRecord>> {
 	 */
 	public reload() {
 
-		// this.store.clear();
+		this.store.clear();
 
 		this.fireExpand();
 
@@ -183,9 +212,11 @@ export class Tree extends List<Store<TreeRecord>> {
 	private fireExpand() {
 		if(!(this.parent instanceof Tree)) {
 			// top level reload
+			this.fire("beforeexpand", this, this, undefined, -1)
 			this.fire("expand", this, this, undefined, -1)
 		} else {
 			const record = this.parent.store.get(this.parentStoreIndex), top = this.findTopTree();
+			top.fire("beforeexpand", top, this, record, this.parentStoreIndex);
 			top.fire("expand", top, this, record, this.parentStoreIndex);
 		}
 	}
@@ -202,27 +233,81 @@ export class Tree extends List<Store<TreeRecord>> {
 		}
 	}
 
-	private expand(row: HTMLElement): Tree {
+	/**
+	 * Expand this tree or a child node when index is given
+	 *
+ 	 * @param index
+	 */
+	public expand(index?:number) {
+		if(index === undefined || index == -1) {
+			if(this.parent instanceof Tree) {
+				this.parent.expand(this.parentStoreIndex);
+			}
+			return;
+		}
+		this._expand(this.getRowElements()[index]);
+	}
 
-		row.cls("+expanded");
+	/**
+	 * Collapse this tree or a child node when index is given
+	 *
+	 * @param index
+	 */
+	public collapse(index?:number) {
+		if(!index || index == -1) {
+			if(this.parent instanceof Tree) {
+				this.parent.collapse(this.parentStoreIndex);
+			}
+			return;
+		}
+
+		this._collapse(this.getRowElements()[index]);
+	}
+
+	private _expand(row: HTMLElement): Tree {
 
 		const storeIndex = this.getRowElements().indexOf(row);
 
-		if (this.subTrees[storeIndex]) {
-			return this.subTrees[storeIndex];
-		}
-
 		const record = this.store.get(storeIndex);
 		if (!record) {
-			throw "Record not found";
+			debugger;
+			throw "Record not found for index: " + storeIndex;
 		}
 
-		return this.renderSubTree(row, record, storeIndex);
+		const tree = this.subTrees[storeIndex] ? this.subTrees[storeIndex] : this.renderSubTree(row, record, storeIndex);
+		const top = this.findTopTree();
+
+		if(top.fire("beforeexpand", top, tree, record, storeIndex) === false) {
+			return tree;
+		}
+
+		row.cls("+expanded");
+
+		//we set the height so we can use an animation
+		tree.el.style.height = tree.el.scrollHeight + "px";
+		tree.el.addEventListener("transitionend", () => {
+			//check if it's still expanded to handle fast clickers
+			if(row.has(".expanded")) {
+				tree.el.style.height = "auto";
+			}
+		}, {once: true})
+
+
+
+		top.fire("expand", top, tree, record, storeIndex);
+
+		return tree;
 	}
 
 	private renderSubTree(row: HTMLElement, record:TreeRecord, storeIndex:number): Tree {
 
-		row.cls("+expanded");
+		if(!record.id) {
+			if(this.parentStoreIndex > -1) {
+				record.id = (this.parent as Tree).store.get(this.parentStoreIndex)!.id + "-" + storeIndex;
+			} else {
+				record.id = storeIndex + "";
+			}
+		}
 
 		this.findTopTree().expandedIds[record.id] = true;
 
@@ -248,18 +333,29 @@ export class Tree extends List<Store<TreeRecord>> {
 
 		this.subTrees[storeIndex] = sub;
 
-		sub.render(row);
+		//wrapper is needed for css transition transform to hide overflow
+		const wrap = document.createElement("div");
+		wrap.classList.add("wrap");
+		row.append(wrap);
 
-		const top = this.findTopTree();
+		sub.render(wrap);
 
-		top.fire("expand", top, sub, record, storeIndex);
+
 
 		return sub;
 	}
 
-	private collapse(row: HTMLElement) {
+	private _collapse(row: HTMLElement) {
 		row.cls("-expanded");
 		const storeIndex = this.getRowElements().indexOf(row);
+
+
+		//we set height 0 for animation
+		this.subTrees[storeIndex].el.style.height = this.subTrees[storeIndex].el.offsetHeight + "px";
+		requestAnimationFrame(() => {
+			this.subTrees[storeIndex].el.style.height = "0";
+		})
+
 		const record = this.store.get(storeIndex);
 		if (!record) {
 			throw "Record not found";
@@ -284,7 +380,7 @@ export class Tree extends List<Store<TreeRecord>> {
 		row.addEventListener("contextmenu", (e) => {
 			e.stopPropagation();
 			e.preventDefault();
-			const sub = this.expand(row);
+			const sub = this._expand(row);
 			sub.reload();
 		})
 
@@ -292,17 +388,18 @@ export class Tree extends List<Store<TreeRecord>> {
 
 		row.getElementsByClassName("caret")[0].on("click", (e) => {
 
-			row.has(".expanded") ? this.collapse(row) : this.expand(row);
+			row.has(".expanded") ? this._collapse(row) : this._expand(row);
 			e.preventDefault();
 			e.stopPropagation();
 		});
 
-		if(this.findTopTree().expandedIds[record.id]) {
-			row.cls("+expanded");
-			void this.renderSubTree(row, record, storeIndex);
-		}
-
 		return row;
+	}
+
+	protected onRowAppend(row: HTMLElement, record:any, index:number) {
+		if(this.findTopTree().expandedIds[record.id]) {
+			this._expand(row);
+		}
 	}
 
 
@@ -311,7 +408,7 @@ export class Tree extends List<Store<TreeRecord>> {
 		setTimeout(() => {
 			//expand tree node if dragging over for 1 second
 			this.dragOverTimeout = setTimeout(() => {
-				this.expand(dropRow);
+				this._expand(dropRow);
 			}, 1000);
 		});
 	}
@@ -341,7 +438,7 @@ export class Tree extends List<Store<TreeRecord>> {
 		this.clearOverClasses(dropRow);
 		clearTimeout(this.dragOverTimeout);
 
-		const dropTree = this.expand(dropRow);
+		const dropTree = this._expand(dropRow);
 
 		dragData.dropTree = this;
 		dragData.childrenTree = dropTree;

@@ -62,7 +62,7 @@ export class RecurrencePicker extends CardContainer {
 	constructor(startDate: DateTime) {
 		super();
 		this.startDate = startDate;
-		this.width = 450;
+		//this.width = 450;
 		// value = current weekday?
 
 		const weeklyOptions = checkboxgroup({
@@ -182,7 +182,9 @@ export class RecurrencePicker extends CardContainer {
 			tbar({},
 				btn({
 					text: t('Back'),
-					handler: b => this.activeItem = 0
+					handler: b => {
+						this.activeItem = 0;
+					}
 				}),
 				comp({flex: 1}),
 				btn({
@@ -190,7 +192,7 @@ export class RecurrencePicker extends CardContainer {
 					handler: (btn) => {
 						this.setValue(this.createCustomRule(this.form.value));
 						(this.parent! as Menu).close();
-						this.activeItem = 0
+						this.activeItem = 0;
 					}
 				})
 			)
@@ -240,7 +242,13 @@ export class RecurrencePicker extends CardContainer {
 				text: t('Customize') + '...', handler: () => {
 					// collapse menu, open form
 					this.changeFrequency(this.rule?.frequency || 'yearly');
+
+					// fix the height so no jumping of menu occurs
+					this.height = this.height;
 					this.activeItem = 1;
+
+
+
 				}
 			})
 		];

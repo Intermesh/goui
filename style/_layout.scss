@@ -54,7 +54,8 @@ html {
 	> *:not(.goui-form-field) {
 		flex:none; //setting flex none prevents squishing of elements with no flex setting. Needed in dialog with share panel for example.
 		min-width: 0; // to prevent growing larger than container: https://stackoverflow.com/questions/36230944/prevent-flex-items-from-overflowing-a-container
-		// also needed for splitter to work
+		// also needed for splitter to work.
+		// Enabling min-width causes problems in the docs when the tree is larger than the viewport
 	}
 
 	.goui.detail {
@@ -88,7 +89,7 @@ html {
 	align-items: stretch;
 	> *:not(.goui-form-field) {
 		flex:none; //setting flex none prevents squishing of elements with no flex setting.
-		min-height: 0;
+		//min-height: 0; // this causes problems in the docs when the tree is larger than the viewport
 	}
 }
 

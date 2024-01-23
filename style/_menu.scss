@@ -6,11 +6,13 @@ menu.goui {
 	margin-inline-start: 0;
 	margin-inline-end: 0;
 	padding-inline-start: 0;
-
 }
 
 menu.goui-dropdown {
 	@extend .z12;
+
+	max-height: 100vh;
+	max-width: 100vw;
 
 	display: block;
 	z-index: $zIndexMenu;
@@ -193,3 +195,5 @@ menu.main-menu, menu.west-menu {
 		text-align: left;
 	}
 }
+
+

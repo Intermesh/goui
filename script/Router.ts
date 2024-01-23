@@ -163,6 +163,8 @@ export class Router extends Observable {
 		this.params = match;
 		const result = handler.apply({}, match);
 
+		window.scrollTo(0,0);
+
 		this.fire("change", this.getPath(), oldPath);
 
 		return result instanceof Promise ? result : Promise.resolve();
