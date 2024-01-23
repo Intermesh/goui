@@ -132,10 +132,11 @@
 .goui.group {
 	position: relative;
 	display:flex;
-	overflow: hidden;
+	//overflow: hidden; // this doesn't play well with grouping form fields. label overflows
 //	> button {box-shadow: none; border: 1px solid $colorBorder;}
 	> .goui-button {
-		box-shadow: none; border: 1px solid $colorBorder;
+		box-shadow: none;
+		border: 1px solid $colorBorder;
 		&.active {
 			background-color: $colorFocus;
 		}

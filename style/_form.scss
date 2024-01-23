@@ -25,6 +25,40 @@ $formFieldBorderRadius: dp(10);
 
 }
 
+.goui.group {
+	display:flex;
+
+	&>:not(:first-child) {
+		.wrap {
+			border-top-left-radius: 0;
+			border-bottom-left-radius: 0;
+
+		}
+	}
+	&>:focus-within {
+		.wrap {
+			border-right-width: $borderWidth !important;
+		}
+	}
+	&>:focus-within + * {
+		//position:absolute;
+		//border: 1px solid red;
+		.wrap {
+			border-left: 0;
+		}
+
+	}
+	&>:not(:last-child) {
+		.wrap {
+			border-right-width: 0;
+			border-top-right-radius: 0;
+			border-bottom-right-radius: 0;
+		}
+	}
+
+}
+
+
 %control-pit {
 	overflow:hidden;
 	transition: border-color 100ms linear;
@@ -79,6 +113,8 @@ $formFieldBorderRadius: dp(10);
 			margin: 0;
 			width: auto;
 			border-radius: dp(12); //match button
+
+			border: 1px solid $colorBorder;
 
 			.control {
 				padding: 0;
