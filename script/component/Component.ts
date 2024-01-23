@@ -624,11 +624,8 @@ export class Component extends Observable {
 	 * scaled easily for different themes.
 	 *
 	 */
-	set width(width: number|string) {
-		if (typeof width == "number")
-			this.el.style.width = (width / 10) + "rem";
-		else
-			this.el.style.width = width;
+	set width(width: number) {
+		this.el.style.width = (width / 10) + "rem";
 	}
 
 	get width() {
@@ -673,10 +670,7 @@ export class Component extends Observable {
 	 * @see width
 	 */
 	set height(height: number) {
-		if (typeof height == "number")
-			this.el.style.height = (height / 10) + "rem";
-		else
-			this.el.style.height = height;
+		this.el.style.height = (height / 10) + "rem";
 	}
 
 	get height() {
