@@ -61,15 +61,15 @@ export class NumberField extends InputField {
 	 * @param step
 	 */
 	public set step(step:number|undefined|"any") {
-		if(!step) {
-			this.input!.attr('step', undefined);
+		if(step === undefined) {
+			this.input!.removeAttribute('step');
 		} else {
-			this.input!.attr('step', step)
+			this.input!.setAttribute('step', step.toString())
 		}
 	}
 
 	public get step() {
-		return parseFloat(this.input!.attr('step'));
+		return parseFloat(this.input!.getAttribute('step') ?? "0");
 	}
 
 	/**
@@ -79,9 +79,9 @@ export class NumberField extends InputField {
 	 */
 	public set decimals(decimals:number|undefined) {
 		if(!decimals) {
-			this.input!.attr('step', undefined);
+			this.input!.removeAttribute('step');
 		} else {
-			this.input!.attr('step', '0.' . padEnd(decimals + 1, "0") + "1")
+			this.input!.setAttribute('step', '0.' . padEnd(decimals + 1, "0") + "1")
 		}
 	}
 
@@ -99,12 +99,20 @@ export class NumberField extends InputField {
 	 *
 	 * @param min
 	 */
-	public set min(min:number) {
-		this.input!.attr('min', min);
+	public set min(min:number|undefined) {
+		if(min === undefined) {
+			this.input!.removeAttribute("min");
+		} else {
+			this.input!.setAttribute('min', min.toString());
+		}
 	}
 
 	public get min() {
-		return parseInt(this.input!.attr('min'));
+		const min = this.input!.getAttribute('min');
+		if(min === null) {
+			return undefined;
+		}
+		return parseFloat(min);
 	}
 
 	/**
@@ -112,12 +120,20 @@ export class NumberField extends InputField {
 	 *
 	 * @param max
 	 */
-	public set max(max:number) {
-		this.input!.attr('max', max);
+	public set max(max:number|undefined) {
+		if(max === undefined) {
+			this.input!.removeAttribute("max");
+		} else {
+			this.input!.setAttribute('max', max.toString());
+		}
 	}
 
 	public get max() {
-		return parseInt(this.input!.attr('max'));
+		const max = this.input!.getAttribute('max');
+		if(max === null) {
+			return undefined;
+		}
+		return parseFloat(max);
 	}
 }
 
