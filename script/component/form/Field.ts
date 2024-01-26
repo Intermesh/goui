@@ -243,6 +243,13 @@ export abstract class Field extends Component {
 
 	protected renderControl() {
 
+
+		// label must follow input so we can make the transform transition with pure css with input::focus & input::placeholder-shown + label
+		const label = this.createLabel();
+		if (label) {
+			this.wrap!.append(label);
+		}
+
 		if (this.control) {
 			this.wrap.append(this.control.cls('+control'));
 
@@ -251,11 +258,7 @@ export abstract class Field extends Component {
 			}
 		}
 
-		// label must follow input so we can make the transform transition with pure css with input::focus & input::placeholder-shown + label
-		const label = this.createLabel();
-		if (label) {
-			this.wrap!.append(label);
-		}
+
 
 		this.renderButtons();
 
@@ -465,8 +468,16 @@ export abstract class Field extends Component {
 		const old = this._value;
 		this._value = v;
 		this.internalSetValue(v);
+
+		this.checkHasValue();
+
 		this.fire("setvalue", this, this._value, old);
 	}
+
+	protected checkHasValue() {
+		this.el.classList.toggle("has-value", !this.isEmpty());
+	}
+
 
 	/**
 	 * Applies set value to the control.
@@ -488,6 +499,8 @@ export abstract class Field extends Component {
 		this.fire("setvalue", this, v, this.valueOnFocus);
 		this.fire("change", this, v, this.valueOnFocus);
 		this.valueOnFocus = undefined;
+
+		this.checkHasValue();
 	}
 
 	public get value() {

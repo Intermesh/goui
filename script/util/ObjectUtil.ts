@@ -83,7 +83,7 @@ export class ObjectUtil {
 	 * @param source
 	 */
 	public static clone<T>(source: T): T {
-		return JSON.parse(JSON.stringify(source));
+		return structuredClone(source);
 	}
 
 	//

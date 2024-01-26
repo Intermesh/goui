@@ -118,6 +118,10 @@ export class ArrayField extends Field {
 		}
 	}
 
+	isEmpty(): boolean {
+		return this.items.count() > 0;
+	}
+
 
 }
 
