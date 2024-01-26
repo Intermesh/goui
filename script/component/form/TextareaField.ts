@@ -17,8 +17,7 @@ import {InputField} from "./InputField";
 export class TextAreaField extends InputField {
 
 	protected baseCls = 'goui-form-field textarea'
-	public _autoHeight?: boolean
-
+	public _autoHeight: boolean = false;
 
 	protected createInput() {
 		return document.createElement("textarea");
@@ -35,6 +34,10 @@ export class TextAreaField extends InputField {
 			this.resize(input);
 		});
 		this.on('setvalue', ()=>{this.resize(input);});
+	}
+
+	get autoHeight() {
+		return this._autoHeight;
 	}
 
 	private resize(input: HTMLTextAreaElement) {
