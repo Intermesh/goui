@@ -228,17 +228,6 @@ $formFieldBorderRadius: dp(10);
 	}
 }
 
-//%float-label {
-	//&::placeholder {
-	//	color: $colorTextPlaceholder;
-	//}
-	//&+div.label, &+.goui-toolbar+div.label {
-	//	font-size: sp(13);
-	//	top: 0;
-	//	left: dp(16);
-	//}
-//}
-
 .goui-pit {
 	@extend %control-pit;
 
@@ -831,14 +820,6 @@ $formFieldBorderRadius: dp(10);
 			max-width: 100%;
 		}
 
-		&:focus, &:not(:empty) {
-			//@extend %float-label;
-
-			&:empty:before {
-				color: $colorTextPlaceholder;
-			}
-		}
-
 		//placeholder support
 		&:empty:before {
 			content: attr(data-placeholder);
@@ -943,14 +924,6 @@ div.color-dot {
 
 .chips {
 
-	&.has-chips {
-		.wrap {
-			.control-wrap {
-				//@extend %float-label;
-			}
-		}
-	}
-
 	.editor {
 		@extend %input;
 		width: auto;
@@ -1048,9 +1021,6 @@ div.color-dot {
 	.control {
 		padding: dp(11) dp(16);
 		min-height: dp(46);
-		&:not(:empty) {
-			//@extend %float-label;
-		}
 	}
 }
 
