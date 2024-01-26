@@ -9,6 +9,7 @@ import {Component, createComponent} from "../Component.js";
 import {Config} from "../Observable";
 import {DateTime, Format} from "../../util";
 
+const defaultDisplayFieldRenderer: DisplayFieldRenderer = (v:any, field:DisplayField) => Format.escapeHTML(v) ?? ""
 /**
  * Display field
  *
@@ -18,15 +19,17 @@ import {DateTime, Format} from "../../util";
  */
 export class DisplayField extends Field {
 
-	protected baseCls = 'goui-display-field'
 
 	/**
-	 * Renderer function for the value of the field
 	 *
-	 * @param v
-	 * @param field
+	 * @param renderer Renderer function for the value of the field
 	 */
-	public renderer: DisplayFieldRenderer = (v:any, field:DisplayField) => Format.escapeHTML(v) ?? "";
+	constructor(public renderer: DisplayFieldRenderer = defaultDisplayFieldRenderer) {
+		super();
+	}
+
+	protected baseCls = 'goui-display-field';
+
 
 	/**
 	 * Hide this field when the value is empty
@@ -64,7 +67,7 @@ type DisplayFieldConfig = Config<DisplayField, FieldEventMap<DisplayField>> & {
  * @param config
  * @param items
  */
-export const displayfield = (config: DisplayFieldConfig, ...items: Component[]) => createComponent(new DisplayField(config?.tagName), config, items);
+export const displayfield = (config: DisplayFieldConfig, ...items: Component[]) => createComponent(new DisplayField(config?.renderer ?? defaultDisplayFieldRenderer), config, items);
 
 /**
  * Create display field with date icon and renderer
@@ -79,7 +82,7 @@ export const displaydatefield = (config: DisplayFieldConfig, ...items: Component
 	if(!config.renderer)
 		config.renderer = (v) => v ? (new DateTime(v)).format(Format.dateFormat) : ""
 
-	return createComponent(new DisplayField(config?.tagName), config, items);
+	return createComponent(new DisplayField(config?.renderer ?? defaultDisplayFieldRenderer), config, items);
 }
 
 

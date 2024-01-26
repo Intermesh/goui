@@ -266,6 +266,12 @@ $formFieldBorderRadius: dp(10);
 	display: block;
 	margin: 0;
 	position: relative;
+
+	// label is out of the box and displayed in the "gap" between flex fields. We should reserve some
+	// space for it on the first item as there is no gap above the first item
+	&:first-child {
+		margin-top: dp(4);
+	}
 }
 
 .goui-display-field {

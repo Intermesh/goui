@@ -12,7 +12,9 @@ export interface TimeField {
 /**
  * TimeField component
  *
- * Time input based on the browsers locale. Outputs time in "H:i" format. eg. 09:30 or 15:30 {@link DateTime.format}
+ * Time input based on the browser's locale.
+ *
+ * @property value Outputs time in "H:i" format. eg. 09:30 or 15:30 {@link DateTime.format}
  *
  * @link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/time
  */
@@ -37,6 +39,9 @@ export class TimeField extends InputField {
 
 	/**
 	 * The minimum number allowed
+	 *
+	 * The value of the time input is always in 24-hour format that includes leading zeros: hh:mm
+	 *
 	 * @param min
 	 */
 	public set min(min:string) {
@@ -50,10 +55,16 @@ export class TimeField extends InputField {
 	/**
 	 * The maximum number allowed
 	 *
+	 * The value of the time input is always in 24-hour format that includes leading zeros: hh:mm
+	 *
 	 * @param max
 	 */
 	public set max(max:string) {
 		this.input!.attr('max', max);
+	}
+
+	protected outputFormat() {
+		return "H:i";
 	}
 
 	/**
@@ -61,10 +72,8 @@ export class TimeField extends InputField {
 	 */
 	public getValueAsDateTime() {
 
-		let v = this.value,
-			date,
-			format = (v.length===10)? 'Y-m-d' : "Y-m-dTH:i";
-		if (!v || !(date = DateTime.createFromFormat(v, format))) {
+		let v = this.value, date;
+		if (!v || !(date = DateTime.createFromFormat(v, this.outputFormat()))) {
 			return undefined;
 		}
 		return date;

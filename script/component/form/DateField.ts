@@ -10,8 +10,14 @@ import {FieldEventMap} from "./Field";
 import {TimeField} from "./TimeField";
 import {DateTime} from "../../util";
 
+
+
+
 /**
  * Date field
+ *
+ * @property min The minimum value allowed. Same format as {@link DateField.value}.
+ * @property max The maximum value allowed. Same format as {@link DateField.value}.
  *
  * @see Form
  */
@@ -70,6 +76,10 @@ export class DateField extends TimeField {
 		return super.value;
 	}
 
+	/**
+	 * The value of the date is in Y-m-d  or  Y-m-d H:i when withTime is true. {@link DateTime.format}
+	 * @param v
+	 */
 	set value(v: string) {
 		if(v) {
 			const Tindex = v.indexOf("T");
@@ -86,6 +96,10 @@ export class DateField extends TimeField {
 			}
 		}
 		super.value = v;
+	}
+
+	protected outputFormat(): string {
+		return this.withTime ? "Y-m-dTH:i" : 'Y-m-d';
 	}
 
 }
