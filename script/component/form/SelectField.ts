@@ -28,7 +28,7 @@ export interface SelectField {
  */
 export class SelectField extends InputField {
 
-	public baseCls = "goui-form-field select";
+	public baseCls = "goui-form-field select no-floating-label";
 
 
 	/**

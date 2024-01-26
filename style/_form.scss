@@ -29,9 +29,7 @@ $formFieldBorderRadius: dp(10);
 	display:flex;
 	align-items: start;
 
-	.goui-button {
-		background-color: $colorBackgroundInput;
-	}
+
 
 	&>:not(:first-child) {
 		.wrap {
@@ -214,6 +212,7 @@ $formFieldBorderRadius: dp(10);
 
 %input {
 	//background-color:transparent; // Transparent Makes date field in safari unusable
+	background-color: $colorBackgroundInput;
 	font: $fontBase;
 	//min-width: dp(100); //for select element
 	margin: 0;
@@ -266,12 +265,6 @@ $formFieldBorderRadius: dp(10);
 	display: block;
 	margin: 0;
 	position: relative;
-
-	// label is out of the box and displayed in the "gap" between flex fields. We should reserve some
-	// space for it on the first item as there is no gap above the first item
-	&:first-child {
-		margin-top: dp(4);
-	}
 }
 
 .goui-display-field {
@@ -370,7 +363,7 @@ $formFieldBorderRadius: dp(10);
 		}
 
 		menu.goui-toolbar {
-			background-color: transparent;
+
 			padding: 0 !important;
 			border-radius: 0 $formFieldBorderRadius $formFieldBorderRadius 0;
 
@@ -387,6 +380,7 @@ $formFieldBorderRadius: dp(10);
 			}
 
 			.goui-button {
+
 
 				&.with-icon:not(.with-text) {
 					padding: dp(6);
