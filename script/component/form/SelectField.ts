@@ -60,9 +60,7 @@ export class SelectField extends InputField {
 	 * Redraw the options. Can be useful when this.textRenderer() produces another result
 	 */
 	public drawOptions() {
-		const v = this.value;
 		this.options = this.options;
-		this.value = v;
 	}
 
 	/**
@@ -76,6 +74,9 @@ export class SelectField extends InputField {
 	 * @param opts
 	 */
 	public set options(opts:SelectOption[]) {
+
+		const v = this._value;
+
 		this._options = opts;
 		this.input!.empty();
 		opts.forEach((o: any) => {
@@ -87,6 +88,8 @@ export class SelectField extends InputField {
 
 			this.input!.appendChild(opt);
 		});
+
+		this.internalSetValue(v);
 	}
 
 	public get options() {
@@ -112,6 +115,10 @@ export class SelectField extends InputField {
 	}
 
 	get value() : string | undefined {
+
+		if(!this.rendered) {
+			return this._value;
+		}
 		const opts = (this.store ? this.store.items : this.options);
 
 		let index = this.input!.selectedIndex;
