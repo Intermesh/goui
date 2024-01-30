@@ -291,9 +291,10 @@ $formFieldBorderRadius: dp(10);
 		div.label {
 			font-size: sp(13);
 			line-height: sp(13);
-			display: flex;
-			align-items: center;
-			overflow: visible;
+			display:block;
+			//display: flex;
+			//align-items: center;
+			overflow: hidden;
 			text-overflow: ellipsis;
 			white-space: nowrap;
 			color: $colorTextSecondary;
@@ -309,7 +310,7 @@ $formFieldBorderRadius: dp(10);
 			margin: 0;
 			border: 0;
 			padding: dp(11) dp(16);
-			width: 100%;
+			//width: 100%;
 			//outline: none;
 			color: $colorText;
 			display: block;// for text area which has inline-block by default and gets some extra margin
@@ -785,7 +786,7 @@ $formFieldBorderRadius: dp(10);
 		line-height:normal;
 		font-size: dp(18);
 		font-weight: 500;
-		padding: dp(8) dp(16) dp(16) dp(16);
+		padding: dp(8) dp(16) dp(8) 0;
 	}
 
 	//& + .goui-fieldset {
@@ -1039,6 +1040,29 @@ div.color-dot {
 
 		&:hover {
 			background-color: $colorHover;
+		}
+	}
+}
+
+
+.label-align-left {
+	.goui-form-field, .goui-display-field {
+		.wrap {
+			display: flex;
+			flex-direction: row;
+			.label {
+				position: static;
+				width: dp(100);
+			}
+
+			.control {
+				flex: 1;
+				padding: dp(3) 0;
+			}
+
+		}
+		&:not(:last-child) {
+			border-bottom: $borderWidth solid $colorLine;
 		}
 	}
 }

@@ -124,19 +124,19 @@ html {
 }
 
 .goui.border-bottom {
-	border-bottom: $borderWidth solid $colorBorder;
+	border-bottom: $borderWidth solid $colorBorder !important;
 }
 
 .goui.border-top {
-	border-top: $borderWidth solid $colorBorder;
+	border-top: $borderWidth solid $colorBorder !important;;
 }
 
 .goui.border-left {
-	border-left: $borderWidth solid $colorBorder;
+	border-left: $borderWidth solid $colorBorder !important;;
 }
 
 .goui.border-right {
-	border-bottom: $borderWidth solid $colorBorder;
+	border-bottom: $borderWidth solid $colorBorder !important;;
 }
 
 .goui.frame {
