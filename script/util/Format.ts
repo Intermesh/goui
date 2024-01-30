@@ -40,7 +40,7 @@ export class Format {
 	 * Thousands separator when using number formatting functions
 	 */
 
-	public static thousandsSeparator: ",";
+	public static thousandsSeparator: string = ",";
 
 
 	/**

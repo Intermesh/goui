@@ -28,7 +28,7 @@ export interface SelectField {
  */
 export class SelectField extends InputField {
 
-	public baseCls = "goui-form-field select";
+	public baseCls = "goui-form-field select no-floating-label";
 
 
 	/**
@@ -60,9 +60,13 @@ export class SelectField extends InputField {
 	 * Redraw the options. Can be useful when this.textRenderer() produces another result
 	 */
 	public drawOptions() {
-		const v = this.value;
 		this.options = this.options;
-		this.value = v;
+	}
+
+	protected internalRender() {
+		if(this._store)
+			this.options = this._store.items;
+		return super.internalRender();
 	}
 
 	/**
@@ -76,17 +80,16 @@ export class SelectField extends InputField {
 	 * @param opts
 	 */
 	public set options(opts:SelectOption[]) {
+
+		const v = this._value;
+
 		this._options = opts;
 		this.input!.empty();
 		opts.forEach((o: any) => {
-			const opt = new Option();
-			if (o[this.valueField]) {
-				opt.value = o[this.valueField];
-			}
-			opt.innerHTML = this.textRenderer!(o);
-
-			this.input!.appendChild(opt);
+			this.input!.append(new Option(this.textRenderer!(o), o[this.valueField]??undefined));
 		});
+
+		this.internalSetValue(v);
 	}
 
 	public get options() {
@@ -99,7 +102,6 @@ export class SelectField extends InputField {
 	 */
 	public set store(store: Store) {
 		this._store = store;
-		this.options = store.items;
 		store.on("datachanged", () => this.options = store.items);
 	}
 
@@ -112,6 +114,10 @@ export class SelectField extends InputField {
 	}
 
 	get value() : string | undefined {
+
+		if(!this.rendered) {
+			return this._value;
+		}
 		const opts = (this.store ? this.store.items : this.options);
 
 		let index = this.input!.selectedIndex;

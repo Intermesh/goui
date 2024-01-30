@@ -25,6 +25,43 @@ $formFieldBorderRadius: dp(10);
 
 }
 
+.goui.group {
+	display:flex;
+	align-items: start;
+
+
+
+	&>:not(:first-child) {
+		.wrap {
+			border-top-left-radius: 0;
+			border-bottom-left-radius: 0;
+
+		}
+	}
+	&>:focus-within {
+		.wrap {
+			border-right-width: $borderWidth !important;
+		}
+	}
+	&>:focus-within + * {
+		//position:absolute;
+		//border: 1px solid red;
+		.wrap {
+			border-left: 0;
+		}
+
+	}
+	&>:not(:last-child) {
+		.wrap {
+			border-right-width: 0;
+			border-top-right-radius: 0;
+			border-bottom-right-radius: 0;
+		}
+	}
+
+}
+
+
 %control-pit {
 	overflow:hidden;
 	transition: border-color 100ms linear;
@@ -79,6 +116,8 @@ $formFieldBorderRadius: dp(10);
 			margin: 0;
 			width: auto;
 			border-radius: dp(12); //match button
+
+			border: 1px solid $colorBorder;
 
 			.control {
 				padding: 0;
@@ -173,6 +212,7 @@ $formFieldBorderRadius: dp(10);
 
 %input {
 	//background-color:transparent; // Transparent Makes date field in safari unusable
+	background-color: $colorBackgroundInput;
 	font: $fontBase;
 	//min-width: dp(100); //for select element
 	margin: 0;
@@ -188,21 +228,25 @@ $formFieldBorderRadius: dp(10);
 	}
 }
 
-%float-label {
-	&::placeholder {
-		color: $colorTextPlaceholder;
-	}
-	&+div.label, &+.goui-toolbar+div.label {
-		font-size: sp(13);
-		top: 0;
-		left: dp(16);
-	}
-}
-
 .goui-pit {
 	@extend %control-pit;
+
+	// draws line between items inside a pit in event dialog for example
 	> div + div {
 		border-top: $borderWidth solid $colorBorder;
+	}
+
+	// makes a form field underneith appear connected the pit
+	&:not(:empty)+.goui-form-field:before {
+		content: " ";
+		display: block;
+		background-color: var(--bg-input);
+		border-right: 1px solid var(--fg-border);
+		border-left: 1px solid var(--fg-border);
+		height: 1.2rem;
+		width: auto;
+		margin-top: -1.8rem;
+		margin-bottom: -0.8rem;
 	}
 }
 
@@ -213,6 +257,13 @@ $formFieldBorderRadius: dp(10);
 }
 
 .goui-display-field {
+
+	&.right {
+		.control {
+			text-align: right;
+		}
+	}
+
 	&.with-icon {
 		.wrap {
 			div.label {
@@ -240,9 +291,10 @@ $formFieldBorderRadius: dp(10);
 		div.label {
 			font-size: sp(13);
 			line-height: sp(13);
-			display: flex;
-			align-items: center;
-			overflow: visible;
+			display:block;
+			//display: flex;
+			//align-items: center;
+			overflow: hidden;
 			text-overflow: ellipsis;
 			white-space: nowrap;
 			color: $colorTextSecondary;
@@ -258,7 +310,7 @@ $formFieldBorderRadius: dp(10);
 			margin: 0;
 			border: 0;
 			padding: dp(11) dp(16);
-			width: 100%;
+			//width: 100%;
 			//outline: none;
 			color: $colorText;
 			display: block;// for text area which has inline-block by default and gets some extra margin
@@ -301,7 +353,7 @@ $formFieldBorderRadius: dp(10);
 		}
 
 		menu.goui-toolbar {
-			background-color: transparent;
+
 			padding: 0 !important;
 			border-radius: 0 $formFieldBorderRadius $formFieldBorderRadius 0;
 
@@ -318,6 +370,7 @@ $formFieldBorderRadius: dp(10);
 			}
 
 			.goui-button {
+
 
 				&.with-icon:not(.with-text) {
 					padding: dp(6);
@@ -412,7 +465,7 @@ $formFieldBorderRadius: dp(10);
 		}
 	}
 
-	&.no-floating-label {
+	&.no-floating-label, &.has-value, &:focus-within {
 		div.label {
 			top: 0;
 			left: dp(16);
@@ -424,15 +477,8 @@ $formFieldBorderRadius: dp(10);
 	&.text, &.number, &.date, &.time, &.textarea, &.select, &.duration, &.recurrence {
 		input, textarea, .wrap > select {
 			@extend %input;
-			&:not(:placeholder-shown) {
-				@extend %float-label;
-				&+div.label, &+.goui-toolbar+div.label {
-					transition: none;
-				}
-			}
 
 			&:focus {
-				@extend %float-label;
 				color: $colorPrimary;
 			}
 		}
@@ -740,12 +786,12 @@ $formFieldBorderRadius: dp(10);
 		line-height:normal;
 		font-size: dp(18);
 		font-weight: 500;
-		margin: dp(8) 0 dp(24) 0;
+		padding: dp(8) dp(16) dp(8) 0;
 	}
 
-	& + .goui-fieldset {
-		border-top: $borderWidth solid $colorBorder;
-	}
+	//& + .goui-fieldset {
+	//	border-top: $borderWidth solid $colorBorder;
+	//}
 }
 
 .textarea {
@@ -773,14 +819,6 @@ $formFieldBorderRadius: dp(10);
 
 		img {
 			max-width: 100%;
-		}
-
-		&:focus, &:not(:empty) {
-			@extend %float-label;
-
-			&:empty:before {
-				color: $colorTextPlaceholder;
-			}
 		}
 
 		//placeholder support
@@ -887,14 +925,6 @@ div.color-dot {
 
 .chips {
 
-	&.has-chips {
-		.wrap {
-			.control-wrap {
-				@extend %float-label;
-			}
-		}
-	}
-
 	.editor {
 		@extend %input;
 		width: auto;
@@ -911,7 +941,7 @@ div.color-dot {
 		cursor: text;
 		&:focus-within {
 			.control-wrap {
-				@extend %float-label;
+				//@extend %float-label;
 			}
 		}
 		display: flex;
@@ -992,9 +1022,6 @@ div.color-dot {
 	.control {
 		padding: dp(11) dp(16);
 		min-height: dp(46);
-		&:not(:empty) {
-			@extend %float-label;
-		}
 	}
 }
 
@@ -1013,6 +1040,29 @@ div.color-dot {
 
 		&:hover {
 			background-color: $colorHover;
+		}
+	}
+}
+
+
+.label-align-left {
+	.goui-form-field, .goui-display-field {
+		.wrap {
+			display: flex;
+			flex-direction: row;
+			.label {
+				position: static;
+				width: dp(100);
+			}
+
+			.control {
+				flex: 1;
+				padding: dp(3) 0;
+			}
+
+		}
+		&:not(:last-child) {
+			border-bottom: $borderWidth solid $colorLine;
 		}
 	}
 }

@@ -132,16 +132,17 @@
 .goui.group {
 	position: relative;
 	display:flex;
-	overflow: hidden;
+	//overflow: hidden; // this doesn't play well with grouping form fields. label overflows
 //	> button {box-shadow: none; border: 1px solid $colorBorder;}
-	> * {
-		box-shadow: none; border: 1px solid $colorBorder;
+	> .goui-button {
+		box-shadow: none;
+		border: $borderWidth solid $colorBorder;
 		&.active {
 			background-color: $colorFocus;
 		}
 	}
-	&>:not(:first-child) { border-top-left-radius:0; border-bottom-left-radius:0; border-left:0;  }
-	&>:not(:last-child) { border-top-right-radius:0; border-bottom-right-radius:0;  }
+	&>:not(:first-child) { border-top-left-radius:0; border-bottom-left-radius:0; }
+	&>:not(:last-child) { border-top-right-radius:0; border-bottom-right-radius:0; border-right:0 }
 }
 
 .goui.goui-toolbar {

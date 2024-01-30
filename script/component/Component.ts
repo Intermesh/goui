@@ -1103,7 +1103,23 @@ export const h4 = (config?: Config<Component> | string, ...items: Component[]) =
 export const code = (config?: Config<Component> | string, ...items: Component[]) => createComponent(new Component("code"), typeof config == 'string' ? {html: config} : config, items);
 export const section = (config?: Config<Component> | string, ...items: Component[]) => createComponent(new Component("section"), typeof config == 'string' ? {html: config} : config, items);
 export const hr = (config?: Config<Component>) => createComponent(new Component("hr"), config);
+export const img = (config: Config<Component> & {src:string, alt?:string}) => {
+	const img = createComponent(new Component("img"), config);
+	img.attr = {
+		src: config.src,
+		alt: config.alt ?? ""
+	}
+	return img;
+}
 
+export const a = (config: Config<Component> & {href?:string, target?: string}, ...items: Component[]) => {
+	const a = createComponent(new Component("a"), config, items);
+	a.attr = {
+		href: config.href ?? "",
+		target: config.target ?? ""
+	}
+	return a;
+}
 
 export const progress = (config?: Config<Component>) => createComponent(new Component("progress"), config);
 

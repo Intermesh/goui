@@ -38,10 +38,6 @@ export class ChipsField extends Field {
 
 	protected createControl(): HTMLElement | undefined {
 
-		this.items.on("datachanged", collection => {
-			this.el.classList.toggle("has-chips", this.items.count() > 1)
-		});
-
 		this.chipsContainer = document.createElement("div");
 		this.chipsContainer.classList.add("control-wrap");
 

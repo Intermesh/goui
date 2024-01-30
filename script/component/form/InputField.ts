@@ -6,9 +6,6 @@ export abstract class InputField extends Field {
 
 	constructor() {
 		super();
-
-		// so we can float the label using CSS with ::placeholder-shown
-		this.placeholder = " ";
 	}
 
 	/**
