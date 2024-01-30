@@ -63,6 +63,12 @@ export class SelectField extends InputField {
 		this.options = this.options;
 	}
 
+	protected internalRender() {
+		if(this._store)
+			this.options = this._store.items;
+		return super.internalRender();
+	}
+
 	/**
 	 * Provide select input with options
 	 *
@@ -80,13 +86,7 @@ export class SelectField extends InputField {
 		this._options = opts;
 		this.input!.empty();
 		opts.forEach((o: any) => {
-			const opt = new Option();
-			if (o[this.valueField]) {
-				opt.value = o[this.valueField];
-			}
-			opt.innerHTML = this.textRenderer!(o);
-
-			this.input!.appendChild(opt);
+			this.input!.append(new Option(this.textRenderer!(o), o[this.valueField]??undefined));
 		});
 
 		this.internalSetValue(v);
@@ -102,7 +102,6 @@ export class SelectField extends InputField {
 	 */
 	public set store(store: Store) {
 		this._store = store;
-		this.options = store.items;
 		store.on("datachanged", () => this.options = store.items);
 	}
 
