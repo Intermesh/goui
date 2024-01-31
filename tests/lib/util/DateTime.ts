@@ -29,6 +29,15 @@ describe('Date class', () => {
 
 	describe("Test createFromFormat()", () => {
 
+		it("2 feb is not 2 mar", () => { // this test could fail on th 30th or 31st
+			let s = "";
+			const c = DateTime.createFromFormat("20240202", "Ymd");
+			if(c){
+				s= c.format("Ymd");
+			}
+			expect(s).to.equal("20240202");
+		});
+
 		it("Should create date from Dutch format", () => {
 			let s = "";
 			const c = DateTime.createFromFormat("2021-10-21 21:09", "Y-m-d H:i", "america/new_york");
