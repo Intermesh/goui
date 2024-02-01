@@ -955,7 +955,7 @@ export class DateTime {
 			return undefined;
 		}
 
-		const date = new DateTime();
+		const date = new DateTime('1970-01-01'); // we want this to always work the same
 		date.setHours(0, 0, 0, 0);
 
 		if (timezone) {
