@@ -29,6 +29,10 @@ $formFieldBorderRadius: dp(10);
 	display:flex;
 	align-items: start;
 
+	>.goui-form-field {
+		flex: 1;
+	}
+
 
 
 	&>:not(:first-child) {
@@ -473,6 +477,11 @@ $formFieldBorderRadius: dp(10);
 		}
 	}
 
+	&.number {
+		input {
+			text-align: right;
+		}
+	}
 
 	&.text, &.number, &.date, &.time, &.textarea, &.select, &.duration, &.recurrence {
 		input, textarea, .wrap > select {
