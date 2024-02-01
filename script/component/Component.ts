@@ -1123,7 +1123,7 @@ export const a = (config: Config<Component> & {href?:string, target?: string}, .
 
 export const progress = (config?: Config<Component>) => createComponent(new Component("progress"), config);
 
-type BaseConfig = {
+export type BaseConfig = {
 	listeners?:ObservableListener<any>
 }
 export const createComponent = <T extends Observable, C extends BaseConfig>(comp: T, config?: C, items?: Component[]): T => {

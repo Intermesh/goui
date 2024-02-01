@@ -210,9 +210,9 @@ export class Observable {
 // export type WithRequired<T, K extends keyof T> = Pick<T, K> & Partial<Omit<T, K>>;
 type Writeable<T> = { -readonly [P in keyof T]: T[P] };
 
-type ExcludeFunctionPropertyNames<T> = Pick<T, {
-	[K in keyof T]: T[K] extends Function ? never : K
-}[keyof T]>;
+export type FunctionPropertyNames<T> =  {
+	[K in keyof T]: T[K] extends Function ? K : never
+}[keyof T];
 
 /**
  * Generic Config option that allows all public properties as options.
@@ -228,9 +228,7 @@ export type Config<Cmp extends Observable, EventMap extends ObservableEventMap<O
 
 	Writeable<
 		Partial<
-			ExcludeFunctionPropertyNames<
-				Omit<Cmp, Required>
-			>
+			Omit<Cmp, Required & keyof FunctionPropertyNames<Component>>
 		>
 	>
 

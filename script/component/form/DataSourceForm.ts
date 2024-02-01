@@ -4,15 +4,26 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 import {Form, FormEventMap} from "./Form";
-import {AbstractDataSource, BaseEntity, DefaultEntity, EntityID} from "../../data";
+import {
+	AbstractDataSource,
+	BaseEntity, Changes,
+	CommitResponse,
+	DefaultEntity,
+	EntityID,
+	GetResponse, QueryParams, QueryResponse,
+	SetRequest
+} from "../../data";
 import {t} from "../../Translate";
-import {Config, Listener, ObservableListenerOpts} from "../Observable";
-import {Component, createComponent} from "../Component";
-import {ContainerFieldValue} from "./ContainerField";
+import {
+	Config, FunctionPropertyNames,
+	Listener,
+	ObservableListenerOpts
+} from "../Observable";
+import {BaseConfig, Component, createComponent} from "../Component";
 import {Window} from "../Window";
 
 
-export interface DataSourceFormEventMap<Type, ValueType extends ContainerFieldValue = ContainerFieldValue> extends FormEventMap<Type> {
+export interface DataSourceFormEventMap<Type, ValueType extends BaseEntity = DefaultEntity> extends FormEventMap<Type> {
 
 	/**
 	 * Fires when the entity is saved successfully
@@ -168,10 +179,22 @@ export class DataSourceForm<ValueType extends BaseEntity = DefaultEntity> extend
 	}
 }
 
+export type DataSourceFormConfig<ValueType extends BaseEntity =  DefaultEntity> =
+
+
+		Config<DataSourceForm<ValueType>, DataSourceFormEventMap<DataSourceForm<ValueType>, ValueType>, "dataSource">
+
+
+
+
+
+
+
+
 /**
  * Shorthand function to create {@see DataSourceForm}
  *
  * @param config
  * @param items
  */
-export const datasourceform = <ValueType extends BaseEntity =  DefaultEntity>(config: Config<DataSourceForm<ValueType>, DataSourceFormEventMap<DataSourceForm<ValueType>>, "dataSource">, ...items: Component[]) => createComponent(new DataSourceForm<ValueType>(config.dataSource), config, items);
+export const datasourceform = <ValueType extends BaseEntity =  DefaultEntity>(config: DataSourceFormConfig<ValueType>, ...items: Component[]):DataSourceForm<ValueType> => createComponent(new DataSourceForm<ValueType>(config.dataSource), config, items);
