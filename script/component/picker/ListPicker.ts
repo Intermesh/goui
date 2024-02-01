@@ -1,8 +1,7 @@
-import {Table} from "../table";
-import {Store, storeRecordType} from "../../data";
-import {Component, ComponentEventMap, createComponent, FindComponentPredicate} from "../Component";
-import {List, ListEventMap, listStoreType} from "../List";
-import {Config, Listener, ObservableListener, ObservableListenerOpts} from "../Observable";
+import {storeRecordType} from "../../data";
+import {Component, ComponentEventMap, createComponent} from "../Component";
+import {List, listStoreType} from "../List";
+import {Config, Listener, ObservableListenerOpts} from "../Observable";
 
 
 export type listPickerListType<ListPickerType> = ListPickerType extends ListPicker<infer ListType> ? ListType : never;

@@ -4,22 +4,10 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 import {Form, FormEventMap} from "./Form";
-import {
-	AbstractDataSource,
-	BaseEntity, Changes,
-	CommitResponse,
-	DefaultEntity,
-	EntityID,
-	GetResponse, QueryParams, QueryResponse,
-	SetRequest
-} from "../../data";
+import {AbstractDataSource, BaseEntity, DefaultEntity, EntityID} from "../../data";
 import {t} from "../../Translate";
-import {
-	Config, FunctionPropertyNames,
-	Listener,
-	ObservableListenerOpts
-} from "../Observable";
-import {BaseConfig, Component, createComponent} from "../Component";
+import {Config, Listener, ObservableListenerOpts} from "../Observable";
+import {Component, createComponent} from "../Component";
 import {Window} from "../Window";
 
 
@@ -183,10 +171,6 @@ export type DataSourceFormConfig<ValueType extends BaseEntity =  DefaultEntity> 
 
 
 		Config<DataSourceForm<ValueType>, DataSourceFormEventMap<DataSourceForm<ValueType>, ValueType>, "dataSource">
-
-
-
-
 
 
 
