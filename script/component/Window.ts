@@ -667,10 +667,13 @@ export class Window extends DraggableComponent {
 
 }
 
+type WindowConfig = Omit<Config<Window, WindowEventMap<Window>>, "close" | "maximize" | "center" | "dragConstrainTo" | "constrainTo" | "calcConstrainBox">;
+
+
 /**
  * Shorthand function to create {@see Window}
  *
  * @param config
  * @param items
  */
-export const win = (config?: Config<Window, WindowEventMap<Window>>, ...items: Component[]) => createComponent(new Window(), config, items);
+export const win = (config?: WindowConfig, ...items: Component[]) => createComponent(new Window(), config, items);

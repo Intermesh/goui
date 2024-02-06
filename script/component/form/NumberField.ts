@@ -54,8 +54,8 @@ export class NumberField extends InputField {
 	}
 
 	get value(): number | undefined {
-		const v = super.value;
-		return (this.isEmptyNumber(v)  || isNaN(v)) ? undefined : +(+v).toFixed(this.decimals);
+		const v = super.value as number | undefined;
+		return (v === undefined || this.isEmptyNumber(v)  || isNaN(v)) ? undefined : +(+v).toFixed(this.decimals);
 	}
 
 	/**

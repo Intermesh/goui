@@ -107,7 +107,7 @@ export class SearchButton extends Button {
 	private onInput() {
 		this.el.classList.toggle("accent", !!this.searchField.value);
 		this.el.classList.toggle("filled", !!this.searchField.value);
-		this.fire("input", this, this.searchField.value);
+		this.fire("input", this, this.searchField.value as string);
 	}
 
 	private getSearchTBar() {

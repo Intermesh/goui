@@ -1,4 +1,4 @@
-import {Field, FieldEventMap} from "./Field";
+import {Field, FieldEventMap, FieldValue} from "./Field";
 import {comp, Component, createComponent} from "../Component";
 import {Config} from "../Observable";
 import {btn} from "../Button";
@@ -69,6 +69,14 @@ export class ChipsField extends Field {
 		this.items.add(this._editor);
 
 		return this.chipsContainer;
+	}
+
+	get value(): FieldValue[] {
+		return super.value as FieldValue[];
+	}
+
+	set value(v: FieldValue[]) {
+		super.value = v;
 	}
 
 	private onEditorKeyDown(ev: KeyboardEvent) {

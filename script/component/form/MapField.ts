@@ -48,7 +48,7 @@ export class MapField extends Field {
 
 		this.items.forEach((field) => {
 			if(field instanceof Field) {
-				const rowValue = field.value;
+				const rowValue = field.value as MapFieldValue;
 				let key = field.dataSet.key;
 				if (this.keyFieldName && rowValue[this.keyFieldName]) {
 					key = rowValue[this.keyFieldName];

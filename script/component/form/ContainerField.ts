@@ -125,7 +125,7 @@ export class ContainerField<ValueType extends ContainerFieldValue = ContainerFie
 
 		// we have to clone the value to avoid side effects when the value is modified outside the form's
 		// scope. We don't want any external modifications to leak in here because reference is a value.
-		const formProps: ValueType = structuredClone(super.value) || {};
+		const formProps: ValueType = structuredClone(super.value) as ValueType || {};
 
 		this.findFields().forEach((field: any) => {
 			//for Extjs compat try .getName() and .getValue()

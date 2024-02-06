@@ -189,10 +189,41 @@ export class Store<RecordType = StoreRecord> extends Collection<RecordType> {
 	}
 }
 
+export type StoreConfig<RecordType extends StoreRecord = StoreRecord> =
+
+	Omit<Config<Store<RecordType>, StoreEventMap<Store<RecordType>, RecordType>>,
+
+		"hasNext" |
+		"loadPrevious" |
+		"hasPrevious" |
+		"loadNext" |
+		"load" |
+		"reload" |
+		"clear" |
+		"loadData"|
+
+		"[SymbolConstructor.iterator]" | // does not work :(
+		"add" |
+		"count" |
+		"find" |
+		"findIndex" |
+		"first" |
+		"forEach" |
+		"get" |
+		"getArray" |
+		"has" |
+		"indexOf" |
+		"removeAt" |
+		"remove" |
+		"last" |
+		"replace" |
+		"insert"
+
+	>;
 
 /**
  * Shorthand function to create a {@see Store}
  *
  * @param config
  */
-export const store = <RecordType extends StoreRecord = StoreRecord>(config?: Config<Store>) => createComponent(new Store<RecordType>(), config);
+export const store = <RecordType extends StoreRecord = StoreRecord>(config?: StoreConfig<Store<RecordType>>) => createComponent(new Store<RecordType>(), config);

@@ -5,7 +5,7 @@
  */
 
 import {FunctionUtil} from "../util/FunctionUtil.js";
-import {Component, ComponentEventMap} from "./Component.js";
+import {Component, ComponentEventMap, FindComponentPredicate} from "./Component.js";
 
 type Func = (...args: any[]) => any;
 
@@ -210,9 +210,60 @@ export class Observable {
 // export type WithRequired<T, K extends keyof T> = Pick<T, K> & Partial<Omit<T, K>>;
 type Writeable<T> = { -readonly [P in keyof T]: T[P] };
 
-export type FunctionPropertyNames<T> =  {
-	[K in keyof T]: T[K] extends Function ? K : never
-}[keyof T];
+
+
+
+// export type FunctionPropertyNames<T> = { [K in keyof T]: T[K] extends (...args: any[]) => any ? K : never }[keyof T]
+
+
+type CompFuncs =  "buildState" |
+	"cascade" |
+	"computeZIndex" |
+	"createFindPredicateFunction" |
+	"findAncestor" |
+	"findAncestorByType" |
+	"findChild" |
+	"findChildByType" |
+	"findChildren" |
+	"findChildrenByType" |
+	"findItem" |
+	"findItemIndex" |
+	"fire" |
+	"focus" |
+	"getInsertBefore" |
+	"getState" |
+	"hasOwnProperty" |
+	"hasState" |
+	"hide" |
+	"initClassName" |
+	"initItems" |
+	"internalRemove" |
+	"internalRender" |
+	"internalSetHidden" |
+	"isFocusable" |
+	"mask" |
+	"nextSibling" |
+	"on" |
+	"onFirstListenerAdded" |
+	"once" |
+	"previousSibling" |
+	"print" |
+	"propertyIsEnumerable" |
+	"relayEvent" |
+	"remove" |
+	"render" |
+	"renderItem" |
+	"renderItems" |
+	"restoreState" |
+	"saveState" |
+	"show" |
+	"toLocaleString" |
+	"toString" |
+	"un" |
+	"unmask" |
+	"valueOf" |
+	"items"
+
 
 /**
  * Generic Config option that allows all public properties as options.
@@ -224,11 +275,13 @@ export type FunctionPropertyNames<T> =  {
  * 	Partial<Pick<ChipsField, "textInputToValue" | "chipRenderer">>
  * ```
  */
-export type Config<Cmp extends Observable, EventMap extends ObservableEventMap<Observable> = ComponentEventMap<Cmp>, Required extends keyof Cmp = never> =
+export type Config<Cmp extends Observable, EventMap extends ObservableEventMap<Observable> = ComponentEventMap<Cmp>, Required extends keyof Cmp = never,  OmittedProps extends keyof Cmp = never> =
 
 	Writeable<
 		Partial<
-			Omit<Cmp, Required & keyof FunctionPropertyNames<Component>>
+			//somehow this breaks generic class sometimes : (
+			// Omit<Cmp, Required & FunctionPropertyNames<Cmp>>
+		Omit<Cmp, CompFuncs>
 		>
 	>
 
@@ -270,4 +323,3 @@ export type Config<Cmp extends Observable, EventMap extends ObservableEventMap<O
 	 */
 	listeners?: ObservableListener<EventMap>
 }
-	;

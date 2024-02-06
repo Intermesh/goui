@@ -28,7 +28,7 @@ export interface AutocompleteEventMap<Type> extends FieldEventMap<Type> {
 	select: (field: Type, record: any) => any
 }
 
-export interface AutocompleteField<T extends List> extends TextField {
+export interface AutocompleteField<T extends List = List> extends TextField {
 	on<K extends keyof AutocompleteEventMap<this>, L extends Listener>(eventName: K, listener: Partial<AutocompleteEventMap<this>>[K], options?: ObservableListenerOpts): L
 	un<K extends keyof AutocompleteEventMap<this>>(eventName: K, listener: Partial<AutocompleteEventMap<this>>[K]): boolean
 	fire<K extends keyof AutocompleteEventMap<this>>(eventName: K, ...args: Parameters<AutocompleteEventMap<Component>[K]>): boolean

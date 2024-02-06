@@ -66,6 +66,9 @@ export interface FieldEventMap<Type> extends ComponentEventMap<Type> {
 }
 
 
+export type FieldValue = string|number|boolean|any[]|undefined|Record<string,any>;
+
+
 export interface Field extends Component {
 	on<K extends keyof FieldEventMap<this>, L extends Listener>(eventName: K, listener: Partial<FieldEventMap<this>>[K], options?: ObservableListenerOpts): L;
 	un<K extends keyof FieldEventMap<this>>(eventName: K, listener: Partial<FieldEventMap<this>>[K]): boolean
@@ -111,7 +114,7 @@ export abstract class Field extends Component {
 
 	private _label = ""
 
-	protected _value: any;
+	protected _value: FieldValue;
 
 	protected control: HTMLElement | undefined;
 
@@ -139,7 +142,7 @@ export abstract class Field extends Component {
 	 * Used for "change" event
 	 * @protected
 	 */
-	protected valueOnFocus?: string;
+	protected valueOnFocus?: FieldValue;
 
 	/**
 	 * Validate the field on blur
@@ -464,7 +467,7 @@ export abstract class Field extends Component {
 	/**
 	 * Set the field value
 	 */
-	public set value(v: any) {
+	public set value(v: FieldValue) {
 		const old = this._value;
 		this._value = v;
 		this.internalSetValue(v);

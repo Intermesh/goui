@@ -73,7 +73,7 @@ export class DateField extends TimeField {
 	}
 
 	get value(): string {
-		return super.value;
+		return super.value as string;
 	}
 
 	/**

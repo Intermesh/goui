@@ -489,7 +489,7 @@ export class HtmlField extends Field {
 
 	get value() {
 		if (!this.editor) {
-			return super.value;
+			return super.value as string;
 		} else {
 			return this.editor.innerHTML;
 		}

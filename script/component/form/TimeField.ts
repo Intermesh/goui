@@ -72,7 +72,7 @@ export class TimeField extends InputField {
 	 */
 	public getValueAsDateTime() {
 
-		let v = this.value, date;
+		let v = this.value as string, date;
 		if (!v || !(date = DateTime.createFromFormat(v, this.outputFormat()))) {
 			return undefined;
 		}

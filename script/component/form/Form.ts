@@ -13,6 +13,8 @@ import {t} from "../../Translate.js";
 import {DatePickerEventMap} from "../picker";
 
 
+export type FormHandler<ValueType extends ContainerFieldValue = ContainerFieldValue> = ((form: Form<ValueType>) => any | Promise<any>) | undefined;
+
 export interface FormEventMap<Type, ValueType extends ContainerFieldValue = ContainerFieldValue> extends FieldEventMap<Type> {
 	/**
 	 * Fires when the form is submitted. The event is fired after calling the handler.
@@ -95,7 +97,7 @@ export class Form<ValueType extends ContainerFieldValue = ContainerFieldValue> e
 	 *
 	 * @param form
 	 */
-	public handler: ((this: this, form: Form<ValueType>) => any | Promise<any>) | undefined;
+	public handler: FormHandler<ValueType>;
 
 	protected internalRender() {
 		const el = super.internalRender();
@@ -158,7 +160,7 @@ export class Form<ValueType extends ContainerFieldValue = ContainerFieldValue> e
 		this.findFields().forEach((field: any) => {
 			if(field instanceof Field) {
 				if (field.name && !field.disabled && field.isModified()) {
-					v[field.name as keyof ValueType] = field.value;
+					v[field.name as keyof ValueType] = field.value as any;
 				}
 			} else
 			{
@@ -218,11 +220,21 @@ export class Form<ValueType extends ContainerFieldValue = ContainerFieldValue> e
 	}
 
 }
-
+export type FormConfig<ValueType extends ContainerFieldValue = ContainerFieldValue> =
+	Config<Form<ValueType>, FormEventMap<Form<ValueType>>> & {
+	/**
+	 * Executed when form is submitted.
+	 *
+	 * If a promise is returned the "submit" event will fire after it has been resolved.
+	 *
+	 * @param form
+	 */
+	handler?: FormHandler<ValueType>;
+}
 /**
  * Shorthand function to create {@see Form}
  *
  * @param config
  * @param items
  */
-export const form = <ValueType extends ContainerFieldValue = ContainerFieldValue>(config?: Config<Form<ValueType>, FormEventMap<Form<ValueType>>>, ...items: Component[]) => createComponent(new Form<ValueType>, config, items);
+export const form = <ValueType extends ContainerFieldValue = ContainerFieldValue>(config?: FormConfig<ValueType>, ...items: Component[]) => createComponent(new Form<ValueType>, config, items);
