@@ -29,6 +29,10 @@ $formFieldBorderRadius: dp(10);
 	display:flex;
 	align-items: start;
 
+	>.goui-form-field {
+		flex: 1;
+	}
+
 
 
 	&>:not(:first-child) {
@@ -236,7 +240,7 @@ $formFieldBorderRadius: dp(10);
 		border-top: $borderWidth solid $colorBorder;
 	}
 
-	// makes a form field underneith appear connected the pit
+	// makes a form field underneath appear connected the pit
 	&:not(:empty)+.goui-form-field:before {
 		content: " ";
 		display: block;
@@ -473,6 +477,11 @@ $formFieldBorderRadius: dp(10);
 		}
 	}
 
+	&.number {
+		input {
+			text-align: right;
+		}
+	}
 
 	&.text, &.number, &.date, &.time, &.textarea, &.select, &.duration, &.recurrence {
 		input, textarea, .wrap > select {
@@ -939,11 +948,6 @@ div.color-dot {
 	}
 	.wrap {
 		cursor: text;
-		&:focus-within {
-			.control-wrap {
-				//@extend %float-label;
-			}
-		}
 		display: flex;
 
 		.control-wrap {

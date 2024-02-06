@@ -1,8 +1,7 @@
-import {Table} from "../table";
 import {storeRecordType} from "../../data";
 import {Component, ComponentEventMap, createComponent} from "../Component";
-import {List, ListEventMap, listStoreType} from "../List";
-import {Config, Listener, ObservableListener, ObservableListenerOpts} from "../Observable";
+import {List, listStoreType} from "../List";
+import {Config, Listener, ObservableListenerOpts} from "../Observable";
 
 
 export type listPickerListType<ListPickerType> = ListPickerType extends ListPicker<infer ListType> ? ListType : never;
@@ -75,10 +74,6 @@ export class ListPicker<ListType extends List> extends Component {
 
 }
 
-type ListPickerConfig1<ListType extends List> = {
-	list: ListType,
-	listeners?: ObservableListener<ListPickerEventMap<ListPicker<ListType>>>
-}
 type ListPickerConfig<ListType extends List>  =
 	Config<
 		ListPicker<ListType>,

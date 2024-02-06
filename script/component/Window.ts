@@ -183,7 +183,7 @@ export class Window extends DraggableComponent {
 
 				this.titleCmp = comp({
 					tagName: "h3",
-					html: this.title
+					html: this.title ?? ""
 				}),
 
 				'->'

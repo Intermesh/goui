@@ -30,17 +30,21 @@ export class NumberField extends InputField {
 			this.setInvalid("Incorrect number format");
 		}
 		if (this.max !== undefined && v && v > this.max) {
-			this.setInvalid(t("Number is too big"));
+			this.setInvalid(t("Number is bigger than the maximum of {max}.").replace("{max}", this.max.toLocaleString()));
 		}
 		if (this.min !== undefined &&  (!v || v < this.min)) {
-			this.setInvalid(t("Number is too small"));
+			this.setInvalid(t("Number is bigger than the maximum of {max}.").replace("{max}", this.min.toLocaleString()));
 		}
 	}
 
 	set value(v: number | undefined) {
-		if (isNaN(v!)) {
-			throw new Error("Invalid number");
-		} else if (!this.isEmptyNumber(v)) {
+
+		if(this.isEmptyNumber(v)) {
+			super.value = undefined;
+		} else if (isNaN(v!)) {
+			console.error("Invalid number given for field " + this.name, v);
+			super.value = undefined;
+		} else {
 			super.value = + v!.toFixed(this.decimals);
 		}
 	}

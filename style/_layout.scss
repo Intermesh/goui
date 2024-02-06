@@ -193,7 +193,25 @@ html {
 	height: 100%;
 }
 
+@media only screen and (max-width: $breakpointMedium) {
+
+	.goui.not-medium-device {
+		display: none !important;
+	}
+	.goui.hbox.tablet-cards {
+		> *:not(.active) {
+			display: none;
+		}
+		> * {
+			width: 100% !important; //important to override inline width applied by splitter state.
+			height: 100% !important;
+		}
+	}
+}
 @media only screen and (max-width: $breakpointSmall) {
+	.goui.not-small-device {
+		display: none !important;
+	}
 	.goui.hbox.mobile-cards {
 		> *:not(.active) {
 			display: none;
@@ -206,6 +224,11 @@ html {
 	}
 }
 
+@media only screen and (min-width: $breakpointMedium) {
+	.goui.for-medium-device {
+		display: none !important;
+	}
+}
 
 
 @media only screen and (min-width: $breakpointSmall) {
