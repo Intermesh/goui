@@ -15,7 +15,6 @@ import {
 } from "./Observable.js";
 import {State} from "../State.js";
 import {browser, Collection} from "../util";
-import {ColorPickerEventMap} from "./picker";
 
 /**
  * A component identifier by id, itemId, Component instance or custom function

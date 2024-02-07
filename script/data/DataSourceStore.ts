@@ -3,7 +3,7 @@
  * @copyright Copyright 2023 Intermesh BV
  * @author Merijn Schering <mschering@intermesh.nl>
  */
-import {store, Store, StoreEventMap} from "../data/Store.js";
+import {store, Store, StoreConfig, StoreEventMap, StoreRecord} from "../data/Store.js";
 import {
 	AbstractDataSource,
 	BaseEntity,
@@ -200,7 +200,7 @@ export class DataSourceStore<DataSource extends AbstractDataSource = AbstractDat
 
 	private filters: Record<string, any> = {};
 
-	public setFilter(ref: string, filter: any | undefined) {
+	public setFilter(ref: string, filter: Record<string, any> | undefined) {
 
 		if (filter === undefined) {
 			delete this.filters[ref];
@@ -243,13 +243,13 @@ export class DataSourceStore<DataSource extends AbstractDataSource = AbstractDat
 // Somehow using Config<DataSourceStore...> didn't work because it uses dataSourceEntityType<DataSource>
 // that's why we relist the props here.
 
-export type DataSourceStoreConfig<DataSource extends AbstractDataSource, RecordType> =
+export type DataSourceStoreConfig<DataSource extends AbstractDataSource, RecordType extends StoreRecord> =
 
 	// Config<DataSourceStore<DataSource, RecordType>, StoreEventMap<DataSourceStore<DataSource, RecordType>, RecordType>,  "dataSource" >
 	//
 	// &
 
-	Omit<Config<Store<RecordType>>, "listeners"> &
+	Omit<StoreConfig<RecordType>, "listeners"> &
 
 	{
 		queryParams?: QueryParams,
@@ -262,11 +262,8 @@ export type DataSourceStoreConfig<DataSource extends AbstractDataSource, RecordT
 
 		listeners?: ObservableListener<StoreEventMap<DataSourceStore<DataSource, RecordType>,RecordType>>
 
-		filters?: Record<string, any>
+		filters?: Record<string, Record<string, any>>
 	}
-
-
-
 
 
 /**
@@ -275,7 +272,7 @@ export type DataSourceStoreConfig<DataSource extends AbstractDataSource, RecordT
  * @param config
  */
 export const datasourcestore =
-	<DataSource extends AbstractDataSource = AbstractDataSource, RecordType = dataSourceEntityType<DataSource>>(config: DataSourceStoreConfig<DataSource, RecordType>) => {
+	<DataSource extends AbstractDataSource = AbstractDataSource, RecordType extends StoreRecord = dataSourceEntityType<DataSource>>(config: DataSourceStoreConfig<DataSource, RecordType>) => {
 
 		let f;
 		if(config.filters) {

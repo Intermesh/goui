@@ -58,11 +58,11 @@ export abstract class InputField extends Field {
 		this.applyInvalidMsg();
 	}
 
-	protected internalSetValue(v?: string) {
-		this._input!.value = v ?? "";
+	protected internalSetValue(v?: string|number|boolean|undefined) {
+		this._input!.value = v ? v.toString() : "";
 	}
 
-	set value(v: any) {
+	set value(v: string|number|boolean|undefined) {
 		super.value = v;
 	}
 

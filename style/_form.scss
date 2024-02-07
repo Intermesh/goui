@@ -314,7 +314,7 @@ $formFieldBorderRadius: dp(10);
 			margin: 0;
 			border: 0;
 			padding: dp(11) dp(16);
-			//width: 100%;
+			width: 100%;
 			//outline: none;
 			color: $colorText;
 			display: block;// for text area which has inline-block by default and gets some extra margin
@@ -1050,13 +1050,18 @@ div.color-dot {
 
 
 .label-align-left {
+	.goui-display-field {
+		&:not(:last-child) {
+			border-bottom: $borderWidth solid $colorLine;
+		}
+	}
 	.goui-form-field, .goui-display-field {
 		.wrap {
-			display: flex;
-			flex-direction: row;
+			margin-left: dp(100);
+			align-items: center;
+
 			.label {
-				position: static;
-				width: dp(100);
+				top: auto;
 			}
 
 			.control {
@@ -1065,8 +1070,6 @@ div.color-dot {
 			}
 
 		}
-		&:not(:last-child) {
-			border-bottom: $borderWidth solid $colorLine;
-		}
+
 	}
 }

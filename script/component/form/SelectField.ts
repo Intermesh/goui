@@ -81,7 +81,7 @@ export class SelectField extends InputField {
 	 */
 	public set options(opts:SelectOption[]) {
 
-		const v = this._value;
+		const v = this._value as any;
 
 		this._options = opts;
 		this.input!.empty();
@@ -116,7 +116,7 @@ export class SelectField extends InputField {
 	get value() : string | undefined {
 
 		if(!this.rendered) {
-			return this._value;
+			return this._value as any;
 		}
 		const opts = (this.store ? this.store.items : this.options);
 

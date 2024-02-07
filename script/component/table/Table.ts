@@ -94,7 +94,7 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 	 * @param store Store to provide data
 	 * @param columns The table columns
 	 */
-	constructor(readonly store: StoreType, public columns: TableColumn[]) {
+	constructor(store: StoreType, public columns: TableColumn[]) {
 		super(store, (record, row, me, storeIndex) => {
 
 

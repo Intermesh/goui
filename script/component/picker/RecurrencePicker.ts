@@ -25,7 +25,7 @@ import {checkboxgroup} from "../form/index.js";
 
 export interface RecurrencePickerEventMap<Type> extends CardContainerEventMap<Type> {
 
-	select: (picker: Type, rule: RecurrenceRule | null) => false | void
+	select: (picker: Type, rule: RecurrenceRule | undefined) => false | void
 }
 
 export interface RecurrencePicker {
@@ -49,7 +49,7 @@ export class RecurrencePicker extends CardContainer {
 	count: NumberField
 	until: DateField
 
-	rule!: RecurrenceRule | null
+	rule!: RecurrenceRule | undefined
 
 	static frequencies: { [freq: string]: FrequencyDefaults } = {
 		'daily': [t("day"), t('days'), 30, '30-d', t('Daily')],
@@ -205,7 +205,7 @@ export class RecurrencePicker extends CardContainer {
 		return [
 			btn({
 				text: t('Not recurring'),
-				handler: _ => this.setValue(null)
+				handler: _ => this.setValue(undefined)
 			}),
 			comp({tagName: 'hr'}),
 			btn({
@@ -331,7 +331,7 @@ export class RecurrencePicker extends CardContainer {
 		}
 	}
 
-	setValue(rrule: RecurrenceRule | null) {
+	setValue(rrule: RecurrenceRule | undefined) {
 		if (this.rule == rrule) return;
 		this.rule = rrule;
 		this.fire('select', this, rrule);

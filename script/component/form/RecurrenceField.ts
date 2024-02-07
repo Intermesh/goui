@@ -15,6 +15,10 @@ import {btn, Button} from "../Button.js";
 import {menu} from "../menu/index.js";
 import {Config} from "../Observable";
 
+export interface RecurrenceField extends Field {
+	set value(v:RecurrenceRule|undefined)
+}
+
 export class RecurrenceField extends Field {
 
 	private readonly picker: RecurrencePicker
@@ -69,7 +73,7 @@ export class RecurrenceField extends Field {
 			this.control.value = RecurrenceField.toText(this.value, this.picker.startDate);
 	}
 
-	static toText(rule: RecurrenceRule, start: DateTime) {
+	static toText(rule: RecurrenceRule|undefined, start: DateTime) {
 		const rr = rule;
 		if (!rr || !rr.frequency) {
 			return t('Not recurring');

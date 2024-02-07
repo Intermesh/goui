@@ -118,7 +118,7 @@ export class RadioField extends Field {
 				}
 			}
 		}
-		return super.value;
+		return super.value as string | undefined;
 	}
 
 }

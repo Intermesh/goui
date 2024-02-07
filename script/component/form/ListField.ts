@@ -9,9 +9,11 @@ import {Field, FieldEventMap} from "./Field.js";
 import {btn, Button} from "../Button.js";
 import {Menu, menu} from "../menu/Menu.js";
 import {Config, Listener, ObservableListenerOpts} from "../Observable";
-import {listpicker} from "../picker";
-import {List} from "../List";
+import {ListPicker, listpicker, ListPickerConfig} from "../picker";
+import {List, list as coreList} from "../List";
 import {AutocompleteField} from "./AutocompleteField";
+import {table} from "../table";
+import {DataSourceStore, store} from "../../data";
 
 export interface ListFieldEventMap<Type> extends FieldEventMap<Type> {
 
@@ -32,7 +34,7 @@ export interface ListField<ListType extends List> extends Field {
  *
  * @see Form
  */
-export class ListField<ListType extends List> extends Field {
+export class ListField<ListType extends List = List> extends Field {
 
 	public readonly menu: Menu;
 	protected readonly menuButton: Button;
@@ -45,7 +47,9 @@ export class ListField<ListType extends List> extends Field {
 		super();
 
 		this.picker = listpicker({
-			list: list
+			list: this.list,
+
+
 		});
 
 		this.picker.on("select", (tablePicker, record) => {

@@ -3,7 +3,7 @@
  * @copyright Copyright 2023 Intermesh BV
  * @author Merijn Schering <mschering@intermesh.nl>
  */
-import {Field, FieldEventMap} from "./Field.js";
+import {Field, FieldEventMap, FieldValue} from "./Field.js";
 import {ContainerField} from "./ContainerField.js";
 import {createComponent} from "../Component.js";
 import {btn} from "../Button";
@@ -15,8 +15,8 @@ import {Config} from "../Observable";
  */
 type ArrayFieldConfig = Config<ArrayField, FieldEventMap<ArrayField>, "buildField">
 
-type FieldBuilder = (value?: Record<string, any>) => Field;
-type ArrayFieldValue = Record<string, any>[];
+type FieldBuilder = (value?: FieldValue) => Field;
+type ArrayFieldValue = FieldValue[];
 
 export interface ArrayField {
 
@@ -100,7 +100,7 @@ export class ArrayField extends Field {
 		return this;
 	}
 
-	private internalAddValue(value:Record<string,any>) {
+	private internalAddValue(value:FieldValue) {
 		const field = this.buildField(value);
 		field.value = value;
 
