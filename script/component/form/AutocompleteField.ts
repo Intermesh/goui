@@ -43,6 +43,7 @@ export class AutocompleteField<T extends List = List> extends TextField {
 	public readonly menu: Menu;
 	protected readonly menuButton: Button;
 	public readonly picker;
+	public minLength = 0;
 
 	/**
 	 *
@@ -189,6 +190,9 @@ export class AutocompleteField<T extends List = List> extends TextField {
 	}
 
 	private onInput(ev: KeyboardEvent) {
+		if(this.input!.value.length <= this.minLength) {
+			return;
+		}
 		this.menuButton.showMenu();
 		this.fire("autocomplete", this, this.input!.value);
 	}
