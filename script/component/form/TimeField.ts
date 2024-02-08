@@ -83,8 +83,9 @@ export class TimeField extends InputField {
 		super.value = v;
 	}
 
-	get value(): string {
-		return super.value as string;
+	get value(): string |undefined {
+		const v = super.value as string | undefined;
+		return v ? v : undefined;
 	}
 }
 

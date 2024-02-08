@@ -72,15 +72,15 @@ export class DateField extends TimeField {
 		return this.type == "datetime-local";
 	}
 
-	get value(): string {
-		return super.value as string;
+	get value(): string | undefined {
+		return super.value as string | undefined;
 	}
 
 	/**
 	 * The value of the date is in Y-m-d  or  Y-m-d H:i when withTime is true. {@link DateTime.format}
 	 * @param v
 	 */
-	set value(v: string) {
+	set value(v: string | undefined) {
 		if(v) {
 			const Tindex = v.indexOf("T");
 			if (this.withTime) {
