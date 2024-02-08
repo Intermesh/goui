@@ -59,7 +59,7 @@ export abstract class InputField extends Field {
 	}
 
 	protected internalSetValue(v?: string|number|boolean|undefined) {
-		this._input!.value = v ? v.toString() : "";
+		this._input!.value = v !== undefined && v !== null ? v.toString() : "";
 	}
 
 	set value(v: string|number|boolean|undefined) {
