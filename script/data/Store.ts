@@ -226,4 +226,4 @@ export type StoreConfig<RecordType extends StoreRecord = StoreRecord> =
  *
  * @param config
  */
-export const store = <RecordType extends StoreRecord = StoreRecord>(config?: StoreConfig<Store<RecordType>>) => createComponent(new Store<RecordType>(), config);
+export const store = <RecordType extends StoreRecord = StoreRecord>(config?: StoreConfig<RecordType>) => createComponent(new Store<RecordType>(), config);

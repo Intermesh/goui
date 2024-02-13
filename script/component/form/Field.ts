@@ -450,6 +450,7 @@ export abstract class Field extends Component {
 	 */
 	public isModified() : boolean {
 		// We use stringify to support object and array values
+		// console.log("isModified()", JSON.stringify(this.resetValue), JSON.stringify(this.value))
 		return JSON.stringify(this.resetValue) !== JSON.stringify(this.value);
 	}
 

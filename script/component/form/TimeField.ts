@@ -78,6 +78,15 @@ export class TimeField extends InputField {
 		}
 		return date;
 	}
+
+	set value(v: string | undefined) {
+		super.value = v;
+	}
+
+	get value(): string |undefined {
+		const v = super.value as string | undefined;
+		return v ? v : undefined;
+	}
 }
 
 
