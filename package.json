@@ -29,6 +29,9 @@
     "build:sass": "npx sass --style=compressed ./style:./dist",
     "build:ts": "tsc",
 
+
+    "test:ts": "tsc --noEmit",
+
     "update-material-icons": "./update_material_icon.sh > script/component/MaterialIcon.ts",
 
     "prepublishOnly": "npm run build"

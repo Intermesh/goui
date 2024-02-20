@@ -168,7 +168,7 @@ export class RestDataSource<EntityType extends BaseEntity = DefaultEntity> exten
 
 		// immediately add data so we don't have to fetch it when data is retrieved using {@see get()} or {@see single()}
 		response.data.forEach((r:EntityType) => {
-			if(!this.data[r.id]) {
+			if(!this.data[r.id!]) {
 				this.add(r);
 			}
 		});

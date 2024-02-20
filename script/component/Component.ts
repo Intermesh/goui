@@ -348,6 +348,10 @@ export class Component extends Observable {
 		this.el.className += " " + cls;
 	}
 
+	get cls() {
+		return this._cls ?? "";
+	}
+
 	private initClassName() {
 		if (this.el.classList.contains("goui")) {
 			return;
