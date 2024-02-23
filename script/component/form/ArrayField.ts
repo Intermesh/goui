@@ -13,10 +13,9 @@ import {Config} from "../Observable";
 /**
  * @inheritDoc
  */
-type ArrayFieldConfig = Config<ArrayField, FieldEventMap<ArrayField>, "buildField">
+type ArrayFieldConfig<Type extends FieldValue = Record<string, any>> = Config<ArrayField<Type>, FieldEventMap<ArrayField<Type>>, "buildField">
 
-type FieldBuilder = (value?: FieldValue) => Field;
-type ArrayFieldValue = FieldValue[];
+type FieldBuilder<Type extends FieldValue = Record<string, any>> = (value?: Type) => Field;
 
 export interface ArrayField {
 
@@ -30,13 +29,13 @@ export interface ArrayField {
  *
  * @see Form
  */
-export class ArrayField extends Field {
+export class ArrayField<Type extends FieldValue = Record<string, any>> extends Field {
 
 	/**
 	 *
 	 * @param buildField Function that returns a new form field for an array item
 	 */
-	constructor(public buildField: FieldBuilder) {
+	constructor(public buildField: FieldBuilder<Type>) {
 		super("div");
 
 		this.baseCls = "flow";
@@ -54,7 +53,7 @@ export class ArrayField extends Field {
 
 	private enableChangeEvent = true;
 
-	set value(v: ArrayFieldValue) {
+	set value(v: Type[]) {
 		super.value = v;
 
 		this.enableChangeEvent = false;
@@ -70,13 +69,13 @@ export class ArrayField extends Field {
 		this.enableChangeEvent = true;
 	}
 
-	get value(): ArrayFieldValue {
+	get value(): Type[] {
 
-		const v: ArrayFieldValue = [];
+		const v: Type[] = [];
 
 		this.items.forEach((item) => {
 			if (item instanceof Field) {
-				v.push(item.value);
+				v.push(item.value as Type);
 			}
 		});
 
@@ -88,7 +87,7 @@ export class ArrayField extends Field {
 	 *
 	 * @param value
 	 */
-	public addValue(value:Record<string,any> = {}) {
+	public addValue(value:Type) {
 
 		if(!this.valueOnFocus) {
 			this.captureValueForChange();
@@ -100,7 +99,7 @@ export class ArrayField extends Field {
 		return this;
 	}
 
-	private internalAddValue(value:FieldValue) {
+	private internalAddValue(value:Type) {
 		const field = this.buildField(value);
 		field.value = value;
 
@@ -132,4 +131,4 @@ export class ArrayField extends Field {
  * @param config
  * @param items
  */
-export const arrayfield = (config: ArrayFieldConfig, ...items: Field[]) => createComponent(new ArrayField(config.buildField), config, items);
+export const arrayfield = <Type extends FieldValue = Record<string,any>>(config: ArrayFieldConfig<Type>, ...items: Field[]) => createComponent(new ArrayField<Type>(config.buildField), config, items);
