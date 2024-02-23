@@ -68,7 +68,7 @@ export type CommitEntityError = Record<EntityID, CommitError>
  * @category Data
  */
 export interface BaseEntity {
-	id?: EntityID
+	id: EntityID
 }
 
 /**
