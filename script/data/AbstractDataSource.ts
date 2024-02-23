@@ -81,6 +81,7 @@ export interface DefaultEntity extends BaseEntity {
 	[key: string]: any
 }
 
+export type NewEntity<Type> = Omit<Type, "id">
 /**
  * @category Data
  */
