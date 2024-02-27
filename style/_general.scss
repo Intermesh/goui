@@ -1,3 +1,13 @@
+:root, body {
+	@include light-theme;
+}
+body.dark {
+	@include dark-theme;
+	* {
+		color-scheme: dark;
+	}
+}
+
 .goui * {
 	text-rendering: optimizeLegibility;
 	font-smoothing: antialiased;
@@ -13,40 +23,14 @@
 	font: $fontBase;
 	color: $colorText;
 	width: 100%; //Needed for modal windows setting it to position fixed, top 0
-	background-color: var(--bg-body);
+	background-color: $surfaceLow;
 
 }
-.goui {
-	@include light-theme;
 
+.goui {
 	::selection {
 		background: var(--bg-selection);
 		color: var(--fg-selection);
-	}
-}
-
-
-.dark {
-	@include dark-theme;
-	.goui {
-		@include dark-theme;
-	}
-	* {
-		color-scheme: dark;
-	}
-}
-
-
-
-@media (prefers-color-scheme: dark) {
-	.goui.root.system {
-		@include dark-theme;
-		.goui {
-			@include dark-theme;
-		}
-		* {
-			color-scheme: dark;
-		}
 	}
 }
 

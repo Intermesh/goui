@@ -19,11 +19,11 @@ menu.goui-dropdown {
 	list-style: none;
 	position: fixed;
 	min-width: $menuWidth;
-	border: $borderWidth solid $colorBorderWindow;
+	border: $borderWidth solid $colorLine;
 	border-radius: dp(8);
-	background-color: $colorBackgroundDarker;//rgba(232,232,232,0.95);
-	backdrop-filter: blur(5px);
-	-webkit-backdrop-filter: blur(5px);
+	background-color: $surfaceLayer;
+	backdrop-filter: blur(20px);
+	-webkit-backdrop-filter: blur(20px);
 	padding: dp(6);
 
 	> li {
@@ -176,7 +176,7 @@ button.goui-button.with-text.has-menu {
 				width: dp(16);
 				height: dp(16);
 				border-radius: 50%;
-				border: 1px solid $colorBorder;
+				border: 1px solid $colorOutline;
 			}
 		}
 
@@ -188,7 +188,7 @@ menu.main-menu, menu.west-menu {
 	list-style: none;
 	padding: dp(8);
 	margin-bottom: dp(12);
-	background-color: var(--bg-side-bar);
+	background-color: $surfaceHigh;
 
 	.goui-button {
 		width: 100%;

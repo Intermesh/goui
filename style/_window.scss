@@ -21,6 +21,21 @@
 	}
 }
 .goui-window {
+	@extend .vbox;
+	@extend .z12;
+	position: fixed;
+
+	background-color: $surfaceLayer;
+	backdrop-filter: blur(20px);
+	-webkit-backdrop-filter: blur(20px);
+
+	border: $borderWidth solid $colorBorderWindow;
+	border-radius: dp(12);
+	z-index: $zIndexWindow;
+	overflow: hidden;
+	min-height: dp(160);
+	min-width: dp(160);
+
 	&.modal {
 		@extend .z24;
 		border: 0;
@@ -75,22 +90,11 @@
 		resize: none !important;
 	}
 
-	background-color: var(--bg-body);
 
-	@extend .vbox;
-
-	@extend .z12;
-
-	position: fixed;
-	border: $borderWidth solid $colorBorderWindow;
-	border-radius: dp(12);
-
-	z-index: $zIndexWindow;
 	//focussed window on top
 	&:focus-within {
-		z-index: $zIndexWindow + 10000; // 10000 to be higher thanin ExtjS
+		z-index: $zIndexWindow + 10000; // 10000 to be higher than in Ext
 	}
-	overflow: hidden;
 	form.goui-form {
 		fieldset {
 			padding: dp(18);
@@ -103,23 +107,20 @@
 		transform: translate(-50%, -50%);
 	}
 
-	min-height: dp(160);
-	min-width: dp(160);
-
 	.goui-toolbar:first-child, .goui-toolbar:last-child {
 		padding: dp(12) dp(18);
-		background-color: $colorWindowHeader;
+		//background-color: $colorWindowHeader;
 	}
 
 	.goui-cardmenu {
-		background-color: $colorWindowHeader;
+		//background-color: $colorWindowHeader;
 		width: 100%;
 		border-bottom: $borderWidth solid $colorBorderWindow;
 	}
 
 	.header {
 		height: dp(74);
-		background: $colorWindowHeader;
+
 		position: relative;
 		margin: 0;
 
@@ -128,6 +129,10 @@
 		}
 
 		& + form {
+			> div {
+				background: $surfaceMid;
+			}
+
 			&:first-child:not(.goui-cardmenu) {
 				margin-top: 0;
 			}

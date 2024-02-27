@@ -53,7 +53,7 @@ export class ComboBox<DS extends AbstractDataSource = AbstractDataSource> extend
 					resizable: true,
 					width: 312,
 					sortable: true,
-					renderer:(columnValue, record, td, table1) => {
+					renderer:(_columnValue, record) => {
 						return Format.escapeHTML(renderer(this, record));
 					}
 				})

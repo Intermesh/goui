@@ -1,41 +1,48 @@
-$resourcePath: "../resources/";
-
-
+$resourcePath: "../resources/" !default;
 
 //$windowShadow: 0 0 dp(16) 0 rgba(0,0,0,20%);
 
-$colorLine: var(--fg-divider) !default;
+$colorLine: var(--fg-line) !default;
 $borderWidth: dp(2) !default;
+$colorDivider: var(--fg-divider) !default;
+$colorOutline: var(--fg-track);
 $colorBorder: var(--fg-border); //#D3D3D3;
-$colorBorderWindow: $colorBorder !default;
-$colorHover: var(--bg-hover) !default;//#f1f1f6;//rgba(black, 0.04);
+$colorBorderWindow: $colorDivider !default;
 
+$colorHover: var(--bg-hover) !default;//#f1f1f6;//rgba(black, 0.04);
 $colorSelectedRow: var(--bg-selected)  !default;
+$colorSelectedRowText: var(--fg-selected) !default;
 $colorSelectedRowInactive: var(--bg-selected-inactive) !default;
 
 $colorPrimary: var(--c-primary) !default;
 $colorSecondary: var(--c-secondary) !default;
 $colorAccent: var(--c-accent) !default; //#f39345;
-$colorButton: var(--bg-button) !default;
 
 
 $colorText: var(--fg-text) !default;
 $colorTextSecondary: var(--fg-secondary-text) !default;
 $colorTextPlaceholder: var(--fg-secondary-text) !default;
 
+$surfaceLowest: var(--bg-lowest) !default;
+$surfaceLow:var(--bg-low) !default;
+$surfaceMid:var(--bg-mid) !default;
+$surfaceHigh:var(--bg-high) !default;
+$surfaceHighest:var(--bg-highest) !default;
 
-$colorBackground: var(--bg-body) !default;
-$colorBackgroundDarker: var(--bg-layer) !default;//rgb(30 ,18, 70, 0.03);
-$colorBackgroundWindow: $colorBackgroundDarker !default; //rgb(30 ,18, 70, 0.03);
-$colorWindowHeader: $colorBackgroundWindow !default;//#f5f5f5;
+$surfaceLayer: var(--bg-layer) !default;
+
+$colorBackground: $surfaceLow !default;
+$colorBackgroundDarker: $surfaceMid !default;//rgb(30 ,18, 70, 0.03);
+$colorBackgroundWindow: $surfaceLayer !default; //rgb(30 ,18, 70, 0.03);
+$colorWindowHeader: $surfaceHigh !default;//#f5f5f5;
 
 $colorFocus: var(--bg-focus) !default;
 
 
 $colorBorderSelectedInput: var(--c-primary) !default; //rgb(0,176,173) !default;
 $colorBackgroundInput: var(--bg-input) !default;
-$colorBackgroundReadOnly: var(--bg-read-only);
-$colorMasked: var(--bg-read-only) !default;
+$colorBackgroundReadOnly: var(--bg-low);
+$colorMasked: $colorBackgroundReadOnly !default;
 
 // Colors that have meaning (eg. success/failure)
 $colorSuccess:		#155724 !default;

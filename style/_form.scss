@@ -71,7 +71,7 @@ $formFieldBorderRadius: dp(10);
 	transition: border-color 100ms linear;
 	border-radius: $formFieldBorderRadius;
 	background-color: $colorBackgroundInput;
-	border: $borderWidth solid $colorBorder;
+	border: $borderWidth solid $colorOutline;
 }
 // base for checkbox and radio's
 %boxgroup {
@@ -121,7 +121,7 @@ $formFieldBorderRadius: dp(10);
 			width: auto;
 			border-radius: dp(12); //match button
 
-			border: 1px solid $colorBorder;
+			border: 1px solid $colorOutline;
 
 			.control {
 				padding: 0;
@@ -237,7 +237,7 @@ $formFieldBorderRadius: dp(10);
 
 	// draws line between items inside a pit in event dialog for example
 	> div + div {
-		border-top: $borderWidth solid $colorBorder;
+		border-top: $borderWidth solid $colorOutline;
 	}
 
 	// makes a form field underneath appear connected the pit
@@ -361,7 +361,7 @@ $formFieldBorderRadius: dp(10);
 			padding: 0 !important;
 			border-radius: 0 $formFieldBorderRadius $formFieldBorderRadius 0;
 
-			border-left: $borderWidth solid $colorBorder;// !important; //importants for Window rule for border top
+			border-left: $borderWidth solid $colorOutline;// !important; //importants for Window rule for border top
 			border-top: 0 !important;
 			border-right: 0 !important;
 			border-bottom: 0 !important;
@@ -428,7 +428,7 @@ $formFieldBorderRadius: dp(10);
 		.hint {
 			transition: border-color 100ms linear;
 			background-color: $colorBackgroundInput;
-			border: $borderWidth solid $colorBorder;
+			border: $borderWidth solid $colorOutline;
 			border-radius: 0 0 $formFieldBorderRadius $formFieldBorderRadius;
 			padding: dp(3) dp(18);
 		}
@@ -648,7 +648,7 @@ $formFieldBorderRadius: dp(10);
 			.radio {
 
 				background-color: $colorBackgroundInput;
-				border: 1px solid $colorBorder;
+				border: 1px solid $colorOutline;
 				border-radius: dp(12);
 
 				&:focus-visible {
@@ -660,7 +660,7 @@ $formFieldBorderRadius: dp(10);
 					overflow: hidden;
 
 					+ label {
-						border-left: 1px solid $colorBorder;
+						border-left: 1px solid $colorOutline;
 					}
 				}
 			}

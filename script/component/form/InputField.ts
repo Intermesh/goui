@@ -26,6 +26,8 @@ export abstract class InputField extends Field {
 	public focus(o?: FocusOptions) {
 		if (!this._input) {
 			super.focus(o);
+		} else {
+			this.fire("focus", this, o);
 		}
 		this._input?.focus(o);
 	}

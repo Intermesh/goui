@@ -25,7 +25,7 @@ html {
 }
 
 .goui.main {
-	background-color: var(--bg-main);
+	background-color: $surfaceLowest;
 }
 
 // flow layout. generally used or form fields
@@ -143,7 +143,7 @@ html {
 	border: $borderWidth solid $colorBorder;
 	border-radius: dp(12);
 	overflow:hidden;
-	background-color: var(--bg-main);
+	background-color: $surfaceLowest;
 
 	> .toolbar {
 		background-color: $colorBackgroundDarker;
@@ -177,9 +177,11 @@ html {
 	display: block;
 	margin: 0 (-2 * $borderWidth);
 	background-color: transparent;
-	//background-image: linear-gradient(90deg, transparent, transparent $borderWidth * 2 $colorBorder $borderWidth);
-	background:linear-gradient(90deg, transparent, transparent ($borderWidth * 2), $colorBorder $borderWidth, transparent ($borderWidth * 3) );
-
+	color: $colorBorder;
+	background:linear-gradient(90deg, transparent 33%, currentColor 33% 66%, transparent 66%);
+	&:hover{
+		color: $colorDivider;
+	}
 	// make it easy to grab with 5px but only show 1px border
 	//&:after {
 	//	display:block;

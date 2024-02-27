@@ -3,34 +3,6 @@
  * @copyright Copyright 2023 Intermesh BV
  * @author Merijn Schering <mschering@intermesh.nl>
  */
-
-//Set before util and theme:
-//$density: 54%;
-//$mobileDensity: 62.5%;
-//$font-scale: 1;
-
-@import 'util';
-@import 'theme';
-
-//Override defaults from _config.scss:
-//$borderWidth: 1px;
-//$baseLineHeight: dp(20);
-//$fontSize: sp(16);
-
-@import 'config';
-@import 'icons';
-@import 'shadows';
-@import 'general';
-@import 'normalize';
-@import 'print';
-@import 'tree';
-@import 'layout';
-@import 'alert';
-@import 'mask';
-@import 'form';
-@import 'button';
-@import 'table';
-@import 'menu';
-@import 'window';
-@import 'datepicker';
-@import 'description_list';
+@import 'util',
+	'theme',
+	'index';

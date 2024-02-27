@@ -44,7 +44,7 @@
 	}
 
 	&.pressed {
-		box-shadow: inset -2px -2px -2 $colorBorder; // underline
+		box-shadow: inset -2px -2px -2 $colorOutline; // underline
 		background-color: $colorPrimary;
 		color: white;
 		&:hover {
@@ -58,7 +58,7 @@
 	//}
 
 	&.primary {
-		color: $colorSecondary;
+		color: $colorPrimary;
 	}
 
 	&.accent {
@@ -76,8 +76,8 @@
 
 		&.primary, &[type=submit] {
 			color: white;
-			background-color: $colorSecondary;
-			border-color: $colorSecondary;
+			background-color: $colorPrimary;
+			border-color: $colorPrimary;
 			&:hover {
 				filter: brightness(120%);
 			}
@@ -133,10 +133,10 @@
 	position: relative;
 	display:flex;
 	//overflow: hidden; // this doesn't play well with grouping form fields. label overflows
-//	> button {box-shadow: none; border: 1px solid $colorBorder;}
+//	> button {box-shadow: none; border: 1px solid $colorOutline;}
 	> .goui-button {
 		box-shadow: none;
-		border: $borderWidth solid $colorBorder;
+		border: $borderWidth solid $colorOutline;
 		&.active {
 			background-color: $colorFocus;
 		}
@@ -160,7 +160,7 @@
 		left: 0;
 		right: 0;
 		bottom: 0;
-		background-color: var(--bg-body);
+		background-color: $surfaceLow;
 	}
 
 	&.search {

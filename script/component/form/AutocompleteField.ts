@@ -6,7 +6,7 @@
 
 import {TextField} from "./TextField.js";
 import {Config, Listener, ObservableEventMap, ObservableListenerOpts} from "../Observable.js";
-import {FunctionUtil} from "../../util/FunctionUtil.js";
+import {FunctionUtil} from "../../util/index.js";
 import {FieldEventMap} from "./Field.js";
 import {btn, Button} from "../Button.js";
 import {Component, createComponent} from "../Component.js";
@@ -43,6 +43,8 @@ export class AutocompleteField<T extends List = List> extends TextField {
 	public readonly menu: Menu;
 	protected readonly menuButton: Button;
 	public readonly picker;
+
+	public readonly clearable!: boolean
 
 	/**
 	 *
@@ -99,21 +101,15 @@ export class AutocompleteField<T extends List = List> extends TextField {
 	 * Method that transforms a record from the TablePicker store to a value for this field.
 	 * This is not necessarily a text value. In conjunction with {@see valueToTextField()} this
 	 * could also be an ID of an object for example.
-	 *
-	 * @param field
-	 * @param record
 	 */
-	public pickerRecordToValue (field: this, record:storeRecordType<listStoreType<T>>) : any {
+	public pickerRecordToValue (_field: this, record:storeRecordType<listStoreType<T>>) : any {
 		return record.id;
 	}
 
 	/**
 	 * This method transforms the value in to a text representation for the input field
-	 *
-	 * @param field
-	 * @param value
 	 */
-	public async valueToTextField(field: this, value:any) {
+	public async valueToTextField(_field: this, _value:any) {
 		return "";
 	}
 
@@ -147,6 +143,9 @@ export class AutocompleteField<T extends List = List> extends TextField {
 	protected internalRender(): HTMLElement {
 
 		this.buttons = this.buttons || [];
+		if(this.clearable) {
+			this.buttons.push(btn({icon:'clear', handler: () => this.value = null}))
+		}
 		this.buttons.push(this.menuButton);
 
 		const el = super.internalRender();
@@ -188,7 +187,7 @@ export class AutocompleteField<T extends List = List> extends TextField {
 		return el;
 	}
 
-	private onInput(ev: KeyboardEvent) {
+	private onInput(_ev: KeyboardEvent) {
 		this.menuButton.showMenu();
 		this.fire("autocomplete", this, this.input!.value);
 	}
