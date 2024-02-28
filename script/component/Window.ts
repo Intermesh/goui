@@ -30,6 +30,9 @@ export interface WindowEventMap<Type> extends DraggableComponentEventMap<Type> {
 	 */
 	close: (window: Type) => void
 
+	/** Fires when user clicks on the closing cross.*/
+	userclosed: (window: Type) => void
+
 	/**
 	 * Fires before closing window
 	 * return false to cancel close
@@ -208,6 +211,7 @@ export class Window extends DraggableComponent {
 				this.header.items.add(btn({
 					icon: "close",
 					handler: () => {
+						this.fire("userclosed", this);
 						this.close();
 					}
 				}));

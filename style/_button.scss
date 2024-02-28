@@ -136,7 +136,7 @@
 //	> button {box-shadow: none; border: 1px solid $colorOutline;}
 	> .goui-button {
 		box-shadow: none;
-		border: $borderWidth solid $colorOutline;
+		border: $borderWidth solid $colorBorder;
 		&.active {
 			background-color: $colorFocus;
 		}
