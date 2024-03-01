@@ -211,7 +211,7 @@ html {
 	}
 }
 @media only screen and (max-width: $breakpointSmall) {
-	.goui.not-small-device {
+	.not-small-device {
 		display: none !important;
 	}
 	.goui.hbox.mobile-cards {
