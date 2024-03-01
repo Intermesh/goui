@@ -12,6 +12,9 @@ import {checkbox} from "../form";
 import {btn} from "../Button";
 import {menu} from "../menu";
 
+/**
+ * Return HTML or component to render into the table cell. Can also be async.
+ */
 type TableColumnRenderer = (columnValue: any, record: any, td: HTMLTableCellElement, table: Table, storeIndex: number) => string | Promise<string> | Component | Promise<Component>;
 type HeaderRenderer = (col: TableColumn, headerEl: HTMLTableCellElement, table: Table) => string | Component;
 

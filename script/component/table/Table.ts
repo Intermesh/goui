@@ -15,8 +15,6 @@ import {TableColumn} from "./TableColumns.js";
 import {List, ListEventMap} from "../List.js";
 import {Config, Listener, ObservableListenerOpts} from "../Observable";
 import {t} from "../../Translate";
-import {index} from "typedoc/dist/lib/output/themes/default/partials";
-import {SearchButtonEventMap} from "../SearchButton";
 
 
 type GroupByRenderer = (groupBy: any, record: any, thEl: HTMLTableCellElement, table: Table) => string | Promise<string> | Component | Promise<Component>;
@@ -119,24 +117,32 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 
 				if (c.renderer) {
 					const r = c.renderer(value, record, td, this, storeIndex);
-					if (typeof r === "string") {
-						td.innerHTML = r;
-					} else if (r instanceof Component) {
-						r.parent = this;
-						r.render(td);
-					} else {
-						r.then((s) => {
-							if (s instanceof Component) {
-								s.parent = this;
-								s.render(td);
-							} else {
-								td.innerHTML = s;
-							}
-						})
+
+					if (r) {
+
+						if (typeof r === "string") {
+							td.innerHTML = r;
+						} else if (r instanceof Component) {
+							r.parent = this;
+							r.render(td);
+						} else {
+							r.then((s) => {
+								if (!s) {
+									return;
+								}
+								if (s instanceof Component) {
+									s.parent = this;
+									s.render(td);
+								} else {
+									td.innerHTML = s;
+								}
+							})
+						}
 					}
 				} else {
 					td.innerText = value ? value : "";
 				}
+
 
 				row.append(td);
 			}
@@ -292,9 +298,10 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 		if (h.resizable) {
 			const splitter = draggable({
 				tagName: "hr",
-				setPosition: false,
-				parent: this
+				setPosition: false
 			});
+
+			splitter.parent = this;
 
 			splitter.on("dragstart", (cmp, dragData) => {
 				if (!this.colsAreFixed) {
@@ -536,20 +543,27 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 
 			const r = this.groupByRenderer(groupBy, record, th, this);
 
-			if (typeof r === "string") {
-				th.innerHTML = r;
-			} else if (r instanceof Component) {
-				r.render(th);
-			} else if (r instanceof Promise) {
-				r.then((s) => {
-					if (s instanceof Component) {
-						s.render(th);
-					} else {
-						th.innerHTML = s;
-					}
-				})
-			} else {
-				console.warn("Renderer returned invalid value: ", r);
+			if(r) {
+				if (typeof r === "string") {
+					th.innerHTML = r;
+				} else if (r instanceof Component) {
+					r.render(th);
+				} else if (r instanceof Promise) {
+					r.then((s) => {
+
+						if (!s) {
+							return;
+						}
+
+						if (s instanceof Component) {
+							s.render(th);
+						} else {
+							th.innerHTML = s;
+						}
+					})
+				} else {
+					console.warn("Renderer returned invalid value: ", r);
+				}
 			}
 
 			tr.append(th);
