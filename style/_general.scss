@@ -152,7 +152,8 @@ body.dark {
 
 hr.goui {
 	border:0;
-	border-top: $borderWidth solid $colorBorder;
+	color: $colorBorder;
+	border-top: $borderWidth solid currentColor;
 }
 
 

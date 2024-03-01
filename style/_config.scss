@@ -2,12 +2,13 @@ $resourcePath: "../resources/" !default;
 
 //$windowShadow: 0 0 dp(16) 0 rgba(0,0,0,20%);
 
-$colorLine: var(--fg-line) !default;
 $borderWidth: dp(2) !default;
+
+$colorLine: var(--fg-line) !default;
 $colorDivider: var(--fg-divider) !default;
 $colorOutline: var(--fg-track);
 $colorBorder: var(--fg-border); //#D3D3D3;
-$colorBorderWindow: $colorDivider !default;
+$colorBorderWindow: $colorLine !default;
 
 $colorHover: var(--bg-hover) !default;//#f1f1f6;//rgba(black, 0.04);
 $colorSelectedRow: var(--bg-selected)  !default;
