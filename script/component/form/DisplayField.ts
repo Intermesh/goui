@@ -4,7 +4,7 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {Field, FieldEventMap} from "./Field.js";
+import {Field, FieldConfig, FieldEventMap} from "./Field.js";
 import {Component, createComponent} from "../Component.js";
 import {Config} from "../Observable";
 import {DateTime, Format} from "../../util";
@@ -53,7 +53,7 @@ export class DisplayField extends Field {
 	}
 }
 type DisplayFieldRenderer = (v:any, field:DisplayField) => string|Promise<string>;
-type DisplayFieldConfig = Config<DisplayField, FieldEventMap<DisplayField>> & {
+type DisplayFieldConfig = FieldConfig<DisplayField, FieldEventMap<DisplayField>> & {
 
 	/**
 	 * Renderer function for the value of the field

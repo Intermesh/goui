@@ -4,12 +4,12 @@
  * @author Michael de Hart <mdhart@intermesh.nl>
  */
 
-import {Field, FieldEventMap} from "./Field.js";
+import {Field, FieldConfig, FieldEventMap} from "./Field.js";
 import {createComponent} from "../Component.js";
 import {btn} from "../Button.js";
 import {Config, Observable} from "../Observable";
 
-type MapFieldConfig = Config<MapField, FieldEventMap<MapField>, "buildField">;
+type MapFieldConfig = FieldConfig<MapField, FieldEventMap<MapField>, "buildField">;
 type FieldBuilder = (value: MapFieldValue|undefined) => Field;
 type MapFieldValue = Record<string, any>;
 

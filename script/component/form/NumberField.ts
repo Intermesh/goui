@@ -6,7 +6,7 @@
 
 import {createComponent} from "../Component.js";
 import {Config} from "../Observable";
-import {FieldEventMap} from "./Field";
+import {FieldConfig, FieldEventMap} from "./Field";
 import {t} from "../../Translate";
 import {InputField} from "./InputField";
 
@@ -141,4 +141,4 @@ export class NumberField extends InputField {
 	}
 }
 
-export const numberfield = (config?: Config<NumberField, FieldEventMap<NumberField>>) => createComponent(new NumberField(), config);
+export const numberfield = (config?: FieldConfig<NumberField, FieldEventMap<NumberField>>) => createComponent(new NumberField(), config);

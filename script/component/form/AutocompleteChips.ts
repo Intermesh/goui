@@ -2,12 +2,12 @@ import {ChipsField} from "./ChipsField";
 import {List, listStoreType} from "../List";
 import {Menu, menu} from "../menu";
 import {btn, Button} from "../Button";
-import {FieldEventMap} from "./Field";
-import {Config, Listener, ObservableListenerOpts} from "../Observable";
+import {FieldConfig, FieldEventMap} from "./Field";
+import {Listener, ObservableListenerOpts} from "../Observable";
 import {Component, createComponent} from "../Component";
 import {FunctionUtil} from "../../util";
-import {DataSourceEventMap, storeRecordType} from "../../data";
-import {RouterEventMap} from "../../Router";
+import {storeRecordType} from "../../data";
+
 export interface AutocompleteChipsEventMap<Type> extends FieldEventMap<Type> {
 	/**
 	 * Fires when suggestions need to load
@@ -216,7 +216,7 @@ export class AutocompleteChips<T extends List = List> extends ChipsField {
 	}
 }
 
-type AutoCompleteChipsConfig<ListType extends List = List> = Config<AutocompleteChips<ListType>, AutocompleteChipsEventMap<AutocompleteChips<ListType>>, "list"> &
+type AutoCompleteChipsConfig<ListType extends List = List> = FieldConfig<AutocompleteChips<ListType>, AutocompleteChipsEventMap<AutocompleteChips<ListType>>, "list"> &
 	// Add the function properties as they are filtered out
 	Partial<Pick<AutocompleteChips<ListType>, "textInputToValue" | "chipRenderer" | "pickerRecordToValue">>
 /**

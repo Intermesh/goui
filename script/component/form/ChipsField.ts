@@ -1,4 +1,4 @@
-import {Field, FieldEventMap, FieldValue} from "./Field";
+import {Field, FieldConfig, FieldEventMap, FieldValue} from "./Field";
 import {comp, Component, createComponent} from "../Component";
 import {Config} from "../Observable";
 import {btn} from "../Button";
@@ -236,7 +236,7 @@ export class ChipsField extends Field {
 
 }
 
-type ChipsConfig = Config<ChipsField, FieldEventMap<ChipsField>> &
+type ChipsConfig = FieldConfig<ChipsField, FieldEventMap<ChipsField>> &
 	// Add the function properties as they are filtered out
 	Partial<Pick<ChipsField, "textInputToValue" | "chipRenderer">>
 /**

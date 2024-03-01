@@ -4,7 +4,7 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {FieldEventMap} from "./Field.js";
+import {FieldConfig, FieldEventMap} from "./Field.js";
 import {createComponent} from "../Component.js";
 import {Config} from "../Observable";
 import {InputField} from "./InputField";
@@ -66,9 +66,9 @@ export class TextField extends InputField {
  *
  * @param config
  */
-export const textfield = (config?: Config<TextField, FieldEventMap<TextField>>) => createComponent(new TextField(), config);
+export const textfield = (config?: FieldConfig<TextField, FieldEventMap<TextField>>) => createComponent(new TextField(), config);
 
 
-const c: Config<TextField, FieldEventMap<TextField>> = {
+const c: FieldConfig<TextField, FieldEventMap<TextField>> = {
 
 }

@@ -1,6 +1,6 @@
 import {TextField} from "./TextField";
 import {Config} from "../Observable";
-import {FieldEventMap} from "./Field";
+import {FieldConfig, FieldEventMap} from "./Field";
 import {createComponent} from "../Component";
 import {DateTime} from "../../util";
 import {InputField} from "./InputField";
@@ -95,4 +95,4 @@ export class TimeField extends InputField {
  *
  * @param config
  */
-export const timefield = (config?: Config<TimeField, FieldEventMap<TextField>>) => createComponent(new TimeField(), config);
+export const timefield = (config?: FieldConfig<TimeField, FieldEventMap<TextField>>) => createComponent(new TimeField(), config);

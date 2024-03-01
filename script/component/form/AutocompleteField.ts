@@ -7,7 +7,7 @@
 import {TextField} from "./TextField.js";
 import {Config, Listener, ObservableEventMap, ObservableListenerOpts} from "../Observable.js";
 import {FunctionUtil} from "../../util/index.js";
-import {FieldEventMap} from "./Field.js";
+import {FieldConfig, FieldEventMap} from "./Field.js";
 import {btn, Button} from "../Button.js";
 import {Component, createComponent} from "../Component.js";
 import {List, listStoreType} from "../List";
@@ -194,7 +194,7 @@ export class AutocompleteField<T extends List = List> extends TextField {
 
 }
 
-type AutoCompleteConfig<T extends List, Map extends ObservableEventMap<any>, Required extends keyof AutocompleteField<T>> = Config<AutocompleteField<T>, Map, Required> &
+type AutoCompleteConfig<T extends List, Map extends ObservableEventMap<any>, Required extends keyof AutocompleteField<T>> = FieldConfig<AutocompleteField<T>, Map, Required> &
 // Add the function properties as they are filtered out
 	Partial<Pick<AutocompleteField<T>, "pickerRecordToValue" | "valueToTextField">>;
 

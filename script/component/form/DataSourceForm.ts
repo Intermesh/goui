@@ -9,6 +9,7 @@ import {t} from "../../Translate";
 import {Config, Listener, ObservableListenerOpts} from "../Observable";
 import {Component, createComponent} from "../Component";
 import {Window} from "../Window";
+import {FieldConfig} from "./Field";
 
 
 export interface DataSourceFormEventMap<Type, ValueType extends BaseEntity = DefaultEntity> extends FormEventMap<Type> {
@@ -170,7 +171,7 @@ export class DataSourceForm<ValueType extends BaseEntity = DefaultEntity> extend
 export type DataSourceFormConfig<ValueType extends BaseEntity =  DefaultEntity> =
 
 
-		Config<DataSourceForm<ValueType>, DataSourceFormEventMap<DataSourceForm<ValueType>, ValueType>, "dataSource">
+		FieldConfig<DataSourceForm<ValueType>, DataSourceFormEventMap<DataSourceForm<ValueType>, ValueType>, "dataSource">
 
 
 

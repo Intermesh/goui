@@ -262,7 +262,8 @@ type CompFuncs =  "buildState" |
 	"un" |
 	"unmask" |
 	"valueOf" |
-	"items"
+	"items" |
+	"parent"
 
 
 /**
@@ -275,13 +276,13 @@ type CompFuncs =  "buildState" |
  * 	Partial<Pick<ChipsField, "textInputToValue" | "chipRenderer">>
  * ```
  */
-export type Config<Cmp extends Observable, EventMap extends ObservableEventMap<Observable> = ComponentEventMap<Cmp>, Required extends keyof Cmp = never,  OmittedProps extends keyof Cmp = never> =
+export type Config<Cmp extends Observable, EventMap extends ObservableEventMap<Observable> = ComponentEventMap<Cmp>, Required extends keyof Cmp = never> =
 
 	Writeable<
 		Partial<
 			//somehow this breaks generic class sometimes : (
 			// Omit<Cmp, Required & FunctionPropertyNames<Cmp>>
-		Omit<Cmp, CompFuncs>
+		Omit<Cmp, CompFuncs >
 		>
 	>
 

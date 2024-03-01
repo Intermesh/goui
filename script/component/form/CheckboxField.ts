@@ -4,7 +4,7 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {Field, FieldEventMap} from "./Field.js";
+import {Field, FieldConfig, FieldEventMap} from "./Field.js";
 import {createComponent} from "../Component.js";
 import {E} from "../../util/Element.js";
 import {Config} from "../Observable";
@@ -104,7 +104,7 @@ export class CheckboxField extends InputField {
 	}
 }
 
-export type CheckboxFieldConfig = Omit<Config<CheckboxField, FieldEventMap<CheckboxField>>, "type"> & {
+export type CheckboxFieldConfig = Omit<FieldConfig<CheckboxField, FieldEventMap<CheckboxField>>, "type"> & {
 	type?: CheckBoxType
 }
 

@@ -8,7 +8,7 @@ import {ContainerField, ContainerFieldValue} from "./ContainerField.js";
 import {Config, Listener, ObservableListenerOpts} from "../Observable.js";
 import {Notifier} from "../../Notifier.js";
 import {Component, createComponent} from "../Component.js";
-import {Field, FieldEventMap} from "./Field.js";
+import {Field, FieldConfig, FieldEventMap} from "./Field.js";
 import {t} from "../../Translate.js";
 import {DatePickerEventMap} from "../picker";
 
@@ -221,7 +221,7 @@ export class Form<ValueType extends ContainerFieldValue = ContainerFieldValue> e
 
 }
 export type FormConfig<ValueType extends ContainerFieldValue = ContainerFieldValue> =
-	Config<Form<ValueType>, FormEventMap<Form<ValueType>>> & {
+	FieldConfig<Form<ValueType>, FormEventMap<Form<ValueType>>> & {
 	/**
 	 * Executed when form is submitted.
 	 *

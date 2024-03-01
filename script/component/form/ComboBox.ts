@@ -10,6 +10,7 @@ import {column, Table, table} from "../table";
 import {Config} from "../Observable";
 import {createComponent} from "../Component";
 import {Format} from "../../util";
+import {FieldConfig} from "./Field";
 
 export type ComboBoxStoreConfig<DS extends AbstractDataSource = AbstractDataSource> = Partial<DataSourceStoreConfig<DS, any>>
 
@@ -93,7 +94,7 @@ export class ComboBox<DS extends AbstractDataSource = AbstractDataSource> extend
 	}
 }
 
-export type ComboBoxConfig<Type extends ComboBox = ComboBox> = Config<Type, AutocompleteEventMap<Type>, "dataSource"> & {
+export type ComboBoxConfig<Type extends ComboBox = ComboBox> = FieldConfig<Type, AutocompleteEventMap<Type>, "dataSource"> & {
 	/**
 	 * Config for the {@link DataSourceStore}
 	 */

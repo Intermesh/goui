@@ -4,7 +4,7 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {Field, FieldEventMap} from "./Field.js";
+import {Field, FieldConfig, FieldEventMap} from "./Field.js";
 import {Config, Listener, ObservableListenerOpts} from "../Observable.js";
 import {Component, createComponent} from "../Component.js";
 
@@ -215,4 +215,4 @@ export class ContainerField<ValueType extends ContainerFieldValue = ContainerFie
  * @param config
  * @param items
  */
-export const containerfield = (config?: Config<ContainerField, FieldEventMap<ContainerField>>, ...items: Component[]) => createComponent(new ContainerField(), config, items);
+export const containerfield = (config?: FieldConfig<ContainerField, FieldEventMap<ContainerField>>, ...items: Component[]) => createComponent(new ContainerField(), config, items);

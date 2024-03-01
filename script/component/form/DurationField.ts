@@ -1,5 +1,5 @@
 import {Config} from "../Observable";
-import {Field, FieldEventMap} from "./Field";
+import {Field, FieldConfig, FieldEventMap} from "./Field";
 import {createComponent} from "../Component";
 import {DateInterval, E} from "../../util";
 import {t} from "../../Translate";
@@ -175,4 +175,4 @@ export class DurationField extends Field {
 	}
 }
 
-export const durationfield = (config?: Config<DurationField, FieldEventMap<DurationField>>) => createComponent(new DurationField(config?.outputFormat ?? "h:I"), config);
+export const durationfield = (config?: FieldConfig<DurationField, FieldEventMap<DurationField>>) => createComponent(new DurationField(config?.outputFormat ?? "h:I"), config);

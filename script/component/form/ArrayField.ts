@@ -3,7 +3,7 @@
  * @copyright Copyright 2023 Intermesh BV
  * @author Merijn Schering <mschering@intermesh.nl>
  */
-import {Field, FieldEventMap, FieldValue} from "./Field.js";
+import {Field, FieldConfig, FieldEventMap, FieldValue} from "./Field.js";
 import {ContainerField} from "./ContainerField.js";
 import {createComponent} from "../Component.js";
 import {btn} from "../Button";
@@ -13,7 +13,7 @@ import {Config} from "../Observable";
 /**
  * @inheritDoc
  */
-type ArrayFieldConfig<Type extends FieldValue = Record<string, any>> = Config<ArrayField<Type>, FieldEventMap<ArrayField<Type>>, "buildField">
+type ArrayFieldConfig<Type extends FieldValue = Record<string, any>> = FieldConfig<ArrayField<Type>, FieldEventMap<ArrayField<Type>>, "buildField">
 
 type FieldBuilder<Type extends FieldValue = Record<string, any>> = (value?: Type) => Field;
 

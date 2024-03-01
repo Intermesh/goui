@@ -6,7 +6,7 @@
 
 // noinspection JSDeprecatedSymbols
 
-import {Field, FieldEventMap} from "./Field.js";
+import {Field, FieldConfig, FieldEventMap} from "./Field.js";
 import {tbar, Toolbar} from "../Toolbar.js";
 import {btn, Button} from "../Button.js";
 import {Config, Listener, ObservableListenerOpts} from "../Observable.js";
@@ -657,4 +657,4 @@ export class HtmlField extends Field {
  *
  * @param config
  */
-export const htmlfield = (config?: Config<HtmlField, HtmlFieldEventMap<HtmlField>>) => createComponent(new HtmlField(), config);
+export const htmlfield = (config?: FieldConfig<HtmlField, HtmlFieldEventMap<HtmlField>>) => createComponent(new HtmlField(), config);

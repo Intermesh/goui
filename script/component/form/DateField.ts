@@ -6,7 +6,7 @@
 
 import {createComponent} from "../Component.js";
 import {Config} from "../Observable";
-import {FieldEventMap} from "./Field";
+import {FieldConfig, FieldEventMap} from "./Field";
 import {TimeField} from "./TimeField";
 import {DateTime} from "../../util";
 
@@ -109,4 +109,4 @@ export class DateField extends TimeField {
  *
  * @param config
  */
-export const datefield = (config?: Config<DateField, FieldEventMap<DateField>>) => createComponent(new DateField(), config);
+export const datefield = (config?: FieldConfig<DateField, FieldEventMap<DateField>>) => createComponent(new DateField(), config);

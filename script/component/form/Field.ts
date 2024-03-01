@@ -5,7 +5,7 @@
  */
 
 import {Component, ComponentEventMap} from "../Component.js";
-import {Listener, ObservableListenerOpts} from "../Observable.js";
+import {Config, Listener, Observable, ObservableEventMap, ObservableListenerOpts} from "../Observable.js";
 import {Button} from "../Button.js";
 import {tbar, Toolbar} from "../Toolbar.js";
 import {t} from "../../Translate.js";
@@ -688,3 +688,14 @@ false
 
 	}
 }
+
+export type FieldConfig<Cmp extends Field, EventMap extends ObservableEventMap<Observable> = ComponentEventMap<Cmp>, Required extends keyof Cmp = never> = Omit<Config<Cmp, EventMap, Required>,
+	"isValid" |
+	"clearInvalid" |
+	"isEmtpy" |
+	"isFocussable" |
+	"isModified" |
+	"reset" |
+	"setInvalid" |
+	"trackReset"
+>;

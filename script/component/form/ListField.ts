@@ -5,7 +5,7 @@
  */
 
 import {Component, createComponent} from "../Component.js";
-import {Field, FieldEventMap} from "./Field.js";
+import {Field, FieldConfig, FieldEventMap} from "./Field.js";
 import {btn, Button} from "../Button.js";
 import {Menu, menu} from "../menu/Menu.js";
 import {Config, Listener, ObservableListenerOpts} from "../Observable";
@@ -137,7 +137,7 @@ export class ListField<ListType extends List = List> extends Field {
 }
 
 
-export type ListFieldConfig <T extends List> = Config<ListField<T>, ListFieldEventMap<ListField<T>>, "list"> &
+export type ListFieldConfig <T extends List> = FieldConfig<ListField<T>, ListFieldEventMap<ListField<T>>, "list"> &
 	Partial<Pick<ListField<T>, "pickerRecordToValue" | "renderValue">>;
 
 /**

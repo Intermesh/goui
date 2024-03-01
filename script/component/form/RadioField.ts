@@ -6,7 +6,7 @@
 
 import {E} from "../../util/Element.js";
 import {Component, createComponent} from "../Component.js";
-import {Field, FieldEventMap} from "./Field.js";
+import {Field, FieldConfig, FieldEventMap} from "./Field.js";
 import {Config} from "../Observable";
 
 
@@ -128,4 +128,4 @@ export class RadioField extends Field {
  *
  * @param config
  */
-export const radio = (config?: Config<RadioField, FieldEventMap<RadioField>>) => createComponent(new RadioField(config?.type || 'box'), config);
+export const radio = (config?: FieldConfig<RadioField, FieldEventMap<RadioField>>) => createComponent(new RadioField(config?.type || 'box'), config);

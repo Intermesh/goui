@@ -4,7 +4,7 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {FieldEventMap} from "./Field.js";
+import {FieldConfig, FieldEventMap} from "./Field.js";
 import {createComponent} from "../Component.js";
 import {Store} from "../../data/index.js";
 import {Config} from "../Observable";
@@ -137,4 +137,4 @@ export class SelectField extends InputField {
  *
  * @param config
  */
-export const select = (config?: Config<SelectField, FieldEventMap<SelectField>>) => createComponent(new SelectField(), config);
+export const select = (config?: FieldConfig<SelectField, FieldEventMap<SelectField>>) => createComponent(new SelectField(), config);

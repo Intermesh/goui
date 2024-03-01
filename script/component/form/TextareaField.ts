@@ -6,7 +6,7 @@
 import {TextField} from "./TextField.js";
 import {createComponent} from "../Component.js";
 import {Config} from "../Observable";
-import {FieldEventMap} from "./Field";
+import {FieldConfig, FieldEventMap} from "./Field";
 import {InputField} from "./InputField";
 
 /**
@@ -51,4 +51,4 @@ export class TextAreaField extends InputField {
  *
  * @param config
  */
-export const textarea = (config?: Config<TextAreaField, FieldEventMap<TextAreaField>>) => createComponent(new TextAreaField(), config);
+export const textarea = (config?: FieldConfig<TextAreaField, FieldEventMap<TextAreaField>>) => createComponent(new TextAreaField(), config);

@@ -6,7 +6,7 @@
 
 import {createComponent} from "../Component.js";
 import {Config} from "../Observable";
-import {FieldEventMap} from "./Field";
+import {FieldConfig, FieldEventMap} from "./Field";
 import {NumberField} from "./NumberField";
 
 export class RangeField extends NumberField {
@@ -23,4 +23,4 @@ export class RangeField extends NumberField {
 	}
 }
 
-export const rangefield = (config?: Config<RangeField, FieldEventMap<RangeField>>) => createComponent(new RangeField(), config);
+export const rangefield = (config?: FieldConfig<RangeField, FieldEventMap<RangeField>>) => createComponent(new RangeField(), config);
