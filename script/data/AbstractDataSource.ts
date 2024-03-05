@@ -524,7 +524,9 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	 * Clears all data and will resync
 	 */
 	public async reset() {
-		return this.setState(undefined);
+		await this.setState(undefined);
+
+		return await this.clearCache();
 	}
 
 	/**
