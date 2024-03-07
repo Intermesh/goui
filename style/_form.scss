@@ -84,7 +84,7 @@ $formFieldBorderRadius: dp(10);
 
 	&.box input {
 		margin: 0;
-		color: $colorPrimary;
+		color: $colorMain;
 		min-width: $baseLineHeight;
 		min-height: $baseLineHeight;
 		width: $baseLineHeight;
@@ -106,8 +106,8 @@ $formFieldBorderRadius: dp(10);
 			transform: scale(1);
 		}
 		&:focus {
-			border-color: $colorPrimary;
-			//box-shadow: 0 0 0 1px $colorPrimary;
+			border-color: $colorMain;
+			//box-shadow: 0 0 0 1px $colorMain;
 		}
 		&[style]:checked:before {
 			color:inherit;
@@ -397,14 +397,14 @@ $formFieldBorderRadius: dp(10);
 
 	&:focus-within {
 		>.wrap {
-			border-color: $colorPrimary;
+			border-color: $colorMain;
 
 			> i {
-				color: $colorPrimary;
+				color: $colorMain;
 			}
 
 			>.label {
-				color: $colorPrimary;
+				color: $colorMain;
 			}
 		}
 	}
@@ -421,7 +421,7 @@ $formFieldBorderRadius: dp(10);
 
 		&:focus-within:not(.invalid) {
 			.hint {
-				border-color: $colorPrimary;
+				border-color: $colorMain;
 			}
 		}
 
@@ -488,7 +488,7 @@ $formFieldBorderRadius: dp(10);
 			@extend %input;
 
 			&:focus {
-				color: $colorPrimary;
+				color: $colorMain;
 			}
 		}
 
@@ -652,7 +652,7 @@ $formFieldBorderRadius: dp(10);
 				border-radius: dp(12);
 
 				&:focus-visible {
-					border-color: $colorPrimary;
+					border-color: $colorMain;
 				}
 
 				> label {
@@ -737,7 +737,7 @@ $formFieldBorderRadius: dp(10);
 				border-radius:999px;
 			}
 			&:checked {
-				background-color: $colorSecondary;
+				background-color: $colorPrimary;
 			}
 			&:checked::after  {
 				transform: scale(1.5) translateX(dp(14));
@@ -751,7 +751,7 @@ $formFieldBorderRadius: dp(10);
 				background-color: $colorBackgroundInput;
 			}
 			&:focus {
-				border-color: $colorPrimary;
+				border-color: $colorMain;
 				&:checked:after {
 					transform:scale(1.75) translateX(dp(12));
 				}
@@ -881,14 +881,14 @@ form {
 .autocomplete {
 	&.expanded {
 		.wrap {
-			border-color: $colorPrimary;
+			border-color: $colorMain;
 			border-bottom-left-radius: 0;
 			border-bottom-right-radius: 0;
 			border-bottom: 0;
 		}
 
 		.label, .control {
-			color: $colorPrimary;
+			color: $colorMain;
 		}
 
 		box-shadow: 0 10px 20px 0 rgb(0 0 0 / 40%);
@@ -898,7 +898,7 @@ form {
 .autocomplete-suggestions {
 
 	@extend .z8;
-	border: $borderWidth solid $colorPrimary;
+	border: $borderWidth solid $colorMain;
 	border-top: 0;
 	border-radius: 0 0 $formFieldBorderRadius $formFieldBorderRadius;
 	background-color: white;
@@ -961,7 +961,7 @@ div.color-dot {
 		.chip {
 			float: left;
 			border-radius: dp(20);
-			background-color: var(--bg-primary);
+			background-color: var(--bg-main);
 			padding: dp(3) dp(12);
 			margin: dp(8) dp(4);
 			overflow: hidden;
@@ -1004,14 +1004,14 @@ div.color-dot {
 		overflow: visible;;
 		padding: 0;
 		-webkit-appearance: none;
-		background: $colorPrimary;
+		background: $colorMain;
 		height: dp(8);
 		margin: dp(19);
 	}
 
 	input[type='range']::-webkit-slider-thumb {
 		-webkit-appearance: none;
-		background: $colorPrimary;
+		background: $colorMain;
 		height: dp(24);
 		width: dp(24);
 		border-radius: 50%;

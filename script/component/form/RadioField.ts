@@ -47,6 +47,8 @@ export class RadioField extends Field {
 		this.type = type;
 		this.el.cls(type, true);
 	}
+	// we handle it with the native change event here
+	protected fireChangeOnBlur = false;
 
 	protected createLabel(): HTMLDivElement | void {
 		return;
@@ -79,9 +81,13 @@ export class RadioField extends Field {
 		}
 
 		options.forEach((o) => {
-			const btn = E('input').on("change", () => {
-				this.fireChange();
-			});
+			const btn = E('input')
+				.on("focus", () => {
+					this.valueOnFocus = this.value;
+				})
+				.on("change", () => {
+					this.fireChange();
+				});
 			btn.type = "radio";
 			btn.name = this.name || this.itemId;
 			btn.readOnly = this.readOnly;

@@ -45,7 +45,7 @@
 
 	&.pressed {
 		box-shadow: inset -2px -2px -2 $colorOutline; // underline
-		background-color: $colorPrimary;
+		background-color: $colorMain;
 		color: white;
 		&:hover {
 			filter: brightness(120%);
@@ -58,7 +58,7 @@
 	//}
 
 	&.primary {
-		color: $colorPrimary;
+		color: $colorMain;
 	}
 
 	&.accent {
@@ -76,8 +76,8 @@
 
 		&.primary, &[type=submit] {
 			color: white;
-			background-color: $colorPrimary;
-			border-color: $colorPrimary;
+			background-color: $colorMain;
+			border-color: $colorMain;
 			&:hover {
 				filter: brightness(120%);
 			}
@@ -104,12 +104,12 @@
 
 
 		&.primary, &[type=submit] {
-			border-color: $colorSecondary;
-			color: $colorSecondary;
+			border-color: $colorPrimary;
+			color: $colorPrimary;
 
 			&:hover {
 				color: white;
-				background-color: $colorSecondary;
+				background-color: $colorPrimary;
 			}
 		}
 
@@ -125,7 +125,7 @@
 	}
 
 	&:focus-visible {
-		border: $borderWidth solid $colorPrimary;
+		border: $borderWidth solid $colorMain;
 		@extend .z4;
 	}
 }

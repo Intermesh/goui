@@ -85,7 +85,7 @@ menu.goui-dropdown {
 			}
 		}
 		&.today {
-			border: 1px solid $colorPrimary;
+			border: 1px solid $colorMain;
 		}
 		&.off {
 			opacity: .4;
@@ -99,7 +99,7 @@ menu.goui-dropdown {
 	}
 
 	.selected, .selected:hover {
-		background-color: $colorPrimary;
+		background-color: $colorMain;
 		color:white;
 	}
 

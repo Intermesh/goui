@@ -15,8 +15,8 @@ $colorSelectedRow: var(--bg-selected)  !default;
 $colorSelectedRowText: var(--fg-selected) !default;
 $colorSelectedRowInactive: var(--bg-selected-inactive) !default;
 
+$colorMain: var(--fg-main) !default;
 $colorPrimary: var(--c-primary) !default;
-$colorSecondary: var(--c-secondary) !default;
 $colorAccent: var(--c-accent) !default; //#f39345;
 
 
@@ -40,7 +40,7 @@ $colorWindowHeader: $surfaceHigh !default;//#f5f5f5;
 $colorFocus: var(--bg-focus) !default;
 
 
-$colorBorderSelectedInput: var(--c-primary) !default; //rgb(0,176,173) !default;
+$colorBorderSelectedInput: var(--fg-main) !default; //rgb(0,176,173) !default;
 $colorBackgroundInput: var(--bg-input) !default;
 $colorBackgroundReadOnly: var(--bg-low);
 $colorMasked: $colorBackgroundReadOnly !default;

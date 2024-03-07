@@ -252,13 +252,13 @@ hr.goui {
 .goui.drop-pin {
 	position:fixed;
 	height: 1px;
-	background-color: $colorPrimary;
+	background-color: $colorMain;
 	pointer-events: none;
 	&:after {
 		content: " ";
 		display: block;;
 		border-radius: 50%;
-		background-color: $colorPrimary;
+		background-color: $colorMain;
 		width: dp(8);
 		height: dp(8);
 		position: absolute;
