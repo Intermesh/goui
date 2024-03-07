@@ -135,8 +135,15 @@ export class Observable {
 	}
 
 	private once(eventName: keyof ObservableEventMap<Observable>, listener: Function) {
+
+		//because of the settimeout it can run multiple times within the same event loop
+		let executed = false;
 		const newfn = (...args: any[]) => {
-			listener.apply(null, args);
+			if(!executed) {
+				listener.apply(null, args);
+			}
+
+			executed = true;
 			// use set timeout so for .. of loop will continue with next listeners
 			setTimeout(() => {
 				this.un(eventName, listener);

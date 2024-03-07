@@ -46,9 +46,28 @@ class Root extends Component {
 			this.el.classList.add("goui");
 			this.el.classList.add("root");
 
+			this.initColorScheme();
+
 		}, {
 			once: true
 		})
+	}
+
+	private initColorScheme() {
+
+		if(!this.el.classList.contains("system")) {
+			return;
+		}
+
+		const dark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+		this.el.classList.toggle("dark", dark)
+		this.el.classList.toggle("light", !dark)
+
+		window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+			this.el.classList.toggle("dark", event.matches)
+			this.el.classList.toggle("light", !event.matches)
+		});
 	}
 }
 
