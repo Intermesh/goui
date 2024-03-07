@@ -58,7 +58,7 @@
 	//}
 
 	&.primary {
-		color: $colorMain;
+		color: $colorPrimary;
 	}
 
 	&.accent {
@@ -76,8 +76,8 @@
 
 		&.primary, &[type=submit] {
 			color: white;
-			background-color: $colorMain;
-			border-color: $colorMain;
+			background-color: $colorPrimary;
+			border-color: $colorPrimary;
 			&:hover {
 				filter: brightness(120%);
 			}
