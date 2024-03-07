@@ -36,10 +36,12 @@ $mobileDensity: 62.5% !default;
 	--bg-selected:   	#{rgba(black, .08)};
 	--bg-selected-inactive: #{rgba(black, .08)};
 
-	--bg-main: #dae3f0;
-	--fg-main: 		#1652a1;
+	--bg-main: #1652a1; // used for header in GO for example.
+	--fg-main: 		#1652a1; // Used for anchor text for example and form focus color
+
+	// Mainly used as button styles
 	--c-primary: 	 #00b0ad;
-	--c-secondary: 		rgb(243,219,0);
+	--c-secondary: 		rgb(243,219,0); // Active tab underline
 	--c-accent: 		#ff7200;
 
 	--fg-error: #721c24;
@@ -64,8 +66,6 @@ $mobileDensity: 62.5% !default;
 	--hue-brown: #6D4C41;
 	--hue-yellow: #FDD170;
 	--hue-bluegrey: #607D8B;
-
-	--c-header-bg: 	var(--fg-main);
 
 	--bg-alt: 			#212121;
 	--fg-alt:			#f5f5f5;
@@ -112,7 +112,7 @@ $mobileDensity: 62.5% !default;
 	--fg-selected: 	white;
 	--bg-selected-inactive: #4a4a60;
 
-	--bg-main: #1652a1;
+	--bg-main: #000000;
 	--fg-main: #009BC9;
 
 	--fg-error: #FFEBEE;
