@@ -126,7 +126,8 @@ export class DatePicker extends Component {
 					E('div').attr('style', 'flex:1'),
 
 					E('button', t("Today")).cls(["goui-button", "primary"], true).on('click', _ => {
-						this.fire('select', this, new DateTime());
+						this.value = new DateTime();
+						this.fire('select', this, this.value );
 					})
 				)
 			);
@@ -298,7 +299,9 @@ export class DatePicker extends Component {
 			dl.un('mousemove', onMouseMove);
 			window.removeEventListener('mouseup', onMouseUp);
 			if (!this.enableRangeSelect || start == end) {
-				this.fire('select', this, new DateTime(start.attr('data-date')));
+				const v = new DateTime(start.attr('data-date'));
+				this.value = v;
+				this.fire('select', this, v);
 			} else {
 				this.fire('select-range', this, new DateTime(start.attr('data-date')), new DateTime(end.attr('data-date')));
 			}

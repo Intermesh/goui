@@ -417,10 +417,15 @@ export class DateTime {
 	 *
 	 * @param date Can be a date object, a unix timestamp or date string (see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date#date_time_string_format)
 	 */
-	constructor(date?: Date | number | string) {
-		this.date = (date instanceof Date) ?
-			date :
-			(date ? new Date(date) : new Date());
+	constructor(date?: Date | DateTime | number | string) {
+
+		if( (date instanceof Date)) {
+			this.date = structuredClone(date);
+		} else if (date instanceof DateTime) {
+			this.date = structuredClone(date.date);
+		} else {
+			this.date = date ? new Date(date) : new Date();
+		}
 	}
 
 	/**
@@ -779,6 +784,7 @@ export class DateTime {
 		'D': date => DateTime.dayNames[DateTime.dayMap[date.getWeekDay()]].substring(0, 3),
 		'j': date => date.getMonthDay().toString(),
 		'l': date => DateTime.dayNames[DateTime.dayMap[date.getWeekDay()]],
+		'N' : date => (date.getWeekDay() + 1).toString(),
 		'S': date => ["st", "nd", "rd"][((date.getMonthDay() + 90) % 100 - 10) % 10 - 1] || "th",
 
 		'w': date => date.getDay().toString(),

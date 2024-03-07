@@ -267,9 +267,8 @@ export class Button extends Component {
 	 */
 	set text(text: string) {
 
+		this._text = text;
 		if (text) {
-			this._text = text;
-
 			this.el.classList.add("with-text");
 		} else {
 			this.el.classList.remove("with-text");
