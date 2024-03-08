@@ -9,7 +9,6 @@
     "fake-indexeddb": "latest",
     "jsdom": "latest",
     "jsdom-global": "latest",
-    "material-icons": "latest",
     "mocha": "latest",
     "sass": "latest",
     "ts-node": "latest",
