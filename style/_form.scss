@@ -990,7 +990,15 @@ div.color-dot {
 	}
 }
 
-
+.goui-form-field {
+	&.date-range {
+		.value-display {
+			flex: 1;
+			align-self: stretch;
+			padding: dp(11) dp(16);
+		}
+	}
+}
 
 
 .goui-form-field.range {

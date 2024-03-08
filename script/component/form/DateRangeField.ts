@@ -4,15 +4,22 @@ import {Menu, menu} from "../menu";
 import {t} from "../../Translate";
 import {DatePicker, datepicker} from "../picker";
 import {DateTime, Format} from "../../util";
-import {comp, createComponent, hr} from "../Component";
-import {DateField} from "./DateField";
+import {comp, Component, createComponent, hr} from "../Component";
 
+/**
+ * Date range field
+ *
+ * Used to select a date range. The value format is:
+ *
+ * "YYYY-MM-DD..YYYY-MM-DD"
+ */
 export class DateRangeField extends Field {
 	private button: Button;
 	private startPicker: DatePicker;
 	private endPicker: DatePicker	;
 
 	private static f = "Y-m-d";
+	private valueDisplay: Component;
 	constructor() {
 		super();
 
@@ -31,18 +38,31 @@ export class DateRangeField extends Field {
 
 		this.button = this.createButton();
 
-		this.items.add(this.button);
-	}
+		this.baseCls += " date-range";
 
-	protected createControl(): HTMLElement | undefined {
-		return super.createControl();
+		this.valueDisplay = comp({cls: "value-display"});
+		this.items.add(this.valueDisplay);
+
+		this.buttons = [
+			btn({
+				icon: "clear",
+				handler: ()=>{
+					this.value = undefined;
+					this.fireChange();
+				}
+			}),
+
+			this.button
+		]
 	}
 
 	private createButton() {
 		return btn({
 			flex: 1,
+			icon: "expand_more",
 			menu: menu({
-					alignToInheritWidth: true
+					alignToInheritWidth: true,
+					alignTo: this.el
 				},
 				btn({
 					text: t("Today"),
@@ -151,39 +171,33 @@ export class DateRangeField extends Field {
 							this.startPicker, this.endPicker
 						)
 					)
-				}),
-
-
-				hr(),
-
-				btn({
-					text: t("Clear"),
-					handler: () => {
-						this.value = undefined;
-						this.fireChange();
-					}
 				})
 			)
 		});
 	}
 
-
-
-
 	protected internalSetValue(v?: any) {
 		super.internalSetValue(v);
 
-		if(!v) {
-			this.button.text = "";
+		if (!v) {
+			this.valueDisplay.text = "";
 		} else {
-			//const parts = v.split("..");
+			const parts = v.split("..");
 
-			this.button.text = v;
+			const date1 = DateTime.createFromFormat(parts[0], DateRangeField.f)
+
+			if (date1) {
+				this.valueDisplay.text = date1.format(Format.dateFormat);
+
+				if (parts[0] != parts[1]) {
+					const date2 = DateTime.createFromFormat(parts[1], DateRangeField.f);
+
+					if (date2) {
+						this.valueDisplay.text += " - " + date2.format(Format.dateFormat);
+					}
+				}
+			}
 		}
-
-
-
-
 	}
 
 	private updateBtnText() {
