@@ -42,10 +42,15 @@ export class RadioField extends Field {
 	readonly type: RadioType;
 	protected baseCls = 'goui-form-field radiogroup';
 
+
+	private domName: string;
+
 	constructor(type: RadioType = 'box') {
 		super('div');
 		this.type = type;
 		this.el.cls(type, true);
+
+		this.domName = "radio-" + Component.uniqueID();
 	}
 	// we handle it with the native change event here
 	protected fireChangeOnBlur = false;
@@ -89,7 +94,7 @@ export class RadioField extends Field {
 					this.fireChange();
 				});
 			btn.type = "radio";
-			btn.name = this.name || this.itemId;
+			btn.name = this.domName;
 			btn.readOnly = this.readOnly;
 			if (o.value) {
 				btn.value = o.value;
