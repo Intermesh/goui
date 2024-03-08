@@ -37,6 +37,10 @@ export class ContainerField<ValueType extends ContainerFieldValue = ContainerFie
 
 	protected fireChangeOnBlur = false;
 
+	protected get itemContainerEl() :HTMLElement{
+		return this.el;
+	}
+
 	/**
 	 * Find all form fields
 	 *
