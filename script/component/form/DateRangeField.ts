@@ -79,6 +79,10 @@ export class DateRangeField extends Field {
 		});
 	}
 
+	protected get itemContainerEl() :HTMLElement{
+		return this.wrap;
+	}
+
 	private createButton() {
 		return btn({
 			flex: 1,

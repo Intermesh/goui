@@ -124,19 +124,19 @@
 		position: relative;
 		margin: 0;
 
-		& + *:not(.goui-cardmenu):not(form) {
-			margin-top: 0;
-		}
-
-		& + form {
-			> div {
-				background: $surfaceMid;
-			}
-
-			&:first-child:not(.goui-cardmenu) {
-				margin-top: 0;
-			}
-		}
+		//& + *:not(.goui-cardmenu):not(form) {
+		//	margin-top: 0;
+		//}
+		//
+		//& + form {
+		//	> div {
+		//		background: $surfaceMid;
+		//	}
+		//
+		//	&:first-child:not(.goui-cardmenu) {
+		//		margin-top: 0;
+		//	}
+		//}
 	}
 
 	> p {

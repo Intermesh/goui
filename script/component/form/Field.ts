@@ -243,9 +243,7 @@ export abstract class Field extends Component {
 
 		return this._wrap;
 	}
-	protected get itemContainerEl() :HTMLElement{
-		return this.wrap;
-	}
+
 
 	protected renderControl() {
 
