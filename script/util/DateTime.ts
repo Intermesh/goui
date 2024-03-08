@@ -688,6 +688,30 @@ export class DateTime {
 		return this;
 	}
 
+
+	/**
+	 * Get the day of the year in range 1-366
+	 */
+	getYearDay(){
+		const date = this.date;
+		return (Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) - Date.UTC(date.getFullYear(), 0, 0)) / 24 / 60 / 60 / 1000;
+	}
+
+
+	/**
+	 * Set the day of the year
+	 * @param yearDay range 1-366
+	 */
+	setYearDay(yearDay:number) {
+		this.setMonth(1);
+		this.setDay(0);
+		return this.addDays(yearDay);
+	}
+
+	/**
+	 * Sets the numeric day-of-the-month value of the Date object using local time.
+	 * @param date A numeric value equal to the day of the month.
+	 */
 	setDate(date: number) {
 		this.date.setDate(date);
 		return this;
