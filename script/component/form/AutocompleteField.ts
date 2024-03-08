@@ -169,7 +169,7 @@ export class AutocompleteField<T extends List = List> extends TextField {
 				case 'ArrowDown':
 					ev.preventDefault();
 					this.fire("autocomplete", this, this.input!.value);
-					this.menuButton.showMenu();
+					this.menuButton.menu!.show();
 					this.list.focus();
 					break;
 
@@ -188,7 +188,7 @@ export class AutocompleteField<T extends List = List> extends TextField {
 	}
 
 	private onInput(_ev: KeyboardEvent) {
-		this.menuButton.showMenu();
+		this.menuButton.menu!.show();
 		this.fire("autocomplete", this, this.input!.value);
 	}
 

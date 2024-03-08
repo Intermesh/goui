@@ -4,12 +4,16 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {comp, Component} from "./Component.js";
+import {comp, Component, ComponentEventMap} from "./Component.js";
 import {Button} from "./Button.js";
-import type {Menu} from "./menu/Menu.js";
-import {Config} from "./Observable";
+import {Config, Listener, ObservableListenerOpts} from "./Observable";
 
 
+export interface Toolbar extends Component {
+	on<K extends keyof ComponentEventMap<this>, L extends Listener>(eventName: K, listener: Partial<ComponentEventMap<this>>[K], options?: ObservableListenerOpts): L
+	un<K extends keyof ComponentEventMap<this>>(eventName: K, listener: Partial<ComponentEventMap<this>>[K]): boolean
+	fire<K extends keyof ComponentEventMap<this>>(eventName: K, ...args: Parameters<ComponentEventMap<any>[K]>): boolean
+}
 /**
  * Toolbar Component
  *
@@ -82,11 +86,6 @@ export class Toolbar extends Component {
 
 		})
 
-		this.on("focus", () => {
-			if (this.focusedItemIndex > -1) {
-				this.items.get(this.focusedItemIndex)!.focus();
-			}
-		});
 
 		this.on("hide", () => {
 			this.focusedItemIndex = -1;
@@ -107,7 +106,7 @@ export class Toolbar extends Component {
 					} else {
 						this.focusNext();
 					}
-					ev.stopPropagation();
+					// ev.stopPropagation();
 					ev.preventDefault();
 					break;
 				case 'ArrowDown':
@@ -117,7 +116,7 @@ export class Toolbar extends Component {
 						this.focusChild();
 
 					}
-					ev.stopPropagation();
+					//ev.stopPropagation();
 					ev.preventDefault();
 					break;
 
@@ -134,7 +133,7 @@ export class Toolbar extends Component {
 						this.focusNext(-1);
 
 					}
-					ev.stopPropagation();
+					// ev.stopPropagation();
 					ev.preventDefault();
 					break;
 
@@ -145,7 +144,7 @@ export class Toolbar extends Component {
 						this.focusParent();
 
 					}
-					ev.stopPropagation();
+					// ev.stopPropagation();
 					ev.preventDefault();
 					break;
 			}
@@ -195,6 +194,19 @@ export class Toolbar extends Component {
 		}
 
 		return true;
+	}
+
+	public focus(o?: FocusOptions) {
+		if (this.focusedItemIndex > -1) {
+			this.items.get(this.focusedItemIndex)!.focus();
+		} else {
+			const i = this.items.get(0);
+
+			if(i) {
+				this.focusedItemIndex = 0;
+				i.focus(o);
+			}
+		}
 	}
 
 }

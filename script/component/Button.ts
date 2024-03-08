@@ -195,7 +195,7 @@ export class Button extends Component {
 
 	private onMenuButtonClick(ev: MouseEvent) {
 		if (this._menu!.hidden) {
-			this.showMenu();
+			this._menu!.show();
 		} else {
 			this._menu!.hide();
 		}
@@ -204,7 +204,7 @@ export class Button extends Component {
 	private onMenuMouseEnter(ev: MouseEvent) {
 		if (Menu.openedMenu && Menu.openedMenu != this._menu && Menu.openedMenu.parent!.parent === this._menu!.parent!.parent) {
 
-			this.showMenu();
+			this._menu!.show();
 		}
 	}
 
@@ -216,6 +216,12 @@ export class Button extends Component {
 			menu.parent = this;
 			menu.removeOnClose = false;
 			menu.isDropdown = true;
+
+			menu.on("beforeshow", (m) => {
+				if(!m.alignTo) {
+					m.alignTo = this.el;
+				}
+			});
 
 			this.el.classList.add("has-menu");
 		}
@@ -241,9 +247,7 @@ export class Button extends Component {
 		if (this.fire("beforeshowmenu", this, this._menu) === false) {
 			return;
 		}
-		if(!this._menu.alignTo) {
-			this._menu.alignTo = this.el;
-		}
+
 
 		this._menu.show();
 

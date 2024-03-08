@@ -4,13 +4,19 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {Component, createComponent} from "../Component.js";
+import {Component, ComponentEventMap, createComponent} from "../Component.js";
 import {root} from "../Root.js";
 import {Button} from "../Button.js";
 import {Toolbar} from "../Toolbar.js";
-import {Config} from "../Observable";
+import {Config, Listener, ObservableListenerOpts} from "../Observable";
 import HTML = Mocha.reporters.HTML;
 
+
+export interface Menu extends Toolbar {
+	on<K extends keyof ComponentEventMap<this>, L extends Listener>(eventName: K, listener: Partial<ComponentEventMap<this>>[K], options?: ObservableListenerOpts): L
+	un<K extends keyof ComponentEventMap<this>>(eventName: K, listener: Partial<ComponentEventMap<this>>[K]): boolean
+	fire<K extends keyof ComponentEventMap<this>>(eventName: K, ...args: Parameters<ComponentEventMap<any>[K]>): boolean
+}
 
 /**
  * Menu class
@@ -359,12 +365,7 @@ export class Menu extends Toolbar {
 		return this.removeOnClose ? this.remove() : this.hide();
 	}
 
-	/**
-	 * @inheritDoc
-	 */
-	public focus(o?: FocusOptions) {
-		this.items.get(0)?.focus(o);
-	}
+
 }
 
 /**
@@ -373,4 +374,4 @@ export class Menu extends Toolbar {
  * @param config
  * @param items
  */
-export const menu = (config?: Config<Menu>, ...items: Component[]) => createComponent(new Menu(), config, items);
+export const menu = (config?: Config<Menu, ComponentEventMap<Menu>>, ...items: Component[]) => createComponent(new Menu(), config, items);

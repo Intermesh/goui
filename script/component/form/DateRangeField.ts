@@ -53,7 +53,30 @@ export class DateRangeField extends Field {
 			}),
 
 			this.button
-		]
+		];
+
+
+
+		this.el!.addEventListener('keydown', (ev) => {
+			console.log(ev.key);
+
+			switch (ev.key) {
+
+				case 'ArrowDown':
+					ev.preventDefault();
+					this.button.menu!.show();
+					this.button.menu!.focus();
+					break;
+
+				case 'Escape':
+				this.button.menu!.hide();
+						ev.preventDefault();
+						ev.stopPropagation();
+
+
+					break;
+			}
+		});
 	}
 
 	private createButton() {
