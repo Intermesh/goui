@@ -165,6 +165,24 @@ html {
 	overflow: auto;
 }
 
+.goui {
+	.bg-lowest {
+		background-color: $surfaceLowest;
+	}
+	.bg-low {
+		background-color: $surfaceLow;
+	}
+	.bg-mid {
+		background-color: $surfaceMid;
+	}
+	.bg-high {
+		background-color: $surfaceHigh;
+	}
+	.bg-highest{
+		background-color: $surfaceHighest;
+	}
+}
+
 
 %vr {
 	border: 0;
