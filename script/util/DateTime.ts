@@ -882,6 +882,8 @@ export class DateTime {
 	 *
 	 */
 	format(format: string): string {
+		if(format.indexOf("\\") > -1)
+			debugger;
 
 		const chars = format.split("");
 		let output = "";
@@ -890,7 +892,7 @@ export class DateTime {
 			if (char == '\\') {
 				i++;
 				if (chars.length > i + 1) {
-					char += chars[i];
+					char = chars[i];
 				}
 			} else if (char in DateTime.converters) {
 				char = DateTime.converters[char](this) + "";

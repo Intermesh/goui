@@ -37,6 +37,7 @@ export class ContainerField<ValueType extends ContainerFieldValue = ContainerFie
 
 	protected fireChangeOnBlur = false;
 
+
 	/**
 	 * Find all form fields
 	 *
