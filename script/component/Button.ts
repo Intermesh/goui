@@ -195,6 +195,7 @@ export class Button extends Component {
 	}
 
 	private onMenuMouseEnter(ev: MouseEvent) {
+		// open submenu's or toolbar menu's when one menu is already opened by a click
 		if(this._menu && this._menu.hidden && (this._menu.parentMenu instanceof Menu || (this._menu.parentMenu && this._menu.parentMenu.openedMenu))) {
 			this._menu.show();
 		}
