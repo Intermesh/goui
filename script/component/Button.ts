@@ -195,8 +195,8 @@ export class Button extends Component {
 	}
 
 	private onMenuMouseEnter(ev: MouseEvent) {
-		if(this._menu!.hidden) {
-			this._menu!.show();
+		if(this._menu && this._menu.hidden && (this._menu.parentMenu instanceof Menu || (this._menu.parentMenu && this._menu.parentMenu.openedMenu))) {
+			this._menu.show();
 		}
 	}
 
