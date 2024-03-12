@@ -55,8 +55,6 @@ export class DateRangeField extends Field {
 			this.button
 		];
 
-
-
 		this.el!.addEventListener('keydown', (ev) => {
 			console.log(ev.key);
 

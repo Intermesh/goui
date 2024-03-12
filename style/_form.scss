@@ -744,24 +744,24 @@ border-radius: 0;
 				border-radius:999px;
 			}
 			&:checked {
-				background-color: $colorPrimary;
+				background-color: var(--bg-focus);
 			}
 			&:checked::after  {
 				transform: scale(1.5) translateX(dp(14));
-				background-color:white;
+				background-color:$colorMain;
 			}
-			&:active::after { // focus
-				transform: scale(1.75);
-			}
+			//&:active::after { // focus
+			//	transform: scale(1.75);
+			//}
 			&:active:checked::after  {
-				transform:scale(1.75) translateX(dp(12));
-				background-color: $colorBackgroundInput;
+				//transform:scale(1.75) translateX(dp(12));
+				//background-color: $colorBackgroundInput;
 			}
 			&:focus {
 				border-color: $colorMain;
-				&:checked:after {
-					transform:scale(1.75) translateX(dp(12));
-				}
+				//&:checked:after {
+				//	transform:scale(1.75) translateX(dp(12));
+				//}
 			}
 		}
 
