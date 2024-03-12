@@ -1,6 +1,3 @@
-.preload * {
-	animation-duration: 0s !important;
-}
 
 $buttonSize: dp(34);
 
@@ -13,7 +10,10 @@ menu.goui-dropdown {
 .datepicker {
 	width: 7 * ($buttonSize + dp(4)) + dp(8);
 	position: relative;
-	margin:0 auto;
+	display: block;
+	&.show-weeknbs {
+		width: 8 * ($buttonSize + dp(4)) + dp(8);
+	}
 	dl {
 		margin: 0;
 		display: grid;
@@ -43,16 +43,19 @@ menu.goui-dropdown {
 	}
 
 	ol { // week nbs
+		display: grid;
+		grid-template-columns: repeat(1, 1fr);
 		list-style-type: none;
 		float: left;
+		gap: dp(2);
 		border-right: 1px solid rgba(0, 0, 0, 0.16);
 		font-size: 1rem;
 		padding: 0;
-		margin: dp(2) 0 0 0;
+		margin: dp(40) 0 0 0;
 		> li {
 			cursor: default;
 			user-select: none;
-			margin-bottom: dp(2);
+			margin: dp(2);
 		}
 	}
 	dd, dt, li {
@@ -143,14 +146,14 @@ menu.goui-dropdown {
 
 	@keyframes go-top {
 		from {transform: translateY(0);}
-		to {	transform: translateY(-100%);}
+		to {	transform: translateY(-101%);}
 	}
 	@keyframes go-bottom {
 		from {transform: translateY(0);}
-		to {	transform: translateY(100%);}
+		to {	transform: translateY(101%);}
 	}
 
-	$duration: 250ms;
+	$duration: 400ms;
 	.cards {
 		position: relative;
 		height: 7 * ($buttonSize + dp(4)) + dp(12);//20.8rem; /* 6x28 + 12m */
@@ -167,21 +170,48 @@ menu.goui-dropdown {
 			}
 		}
 
-		> * {
-			z-index: 0;
-			position: absolute;
-			animation: $duration ease-out forwards go-bottom; // go out to bottom
+		&.animate {
+
+			> * {
+				z-index: 0;
+				position: absolute;
+				transition: transform $duration linear; // go out to bottom
+				transform: translateY(100%);
+			}
+
+			> .active {
+				z-index: 1;
+				transition: transform $duration linear; // come in from top
+				transform: translateY(0);
+			}
+
+			> .active + div {
+				transition: transform $duration linear; // come in from top
+				transform: translateY(-100%);
+			}
+
+			&.reverse {
+				> * {
+					z-index: 0;
+					position: absolute;
+					transition: transform $duration linear; // go out to bottom
+					transform: translateY(-100%);
+				}
+
+				> .active {
+					z-index: 1;
+					transition: transform $duration linear; // come in from top
+					transform: translateY(0);
+				}
+
+				> .active + div {
+					transition: transform $duration linear; // come in from top
+					transform: translateY(100%);
+				}
+			}
 		}
-		> .active {
-			z-index: 1;
-			animation: $duration ease-in reverse forwards go-top; // come in from top
-		}
-		&.reverse > * {
-			animation: $duration ease-out forwards go-top; // go out to top
-		}
-		&.reverse > .active {
-			animation: $duration ease-in reverse forwards go-bottom; // come in from bottom
-		}
+
+
 	}
 
 }

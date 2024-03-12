@@ -39,7 +39,6 @@ export class DatePicker extends Component {
 	protected grid: HTMLElement
 	protected menu: HTMLElement
 
-	withoutFooter?: boolean
 	minDate?: DateTime;
 
 	maxDate?: DateTime;
@@ -57,8 +56,6 @@ export class DatePicker extends Component {
 		this.showWeekNbs = true;
 		this.value = new DateTime();
 		this.now = new DateTime();
-		//this.el = document.getElementById('cal');
-		this.el.cls('+preload');
 
 		this.el.append(
 			this.menu = E('header',
@@ -96,7 +93,7 @@ export class DatePicker extends Component {
 						this.months.cls('-active');
 					}
 				})
-			).cls(['cards', 'top'], true)
+			).cls(['cards', 'top', 'animate', 'reverse'], true)
 		);
 
 		// minimum and maximum year
@@ -115,25 +112,7 @@ export class DatePicker extends Component {
 		this.setValue(this.value);
 	}
 
-	public render(parentEl?: Node, insertBefore?: Node) {
-		if(!this.withoutFooter) {
-			this.el.append(
-				E('footer',
-					E('button', t("Clear")).cls(["goui-button", "primary"], true).on('click', _ => {
-						this.fire('select', this, undefined);
-					}),
 
-					E('div').attr('style', 'flex:1'),
-
-					E('button', t("Today")).cls(["goui-button", "primary"], true).on('click', _ => {
-						this.value = new DateTime();
-						this.fire('select', this, this.value );
-					})
-				)
-			);
-		}
-		return super.render(parentEl, insertBefore);
-	}
 
 	/**
 	 * Refresh the view
@@ -160,7 +139,7 @@ export class DatePicker extends Component {
 		}
 	}
 
-	private setYearClases() {
+	private setYearClasses() {
 
 		this.years.querySelector('.selected')?.cls('-selected');
 
@@ -208,11 +187,15 @@ export class DatePicker extends Component {
 		this.monthEl.innerHTML = month + '<i class="icon">arrow_drop_down</i>';
 
 
-		this.setYearClases();
+		this.setYearClasses();
 		this.setMonthClasses();
 
+		if(this.showWeekNbs) {
+			this.el.classList.add("show-weeknbs");
+		}
 
-		const cal = E('div').cls('active');
+
+		const cal = E('div');
 		const dl = E('dl'),
 			itr = this.value.clone().setMonthDay(1).setWeekDay(0),  // monday back from 1st
 			weekNbs = E('ol');
@@ -244,14 +227,20 @@ export class DatePicker extends Component {
 		this.setupDraggability(dl);
 		cal.append(dl);
 
-		const old = this.grid.firstElementChild?.cls('-active');
+		const old = this.grid.firstElementChild?.cls('-active').cls("+reverse");
 		this.grid.prepend(cal); // prepend so query selector will find the new month
+
+		this.grid.offsetHeight; // force paint
+
+		this.grid.cls("+animate");
+
+		cal.cls('active');
 
 		// cleanup
 		setTimeout(function () {
-			el.cls('-preload');
+
 			old?.remove();
-		}, 250);
+		}, 400);
 		return el;
 	}
 
@@ -259,7 +248,6 @@ export class DatePicker extends Component {
 
 		this.value = start;
 		if (this.rendered && start.format('YM') !== this.renderedMonth) {
-			this.el.cls('+preload');
 			this.internalRender();
 		}
 
