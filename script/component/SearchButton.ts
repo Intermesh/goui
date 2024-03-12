@@ -82,7 +82,10 @@ export class SearchButton extends Button {
 
 	public handler = (button: Button, ev?: MouseEvent) => {
 
-		this.mainTbar = button.parent as Toolbar;
+		this.mainTbar = button.findAncestorByType(Toolbar);
+		if(!this.mainTbar) {
+			throw "Search button must be inside a Toolbar";
+		}
 		this.getSearchTBar().show();
 
 		this.searchField.focus();
