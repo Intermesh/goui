@@ -7,6 +7,7 @@
 import {comp, Component, ComponentEventMap} from "./Component.js";
 import {Button} from "./Button.js";
 import {Config, Listener, ObservableListenerOpts} from "./Observable";
+import {Menu} from "./menu";
 
 
 export interface Toolbar extends Component {
@@ -56,6 +57,11 @@ export class Toolbar extends Component {
 	}
 
 	private focusedItemIndex = -1;
+
+	/**
+	 * Is set to the menu currently open. There can only be one dropdown open at the same time
+	 */
+	public openedMenu?:Menu;
 
 	/**
 	 * Find the first menu in the tree of submenu's

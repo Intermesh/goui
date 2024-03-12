@@ -9,6 +9,7 @@ import {Menu} from "./menu/Menu.js";
 import {Config, Listener, ObservableListenerOpts} from "./Observable.js";
 import {MaterialIcon} from "./MaterialIcon.js";
 import {router} from "../Router.js";
+import {root} from "./Root";
 
 type ButtonType = "button" | "submit" | "reset";
 
@@ -159,16 +160,8 @@ export class Button extends Component {
 		// visible in windows. Sub menu's are rendered inside the parent menu button.
 		if (this.menu) {
 			this.menu.hide();
-
-			if (!(this.parent instanceof Menu)) {
-				// When a menu is opened. other top level will open on mouse enter
-				this.el.addEventListener("mouseenter", this.onMenuMouseEnter.bind(this));
-				this.el.addEventListener("click", this.onMenuButtonClick.bind(this));
-			} else {
-				// Setting renderTo to undefined will make it render to it's parent
-				// which is this button
-				this.menu.renderTo = undefined;
-			}
+			this.el.addEventListener("mouseenter", this.onMenuMouseEnter.bind(this));
+			this.el.addEventListener("click", this.onMenuButtonClick.bind(this));
 		}
 
 		el.addEventListener("click", (e) => {
@@ -202,11 +195,11 @@ export class Button extends Component {
 	}
 
 	private onMenuMouseEnter(ev: MouseEvent) {
-		if (Menu.openedMenu && Menu.openedMenu != this._menu && Menu.openedMenu.parent!.parent === this._menu!.parent!.parent) {
-
+		if(this._menu!.hidden) {
 			this._menu!.show();
 		}
 	}
+
 
 	/**
 	 * Add menu to this button
@@ -233,26 +226,26 @@ export class Button extends Component {
 		return this._menu;
 	}
 
-	public showMenu() {
-
-		if(!this._menu) {
-			return;
-		}
-
-		if(!this._menu.hidden) {
-			return;
-		}
-
-		// noinspection PointlessBooleanExpressionJS
-		if (this.fire("beforeshowmenu", this, this._menu) === false) {
-			return;
-		}
-
-
-		this._menu.show();
-
-		this.fire("showmenu", this, this._menu!);
-	}
+	// public showMenu() {
+	//
+	// 	if(!this._menu) {
+	// 		return;
+	// 	}
+	//
+	// 	if(!this._menu.hidden) {
+	// 		return;
+	// 	}
+	//
+	// 	// noinspection PointlessBooleanExpressionJS
+	// 	if (this.fire("beforeshowmenu", this, this._menu) === false) {
+	// 		return;
+	// 	}
+	//
+	//
+	// 	this._menu.show();
+	//
+	// 	this.fire("showmenu", this, this._menu!);
+	// }
 
 	protected internalRemove() {
 		if (this.menu) {

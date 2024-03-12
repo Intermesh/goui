@@ -90,6 +90,7 @@ export interface Menu extends Toolbar {
  * ```
  */
 export class Menu extends Toolbar {
+	private _parentMenu?: Menu | Toolbar | boolean;
 
 	constructor() {
 		super();
@@ -117,12 +118,10 @@ export class Menu extends Toolbar {
 	 */
 	public removeOnClose = true;
 
-	/**
-	 * Is set to the menu currently open. There can only be one dropdown open at the same time
-	 */
-	public static openedMenu?: Menu;
+
 
 	protected internalRender() {
+
 		const el = super.internalRender();
 
 		this.el.addEventListener('keydown', (ev) => {
@@ -137,9 +136,13 @@ export class Menu extends Toolbar {
 		});
 
 		const onClose = () => {
-			if (Menu.openedMenu == this) {
-				Menu.openedMenu = undefined;
+
+			if(this.parentMenu) {
+				if(this.parentMenu.openedMenu == this) {
+					this.parentMenu.openedMenu = undefined;
+				}
 			}
+
 		}
 
 		this.on("hide", onClose);
@@ -170,25 +173,14 @@ export class Menu extends Toolbar {
 		return this.el.classList.contains("goui-dropdown");
 	}
 
-	/**
-	 * Expand menu on the left side of the parent button.
-	 * If not set then it will automatically detect that it goes outside the right side off the screen and set this to true
-	 * @param expandLeft
-	 */
-	set expandLeft(expandLeft: boolean) {
-		this.el.classList.add("expand-left");
-	}
-	get expandLeft() {
-		return this.el.classList.contains("expand-left");
-	}
 	protected renderItem(item: Component) {
 
 		const insertBefore = this.getInsertBefore();
 
 		if (!insertBefore) {
-			this.el.appendChild(this.wrapLI(item));
+			this.itemContainerEl.appendChild(this.wrapLI(item));
 		} else {
-			this.el.insertBefore(this.wrapLI(item), insertBefore);
+			this.itemContainerEl.insertBefore(this.wrapLI(item), insertBefore);
 		}
 	}
 
@@ -197,9 +189,6 @@ export class Menu extends Toolbar {
 
 		item.render(li);
 
-		if(item instanceof Button && item.menu) {
-			item.menu!.render(li);
-		}
 		//cleanup li when item is removed
 		item.on("remove", () => {
 			li.remove();
@@ -240,11 +229,15 @@ export class Menu extends Toolbar {
 		}
 		const rect = this.alignTo.getBoundingClientRect();
 
-		const x = Math.max(0, this.expandLeft ? rect.right - this.el.offsetWidth : rect.x);
-		const y = Math.max(0, rect.bottom);
+		console.warn(rect, this.el.offsetHeight, window.innerHeight);
 
-		this.x = x;
-		this.y = y;
+		let x = Math.max(0, rect.x);
+		let y = Math.max(0, rect.bottom);
+
+		if(this.isSubMenu()) {
+			x += rect.width;
+			y -= rect.height;
+		}
 
 		if(this.alignToInheritWidth) {
 			// make the menu at least as wide as the component it aligns too.
@@ -262,14 +255,31 @@ export class Menu extends Toolbar {
 
 		//aligns down by default. If it runs off screen then align on top
 		if(y + this.el.offsetHeight > window.innerHeight) {
-			this.y = Math.max(0, rect.top - this.el.offsetHeight);
+			if(this.isSubMenu()) {
+				y = rect.bottom;
+			} else {
+				y = rect.top;
+			}
+			y -= this.el.offsetHeight;
+
+			y = Math.max(0, y);
 		}
 
 		//aligns left by default. If it runs off screen then align right
-		if(!this.expandLeft && x + this.el.offsetWidth > window.innerWidth) {
-			this.expandLeft = true;
-			this.x = Math.max(0, rect.right - this.el.offsetWidth);
+		if(x + this.el.offsetWidth > window.innerWidth) {
+
+			if(this.isSubMenu()) {
+				x = rect.left;
+			} else {
+				x = rect.right;
+			}
+			x -= this.el.offsetWidth;
+			x = Math.max(0, x);
+
 		}
+
+		this.x = x;
+		this.y = y;
 	}
 
 	/**
@@ -299,6 +309,17 @@ export class Menu extends Toolbar {
 		return parseInt(this.el.style.top);
 	}
 
+	get parentMenu():Menu|Toolbar | undefined {
+		if(this._parentMenu === undefined) {
+			this._parentMenu = this.findAncestorByType(Menu);
+			if(!this._parentMenu) {
+
+				this._parentMenu = this.findAncestorByType(Toolbar) ?? false;
+			}
+		}
+		return this._parentMenu !== false ? this._parentMenu as Menu|Toolbar : undefined;
+	}
+
 
 	protected internalSetHidden(hidden:boolean) {
 
@@ -312,18 +333,18 @@ export class Menu extends Toolbar {
 				this.render();
 			}
 
+			super.internalSetHidden(hidden);
+
 			this.align();
 
-			if (Menu.openedMenu == this) {
-				return true;
+			if(this.parentMenu)
+			{
+				if(this.parentMenu.openedMenu) {
+					this.parentMenu.openedMenu.el.classList.remove("goui-fade-out");
+					this.parentMenu.openedMenu.close();
+				}
+				this.parentMenu.openedMenu = this;
 			}
-
-			if (Menu.openedMenu) {
-				Menu.openedMenu.el.classList.remove("goui-fade-out");
-				Menu.openedMenu.close();
-			}
-
-			Menu.openedMenu = this;
 
 			//hide menu when clicked elsewhere
 			window.addEventListener("mousedown", (ev) => {
@@ -337,9 +358,14 @@ export class Menu extends Toolbar {
 
 			//put back fade out class removed in mouseenter listener above
 			this.el.classList.add("goui-fade-out");
+		} else {
+			if(this.openedMenu) {
+				this.openedMenu.hide();
+			}
+			super.internalSetHidden(hidden);
 		}
 
-		super.internalSetHidden(hidden);
+
 	}
 
 	/**
@@ -366,6 +392,9 @@ export class Menu extends Toolbar {
 	}
 
 
+	private isSubMenu() {
+		return this.parentMenu instanceof Menu;
+	}
 }
 
 /**
