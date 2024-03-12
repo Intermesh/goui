@@ -173,7 +173,6 @@ menu.goui-dropdown {
 		&.animate {
 
 			> * {
-				z-index: 0;
 				position: absolute;
 				transition: transform $duration linear; // go out to bottom
 				transform: translateY(100%);
@@ -192,7 +191,6 @@ menu.goui-dropdown {
 
 			&.reverse {
 				> * {
-					z-index: 0;
 					position: absolute;
 					transition: transform $duration linear; // go out to bottom
 					transform: translateY(-100%);
