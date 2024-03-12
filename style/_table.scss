@@ -189,14 +189,13 @@
     }
 
     .goui-button {
-      position: absolute;
-      top: dp(4);
-
       padding: dp(3) dp(18);
+			min-height: auto;
 
       &.with-icon:not(.with-text) {
         //icon only
         padding: dp(3);
+				margin: dp(-8); //undo td padding
       }
     }
   }
