@@ -340,9 +340,9 @@ export class Window extends DraggableComponent {
 		if(!hidden) {
 
 			//Close opened menu's becuase they have a higher z-index. They need work inside modal windows.
-			if(Menu.openedMenu) {
-				Menu.openedMenu.close();
-			}
+			// if(Toolbar.openedMenu) {
+			// 	Menu.openedMenu.close();
+			// }
 
 			this.focussedBeforeOpen = document.activeElement || undefined;
 
