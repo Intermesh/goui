@@ -11,5 +11,4 @@ export * from './Format.js';
 export * from './FunctionUtil.js';
 export * from './ObjectUtil.js';
 export * from './QuoteStripper.js';
-export * from './Recurrence.js';
 export * from './BrowserStorage.js';
