@@ -512,7 +512,7 @@ border-radius: 0;
 			}
 		}
 
-		input {
+		input, .wrap > select {
 			height: dp(46); //padding 11 * 2 + line height 24. Needed to be set for Safari with input.time and date.
 		}
 	}
@@ -797,7 +797,7 @@ border-radius: 0;
 		&:after {
 			position: absolute;
 			display: inline-block;
-			top: $baseLineHeight - dp(8);
+			top: $baseLineHeight - dp(6);
 			right: dp(8);
 			@extend %icon;
 			color: $colorTextSecondary;
