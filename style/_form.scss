@@ -783,17 +783,24 @@ border-radius: 0;
 
 	&.select {
 		position: relative;
-		select {
-			padding-right: dp(32);
-			background-image: none;
-			appearance: none;
+		.wrap {
+			select {
+				padding-right: dp(30);
+				background-image: none;
+				appearance: none;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+			}
 		}
 		&:after {
 			position: absolute;
 			display: inline-block;
-			top: $baseLineHeight - dp(10);
-			right: dp(12);
+			top: $baseLineHeight - dp(8);
+			right: dp(8);
 			@extend %icon;
+			color: $colorTextSecondary;
+			font-size: 2rem;
 			margin-right: 0;
 			content: "expand_more";
 			pointer-events: none;
