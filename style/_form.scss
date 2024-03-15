@@ -72,6 +72,9 @@ $formFieldBorderRadius: dp(10);
 	border-radius: $formFieldBorderRadius;
 	background-color: $colorBackgroundInput;
 	border: $borderWidth solid $colorOutline;
+	&:empty {
+		border: 0;
+	}
 }
 // base for checkbox and radio's
 %boxgroup {
@@ -249,10 +252,19 @@ $formFieldBorderRadius: dp(10);
 		border-left: 1px solid var(--fg-border);
 		height: 1.2rem;
 		width: auto;
-		margin-top: -1.8rem;
+		margin-top: -0.8rem;
 		margin-bottom: -0.8rem;
+
+		.flow > & {
+			//undo gap
+			margin-top: -1.8rem;
+		}
 	}
+
+
 }
+
+
 
 .goui-form-field, .goui-display-field {
 	display: block;
