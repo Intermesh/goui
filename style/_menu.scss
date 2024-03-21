@@ -148,7 +148,7 @@ button.goui-button.with-text.has-menu {
 		@extend %icon;
 		margin-right: 0;
 		content: "expand_more";
-		button.goui-button menu.goui & {
+		.goui-dropdown & {
 			content: "chevron_right";
 		}
 	}
