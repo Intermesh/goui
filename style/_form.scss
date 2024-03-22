@@ -506,16 +506,12 @@ border-radius: 0;
 
 	&.duration {
 		.control {
-			line-height: dp(42);
+			line-height: dp(46);
 		}
 		input.hour {
 			width: auto;
 			flex: 1;
 			text-align: right;
-		}
-
-		.wrap {
-			line-height: dp(46);
 		}
 
 		input.text {
