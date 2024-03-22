@@ -16,14 +16,6 @@ html {
 	}
 }
 
-.goui.light-bg {
-	background-color: white; //deprecated
-}
-
-.goui.normal-bg {
-	background-color: $colorBackgroundDarker;
-}
-
 .goui.main {
 	background-color: $surfaceLowest;
 }
@@ -262,6 +254,7 @@ html {
 	border-radius: $borderRadius;
 	margin: dp(8);
 	background-color: white;
+	overflow:hidden;
 	@extend .z2;
 }
 
