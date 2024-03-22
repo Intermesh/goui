@@ -736,6 +736,8 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 			params.destroy.push(id);
 		}
 
+		// copy these so we have the resolve() and reject() functions in this scope and we clear them in the "this" scope
+		// so it's guaranteed that they will never commit more than once.
 		const creates = this.creates,
 			updates = this.updates,
 			destroys = this.destroys;
