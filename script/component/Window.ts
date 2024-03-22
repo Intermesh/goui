@@ -27,19 +27,18 @@ export interface WindowEventMap<Type> extends DraggableComponentEventMap<Type> {
 	 * Fires when the window is closed
 	 *
 	 * @param window
+	 * @param byUser True if the user closed it
 	 */
-	close: (window: Type) => void
-
-	/** Fires when user clicks on the closing cross.*/
-	userclosed: (window: Type) => void
+	close: (window: Type, byUser: boolean) => void
 
 	/**
 	 * Fires before closing window
 	 * return false to cancel close
 	 *
 	 * @param window
+	 * @param byUser True if the user closed it
 	 */
-	beforeclose: (window: Type) => void
+	beforeclose: (window: Type, byUser: boolean) => void
 
 	/**
 	 * Fires when the window is maximized
@@ -211,8 +210,7 @@ export class Window extends DraggableComponent {
 				this.header.items.add(btn({
 					icon: "close",
 					handler: () => {
-						this.fire("userclosed", this);
-						this.close();
+						this.internalClose(true);
 					}
 				}));
 			}
@@ -253,7 +251,7 @@ export class Window extends DraggableComponent {
 		//remove window on escape
 		this.el!.addEventListener('keydown', (e: KeyboardEvent) => {
 			if (e.key == "Escape") {
-				this.close();
+				this.internalClose(true);
 			}
 		});
 
@@ -448,13 +446,15 @@ export class Window extends DraggableComponent {
 	 * Close the window by removing it
 	 */
 	public close() {
+		this.internalClose();
+	}
 
-		if(this.fire("beforeclose", this) === false) {
+	protected internalClose(byUser = false) {
+		if (this.fire("beforeclose", this, byUser) === false) {
 			return;
 		}
 		this.remove();
-		this.fire("close", this);
-
+		this.fire("close", this, byUser);
 	}
 
 	/**
