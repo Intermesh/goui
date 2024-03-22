@@ -716,7 +716,6 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	 */
 	private async commit() {
 
-
 		const params: SetRequest<EntityType> = Object.assign({
 			create: {},
 			update: {},
@@ -737,20 +736,28 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 			params.destroy.push(id);
 		}
 
+		const creates = this.creates,
+			updates = this.updates,
+			destroys = this.destroys;
+
+		this.creates = {};
+		this.updates = {};
+		this.destroys = {};
+
 		this.internalCommit(params).then(async (response) => {
 
 			if (response.created) {
 				for (let clientId in response.created) {
 					//merge client data with server defaults.
 					let data = Object.assign(params.create ? (params.create[clientId] || {}) : {}, response.created[clientId] || {});
-					this.add(data).then(() => this.creates[clientId].resolve(data));
+					this.add(data).then(() => creates[clientId].resolve(data));
 				}
 			}
 
 			if (response.notCreated) {
 				for (let clientId in response.notCreated) {
 					//merge client data with server defaults.
-					this.creates[clientId].reject(response.notCreated[clientId]);
+					creates[clientId].reject(response.notCreated[clientId]);
 				}
 			}
 
@@ -758,13 +765,13 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 				for (let serverId in response.updated) {
 					if (!this.data[serverId]) {
 						//server updated something we don't have. We'll get it in that case.
-						this.single(serverId).then(data => this.updates[serverId].resolve(data));
+						this.single(serverId).then(data => updates[serverId].resolve(data));
 					} else {
 
 						//merge existing data, with updates from client and server
 						let data = params.update && params.update[serverId] ? Object.assign(this.data[serverId], params.update[serverId]) : this.data[serverId];
 						data = Object.assign(data, response.updated[serverId] || {});
-						this.add(data).then((data) => this.updates[serverId].resolve(data));
+						this.add(data).then((data) => updates[serverId].resolve(data));
 					}
 				}
 			}
@@ -772,18 +779,18 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 			if (response.notUpdated) {
 				for (let serverId in response.notUpdated) {
 					//merge client data with server defaults.
-					this.updates[serverId].reject(response.notUpdated[serverId]);
+					updates[serverId].reject(response.notUpdated[serverId]);
 				}
 			}
 
 			if (response.destroyed) {
 				for (let i = 0, l = response.destroyed.length; i < l; i++) {
-					this.remove(response.destroyed[i]).then((id) => this.destroys[id].resolve(id));
+					this.remove(response.destroyed[i]).then((id) => destroys[id].resolve(id));
 				}
 			}
 			if (response.notDestroyed) {
 				for (let serverId in response.notDestroyed) {
-					this.destroys[serverId].reject(response.notDestroyed[serverId]);
+					destroys[serverId].reject(response.notDestroyed[serverId]);
 				}
 			}
 
@@ -798,24 +805,20 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 			});
 		})
 			.catch(e => {
-				for (let clientId in this.creates) {
-					this.creates[clientId].reject(e);
+				for (let clientId in creates) {
+					creates[clientId].reject(e);
 				}
-				for (let clientId in this.updates) {
-					this.updates[clientId].reject(e);
+				for (let clientId in updates) {
+					updates[clientId].reject(e);
 				}
-				for (let clientId in this.destroys) {
-					this.destroys[clientId].reject(e);
+				for (let clientId in destroys) {
+					destroys[clientId].reject(e);
 				}
 
 				throw e;
 			})
 
-			.finally(() => {
-				this.creates = {};
-				this.updates = {};
-				this.destroys = {};
-			})
+
 	}
 
 	/**
