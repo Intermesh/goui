@@ -86,7 +86,7 @@ export class SelectField extends InputField {
 		this._options = opts;
 		this.input!.empty();
 		opts.forEach((o: any) => {
-			this.input!.append(new Option(this.textRenderer!(o), o[this.valueField]??undefined));
+			this.input!.append(new Option(this.textRenderer!(o), o[this.valueField] ?? "__NULL__"));
 		});
 
 		this.internalSetValue(v);
@@ -109,11 +109,11 @@ export class SelectField extends InputField {
 		return this._store;
 	}
 
-	set value(v: string|undefined) {
-		super.value = v;
+	set value(v: string|number|null) {
+		super.value = v ?? "__NULL__";
 	}
 
-	get value() : string | undefined {
+	get value() : string | number | null {
 
 		if(!this.rendered) {
 			return this._value as any;

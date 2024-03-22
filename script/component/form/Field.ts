@@ -66,7 +66,7 @@ export interface FieldEventMap<Type> extends ComponentEventMap<Type> {
 }
 
 
-export type FieldValue = string|number|boolean|any[]|undefined|Record<string,any>;
+export type FieldValue = string|number|boolean|any[]|undefined|null|Record<string,any>;
 
 
 export interface Field extends Component {
