@@ -756,15 +756,16 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 
 			if (response.updated) {
 				for (let serverId in response.updated) {
-					//server updated something we don't have
 					if (!this.data[serverId]) {
-						continue;
-					}
+						//server updated something we don't have. We'll get it in that case.
+						this.single(serverId).then(data => this.updates[serverId].resolve(data));
+					} else {
 
-					//merge existing data, with updates from client and server
-					let data = params.update && params.update[serverId] ? Object.assign(this.data[serverId], params.update[serverId]) : this.data[serverId];
-					data = Object.assign(data, response.updated[serverId] || {});
-					this.add(data).then((data) => this.updates[serverId].resolve(data));
+						//merge existing data, with updates from client and server
+						let data = params.update && params.update[serverId] ? Object.assign(this.data[serverId], params.update[serverId]) : this.data[serverId];
+						data = Object.assign(data, response.updated[serverId] || {});
+						this.add(data).then((data) => this.updates[serverId].resolve(data));
+					}
 				}
 			}
 
