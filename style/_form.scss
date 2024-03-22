@@ -247,25 +247,6 @@ $formFieldBorderRadius: dp(10);
 		padding-bottom:dp(12);
 		margin-bottom:dp(-12);
 	}
-	// makes a form field underneath appear connected the pit
-	&:not(:empty)+.goui-form-field:before {
-		//content: " ";
-		//display: block;
-		//background-color: var(--bg-input);
-		//border-right: 1px solid var(--fg-border);
-		//border-left: 1px solid var(--fg-border);
-		//height: 1.2rem;
-		//width: auto;
-		//margin-top: -0.8rem;
-		//margin-bottom: -0.8rem;
-
-		.flow > & {
-			//undo gap
-			margin-top: -1.8rem;
-		}
-	}
-
-
 }
 
 
