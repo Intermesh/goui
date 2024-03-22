@@ -4,12 +4,12 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {Component, Observable, ObservableEventMap, ObservableListenerOpts, root, Window} from "../component/index.js";
+import {Observable, ObservableEventMap, ObservableListenerOpts, root, Window} from "../component/index.js";
 import {Comparator} from "./Store.js";
 import {FunctionUtil} from "../util/index.js";
 import {BrowserStore} from "../util/BrowserStorage.js";
 import {t} from "../Translate";
-import {Router, RouterEventMap} from "../Router";
+import {RouterEventMap} from "../Router";
 
 /**
  * The response of the {@see AbstractDataSource.get()} method
