@@ -9,7 +9,7 @@
 	display: flex;
 	align-items: center;
 
-	min-height: dp(46); // line-height + padding
+	//min-height: dp(46); // line-height + padding. This broke chips. Don't know why it was here.
 
 	&.caps {
 		text-transform: uppercase;
