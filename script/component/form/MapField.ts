@@ -37,7 +37,7 @@ export class MapField extends Field {
 		this.items.clear();
 		if (v) {
 			for (const key in v) {
-				this.internalAdd(v[key], key);
+				this.internalAdd(-1,v[key], key);
 			}
 		}
 	}
@@ -73,15 +73,19 @@ export class MapField extends Field {
 	 * @param key
 	 */
 	public add(data: MapFieldValue, key?: string | undefined) {
-		if(!this.valueOnFocus) {
-			this.captureValueForChange();
-		}
-		this.internalAdd(data, key);
+		this.internalAdd(-1,data, key);
 		this.fireChange();
 	}
 
-	private internalAdd(data: MapFieldValue, key?: string | number) {
+	public insert(index:number, data: MapFieldValue, key?: string | undefined) {
+		this.internalAdd(index,data, key);
+		this.fireChange();
+	}
 
+	private internalAdd(index:number,data: MapFieldValue, key?: string | number) {
+		if(!this.valueOnFocus) {
+			this.captureValueForChange();
+		}
 		if(typeof key === 'number') {
 			this._nextKey = Math.max(this._nextKey, key);
 		}
@@ -89,7 +93,8 @@ export class MapField extends Field {
 		const field = this.buildField(data);
 		field.dataSet.key = key || this.nextKey();
 		field.value = data;
-		this.items.add(field);
+
+		index < 0 ? this.items.add(field) : this.items.insert(index,field);
 	}
 
 	private _nextKey = 0;
