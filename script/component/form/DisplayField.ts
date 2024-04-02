@@ -9,7 +9,7 @@ import {Component, createComponent} from "../Component.js";
 import {Config} from "../Observable";
 import {DateTime, Format} from "../../util";
 
-const defaultDisplayFieldRenderer: DisplayFieldRenderer = (v:any, field:DisplayField) => Format.escapeHTML(v) ?? ""
+const defaultDisplayFieldRenderer: DisplayFieldRenderer = (v:any, field:DisplayField) => v ?? ""
 /**
  * Display field
  *
@@ -30,6 +30,13 @@ export class DisplayField extends Field {
 
 	protected baseCls = 'goui-display-field';
 
+	/**
+	 * Escape value HTML
+	 *
+	 * {@link Format.escapeHTML}
+	 */
+	public escapeValue = true;
+
 
 	/**
 	 * Hide this field when the value is empty
@@ -43,6 +50,9 @@ export class DisplayField extends Field {
 	protected internalSetValue(v?: any) {
 		if(this.control) {
 			const setFn = (str:string) => {
+				if(this.escapeValue) {
+					str = Format.escapeHTML(str);
+				}
 				this.control!.innerHTML = str;
 				if(this.hideWhenEmpty)
 					this.hidden = str == "";
