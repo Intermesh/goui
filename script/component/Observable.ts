@@ -5,9 +5,7 @@
  */
 
 import {FunctionUtil} from "../util/FunctionUtil.js";
-import {Component, ComponentEventMap, FindComponentPredicate} from "./Component.js";
-
-type Func = (...args: any[]) => any;
+import {ComponentEventMap} from "./Component.js";
 
 /**
  * Component events
@@ -25,7 +23,6 @@ export interface ObservableEventMap<Type> {
  * A listener can be passed as a function or a config option.
  *
  * {@see ObservableListenerWithOpts}
- * {@see ObservableConfig.listeners}
  */
 export type ObservableListener<Map extends ObservableEventMap<Observable>> = {
 	[P in keyof Map]?: ObservableListenerWithOpts<Map[P]> | Map[P]
@@ -138,7 +135,7 @@ export class Observable {
 
 		//because of the settimeout it can run multiple times within the same event loop
 		let executed = false;
-		const newfn = (...args: any[]) => {
+		return (...args: any[]) => {
 			if(!executed) {
 				listener.apply(null, args);
 			}
@@ -148,8 +145,7 @@ export class Observable {
 			setTimeout(() => {
 				this.un(eventName, listener);
 			})
-		}
-		return newfn;
+		};
 	}
 
 
@@ -176,6 +172,11 @@ export class Observable {
 	}
 
 	/**
+	 * Outputs all events to console
+ 	 */
+	public static DEBUG = false;
+
+	/**
 	 * Fire an event
 	 *
 	 * When a listener returns false this function will return false too.
@@ -185,7 +186,9 @@ export class Observable {
 	 */
 	public fire<K extends keyof ObservableEventMap<this>>(eventName: K, ...args: Parameters<ObservableEventMap<this>[K]>) {
 
-		// console.log(eventName, ...args);
+		if(Observable.DEBUG) {
+			console.log(eventName, ...args);
+		}
 
 		if (!this.lisnrs || !this.lisnrs[eventName]) {
 			return true;

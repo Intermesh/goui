@@ -88,6 +88,13 @@ export abstract class Field extends Component {
 	private _icon: MaterialIcon | "" | undefined;
 	private iconEl?: HTMLElement;
 
+	/**
+	 * Tracks if the field currently has focus.
+	 *
+	 * @private
+	 */
+	private hasFocus: boolean = false;
+
 	constructor(tagName: keyof HTMLElementTagNameMap = "label") {
 		super(tagName);
 
@@ -167,6 +174,8 @@ export abstract class Field extends Component {
 			return;
 		}
 
+		this.hasFocus = false;
+
 		if(this.validateOnBlur) {
 			this.validate();
 		}
@@ -192,10 +201,14 @@ export abstract class Field extends Component {
 
 	protected onFocusIn(e:FocusEvent) {
 
-		if (e.relatedTarget instanceof HTMLElement && this.el.contains(e.relatedTarget)) {
+		if (this.hasFocus || (e.relatedTarget instanceof HTMLElement && this.el.contains(e.relatedTarget))) {
 			//focus is still within this field
 			return;
 		}
+
+		// In safari and brave focusin fired while focusout didn't fire when selecting a value from the picker.
+		// This caused that the "setvalue" and "change" event didn't fire.
+		this.hasFocus = true;
 
 		if(this.fireChangeOnBlur) {
 			this.captureValueForChange();
