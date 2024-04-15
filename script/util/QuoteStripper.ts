@@ -40,7 +40,7 @@ export class QuoteStripper {
 			headerBlockIndex = this.findQuoteByHeaderBlock();
 
 		let quoteIndex = blockQuoteIndex;
-		if(blockQuoteIndex < 1 || headerBlockIndex < blockQuoteIndex) {
+		if(blockQuoteIndex < 1 || (headerBlockIndex > 0 && headerBlockIndex < blockQuoteIndex)) {
 			quoteIndex = headerBlockIndex;
 		}
 
