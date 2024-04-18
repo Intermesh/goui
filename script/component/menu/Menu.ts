@@ -229,8 +229,6 @@ export class Menu extends Toolbar {
 		}
 		const rect = this.alignTo.getBoundingClientRect();
 
-		console.warn(rect, this.el.offsetHeight, window.innerHeight);
-
 		let x = Math.max(0, rect.x);
 		let y = Math.max(0, rect.bottom);
 
