@@ -483,7 +483,7 @@ export abstract class Field extends Component {
 	 * Set the field value
 	 */
 	public set value(v: FieldValue) {
-		const old = this._value;
+		const old = this.value;
 		this._value = v;
 		this.internalSetValue(v);
 
