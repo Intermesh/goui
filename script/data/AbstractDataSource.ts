@@ -765,15 +765,23 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 
 			if (response.updated) {
 				for (let serverId in response.updated) {
+
+					const onUpdated = (data:EntityType|undefined) => {
+						// In some cases the server may return other entities that have been updated. For example related calendar
+						// events that are in other calendars
+						if(updates[serverId]) {
+							updates[serverId].resolve(data)
+						}
+					};
 					if (!this.data[serverId]) {
 						//server updated something we don't have. We'll get it in that case.
-						this.single(serverId).then(data => updates[serverId].resolve(data));
+						this.single(serverId).then(onUpdated);
 					} else {
 
 						//merge existing data, with updates from client and server
 						let data = params.update && params.update[serverId] ? Object.assign(this.data[serverId], params.update[serverId]) : this.data[serverId];
 						data = Object.assign(data, response.updated[serverId] || {});
-						this.add(data).then((data) => updates[serverId].resolve(data));
+						this.add(data).then(onUpdated);
 					}
 				}
 			}
