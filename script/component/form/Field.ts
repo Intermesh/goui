@@ -483,6 +483,7 @@ export abstract class Field extends Component {
 	 * Set the field value
 	 */
 	public set value(v: FieldValue) {
+		// Store old value through getter because it might do some extra processing. Like DateField does.
 		const old = this.value;
 		this._value = v;
 		this.internalSetValue(v);
