@@ -10,6 +10,7 @@ import {ArrayUtil} from "../../util/ArrayUtil.js";
 import {createComponent} from "../Component";
 import {Table} from "./Table";
 import {FunctionUtil} from "../../util";
+import {CheckboxSelectColumn} from "./TableColumns";
 
 export interface RowSelectEventMap<Type extends Observable> extends ObservableEventMap<Type> {
 	/**
@@ -69,7 +70,7 @@ export class RowSelect extends Observable {
 	 * Last selected index used for multi selection with shift
 	 * @private
 	 */
-	private lastIndex = -1;
+	public lastIndex = -1;
 	private shiftStartIndex?: number;
 
 	public multiSelect = true;
@@ -79,25 +80,27 @@ export class RowSelect extends Observable {
 	constructor(readonly list: List) {
 		super();
 
-		this.list.on('beforerender', (me: List) => {
 
-			const tableEl = me.el;
+			this.list.on('beforerender', (me: List) => {
 
-			tableEl.cls('+rowselect');
-			tableEl.addEventListener("keydown", (e) => {
-				this.onKeyDown(e);
+				const tableEl = me.el;
+
+				tableEl.cls('+rowselect');
+				tableEl.addEventListener("keydown", (e) => {
+					this.onKeyDown(e);
+				})
+
+				me.on('rowmousedown', (table: List, index: number, row, e: MouseEvent) => {
+					this.onRowMouseDown(table, index, e);
+				});
+
+				// tableEl.addEventListener("focus", (e) => {
+				// 	if (!this.selected.length && this.list.store.get(0)) {
+				// 		this.selected = [0];
+				// 	}
+				// })
 			})
 
-			me.on('rowmousedown', (table: List, index: number, row, e: MouseEvent) => {
-				this.onRowMouseDown(table, index, e);
-			});
-
-			tableEl.addEventListener("focus", (e) => {
-				if (!this.selected.length && this.list.store.get(0)) {
-					this.selected = [0];
-				}
-			})
-		})
 
 		const fireSelectionChange = () => {
 			this.fire('selectionchange', this);
@@ -105,6 +108,25 @@ export class RowSelect extends Observable {
 
 		//buffer selection change so it doesn't fire many changes if rowSelection.add is called in a loop.
 		this.fireSelectionChange = FunctionUtil.buffer(0, fireSelectionChange);
+	}
+
+	private _listHasCheckbox?:boolean;
+
+	private listHasCheckbox() {
+
+		if(this._listHasCheckbox !== undefined) {
+			return this._listHasCheckbox;
+		}
+
+		if(!(this.list instanceof Table)) {
+			this._listHasCheckbox = false;
+		} else {
+			this._listHasCheckbox = this.list.columns.findIndex((c) => {
+				return c instanceof CheckboxSelectColumn;
+			}) > -1;
+		}
+
+		return this._listHasCheckbox;
 	}
 
 	public clear() {
@@ -136,6 +158,8 @@ export class RowSelect extends Observable {
 	private onRowMouseDown(_list: List, index: number, e: MouseEvent) {
 		let selection = this.selected;
 
+		this.lastIndex = index;
+
 		if (e.shiftKey && this.multiSelect) {
 
 			const start = Math.min(index, this.lastIndex);
@@ -146,7 +170,7 @@ export class RowSelect extends Observable {
 					selection.push(i);
 			}
 
-		} else if ((e.ctrlKey || e.metaKey) && this.multiSelect) {
+		} else if ((e.ctrlKey || e.metaKey || this.listHasCheckbox()) && this.multiSelect) {
 			const currentIndex = selection.indexOf(index);
 			if (currentIndex > -1) {
 				selection.splice(currentIndex, 1);
@@ -166,6 +190,24 @@ export class RowSelect extends Observable {
 		}
 
 		this._selected.push(index);
+
+		this.fire('rowselect', this, index);
+		this.fireSelectionChange();
+	}
+
+	public toggle(index:number) {
+
+		if(this.multiSelect) {
+			const currentIndex = this._selected.indexOf(index);
+			if (currentIndex > -1) {
+				this._selected.splice(currentIndex, 1);
+			} else {
+				this._selected.push(index);
+			}
+		} else
+		{
+			this._selected = [index];
+		}
 
 		this.fire('rowselect', this, index);
 		this.fireSelectionChange();
@@ -215,7 +257,7 @@ export class RowSelect extends Observable {
 			this.fire('rowselect', this, i);
 		})
 
-		if (newSelection.length) {
+		if (newSelection.length && this.lastIndex == -1) {
 			this.lastIndex = newSelection[0];
 		}
 
@@ -230,13 +272,15 @@ export class RowSelect extends Observable {
 
 	private onKeyDown(e: KeyboardEvent) {
 
-		if (e.key == "Escape") {
-			this.clear();
-			return;
-		}
-
 		if (e.key == "Shift") {
 			this.shiftStartIndex = this.lastIndex;
+		}
+
+		if(e.key == " ") {
+			e.preventDefault();
+			e.stopPropagation()
+			this.toggle(this.lastIndex);
+			return;
 		}
 
 		if (e.key != "ArrowDown" && e.key != "ArrowUp") {
@@ -244,6 +288,7 @@ export class RowSelect extends Observable {
 		}
 
 		e.preventDefault();
+		e.stopPropagation();
 
 		let index = 0, change = false;
 		if (e.key == "ArrowDown") {
@@ -258,7 +303,6 @@ export class RowSelect extends Observable {
 			}
 			index = this.lastIndex - 1
 		}
-
 		if (e.shiftKey && this.multiSelect) {
 
 			const selected = this.selected;
@@ -276,9 +320,13 @@ export class RowSelect extends Observable {
 			}
 			change = this.setSelected(selected, true);
 		} else {
-			change = this.setSelected([index], true);
+			if(!this.listHasCheckbox()) {
+				change = this.setSelected([index], true);
+			}
+
 			this.list.focusRow(index);
 		}
+
 
 		if (change && !this.hasKeyUpListener) {
 			this.hasKeyUpListener = true;
@@ -289,7 +337,6 @@ export class RowSelect extends Observable {
 		}
 
 		this.lastIndex = index;
-
 	}
 
 }

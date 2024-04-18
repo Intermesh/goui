@@ -15,7 +15,7 @@ import {menu} from "../menu";
 /**
  * Return HTML or component to render into the table cell. Can also be async.
  */
-type TableColumnRenderer = (columnValue: any, record: any, td: HTMLTableCellElement, table: Table, storeIndex: number) => string | Promise<string> | Component | Promise<Component>;
+type TableColumnRenderer = (columnValue: any, record: any, td: HTMLTableCellElement, table: Table, storeIndex: number, column: TableColumn) => string | Promise<string> | Component | Promise<Component>;
 type HeaderRenderer = (col: TableColumn, headerEl: HTMLTableCellElement, table: Table) => string | Component;
 
 export type align = "left" | "right" | "center";
@@ -154,9 +154,23 @@ export class CheckboxColumn extends TableColumn {
 
 	}
 
-	renderer = (val: boolean) => {
+	renderer : TableColumnRenderer = (val, record, td, table, rowIndex, column) => {
 		return checkbox({
-			value: val
+			value: val,
+			listeners: {
+				change: (field, newValue, oldValue) => {
+					record[column.property] = newValue;
+				},
+				render: (field) => {
+
+					table.el.addEventListener("keydown", (e) => {
+						console.warn( td.parentNode);
+						if(e.key == " " && e.target == td.parentNode) {
+							field.value = !field.value;
+						}
+					});
+				},
+			}
 		});
 	}
 }
@@ -166,7 +180,7 @@ export class CheckboxColumn extends TableColumn {
  *
  * @param config
  */
-export const checkboxcolumn = (config: TableColumnConfig) => createComponent(new CheckboxColumn(config.id), config);
+export const checkboxcolumn = (config: TableColumnConfig) => createComponent(new CheckboxColumn(config && config.id ? config.id : "checkbox"), config);
 
 
 
@@ -211,9 +225,12 @@ export class CheckboxSelectColumn extends TableColumn {
 						ev.stopPropagation()
 					});
 
+					field.value = table.rowSelection!.selected.indexOf(rowIndex) > -1;
+
 					table.rowSelection!.on("selectionchange", () => {
 						field.value = table.rowSelection!.selected.indexOf(rowIndex) > -1;
 					});
+
 				},
 				change: (field, newValue, oldValue) => {
 					const index = table.store.indexOf(record);

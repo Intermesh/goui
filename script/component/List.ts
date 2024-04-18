@@ -335,9 +335,12 @@ export class List<StoreType extends Store = Store> extends Component {
 
 	public focusRow(index:number) {
 		const tr = this.getRowElements()[index];
-		if(tr) {
-			tr.focus();
+		if(!tr) {
+			return false;
 		}
+		tr.focus();
+		return true;
+
 	}
 
 	protected renderRows(records: any[]) {
@@ -406,7 +409,7 @@ export class List<StoreType extends Store = Store> extends Component {
 	// 	}
 	// }
 
-	private onMouseEvent(e: MouseEvent & { target: HTMLElement }, type: any) {
+	private onMouseEvent(e: UIEvent & { target: HTMLElement }, type: any) {
 
 		const row = this.findRowByEvent(e),
 			index = row ? this.getRowElements().indexOf(row) : -1;
@@ -417,7 +420,7 @@ export class List<StoreType extends Store = Store> extends Component {
 	}
 
 
-	private findRowByEvent(e: MouseEvent & { target: HTMLElement }) {
+	private findRowByEvent(e: UIEvent & { target: HTMLElement }) {
 		return e.target.closest(".data") as HTMLElement;
 	}
 

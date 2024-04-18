@@ -15,6 +15,7 @@ import {TableColumn} from "./TableColumns.js";
 import {List, ListEventMap} from "../List.js";
 import {Config, Listener, ObservableListenerOpts} from "../Observable";
 import {t} from "../../Translate";
+import {index} from "typedoc/dist/lib/output/themes/default/partials";
 
 
 type GroupByRenderer = (groupBy: any, record: any, thEl: HTMLTableCellElement, table: Table) => string | Promise<string> | Component | Promise<Component>;
@@ -116,7 +117,7 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 				let value = c.property ? ObjectUtil.path(record, c.property) : undefined;
 
 				if (c.renderer) {
-					const r = c.renderer(value, record, td, this, storeIndex);
+					const r = c.renderer(value, record, td, this, storeIndex, c);
 
 					if (r) {
 
@@ -600,6 +601,13 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 
 	protected findDropRow(e: DragEvent) {
 		return (e.target as HTMLDivElement).closest("TR") as HTMLElement;
+	}
+
+	focusRow(index: number): boolean {
+		if(this.rowSelection) {
+			this.rowSelection.lastIndex = index;
+		}
+		return super.focusRow(index);
 	}
 }
 

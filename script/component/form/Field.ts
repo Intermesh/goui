@@ -9,7 +9,7 @@ import {Config, Listener, Observable, ObservableEventMap, ObservableListenerOpts
 import {Button} from "../Button.js";
 import {tbar, Toolbar} from "../Toolbar.js";
 import {t} from "../../Translate.js";
-import {E} from "../../util/Element.js";
+import {E} from "../../util";
 import {MaterialIcon} from "../MaterialIcon";
 import {Menu} from "../menu";
 
@@ -162,7 +162,7 @@ export abstract class Field extends Component {
 	 */
 	protected fireChangeOnBlur = true;
 
-	protected onAdded = (comp:Field, index:number, parent:Component) =>{
+	protected onAdded = (_comp:Field, index:number, parent:Component) =>{
 		this.trackReset();
 		this.defaultValue = this.value;
 	}
@@ -246,7 +246,7 @@ export abstract class Field extends Component {
 	// }
 
 	/**
-	 * A wrapper DIV element that contains input and toolbar for input buttons like an expand button for a drop down
+	 * A wrapper DIV element that contains input and toolbar for input buttons like an expand button for a drop-down
 	 */
 	get wrap() {
 		// wrap required to place buttons after element

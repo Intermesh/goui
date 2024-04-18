@@ -90,19 +90,23 @@ export class AutocompleteChips<T extends List = List> extends ChipsField {
 				this.menu.hide();
 			});
 
-			this.list.store.on("datachanged", () => {
-				this.list.rowSelection!.selected = [0];
-			}, {buffer: 0});
+			// this.list.store.on("datachanged", () => {
+			// 	this.list.rowSelection!.selected = [0];
+			// }, {buffer: 0});
 		} else {
-			this.list.store.on("datachanged", () => {
-
+			const syncSelection = () => {
 				this.list.rowSelection!.clear();
 				this.list.store.data.forEach((record, index) => {
 					if(this.isPickerRecordInValue(record)) {
 						this.list.rowSelection!.add(index)
 					}
 				})
-
+			}
+			this.menu.on("show", () => {
+				syncSelection()
+			}, {buffer: 0});
+			this.list.store.on("datachanged", () => {
+				syncSelection()
 			}, {buffer: 0});
 		}
 
@@ -166,7 +170,8 @@ export class AutocompleteChips<T extends List = List> extends ChipsField {
 				case 'ArrowDown':
 					ev.preventDefault();
 					this.menuButton.menu!.show();
-					this.list.focus();
+
+					this.list.focusRow(0);
 					break;
 
 				case 'Escape':
