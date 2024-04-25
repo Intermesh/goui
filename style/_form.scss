@@ -807,6 +807,10 @@ $formFieldBorderRadius: dp(10);
 		padding: dp(8) dp(16) dp(8) 0;
 	}
 
+	> p:first-child {
+		margin-top: 0;
+	}
+
 	//& + .goui-fieldset {
 	//	border-top: $borderWidth solid $colorBorder;
 	//}

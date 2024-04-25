@@ -591,7 +591,8 @@ export class Window extends DraggableComponent {
 				},
 
 				form({
-
+						flex: 1,
+						cls: "vbox",
 						handler: (form) => {
 							resolve(form.value.input);
 							cancelled = false;
@@ -599,7 +600,9 @@ export class Window extends DraggableComponent {
 						}
 					},
 
-					fieldset({},
+					fieldset({
+							flex: 1
+						},
 						comp({
 							tagName: "p",
 							html: text

@@ -80,6 +80,7 @@ html {
 	> *:not(.goui-form-field) {
 		flex:none; //setting flex none prevents squishing of elements with no flex setting.
 		min-height: 0; // this prevents children from growing larger than the container. We usually don't want that. If you need this then set min-height to "auto".
+
 	}
 }
 
