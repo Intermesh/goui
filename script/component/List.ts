@@ -15,6 +15,7 @@ import {dragData} from "../DragData";
 import {root} from "./Root";
 import {Window} from "./Window";
 import {HtmlFieldEventMap} from "./form";
+import {Type} from "typedoc";
 
 export type RowRenderer = (record: any, row: HTMLElement, list: any, storeIndex: number) => string | Component[] | void;
 
@@ -177,6 +178,38 @@ export class List<StoreType extends Store = Store> extends Component {
 			this.rowSelect = rowselect({list: this as never});
 		}
 	}
+
+	set sortable(sortable: boolean) {
+		this.draggable = true;
+		this.dropBetween = true;
+		this.dropOn = false;
+
+		const ref = this.on("drop", (list, e, dropRow, dropIndex, position, dragData) => {
+			const store = dragData.cmp.store;
+
+			// remove the dragged record from the store
+			store.removeAt(dragData.storeIndex);
+			if(dragData.storeIndex < dropIndex) {
+				// if inserting in the same store we need to substract 1 from the index as we took one off.
+				dropIndex--;
+			}
+
+			//add the record to the new position
+			switch(position) {
+				case "before":
+					// reorder in the tree where it's dropped
+					store.insert(dropIndex, dragData.record);
+					break;
+
+				case "after":
+					store.insert(dropIndex + 1, dragData.record);
+					break;
+			}
+		});
+
+	}
+
+
 
 	constructor(readonly store: StoreType, readonly renderer: RowRenderer, tagName: keyof HTMLElementTagNameMap = "ul") {
 		super(tagName);
