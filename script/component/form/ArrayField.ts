@@ -93,10 +93,7 @@ export class ArrayField<Type extends FieldValue = Record<string, any>> extends F
 			this.captureValueForChange();
 		}
 
-		this.internalAddValue(value);
-
-
-		return this;
+		return this.internalAddValue(value);
 	}
 
 	private internalAddValue(value:Type) {
@@ -104,6 +101,8 @@ export class ArrayField<Type extends FieldValue = Record<string, any>> extends F
 		field.value = value;
 
 		this.items.add(field);
+
+		return field;
 	}
 
 	reset() {
@@ -127,6 +126,8 @@ export class ArrayField<Type extends FieldValue = Record<string, any>> extends F
 
 /**
  * Shorthand function to create {@see ArrayField}
+ *
+ * @see https://github.com/Intermesh/goui-docs/blob/main/script/form/ArrayFieldPage.ts
  *
  * @param config
  * @param items
