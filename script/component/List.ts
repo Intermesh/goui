@@ -71,6 +71,14 @@ export interface ListEventMap<Type> extends ComponentEventMap<Type> {
 	/**
 	 * Fires when the delete key is pressed
 	 *
+	 * @example
+	 * ```
+	 * delete: async (list) => {
+	 * 	const ids = list.rowSelection!.selected.map(index => list.store.get(index)!.id);
+	 * 	await jmapds("Foo").confirmDestroy(ids);
+	 * }
+	 * ```
+	 *
 	 * @param list
 	 */
 	delete: (list: Type) => void,

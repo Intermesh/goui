@@ -23,7 +23,17 @@ class Root extends Component {
 
 	get el() {
 		if (!this._rootEl) {
-			this._rootEl = document.getElementById("goui") || document.body;
+
+			let rootEl = document.getElementById("goui");
+			if(!rootEl) {
+				rootEl = document.createElement("div");
+				rootEl.id = "goui";
+
+				document.body.append(rootEl);
+			}
+
+
+			this._rootEl = rootEl;
 		}
 
 		return this._rootEl;
