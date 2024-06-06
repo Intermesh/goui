@@ -430,6 +430,10 @@ export abstract class Field extends Component {
 	 */
 	public set hint(hint: string) {
 		this._hint = hint;
+		if (this.rendered) {
+			//this sets hint if not invalid
+			this.applyInvalidMsg();
+		}
 	}
 
 	public get readOnly() {
