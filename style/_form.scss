@@ -251,7 +251,9 @@ $formFieldBorderRadius: dp(10);
 
 
 .goui-form-field, .goui-display-field {
-	display: block;
+	display: flex;
+	flex-direction: column;
+	width: 100%;
 	margin: 0;
 	position: relative;
 }
@@ -276,6 +278,7 @@ $formFieldBorderRadius: dp(10);
 	}
 
 	.wrap {
+		flex: 1;
 		align-items: center;
 		> i {
 			width: dp(24);
@@ -335,6 +338,7 @@ $formFieldBorderRadius: dp(10);
 		}
 	}
 	.wrap {
+		flex: 1;
 		@extend %control-pit;
 		display: flex;
 		flex-flow: row nowrap;
@@ -1005,13 +1009,11 @@ div.color-dot {
 
 .goui-form-field {
 	&.date-range {
-		.wrap {
-			height: dp(50);
-		}
 		.value-display {
 			flex: 1;
 			align-self: stretch;
 			padding: dp(11) dp(16);
+			height: dp(46);
 		}
 	}
 }
