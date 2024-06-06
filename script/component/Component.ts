@@ -21,10 +21,13 @@ import {browser, Collection} from "../util";
  */
 export type FindComponentPredicate = string | Component | ((comp: Component) => boolean | void);
 
+// interface ClassTypeOf<T> {
+// 	new(...args: any[]): T
+// }
 
-interface ClassTypeOf<T> {
-	new(...args: any[]): T
-}
+type ClassTypeOf<T> = abstract new (...args: any[]) => T;
+
+// type ClassTypeOf<T> = Function & { prototype: T };
 
 const html = document.querySelector('html')!;
 export const REM_UNIT_SIZE = parseFloat(window.getComputedStyle(html).fontSize);
