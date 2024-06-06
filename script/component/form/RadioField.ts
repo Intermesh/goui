@@ -58,9 +58,9 @@ export class RadioField extends Field {
 			this.itemId = "radio-" + Component.uniqueID();
 		}
 
-		const label = E("h3").cls("legend");
-		label.innerText = this.label;
-		this.el.insertBefore(label, this.wrap!);
+		this._labelEl = E("h3").cls("legend");
+		this._labelEl.innerText = this.label;
+		this.el.insertBefore(this._labelEl, this.wrap!);
 
 		const radio = E('div').cls('radio');
 
