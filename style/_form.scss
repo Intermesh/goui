@@ -670,6 +670,27 @@ $formFieldBorderRadius: dp(10);
 			}
 		}
 
+
+		&.list {
+			.radio.control {
+				flex-direction: column;
+				.control {
+					width: 100%;
+					align-items: start;
+
+					padding: 0;
+					span.box-label {
+						padding: dp(8) dp(16);
+					}
+
+					input:checked + span.box-label {
+						background-color: $colorSelectedRowInactive;
+					}
+				}
+			}
+		}
+
+
 	}
 
 	/** start checkbox **/

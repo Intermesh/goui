@@ -15,7 +15,7 @@ interface RadioOption {
 	text: string
 }
 
-type RadioType = 'box' | 'button';
+type RadioType = 'box' | 'button' | 'list';
 
 /**
  * Radio field
