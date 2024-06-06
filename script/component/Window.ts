@@ -501,7 +501,14 @@ export class Window extends DraggableComponent {
 	 * @param msg - The error message to be displayed.
 	 * @return Promise<void> - A promise that resolves when the alert window is closed
 	 */
-	public static error(msg:string) {
+	public static error(msg:string|any) {
+
+		console.error(msg);
+
+		if(msg.message) {
+			msg = msg.message;
+		}
+
 		return Window.alert(msg, t("Error") + " - " + (new DateTime).format("Y-m-d H:i:s"));
 	}
 
