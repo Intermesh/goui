@@ -16,13 +16,19 @@ import {InputField} from "./InputField";
  */
 export class TextAreaField extends InputField {
 
-	protected baseCls = 'goui-form-field textarea'
-	public _autoHeight: boolean = false;
+	protected baseCls = 'goui-form-field textarea';
+
+	private _autoHeight: boolean = false;
 
 	protected createInput() {
 		return document.createElement("textarea");
 	}
 
+	/**
+	 * Let the textarea grow to it's content
+	 *
+	 * @param v
+	 */
 	set autoHeight(v: boolean) {
 		if(this._autoHeight)
 			return

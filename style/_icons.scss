@@ -26,11 +26,13 @@
 	font-family: 'Material Symbols Rounded';
 	font-weight: normal;
 	font-style: normal;
-	font-size: dp(24);
+	font-size: dp(24);  /* Google Preferred icon size = dp(24) */
+	width: auto; //needed in Group-Office as it sets widht and height to 21px
+	height: auto;
+	display: inline-block;
 	line-height: 1;
 	letter-spacing: normal;
 	text-transform: none;
-	display: block;
 	white-space: nowrap;
 	word-wrap: normal;
 	direction: ltr;

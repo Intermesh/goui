@@ -36,10 +36,12 @@ export class QuoteStripper {
 	}
 
 	private split() {
-		let quoteIndex = this.findByBlockQuote();
+		const blockQuoteIndex = this.findByBlockQuote(),
+			headerBlockIndex = this.findQuoteByHeaderBlock();
 
-		if (quoteIndex < 1) {
-			quoteIndex = this.findQuoteByHeaderBlock();
+		let quoteIndex = blockQuoteIndex;
+		if(blockQuoteIndex < 1 || (headerBlockIndex > 0 && headerBlockIndex < blockQuoteIndex)) {
+			quoteIndex = headerBlockIndex;
 		}
 
 		if (quoteIndex > 0) {
@@ -87,9 +89,9 @@ export class QuoteStripper {
 		const lines = this.splitLines();
 
 		const greaterThan = /^&gt;(\s|&nbsp;)/;
-		const header = /^[a-z]+:(\s|&nbsp;)+.*&lt;[a-z0-9._\-+&]+@[a-z0-9.\-_]+&gt;/i;
+		const header = /[a-z]+:.*[a-z0-9._\-+&]+@[a-z0-9.\-_]+/i;
 
-		const maybeHeader = /^[a-z]+:(\s|&nbsp;)+.*/i;
+		const maybeHeader = /[a-z]+:.*/i;
 
 		let pos = 0, maybePos = 0;
 
