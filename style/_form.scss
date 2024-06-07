@@ -170,8 +170,9 @@ $formFieldBorderRadius: dp(10);
 			}
 		}
 
-		input:checked + span.box-label {
+		input:checked + span.box-label.outlined {
 			background-color: $colorFocus;
+			color: inherit;
 		}
 
 		.box-label {
@@ -683,6 +684,15 @@ $formFieldBorderRadius: dp(10);
 					padding: 0;
 					span.box-label {
 						padding: dp(8) dp(16);
+
+						i.icon {
+							vertical-align: middle;
+							margin-right: dp(8);
+						}
+					}
+
+					input {
+						display: none;
 					}
 
 					input:checked + span.box-label {
