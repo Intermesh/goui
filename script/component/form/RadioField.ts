@@ -86,6 +86,7 @@ export class RadioField extends Field {
 			});
 			btn.type = "radio";
 			btn.name = this.name || this.itemId;
+			btn.id = Component.uniqueID();
 			btn.readOnly = this.readOnly;
 			if (o.value) {
 				btn.value = o.value;
@@ -98,10 +99,15 @@ export class RadioField extends Field {
 			this.control!.append(btn);
 
 			const lbl = E('label').cls('control');
+			lbl.attr("for", btn.id);
+
+
 
 			if(o.icon) {
 				lbl.appendChild(E('i', o.icon).cls('icon'))
 			}
+
+			// lbl.append(btn);
 
 			lbl.appendChild(E('span', o.text).cls('box-label'))
 

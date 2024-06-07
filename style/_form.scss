@@ -127,7 +127,7 @@ $formFieldBorderRadius: dp(10);
 				padding: 0;
 				flex-wrap: nowrap;
 
-				span.box-label {
+				label.control {
 					//put here and not below for extra strong rules
 					padding: dp(9) dp(18);
 					font-weight:normal;
@@ -137,14 +137,15 @@ $formFieldBorderRadius: dp(10);
 		}
 
 		&>:not(:first-child) {
-			span.box-label {
+			label.control {
 				border-top-left-radius: 0;
 				border-bottom-left-radius: 0;
 				border-left: 0;
 			}
-			}
+		}
+
 		&>:not(:last-child) {
-			span.box-label {
+			label.control {
 				border-top-right-radius: 0;
 				border-bottom-right-radius: 0;
 			}
@@ -158,20 +159,21 @@ $formFieldBorderRadius: dp(10);
 		.control {
 			flex-wrap: nowrap;
 
-			span.box-label {
+			label.control {
 				//put here and not below for extra strong rules
 				padding: dp(8) dp(18);
 
 				font-weight:normal;
 				margin:0;
+
 			}
 		}
 
-		input:checked + span.box-label {
+		input:checked + label.control {
 			background-color: $colorFocus;
 		}
 
-		.box-label {
+		label.control {
 			@extend .goui-button;
 		}
 		input {
@@ -203,7 +205,7 @@ $formFieldBorderRadius: dp(10);
 			text-overflow: ellipsis;
 			white-space: nowrap;
 
-			padding: 0 dp(12);
+			//padding: 0 dp(12);
 			margin: auto 0;
 			user-select: none;
 			-webkit-user-select: none;
@@ -684,11 +686,9 @@ $formFieldBorderRadius: dp(10);
 					align-items: start;
 
 					padding: dp(8) dp(16);
-					span.box-label {
-
-					}
-
-
+					//span.box-label {
+					//
+					//}
 				}
 			}
 		}
