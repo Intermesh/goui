@@ -8,14 +8,16 @@ import {E} from "../../util/Element.js";
 import {Component, createComponent} from "../Component.js";
 import {Field, FieldConfig, FieldEventMap} from "./Field.js";
 import {Config} from "../Observable";
+import {MaterialIcon} from "../MaterialIcon";
 
 
 interface RadioOption {
 	value?: string
-	text: string
+	text: string,
+	icon?: MaterialIcon
 }
 
-type RadioType = 'box' | 'button';
+type RadioType = 'box' | 'button' | 'list';
 
 /**
  * Radio field
@@ -95,6 +97,7 @@ export class RadioField extends Field {
 				});
 			btn.type = "radio";
 			btn.name = this.domName;
+			btn.id = Component.uniqueID();
 			btn.readOnly = this.readOnly;
 			if (o.value) {
 				btn.value = o.value;
@@ -104,10 +107,22 @@ export class RadioField extends Field {
 				this.inputs[o.value] = btn;
 			}
 
-			this.control!.append(E('label',
-				btn,
-				E('span', o.text).cls('box-label')
-			).cls('control'));
+			this.control!.append(btn);
+
+			const lbl = E('label').cls('control');
+			lbl.attr("for", btn.id);
+
+
+
+			if(o.icon) {
+				lbl.appendChild(E('i', o.icon).cls('icon'))
+			}
+
+			// lbl.append(btn);
+
+			lbl.appendChild(E('span', o.text).cls('box-label'))
+
+			this.control!.append(lbl);
 		});
 	}
 
