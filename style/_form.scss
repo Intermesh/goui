@@ -674,18 +674,21 @@ $formFieldBorderRadius: dp(10);
 		&.list {
 			.radio.control {
 				flex-direction: column;
-				.control {
+
+				input:checked + label.control {
+					background-color: $colorSelectedRowInactive;
+				}
+				label.control {
+
 					width: 100%;
 					align-items: start;
 
-					padding: 0;
+					padding: dp(8) dp(16);
 					span.box-label {
-						padding: dp(8) dp(16);
+
 					}
 
-					input:checked + span.box-label {
-						background-color: $colorSelectedRowInactive;
-					}
+
 				}
 			}
 		}
