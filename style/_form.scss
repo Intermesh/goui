@@ -170,7 +170,7 @@ $formFieldBorderRadius: dp(10);
 			}
 		}
 
-		input:checked + span.box-label.outlined {
+		input:checked + span.box-label.outlined, input:checked + span.box-label {
 			background-color: $colorFocus;
 			color: inherit;
 		}
@@ -672,6 +672,36 @@ $formFieldBorderRadius: dp(10);
 				}
 			}
 		}
+
+
+		&.list {
+			.radio.control {
+				flex-direction: column;
+				.control {
+					width: 100%;
+					align-items: start;
+
+					padding: 0;
+					span.box-label {
+						padding: dp(8) dp(16);
+
+						i.icon {
+							vertical-align: middle;
+							margin-right: dp(8);
+						}
+					}
+
+					input {
+						display: none;
+					}
+
+					input:checked + span.box-label {
+						background-color: $colorSelectedRowInactive;
+					}
+				}
+			}
+		}
+
 
 
 		&.list {

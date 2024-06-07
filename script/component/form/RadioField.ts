@@ -17,7 +17,7 @@ interface RadioOption {
 	icon?: MaterialIcon
 }
 
-type RadioType = 'box' | 'button' | 'list';
+export type RadioType = 'box' | 'button' | 'list';
 
 /**
  * Radio field
