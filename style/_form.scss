@@ -167,7 +167,7 @@ $formFieldBorderRadius: dp(10);
 			}
 		}
 
-		input:checked + span.box-label.outlined {
+		input:checked + span.box-label.outlined, input:checked + span.box-label {
 			background-color: $colorFocus;
 			color: inherit;
 		}
