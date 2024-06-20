@@ -116,7 +116,7 @@ export class SelectField extends InputField {
 	get value() : string | number | null {
 
 		if(!this.rendered) {
-			return this._value as any;
+			return (this._value === '__NULL__') ? null : this._value as any;
 		}
 		const opts = (this.store ? this.store.items : this.options);
 
