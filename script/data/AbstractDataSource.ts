@@ -626,8 +626,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 		})).finally(() => {
 			root.unmask();
 		}).catch((e:any) => {
-			console.error(e);
-			Window.error(e.message);
+			Window.error(e);
 		})
 
 	}

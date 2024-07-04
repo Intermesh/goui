@@ -97,7 +97,7 @@ export class DataSourceForm<ValueType extends BaseEntity = DefaultEntity> extend
 
 				console.error(t("Error"), e);
 				if(this.fire('saveerror', this, e) !== false) {
-					void Window.error(e.message ?? t("Unknown error"));
+					void Window.error(e);
 				}
 			} finally {
 				this.unmask();
@@ -160,7 +160,7 @@ export class DataSourceForm<ValueType extends BaseEntity = DefaultEntity> extend
 		} catch (e:any) {
 			console.error(t("Error"), e);
 			if(this.fire('loaderror', this, e) !== false) {
-				void Window.error(e.message);
+				void Window.error(e);
 			}
 		} finally {
 			this.unmask();
