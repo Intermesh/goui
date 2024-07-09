@@ -241,6 +241,13 @@ export class Collection<CollectionItem> extends Observable implements Iterable<C
 		return this.items;
 	}
 
+	/**
+	 * Return all items
+	 */
+	public all() {
+		return this.items;
+	}
+
 
 	/**
 	 * Returns the value of the first element in the array where predicate is true, and undefined
