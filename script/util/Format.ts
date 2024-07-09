@@ -175,10 +175,10 @@ export class Format {
 		return parseInt(parts[0]) * 60 + parseInt(parts[1]);
 	}
 
-	static fileSize(bytes:number): string {
+	public static fileSize(bytes:number): string {
 		if(!bytes)
 			return '';
-		var i = Math.floor( Math.log(bytes) / Math.log(1024) );
+		const i = Math.floor( Math.log(bytes) / Math.log(1024) );
 		return (bytes / Math.pow(1024, i) ).toFixed(2) + ' ' + ['B', 'kB', 'MB', 'GB', 'TB'][i];
 	}
 

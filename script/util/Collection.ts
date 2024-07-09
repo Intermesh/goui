@@ -73,7 +73,7 @@ export interface Collection<CollectionItem> extends Observable {
  * @category Utility
  */
 export class Collection<CollectionItem> extends Observable implements Iterable<CollectionItem> {
-	readonly items: CollectionItem[];
+	protected readonly items: CollectionItem[];
 
 	constructor(items: CollectionItem[] = []) {
 		super();
@@ -238,6 +238,13 @@ export class Collection<CollectionItem> extends Observable implements Iterable<C
 	}
 
 	public getArray() {
+		return this.items;
+	}
+
+	/**
+	 * Return all items
+	 */
+	public all() {
 		return this.items;
 	}
 

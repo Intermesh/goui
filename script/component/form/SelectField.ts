@@ -65,7 +65,7 @@ export class SelectField extends InputField {
 
 	protected internalRender() {
 		if(this._store)
-			this.options = this._store.items;
+			this.options = this._store.all();
 		return super.internalRender();
 	}
 
@@ -102,7 +102,7 @@ export class SelectField extends InputField {
 	 */
 	public set store(store: Store) {
 		this._store = store;
-		store.on("datachanged", () => this.options = store.items);
+		store.on("datachanged", () => this.options = store.all());
 	}
 
 	public get store(): Store|undefined {
@@ -118,7 +118,7 @@ export class SelectField extends InputField {
 		if(!this.rendered) {
 			return (this._value === '__NULL__') ? null : this._value as any;
 		}
-		const opts = (this.store ? this.store.items : this.options);
+		const opts = (this.store ? this.store.all() : this.options);
 
 		let index = this.input!.selectedIndex;
 

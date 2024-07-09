@@ -346,7 +346,7 @@ export class List<StoreType extends Store = Store> extends Component {
 
 	protected renderBody() {
 
-		this.renderRows(this.store.items);
+		this.renderRows(this.store.all());
 
 		if (this.rowSelect) {
 			this.rowSelect.on('rowselect', (rowSelect, storeIndex) => {

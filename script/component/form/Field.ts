@@ -343,7 +343,7 @@ export abstract class Field extends Component {
 	 * ```
 	 * @param buttons
 	 */
-	public set buttons(buttons: Button[] | undefined) {
+	public set buttons(buttons: Button[]) {
 		this._buttons = buttons;
 
 		if(this.rendered) {
@@ -352,7 +352,7 @@ export abstract class Field extends Component {
 	}
 
 	public get buttons() {
-		return this._buttons;
+		return this._buttons ?? [];
 	}
 
 	protected createHint(): HTMLDivElement | void {
