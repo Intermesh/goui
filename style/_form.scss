@@ -32,12 +32,10 @@ $formFieldBorderRadius: dp(10);
 	.goui-form-field, .goui-display-field {
 		margin: 0;
 		width: auto;
-		//border-radius: dp(12); //match button
-		//flex: 1;
-		//border: 1px solid $colorBorder;
 
 		.control {
-			//padding: 0;
+			//padding-top: 0; //for radio and checkbox group
+			//padding-bottom: 0; //for radio and checkbox group
 			flex-wrap: nowrap;
 
 			span.box-label {
@@ -45,7 +43,7 @@ $formFieldBorderRadius: dp(10);
 				padding: dp(9) dp(18);
 				font-weight:normal;
 				margin:0 ;
-				border: $borderWidth solid $colorBorder;
+				border: $borderWidth solid $colorOutline;
 			}
 		}
 	}
@@ -53,6 +51,10 @@ $formFieldBorderRadius: dp(10);
 	>.goui-display-field {
 		.wrap {
 			@extend %control-pit;
+
+			.label {
+				background-color: var(--bg-input);
+			}
 		}
 	}
 
@@ -70,9 +72,6 @@ $formFieldBorderRadius: dp(10);
 
 
 	&>:not(:first-child) {
-
-
-
 		.wrap {
 			border-top-left-radius: 0 !important;
 			border-bottom-left-radius: 0 !important;
@@ -85,12 +84,10 @@ $formFieldBorderRadius: dp(10);
 		}
 	}
 	&>:not(:last-child) {
-
-
 		.wrap {
-			border-right-width: 0;
-			border-top-right-radius: 0;
-			border-bottom-right-radius: 0;
+			border-right-width: 0  !important;
+			border-top-right-radius: 0  !important;
+			border-bottom-right-radius: 0  !important;
 
 			span.box-label {
 				border-top-right-radius: 0;
@@ -161,7 +158,7 @@ $formFieldBorderRadius: dp(10);
 
 			span.box-label {
 				//put here and not below for extra strong rules
-				padding: dp(8) dp(12);
+				padding: dp(11) dp(12);
 
 				font-weight:normal;
 				margin:0;
@@ -195,7 +192,7 @@ $formFieldBorderRadius: dp(10);
 
 	.control {
 		display: flex;
-		padding: dp(12) 0;
+		//padding:  0;
 		align-items: center;
 		flex-wrap: wrap;
 
@@ -205,7 +202,7 @@ $formFieldBorderRadius: dp(10);
 			overflow: hidden;
 			text-overflow: ellipsis;
 			white-space: nowrap;
-			padding: 0 dp(12);
+			padding: dp(14) dp(12);
 			margin: auto 0;
 			user-select: none;
 			-webkit-user-select: none;
@@ -268,7 +265,8 @@ $formFieldBorderRadius: dp(10);
 	&.with-icon {
 		.wrap {
 			div.label {
-				left: dp(52);
+				left: dp(48);
+				padding: 0 dp(4);
 			}
 			.control {
 				padding-left: dp(10);
