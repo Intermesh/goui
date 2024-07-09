@@ -45,6 +45,7 @@ $formFieldBorderRadius: dp(10);
 				padding: dp(9) dp(18);
 				font-weight:normal;
 				margin:0 ;
+				border: $borderWidth solid $colorBorder;
 			}
 		}
 	}
@@ -69,27 +70,32 @@ $formFieldBorderRadius: dp(10);
 
 
 	&>:not(:first-child) {
-		span.box-label {
-			border-top-left-radius: 0;
-			border-bottom-left-radius: 0;
-			border-left: 0;
-		}
+
+
 
 		.wrap {
 			border-top-left-radius: 0 !important;
 			border-bottom-left-radius: 0 !important;
+
+			span.box-label {
+				border-top-left-radius: 0;
+				border-bottom-left-radius: 0;
+				border-left: 0;
+			}
 		}
 	}
 	&>:not(:last-child) {
-		span.box-label {
-			border-top-right-radius: 0;
-			border-bottom-right-radius: 0;
-		}
+
 
 		.wrap {
 			border-right-width: 0;
 			border-top-right-radius: 0;
 			border-bottom-right-radius: 0;
+
+			span.box-label {
+				border-top-right-radius: 0;
+				border-bottom-right-radius: 0;
+			}
 		}
 	}
 }
@@ -153,7 +159,7 @@ $formFieldBorderRadius: dp(10);
 		.control {
 			flex-wrap: nowrap;
 
-			label.control {
+			span.box-label {
 				//put here and not below for extra strong rules
 				padding: dp(8) dp(12);
 
@@ -168,7 +174,7 @@ $formFieldBorderRadius: dp(10);
 			color: inherit;
 		}
 
-		label.control {
+		span.box-label {
 			@extend .goui-button;
 		}
 		input {
@@ -199,8 +205,7 @@ $formFieldBorderRadius: dp(10);
 			overflow: hidden;
 			text-overflow: ellipsis;
 			white-space: nowrap;
-
-			//padding: 0 dp(12);
+			padding: 0 dp(12);
 			margin: auto 0;
 			user-select: none;
 			-webkit-user-select: none;
@@ -653,7 +658,7 @@ $formFieldBorderRadius: dp(10);
 			.radio {
 
 				background-color: $colorBackgroundInput;
-				border: 1px solid $colorOutline;
+				border: $borderWidth solid $colorOutline;
 				border-radius: dp(12);
 
 				&:focus-visible {
