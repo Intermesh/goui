@@ -71,6 +71,8 @@ export class CheckboxField extends InputField {
 		this._input = this.createInput() as HTMLInputElement;
 		this._input.on("change", ()=> this.fireChange());
 
+		this._input.on("click", ()=> this.validate());
+
 		const control = E('div',
 			this._input
 		);
