@@ -29,40 +29,69 @@ $formFieldBorderRadius: dp(10);
 	display:flex;
 	align-items: start;
 
-	>.goui-form-field {
-		flex: 1;
-	}
+	.goui-form-field, .goui-display-field {
+		margin: 0;
+		width: auto;
+		//border-radius: dp(12); //match button
+		//flex: 1;
+		//border: 1px solid $colorBorder;
 
+		.control {
+			//padding: 0;
+			flex-wrap: nowrap;
 
-
-	&>:not(:first-child) {
-		.wrap {
-			border-top-left-radius: 0;
-			border-bottom-left-radius: 0;
-
+			span.box-label {
+				//put here and not below for extra strong rules
+				padding: dp(9) dp(18);
+				font-weight:normal;
+				margin:0 ;
+			}
 		}
 	}
+
+	>.goui-display-field {
+		.wrap {
+			@extend %control-pit;
+		}
+	}
+
 	&>:focus-within {
 		.wrap {
 			border-right-width: $borderWidth !important;
 		}
 	}
+
 	&>:focus-within + * {
-		//position:absolute;
-		//border: 1px solid red;
 		.wrap {
 			border-left: 0;
 		}
+	}
 
+
+	&>:not(:first-child) {
+		span.box-label {
+			border-top-left-radius: 0;
+			border-bottom-left-radius: 0;
+			border-left: 0;
+		}
+
+		.wrap {
+			border-top-left-radius: 0 !important;
+			border-bottom-left-radius: 0 !important;
+		}
 	}
 	&>:not(:last-child) {
+		span.box-label {
+			border-top-right-radius: 0;
+			border-bottom-right-radius: 0;
+		}
+
 		.wrap {
 			border-right-width: 0;
 			border-top-right-radius: 0;
 			border-bottom-right-radius: 0;
 		}
 	}
-
 }
 
 
@@ -113,43 +142,6 @@ $formFieldBorderRadius: dp(10);
 			color:inherit;
 			text-shadow: 0 0 1px black;
 		}
-	}
-
-	.group {
-		.goui-form-field {
-			margin: 0;
-			width: auto;
-			border-radius: dp(12); //match button
-
-			border: 1px solid $colorBorder;
-
-			.control {
-				padding: 0;
-				flex-wrap: nowrap;
-
-				span.box-label {
-					//put here and not below for extra strong rules
-					padding: dp(9) dp(18);
-					font-weight:normal;
-					margin:0 ;
-				}
-			}
-		}
-
-		&>:not(:first-child) {
-			span.box-label {
-				border-top-left-radius: 0;
-				border-bottom-left-radius: 0;
-				border-left: 0;
-			}
-			}
-		&>:not(:last-child) {
-			span.box-label {
-				border-top-right-radius: 0;
-				border-bottom-right-radius: 0;
-			}
-		}
-
 	}
 
 
@@ -314,17 +306,22 @@ $formFieldBorderRadius: dp(10);
 
 		.control {
 			font: $fontBase;
-			min-width: dp(100); //for select element
+			min-width: dp(22); //for select element
 			margin: 0;
 			border: 0;
 			padding: dp(11) dp(16);
-			width: 100%;
+			height: dp(46);
+			//width: 100%;
 			//outline: none;
 			color: $colorText;
 			display: block;// for text area which has inline-block by default and gets some extra margin
 			overflow: hidden;
 			text-overflow: ellipsis;
 			white-space: nowrap;
+
+			i.icon {
+				align-self: center;
+			}
 		}
 	}
 }
