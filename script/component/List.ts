@@ -38,7 +38,7 @@ export interface ListEventMap<Type> extends ComponentEventMap<Type> {
 	 * @param list
 	 * @param dataIndex
 	 */
-	sort: (list: Type, dataIndex: string) => void
+	sort: (list: Type, record: any, dropIndex: number, oldIndex: number) => void
 
 	/**
 	 * Fires when a row is mousedowned
@@ -210,9 +210,11 @@ export class List<StoreType extends Store = Store> extends Component {
 					break;
 
 				case "after":
-					store.insert(dropIndex + 1, dragData.record);
+					store.insert(++dropIndex, dragData.record);
 					break;
 			}
+
+			this.fire("sort", this, dragData.record, dropIndex, dragData.storeIndex);
 		});
 
 	}
