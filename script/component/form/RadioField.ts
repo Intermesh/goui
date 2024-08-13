@@ -98,13 +98,17 @@ export class RadioField extends Field {
 			btn.type = "radio";
 			btn.name = this.domName;
 			btn.readOnly = this.readOnly;
-			if (o.value) {
-				btn.value = o.value;
-				if (this._value == o.value) {
-					btn.checked = true;
-				}
-				this.inputs[o.value] = btn;
+
+			if(!o.value) {
+				o.value = "";
 			}
+
+			btn.value = o.value;
+			if (this._value == o.value) {
+				btn.checked = true;
+			}
+			this.inputs[o.value] = btn;
+
 
 			const lbl = E('span').cls('box-label')
 

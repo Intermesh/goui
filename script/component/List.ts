@@ -33,12 +33,20 @@ export interface ListEventMap<Type> extends ComponentEventMap<Type> {
 	 */
 	scrolleddown: (list: Type) => void
 	/**
-	 * Fires when the user sorts the list
+	 * Fires when the user sorts the list by a property
+	 *
+	 * @param list
+	 * @param property
+	 */
+	sort: (list: Type, property: string) => void
+
+	/**
+	 * Fires when the user sorts the list by drag and drop
 	 *
 	 * @param list
 	 * @param dataIndex
 	 */
-	sort: (list: Type, dataIndex: string) => void
+	sortchange: (list: Type, record: any, dropIndex: number, oldIndex: number) => void
 
 	/**
 	 * Fires when a row is mousedowned
@@ -210,9 +218,11 @@ export class List<StoreType extends Store = Store> extends Component {
 					break;
 
 				case "after":
-					store.insert(dropIndex + 1, dragData.record);
+					store.insert(++dropIndex, dragData.record);
 					break;
 			}
+
+			this.fire("sortchange", this, dragData.record, dropIndex, dragData.storeIndex);
 		});
 
 	}

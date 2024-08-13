@@ -249,7 +249,7 @@ $formFieldBorderRadius: dp(10);
 .goui-form-field, .goui-display-field {
 	display: flex;
 	flex-direction: column;
-	width: 100%;
+//	width: 100%;
 	margin: 0;
 	position: relative;
 }
@@ -334,7 +334,7 @@ $formFieldBorderRadius: dp(10);
 			div.label {
 				background-color: $colorBackgroundReadOnly;
 			}
-			input {
+			input, textarea {
 				background-color: $colorBackgroundReadOnly;
 			}
 		}
