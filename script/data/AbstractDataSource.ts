@@ -392,6 +392,9 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	 * @param id
 	 */
 	public async single(id: EntityID): Promise<EntityType | undefined> {
+		if(!id) {
+			return Promise.resolve(undefined);
+		}
 		const p = new Promise((resolve, reject) => {
 			if (!this.getIds[id]) {
 				this.getIds[id] = {
