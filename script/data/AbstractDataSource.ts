@@ -759,6 +759,8 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 				for (let serverId in response.updated) {
 					//server updated something we don't have
 					if (!this.data[serverId]) {
+						// we must still resolve the promise
+						this.updates[serverId].resolve(response.updated[serverId] || {});
 						continue;
 					}
 
