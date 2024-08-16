@@ -17,6 +17,11 @@ export class NumberField extends InputField {
 
 	protected baseCls = 'goui-form-field number';
 
+	/**
+	 * Multiply value with this number on set and divide on get value
+	 */
+	public multiplier = 1;
+
 	constructor() {
 		super();
 
@@ -45,7 +50,7 @@ export class NumberField extends InputField {
 			console.error("Invalid number given for field " + this.name, v);
 			super.value = undefined;
 		} else {
-			super.value = + v!.toFixed(this.decimals);
+			super.value = +(v! * this.multiplier).toFixed(this.decimals);
 		}
 	}
 
@@ -54,8 +59,11 @@ export class NumberField extends InputField {
 	}
 
 	get value(): number | undefined {
-		const v = super.value as number | undefined;
-		return (v === undefined || this.isEmptyNumber(v)  || isNaN(v)) ? undefined : +(+v).toFixed(this.decimals);
+		let v = super.value  as number | undefined;
+		if((v === undefined || this.isEmptyNumber(v)  || isNaN(v))) {
+			return undefined;
+		}
+		return +(v / this.multiplier).toFixed(this.decimals);
 	}
 
 	/**

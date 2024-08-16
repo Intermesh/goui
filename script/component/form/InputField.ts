@@ -157,6 +157,14 @@ export abstract class InputField extends Field {
 		super.required = required;
 		this._input!.required = this.required;
 	}
+	get disabled() {
+		return super.disabled;
+	}
+
+	set disabled(disabled) {
+		super.disabled = disabled;
+		this._input!.disabled = disabled;
+	}
 
 	protected validate() {
 		super.validate();
