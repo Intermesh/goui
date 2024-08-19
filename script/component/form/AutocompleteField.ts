@@ -136,6 +136,10 @@ export class AutocompleteField<T extends List = List> extends TextField {
 		})
 	}
 
+	protected internalGetValue(): string | number | boolean | any[] | Record<string, any> | undefined {
+		return this._value;
+	}
+
 	// get value(): any {
 	// 	return this._value;
 	// }
