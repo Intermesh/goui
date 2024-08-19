@@ -67,7 +67,7 @@ export class NumberField extends InputField {
 
 	protected internalGetValue() {
 
-		let v = this._value  as number | undefined;
+		let v = this.input!.value == "" ? undefined : parseInt(this.input!.value);
 		if((v === undefined || this.isEmptyNumber(v)  || isNaN(v))) {
 			return undefined;
 		}
