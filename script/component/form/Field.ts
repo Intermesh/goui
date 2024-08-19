@@ -529,7 +529,6 @@ export abstract class Field extends Component {
 	 * Helper to fire "change" event. Child classes must implement this.
 	 */
 	protected fireChange() {
-		debugger;
 		const v = this.value;
 		this.fire("setvalue", this, v, this.valueOnFocus);
 		this.fire("change", this, v, this.valueOnFocus);
