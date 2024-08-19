@@ -76,15 +76,9 @@ export class ColorField extends Field {
 		this.applyInvalidMsg();
 	}
 
-	set value(v: any) {
+	protected internalSetValue(v?: any) {
 		this.control!.style.backgroundColor = "#" + v;
-		super.value = v;
 	}
-
-	get value() {
-		return super.value;
-	}
-
 }
 
 /**

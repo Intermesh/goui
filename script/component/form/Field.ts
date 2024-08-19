@@ -30,6 +30,28 @@ export interface FieldEventMap<Type> extends ComponentEventMap<Type> {
 	/**
 	 * Fires when setValue() is called
 	 *
+	 * You can alter this._value
+	 *
+	 * @param field
+	 * @param newValue
+	 * @param oldValue
+	 */
+	beforesetvalue: (field: Type, e:{value: any, oldValue: any}) => void
+
+	/**
+	 * Fires when setValue() is called
+	 *
+	 * You can alter this._value
+	 *
+	 * @param field
+	 * @param newValue
+	 * @param oldValue
+	 */
+	beforegetvalue: (field: Type, e:{value: any}) => void
+
+	/**
+	 * Fires when setValue() is called
+	 *
 	 * @param field
 	 * @param newValue
 	 * @param oldValue
@@ -473,12 +495,16 @@ export abstract class Field extends Component {
 	 * Set the field value
 	 */
 	public set value(v: FieldValue) {
+
 		const old = this._value;
+
 		this._value = v;
-		this.internalSetValue(v);
 
+		const e = {value: v, oldValue: old};
+		this.fire("beforesetvalue", this, e);
+		this._value = e.value;
+		this.internalSetValue(this._value);
 		this.checkHasValue();
-
 		this.fire("setvalue", this, this._value, old);
 	}
 
@@ -503,6 +529,7 @@ export abstract class Field extends Component {
 	 * Helper to fire "change" event. Child classes must implement this.
 	 */
 	protected fireChange() {
+		debugger;
 		const v = this.value;
 		this.fire("setvalue", this, v, this.valueOnFocus);
 		this.fire("change", this, v, this.valueOnFocus);
@@ -512,6 +539,14 @@ export abstract class Field extends Component {
 	}
 
 	public get value() {
+		let v = this.internalGetValue();
+		const e = {value: v};
+		this.fire("beforegetvalue", this, e);
+
+		return e.value;
+	}
+
+	protected internalGetValue() {
 		return this._value;
 	}
 
@@ -524,7 +559,7 @@ export abstract class Field extends Component {
 		this.value = this.resetValue;
 		this.clearInvalid();
 		this.fire("reset", this, this.resetValue, old);
-		this.fire("setvalue", this, this.resetValue, old);
+		//this.fire("setvalue", this, this.resetValue, old);
 		this.fire("change", this, this.resetValue, old);
 	}
 

@@ -19,6 +19,11 @@ interface RadioOption {
 
 export type RadioType = 'box' | 'button' | 'list';
 
+export interface Radiofield {
+	set value(v: string | undefined)
+	get value(): string | undefined
+}
+
 /**
  * Radio field
  *
@@ -118,13 +123,7 @@ export class RadioField extends Field {
 		return this._options ?? [];
 	}
 
-	set value(v: string | undefined) {
-		super.value = v;
-		if (v && v in this.inputs)
-			this.inputs[v].checked = true;
-	}
-
-	get value() {
+	protected internalGetValue(): string | number | boolean | any[] | Record<string, any> | undefined {
 		if(this.rendered) {
 			for (let v in this.inputs) {
 				if (this.inputs[v].checked) {
@@ -132,8 +131,14 @@ export class RadioField extends Field {
 				}
 			}
 		}
-		return super.value as string | undefined;
+		return this._value as string | undefined;
 	}
+
+	protected internalSetValue(v?: any) {
+		if (v && v in this.inputs)
+			this.inputs[v].checked = true;
+	}
+
 
 }
 

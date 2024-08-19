@@ -10,6 +10,11 @@ import {FieldEventMap} from "./Field";
 import {t} from "../../Translate";
 import {InputField} from "./InputField";
 
+export interface NumberField {
+	set value(v: number | undefined)
+
+	get value(): number | undefined
+}
 /**
  * NumberField component
  */
@@ -42,24 +47,27 @@ export class NumberField extends InputField {
 		}
 	}
 
-	set value(v: number | undefined) {
+	protected internalSetValue(v?:  number | undefined) {
 
 		if(this.isEmptyNumber(v)) {
-			super.value = undefined;
+			v= undefined;
 		} else if (isNaN(v!)) {
 			console.error("Invalid number given for field " + this.name, v);
-			super.value = undefined;
+			v = undefined;
 		} else {
-			super.value = +(v! * this.multiplier).toFixed(this.decimals);
+			v= +(v! * this.multiplier).toFixed(this.decimals);
 		}
+
+		super.internalSetValue(v);
 	}
 
 	private isEmptyNumber(v:any) {
 		return (v === undefined || v === null || v === "")
 	}
 
-	get value(): number | undefined {
-		let v = super.value  as number | undefined;
+	protected internalGetValue() {
+
+		let v = this._value  as number | undefined;
 		if((v === undefined || this.isEmptyNumber(v)  || isNaN(v))) {
 			return undefined;
 		}

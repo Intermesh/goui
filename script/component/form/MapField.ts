@@ -13,6 +13,11 @@ type MapFieldConfig = Config<MapField, FieldEventMap<MapField>, "buildField">;
 type FieldBuilder = (value: MapFieldValue|undefined) => Field;
 type MapFieldValue = Record<string, any>;
 
+export interface MapField {
+	set value(v: MapFieldValue)
+	get value(): MapFieldValue
+}
+
 export class MapField extends Field {
 
 	/**
@@ -31,8 +36,8 @@ export class MapField extends Field {
 		// empty
 	}
 
-	set value(v: MapFieldValue) {
-		super.value = v;
+
+	protected internalSetValue(v?: any) {
 
 		this.items.clear();
 		if (v) {
@@ -43,7 +48,7 @@ export class MapField extends Field {
 	}
 
 
-	get value(): MapFieldValue {
+	protected internalGetValue(): string | number | boolean | any[] | Record<string, any> | undefined {
 		const v: MapFieldValue = {};
 
 		this.items.forEach((field) => {

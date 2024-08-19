@@ -13,6 +13,15 @@ import {DateTime} from "../../util";
 
 
 
+export interface DateField {
+	/**
+	 * The value of the date is in Y-m-d  or  Y-m-d H:i when withTime is true. {@link DateTime.format}
+	 * @param v
+	 */
+	set value(v: string | undefined)
+	get value(): string | undefined
+}
+
 /**
  * Date field
  *
@@ -72,15 +81,9 @@ export class DateField extends TimeField {
 		return this.type == "datetime-local";
 	}
 
-	get value(): string | undefined {
-		return super.value as string | undefined;
-	}
 
-	/**
-	 * The value of the date is in Y-m-d  or  Y-m-d H:i when withTime is true. {@link DateTime.format}
-	 * @param v
-	 */
-	set value(v: string | undefined) {
+	protected internalSetValue(v?: string | undefined) {
+
 		if(v) {
 			const Tindex = v.indexOf("T");
 			if (this.withTime) {
@@ -95,7 +98,6 @@ export class DateField extends TimeField {
 				}
 			}
 		}
-		super.value = v;
 	}
 
 	protected outputFormat(): string {

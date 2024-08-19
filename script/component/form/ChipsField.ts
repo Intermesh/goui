@@ -4,6 +4,12 @@ import {Config} from "../Observable";
 import {btn} from "../Button";
 import {t} from "../../Translate";
 
+
+export interface ChipsField {
+	get value(): FieldValue[],
+	set value(v: FieldValue[])
+}
+
 /**
  * Chips component
  */
@@ -71,13 +77,13 @@ export class ChipsField extends Field {
 		return this.chipsContainer;
 	}
 
-	get value(): FieldValue[] {
-		return super.value as FieldValue[];
-	}
-
-	set value(v: FieldValue[]) {
-		super.value = v;
-	}
+	// get value(): FieldValue[] {
+	// 	return super.value as FieldValue[];
+	// }
+	//
+	// set value(v: FieldValue[]) {
+	// 	super.value = v;
+	// }
 
 	private onEditorKeyDown(ev: KeyboardEvent) {
 

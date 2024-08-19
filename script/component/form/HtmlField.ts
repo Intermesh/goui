@@ -58,6 +58,9 @@ export interface HtmlField extends Field {
 	on<K extends keyof HtmlFieldEventMap<HtmlField>, L extends Listener>(eventName: K, listener: Partial<HtmlFieldEventMap<HtmlField>>[K], options?: ObservableListenerOpts): L
 	un<K extends keyof HtmlFieldEventMap<this>>(eventName: K, listener: Partial<HtmlFieldEventMap<this>>[K]): boolean
 	fire<K extends keyof HtmlFieldEventMap<HtmlField>>(eventName: K, ...args: Parameters<HtmlFieldEventMap<Component>[K]>): boolean
+
+	set value(v: string)
+	get value(): string
 }
 
 interface CmdConfig {
@@ -477,19 +480,18 @@ export class HtmlField extends Field {
 	//
 	// }
 
-	set value(v: string) {
 
+	protected internalSetValue(v?: any) {
 		if (this.editor) {
 			this.editor.innerHTML = v;
 			//Image.replaceImages(this.editor);
 		}
-
-		super.value = v;
 	}
 
-	get value() {
+	protected internalGetValue(): string | number | boolean | any[] | Record<string, any> | undefined {
+
 		if (!this.editor) {
-			return super.value as string;
+			return this._value as string;
 		} else {
 			return this.editor.innerHTML;
 		}
