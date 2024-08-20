@@ -164,8 +164,9 @@ export abstract class InputField extends Field {
 	}
 
 	set disabled(disabled) {
-		super.disabled = disabled;
 		this._input!.disabled = disabled;
+
+		super.disabled = disabled;
 	}
 
 	protected validate() {

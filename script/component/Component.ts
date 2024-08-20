@@ -113,6 +113,20 @@ export interface ComponentEventMap<Type> extends ObservableEventMap<Type> {
 	 * @param index the index in the parents' items
 	 */
 	added: (comp: Type, index: number, parent: Component) => void
+
+	/**
+	 * Fires when the component is disabled
+	 *
+	 * @param comp
+	 */
+	disable: (comp: Type) => void
+
+	/**
+	 * Fires when the component is enabled
+	 *
+	 * @param comp
+	 */
+	enable: (comp: Type) => void
 }
 
 export interface Component extends Observable {
@@ -591,8 +605,10 @@ export class Component extends Observable {
 	set disabled(disabled: boolean) {
 		if (!disabled) {
 			this.el.removeAttribute("disabled");
+			this.fire("enable", this);
 		} else {
 			this.el.setAttribute("disabled", "");
+			this.fire("disable", this);
 		}
 	}
 
