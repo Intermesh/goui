@@ -19,13 +19,17 @@ const defaultDisplayFieldRenderer: DisplayFieldRenderer = (v:any, field:DisplayF
  */
 export class DisplayField extends Field {
 
-
 	/**
 	 *
+	 * @param tagName Tagname defaults to ="label". If you pass another tag like h3 for example it will render a simple tag: <h3>{renderedValue}</h3>
 	 * @param renderer Renderer function for the value of the field
 	 */
-	constructor(public renderer: DisplayFieldRenderer = defaultDisplayFieldRenderer) {
-		super();
+	constructor(public tagName: keyof HTMLElementTagNameMap = "label", public renderer: DisplayFieldRenderer = defaultDisplayFieldRenderer) {
+		super(tagName);
+
+		if(tagName != "label") {
+			this.renderTagOnly = true;
+		}
 	}
 
 	protected baseCls = 'goui-display-field';
@@ -43,22 +47,37 @@ export class DisplayField extends Field {
 	 */
 	public hideWhenEmpty = true;
 
+
+	protected renderTagOnly = false;
+
 	protected createControl(): HTMLElement | undefined {
 		return document.createElement("div");
 	}
 
 	protected internalSetValue(v?: any) {
-		if(this.control) {
+
+		// if(this.control) {
 			const setFn = (str:string) => {
 				if(this.escapeValue) {
 					str = Format.escapeHTML(str);
 				}
-				this.control!.innerHTML = str;
+				if(!this.renderTagOnly) {
+					this.control!.innerHTML = str;
+				} else {
+					this.el.innerHTML = str;
+				}
 				if(this.hideWhenEmpty)
 					this.hidden = str == "";
 			}, str = this.renderer(v, this);
 
 			str instanceof Promise ? str.then(setFn) : setFn(str);
+		// }
+	}
+
+	protected renderControl() {
+
+		if(!this.renderTagOnly ) {
+			super.renderControl();
 		}
 	}
 }
@@ -77,7 +96,7 @@ type DisplayFieldConfig = Config<DisplayField, FieldEventMap<DisplayField>> & {
  * @param config
  * @param items
  */
-export const displayfield = (config: DisplayFieldConfig, ...items: Component[]) => createComponent(new DisplayField(config?.renderer ?? defaultDisplayFieldRenderer), config, items);
+export const displayfield = (config: DisplayFieldConfig, ...items: Component[]) => createComponent(new DisplayField(config?.tagName ?? "label", config?.renderer ?? defaultDisplayFieldRenderer), config, items);
 
 /**
  * Create display field with date icon and renderer
@@ -92,7 +111,7 @@ export const displaydatefield = (config: DisplayFieldConfig, ...items: Component
 	if(!config.renderer)
 		config.renderer = (v) => v ? (new DateTime(v)).format(Format.dateFormat) : ""
 
-	return createComponent(new DisplayField(config?.renderer ?? defaultDisplayFieldRenderer), config, items);
+	return createComponent(new DisplayField(config?.tagName ?? "label", config?.renderer ?? defaultDisplayFieldRenderer), config, items);
 }
 
 
