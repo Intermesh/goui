@@ -4,7 +4,7 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {comp, Component, createComponent} from "./Component.js";
+import {comp, Component, createComponent, REM_UNIT_SIZE} from "./Component.js";
 import {tbar, Toolbar} from "./Toolbar.js";
 import {btn} from "./Button.js";
 import {DraggableComponent, DraggableComponentEventMap} from "./DraggableComponent.js";
@@ -323,6 +323,28 @@ export class Window extends DraggableComponent {
 		}
 	}
 
+	private constrainViewport() {
+		if(this.el.offsetWidth > window.innerWidth) {
+			this.width = window.innerWidth * 10 / REM_UNIT_SIZE;
+			this.el.style.left = "0";
+		} else {
+			const maxLeft = window.innerWidth - this.el.offsetWidth;
+			if(this.el.offsetLeft > maxLeft) {
+				this.el.style.left = maxLeft + "px";
+			}
+		}
+
+		if(this.el.offsetHeight > window.innerHeight) {
+			this.height = window.innerHeight * 10 / REM_UNIT_SIZE;
+			this.el.style.top = "0";
+		} else {
+			const maxTop = window.innerHeight - this.el.offsetHeight;
+			if(this.el.offsetHeight > maxTop) {
+				this.el.style.top = maxTop + "px";
+			}
+		}
+	}
+
 	/**
 	 * Open the window by rendering it into the DOM body element
 	 * Use show()
@@ -371,9 +393,10 @@ export class Window extends DraggableComponent {
 				if (!this.hasState()) {
 					this.shrinkToFit();
 					this.center();
-				} else {
-					this.constrainTo(window);
 				}
+				// debugger;
+				this.constrainViewport();
+
 			} else {
 				super.internalSetHidden(hidden);
 			}
