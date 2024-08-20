@@ -509,6 +509,10 @@ export class Window extends DraggableComponent {
 			msg = msg.message;
 		}
 
+		if(typeof msg != "string") {
+			msg = t("Sorry, an unknown error occurred")
+		}
+
 		return Window.alert(msg, t("Error") + " - " + (new DateTime).format("Y-m-d H:i:s"));
 	}
 
