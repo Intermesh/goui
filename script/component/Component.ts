@@ -1125,6 +1125,7 @@ export const h4 = (config?: Config<Component> | string, ...items: Component[]) =
 export const code = (config?: Config<Component> | string, ...items: Component[]) => createComponent(new Component("code"), typeof config == 'string' ? {html: config} : config, items);
 export const section = (config?: Config<Component> | string, ...items: Component[]) => createComponent(new Component("section"), typeof config == 'string' ? {html: config} : config, items);
 export const hr = (config?: Config<Component>) => createComponent(new Component("hr"), config);
+export const br = (config?: Config<Component>) => createComponent(new Component("br"), config);
 export const img = (config: Config<Component> & {src:string, alt?:string}) => {
 	const img = createComponent(new Component("img"), config);
 	img.attr = {

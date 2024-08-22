@@ -339,7 +339,7 @@ export class Window extends DraggableComponent {
 			this.el.style.top = "0";
 		} else {
 			const maxTop = window.innerHeight - this.el.offsetHeight;
-			if(this.el.offsetHeight > maxTop) {
+			if(this.el.offsetTop > maxTop) {
 				this.el.style.top = maxTop + "px";
 			}
 		}
