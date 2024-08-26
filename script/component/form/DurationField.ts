@@ -157,12 +157,7 @@ export class DurationField extends Field {
 		}
 	}
 
-	set value(v: any) {
-		super.value = v;
-	}
-
-	get value(): any {
-
+	protected internalGetValue(): string | number | boolean | any[] | Record<string, any> | undefined {
 		if(!this.hoursInput!.value) {
 			return undefined;
 		}
@@ -171,7 +166,6 @@ export class DurationField extends Field {
 		dateInterval.hours = parseInt(this.hoursInput!.value);
 		dateInterval.minutes = parseInt(this.minutesInput!.value);
 		return dateInterval.format(this.outputFormat);
-
 	}
 }
 

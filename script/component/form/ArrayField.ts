@@ -53,15 +53,13 @@ export class ArrayField<Type extends FieldValue = Record<string, any>> extends F
 
 	private enableChangeEvent = true;
 
-	set value(v: Type[]) {
-		super.value = v;
-
+	protected internalSetValue(v?: any) {
 		this.enableChangeEvent = false;
 
 		this.items.clear();
 
 		if (v) {
-			v.forEach((item) => {
+			v.forEach((item:any) => {
 				this.internalAddValue(item);
 			});
 		}
@@ -69,7 +67,7 @@ export class ArrayField<Type extends FieldValue = Record<string, any>> extends F
 		this.enableChangeEvent = true;
 	}
 
-	get value(): Type[] {
+	protected internalGetValue(): Type[] {
 
 		const v: Type[] = [];
 

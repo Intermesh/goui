@@ -12,10 +12,13 @@ import {Component, createComponent} from "../Component.js";
 export type ContainerFieldValue = Record<string, any>;
 
 
-export interface ContainerField extends Field {
+export interface ContainerField<ValueType extends ContainerFieldValue = ContainerFieldValue> extends Field {
 	on<K extends keyof FieldEventMap<this>, L extends Listener>(eventName: K, listener: Partial<FieldEventMap<this>>[K], options?: ObservableListenerOpts): L;
 	un<K extends keyof FieldEventMap<this>>(eventName: K, listener: Partial<FieldEventMap<this>>[K]): boolean
 	fire<K extends keyof FieldEventMap<this>>(eventName: K, ...args: Parameters<FieldEventMap<Component>[K]>): boolean
+
+	set value(v: Partial<ValueType>)
+	get value(): ValueType
 }
 
 /**
@@ -111,30 +114,32 @@ export class ContainerField<ValueType extends ContainerFieldValue = ContainerFie
 		return false;
 	}
 
-	set value(v: Partial<ValueType>) {
 
+	protected internalSetValue(v: Partial<ValueType>) {
 		for (let name in v) {
 			// We cast to any[] for Ext compatibility. We try setValue() for Ext if it exists
 			let fields = this.findFields(name) as any[];
 			fields.forEach(field => field.setValue ? field.setValue(v[name]) : field.value = v[name]);
 		}
-
-		super.value = v;
 	}
 
-	public get value(): ValueType {
+	protected internalGetValue()  {
 
 		// we have to clone the value to avoid side effects when the value is modified outside the form's
 		// scope. We don't want any external modifications to leak in here because reference is a value.
-		const formProps: ValueType = structuredClone(super.value) as ValueType || {};
+		const formProps: ValueType = structuredClone(this._value) as ValueType || {};
 
 		this.findFields().forEach((field: any) => {
 			//for Extjs compat try .getName() and .getValue()
 			const fieldName = (field.getName ? field.getName() : field.name) as keyof ValueType
 			const fieldVal = field.getValue ? field.getValue() : field.value;
 
-			if (fieldName && !field.disabled) {
-				formProps[fieldName] = fieldVal;
+			if (fieldName) {
+				if(field.disabled) {
+					delete formProps[fieldName];
+				} else {
+					formProps[fieldName] = fieldVal;
+				}
 			}
 		});
 

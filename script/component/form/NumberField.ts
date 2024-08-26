@@ -10,12 +10,22 @@ import {FieldConfig, FieldEventMap} from "./Field";
 import {t} from "../../Translate";
 import {InputField} from "./InputField";
 
+export interface NumberField {
+	set value(v: number | undefined)
+
+	get value(): number | undefined
+}
 /**
  * NumberField component
  */
 export class NumberField extends InputField {
 
 	protected baseCls = 'goui-form-field number';
+
+	/**
+	 * Multiply value with this number on set and divide on get value
+	 */
+	public multiplier = 1;
 
 	constructor() {
 		super();
@@ -37,25 +47,31 @@ export class NumberField extends InputField {
 		}
 	}
 
-	set value(v: number | undefined) {
+	protected internalSetValue(v?:  number | undefined) {
 
 		if(this.isEmptyNumber(v)) {
-			super.value = undefined;
+			v= undefined;
 		} else if (isNaN(v!)) {
 			console.error("Invalid number given for field " + this.name, v);
-			super.value = undefined;
+			v = undefined;
 		} else {
-			super.value = + v!.toFixed(this.decimals);
+			v= +(v! * this.multiplier).toFixed(this.decimals);
 		}
+
+		super.internalSetValue(v);
 	}
 
 	private isEmptyNumber(v:any) {
 		return (v === undefined || v === null || v === "")
 	}
 
-	get value(): number | undefined {
-		const v = super.value as number | undefined;
-		return (v === undefined || this.isEmptyNumber(v)  || isNaN(v)) ? undefined : +(+v).toFixed(this.decimals);
+	protected internalGetValue() {
+
+		let v = this.input!.value == "" ? undefined : parseInt(this.input!.value);
+		if((v === undefined || this.isEmptyNumber(v)  || isNaN(v))) {
+			return undefined;
+		}
+		return +(v / this.multiplier).toFixed(this.decimals);
 	}
 
 	/**

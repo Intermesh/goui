@@ -63,13 +63,11 @@ export class CheckboxField extends InputField {
 		this._labelEl = lbl;
 	}
 
-	// we handle it with the native change event here
-	protected fireChangeOnBlur = false;
+
 
 	protected createControl() {
 
 		this._input = this.createInput() as HTMLInputElement;
-		this._input.on("change", ()=> this.fireChange());
 
 		this._input.on("click", ()=> this.validate());
 
@@ -88,18 +86,16 @@ export class CheckboxField extends InputField {
 		return this.input!.style.backgroundColor;
 	}
 
-	set value(v: boolean) {
+	protected internalSetValue(v: boolean) {
 		if (this.input) {
 			this.input.checked = v;
 		}
-
-		super.value = v;
 	}
 
-	get value() {
+	protected internalGetValue() {
 		if (!this.input) {
 			//always return bool
-			return !!super.value;
+			return !!this._value;
 		} else {
 			return this.input.checked;
 		}

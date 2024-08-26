@@ -120,16 +120,27 @@ export class CardMenu extends Component {
 				return;
 			}
 
+			const b = btn({
+				disabled: item.disabled,
+				type: "button",
+				itemId: item.itemId,
+				cls: index == this.cardContainer!.activeItem ? "active" : "",
+				text: item.title,
+				handler: () => {
+					this.cardContainer!.activeItem = item;
+				}
+			})
+
+			item.on('disable', () => {
+				b.disabled = true;
+			})
+
+			item.on('enable', () => {
+				b.disabled = false;
+			})
+
 			this.items.insert(index,
-				btn({
-					type: "button",
-					itemId: item.itemId,
-					cls: index == this.cardContainer!.activeItem ? "active" : "",
-					text: item.title,
-					handler: () => {
-						this.cardContainer!.activeItem = item;
-					}
-				})
+				b
 			);
 
 			item.title = "";

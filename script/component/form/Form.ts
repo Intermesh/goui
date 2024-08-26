@@ -17,9 +17,7 @@ export type FormHandler<ValueType extends ContainerFieldValue = ContainerFieldVa
 
 export interface FormEventMap<Type, ValueType extends ContainerFieldValue = ContainerFieldValue> extends FieldEventMap<Type> {
 	/**
-	 * Fires when the form is submitted. The event is fired after calling the handler.
-	 *
-	 * You can check if the form is valid after submitting with {@see form.isValid()}
+	 * Fires when the form is valid and submitted. The event is fired after calling the handler.
 	 *
 	 * @param form
 	 */
@@ -178,7 +176,7 @@ export class Form<ValueType extends ContainerFieldValue = ContainerFieldValue> e
 	/**
 	 * Validates the form and submits it using the handler function passed with the config.
 	 */
-	public async submit() {
+	public async submit() : Promise<boolean>{
 
 		const el = this.el as HTMLFormElement;
 
@@ -197,10 +195,13 @@ export class Form<ValueType extends ContainerFieldValue = ContainerFieldValue> e
 
 					const msg = typeof (e) == "string" ? e : e.message;
 					Notifier.error(msg);
-					return;
+					return false;
+
 				}
 			}
 			this.fire("submit", this, handlerResponse);
+
+			return true;
 
 		} else {
 			el.cls(['-valid', '+invalid']);
@@ -211,6 +212,8 @@ export class Form<ValueType extends ContainerFieldValue = ContainerFieldValue> e
 			}
 
 			this.setInvalid(t('You have errors in your form. The invalid fields are marked.'))
+
+			return false;
 		}
 	}
 

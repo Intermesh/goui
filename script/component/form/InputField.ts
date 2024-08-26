@@ -4,6 +4,9 @@ export abstract class InputField extends Field {
 
 	protected _input: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement | undefined;
 
+	// we handle it with the native change event here
+	protected fireChangeOnBlur = false;
+
 	constructor() {
 		super();
 	}
@@ -39,6 +42,9 @@ export abstract class InputField extends Field {
 
 	protected createInput() : HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement{
 		const control = document.createElement("input");
+		control.on("change", ()=> {
+			this.fireChange();
+		});
 
 		if (this.invalidMsg) {
 			this.applyInvalidMsg();
@@ -158,6 +164,15 @@ export abstract class InputField extends Field {
 	set required(required: boolean) {
 		super.required = required;
 		this._input!.required = this.required;
+	}
+	get disabled() {
+		return super.disabled;
+	}
+
+	set disabled(disabled) {
+		this._input!.disabled = disabled;
+
+		super.disabled = disabled;
 	}
 
 	protected validate() {
