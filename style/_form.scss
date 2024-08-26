@@ -32,12 +32,10 @@ $formFieldBorderRadius: dp(10);
 	.goui-form-field, .goui-display-field {
 		margin: 0;
 		width: auto;
-		//border-radius: dp(12); //match button
-		//flex: 1;
-		//border: 1px solid $colorBorder;
 
 		.control {
-			//padding: 0;
+			//padding-top: 0; //for radio and checkbox group
+			//padding-bottom: 0; //for radio and checkbox group
 			flex-wrap: nowrap;
 
 			span.box-label {
@@ -45,6 +43,7 @@ $formFieldBorderRadius: dp(10);
 				padding: dp(9) dp(18);
 				font-weight:normal;
 				margin:0 ;
+				border: $borderWidth solid $colorBorder;
 			}
 		}
 	}
@@ -52,6 +51,10 @@ $formFieldBorderRadius: dp(10);
 	>.goui-display-field {
 		.wrap {
 			@extend %control-pit;
+
+			.label {
+				background-color: var(--bg-input);
+			}
 		}
 	}
 
@@ -69,27 +72,27 @@ $formFieldBorderRadius: dp(10);
 
 
 	&>:not(:first-child) {
-		span.box-label {
-			border-top-left-radius: 0;
-			border-bottom-left-radius: 0;
-			border-left: 0;
-		}
-
 		.wrap {
 			border-top-left-radius: 0 !important;
 			border-bottom-left-radius: 0 !important;
+
+			span.box-label {
+				border-top-left-radius: 0;
+				border-bottom-left-radius: 0;
+				border-left: 0;
+			}
 		}
 	}
 	&>:not(:last-child) {
-		span.box-label {
-			border-top-right-radius: 0;
-			border-bottom-right-radius: 0;
-		}
-
 		.wrap {
-			border-right-width: 0;
-			border-top-right-radius: 0;
-			border-bottom-right-radius: 0;
+			border-right-width: 0  !important;
+			border-top-right-radius: 0  !important;
+			border-bottom-right-radius: 0  !important;
+
+			span.box-label {
+				border-top-right-radius: 0;
+				border-bottom-right-radius: 0;
+			}
 		}
 	}
 }
@@ -101,6 +104,9 @@ $formFieldBorderRadius: dp(10);
 	border-radius: $formFieldBorderRadius;
 	background-color: $colorBackgroundInput;
 	border: $borderWidth solid $colorBorder;
+	&:empty {
+		border: 0;
+	}
 }
 // base for checkbox and radio's
 %boxgroup {
@@ -150,9 +156,9 @@ $formFieldBorderRadius: dp(10);
 		.control {
 			flex-wrap: nowrap;
 
-			label.control {
+			span.box-label {
 				//put here and not below for extra strong rules
-				padding: dp(8) dp(18);
+				padding: dp(11) dp(12);
 
 				font-weight:normal;
 				margin:0;
@@ -165,7 +171,7 @@ $formFieldBorderRadius: dp(10);
 			color: inherit;
 		}
 
-		label.control {
+		span.box-label {
 			@extend .goui-button;
 		}
 		input {
@@ -186,7 +192,7 @@ $formFieldBorderRadius: dp(10);
 
 	.control {
 		display: flex;
-		padding: dp(12) 0;
+		//padding:  0;
 		align-items: center;
 		flex-wrap: wrap;
 
@@ -196,8 +202,7 @@ $formFieldBorderRadius: dp(10);
 			overflow: hidden;
 			text-overflow: ellipsis;
 			white-space: nowrap;
-
-			padding: 0 dp(12);
+			padding: dp(14) dp(12);
 			margin: auto 0;
 			user-select: none;
 			-webkit-user-select: none;
@@ -267,7 +272,8 @@ $formFieldBorderRadius: dp(10);
 	&.with-icon {
 		.wrap {
 			div.label {
-				left: dp(52);
+				left: dp(48);
+				padding: 0 dp(4);
 			}
 			.control {
 				padding-left: dp(10);
@@ -371,20 +377,27 @@ $formFieldBorderRadius: dp(10);
 
 			min-height: auto;
 
+			gap: dp(4);
+
 			> * {
-				margin: 0 dp(4) 0 0;
+				//margin: 0 dp(4) 0 0;
 				padding: dp(6);
 			}
 
 			.goui-button {
-
+				color: $colorTextSecondary;
+				border-radius: 0;
+				i.icon {
+					font-size: dp(20);
+				}
 
 				&.with-icon:not(.with-text) {
 					padding: dp(6);
+					height: 100%;
 				}
-				&:hover {
-					background-color: transparent;
-				}
+				//&:hover {
+				//	background-color: transparent;
+				//}
 			}
 		}
 	}
@@ -495,7 +508,7 @@ $formFieldBorderRadius: dp(10);
 			}
 		}
 
-		input {
+		input, .wrap > select {
 			height: dp(46); //padding 11 * 2 + line height 24. Needed to be set for Safari with input.time and date.
 		}
 	}
@@ -504,14 +517,13 @@ $formFieldBorderRadius: dp(10);
 	}
 
 	&.duration {
+		.control {
+			line-height: dp(46);
+		}
 		input.hour {
 			width: auto;
 			flex: 1;
 			text-align: right;
-		}
-
-		.wrap {
-			line-height: dp(46);
 		}
 
 		input.text {
@@ -776,18 +788,18 @@ $formFieldBorderRadius: dp(10);
 				transform: scale(1.5) translateX(dp(14));
 				background-color:white;
 			}
-			&:active::after { // focus
-				transform: scale(1.75);
-			}
+			//&:active::after { // focus
+			//	transform: scale(1.75);
+			//}
 			&:active:checked::after  {
-				transform:scale(1.75) translateX(dp(12));
-				background-color: $colorBackgroundInput;
+				//transform:scale(1.75) translateX(dp(12));
+				//background-color: $colorBackgroundInput;
 			}
 			&:focus {
 				border-color: $colorPrimary;
-				&:checked:after {
-					transform:scale(1.75) translateX(dp(12));
-				}
+				//&:checked:after {
+				//	transform:scale(1.75) translateX(dp(12));
+				//}
 			}
 		}
 
@@ -797,17 +809,24 @@ $formFieldBorderRadius: dp(10);
 
 	&.select {
 		position: relative;
-		select {
-			padding-right: dp(32);
-			background-image: none;
-			appearance: none;
+		.wrap {
+			select {
+				padding-right: dp(30);
+				background-image: none;
+				appearance: none;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+			}
 		}
 		&:after {
 			position: absolute;
 			display: inline-block;
-			top: $baseLineHeight - dp(10);
-			right: dp(12);
+			top: $baseLineHeight - dp(6);
+			right: dp(8);
 			@extend %icon;
+			color: $colorTextSecondary;
+			font-size: 2rem;
 			margin-right: 0;
 			content: "expand_more";
 			pointer-events: none;
@@ -832,7 +851,7 @@ $formFieldBorderRadius: dp(10);
 		margin: 0;
 	}
 
-	p {
+	> p:first-child {
 		margin-top: 0;
 	}
 
@@ -902,7 +921,7 @@ form {
 		flex-wrap: wrap;
 		column-gap: dp(12);
 		row-gap: 0;
-		align-items: start;
+		align-items: stretch;
 		>* {
 			flex: 1;
 		}
