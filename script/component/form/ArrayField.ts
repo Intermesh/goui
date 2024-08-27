@@ -17,7 +17,10 @@ type ArrayFieldConfig<Type extends FieldValue = Record<string, any>> = FieldConf
 
 type FieldBuilder<Type extends FieldValue = Record<string, any>> = (value?: Type) => Field;
 
-export interface ArrayField {
+export interface ArrayField<Type extends FieldValue = Record<string, any>> extends Field {
+
+	get value() : Type[]
+	set value(value: Type[])
 
 	// on<K extends keyof FieldEventMap<this>>(eventName: K, listener: Partial<FieldEventMap<this>>[K], options?: ObservableListenerOpts): void
 	//
