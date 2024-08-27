@@ -98,6 +98,8 @@ export class DateField extends TimeField {
 				}
 			}
 		}
+
+		super.internalSetValue(v);
 	}
 
 	protected outputFormat(): string {
