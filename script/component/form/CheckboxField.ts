@@ -4,10 +4,9 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {Field, FieldConfig, FieldEventMap} from "./Field.js";
+import {FieldConfig, FieldEventMap} from "./Field.js";
 import {createComponent} from "../Component.js";
 import {E} from "../../util/Element.js";
-import {Config} from "../Observable";
 import {InputField} from "./InputField";
 
 type CheckBoxType = 'box' | 'switch' | 'button';
@@ -71,11 +70,9 @@ export class CheckboxField extends InputField {
 
 		this._input.on("click", ()=> this.validate());
 
-		const control = E('div',
+		return E('div',
 			this._input
 		);
-
-		return control;
 	}
 
 	set color(v: string) {

@@ -70,11 +70,7 @@ export abstract class InputField extends Field {
 		this._input!.value = v !== undefined && v !== null ? v.toString() : "";
 	}
 
-	set value(v: string|number|boolean|undefined|null) {
-		super.value = v;
-	}
-
-	get value() {
+	protected internalGetValue(): string | number | boolean | any[] | Record<string, any> | null | undefined {
 		return this._input!.value;
 	}
 
