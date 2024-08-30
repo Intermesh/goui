@@ -243,9 +243,7 @@ export class Component extends Observable {
 		this.items.on("add", (_collection, item, index) => {
 
 			item.parent = this;
-
-			// fires before render! Menu uses this to modify item.parent
-			item.fire("added", item, index, this);
+			item.onAdded(index);
 
 			if (this.rendered) {
 				this.renderItem(item);
@@ -259,7 +257,18 @@ export class Component extends Observable {
 				item.remove();
 			}
 		});
+	}
 
+	/**
+	 * Called when this component is added to a parent. Useful to override in an extend or with a module:
+	 *
+	 * @link https://github.com/Intermesh/goui-docs/blob/main/script/OverrideTest.ts
+	 *
+	 * @param index
+	 */
+	public onAdded(index:number) {
+		// fires before render! Menu uses this to modify item.parent
+		this.fire("added", this, index, this.parent!);
 	}
 
 	protected getState() {
@@ -435,6 +444,9 @@ export class Component extends Observable {
 
 	/**
 	 * Render the component
+	 *
+	 * For overriding from another module see:
+	 * @link https://github.com/Intermesh/goui-docs/blob/main/script/OverrideTest.ts
 	 *
 	 * @param parentEl The element this componennt will render into
 	 * @param insertBefore If given, the element will be inserted before this child

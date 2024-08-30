@@ -119,9 +119,6 @@ export abstract class Field extends Component {
 
 	constructor(tagName: keyof HTMLElementTagNameMap = "label") {
 		super(tagName);
-
-		this.on("added", this.onAdded , {once: true});
-
 		this.control = this.createControl();
 	}
 
@@ -184,7 +181,8 @@ export abstract class Field extends Component {
 	 */
 	protected fireChangeOnBlur = true;
 
-	protected onAdded = (_comp:Field, index:number, parent:Component) =>{
+	public onAdded(index: number){
+		super.onAdded(index);
 		this.trackReset();
 		this.defaultValue = this.value;
 	}
