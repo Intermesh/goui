@@ -310,7 +310,7 @@ export abstract class Field extends Component {
 	}
 
 	private renderButtons() {
-		if (this._buttons) {
+		if (this._buttons && this._buttons.length) {
 			this.toolbar = tbar({}, ...this._buttons);
 			this.toolbar.parent = this;
 			this.toolbar.render(this.wrap);
