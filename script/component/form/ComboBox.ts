@@ -105,8 +105,9 @@ export type ComboBoxConfig<Type extends ComboBox = ComboBox> = Config<Type, Auto
 };
 
 /**
- * Shorthand function to create {@see DateField}
+ * Shorthand function to create {@see ComboBox}
  *
+ * @link https://goui.io/#form/Select
  * @param config
  */
 export const combobox = (config: ComboBoxConfig) => createComponent(new ComboBox(config.dataSource, config.displayProperty ?? "name", config.valueProperty ?? "id", config.renderer ?? ComboBoxDefaultRenderer, config.storeConfig ?? {
