@@ -355,6 +355,10 @@ export class Window extends DraggableComponent {
 	}
 
 	protected internalSetHidden(hidden: boolean) {
+
+		// has to be shown before center() otherwise it can't calculate it's width and height
+		super.internalSetHidden(hidden);
+
 		if(!hidden) {
 
 			//Close opened menu's becuase they have a higher z-index. They need work inside modal windows.
@@ -363,6 +367,8 @@ export class Window extends DraggableComponent {
 			}
 
 			this.focussedBeforeOpen = document.activeElement || undefined;
+
+
 
 			if (!this.rendered) {
 
@@ -387,23 +393,14 @@ export class Window extends DraggableComponent {
 					this.modalOverlay.show();
 				}
 
-				// has to be shown before center() otherwise it can't calculate it's width and height
-				super.internalSetHidden(hidden);
-
 				if (!this.hasState()) {
 					this.shrinkToFit();
 					this.center();
 				}
 				// debugger;
 				this.constrainViewport();
-
-			} else {
-				super.internalSetHidden(hidden);
 			}
-
 			this.focus();
-		} else {
-			super.internalSetHidden(hidden);
 		}
 	}
 
