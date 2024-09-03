@@ -20,8 +20,16 @@ export class TextAreaField extends InputField {
 
 	private _autoHeight: boolean = false;
 
-	protected createInput() {
-		return document.createElement("textarea");
+	protected createInput() : HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement {
+		const control = document.createElement("textarea");
+		control.on("change", ()=> {
+			this.fireChange();
+		});
+
+		if (this.invalidMsg) {
+			this.applyInvalidMsg();
+		}
+		return control;
 	}
 
 	/**
