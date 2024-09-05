@@ -28,13 +28,13 @@ export class BufferedFunction {
 	 *
 	 * @param args
 	 */
-	buffer(args: any[] = []) {
+	buffer(args: any[] = [], scope:any) {
 		this.cancel();
 
 		return new Promise(resolve => {
 			this.id = window.setTimeout(() => {
 				this.cancel();
-				resolve(this.fn.apply(null, args));
+				resolve(this.fn.apply(scope, args));
 			}, this.delay);
 		})
 	}
@@ -73,8 +73,8 @@ export class FunctionUtil {
 	 */
 	public static buffer(delay: number, fn: Function) {
 		const bf = new BufferedFunction(delay, fn);
-		return (...args: any[]) => {
-			return bf.buffer(args);
+		return function(this:any, ...args: any[]) {
+			return bf.buffer(args, this);
 		};
 	}
 
@@ -86,9 +86,9 @@ export class FunctionUtil {
 	 * @param fn
 	 */
 	public static delay(delay: number, fn: Function) {
-		return (...args: any[]) => {
+		return function(this:any, ...args: any[]) {
 			const bf = new BufferedFunction(delay, fn);
-			bf.buffer(args);
+			bf.buffer(args, this);
 		};
 	}
 
@@ -105,13 +105,13 @@ export class FunctionUtil {
 
 		let frame = -1;
 
-		return (...args: any[]) => {
+		return function(this:any, ...args: any[]) {
 			if (frame > -1) {
 				cancelAnimationFrame(frame);
 			}
 
 			frame = window.requestAnimationFrame(() => {
-				fn.apply(null, args);
+				fn.apply(this, args);
 			});
 		}
 	}
