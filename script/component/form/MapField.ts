@@ -11,7 +11,7 @@ import {Config, Observable} from "../Observable";
 
 type MapFieldConfig = FieldConfig<MapField, FieldEventMap<MapField>, "buildField">;
 type FieldBuilder = (value: MapFieldValue|undefined) => Field;
-type MapFieldValue = Record<string, any>;
+type MapFieldValue = any;
 
 export interface MapField {
 	set value(v: MapFieldValue)
@@ -24,6 +24,11 @@ export class MapField extends Field {
 	 * Set to the name of the field holding the key. If not given a key will be generated.
 	 */
 	public keyFieldName?: string;
+
+	/**
+	 * Set to the name of the field holding the value if it's a scalar.
+	 */
+	public valueFieldName?: string;
 
 	constructor(public buildField: FieldBuilder) {
 		super('div');
@@ -59,7 +64,7 @@ export class MapField extends Field {
 					key = rowValue[this.keyFieldName];
 					delete rowValue[this.keyFieldName];
 				}
-				v[key] = rowValue;
+				v[key] = this.valueFieldName ? rowValue[this.valueFieldName] : rowValue;
 			}
 		})
 		return v;
@@ -97,8 +102,7 @@ export class MapField extends Field {
 
 		const field = this.buildField(data);
 		field.dataSet.key = key || this.nextKey();
-		field.value = data;
-
+		field.value = this.valueFieldName ? {[this.valueFieldName]:data, [this.keyFieldName!]: key} : data;
 		index < 0 ? this.items.add(field) : this.items.insert(index,field);
 	}
 
@@ -116,4 +120,11 @@ export class MapField extends Field {
 	}
 }
 
+/**
+ * Create a map field
+ *
+ * @link https://goui.io/#form/MapField
+ * @param config
+ * @param items
+ */
 export const mapfield = (config: MapFieldConfig, ...items: Field[]) => createComponent(new MapField(config.buildField), config, items);

@@ -30,9 +30,9 @@ export abstract class InputField extends Field {
 		if (!this._input) {
 			super.focus(o);
 		} else {
+			this._input.focus(o);
 			this.fire("focus", this, o);
 		}
-		this._input?.focus(o);
 	}
 
 	protected createControl() : HTMLElement {

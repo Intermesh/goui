@@ -829,6 +829,7 @@ export class DateTime {
 		'h': date => pad(date.getHours() % 12),
 		'H': date => pad(date.getHours()),
 		'i': date => pad(date.getMinutes()),
+		'k': date => date.getMinutes() + "",
 		's': date => pad(date.getSeconds()),
 
 		'O': date => date.getGMTOffset(""),
@@ -868,6 +869,7 @@ export class DateTime {
 	 * h - 12-hour format of an hour (01 to 12)
 	 * H - 24-hour format of an hour (00 to 23)
 	 * i - Minutes with leading zeros (00 to 59)
+	 * k - Minutes without leading zeros (0 to 59)
 	 * s - Seconds, with leading zeros (00 to 59)
 	 * u - Microseconds (added in PHP 5.2.2)
 	 * e - The timezone identifier (Examples: UTC, GMT, Atlantic/Azores)
@@ -929,6 +931,7 @@ export class DateTime {
 				case 'h':
 				case 'j':
 				case 'n':
+				case 'k':
 					char = "(?<" + char + ">\\d{1,2})";
 					break;
 
@@ -967,9 +970,11 @@ export class DateTime {
 
 
 	/**
-	 * Create date by given format. See {@link DateTime.format}.
+	 * Create date by given format. See {@link DateTime.format()}.
 	 * Supports:
-	 * Y, y, m, n, d, j, H, h, G, g, i, s, a, A
+	 * Y, y, m, n, d, j, H, h, G, g, i, k, s, a, A
+	 *
+	 * k = minutes without leading zeros
 	 *
 	 * @example
 	 * ```
@@ -1030,6 +1035,7 @@ export class DateTime {
 					date.setHours(h);
 					break;
 
+				case 'k':
 				case 'i':
 					date.setMinutes(parseInt(result.groups[key]));
 					break;

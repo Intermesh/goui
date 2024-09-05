@@ -1,9 +1,10 @@
 import {TextField} from "./TextField";
-import {Config} from "../Observable";
 import {FieldConfig, FieldEventMap} from "./Field";
-import {createComponent} from "../Component";
+import {comp, createComponent} from "../Component";
 import {DateTime} from "../../util";
 import {InputField} from "./InputField";
+import {Menu, menu} from "../menu";
+import {btn, Button} from "../Button";
 
 
 export interface TimeField {
@@ -22,11 +23,133 @@ export class TimeField extends InputField {
 
 
 	protected baseCls = "goui-form-field time no-floating-label";
+	private menu!: Menu;
 
 	constructor() {
 		super();
 
 		this.type = "time";
+
+		this.createMenu();
+
+	}
+
+	private createMenu() {
+
+		const hrsContainer = comp({
+			tagName: "li",
+			flex: 1,
+				height: 40,
+				cls: "scroll hbox gap"
+		}),
+			minsContainer = comp({
+				tagName: "li",
+				flex: 1,
+				height: 40,
+				cls: "scroll hbox gap"
+			});
+
+		const handler = (btn:Button) => {
+			let dt = this.getValueAsDateTime();
+			if(!dt) {
+				dt = new DateTime();
+				dt.setHours(0);
+				dt.setMinutes(0);
+
+			}
+			if(btn.dataSet.hour) {
+				dt.setHours(btn.dataSet.hour);
+			}
+
+			if(btn.dataSet.min) {
+				dt.setMinutes(btn.dataSet.min);
+			}
+
+			this.value = dt.format("H:i");
+			this.focus();
+		}
+
+		for(let h = 0; h < 24; h++) {
+			hrsContainer.items.add(btn({
+				dataSet: {hour: h},
+				itemId: h,
+				width: 60,
+				text: DateTime.createFromFormat(h + "", "H")?.format("H"),
+				handler: handler
+			}))
+		}
+
+		for(let m = 0; m < 60; m++) {
+			minsContainer.items.add(btn({
+				dataSet: {min: m},
+				itemId: m,
+				width: 60,
+				text: DateTime.createFromFormat(m + "", "k")?.format("i"),
+				handler: handler
+			}))
+		}
+
+		this.menu = menu({
+			renderTo: this.el,
+				autoClose: false,
+				hidden: true,
+				isDropdown: true,
+				cls: "vbox",
+				listeners: {
+					hide: (menu) => {
+
+					}
+				}
+			},
+			hrsContainer,
+			minsContainer
+		);
+
+		this.input.addEventListener('focus', () => {
+			this.menu.show();
+
+			const dt = this.getValueAsDateTime();
+
+			if(dt) {
+
+				this.menu.items.get(0)!.items.forEach(b => b.cls="")
+				this.menu.items.get(1)!.items.forEach(b => b.cls="")
+
+				const activeHour = this.menu.items.get(0)!.findItem(dt.getHours())!;
+				activeHour.cls="primary filled";
+				activeHour.el.scrollIntoView();
+
+				const activeMin = this.menu.items.get(1)!.findItem(dt.getMinutes())!
+				activeMin.cls="primary filled";
+				activeMin.el.scrollIntoView();
+			}
+		})
+
+		this.input.addEventListener('blur', (e:any) => {
+			setTimeout(() => {
+				if (e.relatedTarget && this.menu.el.contains(e.relatedTarget)) {
+					return;
+				}
+				this.menu.hide();
+			});
+		})
+	}
+
+	protected internalRemove() {
+		if (this.menu) {
+			this.menu.remove();
+		}
+		super.internalRemove();
+	}
+
+	protected internalRender(): HTMLElement {
+
+		const el = super.internalRender();
+
+		this.menu.alignTo = this.wrap;
+		this.menu.alignToInheritWidth = false;
+
+		return el;
 	}
 
 	public set step(v:number) {
@@ -61,6 +184,10 @@ export class TimeField extends InputField {
 	 */
 	public set max(max:string) {
 		this.input!.attr('max', max);
+	}
+
+	public get max() {
+		return this.input!.attr('max');
 	}
 
 	protected outputFormat() {
