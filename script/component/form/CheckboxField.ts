@@ -46,8 +46,10 @@ export class CheckboxField extends InputField {
 	focus(o?: FocusOptions) {
 		if (!this.input) {
 			super.focus(o);
+		} else {
+			this.input.focus(o);
+			this.fire("focus", this, o);
 		}
-		this.input?.focus(o);
 	}
 
 	protected createLabel() {

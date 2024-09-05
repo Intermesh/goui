@@ -9,6 +9,7 @@ import {Config} from "../Observable";
 import {FieldEventMap} from "./Field";
 import {TimeField} from "./TimeField";
 import {DateTime} from "../../util";
+import {InputField} from "./InputField";
 
 
 
@@ -20,6 +21,9 @@ export interface DateField {
 	 */
 	set value(v: string | undefined)
 	get value(): string | undefined
+
+	get input(): HTMLInputElement
+
 }
 
 /**
@@ -30,7 +34,7 @@ export interface DateField {
  *
  * @see Form
  */
-export class DateField extends TimeField {
+export class DateField extends InputField {
 
 	protected baseCls = "goui-form-field date no-floating-label";
 
@@ -104,6 +108,49 @@ export class DateField extends TimeField {
 
 	protected outputFormat(): string {
 		return this.withTime ? "Y-m-dTH:i" : 'Y-m-d';
+	}
+
+	/**
+	 * The minimum number allowed
+	 *
+	 * The value of the time input is always in 24-hour format that includes leading zeros: hh:mm
+	 *
+	 * @param min
+	 */
+	public set min(min:string) {
+		this.input!.attr('min', min);
+	}
+
+	public get min() {
+		return this.input!.attr('min');
+	}
+
+	/**
+	 * The maximum number allowed
+	 *
+	 * The value of the time input is always in 24-hour format that includes leading zeros: hh:mm
+	 *
+	 * @param max
+	 */
+	public set max(max:string) {
+		this.input!.attr('max', max);
+	}
+
+	public get max() {
+		return this.input!.attr('max');
+	}
+
+
+	/**
+	 * Get the date as DateTime object
+	 */
+	public getValueAsDateTime() {
+
+		let v = this.value as string, date;
+		if (!v || !(date = DateTime.createFromFormat(v, this.outputFormat()))) {
+			return undefined;
+		}
+		return date;
 	}
 
 }

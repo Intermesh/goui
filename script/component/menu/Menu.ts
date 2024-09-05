@@ -92,6 +92,11 @@ export class Menu extends Toolbar {
 	}
 
 	/**
+	 * Automatically close the menu when the user clicks outside.
+	 */
+	public autoClose = true;
+
+	/**
 	 * Align the menu to this element
 	 */
 	public alignTo?: HTMLElement;
@@ -177,6 +182,10 @@ export class Menu extends Toolbar {
 	}
 	protected renderItem(item: Component) {
 
+		if(item.tagName == "li") {
+			return super.renderItem(item);
+		}
+
 		const insertBefore = this.getInsertBefore();
 
 		if (!insertBefore) {
@@ -187,6 +196,7 @@ export class Menu extends Toolbar {
 	}
 
 	private wrapLI(item: Component) {
+
 		const li = document.createElement("li");
 
 		item.render(li);
@@ -214,8 +224,7 @@ export class Menu extends Toolbar {
 	 * It will align the top left of the menu top the bottom left of the component. It will also be at least as wide as
 	 * the given component by setting the min-width style.
 	 *
-	 * @todo avoid going out of the viewport
-	 * @param cmp
+	 * @param alignEl
 	 */
 	showFor(alignEl: HTMLElement) {
 
@@ -319,15 +328,17 @@ export class Menu extends Toolbar {
 
 			Menu.openedMenu = this;
 
-			//hide menu when clicked elsewhere
-			window.addEventListener("mousedown", (ev) => {
-				this.close();
-			}, {once: true});
+			if(this.autoClose) {
+				//hide menu when clicked elsewhere
+				window.addEventListener("mousedown", (ev) => {
+					this.close();
+				}, {once: true});
 
-			// stop clicks on menu from hiding menu, otherwise it hides before button handlers fire.
-			this.el.addEventListener("mousedown", (ev) => {
-				ev.stopPropagation();
-			});
+				// stop clicks on menu from hiding menu, otherwise it hides before button handlers fire.
+				this.el.addEventListener("mousedown", (ev) => {
+					ev.stopPropagation();
+				});
+			}
 
 			//put back fade out class removed in mouseenter listener above
 			this.el.classList.add("goui-fade-out");

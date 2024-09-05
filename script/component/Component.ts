@@ -19,7 +19,7 @@ import {browser, Collection} from "../util";
 /**
  * A component identifier by id, itemId, Component instance or custom function
  */
-export type FindComponentPredicate = string | Component | ((comp: Component) => boolean | void);
+export type FindComponentPredicate = string | number | Component | ((comp: Component) => boolean | void);
 
 // interface ClassTypeOf<T> {
 // 	new(...args: any[]): T
@@ -190,7 +190,7 @@ export class Component extends Observable {
 	 * if stateId is given it will also be used as itemId
 	 */
 
-	private _itemId: string = "";
+	private _itemId: string|number = "";
 
 	/**
 	 * ID used for storing state of the component in the State storage.
@@ -234,7 +234,7 @@ export class Component extends Observable {
 		return this._itemId || this.stateId || this.el.id || "";
 	}
 
-	set itemId(itemId: string) {
+	set itemId(itemId: string|number) {
 		this._itemId = itemId;
 	}
 

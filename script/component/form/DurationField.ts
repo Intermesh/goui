@@ -77,6 +77,7 @@ export class DurationField extends Field {
 
 		const onFocus = function(this:any, ev:any) {
 			ev.preventDefault();
+			this.focus();
 			this.setSelectionRange(0, this.value.length);
 		};
 
