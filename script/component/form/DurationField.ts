@@ -1,7 +1,7 @@
 import {Config} from "../Observable";
 import {Field, FieldEventMap} from "./Field";
 import {createComponent} from "../Component";
-import {DateInterval, E} from "../../util";
+import {DateInterval, E, FunctionUtil} from "../../util";
 import {t} from "../../Translate";
 
 /**
@@ -75,7 +75,8 @@ export class DurationField extends Field {
 			return true;
 		}
 
-		const onFocus = function(this:any) {
+		const onFocus = function(this:any, ev:any) {
+			ev.preventDefault();
 			this.setSelectionRange(0, this.value.length);
 		};
 
@@ -109,6 +110,12 @@ export class DurationField extends Field {
 		this.hoursInput.pattern = "[0-9]+";
 		this.hoursInput.onblur = onBlur;
 		this.hoursInput.onfocus = onFocus;
+		this.hoursInput.onmousedown = onFocus;
+		this.hoursInput.oninput = FunctionUtil.buffer(500, function(this: any,e:any) {
+			onBlur.call(this);
+			onFocus.call(this, e)
+		});
+
 		this.hoursInput.placeholder = "--";
 		this.hoursInput.autocomplete = "off";
 		this.hoursInput.onkeydown = onKeyDown;
@@ -120,7 +127,17 @@ export class DurationField extends Field {
 		this.minutesInput.type = "text";
 		this.minutesInput.pattern = "[0-9]+";
 		this.minutesInput.maxLength = 2;
+		this.minutesInput.oninput = FunctionUtil.buffer(500, function(this: any,e:any) {
+
+			if(parseInt(this.value) > 59) {
+				this.value = "59";
+			}
+
+			onBlur.call(this);
+			onFocus.call(this, e)
+		});
 		const hoursInput = this.hoursInput!;
+		this.minutesInput.onmousedown = onFocus;
 		this.minutesInput.onblur = function(this:any) {
 			onBlur.call(this);
 			if(!this.value && hoursInput.value) {
@@ -128,15 +145,8 @@ export class DurationField extends Field {
 			}
 		};
 		this.minutesInput.onfocus = onFocus;
+		this.minutesInput.onkeydown = onKeyDown;
 
-		this.hoursInput.onkeydown = onKeyDown;
-		this.minutesInput.oninput = _ev => {
-
-			if(parseInt(this.minutesInput!.value) > 59) {
-				this.minutesInput!.value = "59";
-			}
-
-		}
 		this.minutesInput.placeholder = "--";
 		this.minutesInput.autocomplete = "off";
 
