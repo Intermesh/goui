@@ -109,11 +109,11 @@ export class SelectField extends InputField {
 		return this._store;
 	}
 
-	set value(v: string|undefined) {
+	set value(v: any) {
 		super.value = v;
 	}
 
-	get value() : string | undefined {
+	get value() : any {
 
 		if(!this.rendered) {
 			return this._value as any;
