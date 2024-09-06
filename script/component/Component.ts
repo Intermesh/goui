@@ -231,7 +231,15 @@ export class Component extends Observable {
 	 * if stateId is given it will also be used as itemId
 	 */
 	get itemId() {
-		return this._itemId || this.stateId || this.el.id || "";
+		if(this._itemId !== undefined) {
+			return this._itemId;
+		}
+
+		if(this.stateId !== undefined) {
+			return this.stateId;
+		}
+
+		return this.el.id || "";
 	}
 
 	set itemId(itemId: string|number) {
