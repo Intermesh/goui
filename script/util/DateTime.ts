@@ -408,6 +408,18 @@ export class DateTime {
 	}
 
 	/**
+	 * Check if the system uses 12 hour format time.
+	 *
+	 * Unfortunately it's not possible to detect a 12h or 24h clock setting. We can only check what's used in the
+	 * users' locale.
+	 */
+	public static hour12() {
+		// debugger;
+		const locale = navigator.language
+		return Intl.DateTimeFormat(locale,  { hour: 'numeric' }).resolvedOptions().hour12;
+	}
+
+	/**
 	 * The timezone of the date
 	 */
 	public timezone: Timezone = SystemTimeZone;
@@ -821,12 +833,18 @@ export class DateTime {
 
 		'Y': date => date.getYear().toString(),
 		'y': date => (date.getYear() + "").substr(-2),
-		'a': date => date.getHours() > 12 ? 'pm' : 'am',
-		'A': date => date.getHours() > 12 ? 'PM' : 'AM',
+		'a': date => date.getHours() >= 12 ? 'pm' : 'am',
+		'A': date => date.getHours() >= 12 ? 'PM' : 'AM',
 
-		'g': date => (date.getHours() % 12).toString(),
+		'g': date => {
+			let hr = (date.getHours() % 12);
+			if(hr == 0) {
+				hr = 12;
+			}
+			return hr.toString()
+		},
 		'G': date => date.getHours().toString(),
-		'h': date => pad(date.getHours() % 12),
+		'h': date => pad(DateTime.converters['g'](date)),
 		'H': date => pad(date.getHours()),
 		'i': date => pad(date.getMinutes()),
 		'k': date => date.getMinutes() + "",
@@ -1062,6 +1080,15 @@ export class DateTime {
 	 */
 	public compare(date: DateTime): number {
 		return (this.date > date.date ? 1 : 0) - (this.date < date.date ? 1 : 0);
+	}
+
+
+	public isInThePast() {
+		return this.compare(new DateTime()) === -1;
+	}
+
+	public isInTheFuture() {
+		return this.compare(new DateTime()) === 1;
 	}
 
 

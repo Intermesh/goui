@@ -39,14 +39,12 @@ export class TimeField extends InputField {
 		const hrsContainer = comp({
 			tagName: "li",
 			flex: 1,
-				height: 40,
-				cls: "scroll hbox gap"
+			cls: "scroll vbox gap"
 		}),
 			minsContainer = comp({
 				tagName: "li",
 				flex: 1,
-				height: 40,
-				cls: "scroll hbox gap"
+				cls: "scroll vbox gap"
 			});
 
 		const handler = (btn:Button) => {
@@ -69,12 +67,13 @@ export class TimeField extends InputField {
 			this.focus();
 		}
 
+		const hourFormat = DateTime.hour12() ? 'h\\&\\n\\b\\s\\p\\;a' : 'H';
+
 		for(let h = 0; h < 24; h++) {
 			hrsContainer.items.add(btn({
 				dataSet: {hour: h},
 				itemId: h,
-				width: 60,
-				text: DateTime.createFromFormat(h + "", "H")?.format("H"),
+				html: DateTime.createFromFormat(h + "", "H")!.format(hourFormat),
 				handler: handler
 			}))
 		}
@@ -83,7 +82,6 @@ export class TimeField extends InputField {
 			minsContainer.items.add(btn({
 				dataSet: {min: m},
 				itemId: m,
-				width: 60,
 				text: DateTime.createFromFormat(m + "", "k")?.format("i"),
 				handler: handler
 			}))
@@ -93,8 +91,10 @@ export class TimeField extends InputField {
 			renderTo: this.el,
 				autoClose: false,
 				hidden: true,
+				height: 300,
+				width: 200,
 				isDropdown: true,
-				cls: "vbox",
+				cls: "hbox",
 				listeners: {
 					hide: (menu) => {
 
@@ -104,6 +104,9 @@ export class TimeField extends InputField {
 			hrsContainer,
 			minsContainer
 		);
+
+
+
 
 		this.input.addEventListener('focus', () => {
 			this.menu.show();
@@ -117,13 +120,20 @@ export class TimeField extends InputField {
 
 				const activeHour = this.menu.items.get(0)!.findItem(dt.getHours())!;
 				activeHour.cls="primary filled";
-				activeHour.el.scrollIntoView();
+
+				if(!activeHour.el.isScrolledIntoView(this.menu.items.get(0)!.el))
+					activeHour.el.scrollIntoView();
 
 				const activeMin = this.menu.items.get(1)!.findItem(dt.getMinutes())!
 				activeMin.cls="primary filled";
-				activeMin.el.scrollIntoView();
+
+				if(!activeMin.el.isScrolledIntoView(this.menu.items.get(1)!.el))
+					activeMin.el.scrollIntoView();
 			}
 		})
+
+		// for safari that does not focus on buttons.
+		this.menu.el.tabIndex = -1;
 
 		this.input.addEventListener('blur', (e:any) => {
 			setTimeout(() => {

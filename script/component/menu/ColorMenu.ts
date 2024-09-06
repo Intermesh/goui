@@ -104,8 +104,8 @@ export class ColorMenu extends Menu {
 					}
 				},
 				handler: (btn) => {
-					this.value = btn.itemId;
-					this.fire("select", this, btn.itemId);
+					this.value = btn.itemId + "";
+					this.fire("select", this, this.value);
 				}
 			}))
 		});

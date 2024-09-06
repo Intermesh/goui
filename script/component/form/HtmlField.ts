@@ -369,7 +369,7 @@ export class HtmlField extends Field {
 												// See in this.editor.addEventListener("blur", below
 					handler: (btn) => {
 						if (!config.applyFn) {
-							this.execCmd(btn.itemId);
+							this.execCmd(btn.itemId + "");
 						} else {
 							config.applyFn.call(this, btn);
 						}
