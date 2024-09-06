@@ -90,7 +90,7 @@ export class RadioField extends Field {
 				this.fireChange();
 			});
 			btn.type = "radio";
-			btn.name = this.name || this.itemId;
+			btn.name = this.name || (this.itemId + "");
 			btn.readOnly = this.readOnly;
 
 			if(!o.value) {

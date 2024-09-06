@@ -98,8 +98,8 @@ export class ColorPicker extends Component {
 						}
 					},
 					handler: (btn) => {
-						this.value = btn.itemId;
-						this.fire("select", this, btn.itemId);
+						this.value = btn.itemId + "";
+						this.fire("select", this, this.value );
 					}
 				}))
 			)
