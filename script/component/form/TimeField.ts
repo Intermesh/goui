@@ -74,7 +74,6 @@ export class TimeField extends InputField {
 			hrsContainer.items.add(btn({
 				dataSet: {hour: h},
 				itemId: h,
-				width: 80,
 				html: DateTime.createFromFormat(h + "", "H")!.format(hourFormat),
 				handler: handler
 			}))
@@ -84,7 +83,6 @@ export class TimeField extends InputField {
 			minsContainer.items.add(btn({
 				dataSet: {min: m},
 				itemId: m,
-				width: 80,
 				text: DateTime.createFromFormat(m + "", "k")?.format("i"),
 				handler: handler
 			}))
@@ -95,6 +93,7 @@ export class TimeField extends InputField {
 				autoClose: false,
 				hidden: true,
 				height: 300,
+				width: 200,
 				isDropdown: true,
 				cls: "hbox",
 				listeners: {
@@ -106,6 +105,9 @@ export class TimeField extends InputField {
 			hrsContainer,
 			minsContainer
 		);
+
+
+
 
 		this.input.addEventListener('focus', () => {
 			this.menu.show();
@@ -119,11 +121,15 @@ export class TimeField extends InputField {
 
 				const activeHour = this.menu.items.get(0)!.findItem(dt.getHours())!;
 				activeHour.cls="primary filled";
-				activeHour.el.scrollIntoView();
+
+				if(!activeHour.el.isScrolledIntoView(this.menu.items.get(0)!.el))
+					activeHour.el.scrollIntoView();
 
 				const activeMin = this.menu.items.get(1)!.findItem(dt.getMinutes())!
 				activeMin.cls="primary filled";
-				activeMin.el.scrollIntoView();
+
+				if(!activeMin.el.isScrolledIntoView(this.menu.items.get(1)!.el))
+					activeMin.el.scrollIntoView();
 			}
 		})
 

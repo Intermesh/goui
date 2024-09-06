@@ -82,6 +82,12 @@ declare global {
 		 * Clear all child nodes
 		 */
 		empty(): void
+
+		/**
+		 * Check if this element is visible within the given container
+		 * @param container Defaults to the viewport
+		 */
+		isScrolledIntoView(container?:Element): boolean
 	}
 }
 /**
@@ -161,5 +167,16 @@ Object.assign(Element.prototype, {
 		while(this.firstChild){
 			this.removeChild(this.firstChild);
 		}
-	}
+	},
+
+	isScrolledIntoView(container?: Element) {
+		container = container || document.body
+		const { top, bottom, height } = this.getBoundingClientRect()
+		const holderRect = container.getBoundingClientRect()
+
+		return top <= holderRect.top
+			? holderRect.top - top <= height
+			: bottom - holderRect.bottom <= height
+	},
+
 } as Element);
