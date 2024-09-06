@@ -1039,15 +1039,24 @@ export class DateTime {
 	 *
 	 * Returns:
 	 *
-	 * - -1 if this interval is smaller than the other
+	 * - -1 if this date is smaller than the given
 	 * - 0 if intervals are equal
-	 * - 1 if this interval is greater than the other
+	 * - 1 if this date is greater than the given
 	 *
 	 * @param date
 	 * @return number
 	 */
 	public compare(date: DateTime): number {
 		return (this.date > date.date ? 1 : 0) - (this.date < date.date ? 1 : 0);
+	}
+
+
+	public isInThePast() {
+		return this.compare(new DateTime()) === -1;
+	}
+
+	public isInTheFuture() {
+		return this.compare(new DateTime()) === 1;
 	}
 
 
