@@ -155,7 +155,13 @@ export interface QueryParams {
 	 */
 	sort?: Comparator[],
 
-	filter?: QueryFilter
+	filter?: any
+
+
+	/**
+	 * Extra URL parameters
+	 */
+	urlQueryParams?: Record<string, string>
 
 	// [key:string]: any
 }

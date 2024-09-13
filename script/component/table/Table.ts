@@ -449,7 +449,7 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 
 		const s = this.store.sort;
 
-		let sortIndex = s.length - 1 || 0;
+		let sortIndex = 0;
 
 		if (s[sortIndex]) {
 			if (s[sortIndex].property == dataIndex) {

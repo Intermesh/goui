@@ -523,7 +523,7 @@ export class Component extends Observable {
 	}
 
 	/**
-	 * Remove component from the component tree
+	 * Remove component from the component tree and destroy it's dom.
 	 */
 	public remove() {
 		if (!this.fire("beforeremove", this)) {

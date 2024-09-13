@@ -10,6 +10,10 @@ import {
 
 
 /**
+ * REST based data source
+ *
+ * You probably need to extend this class and implement
+ *
  * @category Data
  */
 export class RestDataSource<EntityType extends BaseEntity = DefaultEntity> extends AbstractDataSource<EntityType> {
@@ -21,8 +25,8 @@ export class RestDataSource<EntityType extends BaseEntity = DefaultEntity> exten
 	 * @param id The Data source ID. Will be appended to the base uri above. for Example
 	 *  if the ID is "users" the uri will be: "https://groupoffice.com/api/users"
 	 */
-	constructor(public readonly uri:string, id?: string, public baseRequestOptions = {
-		mod: "cors",
+	constructor(public readonly uri:string, id?: string, public baseRequestOptions: RequestInit = {
+		mode: "cors",
 		method: "GET"
 	}) {
 		id = id || "restDataSource";
@@ -33,6 +37,12 @@ export class RestDataSource<EntityType extends BaseEntity = DefaultEntity> exten
 		}
 	}
 
+	public limitParamName = "limit";
+	public positionParamName = "offset";
+	public filterParamName = "searchQuery";
+
+	public sortParamName = "orderColumn";
+	public sortDirectionParamName = "orderDirection";
 
 	public read(id :number|number[], path: string="", options: RequestInit={}){
 		if(typeof id === "number") {
@@ -49,19 +59,38 @@ export class RestDataSource<EntityType extends BaseEntity = DefaultEntity> exten
 		return this.request(path, options);
 	}
 
-	private request(path: string = "", options: RequestInit = {}) {
+	protected async request(path: string = "", options: RequestInit = {}, queryParams?: URLSearchParams) {
 		const opts = structuredClone(this.baseRequestOptions);
 
 		Object.assign(opts, options);
 
-		if(path != "" && path.substring(0,1) != "") {
+		if (path != "" && path.substring(0, 1) != "") {
 			path = "/" + path;
 		}
 
-		return fetch(this.uri + path, opts).then(response => {
-			return response.json();
-		});
+		let url = this.uri + path;
+
+		if (queryParams) {
+			url += '?' + queryParams;
+		}
+
+		const response = await fetch(url, opts);
+		if(!response.ok) {
+			throw "Request error: " + response.status + " " + response.statusText;
+		}
+		return await response.json();
 	}
+
+	/**
+	 * Transforms the entity to a string to post to the server.
+	 *
+	 * @param data
+	 * @protected
+	 */
+	protected dataToPostBody(data:any) : string {
+		return JSON.stringify(data);
+	}
+
 	protected internalCommit(params: SetRequest<EntityType>): Promise<CommitResponse<EntityType>> {
 
 		const response:CommitResponse<EntityType> = {
@@ -75,7 +104,7 @@ export class RestDataSource<EntityType extends BaseEntity = DefaultEntity> exten
 			promises.push(
 				this.request(id, {
 					method: "PUT",
-					body: JSON.stringify(params.update[id])
+					body: this.dataToPostBody(params.update[id])
 				})
 					.then((data:any) => {
 						if(!response.updated) {
@@ -98,7 +127,7 @@ export class RestDataSource<EntityType extends BaseEntity = DefaultEntity> exten
 			promises.push(
 				this.request("", {
 					method: "POST",
-					body: JSON.stringify(params.create[id])
+					body: this.dataToPostBody(params.create[id])
 				})
 					.then((data:any) => {
 						if(!response.created) {
@@ -165,9 +194,45 @@ export class RestDataSource<EntityType extends BaseEntity = DefaultEntity> exten
 
 	}
 
-	protected async internalQuery(params: QueryParams): Promise<QueryResponse> {
-		const response = await this.request();
+	protected convertQueryParams(params: QueryParams) {
 
+		const uriParams = new URLSearchParams();
+
+		if(params.limit)
+			uriParams.set(this.limitParamName, params.limit.toString());
+
+		if(params.position) {
+			uriParams.set(this.positionParamName, params.position.toString());
+		}
+
+		if(params.filter) {
+			uriParams.set(this.filterParamName, params.filter);
+		}
+
+		if(params.sort && params.sort.length) {
+			uriParams.set(this.sortParamName, params.sort[0].property);
+
+			uriParams.set(this.sortDirectionParamName, params.sort[0].isAscending ? "ASC" : "DESC");
+		}
+
+		if(params.urlQueryParams) {
+			for(const k in params.urlQueryParams) {
+				uriParams.set(k, params.urlQueryParams[k]);
+			}
+		}
+
+		return uriParams;
+
+	}
+	
+
+	protected async internalQuery(params: QueryParams): Promise<QueryResponse> {
+
+		const response = await this.request("", undefined, this.convertQueryParams(params));
+
+		if(!Array.isArray(response.data)) {
+			throw "Invalid query response";
+		}
 		// immediately add data so we don't have to fetch it when data is retrieved using {@see get()} or {@see single()}
 		response.data.forEach((r:EntityType) => {
 			if(!this.data[r.id!]) {
