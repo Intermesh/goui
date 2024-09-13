@@ -130,6 +130,18 @@ export type EntityID = string;
  */
 export type QueryFilter = Record<string, any>;// TODO
 
+enum AndOrNot {AND, OR, NOT}
+export interface FilterOperator {
+	operator: AndOrNot
+	conditions: (FilterOperator | FilterCondition)[]
+}
+
+export type FilterCondition = Record<string, any>;
+
+export interface JmapQueryParams extends QueryParams {
+	filter?: FilterCondition | FilterOperator,
+}
+
 /**
  * @category Data
  */
@@ -155,13 +167,15 @@ export interface QueryParams {
 	 */
 	sort?: Comparator[],
 
-	filter?: any
-
-
 	/**
 	 * Extra URL parameters
 	 */
 	urlQueryParams?: Record<string, string>
+
+	/**
+	 * Filters for the query operation
+	 */
+	filter?: FilterCondition | FilterOperator
 
 	// [key:string]: any
 }
