@@ -21,7 +21,10 @@ export class RestDataSource<EntityType extends BaseEntity = DefaultEntity> exten
 	 * @param id The Data source ID. Will be appended to the base uri above. for Example
 	 *  if the ID is "users" the uri will be: "https://groupoffice.com/api/users"
 	 */
-	constructor(public readonly uri:string, id?: string) {
+	constructor(public readonly uri:string, id?: string, public baseRequestOptions = {
+		mod: "cors",
+		method: "GET"
+	}) {
 		id = id || "restDataSource";
 		super(id);
 
@@ -29,6 +32,7 @@ export class RestDataSource<EntityType extends BaseEntity = DefaultEntity> exten
 			this.uri  = uri + "/";
 		}
 	}
+
 
 	public read(id :number|number[], path: string="", options: RequestInit={}){
 		if(typeof id === "number") {
@@ -46,17 +50,15 @@ export class RestDataSource<EntityType extends BaseEntity = DefaultEntity> exten
 	}
 
 	private request(path: string = "", options: RequestInit = {}) {
-		const baseOpts = {
-			mod: "cors",
-			method: "GET"
-		}
-		Object.assign(baseOpts, options);
+		const opts = structuredClone(this.baseRequestOptions);
+
+		Object.assign(opts, options);
 
 		if(path != "" && path.substring(0,1) != "") {
 			path = "/" + path;
 		}
 
-		return fetch(this.uri + path, baseOpts).then(response => {
+		return fetch(this.uri + path, opts).then(response => {
 			return response.json();
 		});
 	}
