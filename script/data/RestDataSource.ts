@@ -194,7 +194,7 @@ export class RestDataSource<EntityType extends BaseEntity = DefaultEntity> exten
 
 	}
 
-	protected convertQueryParams(params: QueryParams) {
+	protected queryParamsToUrlParams(params: QueryParams) {
 
 		const uriParams = new URLSearchParams();
 
@@ -203,10 +203,6 @@ export class RestDataSource<EntityType extends BaseEntity = DefaultEntity> exten
 
 		if(params.position) {
 			uriParams.set(this.positionParamName, params.position.toString());
-		}
-
-		if(params.filter) {
-			uriParams.set(this.filterParamName, params.filter);
 		}
 
 		if(params.sort && params.sort.length) {
@@ -224,11 +220,15 @@ export class RestDataSource<EntityType extends BaseEntity = DefaultEntity> exten
 		return uriParams;
 
 	}
-	
+
+	protected queryParamsToRequestOptions(params: QueryParams) : RequestInit | undefined{
+		return undefined;
+	}
+
 
 	protected async internalQuery(params: QueryParams): Promise<QueryResponse> {
 
-		const response = await this.request("", undefined, this.convertQueryParams(params));
+		const response = await this.request("", this.queryParamsToRequestOptions(params), this.queryParamsToUrlParams(params));
 
 		if(!Array.isArray(response.data)) {
 			throw "Invalid query response";

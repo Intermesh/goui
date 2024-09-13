@@ -3,7 +3,7 @@
  * @copyright Copyright 2023 Intermesh BV
  * @author Merijn Schering <mschering@intermesh.nl>
  */
-import {store, Store, StoreConfig, StoreEventMap, StoreRecord} from "../data/Store.js";
+import {Store, StoreConfig, StoreEventMap, StoreRecord} from "../data/Store.js";
 import {
 	AbstractDataSource,
 	BaseEntity,
@@ -13,8 +13,8 @@ import {
 	QueryParams
 } from "./AbstractDataSource.js";
 import {ObjectUtil} from "../util/index.js";
-import {Config, createComponent, ObservableListener} from "../component/index.js";
-import {config} from "chai";
+import {createComponent, ObservableListener} from "../component/index.js";
+
 
 type Relation<EntityType extends BaseEntity> = Partial<Record<keyof EntityType, {
 	dataSource: AbstractDataSource<EntityType>,
