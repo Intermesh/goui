@@ -6,10 +6,8 @@
 
 import {Component, ComponentEventMap, createComponent} from "../Component.js";
 import {root} from "../Root.js";
-import {Button} from "../Button.js";
 import {Toolbar} from "../Toolbar.js";
 import {Config, Listener, ObservableListenerOpts} from "../Observable";
-import HTML = Mocha.reporters.HTML;
 
 
 export interface Menu extends Toolbar {

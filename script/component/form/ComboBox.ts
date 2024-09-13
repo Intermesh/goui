@@ -4,10 +4,10 @@ import {
 	DataSourceStore,
 	datasourcestore,
 	DataSourceStoreConfig,
+	FilterCondition,
 	QueryFilter,
 } from "../../data";
 import {column, Table, table} from "../table";
-import {Config} from "../Observable";
 import {createComponent} from "../Component";
 import {Format} from "../../util";
 import {FieldConfig} from "./Field";
@@ -29,7 +29,7 @@ export class ComboBox<DS extends AbstractDataSource = AbstractDataSource> extend
 	/**
 	 * When autocompleting from the datasource this filter name will be used.
 	 */
-	public filterName:string = "text";
+	public filterName:keyof FilterCondition = "text";
 
 	/**
 	 * Set additional filter properties on the store.
@@ -75,7 +75,8 @@ export class ComboBox<DS extends AbstractDataSource = AbstractDataSource> extend
 			if(this.filter) {
 				Object.assign(this.list.store.queryParams.filter, this.filter);
 			}
-			this.list.store.queryParams.filter[this.filterName ?? this.displayProperty] = input;
+			const filterName = (this.filterName ?? this.displayProperty);
+			this.list.store.setFilter(filterName, {[filterName] : input});
 			await this.list.store.load();
 		});
 	}
