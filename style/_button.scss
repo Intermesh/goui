@@ -8,6 +8,10 @@
 	padding: dp(11) dp(18); //padding 11 because line height is 24 instead of 22
 	display: flex;
 	align-items: center;
+	position: relative;
+	font: $fontBase;
+	font-weight: 600;
+	line-height: dp(24); //match icon
 
 	//min-height: dp(46); // line-height + padding. This broke chips. Don't know why it was here.
 
@@ -36,10 +40,7 @@
 		width: 100%;
 	}
 
-	position: relative;
-	font: $fontBase;
-	font-weight: 600;
-	line-height: dp(24); //match icon
+
 
 	&.small {
 		transform: scale(.8);
@@ -160,6 +161,13 @@
 	justify-content: flex-start;
 	flex-wrap: nowrap;
 	position: relative;// for absolute toolbars inside
+	align-items: center;
+	user-select: none;
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	padding: dp(8) dp(16);
+	min-height: dp(62);
+	margin: 0;
 
 	// toolbar inside a toolbar will be an overlay
 	> .goui.goui-toolbar {
@@ -180,17 +188,7 @@
 		z-index: 2;
 	}
 
-	align-items: center;
-	user-select: none;
-	-moz-user-select: none;
-	-webkit-user-select: none;
-	padding: dp(8) dp(16);
-	min-height: dp(62);
-	margin: 0;
-	//removed for htmlfield toolbar inside menu
-	//padding-bottom: dp(18);
-
-	 h2 {
+	h2 {
 		display: block;
 		margin: 0;
 		color: inherit;
@@ -209,7 +207,6 @@
 		color: inherit;
 		font-size: sp(18);
 		line-height: normal;
-		//font-weight: 700;
 		padding: 0;
 		overflow: hidden;
 		text-overflow: ellipsis;
@@ -218,7 +215,6 @@
 
 	> hr {
 		height: dp(24);
-		//margin: 0px dp(12) 0px 0;
 		border-top: 0;
 		border-right: $borderWidth solid $colorBorder;
 		border-color: currentColor;
@@ -234,15 +230,5 @@
 			padding-bottom: 0;
 			padding-top:0;
 		}
-
-		//input.text {
-		//	padding-top: dp(10);
-		//	padding-bottom: dp(10);
-		//}
-		//
-		//div.label {
-		//	top: math.div($baseLineHeight, 2) + dp(11);
-		//}
-
 	}
 }

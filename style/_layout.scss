@@ -179,9 +179,6 @@ html {
 
 %vr {
 	border: 0;
-	&.draggable {
-		cursor: col-resize;
-	}
 	z-index: 1;
 	padding: 0;
 	width: $borderWidth * 5;
@@ -190,17 +187,14 @@ html {
 	background-color: transparent;
 	color: $colorBorder;
 	background:linear-gradient(90deg, transparent 35%, currentColor 35% 65%, transparent 65%);
+
+	&.draggable {
+		cursor: col-resize;
+	}
+
 	&:hover{
 		color: $colorDivider;
 	}
-	// make it easy to grab with 5px but only show 1px border
-	//&:after {
-	//	display:block;
-	//	content: "";
-	//	height: 100%;
-	//	margin: 0 2px;
-	//	background-color: $colorBorder;
-	//}
 }
 .goui.hbox.mobile-cards {
 	height: 100%;

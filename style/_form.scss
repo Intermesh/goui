@@ -277,16 +277,16 @@ $formFieldBorderRadius: dp(10);
 	.wrap {
 		flex: 1;
 		align-items: center;
-		> i {
-			width: dp(24);
-			height: dp(24);
-			margin: dp(11) dp(0) dp(11) dp(16);
-		}
 		overflow:hidden;
 		display: flex;
 		flex-flow: row nowrap;
 		border: $borderWidth solid transparent;
 
+		> i {
+			width: dp(24);
+			height: dp(24);
+			margin: dp(11) dp(0) dp(11) dp(16);
+		}
 
 		div.label {
 			font-size: sp(13);
@@ -959,6 +959,9 @@ form {
 
 
 .autocomplete {
+
+	box-shadow: 0 10px 20px 0 rgb(0 0 0 / 40%);
+
 	&.expanded {
 		.wrap {
 			border-color: $colorMain;
@@ -970,8 +973,6 @@ form {
 		.label, .control {
 			color: $colorMain;
 		}
-
-		box-shadow: 0 10px 20px 0 rgb(0 0 0 / 40%);
 	}
 }
 

@@ -239,13 +239,13 @@ hr.goui {
 .goui-empty-state {
 	text-align: center;
 	color: $colorTextSecondary;
+	width: 100%;
+	padding: dp(20);
 	.icon {
 		font-size: dp(48);
 		width: dp(48);
 		height: dp(48);
 	}
-	width: 100%;
-	padding: dp(20);
 }
 
 

@@ -33,6 +33,9 @@ ul.goui-tree {
 
 	li {
 
+		margin-top: -1px;
+		cursor: pointer;
+
 		.goui-form-field {
 			margin: 0;
 			.control {
@@ -40,8 +43,7 @@ ul.goui-tree {
 			}
 		}
 
-		margin-top: -1px;
-		cursor: pointer;
+
 		&.drag-over {
 
 			&.on {
@@ -56,15 +58,15 @@ ul.goui-tree {
 			position: relative;
 			border-top: 1px solid transparent;
 			border-bottom: 1px solid transparent;
+			padding: dp(4) 0;
+			display: flex;
+			align-content: center;
+			align-items: center;
 
 			.dragging & {
 				pointer-events: none;
 			}
 
-			padding: dp(4) 0;
-			display: flex;
-			align-content: center;
-			align-items: center;
 			a, label {
 				color: $colorText;
 				margin-left: dp(8);

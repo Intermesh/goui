@@ -1,23 +1,23 @@
 .normalize {
+
+	font: $fontBase;
+	color: $colorText;
+
 	> * {
 		margin: 0;
 		padding: 0;
 		box-sizing: content-box;
 		overflow: visible;
+		text-align: left;
+		overflow-wrap: break-word;
 		&:focus {
 			outline: none; //remove safari outline
 		}
-		text-align: left;
 	}
-
-	overflow-wrap: break-word;
 
 	pre {
 		white-space: pre-wrap;
 	}
-
-	font: $fontBase;
-	color: $colorText;
 
 	blockquote {
 		display: block;

@@ -1,6 +1,10 @@
 .goui-table {
 
   position: relative;
+	border-collapse: collapse;
+	border-spacing: 0;
+	table-layout: fixed;
+	width: dp(100);
 
   &:focus-within {
 
@@ -48,10 +52,7 @@
     width: dp(64);
   }
 
-  border-collapse: collapse;
-  border-spacing: 0;
-  table-layout: fixed;
-  width: dp(100);
+
 
   tbody {
     tr {
@@ -205,31 +206,6 @@
       }
     }
   }
-
-
-  //tr.line td, td.line, th.line, tr.line th {
-  //	border-bottom: 1px solid $colorLine;
-  //}
-  //
-  //tr.totals th {
-  //	padding: dp(8);
-  //	vertical-align: middle;
-  //	border-right: 1px solid $colorLine;
-  //}
-  //
-  //tr.bold-line td, td.bold-line, tr.line th, th.line {
-  //	border-bottom: 1px solid $colorLine;
-  //}
-
-
-  //td:first-child {
-  //	padding-left: 0;
-  //}
-  //
-  //td:last-child {
-  //	padding-right: 0;
-  //}
-
 
   + .goui-toolbar {
     margin-top: dp(16);

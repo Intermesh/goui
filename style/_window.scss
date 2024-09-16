@@ -48,6 +48,8 @@
 	}
 
 	&.collapsed {
+		height: dp(74) !important;
+		min-height: 0;
 		.collapse-btn {
 			i:after {
 				content: "expand_less";
@@ -56,9 +58,6 @@
 		>*:not(.header) {
 			display: none;
 		}
-
-		height: dp(74) !important;
-		min-height: 0;
 	}
 
 	&.maximized

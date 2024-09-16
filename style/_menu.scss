@@ -74,6 +74,9 @@ menu.goui-dropdown {
 
 		> label.goui-form-field.check.box {
 			margin-bottom: 0;
+			border-radius: dp(12);
+			padding: 4px dp(16);
+
 			.control {
 				.box-label {
 					color: inherit;
@@ -87,8 +90,6 @@ menu.goui-dropdown {
 					border-color: white;
 				}
 			}
-			border-radius: dp(12);
-			padding: 4px dp(16);
 		}
 
 		hr {
@@ -115,15 +116,15 @@ menu.goui-dropdown {
 
 	li > menu.goui-dropdown {
 		position: absolute;
-		&:not(:hover) {
-			//https://easings.net/#easeInCubic
-			transition: all 200ms cubic-bezier(0.32, 0, 0.67, 0);;
-		}
 		visibility:hidden;
 		opacity: 0;
 		top: 0;
 		left: 100%;
 		margin-left: dp(-4);
+		&:not(:hover) {
+			//https://easings.net/#easeInCubic
+			transition: all 200ms cubic-bezier(0.32, 0, 0.67, 0);;
+		}
 	}
 
 	//second expands on hover
