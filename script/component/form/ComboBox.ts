@@ -6,10 +6,10 @@ import {
 	DataSourceStoreConfig,
 	FilterCondition,
 	QueryFilter,
-} from "../../data";
-import {column, Table, table} from "../table.js";
+} from "../../data/index.js";
+import {column, Table, table} from "../table/index.js";
 import {createComponent} from "../Component.js";
-import {Format} from "../../util.js";
+import {Format} from "../../util/index.js";
 import {FieldConfig} from "./Field.js";
 
 export type ComboBoxStoreConfig<DS extends AbstractDataSource = AbstractDataSource> = Partial<DataSourceStoreConfig<DS, any>>

@@ -1,9 +1,9 @@
 import {TextField} from "./TextField.js";
 import {FieldConfig, FieldEventMap} from "./Field.js";
 import {comp, createComponent} from "../Component.js";
-import {DateTime} from "../../util.js";
+import {DateTime} from "../../util/index.js";
 import {InputField} from "./InputField.js";
-import {Menu, menu} from "../menu.js";
+import {Menu, menu} from "../menu/index.js";
 import {btn, Button} from "../Button.js";
 
 

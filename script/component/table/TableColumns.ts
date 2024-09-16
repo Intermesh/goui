@@ -7,10 +7,10 @@
 import {Config, Observable} from "../Observable.js";
 import {Table} from "./Table.js";
 import {Component, createComponent} from "../Component.js";
-import {Format, FunctionUtil} from "../../util.js";
-import {checkbox} from "../form.js";
+import {Format} from "../../util/index.js";
+import {checkbox} from "../form/index.js";
 import {btn} from "../Button.js";
-import {menu} from "../menu.js";
+import {menu} from "../menu/index.js";
 
 /**
  * Return HTML or component to render into the table cell. Can also be async.

@@ -1,7 +1,7 @@
 import {Config} from "../Observable.js";
 import {Field, FieldConfig, FieldEventMap} from "./Field.js";
 import {createComponent} from "../Component.js";
-import {DateInterval, E, FunctionUtil} from "../../util.js";
+import {DateInterval, E, FunctionUtil} from "../../util/index.js";
 import {t} from "../../Translate.js";
 
 /**

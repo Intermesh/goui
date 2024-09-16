@@ -15,8 +15,7 @@ import {form} from "./form/Form.js";
 import {fieldset} from "./form/Fieldset.js";
 import {textfield} from "./form/TextField.js";
 import {t} from "../Translate.js";
-import {DateTime} from "../util.js";
-import {Menu} from "./menu.js";
+import {DateTime} from "../util/index.js";
 
 
 /**

@@ -9,7 +9,7 @@ import {List} from "../List.js";
 import {ArrayUtil} from "../../util/ArrayUtil.js";
 import {createComponent} from "../Component.js";
 import {Table} from "./Table.js";
-import {FunctionUtil} from "../../util.js";
+import {FunctionUtil} from "../../util/index.js";
 import {CheckboxSelectColumn} from "./TableColumns.js";
 
 export interface RowSelectEventMap<Type extends Observable> extends ObservableEventMap<Type> {

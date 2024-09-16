@@ -6,7 +6,7 @@ import {
 	GetResponse,
 	QueryParams, QueryResponse,
 	SetRequest
-} from "./AbstractDataSource";
+} from "./AbstractDataSource.js";
 
 
 /**

@@ -2,4 +2,4 @@
 
 export * from './ColorPicker.js';
 export * from './DatePicker.js';
-export * from './ListPicker';
+export * from './ListPicker.js';

@@ -11,9 +11,9 @@ import {FieldConfig, FieldEventMap} from "./Field.js";
 import {btn, Button} from "../Button.js";
 import {Component, createComponent} from "../Component.js";
 import {List, listStoreType} from "../List.js";
-import {listpicker} from "../picker.js";
-import {Menu, menu} from "../menu.js";
-import {storeRecordType} from "../../data.js";
+import {listpicker} from "../picker/index.js";
+import {Menu, menu} from "../menu/index.js";
+import {storeRecordType} from "../../data/index.js";
 
 export interface AutocompleteEventMap<Type> extends FieldEventMap<Type> {
 	/**

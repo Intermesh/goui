@@ -1,9 +1,9 @@
 import {Field, FieldConfig, FieldEventMap} from "./Field.js";
 import {btn, Button} from "../Button.js";
-import {Menu, menu} from "../menu.js";
+import {Menu, menu} from "../menu/index.js";
 import {t} from "../../Translate.js";
-import {DatePicker, datepicker} from "../picker.js";
-import {DateTime, Format} from "../../util.js";
+import {DatePicker, datepicker} from "../picker/index.js";
+import {DateTime, Format} from "../../util/index.js";
 import {comp, Component, createComponent, hr} from "../Component.js";
 
 /**

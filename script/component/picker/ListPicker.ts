@@ -1,4 +1,4 @@
-import {storeRecordType} from "../../data.js";
+import {storeRecordType} from "../../data/index.js";
 import {Component, ComponentEventMap, createComponent} from "../Component.js";
 import {List, listStoreType} from "../List.js";
 import {Config, Listener, ObservableListenerOpts} from "../Observable.js";

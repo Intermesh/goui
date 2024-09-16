@@ -3,6 +3,7 @@
  * @copyright Copyright 2023 Intermesh BV
  * @author Merijn Schering <mschering@intermesh.nl>
  */
+import {ObjectUtil} from "./util/index.js";
 
 // import {LanguageKeys} from "../locale/LanguageKeys";
 
