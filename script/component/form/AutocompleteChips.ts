@@ -1,12 +1,12 @@
-import {ChipsField} from "./ChipsField";
-import {List, listStoreType} from "../List";
-import {Menu, menu} from "../menu";
-import {btn, Button} from "../Button";
-import {FieldConfig, FieldEventMap} from "./Field";
-import {Listener, ObservableListenerOpts} from "../Observable";
-import {Component, createComponent} from "../Component";
-import {FunctionUtil} from "../../util";
-import {storeRecordType} from "../../data";
+import {ChipsField} from "./ChipsField.js";
+import {List, listStoreType} from "../List.js";
+import {Menu, menu} from "../menu.js";
+import {btn, Button} from "../Button.js";
+import {FieldConfig, FieldEventMap} from "./Field.js";
+import {Listener, ObservableListenerOpts} from "../Observable.js";
+import {Component, createComponent} from "../Component.js";
+import {FunctionUtil} from "../../util.js";
+import {storeRecordType} from "../../data.js";
 
 export interface AutocompleteChipsEventMap<Type> extends FieldEventMap<Type> {
 	/**

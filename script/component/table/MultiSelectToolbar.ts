@@ -8,7 +8,7 @@ import {tbarItems, Toolbar} from "../Toolbar.js";
 import {Table} from "./Table.js";
 import {t} from "../../Translate.js";
 import {btn, Button} from "../Button.js";
-import {Config} from "../Observable";
+import {Config} from "../Observable.js";
 
 export class MultiSelectToolbar extends Toolbar {
 	private label: Component;

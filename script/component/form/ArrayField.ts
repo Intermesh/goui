@@ -6,8 +6,8 @@
 import {Field, FieldConfig, FieldEventMap, FieldValue} from "./Field.js";
 import {ContainerField} from "./ContainerField.js";
 import {createComponent} from "../Component.js";
-import {btn} from "../Button";
-import {Config} from "../Observable";
+import {btn} from "../Button.js";
+import {Config} from "../Observable.js";
 
 
 /**

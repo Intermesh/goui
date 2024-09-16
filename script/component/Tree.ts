@@ -1,11 +1,11 @@
-import {List, ListEventMap, RowRenderer} from "./List";
-import {store, Store, StoreRecord} from "../data";
-import {Component, createComponent} from "./Component";
-import {E} from "../util";
-import {Config, Listener, ObservableListenerOpts} from "./Observable";
-import {dragData} from "../DragData";
-import {MaterialIcon} from "./MaterialIcon";
-import {checkbox} from "./form";
+import {List, ListEventMap, RowRenderer} from "./List.js";
+import {store, Store, StoreRecord} from "../data.js";
+import {Component, createComponent} from "./Component.js";
+import {E} from "../util.js";
+import {Config, Listener, ObservableListenerOpts} from "./Observable.js";
+import {dragData} from "../DragData.js";
+import {MaterialIcon} from "./MaterialIcon.js";
+import {checkbox} from "./form.js";
 
 
 export const TreeRowRenderer: RowRenderer = (record, row, me:Tree, storeIndex) => {

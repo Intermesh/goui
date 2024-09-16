@@ -7,7 +7,7 @@
 import {Component, createComponent} from "./Component.js";
 import {CardContainer} from "./CardContainer.js";
 import {btn} from "./Button.js";
-import {Config} from "./Observable";
+import {Config} from "./Observable.js";
 
 
 /**

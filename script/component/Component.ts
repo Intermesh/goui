@@ -14,7 +14,7 @@ import {
 	ObservableListenerOpts,
 } from "./Observable.js";
 import {State} from "../State.js";
-import {browser, Collection} from "../util";
+import {browser, Collection} from "../util.js";
 
 /**
  * A component identifier by id, itemId, Component instance or custom function

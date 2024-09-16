@@ -7,10 +7,10 @@
 import {Config, Listener, Observable, ObservableEventMap, ObservableListenerOpts} from "../Observable.js";
 import {List} from "../List.js";
 import {ArrayUtil} from "../../util/ArrayUtil.js";
-import {createComponent} from "../Component";
-import {Table} from "./Table";
-import {FunctionUtil} from "../../util";
-import {CheckboxSelectColumn} from "./TableColumns";
+import {createComponent} from "../Component.js";
+import {Table} from "./Table.js";
+import {FunctionUtil} from "../../util.js";
+import {CheckboxSelectColumn} from "./TableColumns.js";
 
 export interface RowSelectEventMap<Type extends Observable> extends ObservableEventMap<Type> {
 	/**

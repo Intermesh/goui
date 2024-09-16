@@ -5,7 +5,7 @@
  */
 
 import {comp, Component, createComponent} from "./Component.js";
-import {Config} from "./Observable";
+import {Config} from "./Observable.js";
 
 type renderFunc = (dd: Component) => void;
 

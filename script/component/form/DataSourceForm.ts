@@ -3,13 +3,13 @@
  * @copyright Copyright 2023 Intermesh BV
  * @author Merijn Schering <mschering@intermesh.nl>
  */
-import {Form, FormEventMap} from "./Form";
-import {AbstractDataSource, BaseEntity, DefaultEntity, EntityID} from "../../data";
-import {t} from "../../Translate";
-import {Config, Listener, ObservableListenerOpts} from "../Observable";
-import {Component, createComponent} from "../Component";
-import {Window} from "../Window";
-import {FieldConfig} from "./Field";
+import {Form, FormEventMap} from "./Form.js";
+import {AbstractDataSource, BaseEntity, DefaultEntity, EntityID} from "../../data.js";
+import {t} from "../../Translate.js";
+import {Config, Listener, ObservableListenerOpts} from "../Observable.js";
+import {Component, createComponent} from "../Component.js";
+import {Window} from "../Window.js";
+import {FieldConfig} from "./Field.js";
 
 
 export interface DataSourceFormEventMap<Type, ValueType extends BaseEntity = DefaultEntity> extends FormEventMap<Type> {

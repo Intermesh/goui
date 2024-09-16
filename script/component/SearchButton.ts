@@ -11,7 +11,7 @@ import {TextField, textfield} from "./form/TextField.js";
 import {Component, createComponent} from "./Component.js";
 import {FunctionUtil} from "../util/FunctionUtil.js";
 import {Config, Listener, ObservableListenerOpts} from "./Observable.js";
-import {ListPickerEventMap} from "./picker";
+import {ListPickerEventMap} from "./picker.js";
 
 
 /**

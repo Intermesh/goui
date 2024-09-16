@@ -10,7 +10,7 @@ import {ColorPicker} from "../picker/ColorPicker.js";
 import {Field, FieldConfig, FieldEventMap} from "./Field.js";
 import {btn, Button} from "../Button.js";
 import {menu} from "../menu/Menu.js";
-import {Config} from "../Observable";
+import {Config} from "../Observable.js";
 
 /**
  * ColorField component

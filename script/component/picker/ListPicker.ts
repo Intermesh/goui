@@ -1,7 +1,7 @@
-import {storeRecordType} from "../../data";
-import {Component, ComponentEventMap, createComponent} from "../Component";
-import {List, listStoreType} from "../List";
-import {Config, Listener, ObservableListenerOpts} from "../Observable";
+import {storeRecordType} from "../../data.js";
+import {Component, ComponentEventMap, createComponent} from "../Component.js";
+import {List, listStoreType} from "../List.js";
+import {Config, Listener, ObservableListenerOpts} from "../Observable.js";
 
 
 export type listPickerListType<ListPickerType> = ListPickerType extends ListPicker<infer ListType> ? ListType : never;

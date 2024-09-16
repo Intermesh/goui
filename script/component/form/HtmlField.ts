@@ -17,8 +17,8 @@ import {comp, Component, ComponentEventMap, createComponent} from "../Component.
 import {FunctionUtil} from "../../util/FunctionUtil.js";
 import {root} from "../Root.js";
 import {MaterialIcon} from "../MaterialIcon.js";
-import {Window} from "../Window";
-import {t} from "../../Translate";
+import {Window} from "../Window.js";
+import {t} from "../../Translate.js";
 
 
 /**

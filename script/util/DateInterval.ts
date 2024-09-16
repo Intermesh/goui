@@ -1,4 +1,4 @@
-import {DateTime} from "./DateTime";
+import {DateTime} from "./DateTime.js";
 
 function pad(n: any): string {
 	return n.toString().padStart(2, "0");

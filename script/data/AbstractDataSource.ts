@@ -8,8 +8,8 @@ import {Observable, ObservableEventMap, ObservableListenerOpts, root, Window} fr
 import {Comparator} from "./Store.js";
 import {FunctionUtil} from "../util/index.js";
 import {BrowserStore} from "../util/BrowserStorage.js";
-import {t} from "../Translate";
-import {RouterEventMap} from "../Router";
+import {t} from "../Translate.js";
+import {RouterEventMap} from "../Router.js";
 
 /**
  * The response of the {@see AbstractDataSource.get()} method

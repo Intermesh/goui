@@ -4,7 +4,7 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {DateInterval} from "./DateInterval";
+import {DateInterval} from "./DateInterval.js";
 
 /**
  * @category Utility

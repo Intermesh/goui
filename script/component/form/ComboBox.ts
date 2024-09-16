@@ -1,4 +1,4 @@
-import {AutocompleteEventMap, AutocompleteField} from "./AutocompleteField";
+import {AutocompleteEventMap, AutocompleteField} from "./AutocompleteField.js";
 import {
 	AbstractDataSource,
 	DataSourceStore,
@@ -7,10 +7,10 @@ import {
 	FilterCondition,
 	QueryFilter,
 } from "../../data";
-import {column, Table, table} from "../table";
-import {createComponent} from "../Component";
-import {Format} from "../../util";
-import {FieldConfig} from "./Field";
+import {column, Table, table} from "../table.js";
+import {createComponent} from "../Component.js";
+import {Format} from "../../util.js";
+import {FieldConfig} from "./Field.js";
 
 export type ComboBoxStoreConfig<DS extends AbstractDataSource = AbstractDataSource> = Partial<DataSourceStoreConfig<DS, any>>
 

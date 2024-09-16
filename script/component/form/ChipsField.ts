@@ -1,8 +1,8 @@
-import {Field, FieldConfig, FieldEventMap, FieldValue} from "./Field";
-import {comp, Component, createComponent} from "../Component";
-import {Config} from "../Observable";
-import {btn} from "../Button";
-import {t} from "../../Translate";
+import {Field, FieldConfig, FieldEventMap, FieldValue} from "./Field.js";
+import {comp, Component, createComponent} from "../Component.js";
+import {Config} from "../Observable.js";
+import {btn} from "../Button.js";
+import {t} from "../../Translate.js";
 
 
 export interface ChipsField {

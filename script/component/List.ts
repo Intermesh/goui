@@ -10,9 +10,9 @@ import {t} from "../Translate.js";
 import {E} from "../util/Element.js";
 import {rowselect, RowSelect, RowSelectConfig} from "./table/RowSelect.js";
 import {Config, Listener, ObservableListenerOpts} from "./Observable.js";
-import {dragData} from "../DragData";
-import {root} from "./Root";
-import {Window} from "./Window";
+import {dragData} from "../DragData.js";
+import {root} from "./Root.js";
+import {Window} from "./Window.js";
 
 export type RowRenderer = (record: any, row: HTMLElement, list: any, storeIndex: number) => string | Component[] | void;
 

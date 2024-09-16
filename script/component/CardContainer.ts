@@ -6,8 +6,8 @@
 
 import {Component, ComponentEventMap, createComponent} from "./Component.js";
 import {Config, Listener, ObservableListenerOpts} from "./Observable.js";
-import {ButtonEventMap} from "./Button";
-import {Menu} from "./menu";
+import {ButtonEventMap} from "./Button.js";
+import {Menu} from "./menu.js";
 
 
 export interface CardContainerEventMap<Type> extends ComponentEventMap<Type> {

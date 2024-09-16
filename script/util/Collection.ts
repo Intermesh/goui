@@ -5,7 +5,7 @@
  */
 
 import {Listener, Observable, ObservableEventMap, ObservableListenerOpts} from "../component/Observable.js";
-import {CardContainerEventMap} from "../component";
+import {CardContainerEventMap} from "../component.js";
 
 /**
  * @inheritDoc

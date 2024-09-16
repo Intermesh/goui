@@ -6,8 +6,8 @@
 
 import {Component, createComponent} from "../Component.js";
 import {Form} from "./Form.js";
-import {Config} from "../Observable";
-import {FieldConfig, FieldEventMap} from "./Field";
+import {Config} from "../Observable.js";
+import {FieldConfig, FieldEventMap} from "./Field.js";
 
 /**
  * Field set component

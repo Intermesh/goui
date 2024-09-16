@@ -6,7 +6,7 @@
 
 import {Field, FieldEventMap} from "./Field.js";
 import {createComponent} from "../Component.js";
-import {Config} from "../Observable";
+import {Config} from "../Observable.js";
 
 /**
  * TextField component

@@ -13,8 +13,8 @@ import {Notifier} from "../../Notifier.js";
 import {draggable} from "../DraggableComponent.js";
 import {TableColumn} from "./TableColumns.js";
 import {List, ListEventMap} from "../List.js";
-import {Config, Listener, ObservableListenerOpts} from "../Observable";
-import {t} from "../../Translate";
+import {Config, Listener, ObservableListenerOpts} from "../Observable.js";
+import {t} from "../../Translate.js";
 
 
 type GroupByRenderer = (groupBy: any, record: any, thEl: HTMLTableCellElement, table: Table) => string | Promise<string> | Component | Promise<Component>;

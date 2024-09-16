@@ -10,10 +10,10 @@ import {FunctionUtil} from "../../util/index.js";
 import {FieldConfig, FieldEventMap} from "./Field.js";
 import {btn, Button} from "../Button.js";
 import {Component, createComponent} from "../Component.js";
-import {List, listStoreType} from "../List";
-import {listpicker} from "../picker";
-import {Menu, menu} from "../menu";
-import {storeRecordType} from "../../data";
+import {List, listStoreType} from "../List.js";
+import {listpicker} from "../picker.js";
+import {Menu, menu} from "../menu.js";
+import {storeRecordType} from "../../data.js";
 
 export interface AutocompleteEventMap<Type> extends FieldEventMap<Type> {
 	/**

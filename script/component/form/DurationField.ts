@@ -1,8 +1,8 @@
-import {Config} from "../Observable";
-import {Field, FieldConfig, FieldEventMap} from "./Field";
-import {createComponent} from "../Component";
-import {DateInterval, E, FunctionUtil} from "../../util";
-import {t} from "../../Translate";
+import {Config} from "../Observable.js";
+import {Field, FieldConfig, FieldEventMap} from "./Field.js";
+import {createComponent} from "../Component.js";
+import {DateInterval, E, FunctionUtil} from "../../util.js";
+import {t} from "../../Translate.js";
 
 /**
  * Duration field

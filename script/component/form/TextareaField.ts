@@ -5,9 +5,9 @@
  */
 import {TextField} from "./TextField.js";
 import {createComponent} from "../Component.js";
-import {Config} from "../Observable";
-import {FieldConfig, FieldEventMap} from "./Field";
-import {InputField} from "./InputField";
+import {Config} from "../Observable.js";
+import {FieldConfig, FieldEventMap} from "./Field.js";
+import {InputField} from "./InputField.js";
 
 /**
  * Text Area component

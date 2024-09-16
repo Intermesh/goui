@@ -7,7 +7,7 @@
 import {Component, ComponentEventMap, createComponent} from "../Component.js";
 import {root} from "../Root.js";
 import {Toolbar} from "../Toolbar.js";
-import {Config, Listener, ObservableListenerOpts} from "../Observable";
+import {Config, Listener, ObservableListenerOpts} from "../Observable.js";
 
 
 export interface Menu extends Toolbar {

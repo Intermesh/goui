@@ -5,7 +5,7 @@
  */
 import {Component, ComponentState, createComponent, FindComponentPredicate, REM_UNIT_SIZE} from "./Component.js";
 import {DraggableComponent} from "./DraggableComponent.js";
-import {Config} from "./Observable";
+import {Config} from "./Observable.js";
 
 
 /**

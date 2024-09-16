@@ -1,4 +1,4 @@
-import {Field} from "./Field";
+import {Field} from "./Field.js";
 
 export abstract class InputField extends Field {
 

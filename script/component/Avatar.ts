@@ -5,7 +5,7 @@
  */
 
 import {Component, createComponent} from "./Component.js";
-import {Config} from "./Observable";
+import {Config} from "./Observable.js";
 
 export class Avatar extends Component {
 

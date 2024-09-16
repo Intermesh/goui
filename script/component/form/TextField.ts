@@ -6,8 +6,8 @@
 
 import {FieldConfig, FieldEventMap} from "./Field.js";
 import {createComponent} from "../Component.js";
-import {Config} from "../Observable";
-import {InputField} from "./InputField";
+import {Config} from "../Observable.js";
+import {InputField} from "./InputField.js";
 
 
 export type TextFieldType = ("text" | "password" | "email" | "url" | "tel" | "search" );

@@ -7,7 +7,7 @@
 import {FieldConfig, FieldEventMap} from "./Field.js";
 import {createComponent} from "../Component.js";
 import {E} from "../../util/Element.js";
-import {InputField} from "./InputField";
+import {InputField} from "./InputField.js";
 
 type CheckBoxType = 'box' | 'switch' | 'button';
 

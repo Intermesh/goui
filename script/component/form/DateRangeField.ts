@@ -1,10 +1,10 @@
-import {Field, FieldConfig, FieldEventMap} from "./Field";
-import {btn, Button} from "../Button";
-import {Menu, menu} from "../menu";
-import {t} from "../../Translate";
-import {DatePicker, datepicker} from "../picker";
-import {DateTime, Format} from "../../util";
-import {comp, Component, createComponent, hr} from "../Component";
+import {Field, FieldConfig, FieldEventMap} from "./Field.js";
+import {btn, Button} from "../Button.js";
+import {Menu, menu} from "../menu.js";
+import {t} from "../../Translate.js";
+import {DatePicker, datepicker} from "../picker.js";
+import {DateTime, Format} from "../../util.js";
+import {comp, Component, createComponent, hr} from "../Component.js";
 
 /**
  * Date range field

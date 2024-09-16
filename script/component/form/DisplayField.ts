@@ -6,8 +6,8 @@
 
 import {Field, FieldConfig, FieldEventMap} from "./Field.js";
 import {Component, createComponent} from "../Component.js";
-import {Config} from "../Observable";
-import {DateTime, Format} from "../../util";
+import {Config} from "../Observable.js";
+import {DateTime, Format} from "../../util.js";
 
 const defaultDisplayFieldRenderer: DisplayFieldRenderer = (v:any, field:DisplayField) => v ?? ""
 /**

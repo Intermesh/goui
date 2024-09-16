@@ -9,7 +9,7 @@ import {Menu} from "./menu/Menu.js";
 import {Config, Listener, ObservableListenerOpts} from "./Observable.js";
 import {MaterialIcon} from "./MaterialIcon.js";
 import {router} from "../Router.js";
-import {root} from "./Root";
+import {root} from "./Root.js";
 
 type ButtonType = "button" | "submit" | "reset";
 

@@ -6,8 +6,8 @@
 
 import {comp, Component, ComponentEventMap} from "./Component.js";
 import {Button} from "./Button.js";
-import {Config, Listener, ObservableListenerOpts} from "./Observable";
-import {Menu} from "./menu";
+import {Config, Listener, ObservableListenerOpts} from "./Observable.js";
+import {Menu} from "./menu.js";
 
 
 export interface Toolbar extends Component {

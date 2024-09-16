@@ -1,10 +1,10 @@
-import {TextField} from "./TextField";
-import {FieldConfig, FieldEventMap} from "./Field";
-import {comp, createComponent} from "../Component";
-import {DateTime} from "../../util";
-import {InputField} from "./InputField";
-import {Menu, menu} from "../menu";
-import {btn, Button} from "../Button";
+import {TextField} from "./TextField.js";
+import {FieldConfig, FieldEventMap} from "./Field.js";
+import {comp, createComponent} from "../Component.js";
+import {DateTime} from "../../util.js";
+import {InputField} from "./InputField.js";
+import {Menu, menu} from "../menu.js";
+import {btn, Button} from "../Button.js";
 
 
 export interface TimeField {

@@ -7,8 +7,8 @@
 import {E} from "../../util/Element.js";
 import {Component, createComponent} from "../Component.js";
 import {Field, FieldConfig, FieldEventMap} from "./Field.js";
-import {Config} from "../Observable";
-import {MaterialIcon} from "../MaterialIcon";
+import {Config} from "../Observable.js";
+import {MaterialIcon} from "../MaterialIcon.js";
 
 
 interface RadioOption {

@@ -5,11 +5,11 @@
  */
 
 import {createComponent} from "../Component.js";
-import {Config} from "../Observable";
-import {FieldConfig, FieldEventMap} from "./Field";
-import {TimeField} from "./TimeField";
-import {DateTime} from "../../util";
-import {InputField} from "./InputField";
+import {Config} from "../Observable.js";
+import {FieldConfig, FieldEventMap} from "./Field.js";
+import {TimeField} from "./TimeField.js";
+import {DateTime} from "../../util.js";
+import {InputField} from "./InputField.js";
 
 
 

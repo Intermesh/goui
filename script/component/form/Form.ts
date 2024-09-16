@@ -10,7 +10,7 @@ import {Notifier} from "../../Notifier.js";
 import {Component, createComponent} from "../Component.js";
 import {Field, FieldConfig, FieldEventMap} from "./Field.js";
 import {t} from "../../Translate.js";
-import {DatePickerEventMap} from "../picker";
+import {DatePickerEventMap} from "../picker.js";
 
 
 export type FormHandler<ValueType extends ContainerFieldValue = ContainerFieldValue> = ((form: Form<ValueType>) => any | Promise<any>) | undefined;
