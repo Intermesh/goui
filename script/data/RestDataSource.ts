@@ -70,7 +70,7 @@ export class RestDataSource<EntityType extends BaseEntity = DefaultEntity> exten
 
 		let url = this.uri + path;
 
-		if (queryParams) {
+		if (queryParams && queryParams.size) {
 			url += '?' + queryParams;
 		}
 
