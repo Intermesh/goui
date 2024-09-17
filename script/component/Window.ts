@@ -356,6 +356,7 @@ export class Window extends DraggableComponent {
 	}
 
 	protected internalSetHidden(hidden: boolean) {
+		debugger;
 
 		// has to be shown before center() otherwise it can't calculate it's width and height
 		super.internalSetHidden(hidden);
@@ -480,8 +481,8 @@ export class Window extends DraggableComponent {
 	 * Center the window in the screen
 	 */
 	public center() {
-		this.el.style.top = (((window.innerHeight - this.height) / 2)) + "px";
-		this.el.style.left = (((window.innerWidth - this.width) / 2)) + "px";
+		this.el.style.top = (((window.innerHeight - this.el.offsetHeight) / 2)) + "px";
+		this.el.style.left = (((window.innerWidth - this.el.offsetWidth) / 2)) + "px";
 
 		return this;
 	}
