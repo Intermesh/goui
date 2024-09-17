@@ -1040,17 +1040,23 @@ div.color-dot {
 
 
 		.chip {
+			display: flex;
+			flex-direction: row;
 			float: left;
 			border-radius: dp(20);
 			background-color: var(--bg-highest);
 			padding: dp(3) dp(12);
 			margin: dp(8) dp(4);
-			overflow: hidden;
 			max-width: dp(120);
 			min-width: dp(60);
-			text-overflow: ellipsis;
-			white-space: nowrap;
 			cursor: default;
+
+			> span {
+				flex: 1;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+			}
 
 			&.selected {
 				background-color: $colorSelectedRow;

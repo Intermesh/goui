@@ -1,8 +1,8 @@
 import {Field, FieldConfig, FieldEventMap, FieldValue} from "./Field.js";
-import {comp, Component, createComponent} from "../Component.js";
-import {Config} from "../Observable.js";
+import {comp, Component, createComponent, span, ComponentEventMap} from "../Component.js";
 import {btn} from "../Button.js";
 import {t} from "../../Translate.js";
+import {Listener, ObservableListenerOpts} from "../Observable.js";
 
 
 export interface ChipsField {
@@ -10,6 +10,44 @@ export interface ChipsField {
 	set value(v: FieldValue[])
 }
 
+export interface ChipEventMap<Type> extends ComponentEventMap<Type> {
+	deleteclick: (chip: Type) => any
+}
+
+interface Chip extends Component {
+	on<K extends keyof ChipEventMap<this>, L extends Listener>(eventName: K, listener: Partial<ChipEventMap<this>>[K], options?: ObservableListenerOpts): L
+	un<K extends keyof ChipEventMap<this>>(eventName: K, listener: Partial<ChipEventMap<this>>[K]): boolean
+	fire<K extends keyof ChipEventMap<this>>(eventName: K, ...args: Parameters<ChipEventMap<any>[K]>): boolean
+}
+
+class Chip extends Component {
+	private textComponent: Component;
+	constructor() {
+		super();
+
+		this.cls = "chip";
+
+		this.items.add(
+			this.textComponent = span({}),
+			btn({
+				title: t("Remove"),
+				icon: "cancel",
+				handler: (btn) => {
+					this.fire("deleteclick", this);
+				}
+			})
+		);
+	}
+
+	get text(): string {
+		return this.textComponent.text;
+	}
+
+	set text(text: string) {
+		this.textComponent.text = text;
+		this.title = text;
+	}
+}
 /**
  * Chips component
  */
@@ -35,7 +73,7 @@ export class ChipsField extends Field {
 	 * @param value
 	 */
 	public chipRenderer = async (chip:Component, value: any) => {
-		chip.items.get(0)!.text = value;
+		chip.text = value;
 	}
 
 	public get editor() : Component {
@@ -144,22 +182,16 @@ export class ChipsField extends Field {
 	}
 
 	private createChip() {
-		const chip = comp({
-			cls: "chip hbox"
-		},
-			comp({}),
-			btn({
-				title: t("Remove"),
-				icon: "cancel",
-				handler: (btn) => {
-					this.captureValueForChange();
-					const index = this.items.indexOf(chip);
-					chip.remove();
-					this.value.splice(index, 1);
-					this.fireChange();
-				}
-			})
-		);
+
+		const chip = new Chip();
+		chip.on("deleteclick", comp1 => {
+			this.captureValueForChange();
+			const index = this.items.indexOf(chip);
+			chip.remove();
+			this.value.splice(index, 1);
+			this.fireChange();
+		})
+
 		chip.el.addEventListener("click" , () => {
 			this.select(this.items.indexOf(chip));
 			// this.focus();
