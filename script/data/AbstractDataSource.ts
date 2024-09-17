@@ -137,6 +137,7 @@ export type Filter = {
 }
 
 /**
+ * Paramaters for the query() method
  * @category Data
  */
 export interface QueryParams {

@@ -14,6 +14,7 @@ import {
 } from "./AbstractDataSource.js";
 import {ObjectUtil} from "../util/index.js";
 import {createComponent, ObservableListener} from "../component/index.js";
+import {Filter} from "@intermesh/goui";
 
 
 type Relation<EntityType extends BaseEntity> = Partial<Record<keyof EntityType, {
@@ -192,7 +193,13 @@ export class DataSourceStore<DataSource extends AbstractDataSource = AbstractDat
 		return onScroll;
 	}
 
-	public patchFilter(ref: string, filter:any | undefined) {
+	/**
+	 * Patch an existing filter with extra filter options
+	 *
+	 * @param ref
+	 * @param filter
+	 */
+	public patchFilter(ref: string, filter:Filter | undefined) {
 		const f = this.getFilter(ref) ?? {};
 
 		return this.setFilter(ref, Object.assign(f, filter));
@@ -200,7 +207,13 @@ export class DataSourceStore<DataSource extends AbstractDataSource = AbstractDat
 
 	private filters: Record<string, any> = {};
 
-	public setFilter(ref: string, filter: Record<string, any> | undefined) {
+	/**
+	 * Set a filter for the {@see AbstractDataSource::query()} method
+	 *
+	 * @param ref A reference name so it can be replaced later by the component.
+	 * @param filter
+	 */
+	public setFilter(ref: string, filter: Filter | undefined) {
 
 		if (filter === undefined) {
 			delete this.filters[ref];
