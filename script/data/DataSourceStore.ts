@@ -10,11 +10,11 @@ import {
 	Changes,
 	dataSourceEntityType,
 	DefaultEntity,
-	QueryParams
+	QueryParams,
+	Filter
 } from "./AbstractDataSource.js";
 import {ObjectUtil} from "../util/index.js";
 import {createComponent, ObservableListener} from "../component/index.js";
-import {Filter} from "@intermesh/goui";
 
 
 type Relation<EntityType extends BaseEntity> = Partial<Record<keyof EntityType, {
@@ -199,7 +199,7 @@ export class DataSourceStore<DataSource extends AbstractDataSource = AbstractDat
 	 * @param ref
 	 * @param filter
 	 */
-	public patchFilter(ref: string, filter:Filter | undefined) {
+	public patchFilter(ref: string, filter: Filter | undefined) {
 		const f = this.getFilter(ref) ?? {};
 
 		return this.setFilter(ref, Object.assign(f, filter));
