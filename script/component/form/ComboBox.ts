@@ -4,7 +4,6 @@ import {
 	DataSourceStore,
 	datasourcestore,
 	DataSourceStoreConfig,
-	FilterCondition,
 	QueryFilter,
 } from "../../data/index.js";
 import {column, Table, table} from "../table/index.js";
@@ -29,7 +28,7 @@ export class ComboBox<DS extends AbstractDataSource = AbstractDataSource> extend
 	/**
 	 * When autocompleting from the datasource this filter name will be used.
 	 */
-	public filterName:keyof FilterCondition = "text";
+	public filterName:string = "text";
 
 	/**
 	 * Set additional filter properties on the store.
