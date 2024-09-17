@@ -101,7 +101,7 @@ export abstract class InputField extends Field {
 	 */
 
 	set autocomplete(autocomplete: AutoFill) {
-		this._input!.autocomplete = this.autocomplete;
+		this._input!.autocomplete = autocomplete;
 	}
 
 	get autocomplete() {
