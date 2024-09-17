@@ -493,6 +493,13 @@ export abstract class Field extends Component {
 	}
 
 	/**
+	 * Get the old value before user modifications were made after {@see trackReset()}
+	 */
+	public getOldValue() {
+		return this.resetValue;
+	}
+
+	/**
 	 * Copies the current value to the reset value. Typically happens when this component was added to a parent and
 	 * when the form it belongs too loads.
 	 *
