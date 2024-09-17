@@ -14,6 +14,8 @@ export type TextFieldType = ("text" | "password" | "email" | "url" | "tel" | "se
 
 export interface TextField {
 	get input(): HTMLInputElement
+	get value(): string
+	set value(v: string)
 }
 
 /**
