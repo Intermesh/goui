@@ -356,7 +356,6 @@ export class Window extends DraggableComponent {
 	}
 
 	protected internalSetHidden(hidden: boolean) {
-		debugger;
 
 		// has to be shown before center() otherwise it can't calculate it's width and height
 		super.internalSetHidden(hidden);
