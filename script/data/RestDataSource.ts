@@ -88,7 +88,11 @@ export class RestDataSource<EntityType extends BaseEntity = DefaultEntity> exten
 	 * @protected
 	 */
 	protected dataToPostBody(data:any) : string {
-		return JSON.stringify(data);
+		return JSON.stringify({data: data});
+	}
+
+	protected entityFromServerResponse(data:any) {
+		return data.data;
 	}
 
 	protected internalCommit(params: SetRequest<EntityType>): Promise<CommitResponse<EntityType>> {
@@ -110,7 +114,7 @@ export class RestDataSource<EntityType extends BaseEntity = DefaultEntity> exten
 						if(!response.updated) {
 							response.updated = {};
 						}
-						response.updated[id] = data;
+						response.updated[id] = this.entityFromServerResponse(data);
 					})
 					.catch((reason) => {
 						if(!response.notUpdated) {
@@ -133,7 +137,7 @@ export class RestDataSource<EntityType extends BaseEntity = DefaultEntity> exten
 						if(!response.created) {
 							response.created = {};
 						}
-						response.created[id] = data;
+						response.created[id] = this.entityFromServerResponse(data);
 					})
 					.catch((reason) => {
 						if(!response.notCreated) {
@@ -176,7 +180,7 @@ export class RestDataSource<EntityType extends BaseEntity = DefaultEntity> exten
 		ids.forEach((id) => {
 			promises.push(
 				this.request(id + "").then((data:any):EntityType => {
-					return data.data;
+					return this.entityFromServerResponse(data);
 				})
 			)
 		})
@@ -234,7 +238,7 @@ export class RestDataSource<EntityType extends BaseEntity = DefaultEntity> exten
 			throw "Invalid query response";
 		}
 		// immediately add data so we don't have to fetch it when data is retrieved using {@see get()} or {@see single()}
-		response.data.forEach((r:EntityType) => {
+		this.entityFromServerResponse(response).forEach((r:EntityType) => {
 			if(!this.data[r.id!]) {
 				this.add(r);
 			}
