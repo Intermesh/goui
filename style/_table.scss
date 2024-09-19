@@ -91,13 +91,13 @@
 
       th {
 
-        background-color: $colorBackgroundDarker;
-        font-size: dp(16);
+        background-color: $surfaceLow;
+				font: $fontBase;
+				font-size: $fontSize * .8;
         padding: dp(8) dp(8);
 
         &.sorted {
 
-          font-weight: 600; //semibold
 
           padding-right: dp(40);
 
@@ -108,7 +108,7 @@
             font-size: dp(16);
             position: absolute;
             right: dp(8);
-            top: dp(10); // the th height = line-height 20 + padding 8 = 36
+            top: dp(12); // the th height = line-height 20 + padding 8 = 36
             color: inherit;
           }
 
@@ -211,19 +211,118 @@
   }
 
 	td.sticky-col {
-		background-color: $surfaceLowest;
+		background-color: $surfaceLow;
+
 		position: sticky;
 		z-index: 1;
 	}
 
 	tr.data:hover {
 		td.sticky-col {
-			background-color: color-mix(in srgb, $surfaceLowest, #000 4%);
+			background-color: color-mix(in srgb, $surfaceLow, #000 4%);
 		}
 	}
 	tr.data.selected {
 		td.sticky-col {
-			background-color: color-mix(in srgb, $surfaceLowest, #000 8%);
+			background-color: color-mix(in srgb, $surfaceLow, #000 8%);
 		}
 	}
 }
+
+.bg-lowest {
+
+	.goui-table {
+		td.sticky-col {
+			background-color: $surfaceLowest;
+		}
+		tr.data:hover {
+			td.sticky-col {
+				background-color: color-mix(in srgb, $surfaceLowest, #000 4%);
+			}
+		}
+		tr.data.selected {
+			td.sticky-col {
+				background-color: color-mix(in srgb, $surfaceLowest, #000 8%);
+			}
+		}
+	}
+}
+
+.bg-low {
+
+	.goui-table {
+		td.sticky-col {
+			background-color: $surfaceLow;
+		}
+		tr.data:hover {
+			td.sticky-col {
+				background-color: color-mix(in srgb, $surfaceLow, #000 4%);
+			}
+		}
+		tr.data.selected {
+			td.sticky-col {
+				background-color: color-mix(in srgb, $surfaceLow, #000 8%);
+			}
+		}
+	}
+}
+
+.bg-mid {
+
+	.goui-table {
+		td.sticky-col {
+			background-color: $surfaceMid;
+		}
+		tr.data:hover {
+			td.sticky-col {
+				background-color: color-mix(in srgb, $surfaceMid, #000 4%);
+			}
+		}
+		tr.data.selected {
+			td.sticky-col {
+				background-color: color-mix(in srgb, $surfaceMid, #000 8%);
+			}
+		}
+	}
+}
+
+
+.bg-high {
+
+	.goui-table {
+		td.sticky-col {
+			background-color: $surfaceHigh;
+		}
+		tr.data:hover {
+			td.sticky-col {
+				background-color: color-mix(in srgb, $surfaceHigh, #000 4%);
+			}
+		}
+		tr.data.selected {
+			td.sticky-col {
+				background-color: color-mix(in srgb, $surfaceHigh, #000 8%);
+			}
+		}
+	}
+}
+
+.bg-highest {
+
+	.goui-table {
+		td.sticky-col {
+			background-color: $surfaceHighest;
+		}
+		tr.data:hover {
+			td.sticky-col {
+				background-color: color-mix(in srgb, $surfaceHighest, #000 4%);
+			}
+		}
+		tr.data.selected {
+			td.sticky-col {
+				background-color: color-mix(in srgb, $surfaceHighest, #000 8%);
+			}
+		}
+	}
+}
+
+
