@@ -189,11 +189,11 @@ hr.goui {
 		border: none;
 		border-radius: 0;
 		//color: $colorTextPlaceholder;
-		border-bottom: 4px solid transparent;
-		border-top: 4px solid transparent;
+		border-bottom: dp(4) solid transparent;
+		//border-top: dp(4) solid transparent;
 		color: $colorTextSecondary;
 		&.active {
-			border-bottom: 4px solid #f1df41;
+			border-bottom: 4px solid $colorSecondary;
 			color: $colorText;
 		}
 
@@ -205,6 +205,28 @@ hr.goui {
 			background-color: $colorFocus;
 		}
 	}
+}
+
+.hbox > .goui-cardmenu {
+	height: 100%;
+	border-right: $borderWidth solid $colorBorder;
+	button.goui-button {
+		margin: 0;
+		width: dp(200);
+		text-align: left;
+		display:block;
+		//border-right: dp(4) solid transparent;
+
+		border-bottom: none;
+		border-bottom: none;
+		&.active {
+			//border-right: dp(4) solid $colorSecondary;
+			//border-bottom: none;
+			color: $colorText;
+			background-color: $colorSelectedRow;
+		}
+	}
+
 }
 
 .goui.goui-avatar {
