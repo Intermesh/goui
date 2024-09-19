@@ -902,9 +902,6 @@ export class DateTime {
 	 *
 	 */
 	format(format: string): string {
-		if(format.indexOf("\\") > -1)
-			debugger;
-
 		const chars = format.split("");
 		let output = "";
 		for (let i = 0, l = chars.length; i < l; i++) {
