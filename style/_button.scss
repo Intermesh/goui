@@ -192,7 +192,7 @@
 		display: block;
 		margin: 0;
 		color: inherit;
-		font-size: sp(22);
+		font-size: sp(24);
 		line-height: normal;
 		font-weight: normal;
 		padding: 0;
@@ -201,11 +201,12 @@
 		white-space: nowrap;
 	}
 
-	 h3 {
+	h3 {
 		display: block;
 		margin: 0;
 		color: inherit;
-		font-size: sp(18);
+		font-size: sp(20);
+		font-weight: normal;
 		line-height: normal;
 		padding: 0;
 		overflow: hidden;
