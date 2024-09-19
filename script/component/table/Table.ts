@@ -96,7 +96,10 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 		super(store, (record, row, me, storeIndex) => {
 
 
+			let left = 0, stickyLeft = true, index = -1;
 			for (let c of this.columns) {
+
+				index++
 
 				c.parent = this;
 
@@ -112,6 +115,19 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 				if (c.cls) {
 					td.classList.add(...c.cls.split(" "));
 				}
+
+				if(c.sticky) {
+					td.classList.add("sticky-col");
+					if(stickyLeft)
+						td.style.left = left + "px";
+					else
+						td.style.right = this.calcStickyRight(index) + "px";
+				} else {
+					stickyLeft = false;
+				}
+
+				if(c.width)
+					left += c.width;
 
 				let value = c.property ? ObjectUtil.path(record, c.property) : undefined;
 
@@ -378,7 +394,7 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 			this.showColumnMenu(ev);
 		})
 
-		let index = -1;
+		let index = -1, left = 0,  stickyLeft = true;
 		for (let h of this.columns) {
 			index++;
 			if (h.hidden) {
@@ -396,6 +412,21 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 
 			if (h.cls) {
 				header.classList.add(...h.cls.split(" "));
+			}
+
+			if(h.sticky) {
+				header.classList.add("sticky-col");
+
+				if(stickyLeft) {
+					header.style.left = left + "px";
+				}else{
+					header.style.right = this.calcStickyRight(index) + "px";
+				}
+				if(h.width)
+					left += h.width;
+
+			} else {
+				stickyLeft = false;
 			}
 
 			if (h.headerRenderer) {
@@ -607,6 +638,10 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 			this.rowSelection.lastIndex = index;
 		}
 		return super.focusRow(index);
+	}
+
+	private calcStickyRight(index: number) {
+		return 0;
 	}
 }
 

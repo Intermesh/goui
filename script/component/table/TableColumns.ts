@@ -98,6 +98,15 @@ export class TableColumn extends Observable {
 	 * Add CSS classes
 	 */
 	cls?: string
+
+	/**
+	 * Makes the column stick when scrolling horizontally
+	 *
+	 * All the consecutive sticky columns from the beginning stick to the left side. Others will stick to the right side.
+	 *
+	 * Note:  The sticky column needs a background color. It is currently assumed to be on a background with "bg-lowest"
+	 */
+	sticky?: boolean
 }
 
 type TableColumnConfig = Config<TableColumn> & {
