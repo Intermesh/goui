@@ -124,11 +124,9 @@ export const column = (config: TableColumnConfig) => createComponent(new TableCo
 
 export class DateTimeColumn extends TableColumn {
 	renderer = (date: string) => {
-		return Format.dateTime(date);
+		return Format.smartDateTime(date);
 	}
-
-	//argh!? https://stackoverflow.com/questions/43121661/typescript-type-inference-issue-with-string-literal
-	align = "right" as align
+	align: align = "right"
 	width = 190
 }
 
@@ -140,11 +138,9 @@ export const datetimecolumn = (config: TableColumnConfig) => createComponent(new
 
 export class DateColumn extends TableColumn {
 	renderer = (date: string) => {
-		return Format.date(date);
+		return Format.smartDateTime(date, false);
 	}
-
-	//argh!? https://stackoverflow.com/questions/43121661/typescript-type-inference-issue-with-string-literal
-	align = "right" as align
+	align: align = "right"
 	width = 128
 }
 
@@ -255,7 +251,7 @@ export class CheckboxSelectColumn extends TableColumn {
 	}
 }
 
-export const checkboxselectcolumn = (config?: Config<TableColumn>) => createComponent(new CheckboxSelectColumn(config && config.id ? config.id : "checkboxselect"), config);
+export const checkboxselectcolumn = (config?: TableColumnConfig) => createComponent(new CheckboxSelectColumn(config && config.id ? config.id : "checkboxselect"), config);
 
 
 /**

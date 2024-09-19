@@ -4,6 +4,7 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 import {DateTime, Timezone} from "./DateTime.js";
+import {t} from "../Translate.js";
 
 /**
  * Formatting utilities
@@ -51,6 +52,63 @@ export class Format {
 		const p = document.createElement('p');
 		p.innerText = str;
 		return p.innerHTML;
+	}
+
+	/**
+	 * Show time for today. Yesterday, Tomorrow and full date if otherwise
+	 * 
+	 * @param date
+	 * @param showTime
+	 */
+	public static smartDateTime (date: string | DateTime | Date, showTime:boolean = true) {
+
+		if (!date) {
+			return "";
+		}
+		if (!(date instanceof DateTime)) {
+			date = new DateTime(date);
+		}
+
+		date = date.toTimezone(this.timezone);
+
+		const now = new DateTime(),
+			nowYmd = parseInt(now.format("Ymd")),
+			vYmd = parseInt(date.format("Ymd")),
+			diff = vYmd - nowYmd;
+
+		switch(diff) {
+			case 0:
+				return !showTime ? t("Today") : Format.time(date);
+			case -1:
+				return !showTime ? t('Yesterday') : t('Yesterday') + " " + t('at') + " " + Format.time(date);
+			case 1:
+				return !showTime ? t('Tomorrow') : t('Tomorrow') + " " + t('at') + " " + Format.time(date);
+		}
+
+		let format = Format.dateFormat;
+
+		// //past or upcoming week
+		// if(diff > -6 && diff < 6) {
+		// 	format = "l";
+		// }
+		//
+		// if (now.getYear() === date.getYear()) {
+		// 	let dayIndex = Format.dateFormat.indexOf('d'),
+		// 		monthIndex = Format.dateFormat.indexOf('m');
+		//
+		// 	if(dayIndex == -1) {
+		// 		dayIndex = Format.dateFormat.indexOf('j');
+		// 	}
+		//
+		// 	format = dayIndex > monthIndex ? 'M j' : 'j M'
+		// }
+
+		if(showTime) {
+			format +=  " " + Format.timeFormat;
+		}
+
+		return date.format(format);
+
 	}
 
 
