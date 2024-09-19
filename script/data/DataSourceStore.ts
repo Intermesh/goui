@@ -15,7 +15,6 @@ import {
 } from "./AbstractDataSource.js";
 import {ObjectUtil} from "../util/index.js";
 import {createComponent, ObservableListener} from "../component/index.js";
-import {StoreRecord} from "@intermesh/goui";
 
 
 type Relation<EntityType extends BaseEntity> = Partial<Record<keyof EntityType, {

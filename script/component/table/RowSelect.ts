@@ -339,7 +339,7 @@ export class RowSelect extends Observable {
 		if (change && !this.hasKeyUpListener) {
 			this.hasKeyUpListener = true;
 			this.list.el.addEventListener('keyup', () => {
-				this.fire('selectionchange', this);
+				this.fire('selectionchange', this, this.selected);
 				this.hasKeyUpListener = false;
 			}, {once: true});
 		}
