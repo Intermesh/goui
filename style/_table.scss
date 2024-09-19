@@ -71,19 +71,13 @@
         &.selected {
           background-color: $colorSelectedRowInactive;
         }
-
-
       }
-
-
 
       &.drag-over {
         &.on {
           background-color: $colorHover;
         }
-
-
-      }
+			}
     }
   }
 
@@ -91,7 +85,7 @@
 
     position: sticky;
     top: 0;
-    z-index: 1;
+    z-index: 2;
 
     tr {
 
@@ -143,6 +137,11 @@
           width: 100%;
           border-bottom: $borderWidth solid $colorBorder;
         }
+
+				&.sticky-col {
+					position: sticky;
+					z-index: 2;
+				}
 
       }
     }
@@ -210,4 +209,21 @@
   + .goui-toolbar {
     margin-top: dp(16);
   }
+
+	td.sticky-col {
+		background-color: $surfaceLowest;
+		position: sticky;
+		z-index: 1;
+	}
+
+	tr.data:hover {
+		td.sticky-col {
+			background-color: color-mix(in srgb, $surfaceLowest, #000 4%);
+		}
+	}
+	tr.data.selected {
+		td.sticky-col {
+			background-color: color-mix(in srgb, $surfaceLowest, #000 8%);
+		}
+	}
 }
