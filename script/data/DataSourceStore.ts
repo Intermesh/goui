@@ -15,6 +15,7 @@ import {
 } from "./AbstractDataSource.js";
 import {ObjectUtil} from "../util/index.js";
 import {createComponent, ObservableListener} from "../component/index.js";
+import {StoreRecord} from "@intermesh/goui";
 
 
 type Relation<EntityType extends BaseEntity> = Partial<Record<keyof EntityType, {
@@ -129,9 +130,26 @@ export class DataSourceStore<DataSource extends AbstractDataSource = AbstractDat
 		return Promise.all(promises).then(() => records);
 	}
 
+	private keepPosition = false;
+
 	reload(): Promise<StoreRecord[]> {
+		const limit = this.queryParams.limit, pos = this.queryParams.position ;
 		this.queryParams.position = 0;
-		return super.reload();
+		this.queryParams.limit = this.data.length;
+		this.keepPosition = true;
+		const r = super.reload();
+		this.keepPosition = false;
+		this.queryParams.limit = limit;
+		this.queryParams.position = pos;
+
+		return r;
+	}
+
+	load(append: boolean = false): Promise<StoreRecord[]> {
+		if(!this.keepPosition) {
+			this.queryParams.position = 0;
+		}
+		return super.load(append);
 	}
 
 	public loadNext(append = false) {
@@ -142,7 +160,10 @@ export class DataSourceStore<DataSource extends AbstractDataSource = AbstractDat
 		this.queryParams.position = this.queryParams.position || 0;
 		this.queryParams.position += this.queryParams.limit;
 
-		return this.load(append);
+		this.keepPosition = true;
+		const r = this.load(append);
+		this.keepPosition = false;
+		return r;
 	}
 
 	loadPrevious(): Promise<StoreRecord[]> {

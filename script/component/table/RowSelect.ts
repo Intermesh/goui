@@ -33,7 +33,7 @@ export interface RowSelectEventMap<Type extends Observable> extends ObservableEv
 	 * ```
 	 * @param rowSelect
 	 */
-	selectionchange: (rowSelect: Type) => void
+	selectionchange: (rowSelect: Type, selected: number[]) => void
 
 	/**
 	 * Fires when a row is selected
@@ -80,30 +80,22 @@ export class RowSelect extends Observable {
 	constructor(readonly list: List) {
 		super();
 
+		this.list.on('beforerender', (me: List) => {
 
-			this.list.on('beforerender', (me: List) => {
+			const tableEl = me.el;
 
-				const tableEl = me.el;
-
-				tableEl.cls('+rowselect');
-				tableEl.addEventListener("keydown", (e) => {
-					this.onKeyDown(e);
-				})
-
-				me.on('rowmousedown', (table: List, index: number, row, e: MouseEvent) => {
-					this.onRowMouseDown(table, index, e);
-				});
-
-				// tableEl.addEventListener("focus", (e) => {
-				// 	if (!this.selected.length && this.list.store.get(0)) {
-				// 		this.selected = [0];
-				// 	}
-				// })
+			tableEl.cls('+rowselect');
+			tableEl.addEventListener("keydown", (e) => {
+				this.onKeyDown(e);
 			})
 
+			me.on('rowmousedown', (table: List, index: number, row, e: MouseEvent) => {
+				this.onRowMouseDown(table, index, e);
+			});
+		})
 
 		const fireSelectionChange = () => {
-			this.fire('selectionchange', this);
+			this.fire('selectionchange', this, this.selected);
 		}
 
 		//buffer selection change so it doesn't fire many changes if rowSelection.add is called in a loop.
@@ -158,10 +150,7 @@ export class RowSelect extends Observable {
 	private onRowMouseDown(_list: List, index: number, e: MouseEvent) {
 		let selection = this.selected;
 
-		this.lastIndex = index;
-
 		if (e.shiftKey && this.multiSelect) {
-
 			const start = Math.min(index, this.lastIndex);
 			const end = Math.max(index, this.lastIndex);
 
@@ -178,8 +167,17 @@ export class RowSelect extends Observable {
 				selection.push(index);
 			}
 		} else {
-			selection = [index];
+
+			if(e.ctrlKey || e.metaKey) {
+				this.toggle(index);
+				this.lastIndex = index;
+				return;
+			} else {
+				selection = [index];
+			}
 		}
+
+		this.lastIndex = index;
 
 		this.selected = selection;
 	}
@@ -197,19 +195,29 @@ export class RowSelect extends Observable {
 
 	public toggle(index:number) {
 
-		if(this.multiSelect) {
-			const currentIndex = this._selected.indexOf(index);
-			if (currentIndex > -1) {
+		const currentIndex = this._selected.indexOf(index);
+		if (currentIndex > -1) {
+			if(this.multiSelect) {
 				this._selected.splice(currentIndex, 1);
+				this.fire('rowdeselect', this, index);
 			} else {
-				this._selected.push(index);
+				this._selected = [];
+				this.fire('rowdeselect', this, index);
 			}
-		} else
-		{
-			this._selected = [index];
-		}
+		} else {
+			if(this.multiSelect) {
+				this._selected.push(index);
+				this.fire('rowselect', this, index);
+			}else {
 
-		this.fire('rowselect', this, index);
+				this._selected.forEach(i => {
+					this.fire('rowdeselect', this, i);
+				})
+				this._selected = [index];
+				this.fire('rowselect', this, index);
+			}
+
+		}
 		this.fireSelectionChange();
 	}
 
