@@ -6,7 +6,7 @@
 
 import {Observable, ObservableEventMap, ObservableListenerOpts, root, Window} from "../component/index.js";
 import {Comparator} from "./Store.js";
-import {FunctionUtil} from "../util/index.js";
+import {FunctionUtil, ObjectUtil} from "../util/index.js";
 import {BrowserStore} from "../util/BrowserStorage.js";
 import {t} from "../Translate.js";
 import {RouterEventMap} from "../Router.js";
@@ -799,7 +799,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 					} else {
 
 						//merge existing data, with updates from client and server
-						let data = params.update && params.update[serverId] ? Object.assign(this.data[serverId], params.update[serverId]) : this.data[serverId];
+						let data = params.update && params.update[serverId] ? ObjectUtil.patch(this.data[serverId], params.update[serverId]) : this.data[serverId];
 						data = Object.assign(data, response.updated[serverId] || {});
 						this.add(data).then(onUpdated);
 					}
