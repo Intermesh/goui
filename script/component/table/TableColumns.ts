@@ -38,7 +38,7 @@ export class TableColumn extends Observable {
 	/**
 	 * Path to property. If not given then 'id' is used
 	 *
-	 * @see ObjectUtil.path()
+	 * @see ObjectUtil.get()
 	 */
 	public property: string
 

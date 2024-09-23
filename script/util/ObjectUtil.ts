@@ -16,7 +16,7 @@ export class ObjectUtil {
 	}
 
 	/**
-	 * Simple JSON path function
+	 * Get a nested value by JSON pointer
 	 *
 	 * eg.
 	 * const obj = {
@@ -30,23 +30,24 @@ export class ObjectUtil {
 	 * Object.path(obj, 'foo/bar/test'); // 1
 	 *
 	 * @param obj
-	 * @param path JSON pointer
+	 * @param pointer JSON pointer
 	 *
 	 * @link https://www.rfc-editor.org/rfc/rfc6901
 	 *
 	 * @return The value from the path or undefined if not found
 	 */
-	public static path(obj: KeyValue, path: string): any {
+	public static get(obj: KeyValue, pointer: string): any {
 
-		const parts = ObjectUtil.pointer(path);
+		const parts = ObjectUtil.explodePointer(pointer);
 
 		let part, cur = structuredClone(obj);
 
-		while(part = parts.unshift()) {
+		while(part = parts.shift()) {
 			if(!(part in cur)) {
-				throw "Invalid path";
+				debugger;
+				throw "Invalid JSON pointer : " + pointer;
 			}
-			cur = cur[path];
+			cur = cur[pointer];
 		}
 
 		return cur;
@@ -85,7 +86,7 @@ export class ObjectUtil {
 		return structuredClone(source);
 	}
 
-	private static pointer(path:string) {
+	private static explodePointer(path:string) {
 		const parts = path.replace(/^\//, "").split('/');
 		// ignore leading / as it is implicit
 		for(let i=0; i < parts.length; i++) {
@@ -126,7 +127,7 @@ export class ObjectUtil {
 	public static patch<T>(doc:T, patch:any) : T {
 
 		for(const p in patch) {
-			doc = ObjectUtil.internalPatch(doc, ObjectUtil.pointer(p), patch[p]);
+			doc = ObjectUtil.internalPatch(doc, ObjectUtil.explodePointer(p), patch[p]);
 		}
 
 		return doc;

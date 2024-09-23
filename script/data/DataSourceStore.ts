@@ -17,8 +17,20 @@ import {ObjectUtil} from "../util/index.js";
 import {createComponent, ObservableListener} from "../component/index.js";
 
 
+/**
+ * Entity relation
+ */
 type Relation<EntityType extends BaseEntity> = Partial<Record<keyof EntityType, {
+	/**
+	 * Data source to get relation from
+	 */
 	dataSource: AbstractDataSource<EntityType>,
+
+	/**
+	 * JSON pointer to relation key
+	 *
+	 * @see ObjectUtil.get()
+	 */
 	path: string
 }>>
 
@@ -36,6 +48,9 @@ export class DataSourceStore<DataSource extends AbstractDataSource = AbstractDat
 
 	public hasMore = false;
 
+	/**
+	 * En entity relations
+	 */
 	public relations?: Relation<DefaultEntity>;
 
 	// public properties?: string[] = [];
@@ -114,7 +129,7 @@ export class DataSourceStore<DataSource extends AbstractDataSource = AbstractDat
 
 			let id;
 			for (let i = 0, l = records.length; i < l; i++) {
-				id = ObjectUtil.path(records[i], rel.path);
+				id = ObjectUtil.get(records[i], rel.path);
 
 				if (id) {
 					promises.push(rel.dataSource.single(id).then((e) => {

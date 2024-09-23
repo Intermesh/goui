@@ -129,7 +129,7 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 				if(c.width)
 					left += c.width;
 
-				let value = c.property ? ObjectUtil.path(record, c.property) : undefined;
+				let value = c.property ? ObjectUtil.get(record, c.property) : undefined;
 
 				if (c.renderer) {
 					const r = c.renderer(value, record, td, this, storeIndex, c);
@@ -562,7 +562,7 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 			return this.groupEl;
 		}
 
-		const groupBy = ObjectUtil.path(record, this.groupBy);
+		const groupBy = ObjectUtil.get(record, this.groupBy);
 
 		// console.warn(this.groupEl,groupBy, this.lastGroup)
 		if (!this.groupEl || groupBy != this.lastGroup) {
