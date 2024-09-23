@@ -27,33 +27,32 @@ export class ObjectUtil {
 	 *   }
 	 * }
 	 *
-	 * Object.path(obj, 'foo.bar.test'); // 1
+	 * Object.path(obj, 'foo/bar/test'); // 1
 	 *
 	 * @param obj
-	 * @param path
+	 * @param path JSON pointer
+	 *
+	 * @link https://www.rfc-editor.org/rfc/rfc6901
+	 *
 	 * @return The value from the path or undefined if not found
 	 */
 	public static path(obj: KeyValue, path: string): any {
 
-		const dotPos = path.indexOf(".");
+		const parts = ObjectUtil.pointer(path);
 
-		const prop = dotPos > -1 ? path.substr(0, dotPos) : path;
+		let part, cur = structuredClone(obj);
 
-		const next = obj[prop];
-
-		if (!next) {
-			return next;
-		}
-		if (dotPos == -1) {
-			return next;
+		while(part = parts.unshift()) {
+			if(!(part in cur)) {
+				throw "Invalid path";
+			}
+			cur = cur[path];
 		}
 
-		if (!ObjectUtil.isObject(next)) {
-			return undefined;
-		}
+		return cur;
 
-		return this.path(next, path.substr(dotPos + 1));
 	}
+
 
 	/**
 	 * Deep merge two key value objects
@@ -84,6 +83,54 @@ export class ObjectUtil {
 	 */
 	public static clone<T>(source: T): T {
 		return structuredClone(source);
+	}
+
+	private static pointer(path:string) {
+		const parts = path.replace(/^\//, "").split('/');
+		// ignore leading / as it is implicit
+		for(let i=0; i < parts.length; i++) {
+			parts[i].replace('~1', '/')
+				.replace('~0', '~');
+		}
+		return parts;
+	}
+
+	private static internalPatch(doc: any, path: string[], v: any): any {
+
+		const part = path.shift()!,
+			length = path.length;
+
+		// if(!doc) {
+		// 	doc = {}; // server will return null for empty maps
+		// }
+
+		if(!(part in doc) && length > 0) {
+			throw new Error('patching item in non-existing objects')
+		}
+
+		if(!length) {
+			doc[part] = v;
+		} else {
+			doc[part] = ObjectUtil.internalPatch(doc[part], path, v);
+		}
+		return doc;
+	}
+
+	/**
+	 * Patch an object with a JSON Pointer object following rfc6901 standards
+	 *
+	 * @link https://www.rfc-editor.org/rfc/rfc6901
+	 * @param doc
+	 * @param patch
+	 */
+	public static patch<T>(doc:T, patch:any) : T {
+
+		for(const p in patch) {
+			doc = ObjectUtil.internalPatch(doc, ObjectUtil.pointer(p), patch[p]);
+		}
+
+		return doc;
+
 	}
 
 	//
