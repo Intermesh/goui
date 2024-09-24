@@ -101,9 +101,9 @@ export class ObjectUtil {
 		const part = path.shift()!,
 			length = path.length;
 
-		// if(!doc) {
-		// 	doc = {}; // server will return null for empty maps
-		// }
+		if(!doc) {
+			doc = {}; // server will return null for empty maps
+		}
 
 		if(!(part in doc) && length > 0) {
 			throw new Error('patching item in non-existing objects')
