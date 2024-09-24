@@ -133,7 +133,11 @@ export class ObjectUtil {
 	public static patch<T>(doc:T, patch:any) : T {
 
 		for(const p in patch) {
-			doc = ObjectUtil.internalPatch(doc, ObjectUtil.explodePointer(p), patch[p]);
+			try {
+				doc = ObjectUtil.internalPatch(doc, ObjectUtil.explodePointer(p), patch[p]);
+			} catch(e) {
+				console.warn("Error patching object: ", p, patch, doc)
+			}
 		}
 
 		return doc;
