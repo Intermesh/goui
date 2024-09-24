@@ -101,6 +101,7 @@ export class ObjectUtil {
 		const part = path.shift()!,
 			length = path.length;
 
+		// CalendarItem.ts relies on this when patching participants. It can also patch participants when they are null.
 		if(!doc) {
 			doc = {}; // server will return null for empty maps
 		}
