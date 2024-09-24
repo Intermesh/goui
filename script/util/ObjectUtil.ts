@@ -111,7 +111,12 @@ export class ObjectUtil {
 		}
 
 		if(!length) {
-			doc[part] = v;
+			//remove property by setting null. See https://jmap.io/spec-core.html#set
+			if(v === null || v === undefined) {
+				delete doc[part]
+			} else {
+				doc[part] = v;
+			}
 		} else {
 			doc[part] = ObjectUtil.internalPatch(doc[part], path, v);
 		}
