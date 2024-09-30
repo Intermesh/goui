@@ -42,7 +42,7 @@ export abstract class InputField extends Field {
 
 	protected createInput() : HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement{
 		const control = document.createElement("input");
-		control.on("change", ()=> {
+		control.on("change", (e)=> {
 			this.fireChange();
 		});
 

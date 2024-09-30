@@ -230,9 +230,7 @@ export abstract class Field extends Component {
 		// This caused that the "setvalue" and "change" event didn't fire.
 		this.hasFocus = true;
 
-		if(this.fireChangeOnBlur) {
-			this.captureValueForChange();
-		}
+		this.captureValueForChange();
 	}
 
 	protected captureValueForChange() {
