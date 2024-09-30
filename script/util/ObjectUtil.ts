@@ -43,8 +43,7 @@ export class ObjectUtil {
 		let part, cur = structuredClone(obj);
 
 		while(part = parts.shift()) {
-			if(!(part in cur)) {
-				debugger;
+			if(!(part in cur) && parts.length) {
 				throw "Invalid JSON pointer : " + pointer;
 			}
 			cur = cur[pointer];
