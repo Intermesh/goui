@@ -550,7 +550,7 @@ export abstract class Field extends Component {
 		const v = this.value;
 		this.fire("setvalue", this, v, this.valueOnFocus);
 		this.fire("change", this, v, this.valueOnFocus);
-		this.valueOnFocus = undefined;
+		this.valueOnFocus = v;
 
 		this.checkHasValue();
 	}
