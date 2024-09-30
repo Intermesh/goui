@@ -150,6 +150,22 @@
 		padding-left: dp(18);
 		padding-right: dp(18);
 	}
+
+	&.error {
+		.body {
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			i {
+				font-size: dp(44);
+				color: $colorError;
+				margin-right: dp(16);
+			}
+			.text {
+				flex: 1;
+			}
+		}
+	}
 }
 
 // login dialog must always be on top

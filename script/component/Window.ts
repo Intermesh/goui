@@ -544,7 +544,9 @@ export class Window extends DraggableComponent {
 			msg = t("Sorry, an unknown error occurred")
 		}
 
-		return Window.alert(msg, t("Error") + " - " + (new DateTime).format("Y-m-d H:i:s"));
+		msg = `<i class="icon">error</i><div class="text">${msg}</div>`;
+
+		return Window.alert(msg, t("Error") + " - " + (new DateTime).format("Y-m-d H:i:s"), "error");
 	}
 
 	/**
@@ -552,9 +554,10 @@ export class Window extends DraggableComponent {
 	 *
 	 * @param text - The alert message or an object with a 'message' property
 	 * @param [title="Alert"] - The title of the alert window
+	 * @param cls Window CSS class to add
 	 * @return Promise<void> - A promise that resolves when the alert window is closed
 	 */
-	public static alert(text: any, title: string = t("Alert")): Promise<void> {
+	public static alert(text: any, title: string = t("Alert"), cls?: string): Promise<void> {
 
 		if (text && text.message) {
 			console.error(text);
@@ -563,18 +566,19 @@ export class Window extends DraggableComponent {
 		
 		return new Promise((resolve) => {
 			win({
-					width: 600,
-					modal: true,
-					title: title,
-					listeners: {
-						close: () => {
-							resolve();
-						}
+				cls: cls,
+				width: 600,
+				modal: true,
+				title: title,
+				listeners: {
+					close: () => {
+						resolve();
 					}
-				},
+				}
+			},
 				comp({
 					flex: 1,
-					cls: "scroll pad",
+					cls: "body scroll pad",
 					html: text
 				})
 			).show();
