@@ -310,7 +310,7 @@ $formFieldBorderRadius: dp(10);
 			margin: 0;
 			border: 0;
 			padding: dp(11) dp(16);
-			height: dp(46);
+			min-height: dp(46);
 			//width: 100%;
 			//outline: none;
 			color: $colorText;
