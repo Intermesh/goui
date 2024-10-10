@@ -46,7 +46,7 @@ export class ObjectUtil {
 			if(!(part in cur) && parts.length) {
 				throw "Invalid JSON pointer : " + pointer;
 			}
-			cur = cur[pointer];
+			cur = cur[part];
 		}
 
 		return cur;
