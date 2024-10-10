@@ -176,6 +176,13 @@ export class List<StoreType extends Store = Store> extends Component {
 	 */
 	public dropOn = false;
 
+
+	/**
+	 * When enabled, it will register it's container as scrolling element to the {@see Store}.
+	 * @see Store.addScrollLoader();
+	 */
+	public scrollLoad = false;
+
 	protected itemTag: keyof HTMLElementTagNameMap = 'li'
 	// protected fragment?: DocumentFragment;
 
@@ -288,6 +295,10 @@ export class List<StoreType extends Store = Store> extends Component {
 		// handling remove and add per items allows a drag and drop action via store.remove and store.add
 		this.store.on("remove", this.onRecordRemove.bind(this));
 		this.store.on("add", this.onRecordAdd.bind(this));
+
+		if(this.scrollLoad && this.parent) {
+			this.store.addScrollLoader(this.parent.el);
+		}
 	}
 
 	protected onRecordRemove(collection:StoreType, item:StoreRecord, index:number) {

@@ -187,6 +187,36 @@ export class Store<RecordType = StoreRecord> extends Collection<RecordType> {
 	public hasPrevious() {
 		return false;
 	}
+
+	/**
+	 * Load more data when this element is scrolled down
+	 *
+	 * @param el
+	 */
+	public addScrollLoader(el: HTMLElement) {
+
+		const onScroll = () => {
+			const pixelsLeft = el.scrollHeight - el.scrollTop - el.offsetHeight;
+			if (pixelsLeft < 100) {
+				if (!this.loading && this.hasNext()) {
+					void this.loadNext(true);
+				}
+			}
+		}
+
+		el.addEventListener("scroll", onScroll, {passive: true});
+
+		// this will fill the empty space on firt load.
+		this.on("load", (store, records, append) => {
+			// use set timeout otherwise this.loading is still true
+			setTimeout(() => {
+				onScroll();
+			})
+		});
+
+		return onScroll;
+	}
+
 }
 
 export type StoreConfig<RecordType extends StoreRecord = StoreRecord> =
