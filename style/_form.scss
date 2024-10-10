@@ -652,6 +652,12 @@ $formFieldBorderRadius: dp(10);
 						border-bottom-right-radius: 0;
 					}
 				}
+
+				.box-label {
+					i {
+						margin-right: dp(8);
+					}
+				}
 			}
 
 
