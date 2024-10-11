@@ -116,9 +116,9 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 					td.classList.add(...c.cls.split(" "));
 				}
 
-				if(c.sticky) {
+				if (c.sticky) {
 					td.classList.add("sticky-col");
-					if(stickyLeft)
+					if (stickyLeft)
 						td.style.left = left + "px";
 					else
 						td.style.right = this.calcStickyRight(index) + "px";
@@ -126,10 +126,16 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 					stickyLeft = false;
 				}
 
-				if(c.width)
+				if (c.width)
 					left += c.width;
 
-				let value = c.property ? ObjectUtil.get(record, c.property) : undefined;
+				let value = undefined;
+				try {
+					value = c.property ? ObjectUtil.get(record, c.property) : undefined;
+				} catch (e)
+				{
+					//ignore invalid pointers.
+				}
 
 				if (c.renderer) {
 					const r = c.renderer(value, record, td, this, storeIndex, c);
