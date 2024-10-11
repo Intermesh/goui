@@ -378,8 +378,6 @@ $formFieldBorderRadius: dp(10);
 		display: flex;
 		flex-flow: row nowrap;
 		>.control {
-			//width: 100%;
-			min-height: dp(46);
 			flex: 1;
 			appearance: none;
 			-webkit-appearance: none; /*Removes default chrome and safari style*/
@@ -647,7 +645,7 @@ $formFieldBorderRadius: dp(10);
 	&.radiogroup {
 		@extend .checkbox-group;
 
-		width: auto;
+		//width: auto;
 		.radio.control {
 			padding: 0;
 			flex: none;
@@ -720,6 +718,7 @@ $formFieldBorderRadius: dp(10);
 		&.list {
 			.radio.control {
 				flex-direction: column;
+				width: 100%;
 				.control {
 					width: 100%;
 					align-items: start;
