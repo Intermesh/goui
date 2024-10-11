@@ -1186,9 +1186,9 @@ div.color-dot {
 
 .label-align-left {
 	.goui-display-field {
-		&:not(:last-child) {
-			border-bottom: $borderWidth solid $colorLine;
-		}
+		//&:not(:last-child) {
+		//	border-bottom: $borderWidth solid $colorLine;
+		//}
 	}
 	.goui-form-field, .goui-display-field {
 		.wrap {
