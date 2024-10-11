@@ -160,8 +160,6 @@ export class Menu extends Toolbar {
 				// We have to stop propagation for the click event otherwise the parent button will fire too.
 				// not sure if this will cause problems.
 				e.stopPropagation();
-
-				console.debug("stop propagation", e);
 			}
 
 		})
