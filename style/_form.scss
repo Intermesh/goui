@@ -274,6 +274,37 @@ $formFieldBorderRadius: dp(10);
 		}
 	}
 
+	&.error {
+		.wrap{
+			.control {
+				color: $colorError;
+			}
+		}
+	}
+
+	&.success {
+		.wrap {
+			.control {
+				color: $colorSuccess;
+			}
+		}
+	}
+
+	&.warning {
+		.wrap {
+			.control {
+				color: $colorWarning;
+			}
+		}
+	}
+	&.notice {
+		.wrap {
+			.control {
+				color: $colorNotice;
+			}
+		}
+	}
+
 	.wrap {
 		flex: 1;
 		align-items: center;
@@ -310,7 +341,7 @@ $formFieldBorderRadius: dp(10);
 			margin: 0;
 			border: 0;
 			padding: dp(11) dp(16);
-			min-height: dp(46);
+
 			//width: 100%;
 			//outline: none;
 			color: $colorText;
@@ -324,6 +355,8 @@ $formFieldBorderRadius: dp(10);
 			}
 		}
 	}
+
+
 }
 
 .goui-form-field {
@@ -346,6 +379,7 @@ $formFieldBorderRadius: dp(10);
 		flex-flow: row nowrap;
 		>.control {
 			//width: 100%;
+			min-height: dp(46);
 			flex: 1;
 			appearance: none;
 			-webkit-appearance: none; /*Removes default chrome and safari style*/
