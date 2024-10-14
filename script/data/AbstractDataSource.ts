@@ -125,10 +125,10 @@ export interface CommitResponse<EntityType extends BaseEntity> {
  */
 export type EntityID = string;
 
-/**
- * @category Data
- */
-export type QueryFilter = Record<string, any>;// TODO
+// /**
+//  * @category Data
+//  */
+// export type QueryFilter = Record<string, any>;// TODO
 
 export type Filter = {
 	operator?: "AND" | "OR" | "NOT"

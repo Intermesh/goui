@@ -4,7 +4,7 @@ import {
 	DataSourceStore,
 	datasourcestore,
 	DataSourceStoreConfig,
-	QueryFilter,
+	Filter,
 } from "../../data/index.js";
 import {column, Table, table} from "../table/index.js";
 import {createComponent} from "../Component.js";
@@ -33,7 +33,7 @@ export class ComboBox<DS extends AbstractDataSource = AbstractDataSource> extend
 	/**
 	 * Set additional filter properties on the store.
 	 */
-	public filter?: QueryFilter;
+	public filter?: Filter;
 
 	constructor(public readonly dataSource:DS, public readonly displayProperty = "name", public readonly valueProperty = "id", protected renderer:ComboRenderer = ComboBoxDefaultRenderer, storeConfig:ComboBoxStoreConfig<DS> = {
 		queryParams: {
@@ -71,11 +71,9 @@ export class ComboBox<DS extends AbstractDataSource = AbstractDataSource> extend
 				this.list.store.queryParams.filter = {};
 			}
 
-			if(this.filter) {
-				Object.assign(this.list.store.queryParams.filter, this.filter);
-			}
 			const filterName = (this.filterName ?? this.displayProperty);
 			this.list.store.setFilter(filterName, {[filterName] : input});
+			this.list.store.setFilter("combo", this.filter);
 			await this.list.store.load();
 		});
 	}
