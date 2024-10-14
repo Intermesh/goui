@@ -457,12 +457,12 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 
 			if (h.sortable && h.property) {
 				header.addEventListener("click", () => {
-					this.onSort(h.property!, header);
+					this.onSort(h.id, header);
 				});
 				const sort = this.store.sort;
 				if (sort.length) {
 					sort.forEach((comparator) => {
-						if (h.property == comparator.property) {
+						if (h.id == comparator.property) {
 							header.classList.add("sorted");
 							header.classList.add(comparator.isAscending || comparator.isAscending === undefined ? "asc" : "desc");
 						}
