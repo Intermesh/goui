@@ -4,8 +4,7 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {TextField} from "./TextField.js";
-import {Config, Listener, ObservableEventMap, ObservableListenerOpts} from "../Observable.js";
+import {Listener, ObservableEventMap, ObservableListenerOpts} from "../Observable.js";
 import {FunctionUtil} from "../../util/index.js";
 import {FieldConfig, FieldEventMap} from "./Field.js";
 import {btn, Button} from "../Button.js";
@@ -14,6 +13,7 @@ import {List, listStoreType} from "../List.js";
 import {listpicker} from "../picker/index.js";
 import {Menu, menu} from "../menu/index.js";
 import {storeRecordType} from "../../data/index.js";
+import {InputField} from "./InputField.js";
 
 export interface AutocompleteEventMap<Type> extends FieldEventMap<Type> {
 	/**
@@ -28,16 +28,19 @@ export interface AutocompleteEventMap<Type> extends FieldEventMap<Type> {
 	select: (field: Type, record: any) => any
 }
 
-export interface AutocompleteField<T extends List = List> extends TextField {
+export interface AutocompleteField<T extends List = List> extends InputField {
 	on<K extends keyof AutocompleteEventMap<this>, L extends Listener>(eventName: K, listener: Partial<AutocompleteEventMap<this>>[K], options?: ObservableListenerOpts): L
 	un<K extends keyof AutocompleteEventMap<this>>(eventName: K, listener: Partial<AutocompleteEventMap<this>>[K]): boolean
 	fire<K extends keyof AutocompleteEventMap<this>>(eventName: K, ...args: Parameters<AutocompleteEventMap<Component>[K]>): boolean
+	get input(): HTMLInputElement
+	get value(): string|undefined
+	set value(v: string|undefined)
 }
 
 /**
  * Autocomplete field
  */
-export class AutocompleteField<T extends List = List> extends TextField {
+export class AutocompleteField<T extends List = List> extends InputField {
 
 
 	public readonly menu: Menu;
@@ -55,7 +58,7 @@ export class AutocompleteField<T extends List = List> extends TextField {
 		super();
 
 		this.autocomplete = "off";
-		this.baseCls += " autocomplete";
+		this.baseCls = "goui-form-field text autocomplete";
 
 		this.picker = listpicker({
 			list: list
@@ -78,8 +81,8 @@ export class AutocompleteField<T extends List = List> extends TextField {
 				listeners: {
 					hide: (menu) => {
 						if(menu.rendered) {
-							const textfield = menu.findAncestorByType(TextField)!;
-							textfield.focus();
+							const inputField = menu.findAncestorByType(InputField)!;
+							inputField.focus();
 						}
 					}
 				}
@@ -95,6 +98,18 @@ export class AutocompleteField<T extends List = List> extends TextField {
 			},
 			menu: this.menu
 		});
+
+		this.fireChangeOnBlur = true;
+	}
+
+
+	protected createInput() : HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement{
+		const control = document.createElement("input");
+
+		if (this.invalidMsg) {
+			this.applyInvalidMsg();
+		}
+		return control;
 	}
 
 	/**
@@ -120,13 +135,18 @@ export class AutocompleteField<T extends List = List> extends TextField {
 			return super.internalSetValue(v);
 		}
 
-		this.valueToTextField(this, v+"").then(v => {
+		this.valueToTextField(this, v + "").then(textFieldValue => {
+
+			if(v != this.value) {
+				//Quick and dirty way to cancel this promise if the value has changed in the mean time
+				return;
+			}
 
 			if(this.input) {
-				super.internalSetValue(v);
+				super.internalSetValue(textFieldValue);
 			} else {
 				this.on("render", () => {
-					super.internalSetValue(v);
+					super.internalSetValue(textFieldValue);
 				}, {once: true})
 			}
 		})
@@ -135,14 +155,6 @@ export class AutocompleteField<T extends List = List> extends TextField {
 	protected internalGetValue() {
 		return this._value;
 	}
-
-	// get value(): any {
-	// 	return this._value;
-	// }
-	//
-	// set value(v: any) {
-	// 	super.value = v;
-	// }
 
 	protected internalRender(): HTMLElement {
 
