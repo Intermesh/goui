@@ -584,7 +584,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	 *
 	 * @param id
 	 */
-	public destroy(id: EntityID) {
+	public destroy(id: EntityID) : Promise<EntityID> {
 		const p = new Promise((resolve, reject) => {
 			this.destroys[id] = {
 				resolve: resolve,
@@ -592,7 +592,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 			}
 		}).finally(() => {
 			delete this.destroys[id];
-		})
+		}) as Promise<EntityID>;
 
 		this.delayedCommit();
 
