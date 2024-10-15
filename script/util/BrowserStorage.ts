@@ -50,7 +50,7 @@ class Connection {
 		let intervalId: any;
 		return new Promise((resolve) => {
 			const checkUpgrading = () => {
-				console.log("Check upgrade");
+				// console.log("Check upgrade");
 				if (!this.upgrading) {
 					resolve(this);
 				}
@@ -191,7 +191,7 @@ export class BrowserStore {
 
 	}
 
-	private async getStore(mode: IDBTransactionMode) {
+	private async getStore(mode: IDBTransactionMode) :Promise<IDBObjectStore> {
 		// console.log("getStore " + this.storeName);
 		let db = await browserStoreConnection.connect();
 
@@ -199,8 +199,14 @@ export class BrowserStore {
 			db = await this.createStore();
 		}
 
-		return db.transaction(this.storeName, mode)
-			.objectStore(this.storeName);
+		try {
+			return db.transaction(this.storeName, mode)
+				.objectStore(this.storeName);
+		} catch(e) {
+			// sometimes when upgrade happens in the mean time the connection can have an invalid state
+			console.warn(e);
+			return this.getStore(mode);
+		}
 	}
 
 	private async createStore(): Promise<IDBDatabase> {
