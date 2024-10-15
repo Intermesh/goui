@@ -4,7 +4,7 @@
  * @author Michael de Hart <mdhart@intermesh.nl>
  */
 
-import {comp, Component, ComponentEventMap, createComponent} from "./Component.js";
+import {assignComponentConfig, comp, Component, ComponentEventMap, createComponent} from "./Component.js";
 import {Store, StoreRecord} from "../data/Store.js";
 import {t} from "../Translate.js";
 import {E} from "../util/Element.js";
@@ -192,9 +192,13 @@ export class List<StoreType extends Store = Store> extends Component {
 	 */
 	set rowSelectionConfig(rowSelectionConfig: boolean | Partial<RowSelectConfig>) {
 		if (typeof rowSelectionConfig != "boolean") {
-			(rowSelectionConfig as RowSelectConfig).list = this as never;
-			this.rowSelect = rowselect(rowSelectionConfig as RowSelectConfig);
-		} else {
+			if(!this.rowSelect) {
+				(rowSelectionConfig as RowSelectConfig).list = this as never;
+				this.rowSelect = rowselect(rowSelectionConfig as RowSelectConfig);
+			} else {
+				assignComponentConfig(this.rowSelect, rowSelectionConfig);
+			}
+		} else if (!this.rowSelect) {
 			this.rowSelect = rowselect({list: this as never});
 		}
 	}

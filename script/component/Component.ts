@@ -1173,26 +1173,34 @@ export type BaseConfig = {
 export const createComponent = <T extends Observable, C extends BaseConfig>(comp: T, config?: C, items?: Component[]): T => {
 
 	if (config) {
-		if (config.listeners) {
-			for (let key in config.listeners) {
-				const eventName = key as keyof ObservableEventMap<T>;
-				if (typeof config.listeners[eventName] == 'function') {
-					comp.on(eventName, config.listeners[eventName] as never);
-				} else {
-					const o = config.listeners[eventName];
-					const fn = o.fn as never;
-					delete o.fn;
-					comp.on(eventName, fn, o);
-				}
-			}
-
-			delete config.listeners;
-		}
-
-		Object.assign(comp as any, config);
+		assignComponentConfig(comp, config)
 	}
 	if (items && items.length) {
 		(comp as any).items.add(...items);
 	}
 	return comp;
+}
+
+
+export function assignComponentConfig<T extends Observable, C extends BaseConfig>(comp: T, config: C) {
+	if (config.listeners) {
+		assignComponentListeners(comp, config.listeners);
+		delete config.listeners;
+	}
+	Object.assign(comp as any, config);
+}
+
+export function assignComponentListeners<T extends Observable>(comp:T, listeners: ObservableListener<any>) {
+
+	for (let key in listeners) {
+		const eventName = key as keyof ObservableEventMap<any>;
+		if (typeof listeners[eventName] == 'function') {
+			comp.on(eventName, listeners[eventName] as never);
+		} else {
+			const o = listeners[eventName];
+			const fn = o.fn as never;
+			delete o.fn;
+			comp.on(eventName, fn, o);
+		}
+	}
 }
