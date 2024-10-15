@@ -272,7 +272,8 @@ export class RowSelect extends Observable {
 		const change = (select.length > 0 || deselect.length > 0);
 
 		if (!silent && change) {
-			this.fireSelectionChange();
+			// fire immediately here. Only buffer when using add() and remove()
+			this.fire('selectionchange', this, this.selected);
 		}
 
 		return change;
