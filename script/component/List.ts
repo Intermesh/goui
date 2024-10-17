@@ -8,7 +8,7 @@ import {assignComponentConfig, comp, Component, ComponentEventMap, createCompone
 import {Store, StoreRecord} from "../data/Store.js";
 import {t} from "../Translate.js";
 import {E} from "../util/Element.js";
-import {rowselect, RowSelect, RowSelectConfig} from "./table/RowSelect.js";
+import {rowselect, RowSelect, RowSelectConfig} from "./table/index.js";
 import {Config, Listener, ObservableListenerOpts} from "./Observable.js";
 import {dragData} from "../DragData.js";
 import {root} from "./Root.js";
@@ -309,7 +309,8 @@ export class List<StoreType extends Store = Store> extends Component {
 		const rows = this.getRowElements();
 		rows[index]?.remove();
 
-		if(this.rowSelection) {
+		// Remove row from selection too if it's not caused by a store load. Then we want to maintain the selection.
+		if(!this.store.loading && this.rowSelection) {
 			this.rowSelection.remove(index, true);
 		}
 	}
@@ -411,9 +412,7 @@ export class List<StoreType extends Store = Store> extends Component {
 		for(let i = 0, l = records.length; i < l; i++) {
 			const container = this.renderGroup(records[i]),
 				row = this.renderRow(records[i], i);
-			if (this.rowSelection && this.rowSelection.selected.indexOf(i) > -1) {
-				row.cls("+selected");
-			}
+
 			container.append(row);
 			this.onRowAppend(row, records[i], i);
 		}
