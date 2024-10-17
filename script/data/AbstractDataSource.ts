@@ -564,6 +564,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 			Object.assign(this.updates[id].data, data);
 			return this.updates[id].promise!;
 		}
+
 		const p = new Promise((resolve, reject) => {
 			this.updates[id] = {
 				data: data,
