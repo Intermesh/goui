@@ -1,15 +1,15 @@
 import {Listener, Observable, ObservableEventMap, ObservableListenerOpts} from "./Observable.js";
 
-/**
- * @inheritDoc
- */
 export interface SortableEventMap<Type> extends ObservableEventMap<Type> {
 
+	/**
+	 * Fires when the items are sorted
+	 *
+	 * @param fromIndex
+	 * @param toIndex
+	 */
 	sort: (fromIndex:number, toIndex:number) => void
-
 }
-
-export type DROP_POSITION = "before" | "after" | "on";
 
 export interface Sortable {
 	on<K extends keyof SortableEventMap<this>, L extends Listener>(eventName: K, listener: Partial<SortableEventMap<this>>[K], options?: ObservableListenerOpts): L;
