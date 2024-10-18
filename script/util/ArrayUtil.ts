@@ -78,4 +78,17 @@ export class ArrayUtil {
 			return sorted;
 		});
 	}
+
+
+	/**
+	 * Move element in the array
+	 *
+	 * @param array
+	 * @param from
+	 * @param to
+	 */
+	public static move = function <T extends any[]>(array:T, from:number, to:number) {
+		array.splice(to, 0, array.splice(from, 1)[0]);
+		return array;
+	};
 }

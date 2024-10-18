@@ -289,3 +289,14 @@ hr.goui {
 	}
 }
 
+
+
+.drag-src {
+	visibility: hidden;
+	height: 0;
+}
+
+.drag-ghost {
+	border-radius: dp(4);
+	border: 1px dashed $colorLine;
+}
