@@ -53,21 +53,21 @@ export class Sortable extends Observable {
 
 		container.on("drop", (e)=> {
 
-			// e.preventDefault();
-			//
-			// this.toIndex = Array.from(this.container.childNodes).indexOf(this.currentGhost!);
-			//
-			// if(this.toIndex > this.fromIndex!) {
-			// 	// original el is still there so take it off
-			// 	this.toIndex--;
-			// }
-			//
-			// this.currentGhost!.remove();
-			// this.currentGhost = undefined;
-			//
-			// this.dragSrc!.classList.remove("drag-src");
-			//
-			// this.fire("sort", this.fromIndex!, this.toIndex);
+			e.preventDefault();
+
+			this.toIndex = Array.from(this.container.childNodes).indexOf(this.currentGhost!);
+
+			if(this.toIndex > this.fromIndex!) {
+				// original el is still there so take it off
+				this.toIndex--;
+			}
+
+			this.currentGhost!.remove();
+			this.currentGhost = undefined;
+
+			this.dragSrc!.classList.remove("drag-src");
+
+			this.fire("sort", this.fromIndex!, this.toIndex);
 		})
 
 		container.on("dragover", (e) => {
