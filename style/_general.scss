@@ -272,6 +272,7 @@ hr.goui {
 
 
 .goui.drop-pin {
+	z-index: $zIndexMask;
 	position:fixed;
 	height: 1px;
 	background-color: $colorMain;

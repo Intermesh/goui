@@ -18,7 +18,25 @@ export type RowRenderer = (record: any, row: HTMLElement, list: any, storeIndex:
 
 export type listStoreType<ListType> = ListType extends List<infer StoreType> ? StoreType : never;
 
+type DragData = {
+	/**
+	 * List component it was dragged from
+	 */
+	cmp: List
+	/**
+	 * Row being dragged
+	 */
+	row: HTMLTableRowElement;
+	/**
+	 * Store index of element being dragged
+	 */
+	storeIndex:number
 
+	/**
+	 * Store record
+	 */
+	record: any
+}
 /**
  * @inheritDoc
  */
@@ -124,7 +142,7 @@ export interface ListEventMap<Type> extends ComponentEventMap<Type> {
 	 * @param position
 	 * @param dragData The arbitrary drag data that is set
 	 */
-	drop: (list: Type, e: DragEvent, dropRow: HTMLElement, dropIndex:number, position: DROP_POSITION, dragData: any) => void
+	drop: (list: Type, e: DragEvent, dropRow: HTMLElement, dropIndex:number, position: DROP_POSITION, dragData: DragData) => void
 
 	dropallowed: (list: Type, e: DragEvent, dropRow: HTMLElement, dragData: any) => void
 
@@ -488,15 +506,17 @@ export class List<StoreType extends Store = Store> extends Component {
 
 
 	protected bindDropEvents(row: HTMLElement) {
-		row.ondrop = this.onNodeDrop.bind(this);
-		row.ondragend = this.onNodeDragEnd.bind(this);
-		row.ondragover = this.onNodeDragOver.bind(this);
-		row.ondragenter = this.onNodeDragEnter.bind(this);
-		row.ondragleave = this.onNodeDragLeave.bind(this);
+		if(this.dropOn || this.dropBetween) {
+			row.ondrop = this.onNodeDrop.bind(this);
+			row.ondragend = this.onNodeDragEnd.bind(this);
+			row.ondragover = this.onNodeDragOver.bind(this);
+			row.ondragenter = this.onNodeDragEnter.bind(this);
+			row.ondragleave = this.onNodeDragLeave.bind(this);
+		}
 	}
 
 	protected onNodeDragStart(e: DragEvent) {
-		e.stopPropagation();
+		// e.stopPropagation();
 		const row = e.target as HTMLDivElement;
 
 		//needed for iOS
