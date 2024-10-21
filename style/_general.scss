@@ -290,15 +290,6 @@ hr.goui {
 }
 
 
-
 .drag-src {
-	visibility: hidden;
-	height: 0;
-	margin-top: dp(-8);
-	margin-bottom: dp(-8);
-}
-
-.drag-ghost {
-	border-radius: dp(4);
-	border: 1px dashed $colorLine;
+	opacity: 0.4;
 }

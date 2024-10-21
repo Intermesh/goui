@@ -24,7 +24,6 @@ export class Sortable extends Observable {
 
 	private fromIndex:number | undefined;
 	private toIndex:number | undefined;
-	private currentGhost:HTMLElement|undefined;
 	private dragSrc:HTMLElement|undefined;
 
 	/**
@@ -37,37 +36,22 @@ export class Sortable extends Observable {
 		super();
 
 		container.on("dragstart", (e)=> {
-
-			this.currentGhost = this.createGhost(e.target);
 			this.dragSrc = e.target;
 
 			e.dataTransfer!.setData('text/plain', 'goui');
 			e.dataTransfer!.effectAllowed = "move";
-
-			setTimeout(() => {
-				e.target.classList.add("drag-src");
-			})
-
+			e.target.classList.add("drag-src");
 			this.fromIndex = this.findSortables().indexOf(e.target);
 		})
 
 		container.on("drop", (e)=> {
-
 			e.preventDefault();
+			this.endDrag();
+		})
 
-			this.toIndex = Array.from(this.container.childNodes).indexOf(this.currentGhost!);
-
-			if(this.toIndex > this.fromIndex!) {
-				// original el is still there so take it off
-				this.toIndex--;
-			}
-
-			this.currentGhost!.remove();
-			this.currentGhost = undefined;
-
-			this.dragSrc!.classList.remove("drag-src");
-
-			this.fire("sort", this.fromIndex!, this.toIndex);
+		container.on("dragend", (e)=> {
+			e.preventDefault();
+			this.endDrag();
 		})
 
 		container.on("dragover", (e) => {
@@ -79,24 +63,22 @@ export class Sortable extends Observable {
 				const after = e.y > rect.y + (rect.height / 2);
 
 				if(after) {
-					container.insertBefore(this.currentGhost!, overEl.nextSibling);
+					container.insertBefore(this.dragSrc!, overEl.nextSibling);
 				} else {
-					container.insertBefore(this.currentGhost!, overEl);
+					container.insertBefore(this.dragSrc!, overEl);
 				}
 			}
 		})
+	}
+	private endDrag() {
+		this.toIndex = this.findSortables().indexOf(this.dragSrc!);
+		this.dragSrc!.classList.remove("drag-src");
+		this.dragSrc = undefined;
+
+		this.fire("sort", this.fromIndex!, this.toIndex);
 	}
 
 	private findSortables() {
 		return Array.from(this.container.querySelectorAll(this.sortableChildSelector));
 	}
-
-	private createGhost (el:HTMLElement){
-		const ghost = document.createElement("div");
-		ghost.classList.add("drag-ghost")
-		ghost.style.height = el.offsetHeight + "px";
-		ghost.style.width = el.offsetWidth + "px";
-
-		return ghost;
-	};
 }
