@@ -13,6 +13,7 @@ import {Config, Listener, ObservableListenerOpts} from "./Observable.js";
 import {dragData} from "../DragData.js";
 import {root} from "./Root.js";
 import {Window} from "./Window.js";
+import {Sortable} from "./Sortable.js";
 
 export type RowRenderer = (record: any, row: HTMLElement, list: any, storeIndex: number) => string | Component[] | void;
 
@@ -135,16 +136,26 @@ export interface ListEventMap<Type> extends ComponentEventMap<Type> {
 	/**
 	 * Fires when something was dropped
 	 *
-	 * @param tree The tree that contains the node that is dropped on
-	 * @param e The draag event
-	 * @param dropRow The row element that is dropped on
-	 * @param dropIndex Store index
-	 * @param position
-	 * @param dragData The arbitrary drag data that is set
+	 * @param toComponent The component where it's dropped on. Usually this component but with trees it can be a nested list.
+	 * @param fromIndex The index in the fromComponent of the item being dragged
+	 * @param toIndex The index where it's dropped in this list
+	 * @param droppedOn True if dropped on a node and not between
+	 * @param fromComponent The component where the item is dragged from. When the same sort group is used it can be another component
 	 */
-	drop: (list: Type, e: DragEvent, dropRow: HTMLElement, dropIndex:number, position: DROP_POSITION, dragData: DragData) => void
+	drop: (toComponent: Type, toIndex:number, fromIndex: number, droppedOn:boolean, fromComp: Component) => void
 
-	dropallowed: (list: Type, e: DragEvent, dropRow: HTMLElement, dragData: any) => void
+	/**
+	 * Fires when the items are dragged over this list.
+	 *
+	 * Return false to disallow dropping
+	 *
+	 * @param dropComp The component the element was dropped on
+	 * @param fromIndex Move from index
+	 * @param toIndex To index
+	 * @param droppedOn Dropped on the toIndex or moved to this index
+	 * @param fromComp The component the element was dragged from if "group" is used to drop to other components
+	 */
+	dropallowed: (toComponent: Type, toIndex:number, fromIndex: number, droppedOn:boolean, fromComp: Component) => void
 
 }
 
@@ -193,6 +204,11 @@ export class List<StoreType extends Store = Store> extends Component {
 	 * Allow to drop on items
 	 */
 	public dropOn = false;
+
+	/**
+	 * Group for sortable when drag and drop is used
+	 */
+	public sortableGroup:string|undefined = undefined;
 
 
 	/**
@@ -271,8 +287,30 @@ export class List<StoreType extends Store = Store> extends Component {
 		this.renderEmptyState();
 		this.renderBody();
 		this.initStore();
+		this.initSortable();
 
 		return el;
+	}
+
+	protected initSortable() {
+		if(!this.dropBetween && !this.dropOn && !this.draggable) {
+			return;
+		}
+		const sortable = new Sortable(this, ".data");
+		sortable.dropOn = this.dropOn;
+		sortable.dropBetween = this.dropBetween;
+		if(!this.sortableGroup) {
+			this.sortableGroup = "sortable-" + Component.uniqueID();
+		}
+		sortable.group = this.sortableGroup;
+
+		sortable.on("sort", (toComp, toIndex, fromIndex , droppedOn, fromComp) => {
+			return this.fire("drop", this, toIndex, fromIndex, droppedOn, fromComp);
+		});
+
+		sortable.on("dropallowed", (toComp, toIndex, fromIndex , droppedOn, fromComp) => {
+			return this.fire("dropallowed", this, toIndex, fromIndex, droppedOn, fromComp);
+		});
 	}
 
 	protected onKeyDown(e: KeyboardEvent) {
@@ -310,8 +348,8 @@ export class List<StoreType extends Store = Store> extends Component {
 		if (index == collection.count() - 1) {
 			container.append(row);
 		} else {
-			const before = container.children[index];
-			container.insertBefore(row, before);
+			const before = this.getRowElements()[index];
+			before.parentElement!.insertBefore(row, before);
 		}
 
 		this.onRowAppend(row, item, index);

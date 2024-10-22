@@ -63,7 +63,7 @@ ul.goui-tree {
 			align-content: center;
 			align-items: center;
 
-			.dragging & {
+			.dragging & { // https://stackoverflow.com/questions/7110353/html5-dragleave-fired-when-hovering-a-child-element
 				pointer-events: none;
 			}
 
