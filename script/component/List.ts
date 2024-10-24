@@ -311,6 +311,12 @@ export class List<StoreType extends Store = Store> extends Component {
 		sortable.on("dropallowed", (toComp, toIndex, fromIndex , droppedOn, fromComp) => {
 			return this.fire("dropallowed", this, toIndex, fromIndex, droppedOn, fromComp);
 		});
+
+		sortable.on("dragstart",(sortable1, ev) => {
+			if(this.rowSelect && this.rowSelect.multiSelect && this.rowSelect.selected.length > 1) {
+				ev.setDragComponent(comp({cls: "card pad", html: this.rowSelect.selected.length + " selected rows"}))
+			}
+		});
 	}
 
 	protected onKeyDown(e: KeyboardEvent) {

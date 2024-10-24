@@ -89,7 +89,7 @@ export class RowSelect extends Observable {
 				this.onKeyDown(e);
 			})
 
-			me.on('rowmousedown', (table: List, index: number, row, e: MouseEvent) => {
+			me.on('rowclick', (table: List, index: number, row, e: MouseEvent) => {
 				this.onRowMouseDown(table, index, e);
 			});
 		})

@@ -294,3 +294,9 @@ hr.goui {
 .drag-src {
 	opacity: 0.4;
 }
+
+.drag-img {
+	position: absolute;
+	left: -9999999px;
+	top: -9999999px;
+}

@@ -2,6 +2,9 @@ import {Listener, Observable, ObservableEventMap, ObservableListenerOpts} from "
 import {comp, Component} from "./Component.js";
 import {root} from "./Root.js";
 
+
+type SortableDragEvent = DragEvent & {target: HTMLElement, setDragComponent: (comp:Component) => void};
+
 export interface SortableEventMap<Type> extends ObservableEventMap<Type> {
 
 	/**
@@ -27,6 +30,18 @@ export interface SortableEventMap<Type> extends ObservableEventMap<Type> {
 	 * @param fromComp The component the element was dragged from if "group" is used to drop to other components
 	 */
 	dropallowed: (dropComp:Type, toIndex:number, fromIndex:number, droppedOn: boolean, fromComp:Component) => void,
+
+	/**
+	 * Fires when dragging starts.
+	 *
+	 * You can set a component to show instead of a copy of the drag source:
+	 *
+	 * ev.setDragComponent(comp({cls: "card pad", html: this.rowSelect.selected.length + " selected rows"}))
+	 *
+	 * @param sortable
+	 * @param ev
+	 */
+	dragstart: (sortable:Sortable<any>, ev:SortableDragEvent) => void
 }
 
 export interface Sortable<Type extends Component> {
@@ -57,12 +72,7 @@ const dragData: DragData = {
 	component: root
 }
 
-const dropPin = comp({
-	cls: "drop-pin",
-	hidden: true
-})
 
-root.items.add(dropPin);
 /**
  * Enables sorting of child elements inside a container
  */
@@ -92,6 +102,36 @@ export class Sortable<Type extends Component> extends Observable {
 
 
 	private _gap: number|undefined;
+
+	private static _dropPin: Component | undefined;
+
+	private static getDropPin() {
+
+		if(Sortable._dropPin == undefined) {
+			Sortable._dropPin = comp({
+				cls: "drop-pin",
+				hidden: true
+			})
+
+			root.items.add(Sortable._dropPin);
+		}
+		return Sortable._dropPin;
+	}
+
+
+	private static _dragImg: Component | undefined;
+
+	private static getDragImg() {
+
+		if(Sortable._dragImg == undefined) {
+			Sortable._dragImg = comp({
+				cls: "drag-img"
+			})
+
+			root.items.add(Sortable._dragImg);
+		}
+		return Sortable._dragImg;
+	}
 
 
 	/**
@@ -140,6 +180,16 @@ export class Sortable<Type extends Component> extends Observable {
 			e.dataTransfer!.effectAllowed = "copyMove";
 			e.target.classList.add("drag-src");
 
+			const ev : SortableDragEvent =
+				Object.assign(e, {setDragComponent: function(this:DragEvent,comp:Component)  {
+					Sortable.getDragImg().items.replace(comp);
+					this.dataTransfer!.setDragImage(comp.el, 0, 0)
+				}
+				});
+
+			this.fire("dragstart", this, ev);
+
+
 			dragData.fromIndex = this.findIndex(e.target);
 		})
 
@@ -160,6 +210,10 @@ export class Sortable<Type extends Component> extends Observable {
 				return;
 			}
 
+			if(!this.dropOn && !this.dropBetween) {
+				return false;
+			}
+
 			dragData.overEl = e.target.closest(this.sortableChildSelector) as HTMLElement;
 
 
@@ -169,6 +223,8 @@ export class Sortable<Type extends Component> extends Observable {
 
 			e.preventDefault();
 			e.stopPropagation();
+
+			const dropPin = Sortable.getDropPin();
 
 			if(dragData.overEl) {
 
@@ -188,6 +244,8 @@ export class Sortable<Type extends Component> extends Observable {
 				} else {
 					dragData.pos = "on";
 				}
+
+
 
 				switch(dragData.pos) {
 					case "before":
@@ -222,6 +280,7 @@ export class Sortable<Type extends Component> extends Observable {
 	}
 
 	private dropAllowed() {
+
 		if(dragData.overEl) {
 
 			if (dragData.dragSrc!.contains(dragData.overEl)) {
@@ -266,17 +325,20 @@ export class Sortable<Type extends Component> extends Observable {
 
 	private endDrag() {
 
-		if(!dragData.dragSrc || dragData.group != this.group){
+		if(!dragData.dragSrc) {
 			return;
 		}
 
-		if(!this.dropAllowed()) {
+		dragData.dragSrc!.classList.remove("drag-src");
+
+		if((!this.dropOn && !this.dropBetween) || dragData.group != this.group || !this.dropAllowed()) {
+			dragData.dragSrc = undefined;
 			return;
 		}
 
 		root.el.cls("-dragging");
 
-		dropPin.hidden = true;
+		Sortable.getDropPin().hidden = true;
 
 		if(dragData.overEl) {
 
@@ -303,9 +365,8 @@ export class Sortable<Type extends Component> extends Observable {
 			}
 		}
 
-		dragData.dragSrc!.classList.remove("drag-src");
-		dragData.dragSrc = undefined;
 
+		dragData.dragSrc = undefined;
 		this.fire("sort", this.component, dragData.toIndex, dragData.fromIndex, dragData.pos == "on", dragData.component);
 	}
 
