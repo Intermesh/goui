@@ -3,7 +3,21 @@ import {comp, Component} from "./Component.js";
 import {root} from "./Root.js";
 
 
-type SortableDragEvent = DragEvent & {target: HTMLElement, setDragComponent: (comp:Component) => void};
+type SortableDragEvent = DragEvent & {
+	target: HTMLElement,
+
+	/**
+	 * Set drag component to show instead of a translucent clone of the draggable
+	 *
+	 * ```
+	 * ev.setDragComponent(comp({cls: "card pad", html: this.rowSelect.selected.length + " selected rows"}))
+	 * ```
+	 *
+	 * @link https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer/setDragImage
+	 * @param comp
+	 */
+	setDragComponent: (comp:Component) => void
+};
 
 export interface SortableEventMap<Type> extends ObservableEventMap<Type> {
 
@@ -77,7 +91,6 @@ const dragData: DragData = {
  * Enables sorting of child elements inside a container
  */
 export class Sortable<Type extends Component> extends Observable {
-
 
 	/**
 	 * Only allow drag and drop to Sortable's from the same group
