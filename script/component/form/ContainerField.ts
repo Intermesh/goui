@@ -221,4 +221,4 @@ export class ContainerField<ValueType extends ContainerFieldValue = ContainerFie
  * @param config
  * @param items
  */
-export const containerfield = (config?: FieldConfig<ContainerField, FieldEventMap<ContainerField>>, ...items: Component[]) => createComponent(new ContainerField(), config, items);
+export const containerfield = (config?: FieldConfig<ContainerField, FieldEventMap<ContainerField>>, ...items: Component[]) => createComponent(new ContainerField(config?.tagName ?? 'div'), config, items);
