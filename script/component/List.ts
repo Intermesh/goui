@@ -4,21 +4,40 @@
  * @author Michael de Hart <mdhart@intermesh.nl>
  */
 
-import {comp, Component, ComponentEventMap, createComponent} from "./Component.js";
+import {assignComponentConfig, comp, Component, ComponentEventMap, createComponent} from "./Component.js";
 import {Store, StoreRecord} from "../data/Store.js";
 import {t} from "../Translate.js";
 import {E} from "../util/Element.js";
-import {rowselect, RowSelect, RowSelectConfig} from "./table/RowSelect.js";
+import {rowselect, RowSelect, RowSelectConfig} from "./table/index.js";
 import {Config, Listener, ObservableListenerOpts} from "./Observable.js";
 import {dragData} from "../DragData.js";
 import {root} from "./Root.js";
 import {Window} from "./Window.js";
+import {Sortable} from "./Sortable.js";
 
 export type RowRenderer = (record: any, row: HTMLElement, list: any, storeIndex: number) => string | Component[] | void;
 
 export type listStoreType<ListType> = ListType extends List<infer StoreType> ? StoreType : never;
 
+type DragData = {
+	/**
+	 * List component it was dragged from
+	 */
+	cmp: List
+	/**
+	 * Row being dragged
+	 */
+	row: HTMLTableRowElement;
+	/**
+	 * Store index of element being dragged
+	 */
+	storeIndex:number
 
+	/**
+	 * Store record
+	 */
+	record: any
+}
 /**
  * @inheritDoc
  */
@@ -117,16 +136,26 @@ export interface ListEventMap<Type> extends ComponentEventMap<Type> {
 	/**
 	 * Fires when something was dropped
 	 *
-	 * @param tree The tree that contains the node that is dropped on
-	 * @param e The draag event
-	 * @param dropRow The row element that is dropped on
-	 * @param dropIndex Store index
-	 * @param position
-	 * @param dragData The arbitrary drag data that is set
+	 * @param toComponent The component where it's dropped on. Usually this component but with trees it can be a nested list.
+	 * @param fromIndex The index in the fromComponent of the item being dragged
+	 * @param toIndex The index where it's dropped in this list
+	 * @param droppedOn True if dropped on a node and not between
+	 * @param fromComponent The component where the item is dragged from. When the same sort group is used it can be another component
 	 */
-	drop: (list: Type, e: DragEvent, dropRow: HTMLElement, dropIndex:number, position: DROP_POSITION, dragData: any) => void
+	drop: (toComponent: Type, toIndex:number, fromIndex: number, droppedOn:boolean, fromComp: Component) => void
 
-	dropallowed: (list: Type, e: DragEvent, dropRow: HTMLElement, dragData: any) => void
+	/**
+	 * Fires when the items are dragged over this list.
+	 *
+	 * Return false to disallow dropping
+	 *
+	 * @param dropComp The component the element was dropped on
+	 * @param fromIndex Move from index
+	 * @param toIndex To index
+	 * @param droppedOn Dropped on the toIndex or moved to this index
+	 * @param fromComp The component the element was dragged from if "group" is used to drop to other components
+	 */
+	dropallowed: (toComponent: Type, toIndex:number, fromIndex: number, droppedOn:boolean, fromComp: Component) => void
 
 }
 
@@ -176,6 +205,11 @@ export class List<StoreType extends Store = Store> extends Component {
 	 */
 	public dropOn = false;
 
+	/**
+	 * Group for sortable when drag and drop is used
+	 */
+	public sortableGroup:string|undefined = undefined;
+
 
 	/**
 	 * When enabled, it will register it's container as scrolling element to the {@see Store}.
@@ -184,6 +218,7 @@ export class List<StoreType extends Store = Store> extends Component {
 	public scrollLoad = false;
 
 	protected itemTag: keyof HTMLElementTagNameMap = 'li'
+
 	// protected fragment?: DocumentFragment;
 
 	/**
@@ -192,45 +227,16 @@ export class List<StoreType extends Store = Store> extends Component {
 	 */
 	set rowSelectionConfig(rowSelectionConfig: boolean | Partial<RowSelectConfig>) {
 		if (typeof rowSelectionConfig != "boolean") {
-			(rowSelectionConfig as RowSelectConfig).list = this as never;
-			this.rowSelect = rowselect(rowSelectionConfig as RowSelectConfig);
-		} else {
+			if (!this.rowSelect) {
+				(rowSelectionConfig as RowSelectConfig).list = this as never;
+				this.rowSelect = rowselect(rowSelectionConfig as RowSelectConfig);
+			} else {
+				assignComponentConfig(this.rowSelect, rowSelectionConfig);
+			}
+		} else if (!this.rowSelect) {
 			this.rowSelect = rowselect({list: this as never});
 		}
 	}
-
-	set sortable(sortable: boolean) {
-		this.draggable = true;
-		this.dropBetween = true;
-		this.dropOn = false;
-
-		const ref = this.on("drop", (list, e, dropRow, dropIndex, position, dragData) => {
-			const store = dragData.cmp.store;
-
-			// remove the dragged record from the store
-			store.removeAt(dragData.storeIndex);
-			if(dragData.storeIndex < dropIndex) {
-				// if inserting in the same store we need to substract 1 from the index as we took one off.
-				dropIndex--;
-			}
-
-			//add the record to the new position
-			switch(position) {
-				case "before":
-					// reorder in the tree where it's dropped
-					store.insert(dropIndex, dragData.record);
-					break;
-
-				case "after":
-					store.insert(++dropIndex, dragData.record);
-					break;
-			}
-
-			this.fire("sortchange", this, dragData.record, dropIndex, dragData.storeIndex);
-		});
-
-	}
-
 
 
 	constructor(readonly store: StoreType, readonly renderer: RowRenderer, tagName: keyof HTMLElementTagNameMap = "ul") {
@@ -242,7 +248,7 @@ export class List<StoreType extends Store = Store> extends Component {
 		});
 		store.on("load", () => {
 			this.unmask();
-			if(this.emptyEl) {
+			if (this.emptyEl) {
 				this.emptyEl.hidden = this.store.count() > 0;
 			}
 		});
@@ -281,12 +287,40 @@ export class List<StoreType extends Store = Store> extends Component {
 		this.renderEmptyState();
 		this.renderBody();
 		this.initStore();
+		this.initSortable();
 
 		return el;
 	}
 
-	protected onKeyDown(e:KeyboardEvent) {
-		if(e.key == "Delete" || e.metaKey && e.key =="Backspace") {
+	protected initSortable() {
+		if(!this.dropBetween && !this.dropOn && !this.draggable) {
+			return;
+		}
+		const sortable = new Sortable(this, ".data");
+		sortable.dropOn = this.dropOn;
+		sortable.dropBetween = this.dropBetween;
+		if(!this.sortableGroup) {
+			this.sortableGroup = "sortable-" + Component.uniqueID();
+		}
+		sortable.group = this.sortableGroup;
+
+		sortable.on("sort", (toComp, toIndex, fromIndex , droppedOn, fromComp) => {
+			return this.fire("drop", this, toIndex, fromIndex, droppedOn, fromComp);
+		});
+
+		sortable.on("dropallowed", (toComp, toIndex, fromIndex , droppedOn, fromComp) => {
+			return this.fire("dropallowed", this, toIndex, fromIndex, droppedOn, fromComp);
+		});
+
+		sortable.on("dragstart",(sortable1, ev) => {
+			if(this.rowSelect && this.rowSelect.multiSelect && this.rowSelect.selected.length > 1) {
+				ev.setDragComponent(comp({cls: "card pad", html: this.rowSelect.selected.length + " selected rows"}))
+			}
+		});
+	}
+
+	protected onKeyDown(e: KeyboardEvent) {
+		if (e.key == "Delete" || e.metaKey && e.key == "Backspace") {
 			this.fire("delete", this);
 		}
 	}
@@ -296,32 +330,32 @@ export class List<StoreType extends Store = Store> extends Component {
 		this.store.on("remove", this.onRecordRemove.bind(this));
 		this.store.on("add", this.onRecordAdd.bind(this));
 
-		if(this.scrollLoad && this.parent) {
+		if (this.scrollLoad && this.parent) {
 			this.store.addScrollLoader(this.parent.el);
 		}
 	}
 
-	protected onRecordRemove(collection:StoreType, item:StoreRecord, index:number) {
+	protected onRecordRemove(collection: StoreType, item: StoreRecord, index: number) {
 		const rows = this.getRowElements();
 		rows[index]?.remove();
 
-		if(this.rowSelection) {
+		// Remove row from selection too if it's not caused by a store load. Then we want to maintain the selection.
+		if (!this.store.loading && this.rowSelection) {
 			this.rowSelection.remove(index, true);
 		}
 	}
 
 	//todo inserting doesn't work with groups yet. It can only append to the last
-	protected onRecordAdd(collection:StoreType, item:StoreRecord, index:number) {
+	protected onRecordAdd(collection: StoreType, item: StoreRecord, index: number) {
 
 		const container = this.renderGroup(item)
 
 		const row = this.renderRow(item, index);
-		if(index == collection.count() -1) {
+		if (index == collection.count() - 1) {
 			container.append(row);
-		} else
-		{
-			const before = container.children[index];
-			container.insertBefore(row, before);
+		} else {
+			const before = this.getRowElements()[index];
+			before.parentElement!.insertBefore(row, before);
 		}
 
 		this.onRowAppend(row, item, index);
@@ -356,7 +390,7 @@ export class List<StoreType extends Store = Store> extends Component {
 	}
 
 	protected renderEmptyState() {
-		this.emptyEl = E(this.emptyStateTag).css({'captionSide': 'bottom', height:'100%'});
+		this.emptyEl = E(this.emptyStateTag).css({'captionSide': 'bottom', height: '100%'});
 		this.emptyEl.hidden = this.store.count() > 0;
 		this.emptyEl.innerHTML = this.emptyStateHtml;
 		this.el.appendChild(this.emptyEl);
@@ -392,9 +426,9 @@ export class List<StoreType extends Store = Store> extends Component {
 		}
 	}
 
-	public focusRow(index:number) {
+	public focusRow(index: number) {
 		const tr = this.getRowElements()[index];
-		if(!tr) {
+		if (!tr) {
 			return false;
 		}
 		tr.focus();
@@ -404,12 +438,10 @@ export class List<StoreType extends Store = Store> extends Component {
 
 	protected renderRows(records: any[]) {
 
-		for(let i = 0, l = records.length; i < l; i++) {
+		for (let i = 0, l = records.length; i < l; i++) {
 			const container = this.renderGroup(records[i]),
 				row = this.renderRow(records[i], i);
-			if (this.rowSelection && this.rowSelection.selected.indexOf(i) > -1) {
-				row.cls("+selected");
-			}
+
 			container.append(row);
 			this.onRowAppend(row, records[i], i);
 		}
@@ -417,11 +449,11 @@ export class List<StoreType extends Store = Store> extends Component {
 		this.fire("renderrows", this, records);
 	}
 
-	protected onRowAppend(row:HTMLElement, record: any, index:number) {
+	protected onRowAppend(row: HTMLElement, record: any, index: number) {
 
 	}
 
-	protected renderGroup(record: any): HTMLElement|DocumentFragment {
+	protected renderGroup(record: any): HTMLElement | DocumentFragment {
 		// return this.fragment!;
 		return this.el;
 	}
@@ -434,11 +466,7 @@ export class List<StoreType extends Store = Store> extends Component {
 
 		if (this.draggable) {
 			row.draggable = true;
-			row.ondragstart = this.onNodeDragStart.bind(this);
 		}
-
-		this.bindDropEvents(row);
-
 		const r = this.renderer(record, row, this, storeIndex);
 		if (typeof r === "string") {
 			row.innerHTML = r;
@@ -455,18 +483,6 @@ export class List<StoreType extends Store = Store> extends Component {
 		return row;
 	}
 
-	// private onScroll() {
-	// 	const el = this.el;
-	// 	const pixelsLeft = el.scrollHeight - el.scrollTop - el.offsetHeight;
-	//
-	// 	if (pixelsLeft < 100) {
-	// 		if (!this.store.loading && this.store.hasNext()) {
-	// 			this.store.loadNext(true).finally(() => {
-	// 				this.fire("scrolleddown", this);
-	// 			});
-	// 		}
-	// 	}
-	// }
 
 	private onMouseEvent(e: UIEvent & { target: HTMLElement }, type: any) {
 
@@ -483,146 +499,8 @@ export class List<StoreType extends Store = Store> extends Component {
 		return e.target.closest(".data") as HTMLElement;
 	}
 
-
-	protected bindDropEvents(row: HTMLElement) {
-		row.ondrop = this.onNodeDrop.bind(this);
-		row.ondragend = this.onNodeDragEnd.bind(this);
-		row.ondragover = this.onNodeDragOver.bind(this);
-		row.ondragenter = this.onNodeDragEnter.bind(this);
-		row.ondragleave = this.onNodeDragLeave.bind(this);
-	}
-
-	protected onNodeDragStart(e: DragEvent) {
-		e.stopPropagation();
-		const row = e.target as HTMLDivElement;
-
-		//needed for iOS
-		e.dataTransfer!.setData('text/plain', 'goui');
-
-		dragData.row = row;
-		dragData.cmp = this;
-		dragData.storeIndex = this.getRowElements().indexOf(row);
-		dragData.record = this.store.get(dragData.storeIndex);
-
-		// had to add this class because otherwise dragleave fires immediately on child nodes: https://stackoverflow.com/questions/7110353/html5-dragleave-fired-when-hovering-a-child-element
-		root.el.cls("+dragging");
-	}
-
-	protected onNodeDragEnd(e: DragEvent) {
-		root.el.cls("-dragging");
-	}
-
-	protected onNodeDragEnter(e: DragEvent) {
-
-		const dropRow = this.findDropRow(e);
-		if (this.dropAllowed(e, dropRow)) {
-			e.stopPropagation();
-			e.preventDefault();
-
-			dropRow.cls("+drag-over");
-
-			this.onNodeDragEnterAllowed(e, dropRow);
-		}
-	}
-
-	protected onNodeDragEnterAllowed(e: DragEvent, dropRow: HTMLElement) {
-
-	}
-
-	protected onNodeDragLeave(e: DragEvent) {
-		const dropRow = this.findDropRow(e);
-		if (this.dropAllowed(e, dropRow)) {
-			e.stopPropagation();
-			e.preventDefault();
-			this.clearOverClasses(dropRow);
-			this.onNodeDragLeaveAllowed(e, dropRow);
-		}
-	}
-
-	protected onNodeDragLeaveAllowed(e: DragEvent, dropRow: HTMLElement) {
-
-	}
-
-	protected findDropRow(e: DragEvent) {
-		return (e.target as HTMLDivElement).closest("LI") as HTMLElement;
-	}
-
-
-	protected clearOverClasses(dropRow: HTMLElement) {
-		dropRow.cls("-drag-over");
-		dropRow.classList.remove("before");
-		dropRow.classList.remove("after");
-		dropRow.classList.remove("on");
-
-		dropPin.hidden = true;
-	}
-
-	protected onNodeDragOver(e: DragEvent) {
-
-		if(!this.dropOn && !this.dropBetween) {
-			return;
-		}
-
-		const dropRow = this.findDropRow(e);
-
-		if (this.dropAllowed(e, dropRow)) {
-			e.stopPropagation();
-			e.preventDefault();
-
-			const pos = this.getDropPosition(e);
-			dropRow.classList.toggle("before", "before" == pos);
-			dropRow.classList.toggle("after", "after" == pos);
-			dropRow.classList.toggle("on", "on" == pos);
-
-			dropPin.hidden = pos == "on" || pos == undefined;
-			const dropRowRect = dropRow.getBoundingClientRect();
-			dropPin.el.style.top = (pos == "before" ? dropRowRect.y : dropRowRect.y + dropRowRect.height - 1) + "px";
-			dropPin.el.style.left = dropRowRect.x + "px";
-			dropPin.el.style.width = dropRowRect.width + "px";
-		}
-	}
-
-	protected dropAllowed(e: DragEvent, dropRow: HTMLElement) {
-		return this.fire("dropallowed", this, e, dropRow, dragData);
-	}
-
-	protected getDropPosition(e: DragEvent): DROP_POSITION | undefined {
-
-		if (!this.dropBetween) {
-			return this.dropOn ? "on" : undefined;
-		}
-
-		const betweenZone = 6;
-
-		if (e.offsetY < betweenZone) {
-			return "before";
-		} else if (e.offsetY > (e.target as HTMLElement).offsetHeight - betweenZone) {
-			return "after";
-		} else {
-			return this.dropOn ? "on" : undefined;
-		}
-	}
-
-	protected onNodeDrop(e: DragEvent) {
-
-		const dropPos = this.getDropPosition(e);
-		if (!dropPos) {
-			return;
-		}
-
-		e.preventDefault();
-		e.stopPropagation();
-
-		const dropRow = this.findDropRow(e),
-			dropIndex = this.getRowElements().indexOf(dropRow);
-
-		this.clearOverClasses(dropRow);
-
-		this.fire("drop", this, e, dropRow, dropIndex, dropPos, dragData);
-
-	}
-
 }
+
 
 
 export type ListConfig<StoreType extends Store> = Omit<Config<List<StoreType>, ListEventMap<List<StoreType>>, "store" | "renderer">, "rowSelection">

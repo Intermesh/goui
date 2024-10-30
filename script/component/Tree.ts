@@ -3,7 +3,6 @@ import {store, Store, StoreRecord} from "../data/index.js";
 import {Component, createComponent} from "./Component.js";
 import {E} from "../util/index.js";
 import {Config, Listener, ObservableListenerOpts} from "./Observable.js";
-import {dragData} from "../DragData.js";
 import {MaterialIcon} from "./MaterialIcon.js";
 import {checkbox} from "./form/index.js";
 
@@ -141,12 +140,13 @@ export type TreeRecord = {
 	 */
 	dataSet?: any
 
-	href?:string
+	href?:string,
+
+	subTree?: Tree
 }
 
 export class Tree extends List<Store<TreeRecord>> {
 
-	private subTrees: Record<string, any> = {}
 
 	private dragOverTimeout?: any;
 
@@ -164,10 +164,6 @@ export class Tree extends List<Store<TreeRecord>> {
 			if(list == this) {
 				void this._expand(row);
 			}
-		});
-
-		this.store.on("remove", (collection, item, index) => {
-			delete this.subTrees[index];
 		});
 
 		if (!(this.parent instanceof Tree)) {
@@ -203,10 +199,6 @@ export class Tree extends List<Store<TreeRecord>> {
 		this.store.clear();
 
 		this.fireExpand();
-
-		for(let id in this.subTrees) {
-			this.subTrees[id].reload();
-		}
 	}
 
 	private fireExpand() {
@@ -274,7 +266,7 @@ export class Tree extends List<Store<TreeRecord>> {
 			throw "Record not found for index: " + storeIndex;
 		}
 
-		const tree = this.subTrees[storeIndex] ? this.subTrees[storeIndex] : this.renderSubTree(row, record, storeIndex);
+		const tree = record.subTree ?? this.renderSubTree(row, record, storeIndex);
 		const top = this.findTopTree();
 
 		if(top.fire("beforeexpand", top, tree, record, storeIndex) === false) {
@@ -315,6 +307,8 @@ export class Tree extends List<Store<TreeRecord>> {
 		sub.dropOn = this.dropOn;
 		sub.dropBetween = this.dropBetween;
 		sub.draggable = this.draggable;
+		sub.sortableGroup = this.sortableGroup;
+
 		sub.parent = this;
 		sub.parentStoreIndex = storeIndex;
 		if(record.children) {
@@ -327,11 +321,11 @@ export class Tree extends List<Store<TreeRecord>> {
 			record.children = store1.data;
 		});
 
-		["rowclick", "rowdblclick", "rowcontextmenu", "rowmousedown"].forEach( (e) => {
+		["rowclick", "rowdblclick", "rowcontextmenu", "rowmousedown", "drop", "dropallowed"].forEach( (e) => {
 			this.relayEvent(sub, e);
 		})
 
-		this.subTrees[storeIndex] = sub;
+		record.subTree = sub;
 
 		//wrapper is needed for css transition transform to hide overflow
 		const wrap = document.createElement("div");
@@ -340,26 +334,38 @@ export class Tree extends List<Store<TreeRecord>> {
 
 		sub.render(wrap);
 
-
-
 		return sub;
 	}
 
+	protected onRecordRemove(collection: Store<TreeRecord>, item: StoreRecord, index: number) {
+		if(item.subTree) {
+			// remove tree with wrap.
+			item.subTree.remove();
+			delete item.subTree
+		}
+
+		clearTimeout(this.dragOverTimeout);
+
+		super.onRecordRemove(collection, item, index);
+	}
+
 	private _collapse(row: HTMLElement) {
+
 		row.cls("-expanded");
 		const storeIndex = this.getRowElements().indexOf(row);
 
-
-		//we set height 0 for animation
-		this.subTrees[storeIndex].el.style.height = this.subTrees[storeIndex].el.offsetHeight + "px";
-		requestAnimationFrame(() => {
-			this.subTrees[storeIndex].el.style.height = "0";
-		})
 
 		const record = this.store.get(storeIndex);
 		if (!record) {
 			throw "Record not found";
 		}
+
+		//we set height 0 for animation
+		record.subTree!.el.style.height = record.subTree!.el.offsetHeight + "px";
+		requestAnimationFrame(() => {
+			record.subTree!.el.style.height = "0";
+		})
+
 		const top = this.findTopTree();
 
 		top.expandedIds[record.id!] = true;
@@ -374,7 +380,6 @@ export class Tree extends List<Store<TreeRecord>> {
 
 		if (this.draggable) {
 			row.draggable = true;
-			row.ondragstart = this.onNodeDragStart.bind(this);
 		}
 
 		row.addEventListener("contextmenu", (e) => {
@@ -383,8 +388,6 @@ export class Tree extends List<Store<TreeRecord>> {
 			const sub = this._expand(row);
 			sub.reload();
 		})
-
-		this.bindDropEvents(row);
 
 		row.getElementsByClassName("caret")[0].on("click", (e) => {
 
@@ -400,55 +403,33 @@ export class Tree extends List<Store<TreeRecord>> {
 		if(this.findTopTree().expandedIds[record.id]) {
 			this._expand(row);
 		}
+
+		row.addEventListener("dragenter", (e) => {
+			clearTimeout(this.dragOverTimeout);
+
+			// this first setTimeout is needed otherwise dragleave will fire immediately. The .dragging class is assed
+			// by sortable to the GOUI root el to set pointer-event = none on the children https://stackoverflow.com/questions/7110353/html5-dragleave-fired-when-hovering-a-child-element
+			setTimeout(() => {
+				//expand tree node if dragging over for 1 second
+				this.dragOverTimeout = setTimeout(() => {
+					this._expand(row);
+				}, 1000);
+			});
+
+		})
+
+		row.addEventListener("dragleave", (e)=>{
+			clearTimeout(this.dragOverTimeout);
+		})
 	}
 
 
-	protected onNodeDragEnterAllowed(e: DragEvent, dropRow: HTMLElement) {
-		clearTimeout(this.dragOverTimeout);
-		setTimeout(() => {
-			//expand tree node if dragging over for 1 second
-			this.dragOverTimeout = setTimeout(() => {
-				this._expand(dropRow);
-			}, 1000);
-		});
-	}
-
-	protected onNodeDragLeaveAllowed(e: DragEvent, dropRow: HTMLElement) {
-		clearTimeout(this.dragOverTimeout);
-	}
-
-
-	protected dropAllowed(e: DragEvent, dropRow: HTMLElement) {
-		const topTree = this.findTopTree();
-		return (dragData.row && !dragData.row.contains(dropRow));// && topTree.fire("dropallowed", topTree, e, dropRow, dragData);
-	}
-
-	protected onNodeDrop(e: DragEvent) {
-		const dropPos = this.getDropPosition(e);
-		if (!dropPos) {
-			return;
-		}
-
-		e.preventDefault();
-		e.stopPropagation();
-
-		const dropRow = this.findDropRow(e),
-			dropIndex = this.getRowElements().indexOf(dropRow);
-
-		this.clearOverClasses(dropRow);
-		clearTimeout(this.dragOverTimeout);
-
-		const dropTree = this._expand(dropRow);
-
-		dragData.dropTree = this;
-		dragData.childrenTree = dropTree;
-
-		const topTree = this.findTopTree();
-
-		topTree.fire("drop", topTree, e, dropRow, dropIndex, dropPos, dragData);
-
-		return false;
-	}
+	//
+	// protected dropAllowed(e: DragEvent, dropRow: HTMLElement) {
+	// 	const topTree = this.findTopTree();
+	// 	return (dragData.row && !dragData.row.contains(dropRow));// && topTree.fire("dropallowed", topTree, e, dropRow, dragData);
+	// }
+	//
 
 }
 

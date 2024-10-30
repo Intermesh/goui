@@ -272,6 +272,7 @@ hr.goui {
 
 
 .goui.drop-pin {
+	z-index: $zIndexMask;
 	position:fixed;
 	height: 1px;
 	background-color: $colorMain;
@@ -289,3 +290,13 @@ hr.goui {
 	}
 }
 
+
+.drag-src {
+	opacity: 0.4;
+}
+
+.drag-img {
+	position: absolute;
+	left: -9999999px;
+	top: -9999999px;
+}

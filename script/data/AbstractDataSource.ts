@@ -215,7 +215,8 @@ export interface AbstractDataSource<EntityType extends BaseEntity = DefaultEntit
 type SaveData<EntityType extends BaseEntity> = {
 	data: Partial<EntityType>,
 	resolve: (value: any) => void, //changing this to EntityType somehow breaks!?
-	reject: (reason?: any) => void
+	reject: (reason?: any) => void,
+	promise?: Promise<EntityType>
 }
 
 interface DestroyData {
@@ -556,6 +557,14 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	 * @param data
 	 */
 	public update(id:EntityID, data: Partial<EntityType>): Promise<EntityType> {
+
+		if(this.updates[id]) {
+			// update is called twice with the same ID before the commit() was done to the server. We'll merge the data into
+			// one action here and return the original promise.
+			Object.assign(this.updates[id].data, data);
+			return this.updates[id].promise!;
+		}
+
 		const p = new Promise((resolve, reject) => {
 			this.updates[id] = {
 				data: data,
@@ -565,6 +574,8 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 		}).finally(() => {
 			delete this.updates[id];
 		}) as Promise<EntityType>;
+
+		(this.updates[id] as SaveData<EntityType>).promise = p;
 
 		this.delayedCommit();
 

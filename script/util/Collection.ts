@@ -5,6 +5,7 @@
  */
 
 import {Listener, Observable, ObservableEventMap, ObservableListenerOpts} from "../component/Observable.js";
+import {ArrayUtil} from "./ArrayUtil.js";
 
 /**
  * @inheritDoc
@@ -174,6 +175,16 @@ export class Collection<CollectionItem> extends Observable implements Iterable<C
 				return this.removeAt(index);
 			}
 		});
+	}
+
+	public move(from:number, to:number) {
+		const r = this.get(from);
+		if(!r) {
+			throw "out of bounds";
+		}
+		this.removeAt(from);
+
+		this.insert(to > from ? to - 1: to, r);
 	}
 
 	/**

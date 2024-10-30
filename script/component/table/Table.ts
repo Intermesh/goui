@@ -635,10 +635,6 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 		}
 	}
 
-	protected findDropRow(e: DragEvent) {
-		return (e.target as HTMLDivElement).closest("TR") as HTMLElement;
-	}
-
 	focusRow(index: number): boolean {
 		if(this.rowSelection) {
 			this.rowSelection.lastIndex = index;

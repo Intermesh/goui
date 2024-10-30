@@ -210,7 +210,7 @@ export class Observable {
 		//@ts-ignore
 		comp.on(type, (...args:any[]) =>{
 			//@ts-ignore
-			this.fire(type, ...args);
+			return this.fire(type, ...args);
 		});
 	}
 }

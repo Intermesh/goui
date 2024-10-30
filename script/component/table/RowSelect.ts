@@ -92,6 +92,10 @@ export class RowSelect extends Observable {
 			me.on('rowmousedown', (table: List, index: number, row, e: MouseEvent) => {
 				this.onRowMouseDown(table, index, e);
 			});
+
+			me.on('rowclick', (table: List, index: number, row, e: MouseEvent) => {
+				this.onRowClick(table, index, e);
+			});
 		})
 
 		const fireSelectionChange = () => {
@@ -147,6 +151,14 @@ export class RowSelect extends Observable {
 	}
 
 
+	/**
+	 * When shift or ctrl, meta is used then do this on mousedown
+	 *
+	 * @param _list
+	 * @param index
+	 * @param e
+	 * @private
+	 */
 	private onRowMouseDown(_list: List, index: number, e: MouseEvent) {
 		let selection = this.selected;
 
@@ -173,9 +185,32 @@ export class RowSelect extends Observable {
 				this.lastIndex = index;
 				return;
 			} else {
-				selection = [index];
+				//handled by click instead of mousedown
+				return;
 			}
 		}
+
+		this.lastIndex = index;
+
+		this.selected = selection;
+	}
+
+
+	/**
+	 * Click clears the selection handling this in click allows selections to be dragged
+	 * @param _list
+	 * @param index
+	 * @param e
+	 * @private
+	 */
+	private onRowClick(_list: List, index: number, e: MouseEvent) {
+		let selection = this.selected;
+
+		if(e.shiftKey || e.ctrlKey || e.metaKey || this.listHasCheckbox()) {
+			return;
+		}
+
+		selection = [index];
 
 		this.lastIndex = index;
 
@@ -272,7 +307,8 @@ export class RowSelect extends Observable {
 		const change = (select.length > 0 || deselect.length > 0);
 
 		if (!silent && change) {
-			this.fireSelectionChange();
+			// fire immediately here. Only buffer when using add() and remove()
+			this.fire('selectionchange', this, this.selected);
 		}
 
 		return change;

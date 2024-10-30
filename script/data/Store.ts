@@ -107,9 +107,14 @@ export class Store<RecordType = StoreRecord> extends Collection<RecordType> {
 	 * @param append
 	 */
 	public loadData(records: RecordType[], append = true) {
-		append ? this.add(...records) : this.replace(...records);
-		this._loaded = true;
-		this.fire("load", this, records, append);
+		this._loading = true;
+		try {
+			append ? this.add(...records) : this.replace(...records);
+			this._loaded = true;
+			this.fire("load", this, records, append);
+		} finally {
+			this._loading = false;
+		}
 	}
 
 	set data(records: RecordType[]) {
