@@ -11,10 +11,10 @@
     "jsdom-global": "latest",
     "material-icons": "latest",
     "mocha": "latest",
-    "sass": "latest",
+    "sass": "1.69.*",
     "ts-node": "latest",
     "typedoc": "latest",
-    "typescript": "latest"
+    "typescript": "5.6.*"
   },
   "scripts": {
     "test": "mocha",
@@ -38,7 +38,7 @@
   },
   "name": "@intermesh/goui",
   "description": "Group-Office User Interface",
-  "version": "1.0.34",
+  "version": "0.1.1",
   "directories": {
     "test": "tests"
   },

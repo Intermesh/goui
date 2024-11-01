@@ -155,7 +155,7 @@ export interface QueryParams {
 	 */
 	sort?: Comparator[],
 
-	filter?: QueryFilter
+	filter?: any
 
 	// [key:string]: any
 }
