@@ -3,12 +3,12 @@
 @use "shadows";
 
 html {
-	font-size: config.$density; //makes everying smaller on desktop
+	font-size: var(--density); //makes everything smaller on desktop
 }
 
 @media (max-device-width:1200px) {
 	html {
-		font-size: config.$mobileDensity;
+		font-size: var(--mobile-density);
 		/* changes a default 16px font size to 10px */
 	}
 }
