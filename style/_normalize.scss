@@ -1,7 +1,10 @@
+@use "config";
+@use "util";
+
 .normalize {
 
-	font: $fontBase;
-	color: $colorText;
+	font: config.$fontBase;
+	color: config.$colorText;
 
 	> * {
 		margin: 0;
@@ -21,8 +24,8 @@
 
 	blockquote {
 		display: block;
-		margin: 1em dp(40);
-		padding: 0 dp(16);
+		margin: 1em util.dp(40);
+		padding: 0 util.dp(16);
 	}
 
 	td {
@@ -72,12 +75,12 @@
 	}
 
 	p {
-		margin: dp(8) 0;
+		margin: util.dp(8) 0;
 	}
 
 	a:link, a:visited, a:active {
 		text-decoration: underline;
-		color: $colorMain;
+		color: config.$colorMain;
 	}
 
 	a:visited {
@@ -86,8 +89,8 @@
 
 	hr {
 		border:0;
-		border-top: 2px solid $colorBorder;
-		margin: dp(24) 0;
+		border-top: 2px solid config.$colorBorder;
+		margin: util.dp(24) 0;
 		padding:0;
 	}
 

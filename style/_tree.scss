@@ -1,4 +1,6 @@
-
+@use "config";
+@use "util";
+@use "icons";
 
 ul.goui-tree {
 	display:block;
@@ -25,7 +27,7 @@ ul.goui-tree {
 
 		> li{
 			//>.node {
-			padding-left: dp(24);
+			padding-left: util.dp(24);
 			//}
 		}
 	}
@@ -48,7 +50,7 @@ ul.goui-tree {
 
 			&.on {
 				> .node {
-					background-color: $colorHover;
+					background-color: config.$colorHover;
 				}
 			}
 
@@ -58,7 +60,7 @@ ul.goui-tree {
 			position: relative;
 			border-top: 1px solid transparent;
 			border-bottom: 1px solid transparent;
-			padding: dp(4) 0;
+			padding: util.dp(4) 0;
 			display: flex;
 			align-content: center;
 			align-items: center;
@@ -68,8 +70,8 @@ ul.goui-tree {
 			}
 
 			a, label {
-				color: $colorText;
-				margin-left: dp(8);
+				color: config.$colorText;
+				margin-left: util.dp(8);
 				cursor: pointer;
 				white-space: nowrap;
 				overflow: hidden;
@@ -83,8 +85,8 @@ ul.goui-tree {
 
 			.caret {
 				flex-shrink: 0;
-				width: dp(24);
-				height: dp(24);
+				width: util.dp(24);
+				height: util.dp(24);
 				&:before {
 					@extend %icon;
 					content: "arrow_right";

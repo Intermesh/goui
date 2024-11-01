@@ -1,58 +1,61 @@
+@use "config";
+@use "util";
+@use "icons";
 
 .goui-alert {
-	z-index: $zIndexAlert;
+	z-index: config.$zIndexAlert;
 	position: fixed;
-	top: dp(64);
+	top: util.dp(64);
 	left: 0;
 	right: 0;
-	width: dp(600);
+	width: util.dp(600);
 	max-width: 80%;
 	margin:0 auto;
-	border-radius:dp(10);
-	padding:dp(24) dp(24) dp(24) dp(64);
+	border-radius:util.dp(10);
+	padding:util.dp(24) util.dp(24) util.dp(24) util.dp(64);
 	animation: goui-alert .5s ease-out;
 	cursor: pointer;
 
 	&:before {
 		position: absolute;
-		left: dp(24);
+		left: util.dp(24);
 		@extend %icon;
 	}
 
 
 	&.error {
-		background: $colorErrorBg;
-		border:2px solid $colorErrorBorder;
-		color: $colorError;
+		background: config.$colorErrorBg;
+		border:2px solid config.$colorErrorBorder;
+		color: config.$colorError;
 		&:before {
-			color: $colorError;
+			color: config.$colorError;
 			content: "error";
 		}
 	}
 	&.success {
-		background: $colorSuccessBg;
-		border:2px solid $colorSuccessBorder;
-		color: $colorSuccess;
+		background: config.$colorSuccessBg;
+		border:2px solid config.$colorSuccessBorder;
+		color: config.$colorSuccess;
 		&:before {
-			color: $colorSuccess;
+			color: config.$colorSuccess;
 			content: "check_circle";
 		}
 	}
 	&.warning {
-		background: $colorWarningBg;
-		border:2px solid $colorWarningBorder;
-		color: $colorWarning;
+		background: config.$colorWarningBg;
+		border:2px solid config.$colorWarningBorder;
+		color: config.$colorWarning;
 		&:before {
-			color: $colorWarning;
+			color: config.$colorWarning;
 			content: "warning";
 		}
 	}
 	&.notice {
-		background:$colorNoticeBg;
-		border:2px solid $colorNoticeBorder;
-		color: $colorNotice;
+		background:config.$colorNoticeBg;
+		border:2px solid config.$colorNoticeBorder;
+		color: config.$colorNotice;
 		&:before {
-			color: $colorNotice;
+			color: config.$colorNotice;
 			content: "info";
 		}
 	}

@@ -16,20 +16,20 @@
 //$baseLineHeight: dp(20);
 //$fontSize: sp(16);
 
-@import 'config',
-'icons',
-'shadows',
-'general',
-'normalize',
-'print',
-'tree',
-'layout',
-'alert',
-'mask',
-'form',
-'button',
-'table',
-'menu',
-'window',
-'datepicker',
-'description_list';
+@use 'config';
+@use 'icons';
+@use 'shadows';
+@use 'general';
+@use 'normalize';
+@use 'print';
+@use 'tree';
+@use 'layout';
+@use 'alert';
+@use 'mask';
+@use 'form';
+@use 'button';
+@use 'table';
+@use 'menu';
+@use 'window';
+@use 'datepicker';
+@use 'description_list';

@@ -1,8 +1,13 @@
+@use "config";
+@use "theme";
+@use "util";
+@use "layout";
+
 :root, body {
-	@include light-theme;
+	@include theme.light-theme;
 }
 body.dark {
-	@include dark-theme;
+	@include theme.dark-theme;
 	* {
 		color-scheme: dark;
 	}
@@ -20,10 +25,10 @@ body.dark {
 }
 
 .goui.root {
-	font: $fontBase;
-	color: $colorText;
+	font: config.$fontBase;
+	color: config.$colorText;
 	width: 100%; //Needed for modal windows setting it to position fixed, top 0
-	background-color: $surfaceLow;
+	background-color: config.$surfaceLow;
 
 }
 
@@ -152,8 +157,8 @@ body.dark {
 
 hr.goui {
 	border:0;
-	color: $colorBorder;
-	border-top: $borderWidth solid currentColor;
+	color: config.$colorBorder;
+	border-top: config.$borderWidth solid currentColor;
 }
 
 
@@ -183,18 +188,18 @@ hr.goui {
 	//text-align: center;
 	button.goui-button {
 		display: inline-block;
-		padding: dp(12) dp(18);
-		margin: 0 dp(24) 0 0;
+		padding: util.dp(12) util.dp(18);
+		margin: 0 util.dp(24) 0 0;
 		background: none;
 		border: none;
 		border-radius: 0;
 		//color: $colorTextPlaceholder;
-		border-bottom: dp(4) solid transparent;
+		border-bottom: util.dp(4) solid transparent;
 		//border-top: dp(4) solid transparent;
-		color: $colorTextSecondary;
+		color: config.$colorTextSecondary;
 		&.active {
-			border-bottom: 4px solid $colorSecondary;
-			color: $colorText;
+			border-bottom: 4px solid config.$colorSecondary;
+			color: config.$colorText;
 		}
 
 		&:hover {
@@ -202,17 +207,17 @@ hr.goui {
 		}
 
 		&:focus-visible {
-			background-color: $colorFocus;
+			background-color: config.$colorFocus;
 		}
 	}
 }
 
 .hbox > .goui-cardmenu {
 	height: 100%;
-	border-right: $borderWidth solid $colorBorder;
+	border-right: config.$borderWidth solid config.$colorBorder;
 	button.goui-button {
 		margin: 0;
-		width: dp(200);
+		width: util.dp(200);
 		text-align: left;
 		display:block;
 		//border-right: dp(4) solid transparent;
@@ -222,8 +227,8 @@ hr.goui {
 		&.active {
 			//border-right: dp(4) solid $colorSecondary;
 			//border-bottom: none;
-			color: $colorText;
-			background-color: $colorSelectedRow;
+			color: config.$colorText;
+			background-color: config.$colorSelectedRow;
 		}
 	}
 
@@ -235,13 +240,13 @@ hr.goui {
 	display: block;
 	color:white;
 	padding: 0;
-	background-color: $colorTextSecondary;
+	background-color: config.$colorTextSecondary;
 	background-size: cover;
 	border-radius: 50%;
-	width: $baseLineHeight + dp(22);
-	height: $baseLineHeight + dp(22);
-	line-height: $baseLineHeight + dp(22);
-	font-size: dp(16);
+	width: config.$baseLineHeight + util.dp(22);
+	height: config.$baseLineHeight + util.dp(22);
+	line-height: config.$baseLineHeight + util.dp(22);
+	font-size: util.dp(16);
 	text-align: center;
 	overflow: hidden;
 	img {
@@ -252,7 +257,7 @@ hr.goui {
 
 	&.inline {
 		display: inline-block;
-		margin-right: dp(8);
+		margin-right: util.dp(8);
 		vertical-align: middle;
 	}
 }
@@ -260,33 +265,33 @@ hr.goui {
 
 .goui-empty-state {
 	text-align: center;
-	color: $colorTextSecondary;
+	color: config.$colorTextSecondary;
 	width: 100%;
-	padding: dp(20);
+	padding: util.dp(20);
 	.icon {
-		font-size: dp(48);
-		width: dp(48);
-		height: dp(48);
+		font-size: util.dp(48);
+		width: util.dp(48);
+		height: util.dp(48);
 	}
 }
 
 
 .goui.drop-pin {
-	z-index: $zIndexMask;
+	z-index: config.$zIndexMask;
 	position:fixed;
 	height: 1px;
-	background-color: $colorMain;
+	background-color: config.$colorMain;
 	pointer-events: none;
 	&:after {
 		content: " ";
 		display: block;;
 		border-radius: 50%;
-		background-color: $colorMain;
-		width: dp(8);
-		height: dp(8);
+		background-color: config.$colorMain;
+		width: util.dp(8);
+		height: util.dp(8);
 		position: absolute;
 		left: 0;
-		top: dp(-4);
+		top: util.dp(-4);
 	}
 }
 

@@ -1,3 +1,6 @@
+@use "config";
+@use "util";
+
 
 .goui-mask {
 	//backdrop-filter: blur(5px) brightness(40%) ;
@@ -14,7 +17,7 @@
 	transform: translate(0, 0);
 
 	#goui & {
-		z-index: $zIndexMask;
+		z-index: config.$zIndexMask;
 	}
 
 	.spinner,
@@ -26,17 +29,17 @@
 	.spinner {
 		color: white;
 		position: absolute;
-		width: dp(80);
-		height: dp(80);
+		width: util.dp(80);
+		height: util.dp(80);
 		top: 50%;
 		left: 50%;
-		margin-top: dp(-40);
-		margin-left: dp(-40);
+		margin-top: util.dp(-40);
+		margin-left: util.dp(-40);
 	}
 
 	.spinner div {
 		animation: goui-spinner 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-		transform-origin: dp(40) dp(40);
+		transform-origin: util.dp(40) util.dp(40);
 	}
 
 	.spinner div:after {
@@ -55,8 +58,8 @@
 	}
 
 	.spinner div:nth-child(1):after {
-		top: dp(62.62742);
-		left: dp(62.62742);
+		top: util.dp(62.62742);
+		left: util.dp(62.62742);
 	}
 
 	.spinner div:nth-child(2) {
@@ -64,8 +67,8 @@
 	}
 
 	.spinner div:nth-child(2):after {
-		top: dp(67.71281);
-		left: dp(56);
+		top: util.dp(67.71281);
+		left: util.dp(56);
 	}
 
 	.spinner div:nth-child(3) {
@@ -73,8 +76,8 @@
 	}
 
 	.spinner div:nth-child(3):after {
-		top: dp(70.90963);
-		left: dp(48.28221);
+		top: util.dp(70.90963);
+		left: util.dp(48.28221);
 	}
 
 	.spinner div:nth-child(4) {
@@ -82,8 +85,8 @@
 	}
 
 	.spinner div:nth-child(4):after {
-		top: dp(72);
-		left: dp(40);
+		top: util.dp(72);
+		left: util.dp(40);
 	}
 
 	.spinner div:nth-child(5) {
@@ -91,8 +94,8 @@
 	}
 
 	.spinner div:nth-child(5):after {
-		top: dp(70.90963);
-		left: dp(31.71779);
+		top: util.dp(70.90963);
+		left: util.dp(31.71779);
 	}
 
 	.spinner div:nth-child(6) {
@@ -100,8 +103,8 @@
 	}
 
 	.spinner div:nth-child(6):after {
-		top: dp(67.71281);
-		left: dp(24);
+		top: util.dp(67.71281);
+		left: util.dp(24);
 	}
 
 	.spinner div:nth-child(7) {
@@ -109,8 +112,8 @@
 	}
 
 	.spinner div:nth-child(7):after {
-		top: dp(62.62742);
-		left: dp(17.37258);
+		top: util.dp(62.62742);
+		left: util.dp(17.37258);
 	}
 
 	.spinner div:nth-child(8) {
@@ -118,8 +121,8 @@
 	}
 
 	.spinner div:nth-child(8):after {
-		top: dp(56);
-		left: dp(12.28719);
+		top: util.dp(56);
+		left: util.dp(12.28719);
 	}
 
 	@keyframes goui-spinner {

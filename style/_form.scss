@@ -1,5 +1,11 @@
+@use "config";
+@use "util";
+@use "icons";
 @use 'sass:math';
-$formFieldBorderRadius: dp(10);
+@use "normalize";
+@use "shadows";
+
+$formFieldBorderRadius: util.dp(10);
 
 .checkbox-group {
 	//reset fieldset defaults
@@ -40,10 +46,10 @@ $formFieldBorderRadius: dp(10);
 
 			span.box-label {
 				//put here and not below for extra strong rules
-				padding: dp(9) dp(18);
+				padding: util.dp(9) util.dp(18);
 				font-weight:normal;
 				margin:0 ;
-				border: $borderWidth solid $colorOutline;
+				border: config.$borderWidth solid config.$colorOutline;
 			}
 		}
 	}
@@ -60,7 +66,7 @@ $formFieldBorderRadius: dp(10);
 
 	&>:focus-within {
 		.wrap {
-			border-right-width: $borderWidth !important;
+			border-right-width: config.$borderWidth !important;
 		}
 	}
 
@@ -102,8 +108,8 @@ $formFieldBorderRadius: dp(10);
 	overflow:hidden;
 	transition: border-color 100ms linear;
 	border-radius: $formFieldBorderRadius;
-	background-color: $colorBackgroundInput;
-	border: $borderWidth solid $colorOutline;
+	background-color: config.$colorBackgroundInput;
+	border: config.$borderWidth solid config.$colorOutline;
 	&:empty {
 		border: 0;
 	}
@@ -119,21 +125,21 @@ $formFieldBorderRadius: dp(10);
 
 	&.box input {
 		margin: 0;
-		color: $colorMain;
-		min-width: $baseLineHeight;
-		min-height: $baseLineHeight;
-		width: $baseLineHeight;
-		height:$baseLineHeight;
-		background-color: $colorBackgroundInput;
-		border: $borderWidth solid $colorOutline;
-		border-radius: math.div($borderRadius, 2);
+		color: config.$colorMain;
+		min-width: config.$baseLineHeight;
+		min-height: config.$baseLineHeight;
+		width: config.$baseLineHeight;
+		height:config.$baseLineHeight;
+		background-color: config.$colorBackgroundInput;
+		border: config.$borderWidth solid config.$colorOutline;
+		border-radius: math.div(config.$borderRadius, 2);
 		&:before { // tick
 			content: '';
 			transform: scale(0);
 			display:inline-block;
-			margin: 0-$borderWidth;
-			width: $baseLineHeight;
-			height: $baseLineHeight;
+			margin: 0-(config.$borderWidth);
+			width: config.$baseLineHeight;
+			height: config.$baseLineHeight;
 			transition: 90ms transform ease-in-out;
 			background-color: currentColor;
 		}
@@ -141,7 +147,7 @@ $formFieldBorderRadius: dp(10);
 			transform: scale(1);
 		}
 		&:focus {
-			border-color: $colorMain;
+			border-color: config.$colorMain;
 			//box-shadow: 0 0 0 1px $colorMain;
 		}
 		&[style]:checked:before {
@@ -158,7 +164,7 @@ $formFieldBorderRadius: dp(10);
 
 			span.box-label {
 				//put here and not below for extra strong rules
-				padding: dp(11) dp(12);
+				padding: util.dp(11) util.dp(12);
 
 				font-weight:normal;
 				margin:0;
@@ -167,7 +173,7 @@ $formFieldBorderRadius: dp(10);
 		}
 
 		input:checked + span.box-label.outlined, input:checked + span.box-label {
-			background-color: $colorFocus;
+			background-color: config.$colorFocus;
 			color: inherit;
 		}
 
@@ -202,7 +208,7 @@ $formFieldBorderRadius: dp(10);
 			overflow: hidden;
 			text-overflow: ellipsis;
 			white-space: nowrap;
-			padding: dp(14) dp(12);
+			padding: util.dp(14) util.dp(12);
 			margin: auto 0;
 			user-select: none;
 			-webkit-user-select: none;
@@ -215,19 +221,19 @@ $formFieldBorderRadius: dp(10);
 
 %input {
 	//background-color:transparent; // Transparent Makes date field in safari unusable
-	background-color: $colorBackgroundInput;
-	font: $fontBase;
+	background-color: config.$colorBackgroundInput;
+	font: config.$fontBase;
 	//min-width: dp(100); //for select element
 	margin: 0;
 	border: 0;
-	padding: dp(11) dp(16);
+	padding: util.dp(11) util.dp(16);
 	width: 100%;
-	color: $colorText;
+	color: config.$colorText;
 	display: block;// for text area which has inline-block by default and gets some extra margin
 
 	&::placeholder {
 		transition: all 200ms linear;
-		color: $colorTextPlaceholder;
+		color: config.$colorTextPlaceholder;
 	}
 }
 
@@ -236,11 +242,11 @@ $formFieldBorderRadius: dp(10);
 
 	// draws line between items inside a pit in event dialog for example
 	> div + div {
-		border-top: $borderWidth solid $colorOutline;
+		border-top: config.$borderWidth solid config.$colorOutline;
 	}
 	&:not(:empty){
-		padding-bottom:dp(12);
-		margin-bottom:dp(-12);
+		padding-bottom:util.dp(12);
+		margin-bottom:util.dp(-12);
 	}
 }
 
@@ -265,11 +271,11 @@ $formFieldBorderRadius: dp(10);
 	&.with-icon {
 		.wrap {
 			div.label {
-				left: dp(48);
-				padding: 0 dp(4);
+				left: util.dp(48);
+				padding: 0 util.dp(4);
 			}
 			.control {
-				padding-left: dp(10);
+				padding-left: util.dp(10);
 			}
 		}
 	}
@@ -277,7 +283,7 @@ $formFieldBorderRadius: dp(10);
 	&.error {
 		.wrap{
 			.control {
-				color: $colorError;
+				color: config.$colorError;
 			}
 		}
 	}
@@ -285,7 +291,7 @@ $formFieldBorderRadius: dp(10);
 	&.success {
 		.wrap {
 			.control {
-				color: $colorSuccess;
+				color: config.$colorSuccess;
 			}
 		}
 	}
@@ -293,14 +299,14 @@ $formFieldBorderRadius: dp(10);
 	&.warning {
 		.wrap {
 			.control {
-				color: $colorWarning;
+				color: config.$colorWarning;
 			}
 		}
 	}
 	&.notice {
 		.wrap {
 			.control {
-				color: $colorNotice;
+				color: config.$colorNotice;
 			}
 		}
 	}
@@ -311,40 +317,40 @@ $formFieldBorderRadius: dp(10);
 		overflow:hidden;
 		display: flex;
 		flex-flow: row nowrap;
-		border: $borderWidth solid transparent;
+		border: config.$borderWidth solid transparent;
 
 		> i {
-			width: dp(24);
-			height: dp(24);
-			margin: dp(11) dp(0) dp(11) dp(16);
+			width: util.dp(24);
+			height: util.dp(24);
+			margin: util.dp(11) util.dp(0) util.dp(11) util.dp(16);
 		}
 
 		div.label {
-			font-size: sp(13);
-			line-height: sp(13);
+			font-size: util.sp(13);
+			line-height: util.sp(13);
 			display:block;
 			//display: flex;
 			//align-items: center;
 			overflow: hidden;
 			text-overflow: ellipsis;
 			white-space: nowrap;
-			color: $colorTextSecondary;
+			color: config.$colorTextSecondary;
 			vertical-align: top;
 			position:absolute;
-			left: dp(18);
-			top: dp(-6.5);
+			left: util.dp(18);
+			top: util.dp(-6.5);
 		}
 
 		.control {
-			font: $fontBase;
-			min-width: dp(22); //for select element
+			font: config.$fontBase;
+			min-width: util.dp(22); //for select element
 			margin: 0;
 			border: 0;
-			padding: dp(11) dp(16);
+			padding: util.dp(11) util.dp(16);
 
 			//width: 100%;
 			//outline: none;
-			color: $colorText;
+			color: config.$colorText;
 			display: block;// for text area which has inline-block by default and gets some extra margin
 			overflow: hidden;
 			text-overflow: ellipsis;
@@ -363,12 +369,12 @@ $formFieldBorderRadius: dp(10);
 
 	&.readonly {
 		.wrap {
-			background-color: $colorBackgroundReadOnly;
+			background-color: config.$colorBackgroundReadOnly;
 			div.label {
-				background-color: $colorBackgroundReadOnly;
+				background-color: config.$colorBackgroundReadOnly;
 			}
 			input, textarea {
-				background-color: $colorBackgroundReadOnly;
+				background-color: config.$colorBackgroundReadOnly;
 			}
 		}
 	}
@@ -385,9 +391,9 @@ $formFieldBorderRadius: dp(10);
 		}
 
 		> i {
-			width: dp(24);
-			height: dp(24);
-			margin: dp(11) dp(0) dp(11) dp(16);
+			width: util.dp(24);
+			height: util.dp(24);
+			margin: util.dp(11) util.dp(0) util.dp(11) util.dp(16);
 		}
 
 		menu.goui-toolbar {
@@ -395,29 +401,29 @@ $formFieldBorderRadius: dp(10);
 			padding: 0 !important;
 			border-radius: 0 $formFieldBorderRadius $formFieldBorderRadius 0;
 
-			border-left: $borderWidth solid $colorOutline;// !important; //importants for Window rule for border top
+			border-left: config.$borderWidth solid config.$colorOutline;// !important; //importants for Window rule for border top
 			border-top: 0 !important;
 			border-right: 0 !important;
 			border-bottom: 0 !important;
 
 			min-height: auto;
 
-			gap: dp(4);
+			gap: util.dp(4);
 
 			> * {
 				//margin: 0 dp(4) 0 0;
-				padding: dp(6);
+				padding: util.dp(6);
 			}
 
 			.goui-button {
-				color: $colorTextSecondary;
+				color: config.$colorTextSecondary;
 				border-radius: 0;
 				i.icon {
-					font-size: dp(20);
+					font-size: util.dp(20);
 				}
 
 				&.with-icon:not(.with-text) {
-					padding: dp(6);
+					padding: util.dp(6);
 					height: 100%;
 				}
 				//&:hover {
@@ -429,23 +435,23 @@ $formFieldBorderRadius: dp(10);
 
 	&.with-icon {
 		div.label {
-			left: dp(48);
+			left: util.dp(48);
 		}
 		input {
-			padding-left: dp(10);
+			padding-left: util.dp(10);
 		}
 	}
 
 	&:focus-within {
 		>.wrap {
-			border-color: $colorMain;
+			border-color: config.$colorMain;
 
 			> i {
-				color: $colorMain;
+				color: config.$colorMain;
 			}
 
 			>.label {
-				color: $colorMain;
+				color: config.$colorMain;
 			}
 		}
 	}
@@ -462,22 +468,22 @@ $formFieldBorderRadius: dp(10);
 
 		&:focus-within:not(.invalid) {
 			.hint {
-				border-color: $colorMain;
+				border-color: config.$colorMain;
 			}
 		}
 
 		.hint {
 			transition: border-color 100ms linear;
-			background-color: $colorBackgroundInput;
-			border: $borderWidth solid $colorOutline;
+			background-color: config.$colorBackgroundInput;
+			border: config.$borderWidth solid config.$colorOutline;
 			border-radius: 0 0 $formFieldBorderRadius $formFieldBorderRadius;
-			padding: dp(3) dp(18);
+			padding: util.dp(3) util.dp(18);
 		}
 
 		&.invalid {
 			.hint {
-				background-color: $colorErrorBg;
-				border-color: $colorError;
+				background-color: config.$colorErrorBg;
+				border-color: config.$colorError;
 			}
 		}
 	}
@@ -491,15 +497,15 @@ $formFieldBorderRadius: dp(10);
 		overflow: visible;
 		text-overflow: ellipsis;
 		white-space: nowrap;
-		color: $colorTextSecondary;
+		color: config.$colorTextSecondary;
 		vertical-align: top;
 		pointer-events: none;
 		position:absolute;
-		left: dp(16);
-		padding: 0 dp(4);
-		top: math.div($baseLineHeight, 2) + dp(11);
-		height: $borderWidth;
-		background-color: $colorBackgroundInput;
+		left: util.dp(16);
+		padding: 0 util.dp(4);
+		top: math.div(config.$baseLineHeight, 2) + util.dp(11);
+		height: config.$borderWidth;
+		background-color: config.$colorBackgroundInput;
 		transition: top .15s cubic-bezier(.4,0,.2,1), left .15s cubic-bezier(.4,0,.2,1), font-size .15s cubic-bezier(.4,0,.2,1);
 
 		//below performs better but looks ugly on windows :(
@@ -513,8 +519,8 @@ $formFieldBorderRadius: dp(10);
 	&.no-floating-label, &.has-value, &:focus-within {
 		div.label {
 			top: 0;
-			left: dp(16);
-			font-size: sp(13);
+			left: util.dp(16);
+			font-size: util.sp(13);
 		}
 	}
 
@@ -529,21 +535,21 @@ $formFieldBorderRadius: dp(10);
 			@extend %input;
 
 			&:focus {
-				color: $colorMain;
+				color: config.$colorMain;
 			}
 		}
 
 		input, .wrap > select {
-			height: dp(46); //padding 11 * 2 + line height 24. Needed to be set for Safari with input.time and date.
+			height: util.dp(46); //padding 11 * 2 + line height 24. Needed to be set for Safari with input.time and date.
 		}
 	}
 	textarea {
-		line-height: $baseLineHeight;
+		line-height: config.$baseLineHeight;
 	}
 
 	&.duration {
 		.control {
-			line-height: dp(46);
+			line-height: util.dp(46);
 		}
 
 		input.hour {
@@ -553,28 +559,28 @@ $formFieldBorderRadius: dp(10);
 		}
 
 		input.text {
-			height: $baseLineHeight;
+			height: config.$baseLineHeight;
 			cursor: default;
 			min-width: auto;
-			width: sp(22);
+			width: util.sp(22);
 			box-sizing: content-box;
-			padding-right: dp(2);
-			padding-left: dp(2);
+			padding-right: util.dp(2);
+			padding-left: util.dp(2);
 		}
 		input.text:first-child {
-			padding-left: dp(16);
+			padding-left: util.dp(16);
 		}
 
 		input.text:last-child {
-			padding-right: dp(16);
+			padding-right: util.dp(16);
 		}
 
 		input.month:placeholder-shown {
-			width: sp(30);
+			width: util.sp(30);
 		}
 
 		input.text.year {
-			width: dp(44);
+			width: util.dp(44);
 		}
 	}
 
@@ -583,46 +589,46 @@ $formFieldBorderRadius: dp(10);
 
 	&.invalid {
 		.wrap {
-			border-color: $colorErrorBorder;
-			background-color: $colorErrorBg;
+			border-color: config.$colorErrorBorder;
+			background-color: config.$colorErrorBg;
 			i {
-				color: $colorError;
+				color: config.$colorError;
 			}
 
 			input {
-				color: $colorError;
-				background-color: $colorErrorBg;
+				color: config.$colorError;
+				background-color: config.$colorErrorBg;
 			}
 
 			> .label {
-				background-color: $colorErrorBg;
-				color: $colorError;
+				background-color: config.$colorErrorBg;
+				color: config.$colorError;
 			}
 
 			menu.goui-toolbar {
-				border-color: $colorErrorBorder;
+				border-color: config.$colorErrorBorder;
 			};
 		}
 
 		.hint {
-			color: $colorError;
+			color: config.$colorError;
 		}
 	}
 
 	.error {
-		font-size: dp(14);
-		color: $colorError;
-		line-height: dp(20); //match icon
-		padding: 2px dp(12);
-		height: dp(20);
+		font-size: util.dp(14);
+		color: config.$colorError;
+		line-height: util.dp(20); //match icon
+		padding: 2px util.dp(12);
+		height: util.dp(20);
 		width: 100%;
 	}
 
 	.hint {
-		font-size: dp(14);
-		color: $colorTextSecondary;
-		line-height: dp(20); //match icon
-		padding: dp(4) dp(18) dp(4);
+		font-size: util.dp(14);
+		color: config.$colorTextSecondary;
+		line-height: util.dp(20); //match icon
+		padding: util.dp(4) util.dp(18) util.dp(4);
 
 		&:empty {
 			padding: 0;
@@ -631,7 +637,7 @@ $formFieldBorderRadius: dp(10);
 
 	input.number {
 		padding-right: 0;
-		min-width: dp(54);
+		min-width: util.dp(54);
 	}
 
 	input.text {
@@ -653,12 +659,12 @@ $formFieldBorderRadius: dp(10);
 
 		&.box {
 			.radio > label {
-				padding-right: dp(8);
+				padding-right: util.dp(8);
 			}
 
 			input {
 				&[type="radio"] {
-					border-radius: dp(12);
+					border-radius: util.dp(12);
 					&:checked:before {
 						content: '';
 						border-radius: 50%;
@@ -687,7 +693,7 @@ $formFieldBorderRadius: dp(10);
 
 				.box-label {
 					i {
-						margin-right: dp(8);
+						margin-right: util.dp(8);
 					}
 				}
 			}
@@ -695,12 +701,12 @@ $formFieldBorderRadius: dp(10);
 
 			.radio {
 
-				background-color: $colorBackgroundInput;
-				border: $borderWidth solid $colorOutline;
-				border-radius: dp(12);
+				background-color: config.$colorBackgroundInput;
+				border: config.$borderWidth solid config.$colorOutline;
+				border-radius: util.dp(12);
 
 				&:focus-visible {
-					border-color: $colorMain;
+					border-color: config.$colorMain;
 				}
 
 				> label {
@@ -708,7 +714,7 @@ $formFieldBorderRadius: dp(10);
 					overflow: hidden;
 
 					+ label {
-						border-left: 1px solid $colorOutline;
+						border-left: 1px solid config.$colorOutline;
 					}
 				}
 			}
@@ -725,11 +731,11 @@ $formFieldBorderRadius: dp(10);
 
 					padding: 0;
 					span.box-label {
-						padding: dp(8) dp(16);
+						padding: util.dp(8) util.dp(16);
 
 						i.icon {
 							vertical-align: middle;
-							margin-right: dp(8);
+							margin-right: util.dp(8);
 						}
 					}
 
@@ -738,7 +744,7 @@ $formFieldBorderRadius: dp(10);
 					}
 
 					input:checked + span.box-label {
-						background-color: $colorSelectedRowInactive;
+						background-color: config.$colorSelectedRowInactive;
 					}
 				}
 			}
@@ -755,11 +761,11 @@ $formFieldBorderRadius: dp(10);
 
 					padding: 0;
 					span.box-label {
-						padding: dp(8) dp(16);
+						padding: util.dp(8) util.dp(16);
 
 						i.icon {
 							vertical-align: middle;
-							margin-right: dp(8);
+							margin-right: util.dp(8);
 						}
 					}
 
@@ -768,7 +774,7 @@ $formFieldBorderRadius: dp(10);
 					}
 
 					input:checked + span.box-label {
-						background-color: $colorSelectedRowInactive;
+						background-color: config.$colorSelectedRowInactive;
 					}
 				}
 			}
@@ -786,19 +792,19 @@ $formFieldBorderRadius: dp(10);
 			}
 
 			input, &.switch input, &.button input + span.outlined   {
-				background-color: $colorErrorBg;
-				border-color: $colorError;
-				color: $colorError;
+				background-color: config.$colorErrorBg;
+				border-color: config.$colorError;
+				color: config.$colorError;
 			}
 
 			&.switch input {
 				&::after {
-					background-color: $colorError;
+					background-color: config.$colorError;
 				}
 			}
 
 			.box-label {
-				color: $colorError;
+				color: config.$colorError;
 			}
 
 		}
@@ -820,11 +826,11 @@ $formFieldBorderRadius: dp(10);
 		}
 
 		&.switch input { // track
-			background-color: $colorBackgroundInput;
-			width: dp(50);
-			height: dp(28);
+			background-color: config.$colorBackgroundInput;
+			width: util.dp(50);
+			height: util.dp(28);
 			overflow:hidden;
-			border: $borderWidth solid $colorText;
+			border: config.$borderWidth solid config.$colorText;
 			position:relative;
 			border-radius:999px;
 			&::before {
@@ -832,25 +838,25 @@ $formFieldBorderRadius: dp(10);
 			}
 			&::after { // thumb
 				position:absolute;
-				top: 0 - $borderWidth;
-				left: 0 - $borderWidth;
+				top: 0 - config.$borderWidth;
+				left: 0 - config.$borderWidth;
 				color:white;
 				font-size: .7em;
 				content: "";
 				transition: 100ms transform ease-out;
-				margin: dp(7);
+				margin: util.dp(7);
 				display:block;
-				height: dp(14);
-				width: dp(14);
-				background-color:  $colorTextSecondary;//rgba(0, 0, 0, 0.48);
+				height: util.dp(14);
+				width: util.dp(14);
+				background-color:  config.$colorTextSecondary;//rgba(0, 0, 0, 0.48);
 				border-radius:999px;
 			}
 			&:checked {
 				background-color: var(--bg-focus);
 			}
 			&:checked::after  {
-				transform: scale(1.5) translateX(dp(14));
-				background-color:$colorMain;
+				transform: scale(1.5) translateX(util.dp(14));
+				background-color:config.$colorMain;
 			}
 			//&:active::after { // focus
 			//	transform: scale(1.75);
@@ -860,7 +866,7 @@ $formFieldBorderRadius: dp(10);
 				//background-color: $colorBackgroundInput;
 			}
 			&:focus {
-				border-color: $colorMain;
+				border-color: config.$colorMain;
 				//&:checked:after {
 				//	transform:scale(1.75) translateX(dp(12));
 				//}
@@ -875,7 +881,7 @@ $formFieldBorderRadius: dp(10);
 		position: relative;
 		.wrap {
 			select {
-				padding-right: dp(30);
+				padding-right: util.dp(30);
 				background-image: none;
 				appearance: none;
 				overflow: hidden;
@@ -886,10 +892,10 @@ $formFieldBorderRadius: dp(10);
 		&:after {
 			position: absolute;
 			display: inline-block;
-			top: $baseLineHeight - dp(6);
-			right: dp(8);
+			top: config.$baseLineHeight - util.dp(6);
+			right: util.dp(8);
 			@extend %icon;
-			color: $colorTextSecondary;
+			color: config.$colorTextSecondary;
 			font-size: 2rem;
 			margin-right: 0;
 			content: "expand_more";
@@ -903,15 +909,15 @@ $formFieldBorderRadius: dp(10);
 .goui-fieldset {
 	border: 0;
 	min-width: 0;
-	padding: dp(16);
+	padding: util.dp(16);
 	margin: 0;
 
 	.legend {
 		display: block;
 		line-height:normal;
-		font-size: dp(18);
+		font-size: util.dp(18);
 		font-weight: 500;
-		padding: dp(8) dp(16) dp(8) 0;
+		padding: util.dp(8) util.dp(16) util.dp(8) 0;
 	}
 
 	> p:first-child {
@@ -926,7 +932,7 @@ $formFieldBorderRadius: dp(10);
 .textarea {
 	textarea
 	{
-		min-height: dp(42);
+		min-height: util.dp(42);
 	}
 }
 
@@ -936,15 +942,15 @@ $formFieldBorderRadius: dp(10);
 
 	&.invalid {
 		div.editor{
-			background-color: $colorErrorBg;
-			border-color: $colorError;
+			background-color: config.$colorErrorBg;
+			border-color: config.$colorError;
 		}
 	}
 
 	div.editor {
 		@extend %input;
 		@extend .normalize;
-		min-height: dp(100);
+		min-height: util.dp(100);
 
 		img {
 			max-width: 100%;
@@ -969,7 +975,7 @@ $formFieldBorderRadius: dp(10);
 
 .goui.goui-toolbar.html-field-toolbar {
 	position: absolute;
-	z-index: $zIndexMenu;
+	z-index: config.$zIndexMenu;
 	flex-wrap: wrap;
 	max-width: 100%;
 	@extend .z8;
@@ -982,7 +988,7 @@ form {
 	.row {
 		display: flex;
 		flex-wrap: wrap;
-		column-gap: dp(12);
+		column-gap: util.dp(12);
 		row-gap: 0;
 		align-items: stretch;
 		>* {
@@ -1002,14 +1008,14 @@ form {
 
 	&.expanded {
 		.wrap {
-			border-color: $colorMain;
+			border-color: config.$colorMain;
 			border-bottom-left-radius: 0;
 			border-bottom-right-radius: 0;
 			border-bottom: 0;
 		}
 
 		.label, .control {
-			color: $colorMain;
+			color: config.$colorMain;
 		}
 	}
 }
@@ -1017,7 +1023,7 @@ form {
 .autocomplete-suggestions {
 
 	@extend .z8;
-	border: $borderWidth solid $colorMain;
+	border: config.$borderWidth solid config.$colorMain;
 	border-top: 0;
 	border-radius: 0 0 $formFieldBorderRadius $formFieldBorderRadius;
 	background-color: white;
@@ -1027,11 +1033,11 @@ form {
 
 .masked {
 	.form-field {
-		color: $colorMasked !important;
+		color: config.$colorMasked !important;
 		.control {
-			border-color: $colorMasked !important;
-			color: $colorMasked !important;
-			background-color: $colorMasked !important;
+			border-color: config.$colorMasked !important;
+			color: config.$colorMasked !important;
+			background-color: config.$colorMasked !important;
 			> * {
 				visibility: hidden;
 			}
@@ -1045,8 +1051,8 @@ form {
 
 div.color-dot {
 	border-radius: $formFieldBorderRadius;
-	margin: dp(11); //match input
-	height: $baseLineHeight;
+	margin: util.dp(11); //match input
+	height: config.$baseLineHeight;
 	flex: 1;
 }
 
@@ -1081,12 +1087,12 @@ div.color-dot {
 			display: flex;
 			flex-direction: row;
 			float: left;
-			border-radius: dp(20);
+			border-radius: util.dp(20);
 			background-color: var(--bg-highest);
-			padding: dp(3) dp(12);
-			margin: dp(8) dp(4);
-			max-width: dp(120);
-			min-width: dp(60);
+			padding: util.dp(3) util.dp(12);
+			margin: util.dp(8) util.dp(4);
+			max-width: util.dp(120);
+			min-width: util.dp(60);
 			cursor: default;
 
 			> span {
@@ -1097,7 +1103,7 @@ div.color-dot {
 			}
 
 			&.selected {
-				background-color: $colorSelectedRow;
+				background-color: config.$colorSelectedRow;
 				color: white;
 				.goui-button {
 					color: white;
@@ -1105,11 +1111,11 @@ div.color-dot {
 			}
 
 			.goui-button {
-				color: $colorTextSecondary;
+				color: config.$colorTextSecondary;
 				padding: 0;
 				margin: 0;
-				margin-left: dp(8);
-				margin-right: dp(-8);
+				margin-left: util.dp(8);
+				margin-right: util.dp(-8);
 			}
 		}
 	}
@@ -1120,8 +1126,8 @@ div.color-dot {
 		.value-display {
 			flex: 1;
 			align-self: stretch;
-			padding: dp(11) dp(16);
-			height: dp(46);
+			padding: util.dp(11) util.dp(16);
+			height: util.dp(46);
 		}
 	}
 }
@@ -1138,16 +1144,16 @@ div.color-dot {
 		overflow: visible;;
 		padding: 0;
 		-webkit-appearance: none;
-		background: $colorMain;
-		height: dp(8);
-		margin: dp(19);
+		background: config.$colorMain;
+		height: util.dp(8);
+		margin: util.dp(19);
 	}
 
 	input[type='range']::-webkit-slider-thumb {
 		-webkit-appearance: none;
-		background: $colorMain;
-		height: dp(24);
-		width: dp(24);
+		background: config.$colorMain;
+		height: util.dp(24);
+		width: util.dp(24);
 		border-radius: 50%;
 		cursor: ew-resize;
 		box-shadow: 0 0 2px 0 #555;
@@ -1158,8 +1164,8 @@ div.color-dot {
 
 .listfield {
 	.control {
-		padding: dp(11) dp(16);
-		min-height: dp(46);
+		padding: util.dp(11) util.dp(16);
+		min-height: util.dp(46);
 	}
 }
 
@@ -1170,14 +1176,14 @@ div.color-dot {
 
 	li {
 		margin: 0;
-		padding: dp(8) dp(4);
+		padding: util.dp(8) util.dp(4);
 		cursor: default;
 		user-select: none;
 		-webkit-user-select: none;
 		-moz-user-select: none;
 
 		&:hover {
-			background-color: $colorHover;
+			background-color: config.$colorHover;
 		}
 	}
 }
@@ -1191,7 +1197,7 @@ div.color-dot {
 	}
 	.goui-form-field, .goui-display-field {
 		.wrap {
-			margin-left: dp(100);
+			margin-left: util.dp(100);
 			align-items: center;
 
 			.label {
@@ -1200,7 +1206,7 @@ div.color-dot {
 
 			.control {
 				flex: 1;
-				padding: dp(3) 0;
+				padding: util.dp(3) 0;
 			}
 
 		}

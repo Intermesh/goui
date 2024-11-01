@@ -1,5 +1,8 @@
+@use "config";
+@use "util";
 
-$buttonSize: dp(34);
+
+$buttonSize: util.dp(34);
 
 menu.goui-dropdown {
 	.datepicker {
@@ -8,17 +11,17 @@ menu.goui-dropdown {
 }
 
 .datepicker {
-	width: 7 * ($buttonSize + dp(4)) + dp(8);
+	width: 7 * ($buttonSize + util.dp(4)) + util.dp(8);
 	position: relative;
 	display: block;
 	&.show-weeknbs {
-		width: 8 * ($buttonSize + dp(4)) + dp(8);
+		width: 8 * ($buttonSize + util.dp(4)) + util.dp(8);
 	}
 	dl {
 		margin: 0;
 		display: grid;
 		grid-template-columns: repeat(7, 1fr);
-		row-gap: dp(2);
+		row-gap: util.dp(2);
 	}
 
 	ul { // month / year pickers
@@ -26,8 +29,8 @@ menu.goui-dropdown {
 		display: grid;
 		grid-template-columns: repeat(2, 1fr);
 		align-items: center;
-		gap: dp(2);
-		background-color: $colorBackgroundDarker;
+		gap: util.dp(2);
+		background-color: config.$colorBackgroundDarker;
 		overflow-y: auto;
 		width: 100%;
 		top: 0;
@@ -47,15 +50,15 @@ menu.goui-dropdown {
 		grid-template-columns: repeat(1, 1fr);
 		list-style-type: none;
 		float: left;
-		gap: dp(2);
+		gap: util.dp(2);
 		border-right: 1px solid rgba(0, 0, 0, 0.16);
 		font-size: 1rem;
 		padding: 0;
-		margin: dp(40) 0 0 0;
+		margin: util.dp(40) 0 0 0;
 		> li {
 			cursor: default;
 			user-select: none;
-			margin: dp(2);
+			margin: util.dp(2);
 		}
 	}
 	dd, dt, li {
@@ -63,7 +66,7 @@ menu.goui-dropdown {
 		line-height: $buttonSize;
 		min-width: $buttonSize;
 		height: $buttonSize;
-		margin: dp(2);
+		margin: util.dp(2);
 		&.disabled {
 			text-decoration: line-through;
 		}
@@ -75,7 +78,7 @@ menu.goui-dropdown {
 		cursor: pointer;
 		user-select: none;
 		-webkit-user-select: none;
-		color: $colorText;
+		color: config.$colorText;
 		&.selected {
 			border-radius: 0;
 			&.head {
@@ -88,7 +91,7 @@ menu.goui-dropdown {
 			}
 		}
 		&.today {
-			border: 1px solid $colorMain;
+			border: 1px solid config.$colorMain;
 		}
 		&.off {
 			opacity: .4;
@@ -102,7 +105,7 @@ menu.goui-dropdown {
 	}
 
 	.selected, .selected:hover {
-		background-color: $colorMain;
+		background-color: config.$colorMain;
 		color:white;
 	}
 
@@ -126,9 +129,9 @@ menu.goui-dropdown {
 			text-align: center;
 		}
 		> button.nav.goui-button.with-icon {
-			width: dp(32);
-			max-width: dp(32);
-			padding: dp(4);
+			width: util.dp(32);
+			max-width: util.dp(32);
+			padding: util.dp(4);
 			border: 0;
 		}
 
@@ -136,7 +139,7 @@ menu.goui-dropdown {
 
 			text-align: center;
 			display:block;
-			padding: dp(4);
+			padding: util.dp(4);
 			i.icon {
 				display: inline;
 				vertical-align: bottom;
@@ -156,7 +159,7 @@ menu.goui-dropdown {
 	$duration: 400ms;
 	.cards {
 		position: relative;
-		height: 7 * ($buttonSize + dp(4)) + dp(12);//20.8rem; /* 6x28 + 12m */
+		height: 7 * ($buttonSize + util.dp(4)) + util.dp(12);//20.8rem; /* 6x28 + 12m */
 		overflow: hidden;
 		user-select:none;
 		&.top {

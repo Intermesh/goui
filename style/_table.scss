@@ -1,18 +1,23 @@
+@use "config";
+@use "util";
+@use "icons";
+@use "layout";
+
 .goui-table {
 
   position: relative;
 	border-collapse: collapse;
 	border-spacing: 0;
 	table-layout: fixed;
-	width: dp(100);
+	width: util.dp(100);
 
   &:focus-within {
 
     tbody {
       tr.data.selected {
-        background-color: $colorSelectedRow;
+        background-color: config.$colorSelectedRow;
         outline: none;
-        color: $colorSelectedRowText;
+        color: config.$colorSelectedRowText;
 
         a, i.icon {
           color: inherit;
@@ -20,7 +25,7 @@
       }
 
 			tr.data:focus-visible {
-				background-color: $colorFocus;
+				background-color: config.$colorFocus;
 			}
     }
 
@@ -49,7 +54,7 @@
 
   //applies to th, td and col
   .checkbox-select-column {
-    width: dp(64);
+    width: util.dp(64);
   }
 
 
@@ -57,25 +62,25 @@
   tbody {
     tr {
       position: relative;
-      border-bottom: 1px solid $colorDivider;
+      border-bottom: 1px solid config.$colorDivider;
 
       &.group {
-        color: $colorAccent;
+        color: config.$colorAccent;
       }
 
       &.data {
         &:hover {
-          background-color: $colorHover;
+          background-color: config.$colorHover;
         }
 
         &.selected {
-          background-color: $colorSelectedRowInactive;
+          background-color: config.$colorSelectedRowInactive;
         }
       }
 
       &.drag-over {
         &.on {
-          background-color: $colorHover;
+          background-color: config.$colorHover;
         }
 			}
     }
@@ -91,24 +96,24 @@
 
       th {
 
-        background-color: $surfaceLow;
-				font: $fontBase;
-				font-size: $fontSize * .8;
-        padding: dp(8) dp(8);
+        background-color: config.$surfaceLow;
+				font: config.$fontBase;
+				font-size: config.$fontSize * .8;
+        padding: util.dp(8) util.dp(8);
 
         &.sorted {
 
 
-          padding-right: dp(40);
+          padding-right: util.dp(40);
 
           &:after {
             //asc
             content: "south";
             @extend %icon;
-            font-size: dp(16);
+            font-size: util.dp(16);
             position: absolute;
-            right: dp(8);
-            top: dp(12); // the th height = line-height 20 + padding 8 = 36
+            right: util.dp(8);
+            top: util.dp(12); // the th height = line-height 20 + padding 8 = 36
             color: inherit;
           }
 
@@ -135,7 +140,7 @@
           left: 0;
           bottom: 0;
           width: 100%;
-          border-bottom: $borderWidth solid $colorBorder;
+          border-bottom: config.$borderWidth solid config.$colorBorder;
         }
 
 				&.sticky-col {
@@ -149,22 +154,22 @@
 
 
   td, th {
-    min-width: dp(30);
+    min-width: util.dp(30);
     text-align: left;
     vertical-align: middle;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    padding: dp(8);
+    padding: util.dp(8);
     position: relative;
 
     &:first-child {
-      padding-left: dp(16);
+      padding-left: util.dp(16);
       //border-radius: dp(10) 0 0 dp(10) ;
     }
 
     &:last-child {
-      padding-right: dp(16);
+      padding-right: util.dp(16);
       //border-radius: 0 dp(10) dp(10) 0;
     }
 
@@ -195,23 +200,23 @@
     }
 
     .goui-button {
-      padding: dp(3) dp(18);
+      padding: util.dp(3) util.dp(18);
 			min-height: auto;
 
       &.with-icon:not(.with-text) {
         //icon only
-        padding: dp(3);
-				margin: dp(-8); //undo td padding
+        padding: util.dp(3);
+				margin: util.dp(-8); //undo td padding
       }
     }
   }
 
   + .goui-toolbar {
-    margin-top: dp(16);
+    margin-top: util.dp(16);
   }
 
 	td.sticky-col {
-		background-color: $surfaceLow;
+		background-color: config.$surfaceLow;
 
 		position: sticky;
 		z-index: 1;
@@ -219,12 +224,12 @@
 
 	tr.data:hover {
 		td.sticky-col {
-			background-color: color-mix(in srgb, $surfaceLow, #000 4%);
+			background-color: color-mix(in srgb, config.$surfaceLow, #000 4%);
 		}
 	}
 	tr.data.selected {
 		td.sticky-col {
-			background-color: color-mix(in srgb, $surfaceLow, #000 8%);
+			background-color: color-mix(in srgb, config.$surfaceLow, #000 8%);
 		}
 	}
 }
@@ -233,16 +238,16 @@
 
 	.goui-table {
 		td.sticky-col {
-			background-color: $surfaceLowest;
+			background-color: config.$surfaceLowest;
 		}
 		tr.data:hover {
 			td.sticky-col {
-				background-color: color-mix(in srgb, $surfaceLowest, #000 4%);
+				background-color: color-mix(in srgb, config.$surfaceLowest, #000 4%);
 			}
 		}
 		tr.data.selected {
 			td.sticky-col {
-				background-color: color-mix(in srgb, $surfaceLowest, #000 8%);
+				background-color: color-mix(in srgb, config.$surfaceLowest, #000 8%);
 			}
 		}
 	}
@@ -252,16 +257,16 @@
 
 	.goui-table {
 		td.sticky-col {
-			background-color: $surfaceLow;
+			background-color: config.$surfaceLow;
 		}
 		tr.data:hover {
 			td.sticky-col {
-				background-color: color-mix(in srgb, $surfaceLow, #000 4%);
+				background-color: color-mix(in srgb, config.$surfaceLow, #000 4%);
 			}
 		}
 		tr.data.selected {
 			td.sticky-col {
-				background-color: color-mix(in srgb, $surfaceLow, #000 8%);
+				background-color: color-mix(in srgb, config.$surfaceLow, #000 8%);
 			}
 		}
 	}
@@ -271,16 +276,16 @@
 
 	.goui-table {
 		td.sticky-col {
-			background-color: $surfaceMid;
+			background-color: config.$surfaceMid;
 		}
 		tr.data:hover {
 			td.sticky-col {
-				background-color: color-mix(in srgb, $surfaceMid, #000 4%);
+				background-color: color-mix(in srgb, config.$surfaceMid, #000 4%);
 			}
 		}
 		tr.data.selected {
 			td.sticky-col {
-				background-color: color-mix(in srgb, $surfaceMid, #000 8%);
+				background-color: color-mix(in srgb, config.$surfaceMid, #000 8%);
 			}
 		}
 	}
@@ -291,16 +296,16 @@
 
 	.goui-table {
 		td.sticky-col {
-			background-color: $surfaceHigh;
+			background-color: config.$surfaceHigh;
 		}
 		tr.data:hover {
 			td.sticky-col {
-				background-color: color-mix(in srgb, $surfaceHigh, #000 4%);
+				background-color: color-mix(in srgb, config.$surfaceHigh, #000 4%);
 			}
 		}
 		tr.data.selected {
 			td.sticky-col {
-				background-color: color-mix(in srgb, $surfaceHigh, #000 8%);
+				background-color: color-mix(in srgb, config.$surfaceHigh, #000 8%);
 			}
 		}
 	}
@@ -310,16 +315,16 @@
 
 	.goui-table {
 		td.sticky-col {
-			background-color: $surfaceHighest;
+			background-color: config.$surfaceHighest;
 		}
 		tr.data:hover {
 			td.sticky-col {
-				background-color: color-mix(in srgb, $surfaceHighest, #000 4%);
+				background-color: color-mix(in srgb, config.$surfaceHighest, #000 4%);
 			}
 		}
 		tr.data.selected {
 			td.sticky-col {
-				background-color: color-mix(in srgb, $surfaceHighest, #000 8%);
+				background-color: color-mix(in srgb, config.$surfaceHighest, #000 8%);
 			}
 		}
 	}

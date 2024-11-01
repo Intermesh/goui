@@ -1,3 +1,9 @@
+@use "config";
+@use "util";
+@use "layout";
+@use "shadows";
+@use "general";
+
 .goui-window-modal-overlay {
 
 	backdrop-filter: blur(2px);
@@ -25,16 +31,16 @@
 	@extend .z12;
 	position: fixed;
 
-	background-color: $surfaceLow;
+	background-color: config.$surfaceLow;
 	backdrop-filter: blur(20px);
 	-webkit-backdrop-filter: blur(20px);
 
-	border: $borderWidth solid $colorBorderWindow;
-	border-radius: dp(12);
-	z-index: $zIndexWindow;
+	border: config.$borderWidth solid config.$colorBorderWindow;
+	border-radius: util.dp(12);
+	z-index: config.$zIndexWindow;
 	overflow: hidden;
-	min-height: dp(160);
-	min-width: dp(160);
+	min-height: util.dp(160);
+	min-width: util.dp(160);
 
 	&.modal {
 		@extend .z24;
@@ -48,7 +54,7 @@
 	}
 
 	&.collapsed {
-		height: dp(74) !important;
+		height: util.dp(74) !important;
 		min-height: 0;
 		.collapse-btn {
 			i:after {
@@ -77,7 +83,7 @@
 		}
 	}
 
-	@media only screen and (max-width: $breakpointSmall) {
+	@media only screen and (max-width: config.$breakpointSmall) {
 		top: 0 !important;
 		bottom: 0 !important;
 		left: 0 !important;
@@ -92,11 +98,11 @@
 
 	//focussed window on top
 	&:focus-within {
-		z-index: $zIndexWindow + 10000; // 10000 to be higher than in Ext
+		z-index: config.$zIndexWindow + 10000; // 10000 to be higher than in Ext
 	}
 	form.goui-form {
 		fieldset {
-			padding: dp(18);
+			padding: util.dp(18);
 		}
 	}
 
@@ -107,19 +113,19 @@
 	}
 
 	.goui-toolbar:first-child, .goui-toolbar:last-child {
-		padding: dp(12) dp(18);
+		padding: util.dp(12) util.dp(18);
 		//background-color: $colorWindowHeader;
 	}
 
 	.goui-cardmenu {
 		//background-color: $colorWindowHeader;
 		width: 100%;
-		border-bottom: $borderWidth solid $colorBorderWindow;
+		border-bottom: config.$borderWidth solid config.$colorBorderWindow;
 	}
 
 	.header {
-		height: dp(74);
-		background-color: $surfaceHigh;
+		height: util.dp(74);
+		background-color: config.$surfaceHigh;
 		position: relative;
 		margin: 0;
 
@@ -139,7 +145,7 @@
 	}
 
 	> p {
-		padding: dp(18);
+		padding: util.dp(18);
 	}
 
 	> * {
@@ -147,8 +153,8 @@
 	}
 
 	.goui-toolbar:last-child:not(:only-child) {
-		padding-left: dp(18);
-		padding-right: dp(18);
+		padding-left: util.dp(18);
+		padding-right: util.dp(18);
 	}
 
 	&.error {
@@ -157,9 +163,9 @@
 			flex-direction: row;
 			align-items: center;
 			i {
-				font-size: dp(44);
-				color: $colorError;
-				margin-right: dp(16);
+				font-size: util.dp(44);
+				color: config.$colorError;
+				margin-right: util.dp(16);
 			}
 			.text {
 				flex: 1;
@@ -170,8 +176,8 @@
 
 // login dialog must always be on top
 .goui-login {
-	z-index: $zIndexWindow + 3;
+	z-index: config.$zIndexWindow + 3;
 	&:focus-within {
-		z-index: $zIndexWindow + 3;
+		z-index: config.$zIndexWindow + 3;
 	}
 }

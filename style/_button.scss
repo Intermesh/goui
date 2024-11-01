@@ -1,17 +1,22 @@
+@use "config";
+@use "util";
+@use "icons";
 @use 'sass:math';
+@use "layout";
+@use "shadows";
 
 .goui-button  {
 	color: inherit;
 	background-color: transparent;
-	border: $borderWidth solid transparent;
-	border-radius: dp(12);
-	padding: dp(11) dp(18); //padding 11 because line height is 24 instead of 22
+	border: config.$borderWidth solid transparent;
+	border-radius: util.dp(12);
+	padding: util.dp(11) util.dp(18); //padding 11 because line height is 24 instead of 22
 	display: flex;
 	align-items: center;
 	position: relative;
-	font: $fontBase;
+	font: config.$fontBase;
 	font-weight: 600;
-	line-height: dp(24); //match icon
+	line-height: util.dp(24); //match icon
 
 	//min-height: dp(46); // line-height + padding. This broke chips. Don't know why it was here.
 
@@ -21,19 +26,19 @@
 
 	&.with-icon:not(.with-text) {
 		//icon only
-		padding: dp(11);
+		padding: util.dp(11);
 	}
 
 	&.with-text {
 		i.icon {
-			margin-right: dp(8);
+			margin-right: util.dp(8);
 		}
 	}
 
 	i.icon {
-		width: dp(24);
-		height: dp(24);
-		line-height: dp(24);
+		width: util.dp(24);
+		height: util.dp(24);
+		line-height: util.dp(24);
 	}
 
 	.text {
@@ -48,13 +53,13 @@
 
 
 	&:hover {
-		background-color: $colorHover;
+		background-color: config.$colorHover;
 		outline: none;
 	}
 
 	&.pressed {
-		box-shadow: inset -2px -2px -2 $colorOutline; // underline
-		background-color: $colorMain;
+		box-shadow: inset -2px -2px -2 config.$colorOutline; // underline
+		background-color: config.$colorMain;
 		color: white;
 		&:hover {
 			filter: brightness(120%);
@@ -67,26 +72,26 @@
 	//}
 
 	&.primary {
-		color: $colorPrimary;
+		color: config.$colorPrimary;
 	}
 
 	&.accent {
-		color: $colorAccent;
+		color: config.$colorAccent;
 	}
 
 
 	&.filled, &[type=submit] {
-		background-color: $colorHover;
+		background-color: config.$colorHover;
 
 		&:hover {
-			background-color: $colorAccent;
+			background-color: config.$colorAccent;
 			color: white;
 		}
 
 		&.primary, &[type=submit] {
 			color: white;
-			background-color: $colorPrimary;
-			border-color: $colorPrimary;
+			background-color: config.$colorPrimary;
+			border-color: config.$colorPrimary;
 			&:hover {
 				filter: brightness(120%);
 			}
@@ -94,8 +99,8 @@
 
 		&.accent {
 			color: white;
-			background-color: $colorAccent;
-			border-color: $colorAccent;
+			background-color: config.$colorAccent;
+			border-color: config.$colorAccent;
 
 			&:hover {
 				filter: brightness(120%);
@@ -104,37 +109,37 @@
 	}
 
 	&.outlined {
-		border: $borderWidth solid $colorTextSecondary;
+		border: config.$borderWidth solid config.$colorTextSecondary;
 
 		&:hover {
 			color: white;
-			background-color: $colorTextSecondary;
+			background-color: config.$colorTextSecondary;
 		}
 
 
 		&.primary, &[type=submit] {
-			border-color: $colorPrimary;
-			color: $colorPrimary;
+			border-color: config.$colorPrimary;
+			color: config.$colorPrimary;
 
 			&:hover {
 				color: white;
-				background-color: $colorPrimary;
+				background-color: config.$colorPrimary;
 			}
 		}
 
 		&.accent {
-			color: $colorAccent;
-			border-color: $colorAccent;
+			color: config.$colorAccent;
+			border-color: config.$colorAccent;
 
 			&:hover {
 				color: white;
-				background-color: $colorAccent;
+				background-color: config.$colorAccent;
 			}
 		}
 	}
 
 	&:focus-visible {
-		border: $borderWidth solid $colorMain;
+		border: config.$borderWidth solid config.$colorMain;
 		@extend .z4;
 	}
 }
@@ -145,9 +150,9 @@
 //	> button {box-shadow: none; border: 1px solid $colorOutline;}
 	> .goui-button {
 		box-shadow: none;
-		border: $borderWidth solid $colorBorder;
+		border: config.$borderWidth solid config.$colorBorder;
 		&.active {
-			background-color: $colorFocus;
+			background-color: config.$colorFocus;
 		}
 	}
 	&>:not(:first-child) { border-top-left-radius:0; border-bottom-left-radius:0; }
@@ -157,7 +162,7 @@
 .goui.goui-toolbar {
 	display: flex;
 	flex-direction: row;
-	gap: dp(8);
+	gap: util.dp(8);
 	justify-content: flex-start;
 	flex-wrap: nowrap;
 	position: relative;// for absolute toolbars inside
@@ -165,8 +170,8 @@
 	user-select: none;
 	-moz-user-select: none;
 	-webkit-user-select: none;
-	padding: dp(8) dp(16);
-	min-height: dp(62);
+	padding: util.dp(8) util.dp(16);
+	min-height: util.dp(62);
 	margin: 0;
 
 	// toolbar inside a toolbar will be an overlay
@@ -176,7 +181,7 @@
 		left: 0;
 		right: 0;
 		bottom: 0;
-		background-color: $surfaceLow;
+		background-color: config.$surfaceLow;
 	}
 
 	&.search {
@@ -192,7 +197,7 @@
 		display: block;
 		margin: 0;
 		color: inherit;
-		font-size: sp(24);
+		font-size: util.sp(24);
 		line-height: normal;
 		font-weight: normal;
 		padding: 0;
@@ -205,7 +210,7 @@
 		display: block;
 		margin: 0;
 		color: inherit;
-		font-size: sp(20);
+		font-size: util.sp(20);
 		font-weight: normal;
 		line-height: normal;
 		padding: 0;
@@ -215,11 +220,11 @@
 	}
 
 	> hr {
-		height: dp(24);
+		height: util.dp(24);
 		border-top: 0;
-		border-right: $borderWidth solid $colorBorder;
+		border-right: config.$borderWidth solid config.$colorBorder;
 		border-color: currentColor;
-		margin: 0 dp(16);
+		margin: 0 util.dp(16);
 		opacity: .2
 	}
 

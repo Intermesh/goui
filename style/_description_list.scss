@@ -1,15 +1,18 @@
+@use "config";
+@use "util";
+
 dl.goui-dl {
-	margin: 0 dp(16) 0 0;
+	margin: 0 util.dp(16) 0 0;
 
 	&:last-child {
 		margin-right: 0;
 	}
 	dt {
 		display: block;
-		font-size: dp(12);
-		top: dp(5);
-		color: $colorMain;
-		margin: dp(16) 0 0 0;
+		font-size: util.dp(12);
+		top: util.dp(5);
+		color: config.$colorMain;
+		margin: util.dp(16) 0 0 0;
 		padding: 0;
 	}
 
@@ -17,7 +20,7 @@ dl.goui-dl {
 		margin: 0;
 		padding: 0;
 		display: block;
-		min-height: $baseLineHeight;
+		min-height: config.$baseLineHeight;
 		//text-overflow: ellipsis;
 		//overflow: hidden;
 		//white-space: nowrap;
@@ -27,9 +30,9 @@ dl.goui-dl {
 			word-break: break-all;
 			white-space: break-spaces;
 			background-color: #f1f1f1;
-			border: $borderWidth solid $colorBorder;
-			border-radius: $borderRadius;
-			padding: dp(8);
+			border: config.$borderWidth solid config.$colorBorder;
+			border-radius: config.$borderRadius;
+			padding: util.dp(8);
 			line-height:normal;
 		}
 	}
@@ -38,9 +41,9 @@ dl.goui-dl {
 .masked {
 	dl.goui-dl {
 		dd {
-			background-color: $colorMasked;
-			color: $colorMasked;
-			border-radius: dp(8);
+			background-color: config.$colorMasked;
+			color: config.$colorMasked;
+			border-radius: util.dp(8);
 			> * {
 				visibility: hidden;
 			}

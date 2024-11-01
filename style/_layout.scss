@@ -1,10 +1,15 @@
+@use "config";
+@use "theme";
+@use "util";
+@use "shadows";
+
 html {
-	font-size: $density; //makes everying smaller on desktop
+	font-size: theme.$density; //makes everying smaller on desktop
 }
 
 @media (max-device-width:1200px) {
 	html {
-		font-size: $mobileDensity;
+		font-size: theme.$mobileDensity;
 		/* changes a default 16px font size to 10px */
 	}
 }
@@ -17,7 +22,7 @@ html {
 }
 
 .goui.main {
-	background-color: $surfaceLowest;
+	background-color: config.$surfaceLowest;
 }
 
 // flow layout. generally used or form fields
@@ -26,7 +31,7 @@ html {
 	flex-flow: row wrap !important;
 	align-content: flex-start;
 	align-items: start;
-	gap: dp(14);
+	gap: util.dp(14);
 	> * {
 		width:100%;
 	}
@@ -49,7 +54,7 @@ html {
 	}
 
 	.goui.detail {
-		min-width: dp(300);
+		min-width: util.dp(300);
 	}
 
 	> hr {
@@ -86,7 +91,7 @@ html {
 
 
 .goui.gap {
-	gap: dp(8);
+	gap: util.dp(8);
 }
 
 
@@ -113,42 +118,42 @@ html {
 
 // padding for text contet
 .goui.pad {
-	padding: dp(24) dp(18) !important;
+	padding: util.dp(24) util.dp(18) !important;
 }
 
 .goui.border-bottom {
-	border-bottom: $borderWidth solid $colorBorder !important;
+	border-bottom: config.$borderWidth solid config.$colorBorder !important;
 }
 
 .goui.border-top {
-	border-top: $borderWidth solid $colorBorder !important;;
+	border-top: config.$borderWidth solid config.$colorBorder !important;;
 }
 
 .goui.border-left {
-	border-left: $borderWidth solid $colorBorder !important;;
+	border-left: config.$borderWidth solid config.$colorBorder !important;;
 }
 
 .goui.border-right {
-	border-bottom: $borderWidth solid $colorBorder !important;;
+	border-bottom: config.$borderWidth solid config.$colorBorder !important;;
 }
 
 .goui.frame {
-	border: $borderWidth solid $colorBorder;
-	border-radius: dp(12);
+	border: config.$borderWidth solid config.$colorBorder;
+	border-radius: util.dp(12);
 	overflow:hidden;
-	background-color: $surfaceLowest;
+	background-color: config.$surfaceLowest;
 
 	> .toolbar {
-		background-color: $colorBackgroundDarker;
-		padding: dp(18);
-		border-bottom: $borderWidth solid $colorBorder;
+		background-color: config.$colorBackgroundDarker;
+		padding: util.dp(18);
+		border-bottom: config.$borderWidth solid config.$colorBorder;
 	}
 
 	> :first-child {
 		.toolbar:first-child {
-			background-color: $colorBackgroundDarker;
-			padding: dp(18);
-			border-bottom: $borderWidth solid $colorBorder;
+			background-color: config.$colorBackgroundDarker;
+			padding: util.dp(18);
+			border-bottom: config.$borderWidth solid config.$colorBorder;
 		}
 	}
 }
@@ -160,19 +165,19 @@ html {
 
 .goui {
 	.bg-lowest {
-		background-color: $surfaceLowest;
+		background-color: config.$surfaceLowest;
 	}
 	.bg-low {
-		background-color: $surfaceLow;
+		background-color: config.$surfaceLow;
 	}
 	.bg-mid {
-		background-color: $surfaceMid;
+		background-color: config.$surfaceMid;
 	}
 	.bg-high {
-		background-color: $surfaceHigh;
+		background-color: config.$surfaceHigh;
 	}
 	.bg-highest{
-		background-color: $surfaceHighest;
+		background-color: config.$surfaceHighest;
 	}
 }
 
@@ -181,12 +186,12 @@ html {
 	border: 0;
 	z-index: 1;
 	padding: 0;
-	width: $borderWidth * 5;
+	width: config.$borderWidth * 5;
 	display: block;
-	margin: 0 (-2 * $borderWidth);
+	margin: 0 (-2 * config.$borderWidth);
 	background-color: transparent;
-	color: $colorBorder;
-	background:linear-gradient(90deg, transparent $borderWidth * 2, currentColor $borderWidth * 2 $borderWidth * 3, transparent $borderWidth * 3);
+	color: config.$colorBorder;
+	background:linear-gradient(90deg, transparent config.$borderWidth * 2, currentColor config.$borderWidth * 2 config.$borderWidth * 3, transparent config.$borderWidth * 3);
 
 	&.draggable {
 		cursor: col-resize;
@@ -196,7 +201,7 @@ html {
 	height: 100%;
 }
 
-@media only screen and (max-width: $breakpointMedium) {
+@media only screen and (max-width: config.$breakpointMedium) {
 
 	.goui.not-medium-device {
 		display: none !important;
@@ -211,7 +216,7 @@ html {
 		}
 	}
 }
-@media only screen and (max-width: $breakpointSmall) {
+@media only screen and (max-width: config.$breakpointSmall) {
 	.not-small-device {
 		display: none !important;
 	}
@@ -227,14 +232,14 @@ html {
 	}
 }
 
-@media only screen and (min-width: $breakpointMedium) {
+@media only screen and (min-width: config.$breakpointMedium) {
 	.goui.for-medium-device {
 		display: none !important;
 	}
 }
 
 
-@media only screen and (min-width: $breakpointSmall) {
+@media only screen and (min-width: config.$breakpointSmall) {
 	.goui.for-small-device {
 		display: none !important;
 	}
@@ -242,8 +247,8 @@ html {
 
 
 .goui.card {
-	border-radius: $borderRadius;
-	margin: dp(8);
+	border-radius: config.$borderRadius;
+	margin: util.dp(8);
 	background-color: white;
 	overflow:hidden;
 	@extend .z2;

@@ -1,9 +1,12 @@
+@use "config";
+@use "util";
+
 
 @font-face {
 	font-family: 'Material Symbols Rounded';
 	font-style: normal;
 	font-weight: 400;
-	src: url(#{$resourcePath}iconfont/MaterialSymbolsOutlined.woff2) format('woff2');
+	src: url(#{config.$resourcePath}iconfont/MaterialSymbolsOutlined.woff2) format('woff2');
 }
 
 //.material-symbols-rounded {
@@ -26,7 +29,7 @@
 	font-family: 'Material Symbols Rounded';
 	font-weight: normal;
 	font-style: normal;
-	font-size: dp(24);  /* Google Preferred icon size = dp(24) */
+	font-size: util.dp(24);  /* Google Preferred icon size = dp(24) */
 	width: auto; //needed in Group-Office as it sets widht and height to 21px
 	height: auto;
 	display: inline-block;
