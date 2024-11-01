@@ -140,6 +140,8 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 				if (c.renderer) {
 					const r = c.renderer(value, record, td, this, storeIndex, c);
 
+					c.fire("render", c, r, record, storeIndex, td);
+
 					if (r) {
 
 						if (typeof r === "string") {

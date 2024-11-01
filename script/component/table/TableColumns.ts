@@ -4,13 +4,13 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {Config, Observable} from "../Observable.js";
+import {Config, Listener, Observable, ObservableEventMap, ObservableListenerOpts} from "../Observable.js";
 import {Table} from "./Table.js";
-import {Component, createComponent} from "../Component.js";
+import {Component, ComponentEventMap, createComponent} from "../Component.js";
 import {Format} from "../../util/index.js";
-import {checkbox} from "../form/index.js";
+import {checkbox, CheckboxField} from "../form/index.js";
 import {btn} from "../Button.js";
-import {menu} from "../menu/index.js";
+import {Menu, menu} from "../menu/index.js";
 
 /**
  * Return HTML or component to render into the table cell. Can also be async.
@@ -19,6 +19,28 @@ type TableColumnRenderer = (columnValue: any, record: any, td: HTMLTableCellElem
 type HeaderRenderer = (col: TableColumn, headerEl: HTMLTableCellElement, table: Table) => string | Component;
 
 export type align = "left" | "right" | "center";
+
+
+export interface TableColumnEventMap<Type> extends ObservableEventMap<Type> {
+
+
+	/**
+	 * Fires when a table column renders
+	 *
+	 * @param column
+	 * @param result The result of the column renderer function
+	 * @param record
+	 * @param storeIndex
+	 * @param td
+	 */
+	render: (column: Type, result: string | Promise<string> | Component | Promise<Component>, record:any, storeIndex:number, td: HTMLTableCellElement) => void
+}
+
+export interface TableColumn extends Observable {
+	on<K extends keyof TableColumnEventMap<this>, L extends Listener>(eventName: K, listener: Partial<TableColumnEventMap<this>>[K], options?: ObservableListenerOpts): L
+	un<K extends keyof TableColumnEventMap<this>>(eventName: K, listener: Partial<TableColumnEventMap<this>>[K]): boolean
+	fire<K extends keyof TableColumnEventMap<this>>(eventName: K, ...args: Parameters<TableColumnEventMap<any>[K]>): boolean
+}
 
 export class TableColumn extends Observable {
 
@@ -109,7 +131,7 @@ export class TableColumn extends Observable {
 	sticky?: boolean
 }
 
-type TableColumnConfig = Config<TableColumn> & {
+type TableColumnConfig = Config<TableColumn, TableColumnEventMap<TableColumn>> & {
 	/**
 	 * The ID of the column which is also the default for the column 'property'
 	 */
@@ -151,6 +173,27 @@ export class DateColumn extends TableColumn {
  */
 export const datecolumn = (config: TableColumnConfig) => createComponent(new DateColumn(config.id), config);
 
+
+export interface CheckboxColumnEventMap<Type> extends TableColumnEventMap<Type> {
+
+	/**
+	 * Fires when the checkbox is checked by the user
+	 *
+	 * @param column
+	 * @param checkbox
+	 * @param checked
+	 * @param record
+	 * @param storeIndex
+	 */
+	change: (column: Type, checkbox:CheckboxField, checked: boolean, record:any, storeIndex:number) => void
+}
+
+export interface CheckboxColumn extends TableColumn {
+	on<K extends keyof CheckboxColumnEventMap<this>, L extends Listener>(eventName: K, listener: Partial<CheckboxColumnEventMap<this>>[K], options?: ObservableListenerOpts): L
+	un<K extends keyof CheckboxColumnEventMap<this>>(eventName: K, listener: Partial<CheckboxColumnEventMap<this>>[K]): boolean
+	fire<K extends keyof CheckboxColumnEventMap<this>>(eventName: K, ...args: Parameters<CheckboxColumnEventMap<any>[K]>): boolean
+}
+
 export class CheckboxColumn extends TableColumn {
 	constructor(id: string) {
 		super(id);
@@ -165,11 +208,12 @@ export class CheckboxColumn extends TableColumn {
 			listeners: {
 				change: (field, newValue, oldValue) => {
 					record[column.property] = newValue;
+
+					this.fire("change", this,  field, newValue, record, rowIndex);
 				},
 				render: (field) => {
 
 					table.el.addEventListener("keydown", (e) => {
-						console.warn( td.parentNode);
 						if(e.key == " " && e.target == td.parentNode) {
 							field.value = !field.value;
 						}
@@ -180,12 +224,24 @@ export class CheckboxColumn extends TableColumn {
 	}
 }
 
+
+
+type CheckboxColumnConfig = Config<TableColumn, CheckboxColumnEventMap<TableColumn>> & {
+	/**
+	 * The ID of the column which is also the default for the column 'property'
+	 */
+	id: string
+};
+
+
 /**
  * Create a checkbox column
  *
  * @param config
  */
-export const checkboxcolumn = (config: TableColumnConfig) => createComponent(new CheckboxColumn(config && config.id ? config.id : "checkbox"), config);
+export const checkboxcolumn = (config: CheckboxColumnConfig) => createComponent(new CheckboxColumn(config && config.id ? config.id : "checkbox"), config);
+
+
 
 
 
