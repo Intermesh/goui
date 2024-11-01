@@ -1,9 +1,4 @@
-$font-scale: 1 !default;
-$density: 54% !default;
-$mobileDensity: 62.5% !default;
-
-@mixin light-theme {
-
+:root, body {
 	--fg-border:	rgba(68, 68, 68, 0.26); // outline For splitter borders in layout
 	--fg-line:		#{rgba(black, 0.12)}; // outline-variant (thick)
 	--fg-divider:	#{rgba(black, 0.04)}; // (thin)
@@ -78,8 +73,7 @@ $mobileDensity: 62.5% !default;
 	--fg-unfocused: var(--fg-secondary-text);
 	--bg-background: var(--bg-mid);
 }
-
-@mixin dark-theme {
+body.dark {
 
 	--fg-border:			black; //#1b1b1b;
 	--fg-line:				#{rgba(white, 0.32)};
@@ -127,4 +121,7 @@ $mobileDensity: 62.5% !default;
 	--border-notice: #b8daff;
 	--bg-notice: #cce5ff;
 
+	* {
+		color-scheme: dark;
+	}
 }

@@ -1,8 +1,13 @@
-@use "util";
+$font-scale: 1 !default;
+@use "util" with (
+	$font-scale: $font-scale
+);
+
 
 $resourcePath: "../resources/" !default;
-
-//$windowShadow: 0 0 dp(16) 0 rgba(0,0,0,20%);
+$font-scale: 1 !default;
+$density: 54% !default;
+$mobileDensity: 62.5% !default;
 
 $borderWidth: 1px !default;
 
@@ -86,9 +91,6 @@ $breakpointXL: 1200px !default;
 $breakpointLarge: 992px !default;
 $breakpointMedium: 845px !default;
 $breakpointSmall: 576px !default;
-
-
-
 
 
 //shadows

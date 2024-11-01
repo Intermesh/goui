@@ -4,18 +4,6 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-//Set before util and theme:
-//$density: 54%;
-//$mobileDensity: 62.5%;
-//$font-scale: 1;
-
-
-
-//Override defaults from _config.scss:
-//$borderWidth: 1px;
-//$baseLineHeight: dp(20);
-//$fontSize: sp(16);
-
 @use 'config';
 @use 'icons';
 @use 'shadows';

@@ -3,16 +3,6 @@
 @use "util";
 @use "layout";
 
-:root, body {
-	@include theme.light-theme;
-}
-body.dark {
-	@include theme.dark-theme;
-	* {
-		color-scheme: dark;
-	}
-}
-
 .goui * {
 	text-rendering: optimizeLegibility;
 	font-smoothing: antialiased;

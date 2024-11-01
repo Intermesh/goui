@@ -1,15 +1,14 @@
 @use "config";
-@use "theme";
 @use "util";
 @use "shadows";
 
 html {
-	font-size: theme.$density; //makes everying smaller on desktop
+	font-size: config.$density; //makes everying smaller on desktop
 }
 
 @media (max-device-width:1200px) {
 	html {
-		font-size: theme.$mobileDensity;
+		font-size: config.$mobileDensity;
 		/* changes a default 16px font size to 10px */
 	}
 }
