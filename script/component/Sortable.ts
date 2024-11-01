@@ -73,7 +73,8 @@ type DragData = {
 	fromIndex: number,
 	toIndex: number,
 	group: string,
-	component: Component
+	fromComponent: Component
+	toComponent: Component
 }
 
 const dragData: DragData = {
@@ -83,7 +84,8 @@ const dragData: DragData = {
 	fromIndex: -1,
 	toIndex: -1,
 	group:"",
-	component: root
+	fromComponent: root,
+	toComponent: root
 }
 
 
@@ -187,7 +189,8 @@ export class Sortable<Type extends Component> extends Observable {
 
 			dragData.group = this.group;
 			dragData.dragSrc = e.target;
-			dragData.component = this.component;
+			dragData.fromComponent = this.component;
+			dragData.toComponent = this.component;
 
 			e.dataTransfer!.setData('text/plain', 'goui');
 			e.dataTransfer!.effectAllowed = "copyMove";
@@ -238,6 +241,8 @@ export class Sortable<Type extends Component> extends Observable {
 			e.stopPropagation();
 
 			const dropPin = Sortable.getDropPin();
+
+			dragData.toComponent = component;
 
 			if(dragData.overEl) {
 
@@ -308,7 +313,7 @@ export class Sortable<Type extends Component> extends Observable {
 			dragData.toIndex = 0;
 		}
 
-		return this.fire("dropallowed", this.component, dragData.toIndex, dragData.fromIndex, dragData.pos == "on", dragData.component);
+		return this.fire("dropallowed", dragData.toComponent, dragData.toIndex, dragData.fromIndex, dragData.pos == "on", dragData.fromComponent);
 
 	}
 
@@ -380,7 +385,7 @@ export class Sortable<Type extends Component> extends Observable {
 
 
 		dragData.dragSrc = undefined;
-		this.fire("sort", this.component, dragData.toIndex, dragData.fromIndex, dragData.pos == "on", dragData.component);
+		this.fire("sort", dragData.toComponent, dragData.toIndex, dragData.fromIndex, dragData.pos == "on", dragData.fromComponent);
 	}
 
 	private findSortables() {

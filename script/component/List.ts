@@ -305,7 +305,7 @@ export class List<StoreType extends Store = Store> extends Component {
 		sortable.group = this.sortableGroup;
 
 		sortable.on("sort", (toComp, toIndex, fromIndex , droppedOn, fromComp) => {
-			return this.fire("drop", this, toIndex, fromIndex, droppedOn, fromComp);
+			return this.fire("drop", toComp, toIndex, fromIndex, droppedOn, fromComp);
 		});
 
 		sortable.on("dropallowed", (toComp, toIndex, fromIndex , droppedOn, fromComp) => {
