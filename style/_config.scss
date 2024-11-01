@@ -1,8 +1,4 @@
-$font-scale: 1 !default;
-@use "util" with (
-	$font-scale: $font-scale
-);
-
+@use "util";
 
 $resourcePath: "../resources/" !default;
 $font-scale: 1 !default;
