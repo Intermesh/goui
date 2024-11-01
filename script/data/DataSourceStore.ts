@@ -149,7 +149,10 @@ export class DataSourceStore<DataSource extends AbstractDataSource = AbstractDat
 	reload(): Promise<StoreRecord[]> {
 		const limit = this.queryParams.limit, pos = this.queryParams.position ;
 		this.queryParams.position = 0;
-		this.queryParams.limit = this.data.length;
+		if(limit) {
+			this.queryParams.limit = Math.max(limit, this.data.length);
+		}
+
 		this.keepPosition = true;
 		const r = super.reload();
 		this.keepPosition = false;
