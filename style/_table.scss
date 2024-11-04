@@ -216,7 +216,7 @@
   }
 
 	td.sticky-col {
-		background-color: config.$surfaceLow;
+		background-color: config.$surfaceMid;
 
 		position: sticky;
 		z-index: 1;
@@ -224,17 +224,17 @@
 
 	tr.data:hover {
 		td.sticky-col {
-			background-color: color-mix(in srgb, config.$surfaceLow, #000 4%);
+			background-color: color-mix(in srgb, config.$surfaceMid, #000 4%);
 		}
 	}
 	tr.data.selected {
 		td.sticky-col {
-			background-color: color-mix(in srgb, config.$surfaceLow, #000 8%);
+			background-color: color-mix(in srgb, config.$surfaceMid, #000 8%);
 		}
 	}
 }
 
-.bg-lowest {
+.bg-lowest, .card, .main {
 
 	.goui-table {
 		td.sticky-col {
