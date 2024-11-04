@@ -140,9 +140,9 @@ export interface ListEventMap<Type> extends ComponentEventMap<Type> {
 	 * @param toIndex The index where it's dropped in this list
 	 * @param droppedOn True if dropped on a node and not between
 	 * @param fromComponent The component where the item is dragged from. When the same sort group is used it can be another component
-	 * @param selectedRowIndexes The row indexes when a multiselect is dragged. If the record dragged is not part of the selection then it will contain the single dragged record.
+	 * @param dragDataSet Arbitrary drag data components may set. A list adds dragDataSet.selectedRowIndexes: The row indexes when a multiselect is dragged. If the record dragged is not part of the selection then it will contain the single dragged record.
 	 */
-	drop: (toComponent: Type, toIndex:number, fromIndex: number, droppedOn:boolean, fromComp: Component, selectedRowIndexes: number[]) => void
+	drop: (toComponent: Type, toIndex:number, fromIndex: number, droppedOn:boolean, fromComp: Component, dragDataSet: Record<string, any>) => void
 
 	/**
 	 * Fires when the items are dragged over this list.
@@ -154,9 +154,9 @@ export interface ListEventMap<Type> extends ComponentEventMap<Type> {
 	 * @param toIndex To index
 	 * @param droppedOn Dropped on the toIndex or moved to this index
 	 * @param fromComp The component the element was dragged from if "group" is used to drop to other components
-	 @param selectedRowIndexes The row indexes when a multiselect is dragged. If the record dragged is not part of the selection then it will contain the single dragged record.
+	 * @param dragDataSet Arbitrary drag data components may set. A list adds dragDataSet.selectedRowIndexes: The row indexes when a multiselect is dragged. If the record dragged is not part of the selection then it will contain the single dragged record.
 	 */
-	dropallowed: (toComponent: Type, toIndex:number, fromIndex: number, droppedOn:boolean, fromComp: Component, selectedRowIndexes: number[]) => void
+	dropallowed: (toComponent: Type, toIndex:number, fromIndex: number, droppedOn:boolean, fromComp: Component, dragDataSet: Record<string, any>) => void
 
 }
 
@@ -306,26 +306,26 @@ export class List<StoreType extends Store = Store> extends Component {
 		sortable.group = this.sortableGroup;
 
 		sortable.on("sort", (toComp, toIndex, fromIndex , droppedOn, fromComp, dragDataSet) => {
-			return this.fire("drop", toComp, toIndex, fromIndex, droppedOn, fromComp, dragDataSet.selectedRows as number[]);
+			return this.fire("drop", toComp, toIndex, fromIndex, droppedOn, fromComp, dragDataSet);
 		});
 
 		sortable.on("dropallowed", (toComp, toIndex, fromIndex , droppedOn, fromComp, dragDataSet) => {
-			return this.fire("dropallowed", this, toIndex, fromIndex, droppedOn, fromComp, dragDataSet.selectedRows as number[]);
+			return this.fire("dropallowed", this, toIndex, fromIndex, droppedOn, fromComp, dragDataSet);
 		});
 
 		sortable.on("dragstart",(sortable1, ev, dragData) => {
 
 			//Multiselect movement support here. Don't move selection if the dragged element wasn't part of the selection
 			if(this.rowSelect && this.rowSelect.multiSelect && this.rowSelect.selected.length > 1 && this.rowSelect.selected.indexOf(dragData.fromIndex) > -1) {
-				dragData.dataSet.selectedRows = this.rowSelect.selected;
+				dragData.dataSet.selectedRowIndexes = this.rowSelect.selected;
 				ev.setDragComponent(comp({cls: "card pad", html: this.rowSelect.selected.length + " selected rows"}))
 			} else {
-				dragData.dataSet.selectedRows = [dragData.fromIndex];
+				dragData.dataSet.selectedRowIndexes = [dragData.fromIndex];
 			}
 		});
 
 		sortable.on("dragend", (sortable1, ev, dragData1) => {
-			delete dragData1.dataSet.selectedRows;
+			delete dragData1.dataSet.selectedRowIndexes;
 		})
 
 		//sortable.on("")
