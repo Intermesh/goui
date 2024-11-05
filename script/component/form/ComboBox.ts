@@ -64,7 +64,7 @@ export class ComboBox<DS extends AbstractDataSource = AbstractDataSource> extend
 
 		// load next data on scroll
 		this.picker.list.store.addScrollLoader(this.menu.el);
-		this.picker.list.store.queryParams.limit = 20;
+		this.picker.list.store.queryParams.limit = 50;
 
 		this.on("autocomplete", async (_field, input) => {
 			this.list.store.queryParams.position = 0;

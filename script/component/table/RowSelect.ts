@@ -80,23 +80,19 @@ export class RowSelect extends Observable {
 	constructor(readonly list: List) {
 		super();
 
-		this.list.on('beforerender', (me: List) => {
 
-			const tableEl = me.el;
-
-			tableEl.cls('+rowselect');
-			tableEl.addEventListener("keydown", (e) => {
-				this.onKeyDown(e);
-			})
-
-			me.on('rowmousedown', (table: List, index: number, row, e: MouseEvent) => {
-				this.onRowMouseDown(table, index, e);
-			});
-
-			me.on('rowclick', (table: List, index: number, row, e: MouseEvent) => {
-				this.onRowClick(table, index, e);
-			});
+		this.list.el.cls('+rowselect');
+		this.list.el.addEventListener("keydown", (e) => {
+			this.onKeyDown(e);
 		})
+
+		this.list.on('rowmousedown', (table: List, index: number, row, e: MouseEvent) => {
+			this.onRowMouseDown(table, index, e);
+		});
+
+		this.list.on('rowclick', (table: List, index: number, row, e: MouseEvent) => {
+			this.onRowClick(table, index, e);
+		});
 
 		const fireSelectionChange = () => {
 			this.fire('selectionchange', this, this.selected);
