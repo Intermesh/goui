@@ -6,11 +6,12 @@
 
 import {createComponent} from "../Component.js";
 import {E} from "../../util/Element.js";
-import {ColorPicker} from "../picker/ColorPicker.js";
+import {ColorPicker} from "../picker/index.js";
 import {Field, FieldConfig, FieldEventMap} from "./Field.js";
 import {btn, Button} from "../Button.js";
 import {menu} from "../menu/Menu.js";
-import {Config} from "../Observable.js";
+
+let colorPicker: ColorPicker | undefined;
 
 /**
  * ColorField component
@@ -41,18 +42,20 @@ export class ColorField extends Field {
 	}
 
 	private createPicker() {
-		const picker = new ColorPicker();
-		picker.on('select', (colorPicker, val) => {
+		if(colorPicker == undefined) {
+			colorPicker = new ColorPicker();
+			colorPicker.on('select', (colorPicker, val) => {
 
-			this.pickerButton.menu!.hide();
-			this.clearInvalid();
-			this.focus();
+				this.pickerButton.menu!.hide();
+				this.clearInvalid();
+				this.focus();
 
-			//important to set value after focus so change event will fire on focusout
-			this.value = val;
-		});
+				//important to set value after focus so change event will fire on focusout
+				this.value = val;
+			});
+		}
 
-		return picker;
+		return colorPicker;
 	}
 
 	protected createControl(): undefined | HTMLElement {
