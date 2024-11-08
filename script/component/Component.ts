@@ -436,21 +436,6 @@ export class Component extends Observable {
 	}
 
 	/**
-	 * Make it resizable
-	 */
-	set resizable(resizable: boolean) {
-		if (resizable) {
-			this.el.classList.add("goui-resizable");
-		} else {
-			this.el.classList.remove("goui-resizable");
-		}
-	}
-
-	get resizable() {
-		return this.el.classList.contains("goui-resizable");
-	}
-
-	/**
 	 * Render the component
 	 *
 	 * For overriding from another module see:
@@ -673,14 +658,14 @@ export class Component extends Observable {
 	get width() {
 		const px = this.el.offsetWidth;
 		if(px) {
-			return (px / REM_UNIT_SIZE) * 10;
+			return Component.pxToRem(px);
 		}
 
 		const styleWidth = this.el.style.width;
 		if(styleWidth.substring(styleWidth.length - 3) == "rem") {
 			return parseFloat(styleWidth);
 		} else if(styleWidth.substring(styleWidth.length - 2) == "px") {
-			return (parseFloat(styleWidth) / REM_UNIT_SIZE) * 10;
+			return Component.pxToRem(parseFloat(styleWidth));
 		}
 		return 0;
 	}
@@ -718,16 +703,37 @@ export class Component extends Observable {
 	get height() {
 		const px = this.el.offsetHeight;
 		if(px) {
-			return (px / REM_UNIT_SIZE) * 10;
+			return Component.pxToRem(px);
 		}
 
 		const styleHeight = this.el.style.height;
 		if(styleHeight.substring(styleHeight.length - 3) == "rem") {
 			return parseFloat(styleHeight);
 		} else if(styleHeight.substring(styleHeight.length - 2) == "px") {
-			return (parseFloat(styleHeight) / REM_UNIT_SIZE) * 10;
+			return Component.pxToRem(parseFloat(styleHeight));
 		}
 		return 0;
+	}
+
+	/**
+	 * Convert pixels to rem units
+	 *
+	 * See also the width property
+	 * @param px
+	 */
+	public static pxToRem(px:number) :number {
+		return (px / REM_UNIT_SIZE) * 10;
+	}
+
+	/**
+	 * Convert rem units to pixels
+	 *
+	 * See also the width property
+	 *
+	 * @param rem
+	 */
+	public static remToPx(rem:number) :number {
+		return (rem * REM_UNIT_SIZE) / 10;
 	}
 
 	/**

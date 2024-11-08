@@ -12,7 +12,7 @@ import {FunctionUtil} from "../util/FunctionUtil.js";
 /**
  * Data available to draggable item listeners
  */
-interface DragData {
+export interface DragData {
 
 	/**
 	 * x when dragging started

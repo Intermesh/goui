@@ -7,7 +7,7 @@
 import {comp, Component, createComponent, REM_UNIT_SIZE} from "./Component.js";
 import {tbar, Toolbar} from "./Toolbar.js";
 import {btn} from "./Button.js";
-import {DraggableComponent, DraggableComponentEventMap} from "./DraggableComponent.js";
+import {DragData, draggable, DraggableComponent, DraggableComponentEventMap} from "./DraggableComponent.js";
 import {Config, Listener, ObservableListenerOpts} from "./Observable.js";
 import {root} from "./Root.js";
 import {FunctionUtil} from "../util/FunctionUtil.js";
@@ -16,6 +16,7 @@ import {fieldset} from "./form/Fieldset.js";
 import {textfield} from "./form/TextField.js";
 import {t} from "../Translate.js";
 import {DateTime} from "../util/index.js";
+import {splitter} from "./Splitter.js";
 
 
 /**
@@ -94,6 +95,11 @@ export class Window extends DraggableComponent {
 	 * Enable tool to maximize window
 	 */
 	public maximizable = false
+
+	/**
+	 * Enable resizing on window edges and corners
+	 */
+	public resizable = false;
 
 	/**
 	 * Enable tool to close window
@@ -255,6 +261,7 @@ export class Window extends DraggableComponent {
 		});
 
 		if (this.resizable) {
+			this.initResizable();
 			this.observerResize();
 		}
 
@@ -263,6 +270,134 @@ export class Window extends DraggableComponent {
 		}
 
 		return el;
+	}
+
+	private resizeWidth(dragData:DragData,  invert = false) {
+		const offset = (dragData.x - dragData.startX) * (invert ? -1 : 1);
+
+		this.width = dragData.data.startWidth + Window.pxToRem(offset);
+
+		if(invert) {
+			this.el.style.left = (dragData.data.startLeft - offset) + "px";
+		}
+	}
+
+	private resizeHeight(dragData:DragData, invert = false) {
+		const offset = (dragData.y - dragData.startY) * (invert ? -1 : 1);
+		this.height = dragData.data.startHeight + Window.pxToRem(offset);
+		if(invert) {
+			this.el.style.top = (dragData.data.startTop - offset) + "px";
+		}
+	}
+
+
+
+	private initResizable() {
+
+		const onDragStart = (comp1:DraggableComponent, dragData:DragData) => {
+			dragData.data.startWidth = this.width;
+			dragData.data.startHeight = this.height;
+			dragData.data.startLeft = parseFloat(this.el.style.left);
+			dragData.data.startTop = parseFloat(this.el.style.top);
+		}
+
+		draggable({
+			cls: "resizer right",
+			setPosition: false,
+			listeners: {
+				dragstart: onDragStart,
+				drag: (comp1, dragData, e) => {
+					this.resizeWidth(dragData);
+				}
+			}
+		}).render(this.el);
+
+
+		draggable({
+			cls: "resizer left",
+			setPosition: false,
+			listeners: {
+				dragstart: onDragStart,
+				drag: (comp1, dragData, e) => {
+					this.resizeWidth(dragData, true);
+				}
+			}
+		}).render(this.el);
+
+
+		draggable({
+			cls: "resizer bottom",
+			setPosition: false,
+			listeners: {
+				dragstart: onDragStart,
+				drag: (comp1, dragData, e) => {
+					this.resizeHeight(dragData, false);
+				}
+			}
+		}).render(this.el);
+
+
+		draggable({
+			cls: "resizer top",
+			setPosition: false,
+			listeners: {
+				dragstart: onDragStart,
+				drag: (comp1, dragData, e) => {
+					this.resizeHeight(dragData, true);
+				}
+			}
+		}).render(this.el);
+
+
+		draggable({
+			cls: "resizer bottomright",
+			setPosition: false,
+			listeners: {
+				dragstart: onDragStart,
+				drag: (comp1, dragData, e) => {
+					this.resizeHeight(dragData, false);
+					this.resizeWidth(dragData, false);
+				}
+			}
+		}).render(this.el);
+
+		draggable({
+			cls: "resizer bottomleft",
+			setPosition: false,
+			listeners: {
+				dragstart: onDragStart,
+				drag: (comp1, dragData, e) => {
+					this.resizeHeight(dragData, false);
+					this.resizeWidth(dragData, true);
+				}
+			}
+
+		}).render(this.el);
+
+		draggable({
+			cls: "resizer topright",
+			setPosition: false,
+			listeners: {
+				dragstart: onDragStart,
+				drag: (comp1, dragData, e) => {
+					this.resizeHeight(dragData, true);
+					this.resizeWidth(dragData, false);
+				}
+			}
+		}).render(this.el);
+
+		draggable({
+			cls: "resizer topleft",
+			setPosition: false,
+			listeners: {
+				dragstart: onDragStart,
+				drag: (comp1, dragData, e) => {
+					this.resizeHeight(dragData, true);
+					this.resizeWidth(dragData, true);
+				}
+			}
+		}).render(this.el);
+
 	}
 
 	private observerResize() {
