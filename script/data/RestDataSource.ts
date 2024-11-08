@@ -261,5 +261,9 @@ export class RestDataSource<EntityType extends BaseEntity = DefaultEntity> exten
 		return {}
 	}
 
+	protected async internalMerge(ids:EntityID[]) {
+		return Promise.reject("Not implemented");
+	}
+
 }
 

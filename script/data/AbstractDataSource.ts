@@ -120,6 +120,15 @@ export interface CommitResponse<EntityType extends BaseEntity> {
 	oldState?: string
 }
 
+
+export interface MergeResponse<EntityType extends BaseEntity> {
+	destroyed: EntityID[],
+	id: EntityID,
+	newState: string
+	oldState: string,
+	updated: Record<EntityID, EntityType>
+}
+
 /**
  * @category Data
  */
@@ -915,4 +924,44 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	 * @param params
 	 */
 	protected abstract internalQuery(params: QueryParams): Promise<QueryResponse>;
+
+
+	/**
+	 * Merge duplicated entities into one
+	 *
+	 * @param ids
+	 */
+	public async merge(ids:EntityID[]) : Promise<MergeResponse<EntityType>> {
+
+		const response = await this.internalMerge(ids);
+
+		if (response.updated) {
+			for (const serverId in response.updated) {
+				//merge existing data, with updates from client and server
+				const entity = Object.assign(this.data[serverId], response.updated[serverId]);
+				void this.add(entity);
+			}
+		}
+
+		if (response.destroyed) {
+			for (let i = 0, l = response.destroyed.length; i < l; i++) {
+				void this.remove(response.destroyed[i]);
+			}
+		}
+
+		await this.setState(response.newState);
+
+		this.fire("change", this, {
+			created: [],
+			updated: response.updated ? Object.keys(response.updated) : [],
+			destroyed: response.destroyed || [],
+			oldState: response.oldState,
+			newState: response.newState
+		});
+
+		return response;
+	}
+
+
+	protected abstract internalMerge(ids: EntityID[]) : Promise<MergeResponse<EntityType>>;
 }
