@@ -16,7 +16,6 @@ import {fieldset} from "./form/Fieldset.js";
 import {textfield} from "./form/TextField.js";
 import {t} from "../Translate.js";
 import {DateTime} from "../util/index.js";
-import {splitter} from "./Splitter.js";
 
 
 /**
@@ -79,7 +78,6 @@ export class Window extends DraggableComponent {
 
 	constructor() {
 		super();
-		this.resizable = true;
 		this.width = 400;
 		this.hidden = true;
 	}
@@ -120,7 +118,6 @@ export class Window extends DraggableComponent {
 	private titleCmp!: Component;
 	private header!: Toolbar;
 	private modalOverlay: Component | undefined;
-	private resizeObserver?: ResizeObserver;
 
 	/**
 	 * Return focus to element focussed before opening it when closing the window
@@ -262,7 +259,6 @@ export class Window extends DraggableComponent {
 
 		if (this.resizable) {
 			this.initResizable();
-			this.observerResize();
 		}
 
 		if (this.modal) {
@@ -294,6 +290,11 @@ export class Window extends DraggableComponent {
 
 	private initResizable() {
 
+
+		const saveState = FunctionUtil.buffer(200, () => {
+			void this.saveState();
+		});
+
 		const onDragStart = (comp1:DraggableComponent, dragData:DragData) => {
 			dragData.data.startWidth = this.width;
 			dragData.data.startHeight = this.height;
@@ -308,7 +309,8 @@ export class Window extends DraggableComponent {
 				dragstart: onDragStart,
 				drag: (comp1, dragData, e) => {
 					this.resizeWidth(dragData);
-				}
+				},
+
 			}
 		}).render(this.el);
 
@@ -320,7 +322,8 @@ export class Window extends DraggableComponent {
 				dragstart: onDragStart,
 				drag: (comp1, dragData, e) => {
 					this.resizeWidth(dragData, true);
-				}
+				},
+				drop: saveState
 			}
 		}).render(this.el);
 
@@ -332,7 +335,8 @@ export class Window extends DraggableComponent {
 				dragstart: onDragStart,
 				drag: (comp1, dragData, e) => {
 					this.resizeHeight(dragData, false);
-				}
+				},
+				drop: saveState
 			}
 		}).render(this.el);
 
@@ -344,7 +348,8 @@ export class Window extends DraggableComponent {
 				dragstart: onDragStart,
 				drag: (comp1, dragData, e) => {
 					this.resizeHeight(dragData, true);
-				}
+				},
+				drop: saveState
 			}
 		}).render(this.el);
 
@@ -357,7 +362,8 @@ export class Window extends DraggableComponent {
 				drag: (comp1, dragData, e) => {
 					this.resizeHeight(dragData, false);
 					this.resizeWidth(dragData, false);
-				}
+				},
+				drop: saveState
 			}
 		}).render(this.el);
 
@@ -369,7 +375,8 @@ export class Window extends DraggableComponent {
 				drag: (comp1, dragData, e) => {
 					this.resizeHeight(dragData, false);
 					this.resizeWidth(dragData, true);
-				}
+				},
+				drop: saveState
 			}
 
 		}).render(this.el);
@@ -382,7 +389,8 @@ export class Window extends DraggableComponent {
 				drag: (comp1, dragData, e) => {
 					this.resizeHeight(dragData, true);
 					this.resizeWidth(dragData, false);
-				}
+				},
+				drop: saveState
 			}
 		}).render(this.el);
 
@@ -394,32 +402,10 @@ export class Window extends DraggableComponent {
 				drag: (comp1, dragData, e) => {
 					this.resizeHeight(dragData, true);
 					this.resizeWidth(dragData, true);
-				}
+				},
+				drop: saveState
 			}
 		}).render(this.el);
-
-	}
-
-	private observerResize() {
-
-		const saveState = FunctionUtil.buffer(200, () => {
-			void this.saveState();
-		});
-
-		// observer callback always fires inititally and we don't want to save state on init. ONly on resize.
-		// See: https://github.com/WICG/resize-observer/issues/8
-		let init = false;
-
-		this.resizeObserver = new ResizeObserver(() => {
-
-			if (init) {
-				saveState();
-			} else {
-				init = true;
-			}
-		});
-
-		this.resizeObserver.observe(this.el!);
 
 	}
 
@@ -580,11 +566,6 @@ export class Window extends DraggableComponent {
 
 		if (this.focussedBeforeOpen instanceof HTMLElement) {
 			this.focussedBeforeOpen.focus();
-		}
-
-		if (this.resizeObserver) {
-			//otherwise it will fire when removing this element.
-			this.resizeObserver.disconnect();
 		}
 
 		if (this.modalOverlay) {
