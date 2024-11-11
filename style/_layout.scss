@@ -248,7 +248,7 @@ html {
 .goui.card {
 	border-radius: config.$borderRadius;
 	margin: util.dp(8);
-	background-color: white;
+	background-color: var(--bg-lowest);
 	overflow:hidden;
 	@extend .z2;
 }
