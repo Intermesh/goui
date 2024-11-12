@@ -527,10 +527,15 @@ export class Window extends DraggableComponent {
 	}
 
 	protected internalRemove() {
+		if (this.focussedBeforeOpen instanceof HTMLElement) {
+			this.focussedBeforeOpen.focus();
+		}
 
-		if(this.modalOverlay) {
+		if (this.modalOverlay) {
+			this.enableBodyScroll();
 			this.modalOverlay.remove();
 		}
+		this.header.remove();
 
 		super.internalRemove();
 	}
@@ -566,27 +571,7 @@ export class Window extends DraggableComponent {
 		});
 		document.documentElement.style.scrollBehavior = "";
 	}
-
-
-	/**
-	 * @inheritDoc
-	 */
-	public remove() {
-
-		if (this.focussedBeforeOpen instanceof HTMLElement) {
-			this.focussedBeforeOpen.focus();
-		}
-
-		if (this.modalOverlay) {
-			this.enableBodyScroll();
-			this.modalOverlay.remove();
-		}
-		this.header.remove();
-
-		return super.remove();
-	}
-
-	/**
+		/**
 	 * Close the window by removing it
 	 */
 	public close() {
