@@ -168,13 +168,6 @@ export interface List<StoreType extends Store = Store> extends Component {
 	fire<K extends keyof ListEventMap<this>>(eventName: K, ...args: Parameters<ListEventMap<any>[K]>): boolean
 }
 
-const dropPin = comp({
-	cls: "drop-pin",
-	hidden: true
-})
-
-root.items.add(dropPin);
-
 /**
  * List component
  *
