@@ -45,9 +45,20 @@ export class DateField extends InputField {
 	 */
 	public defaultTime?: string;
 
+	// Don't use native event as chrome fires change on every key stroke
+	protected fireChangeOnBlur = true;
+
 	constructor() {
 		super();
 		this.type = "date";
+	}
+
+	protected createInput() : HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement{
+		const control = document.createElement("input");
+		if (this.invalidMsg) {
+			this.applyInvalidMsg();
+		}
+		return control;
 	}
 
 	/**
