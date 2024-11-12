@@ -787,7 +787,7 @@ export class Window extends DraggableComponent {
 						width: 600,
 						listeners: {
 							focus: (w) => {
-								w.findChild("no")!.focus();
+								w.findChild("yes")!.focus();
 							}
 						}
 					},
