@@ -831,8 +831,8 @@ export class DateTime {
 		'M': date => DateTime.monthNames[date.getMonth() - 1].substring(0, 3),
 		'n': date => date.getMonth().toString(),
 
-		'Y': date => date.getYear().toString(),
-		'y': date => (date.getYear() + "").substr(-2),
+		'Y': date => (""+date.getYear()).padStart(4, '0'),
+		'y': date => (date.getYear() + "").substr(-2).padStart(4, '0'),
 		'a': date => date.getHours() >= 12 ? 'pm' : 'am',
 		'A': date => date.getHours() >= 12 ? 'PM' : 'AM',
 
