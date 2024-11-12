@@ -611,6 +611,13 @@ export abstract class Field extends Component {
 		this.fire("validate", this);
 	}
 
+	protected internalRemove() {
+		if(this.toolbar) {
+			this.toolbar.remove();
+		}
+		super.internalRemove();
+	}
+
 
 	/*
 
