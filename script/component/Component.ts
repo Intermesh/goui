@@ -372,14 +372,12 @@ export class Component extends Observable {
 
 		//remove previously set
 		if(this._cls) {
-			this._cls.split(/\s+/).forEach(cls => {
-				this.el.classList.remove(cls);
-			})
+			this.el.classList.remove(...this._cls.split(/\s+/));
 		}
 
 		this._cls = cls;
 		this.initClassName();
-		this.el.className += " " + cls;
+		this.el.classList.add(...cls.split(/\s+/));
 	}
 
 	get cls() {
@@ -392,7 +390,7 @@ export class Component extends Observable {
 		}
 		this.el.classList.add("goui");
 		if (this.baseCls) {
-			this.el.className += " " + this.baseCls;
+			this.el.classList.add(...this.baseCls.split(/\s+/));
 		}
 	}
 
@@ -468,13 +466,13 @@ export class Component extends Observable {
 			}
 		}
 
+		this.internalRender();
+
 		if (!insertBefore) {
 			parentEl.appendChild(this.el);
 		} else {
 			parentEl.insertBefore(this.el, insertBefore);
 		}
-
-		this.internalRender();
 
 		this._rendered = true;
 

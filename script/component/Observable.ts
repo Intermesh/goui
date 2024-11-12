@@ -213,6 +213,13 @@ export class Observable {
 			return this.fire(type, ...args);
 		});
 	}
+
+	/**
+	 * Remove all listeners
+	 */
+	public removeAllListeners() {
+		this.lisnrs = {};
+	}
 }
 
 

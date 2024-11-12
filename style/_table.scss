@@ -211,9 +211,11 @@
     }
   }
 
-  + .goui-toolbar {
-    margin-top: util.dp(16);
-  }
+	// somehow detached objects appeared in the Table if this class was added after adding the element to the DOM.
+	// This css makes no sense but I left it here because it caused this memory problem.
+  //+ .goui-toolbar {
+  //  margin-top: util.dp(16);
+  //}
 
 	td.sticky-col {
 		background-color: config.$surfaceMid;
