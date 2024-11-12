@@ -75,9 +75,7 @@ export class CardContainer extends Component {
 	protected internalRender() {
 		this.setCardVisibilities();
 
-		const el = super.internalRender();
-
-		return el;
+		return super.internalRender();
 	}
 
 	protected renderItems() {

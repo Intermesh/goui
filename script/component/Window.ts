@@ -526,6 +526,15 @@ export class Window extends DraggableComponent {
 		}
 	}
 
+	protected internalRemove() {
+
+		if(this.modalOverlay) {
+			this.modalOverlay.remove();
+		}
+
+		super.internalRemove();
+	}
+
 	private shrinkToFit() {
 		if (this.el.offsetHeight > window.innerHeight) {
 			this.el.style.height = window.innerHeight * .9 + "px";
