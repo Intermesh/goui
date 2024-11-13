@@ -217,7 +217,7 @@ export type dataSourceEntityType<DS> = DS extends AbstractDataSource<infer Entit
 
 export interface AbstractDataSource<EntityType extends BaseEntity = DefaultEntity>  extends Observable {
 	on<K extends keyof DataSourceEventMap<this>>(eventName: K, listener: DataSourceEventMap<this>[K], options?: ObservableListenerOpts): DataSourceEventMap<this>[K]
-	un<K extends keyof DataSourceEventMap<this>>(eventName: K, listener: RouterEventMap<this>[K]): boolean
+	un<K extends keyof DataSourceEventMap<this>>(eventName: K, listener: DataSourceEventMap<this>[K]): boolean
 	fire<K extends keyof DataSourceEventMap<this>>(eventName: K, ...args: Parameters<DataSourceEventMap<this>[K]>): boolean
 }
 

@@ -58,7 +58,12 @@ export interface ObservableListenerOpts {
 	/**
 	 * Put this listener before existing listeners instead of after
 	 */
-	unshift?: boolean
+	unshift?: boolean,
+
+	/**
+	 * Call the function with this argument as thisArg.
+	 */
+	bind?: any
 }
 
 /**
@@ -92,19 +97,23 @@ export class Observable {
 	public on<key extends keyof ObservableEventMap<this>, L extends Listener>(eventName: keyof ObservableEventMap<this>, listener: ObservableEventMap<this>[key], options?: ObservableListenerOpts) : L {
 
 		//store original listener for the un() method. Because options may change the function
-		const unbindkey = listener!;
+		const unbindkey = listener;
 
 		if (options) {
 			if (options.buffer !== undefined) {
-				listener = FunctionUtil.buffer(options.buffer, listener!) as never;
+				listener = FunctionUtil.buffer(options.buffer, listener) as never;
 			}
 
 			if (options.once) {
-				listener = this.once(eventName, listener!) as never;
+				listener = this.once(eventName, listener) as never;
 			}
 
 			if (options.delay) {
-				listener = FunctionUtil.delay(options.delay, listener!) as never;
+				listener = FunctionUtil.delay(options.delay, listener) as never;
+			}
+
+			if(options.bind) {
+				listener = (listener as Function).bind(options.bind);
 			}
 		}
 		this.lisnrs = this.lisnrs || {};

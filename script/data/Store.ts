@@ -6,7 +6,8 @@
 import {Config, Listener, ObservableListenerOpts} from "../component/Observable.js";
 import {ArrayUtil} from "../util/ArrayUtil.js";
 import {Collection, CollectionEventMap} from "../util/Collection.js";
-import {createComponent} from "../component/Component.js";
+import {Component, createComponent} from "../component/Component.js";
+import {Window} from "../component/index.js";
 
 /**
  * Comparator interface for sorting data
@@ -24,6 +25,18 @@ export interface Comparator {
 }
 
 export type StoreRecord = Record<string, any>
+
+
+/**
+ * Interface for a component that uses a store to present data
+ */
+export interface StoreComponent<StoreType extends Store = Store> extends Component {
+	onStoreLoadException: (store:StoreType, reason:any) => void;
+	onBeforeStoreLoad: (store:StoreType) => void
+	onStoreLoad: (store:StoreType) => void;
+	onRecordRemove: (collection: StoreType, item: any, index: number) => void;
+  onRecordAdd: (collection: StoreType, item: any, index: number) => void
+}
 
 
 /**
@@ -55,9 +68,9 @@ export interface StoreEventMap<Type, RecordType> extends CollectionEventMap<Type
 	loadexception: (store: Type, reason:any) => void
 }
 
-export interface Store<RecordType = StoreRecord> {
+export interface Store<RecordType extends StoreRecord = StoreRecord > {
 	on<K extends keyof StoreEventMap<this, RecordType>, L extends Listener>(eventName: K, listener: Partial<StoreEventMap<this, RecordType>>[K], options?: ObservableListenerOpts): L
-
+	un<K extends keyof StoreEventMap<this, RecordType>, L extends Listener>(eventName: K, listener: Partial<StoreEventMap<this, RecordType>>[K]): boolean
 	fire<K extends keyof StoreEventMap<this, RecordType>>(eventName: K, ...args: Parameters<StoreEventMap<any, RecordType>[K]>): boolean
 
 }
@@ -69,7 +82,7 @@ export type storeRecordType<StoreType> = StoreType extends Store<infer RecordTyp
  *
  * @category Data
  */
-export class Store<RecordType = StoreRecord> extends Collection<RecordType> {
+export class Store<RecordType extends StoreRecord  = StoreRecord> extends Collection<RecordType> {
 
 	// private static stores: Record<string, Store> = {};
 	//
@@ -85,6 +98,12 @@ export class Store<RecordType = StoreRecord> extends Collection<RecordType> {
 	 * Sort the data on field and direction
 	 */
 	public sort: Comparator[] = [];
+
+	/**
+	 * Register of all components bound to this store using {@see bindStore()}
+	 * @private
+	 */
+	protected readonly components: Component[] = [];
 
 	/**
 	 * True when the store is loading
@@ -123,6 +142,36 @@ export class Store<RecordType = StoreRecord> extends Collection<RecordType> {
 
 	get data() {
 		return this.getArray();
+	}
+
+	/**
+	 * Binds as component to this store so it can update when the store changes
+	 * @param comp
+	 */
+	public bindComponent(comp: StoreComponent<this>) {
+
+		this.components.push(comp);
+// handling remove and add per items allows a drag and drop action via store.remove and store.add
+		this.on("remove", comp.onRecordRemove, {bind: comp});
+		this.on("add", comp.onRecordAdd, {bind: comp});
+		this.on("beforeload", comp.onBeforeStoreLoad, {bind: comp});
+		this.on("load",comp.onStoreLoad, {bind: comp});
+		this.on("loadexception", comp.onStoreLoadException, {bind: comp})
+
+		comp.on("remove", () => {
+			this.unbindComponent(comp);
+		})
+	}
+
+	public unbindComponent(comp: StoreComponent<this>) {
+		this.un("remove", comp.onRecordRemove);
+		this.un("add", comp.onRecordAdd);
+		this.un("beforeload", comp.onBeforeStoreLoad);
+		this.un("load",comp.onStoreLoad);
+		this.un("loadexception", comp.onStoreLoadException);
+
+		const i = this.components.indexOf(comp);
+		this.components.splice(i, 1);
 	}
 
 	/**

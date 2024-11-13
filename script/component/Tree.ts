@@ -337,7 +337,7 @@ export class Tree extends List<Store<TreeRecord>> {
 		return sub;
 	}
 
-	protected onRecordRemove(collection: Store<TreeRecord>, item: StoreRecord, index: number) {
+	public onRecordRemove(collection: Store<TreeRecord>, item: StoreRecord, index: number) {
 		if(item.subTree) {
 			// remove tree with wrap.
 			item.subTree.remove();

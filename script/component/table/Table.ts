@@ -618,7 +618,7 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 		return this.groupEl;
 	}
 
-	protected onRecordRemove(collection: StoreType, item: StoreRecord, index: number) {
+	public onRecordRemove(collection: StoreType, item: StoreRecord, index: number) {
 
 		let groupEl;
 		if(this.groupBy) {

@@ -5,12 +5,11 @@
  */
 
 import {assignComponentConfig, comp, Component, ComponentEventMap, createComponent} from "./Component.js";
-import {Store, StoreRecord} from "../data/Store.js";
+import {Store, StoreComponent, StoreRecord} from "../data/Store.js";
 import {t} from "../Translate.js";
 import {E} from "../util/Element.js";
 import {rowselect, RowSelect, RowSelectConfig} from "./table/index.js";
 import {Config, Listener, ObservableListenerOpts} from "./Observable.js";
-import {root} from "./Root.js";
 import {Window} from "./Window.js";
 import {Sortable} from "./Sortable.js";
 
@@ -173,7 +172,7 @@ export interface List<StoreType extends Store = Store> extends Component {
  *
  * Create a list with a custom item renderer. Also capable of selecting rows.
  */
-export class List<StoreType extends Store = Store> extends Component {
+export class List<StoreType extends Store = Store> extends Component implements StoreComponent<StoreType> {
 	/**
 	 * Shown when the list is empty.
 	 */
@@ -237,20 +236,7 @@ export class List<StoreType extends Store = Store> extends Component {
 		super(tagName);
 		this.tabIndex = 0;
 
-		store.on("beforeload", () => {
-			this.mask()
-		});
-		store.on("load", () => {
-			this.unmask();
-			if (this.emptyEl) {
-				this.emptyEl.hidden = this.store.count() > 0;
-			}
-		});
 
-		store.on("loadexception", (store, reason) => {
-			Window.error(reason);
-			this.unmask();
-		})
 	}
 
 	get rowSelection(): RowSelect | undefined {
@@ -331,16 +317,31 @@ export class List<StoreType extends Store = Store> extends Component {
 	}
 
 	protected initStore() {
-		// handling remove and add per items allows a drag and drop action via store.remove and store.add
-		this.store.on("remove", this.onRecordRemove.bind(this));
-		this.store.on("add", this.onRecordAdd.bind(this));
+		this.store.bindComponent(this);
 
 		if (this.scrollLoad && this.parent) {
 			this.store.addScrollLoader(this.parent.el);
 		}
 	}
 
-	protected onRecordRemove(collection: StoreType, item: StoreRecord, index: number) {
+	public onStoreLoadException(store:StoreType, reason:any) {
+		void Window.error(reason);
+		this.unmask();
+	}
+
+
+	public onBeforeStoreLoad() {
+		this.mask()
+	}
+
+	public onStoreLoad() {
+		this.unmask();
+		if (this.emptyEl) {
+			this.emptyEl.hidden = this.store.count() > 0;
+		}
+	}
+
+	public onRecordRemove(collection: StoreType, item: any, index: number) {
 		const rows = this.getRowElements();
 		rows[index]?.remove();
 
@@ -351,7 +352,7 @@ export class List<StoreType extends Store = Store> extends Component {
 	}
 
 	//todo inserting doesn't work with groups yet. It can only append to the last
-	protected onRecordAdd(collection: StoreType, item: StoreRecord, index: number) {
+	public onRecordAdd(collection: StoreType, item: StoreRecord, index: number) {
 
 		const container = this.renderGroup(item)
 

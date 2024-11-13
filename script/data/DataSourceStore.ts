@@ -3,7 +3,7 @@
  * @copyright Copyright 2023 Intermesh BV
  * @author Merijn Schering <mschering@intermesh.nl>
  */
-import {Store, StoreConfig, StoreEventMap, StoreRecord} from "../data/Store.js";
+import {Store, StoreComponent, StoreConfig, StoreEventMap, StoreRecord} from "../data/Store.js";
 import {
 	AbstractDataSource,
 	BaseEntity,
@@ -14,7 +14,7 @@ import {
 	Filter
 } from "./AbstractDataSource.js";
 import {ObjectUtil} from "../util/index.js";
-import {createComponent, ObservableListener} from "../component/index.js";
+import {comp, createComponent, ObservableListener} from "../component/index.js";
 
 
 /**
@@ -42,7 +42,9 @@ type RecordBuilder<EntityType, StoreRecord> = (entity: EntityType) => Promise<St
  * Uses an {@see AbstractDataSource} to present data in the view.
  * @category Data
  */
-export class DataSourceStore<DataSource extends AbstractDataSource = AbstractDataSource, StoreRecord = dataSourceEntityType<DataSource>> extends Store<StoreRecord> {
+export class DataSourceStore<
+	DataSource extends AbstractDataSource = AbstractDataSource,
+	RecordType extends StoreRecord = dataSourceEntityType<DataSource>> extends Store<RecordType> {
 
 	public queryParams: Omit<QueryParams, "sort"> = {};
 
@@ -65,25 +67,44 @@ export class DataSourceStore<DataSource extends AbstractDataSource = AbstractDat
 	 * Builds record from entity
 	 * @param entity
 	 */
-	public buildRecord: RecordBuilder<dataSourceEntityType<DataSource>, StoreRecord> = async (entity) => <StoreRecord><unknown>entity;
+	public buildRecord: RecordBuilder<dataSourceEntityType<DataSource>, RecordType> = async (entity) => <RecordType><unknown>entity;
 	// private bufferedLoad?: (...args:any[]) => Promise<StoreRecord[]>;
 
 	constructor(public dataSource:DataSource) {
 		super();
 
-		this.dataSource.on('change', (dataSource, changes) => {
-			void this.onChange(dataSource, changes);
-		});
+
 	}
+
+	private listening = false;
 
 	/**
 	 * Reloads the store when the datasource changes
 	 *
 	 * @protected
 	 */
-	protected async onChange(DataSource:DataSource, changes: Changes) {
+	protected onDSChange(DataSource:DataSource, changes: Changes) {
 		if (this.loaded && this.monitorChanges && !this.loading) {
 			void this.reload();
+		}
+	}
+
+	bindComponent(comp: StoreComponent<this>) {
+		super.bindComponent(comp);
+
+		if(!this.listening) {
+			this.dataSource.on('change', this.onDSChange, {bind: this});
+			this.listening = true;
+		}
+
+	}
+
+	unbindComponent(comp: StoreComponent<this>) {
+		super.unbindComponent(comp);
+
+		if(!this.components.length) {
+			this.dataSource.un("change", this.onDSChange);
+			this.listening = false;
 		}
 	}
 
@@ -146,7 +167,7 @@ export class DataSourceStore<DataSource extends AbstractDataSource = AbstractDat
 
 	private keepPosition = false;
 
-	reload(): Promise<StoreRecord[]> {
+	reload(): Promise<RecordType[]> {
 		const limit = this.queryParams.limit, pos = this.queryParams.position ;
 		this.queryParams.position = 0;
 		if(limit) {
@@ -162,7 +183,7 @@ export class DataSourceStore<DataSource extends AbstractDataSource = AbstractDat
 		return r;
 	}
 
-	load(append: boolean = false): Promise<StoreRecord[]> {
+	load(append: boolean = false): Promise<RecordType[]> {
 		if(!this.keepPosition) {
 			this.queryParams.position = 0;
 		}
@@ -183,7 +204,7 @@ export class DataSourceStore<DataSource extends AbstractDataSource = AbstractDat
 		return r;
 	}
 
-	loadPrevious(): Promise<StoreRecord[]> {
+	loadPrevious(): Promise<RecordType[]> {
 		if (!this.queryParams.limit) {
 			throw new Error("Limit and position must be set!");
 		}
