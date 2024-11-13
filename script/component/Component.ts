@@ -375,10 +375,10 @@ export class Component extends Observable {
 			this.el.classList.remove(...this._cls.split(/\s+/));
 		}
 
-		this._cls = cls;
+		this._cls = cls.trim();
 		this.initClassName();
-		if(cls) {
-			this.el.classList.add(...cls.split(/\s+/));
+		if(this._cls) {
+			this.el.classList.add(...this._cls.split(/\s+/));
 		}
 	}
 
@@ -392,7 +392,7 @@ export class Component extends Observable {
 		}
 		this.el.classList.add("goui");
 		if (this.baseCls) {
-			this.el.classList.add(...this.baseCls.split(/\s+/));
+			this.el.classList.add(...this.baseCls.trim().split(/\s+/));
 		}
 	}
 
