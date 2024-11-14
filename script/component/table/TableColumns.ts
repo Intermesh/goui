@@ -199,7 +199,6 @@ export class CheckboxColumn extends TableColumn {
 		super(id);
 
 		this.cls = "checkbox-select-column";
-
 	}
 
 	renderer : TableColumnRenderer = (val, record, td, table, rowIndex, column) => {
@@ -226,7 +225,7 @@ export class CheckboxColumn extends TableColumn {
 
 
 
-type CheckboxColumnConfig = Config<TableColumn, CheckboxColumnEventMap<TableColumn>> & {
+type CheckboxColumnConfig = Config<CheckboxColumn, CheckboxColumnEventMap<TableColumn>> & {
 	/**
 	 * The ID of the column which is also the default for the column 'property'
 	 */
@@ -307,7 +306,7 @@ export class CheckboxSelectColumn extends TableColumn {
 	}
 }
 
-export const checkboxselectcolumn = (config?: TableColumnConfig) => createComponent(new CheckboxSelectColumn(config && config.id ? config.id : "checkboxselect"), config);
+export const checkboxselectcolumn = (config?: CheckboxColumnConfig) => createComponent(new CheckboxSelectColumn(config && config.id ? config.id : "checkboxselect"), config);
 
 
 /**
