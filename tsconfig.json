@@ -4,10 +4,10 @@
     "target": "es2020",
     "sourceMap": true,
     "lib": ["es2020", "dom"],
-    "moduleResolution": "nodenext",
+    "moduleResolution": "bundler",
     "esModuleInterop": true,
     "isolatedModules": true, // important for tree shaking in esbuild
-    "module":"nodenext",
+    "module":"preserve",
     "baseUrl": ".",
     "outDir": "./dist",
     "declaration": true,
