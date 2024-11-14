@@ -73,7 +73,8 @@ export class DataSourceStore<
 	constructor(public dataSource:DataSource) {
 		super();
 
-
+		// Always start listening for changes. If no component is bound then it will always stay in memory.
+		this.listen();
 	}
 
 	private listening = false;
@@ -92,11 +93,15 @@ export class DataSourceStore<
 	bindComponent(comp: StoreComponent<this>) {
 		super.bindComponent(comp);
 
+		this.listen();
+
+	}
+
+	private listen() {
 		if(!this.listening) {
 			this.dataSource.on('change', this.onDSChange, {bind: this});
 			this.listening = true;
 		}
-
 	}
 
 	unbindComponent(comp: StoreComponent<this>) {
