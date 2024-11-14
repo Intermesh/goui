@@ -468,13 +468,17 @@ export class Component extends Observable {
 			}
 		}
 
-		this.internalRender();
-
 		if (!insertBefore) {
 			parentEl.appendChild(this.el);
 		} else {
 			parentEl.insertBefore(this.el, insertBefore);
 		}
+
+		// It actually makes more sense to me to render before inserting to the DOM. Perhaps
+		// that also performs better but there is a problem with rendering ExtJS components inside GOUI
+		// components if we do that. ExtJS relies on the elements alread being in the DOM tree.
+		// For now we have to do it afterwards.
+		this.internalRender();
 
 		this._rendered = true;
 
