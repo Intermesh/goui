@@ -68,11 +68,11 @@ export class TimeField extends InputField {
 				dt.setMinutes(0);
 
 			}
-			if(btn.dataSet.hour) {
+			if(btn.dataSet.hour !== undefined) {
 				dt.setHours(btn.dataSet.hour);
 			}
 
-			if(btn.dataSet.min) {
+			if(btn.dataSet.min !== undefined) {
 				dt.setMinutes(btn.dataSet.min);
 			}
 
