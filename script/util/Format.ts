@@ -5,6 +5,7 @@
  */
 import {DateTime, Timezone} from "./DateTime.js";
 import {t} from "../Translate.js";
+import Autolinker from "autolinker";
 
 /**
  * Formatting utilities
@@ -52,6 +53,34 @@ export class Format {
 		const p = document.createElement('p');
 		p.innerText = str;
 		return p.innerHTML;
+	}
+
+
+	/**
+	 * Replace newlines with <br /> tag
+	 *
+	 * @param text
+	 */
+	public static nl2br(text:string) {
+		return text.replace(/\r?\n/g, '<br />');
+	}
+
+
+	/**
+	 * Convert plain text to HTML with hyperlinks
+	 *
+	 * @param text
+	 */
+	public static textToHtml(text:string) {
+		if (!text) {
+			return text;
+		}
+		return this.nl2br(
+			Autolinker.link(
+				this.escapeHTML(text),
+				{stripPrefix: false, stripTrailingSlash: false, newWindow: true, phone: false}
+			)
+		);
 	}
 
 	/**

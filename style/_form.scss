@@ -264,6 +264,23 @@ $formFieldBorderRadius: util.dp(10);
 
 .goui-display-field {
 
+	&.pit {
+		.wrap {
+			@extend %control-pit;
+
+
+			div.label {
+				display: flex;
+				align-items: center;
+				top:0;
+				overflow: visible;
+				pointer-events: none;
+				height: config.$borderWidth;
+				background-color: config.$colorBackgroundInput;
+			}
+		}
+	}
+
 	&.right {
 		.control {
 			text-align: right;
@@ -328,6 +345,7 @@ $formFieldBorderRadius: util.dp(10);
 		}
 
 		div.label {
+			padding: 0 util.dp(4);
 			font-size: util.sp(13);
 			line-height: util.sp(13);
 			display:block;
@@ -339,7 +357,7 @@ $formFieldBorderRadius: util.dp(10);
 			color: config.$colorTextSecondary;
 			vertical-align: top;
 			position:absolute;
-			left: util.dp(18);
+			left: util.dp(16);
 			top: util.dp(-6.5);
 		}
 
