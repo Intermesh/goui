@@ -7,6 +7,8 @@
 
 $formFieldBorderRadius: util.dp(10);
 
+
+
 .checkbox-group {
 	//reset fieldset defaults
 	border: 0;
@@ -545,6 +547,12 @@ $formFieldBorderRadius: util.dp(10);
 	}
 	textarea {
 		line-height: config.$baseLineHeight;
+	}
+
+	&.time {
+		input::-webkit-calendar-picker-indicator {
+			display: none
+		}
 	}
 
 	&.duration {

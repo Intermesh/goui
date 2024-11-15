@@ -34,6 +34,19 @@ export class TimeField extends InputField {
 
 	}
 
+	fireChangeOnBlur = true;
+
+
+	protected createInput() : HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement{
+		const control = document.createElement("input");
+
+		if (this.invalidMsg) {
+			this.applyInvalidMsg();
+		}
+		return control;
+	}
+
+
 	private createMenu() {
 
 		const hrsContainer = comp({
@@ -88,16 +101,25 @@ export class TimeField extends InputField {
 		}
 
 		this.menu = menu({
-			renderTo: this.el,
-				autoClose: false,
+				renderTo: this.el,
+				// autoClose: false,
+				removeOnClose: false,
 				hidden: true,
 				height: 300,
 				width: 200,
 				isDropdown: true,
 				cls: "hbox",
 				listeners: {
-					hide: (menu) => {
+					beforehide: (menu) => {
+						// cancel hide if field still has focus
+						if(this.el.contains(document.activeElement)) {
+							//hide menu when clicked elsewhere
+							window.addEventListener("mousedown", (ev) => {
+								menu.close();
+							}, {once: true});
 
+							return false;
+						}
 					}
 				}
 			},
@@ -105,8 +127,8 @@ export class TimeField extends InputField {
 			minsContainer
 		);
 
-
-
+		// otherwise it will be rendered to the root el.
+		this.menu.parent = this;
 
 		this.input.addEventListener('focus', () => {
 			this.menu.show();
