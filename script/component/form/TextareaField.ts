@@ -48,6 +48,7 @@ export class TextAreaField extends InputField {
 			this.resize(input);
 		});
 		this.on("render", ()=>{this.resize(input);});
+		this.on("show", ()=>{this.resize(input);});
 		this.on('setvalue', ()=>{this.resize(input);});
 	}
 
