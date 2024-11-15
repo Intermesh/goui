@@ -189,7 +189,7 @@ export abstract class Field extends Component {
 
 	protected onFocusOut(e:FocusEvent) {
 
-		if (e.relatedTarget instanceof HTMLElement && this.el.contains(e.relatedTarget)) {
+		if (this.eventTargetIsInFocus(e)) {
 			//focus is still within this field
 			return;
 		}
@@ -219,9 +219,20 @@ export abstract class Field extends Component {
 		}
 	}
 
+	/**
+	 * Checks if the focus out or focus in is relevant for capturing the change event.
+	 * Useful to override when using a menu in the field. Then you should also check if the focus is in the menu.
+	 *
+	 * @param e
+	 * @protected
+	 */
+	protected eventTargetIsInFocus(e:FocusEvent) {
+		return (e.relatedTarget instanceof HTMLElement) && this.el.contains(e.relatedTarget);
+	}
+
 	protected onFocusIn(e:FocusEvent) {
 
-		if (this.hasFocus || (e.relatedTarget instanceof HTMLElement && this.el.contains(e.relatedTarget))) {
+		if (this.hasFocus || this.eventTargetIsInFocus(e)) {
 			//focus is still within this field
 			return;
 		}

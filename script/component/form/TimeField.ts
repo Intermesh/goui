@@ -101,7 +101,7 @@ export class TimeField extends InputField {
 		}
 
 		this.menu = menu({
-				renderTo: this.el,
+				// renderTo: this.el,
 				// autoClose: false,
 				removeOnClose: false,
 				hidden: true,
@@ -128,7 +128,7 @@ export class TimeField extends InputField {
 		);
 
 		// otherwise it will be rendered to the root el.
-		this.menu.parent = this;
+		// this.menu.parent = this;
 
 		this.input.addEventListener('focus', () => {
 			this.menu.show();
@@ -165,6 +165,10 @@ export class TimeField extends InputField {
 				this.menu.hide();
 			});
 		})
+	}
+
+	protected eventTargetIsInFocus(e: FocusEvent): boolean {
+		return super.eventTargetIsInFocus(e) || (e.relatedTarget instanceof HTMLElement) && this.menu.el.contains(e.relatedTarget);
 	}
 
 	protected internalRemove() {
