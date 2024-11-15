@@ -375,7 +375,7 @@ export class Component extends Observable {
 			this.el.classList.remove(...this._cls.split(/\s+/));
 		}
 
-		this._cls = cls.trim();
+		this._cls = cls ? cls.trim() : undefined;
 		this.initClassName();
 		if(this._cls) {
 			this.el.classList.add(...this._cls.split(/\s+/));
