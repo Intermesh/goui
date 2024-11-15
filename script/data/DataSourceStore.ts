@@ -90,7 +90,7 @@ export class DataSourceStore<
 		}
 	}
 
-	bindComponent(comp: StoreComponent<this>) {
+	bindComponent(comp: StoreComponent<this, RecordType>) {
 		super.bindComponent(comp);
 
 		this.listen();
@@ -104,7 +104,7 @@ export class DataSourceStore<
 		}
 	}
 
-	unbindComponent(comp: StoreComponent<this>) {
+	unbindComponent(comp: StoreComponent<this,RecordType>) {
 		super.unbindComponent(comp);
 
 		if(!this.components.length) {

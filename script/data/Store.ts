@@ -30,12 +30,12 @@ export type StoreRecord = Record<string, any>
 /**
  * Interface for a component that uses a store to present data
  */
-export interface StoreComponent<StoreType extends Store = Store> extends Component {
+export interface StoreComponent<StoreType extends Store = Store, RecordType extends StoreRecord = StoreRecord> extends Component {
 	onStoreLoadException: (store:StoreType, reason:any) => void;
 	onBeforeStoreLoad: (store:StoreType) => void
-	onStoreLoad: (store:StoreType) => void;
-	onRecordRemove: (collection: StoreType, item: any, index: number) => void;
-  onRecordAdd: (collection: StoreType, item: any, index: number) => void
+	onStoreLoad: (store:StoreType, records: RecordType[]) => void;
+	onRecordRemove: (collection: StoreType, item: RecordType, index: number) => void;
+  onRecordAdd: (collection: StoreType, item: RecordType, index: number) => void
 }
 
 
@@ -148,7 +148,7 @@ export class Store<RecordType extends StoreRecord  = StoreRecord> extends Collec
 	 * Binds as component to this store so it can update when the store changes
 	 * @param comp
 	 */
-	public bindComponent(comp: StoreComponent<this>) {
+	public bindComponent(comp: StoreComponent<this, RecordType>) {
 
 		this.components.push(comp);
 // handling remove and add per items allows a drag and drop action via store.remove and store.add
@@ -163,7 +163,7 @@ export class Store<RecordType extends StoreRecord  = StoreRecord> extends Collec
 		})
 	}
 
-	public unbindComponent(comp: StoreComponent<this>) {
+	public unbindComponent(comp: StoreComponent<this, RecordType>) {
 		this.un("remove", comp.onRecordRemove);
 		this.un("add", comp.onRecordAdd);
 		this.un("beforeload", comp.onBeforeStoreLoad);
