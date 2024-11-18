@@ -216,6 +216,7 @@ export class DatePicker extends Component {
 			dl.append(E('dd', itr.format('j')).attr('data-date', itr.format('Y-m-d'))
 				.cls('disabled', minStr > itrStr || maxStr < itrStr)
 				.cls('off', itr.format('Ym') !== this.value.format('Ym'))
+				.cls(['selected', 'tail', 'head'], itr.format('Ymd') === this.value.format('Ymd'))
 				.cls('today', itr.format(`Ymd`) === this.now.format("Ymd"))
 			);
 			itr.addDays(1);
