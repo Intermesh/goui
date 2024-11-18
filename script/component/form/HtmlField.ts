@@ -380,6 +380,7 @@ export class HtmlField extends Field {
 
 		root.items.add(this.tbar);
 
+
 		return this.tbar;
 	}
 
@@ -391,9 +392,9 @@ export class HtmlField extends Field {
 		const h = this.getToolbar().height;
 		const style = this.getToolbar().el.style;
 
-		const maxX = window.innerWidth - this.getToolbar().width;
-		style.left = Math.min(maxX, rect.x + window.scrollX) + "px";
-		style.top = (window.scrollY + rect.top - h - 8) + "px";
+		const maxX = Math.max(8, window.innerWidth - this.getToolbar().width);
+		style.left = Math.min(maxX, rect.x + window.scrollX + 8) + "px";
+		style.top = (window.scrollY + Math.max(8, rect.y - h + 14) ) + "px";
 	}
 
 	protected hideToolbar() {

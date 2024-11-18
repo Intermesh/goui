@@ -222,10 +222,8 @@
 	> hr {
 		height: util.dp(24);
 		border-top: 0;
-		border-right: config.$borderWidth solid config.$colorBorder;
-		border-color: currentColor;
-		margin: 0 util.dp(16);
-		opacity: .2
+		border-right: config.$borderWidth solid currentColor;
+		margin: 0 util.dp(8);
 	}
 
 	.goui-form-field {
