@@ -24,6 +24,7 @@ export class RestDataSource<EntityType extends BaseEntity = DefaultEntity> exten
 	 * @param uri The base URI of the REST API. for example https://groupoffice.com/api
 	 * @param id The Data source ID. Will be appended to the base uri above. for Example
 	 *  if the ID is "users" the uri will be: "https://groupoffice.com/api/users"
+	 * @param baseRequestOptions
 	 */
 	constructor(public readonly uri:string, id?: string, public baseRequestOptions: RequestInit = {
 		mode: "cors",
@@ -76,7 +77,8 @@ export class RestDataSource<EntityType extends BaseEntity = DefaultEntity> exten
 
 		const response = await fetch(url, opts);
 		if(!response.ok) {
-			throw "Request error: " + response.status + " " + response.statusText;
+			const body = await response.text();
+			throw new Error("Request error: " + response.status + " " + response.statusText + "\n\n" + body);
 		}
 		return await response.json();
 	}
