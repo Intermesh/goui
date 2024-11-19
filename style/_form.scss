@@ -247,8 +247,8 @@ $formFieldBorderRadius: util.dp(10);
 		border-top: config.$borderWidth solid config.$colorOutline;
 	}
 	&:not(:empty){
-		padding-bottom:util.dp(12);
-		margin-bottom:util.dp(-12);
+		padding-bottom: util.dp(12);
+		margin-bottom: util.dp(-12);
 	}
 }
 
@@ -265,10 +265,12 @@ $formFieldBorderRadius: util.dp(10);
 .goui-display-field {
 
 	&.pit {
+
 		.wrap {
 			@extend %control-pit;
 
 			div.control {
+				min-height: util.dp(46);
 				overflow: auto;
 				white-space: normal;
 				word-wrap: break-word;

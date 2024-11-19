@@ -73,7 +73,7 @@ export class Format {
 	 */
 	public static textToHtml(text:string) {
 		if (!text) {
-			return text;
+			return "";
 		}
 		return this.nl2br(
 			Autolinker.link(
