@@ -389,12 +389,12 @@ export class HtmlField extends Field {
 
 		//must be rendered before we can calc height
 		this.getToolbar().show();
-		const h = this.getToolbar().height;
+		const h = this.getToolbar().el.offsetHeight;
 		const style = this.getToolbar().el.style;
+		const maxX = Math.max(8, window.innerWidth - this.getToolbar().el.offsetWidth);
 
-		const maxX = Math.max(8, window.innerWidth - this.getToolbar().width);
-		style.left = Math.min(maxX, rect.x + window.scrollX + 8) + "px";
-		style.top = (window.scrollY + Math.max(8, rect.y - h + 14) ) + "px";
+		style.left = Math.min(maxX, rect.x + window.scrollX + 12) + "px";
+		style.top = (window.scrollY + Math.max(8, rect.y - h + 6) ) + "px";
 	}
 
 	protected hideToolbar() {
