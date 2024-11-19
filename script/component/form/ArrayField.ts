@@ -34,14 +34,15 @@ export interface ArrayField<Type extends FieldValue = Record<string, any>> exten
  */
 export class ArrayField<Type extends FieldValue = Record<string, any>> extends Field {
 
+	protected baseCls = '';
 	/**
 	 *
 	 * @param buildField Function that returns a new form field for an array item
 	 */
-	constructor(public buildField: FieldBuilder<Type>) {
-		super("div");
+	constructor(public buildField: FieldBuilder<Type>, tagName: keyof HTMLElementTagNameMap = "div") {
+		super(tagName);
 
-		this.baseCls = "flow";
+		this.cls = "flow";
 
 		this.items.on("datachanged", () => {
 			if(this.enableChangeEvent) {
@@ -133,4 +134,4 @@ export class ArrayField<Type extends FieldValue = Record<string, any>> extends F
  * @param config
  * @param items
  */
-export const arrayfield = <Type extends FieldValue = Record<string,any>>(config: ArrayFieldConfig<Type>, ...items: Field[]) => createComponent(new ArrayField<Type>(config.buildField), config, items);
+export const arrayfield = <Type extends FieldValue = Record<string,any>>(config: ArrayFieldConfig<Type>, ...items: Field[]) => createComponent(new ArrayField<Type>(config.buildField, config.tagName ?? 'div'), config, items);
