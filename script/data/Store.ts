@@ -91,7 +91,7 @@ export class Store<RecordType extends StoreRecord  = StoreRecord> extends Collec
 	//  */
 	// public id?: string;
 
-	private _loading = false;
+	private _loading?: Promise<RecordType[]>;
 	private _loaded = false;
 
 	/**
@@ -126,14 +126,10 @@ export class Store<RecordType extends StoreRecord  = StoreRecord> extends Collec
 	 * @param append
 	 */
 	public loadData(records: RecordType[], append = true) {
-		this._loading = true;
-		try {
-			append ? this.add(...records) : this.replace(...records);
-			this._loaded = true;
-			this.fire("load", this, records, append);
-		} finally {
-			this._loading = false;
-		}
+		append ? this.add(...records) : this.replace(...records);
+		this._loaded = true;
+		this.fire("load", this, records, append);
+
 	}
 
 	set data(records: RecordType[]) {
@@ -205,17 +201,17 @@ export class Store<RecordType extends StoreRecord  = StoreRecord> extends Collec
 	 * @param append
 	 */
 	public load(append = false): Promise<RecordType[]> {
-		this._loading = true;
 		this.fire("beforeload", this, append);
-		return this.internalLoad(append)
+		this._loading = this.internalLoad(append)
 			.catch(reason => {
 				console.error(reason)
 				this.fire("loadexception", this, reason);
 				throw reason;
 			})
 			.finally(() => {
-				this._loading = false;
+				this._loading = undefined;
 			});
+		return this._loading;
 	}
 
 	/**
