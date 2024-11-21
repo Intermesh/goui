@@ -88,9 +88,25 @@ export class ContainerField<ValueType extends ContainerFieldValue = ContainerFie
 		};
 
 		this.cascade(fn);
-
-
 		return field;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public reset() {
+		this.findFields().forEach((field) => {
+			field.reset();
+		})
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public clear() {
+		this.findFields().forEach((field) => {
+			field.clear();
+		})
 	}
 
 	/**
@@ -98,6 +114,8 @@ export class ContainerField<ValueType extends ContainerFieldValue = ContainerFie
 	 * when the form it belongs too loads.
 	 */
 	public trackReset() {
+
+
 		this.findFields().forEach((field) => {
 			field.trackReset();
 		})

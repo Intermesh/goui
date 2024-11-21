@@ -172,7 +172,6 @@ export class ChipsField extends Field {
 						this.select(this.items.count() - 2);
 					} else {
 						this.items.get(this.selectedIndex)!.remove();
-						this.value.splice(this.selectedIndex, 1);
 						this.select(this.selectedIndex);
 					}
 					// this.focus();
@@ -234,38 +233,54 @@ export class ChipsField extends Field {
 	}
 
 	protected internalSetValue(v: any[]) {
-		if(this.rendered) {
-			//remove all chips except the editor (last item).
-			for(let i = 0; i < this.items.count() -1; i++) {
-				this.items.removeAt(i);
-			}
 
+			//remove all chips except the editor (last item).
 			while(this.items.count() > 1) {
 				this.items.removeAt(0);
 			}
 
-			this.renderValue();
-		}
-	}
-
-	protected internalRender(): HTMLElement {
-		const el = super.internalRender();
-		this.renderValue();
-		return el;
-	}
-
-	private renderValue() {
-		if(!this.value) {
-			return;
-		}
-		this.value.forEach((v:any) => {
-			const chip =  this.createChip();
-
-			this.chipRenderer(chip, v).then(() => {
+			v.forEach((v:any) => {
+				const chip =  this.createChip();
+				this.chipRenderer(chip, v);
+				chip.dataSet.value = v;
 				this.items.insert(-1, chip);
 			});
-		});
+
 	}
+
+	protected internalGetValue(): FieldValue {
+		const v: any[] = [];
+
+		this.items.forEach((item) => {
+			if(item.dataSet.value) {
+				v.push(item.dataSet.value);
+			}
+		});
+
+		return v;
+	}
+
+	// protected internalRender(): HTMLElement {
+	// 	const el = super.internalRender();
+	// 	this.renderValue();
+	// 	return el;
+	// }
+	//
+	// private renderValue() {
+	// 	const v = this.internalGetValue() as Array<any>;
+	//
+	// 	if(!v) {
+	// 		return;
+	// 	}
+	//
+	// 	v.forEach((v:any) => {
+	// 		const chip =  this.createChip();
+	//
+	// 		this.chipRenderer(chip, v).then(() => {
+	// 			this.items.insert(-1, chip);
+	// 		});
+	// 	});
+	// }
 
 	focus(o?: FocusOptions) {
 		this.editor.focus(o);

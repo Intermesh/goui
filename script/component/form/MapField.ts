@@ -113,11 +113,16 @@ export class MapField extends Field {
 		// todo: maybe use GUID for item with sortOrder?
 		return ++this._nextKey;
 	}
-
-	reset() {
-		super.reset();
-		this.items.clear();
-	}
+	//
+	// reset() {
+	// 	super.reset();
+	// 	this.items.clear();
+	// }
+	//
+	// clear() {
+	// 	super.clear();
+	// 	this.items.clear();
+	// }
 }
 
 /**

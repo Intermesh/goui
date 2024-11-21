@@ -145,14 +145,15 @@ export abstract class Field extends Component {
 	protected control: HTMLElement | undefined;
 
 	/**
-	 * The value this field resets to when a form is reset.
+	 * The value this field resets to when a form is reset with the reset() function
 	 * Changes when a form loads.
 	 * @protected
 	 */
 	protected resetValue: any;
 
 	/**
-	 * The value that was set before adding this component to a parent.
+	 * The value that was set before adding this component to a parent. This is used with the clear() function.
+	 * Useful when reusing a form for multiple save and load actions.
 	 *
 	 * @protected
 	 */
@@ -573,7 +574,7 @@ export abstract class Field extends Component {
 	}
 
 	protected internalGetValue() {
-		return this._value;
+		return structuredClone(this._value);
 	}
 
 	/**
@@ -585,8 +586,16 @@ export abstract class Field extends Component {
 		this.value = this.resetValue;
 		this.clearInvalid();
 		this.fire("reset", this, this.resetValue, old);
-		//this.fire("setvalue", this, this.resetValue, old);
 		this.fire("change", this, this.resetValue, old);
+	}
+
+
+	/**
+	 * Clears the field to it's original state set in the code.
+	 */
+	public clear() {
+		this.value = this.defaultValue;
+		this.clearInvalid();
 	}
 
 	/**

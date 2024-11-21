@@ -5,12 +5,11 @@
  */
 
 import {ContainerField, ContainerFieldValue} from "./ContainerField.js";
-import {Config, Listener, ObservableListenerOpts} from "../Observable.js";
+import {Listener, ObservableListenerOpts} from "../Observable.js";
 import {Notifier} from "../../Notifier.js";
 import {Component, createComponent} from "../Component.js";
 import {Field, FieldConfig, FieldEventMap} from "./Field.js";
 import {t} from "../../Translate.js";
-import {DatePickerEventMap} from "../picker/index.js";
 
 
 export type FormHandler<ValueType extends ContainerFieldValue = ContainerFieldValue> = ((form: Form<ValueType>) => any | Promise<any>) | undefined;
@@ -125,15 +124,6 @@ export class Form<ValueType extends ContainerFieldValue = ContainerFieldValue> e
 		})
 
 		return el;
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public reset() {
-		this.findFields().forEach((field) => {
-			field.reset();
-		})
 	}
 
 	set value(v: Partial<ValueType>) {

@@ -107,16 +107,16 @@ export class ArrayField<Type extends FieldValue = Record<string, any>> extends F
 		return field;
 	}
 
-	reset() {
-		super.reset();
-
-		if(this.items.count()) {
-			this.enableChangeEvent = false;
-			this.items.clear();
-			this.enableChangeEvent = true;
-			this.fireChange();
-		}
-	}
+	// reset() {
+	// 	super.reset();
+	//
+	// 	if(this.items.count()) {
+	// 		this.enableChangeEvent = false;
+	// 		this.items.clear();
+	// 		this.enableChangeEvent = true;
+	// 		this.fireChange();
+	// 	}
+	// }
 
 	isEmpty(): boolean {
 		return this.items.count() > 0;
