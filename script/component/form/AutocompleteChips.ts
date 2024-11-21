@@ -70,15 +70,6 @@ export class AutocompleteChips<T extends List = List> extends ChipsField {
 	}
 
 	private initList() {
-		this.list.el.addEventListener('keydown', (ev) => {
-			switch (ev.key) {
-
-				case "Enter":
-					ev.preventDefault();
-					this.menu.hide();
-					break;
-			}
-		})
 
 		if(!this.list.rowSelection) {
 			this.list.rowSelectionConfig = {multiSelect: false};
@@ -197,6 +188,8 @@ export class AutocompleteChips<T extends List = List> extends ChipsField {
 		if(!this.menu.rendered) {
 			return;
 		}
+
+		//TODO on enter the row is not selected
 
 		const newValues = this.list.rowSelection!.selected.map((index) => {
 			const record = this.list.store.get(index) as storeRecordType<listStoreType<T>>;

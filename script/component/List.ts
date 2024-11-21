@@ -78,7 +78,7 @@ export interface ListEventMap<Type> extends ComponentEventMap<Type> {
 	 * @param storeIndex
 	 * @param ev
 	 */
-	rowclick: (list: Type, storeIndex: number, row: HTMLElement, ev: MouseEvent) => void
+	rowclick: (list: Type, storeIndex: number, row: HTMLElement, ev: MouseEvent|KeyboardEvent) => void
 
 	/**
 	 * Fires when a row is double clicked
@@ -312,7 +312,16 @@ export class List<StoreType extends Store = Store> extends Component implements 
 
 	protected onKeyDown(e: KeyboardEvent) {
 		if (e.key == "Delete" || e.metaKey && e.key == "Backspace") {
+			e.preventDefault();
 			this.fire("delete", this);
+		}
+
+		if(e.key == "Enter") {
+			const r = this.getFocussedRow();
+			if(r) {
+				e.preventDefault();
+				this.fire("rowclick", this, r.index, r.rowEl, e);
+			}
 		}
 	}
 
@@ -440,6 +449,19 @@ export class List<StoreType extends Store = Store> extends Component implements 
 		tr.focus();
 		return true;
 
+	}
+
+	public getFocussedRow() {
+		if(!document.activeElement) {
+			return undefined;
+		}
+		const rows = this.getRowElements();
+		const index = rows.indexOf(document.activeElement as HTMLElement);
+		if (index == -1) {
+			return undefined;
+		}
+
+		return {rowEl: rows[index], index: index};
 	}
 
 	protected renderRows(records: any[]) {
