@@ -5,7 +5,7 @@
  */
 
 import {FunctionUtil} from "../util/FunctionUtil.js";
-import {ComponentEventMap} from "./Component.js";
+import {comp, ComponentEventMap} from "./Component.js";
 
 /**
  * Component events
@@ -292,6 +292,10 @@ type CompFuncs =  "buildState" |
 	"parent"
 
 
+type WritablePartial<T> = {
+	-readonly [P in keyof T]?: T[P];
+};
+
 /**
  * Generic Config option that allows all public properties as options.
  * It excludes all function types. If you need to pass functions as config options you will need to add them like this:
@@ -304,12 +308,10 @@ type CompFuncs =  "buildState" |
  */
 export type Config<Cmp extends Observable, EventMap extends ObservableEventMap<Observable> = ComponentEventMap<Cmp>, Required extends keyof Cmp = never> =
 
-	Writeable<
-		Partial<
-			//somehow this breaks generic class sometimes : (
-			// Omit<Cmp, Required & FunctionPropertyNames<Cmp>>
-		Omit<Cmp, CompFuncs >
-		>
+	WritablePartial<
+		//somehow this breaks generic class sometimes : (
+		// Omit<Cmp, Required & FunctionPropertyNames<Cmp>>
+	Omit<Cmp, CompFuncs >
 	>
 
 	&
