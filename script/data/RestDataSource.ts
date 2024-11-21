@@ -36,6 +36,9 @@ export class RestDataSource<EntityType extends BaseEntity = DefaultEntity> exten
 		if(uri.substring(-1,1) != "/") {
 			this.uri  = uri + "/";
 		}
+
+		// We can't persist with REST stores as we can't sync data like with JMAP
+		this.persist = false;
 	}
 
 	public limitParamName = "limit";
