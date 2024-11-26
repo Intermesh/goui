@@ -86,11 +86,11 @@ export class RowSelect extends Observable {
 			this.onKeyDown(e);
 		})
 
-		this.list.on('rowmousedown', (table: List, index: number, row, e: MouseEvent) => {
+		this.list.on('rowmousedown', (table, index, row, e) => {
 			this.onRowMouseDown(table, index, e);
 		});
 
-		this.list.on('rowclick', (table: List, index: number, row, e: MouseEvent) => {
+		this.list.on('rowclick', (table, index, row, e) => {
 			this.onRowClick(table, index, e);
 		});
 
@@ -199,7 +199,7 @@ export class RowSelect extends Observable {
 	 * @param e
 	 * @private
 	 */
-	private onRowClick(_list: List, index: number, e: MouseEvent) {
+	private onRowClick(_list: List, index: number, e: MouseEvent|KeyboardEvent) {
 		let selection = this.selected;
 
 		if(e.shiftKey || e.ctrlKey || e.metaKey || this.listHasCheckbox()) {
