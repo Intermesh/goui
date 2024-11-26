@@ -1016,7 +1016,7 @@ export class Component extends Observable {
 	 * It creates an absolute positioned Mask
 	 * component. This component should have a non-static position style for this to work.
 	 */
-	public mask<T extends Promise<any>>(promise:T, delay: number = 300) {
+	public mask<T extends Promise<any>>(promise:T|undefined = undefined, delay: number = 300) {
 
 		if(promise) {
 			promise.finally(() => {
