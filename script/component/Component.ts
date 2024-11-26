@@ -1016,10 +1016,16 @@ export class Component extends Observable {
 	 * It creates an absolute positioned Mask
 	 * component. This component should have a non-static position style for this to work.
 	 */
-	public mask(delay = 300) {
+	public mask<T extends Promise<any>>(promise:T, delay: number = 300) {
+
+		if(promise) {
+			promise.finally(() => {
+				this.unmask()
+			})
+		}
 
 		if(this.maskTimeout || (this._mask && this._mask.hidden == false)) {
-			return ;
+			return promise;
 		}
 
 		this.maskTimeout = setTimeout(() => {
@@ -1031,6 +1037,8 @@ export class Component extends Observable {
 			this._mask.show();
 			this.maskTimeout = undefined;
 		}, delay);
+
+		return promise;
 	}
 
 	/**

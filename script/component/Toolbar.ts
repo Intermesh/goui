@@ -4,7 +4,7 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {comp, Component, ComponentEventMap} from "./Component.js";
+import {comp, Component, ComponentEventMap, hr} from "./Component.js";
 import {Button} from "./Button.js";
 import {Config, Listener, ObservableListenerOpts} from "./Observable.js";
 import {Menu} from "./menu/index.js";
@@ -265,24 +265,20 @@ export const tbar = (config?: Config<Toolbar>, ...items: (Component | "->" | "-"
 	return c;
 }
 
-export const tbarItems = (items: (Component | "->" | "-")[]): Component[] => {
-	const l = items.length;
-	if (l) {
+export const tbarItems = (items: (Component | "->" | "-")[]): Component[] => items.map(i => {
+		switch (i) {
+			case '->':
+				return comp({
+					flex: 1
+				});
+			case '-':
+				return hr();
 
-		for (let i = 0; i < l; i++) {
-			switch (items[i]) {
-				case '->':
-					items[i] = comp({
-						flex: 1
-					});
-					break;
-				case '-':
-					items[i] = comp({tagName: "hr"})
-					break;
-			}
+			default:
+				return i;
+
 		}
-	}
-	return items as Component[];
-}
+	});
+
 
 

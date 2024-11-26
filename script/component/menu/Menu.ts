@@ -4,7 +4,7 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {Component, ComponentEventMap, createComponent} from "../Component.js";
+import {comp, Component, ComponentEventMap, createComponent, hr} from "../Component.js";
 import {root} from "../Root.js";
 import {Toolbar} from "../Toolbar.js";
 import {Config, Listener, ObservableListenerOpts} from "../Observable.js";
@@ -416,4 +416,14 @@ export class Menu extends Toolbar {
  * @param config
  * @param items
  */
-export const menu = (config?: Config<Menu, ComponentEventMap<Menu>>, ...items: Component[]) => createComponent(new Menu(), config, items);
+export const menu = (config?: Config<Menu, ComponentEventMap<Menu>>, ...items: ( Component | "-")[]) => {
+
+	return createComponent(new Menu(), config, items.map(i => {
+		if(i == "-") {
+			return hr();
+		} else {
+			return i;
+		}
+	}));
+
+}
