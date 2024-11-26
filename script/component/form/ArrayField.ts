@@ -119,7 +119,7 @@ export class ArrayField<Type extends FieldValue = Record<string, any>> extends F
 	// }
 
 	isEmpty(): boolean {
-		return this.items.count() > 0;
+		return this.items.count() === 0;
 	}
 
 
