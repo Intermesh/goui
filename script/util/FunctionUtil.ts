@@ -89,7 +89,7 @@ export class FunctionUtil {
 	public static delay<F extends (...args: any) => any>(delay: number, fn: F) {
 		return function(this:any, ...args: any[]) {
 			const bf = new BufferedFunction<F>(delay, fn);
-			bf.buffer(args, this);
+			return bf.buffer(args, this);
 		};
 	}
 
