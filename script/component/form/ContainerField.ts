@@ -114,8 +114,6 @@ export class ContainerField<ValueType extends ContainerFieldValue = ContainerFie
 	 * when the form it belongs too loads.
 	 */
 	public trackReset() {
-
-
 		this.findFields().forEach((field) => {
 			field.trackReset();
 		})
@@ -132,36 +130,24 @@ export class ContainerField<ValueType extends ContainerFieldValue = ContainerFie
 		return false;
 	}
 
-
 	protected internalSetValue(v: Partial<ValueType>) {
-		for (let name in v) {
+
+		this.findFields().forEach((field:any) => {
+			const name = field.getName ? field.getName() : field.name;
 			// We cast to any[] for Ext compatibility. We try setValue() for Ext if it exists
-			let fields = this.findFields(name) as any[];
-			fields.forEach(field => field.setValue ? field.setValue(v[name]) : field.value = v[name]);
-		}
-	}
-
-	protected internalGetValue()  {
-
-		// we have to clone the value to avoid side effects when the value is modified outside the form's
-		// scope. We don't want any external modifications to leak in here because reference is a value.
-		const formProps: ValueType = structuredClone(this._value) as ValueType || {};
-
-		this.findFields().forEach((field: any) => {
-			//for Extjs compat try .getName() and .getValue()
-			const fieldName = (field.getName ? field.getName() : field.name) as keyof ValueType
-			const fieldVal = field.getValue ? field.getValue() : field.value;
-
-			if (fieldName) {
-				if(field.disabled) {
-					delete formProps[fieldName];
+			if(v[name]) {
+				if(field.setValue) {
+					field.setValue(v[name]);
 				} else {
-					formProps[fieldName] = fieldVal;
+					field.value = v[name]
 				}
+			} else if(field.clear) {
+				field.clear();
+			} else {
+				// for Ext
+				field.reset();
 			}
-		});
-
-		return formProps;
+		})
 	}
 
 	protected validate() {

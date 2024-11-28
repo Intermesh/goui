@@ -595,6 +595,7 @@ export abstract class Field extends Component {
 	 */
 	public clear() {
 		this.value = this.defaultValue;
+		this.trackReset();
 		this.clearInvalid();
 	}
 
