@@ -19,7 +19,7 @@ export class MultiSelectToolbar extends Toolbar {
 
 		this.table.rowSelection!.on("selectionchange", (tableRowSelect) => {
 
-			const l = tableRowSelect.selected.length;
+			const l = tableRowSelect.getSelected().length;
 
 			this.hidden = l < 2;
 

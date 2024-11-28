@@ -89,7 +89,7 @@ export class AutocompleteChips<T extends List = List> extends ChipsField {
 				this.list.rowSelection!.clear();
 				this.list.store.data.forEach((record, index) => {
 					if(this.isPickerRecordInValue(record)) {
-						this.list.rowSelection!.add(index)
+						this.list.rowSelection!.add(record)
 					}
 				})
 			}
@@ -191,9 +191,8 @@ export class AutocompleteChips<T extends List = List> extends ChipsField {
 
 		//TODO on enter the row is not selected
 
-		const newValues = this.list.rowSelection!.selected.map((index) => {
-			const record = this.list.store.get(index) as storeRecordType<listStoreType<T>>;
-			return this.pickerRecordToValue(this, record);
+		const newValues = this.list.rowSelection!.getSelected().map((row) => {
+			return this.pickerRecordToValue(this, row.record as storeRecordType<listStoreType<T>>);
 		});
 
 		this.list.rowSelection!.clear();

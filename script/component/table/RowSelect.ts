@@ -6,13 +6,13 @@
 
 import {Config, Listener, Observable, ObservableEventMap, ObservableListenerOpts} from "../Observable.js";
 import {List} from "../List.js";
-import {ArrayUtil} from "../../util/ArrayUtil.js";
+import {FunctionUtil} from "../../util";
 import {createComponent} from "../Component.js";
 import {Table} from "./Table.js";
-import {FunctionUtil} from "../../util/index.js";
 import {CheckboxSelectColumn} from "./TableColumns.js";
+import {Store, StoreRecord, storeRecordType} from "../../data";
 
-export interface RowSelectEventMap<Type extends Observable> extends ObservableEventMap<Type> {
+export interface RowSelectEventMap<Type extends Observable, StoreType extends Store = Store, RecordType extends StoreRecord = storeRecordType<StoreType>>  extends ObservableEventMap<Type> {
 	/**
 	 * Fires when selection changes. When holding arrow on keyboard it will only fire once at key up to prevent
 	 * flooding the server with requests
@@ -33,14 +33,14 @@ export interface RowSelectEventMap<Type extends Observable> extends ObservableEv
 	 * ```
 	 * @param rowSelect
 	 */
-	selectionchange: (rowSelect: Type, selected: number[]) => void
+	selectionchange: (rowSelect: Type, selected: SelectedRow<StoreType, RecordType>[]) => void
 
 	/**
 	 * Fires when a row is selected
 	 * @param rowSelect
 	 * @param storeIndex
 	 */
-	rowselect: (rowSelect: Type, storeIndex: number) => void
+	rowselect: (rowSelect: Type, row: SelectedRow<StoreType, RecordType>) => void
 
 	/**
 	 * Fires when a row is deselected
@@ -48,23 +48,37 @@ export interface RowSelectEventMap<Type extends Observable> extends ObservableEv
 	 * @param rowSelect
 	 * @param storeIndex
 	 */
-	rowdeselect: (rowSelect: Type, storeIndex: number) => void
+	rowdeselect: (rowSelect: Type, row: SelectedRow<StoreType, RecordType>) => void
 }
 
-export interface RowSelect{
-	on<K extends keyof RowSelectEventMap<this>, L extends Listener>(eventName: K, listener: Partial<RowSelectEventMap<this>>[K], options?: ObservableListenerOpts): L
+export interface RowSelect<StoreType extends Store = Store, RecordType extends StoreRecord = storeRecordType<StoreType>>{
+	on<K extends keyof RowSelectEventMap<this, StoreType, RecordType>, L extends Listener>(eventName: K, listener: Partial<RowSelectEventMap<this, StoreType, RecordType>>[K], options?: ObservableListenerOpts): L
 
-	fire<K extends keyof RowSelectEventMap<this>>(eventName: K, ...args: Parameters<RowSelectEventMap<any>[K]>): boolean
+	fire<K extends keyof RowSelectEventMap<this, StoreType, RecordType>>(eventName: K, ...args: Parameters<RowSelectEventMap<any, StoreType, RecordType>[K]>): boolean
 
+}
+
+
+export class SelectedRow<StoreType extends Store, RecordType extends StoreRecord = storeRecordType<StoreType> > {
+	constructor(readonly store:StoreType, readonly record: RecordType) {
+	}
+
+	get storeIndex() {
+		return this.store.findIndexById(this.id);
+	}
+
+	get id() {
+		return this.record[this.store.idField];
+	}
 }
 
 
 /**
  * Row selection model
  */
-export class RowSelect extends Observable {
+export class RowSelect<StoreType extends Store = Store, RecordType extends StoreRecord = storeRecordType<StoreType>> extends Observable {
 
-	private _selected: number[] = [];
+	private readonly selected: SelectedRow<StoreType, RecordType>[] = [];
 
 	/**
 	 * Last selected index used for multi selection with shift
@@ -75,11 +89,10 @@ export class RowSelect extends Observable {
 
 	public multiSelect = true;
 	private hasKeyUpListener: Boolean = false;
-	private fireSelectionChange: () => void;
+	private readonly fireSelectionChange: () => void;
 
 	constructor(readonly list: List) {
 		super();
-
 
 		this.list.el.cls('+rowselect');
 		this.list.el.addEventListener("keydown", (e) => {
@@ -102,6 +115,10 @@ export class RowSelect extends Observable {
 		this.fireSelectionChange = FunctionUtil.buffer(0, fireSelectionChange);
 	}
 
+	public getSelected() {
+		return this.selected;
+	}
+
 	private _listHasCheckbox?:boolean;
 
 	private listHasCheckbox() {
@@ -122,62 +139,63 @@ export class RowSelect extends Observable {
 	}
 
 	public clear() {
-		this.selected = [];
+		while(this.selected.length) {
+			this.remove(this.selected[0].record );
+		}
 	}
 
 	public selectAll() {
-		const selected = [];
-		for (let i = 0, c = this.list.store.count(); i < c; i++) {
-			selected.push(i);
+		const store = this.list.store as StoreType;
+		for (let i = 0, c = store.count(); i < c; i++) {
+			this.add( store.get(i) as RecordType)
 		}
-		this.selected = selected;
 	}
 
-	/**
-	 * Get selected indexes
-	 *
-	 * Note that this is a copy and can't be edited directly. You have to set the selected property with a changed array.
-	 */
-	public get selected() {
-		return [...this._selected];
+	public isSelected(record: RecordType) {
+		return this.getSelectedIndex(record) > -1;
 	}
 
-	public set selected(newSelection) {
-		this.setSelected(newSelection);
-	}
+	private getSelectedIndex(record: RecordType) {
+		const idField = this.list.store.idField;
 
+		const id = record[idField];
+
+		for(let i = 0, l = this.selected.length; i < l; i++) {
+			if(this.selected[i].id == id) {
+				return i;
+			}
+		}
+
+		return -1;
+	}
 
 	/**
 	 * When shift or ctrl, meta is used then do this on mousedown
 	 *
-	 * @param _list
+	 * @param list
 	 * @param index
 	 * @param e
 	 * @private
 	 */
-	private onRowMouseDown(_list: List, index: number, e: MouseEvent) {
-		let selection = this.selected;
+	private onRowMouseDown(list: List, index: number, e: MouseEvent) {
+
+		const store = list.store;
 
 		if (e.shiftKey && this.multiSelect) {
+
 			const start = Math.min(index, this.lastIndex);
 			const end = Math.max(index, this.lastIndex);
 
 			for (let i = start; i <= end; i++) {
-				if (selection.indexOf(i) === -1)
-					selection.push(i);
+				this.add(store.get(i) as RecordType);
 			}
 
-		} else if ((e.ctrlKey || e.metaKey || this.listHasCheckbox()) && this.multiSelect) {
-			const currentIndex = selection.indexOf(index);
-			if (currentIndex > -1) {
-				selection.splice(currentIndex, 1);
-			} else {
-				selection.push(index);
-			}
+		} else if ((e.ctrlKey || e.metaKey || this.listHasCheckbox()) && this.multiSelect)  {
+			this.toggle(store.get(index) as RecordType)
 		} else {
 
 			if(e.ctrlKey || e.metaKey) {
-				this.toggle(index);
+				this.toggle(store.get(index) as RecordType)
 				this.lastIndex = index;
 				return;
 			} else {
@@ -187,128 +205,78 @@ export class RowSelect extends Observable {
 		}
 
 		this.lastIndex = index;
-
-		this.selected = selection;
 	}
 
 
 	/**
 	 * Click clears the selection handling this in click allows selections to be dragged
-	 * @param _list
+	 * @param list
 	 * @param index
 	 * @param e
 	 * @private
 	 */
-	private onRowClick(_list: List, index: number, e: MouseEvent|KeyboardEvent) {
-		let selection = this.selected;
-
-		if(e.shiftKey || e.ctrlKey || e.metaKey || this.listHasCheckbox()) {
+	private onRowClick(list: List, index: number, e: MouseEvent|KeyboardEvent) {
+			if(e.shiftKey || e.ctrlKey || e.metaKey || this.listHasCheckbox()) {
 			return;
 		}
-
-		selection = [index];
+		this.clear();
+		this.add(list.store.get(index) as RecordType)
 
 		this.lastIndex = index;
-
-		this.selected = selection;
 	}
 
-	public add(index:number) {
-		if(this._selected.indexOf(index) > -1) {
+	public add(record:RecordType) {
+		if(this.isSelected(record)) {
 			return;
 		}
 
-		this._selected.push(index);
+		const selectedRow = new SelectedRow<StoreType, RecordType>(this.list.store as StoreType, record);
 
-		this.fire('rowselect', this, index);
+		this.selected.push(selectedRow);
+
+		this.fire('rowselect', this, selectedRow);
 		this.fireSelectionChange();
 	}
-
-	public toggle(index:number) {
-
-		const currentIndex = this._selected.indexOf(index);
-		if (currentIndex > -1) {
-			if(this.multiSelect) {
-				this._selected.splice(currentIndex, 1);
-				this.fire('rowdeselect', this, index);
-			} else {
-				this._selected = [];
-				this.fire('rowdeselect', this, index);
-			}
-		} else {
-			if(this.multiSelect) {
-				this._selected.push(index);
-				this.fire('rowselect', this, index);
-			}else {
-
-				this._selected.forEach(i => {
-					this.fire('rowdeselect', this, i);
-				})
-				this._selected = [index];
-				this.fire('rowselect', this, index);
-			}
-
-		}
-		this.fireSelectionChange();
-	}
-
 
 	/**
 	 * Remove an index from the selection
 	 *
-	 * @param index
+	 * @param record
 	 * @param silent Don't fire events
 	 */
-	public remove(index:number, silent = false) {
-		const selectedIndex = this._selected.indexOf(index);
-		if(selectedIndex == -1) {
+	public remove(record:RecordType, silent = false) {
+		const index = this.getSelectedIndex(record);
+
+		if(index == -1) {
 			return;
 		}
 
-		this._selected.splice(selectedIndex, 1);
+		const selectedRow = this.selected[index];
+
+		this.selected.splice(index, 1);
 
 		if(!silent) {
-			this.fire('rowdeselect', this, index);
+			this.fire('rowdeselect', this, selectedRow);
 			this.fireSelectionChange();
 		}
 	}
 
+	public toggle(record:RecordType) {
 
-	/**
-	 * Set selected indexes
-	 *
-	 * @param newSelection
-	 * @param silent Suspends 'selectionchange' event
-	 */
-	private setSelected(newSelection: number[], silent = false) {
-		const old = this._selected;
-
-		this._selected = newSelection;
-
-		const deselect = ArrayUtil.diff(old, newSelection);
-		const select = ArrayUtil.diff(newSelection, old);
-
-
-		deselect.forEach(i => {
-			this.fire('rowdeselect', this, i);
-		})
-		select.forEach((i, index) => {
-			this.fire('rowselect', this, i);
-		})
-
-		if (newSelection.length && this.lastIndex == -1) {
-			this.lastIndex = newSelection[0];
+		if(this.isSelected(record)) {
+			if(this.multiSelect) {
+				this.remove(record);
+			} else {
+				this.clear();
+			}
+		} else {
+			if(!this.multiSelect) {
+				this.clear();
+			}
+			this.add(record);
 		}
-
-		const change = (select.length > 0 || deselect.length > 0);
-
-		if (!silent && change) {
-			// fire immediately here. Only buffer when using add() and remove()
-			this.fire('selectionchange', this, this.selected);
-		}
-
-		return change;
 	}
+
 
 	private onKeyDown(e: KeyboardEvent) {
 
@@ -319,7 +287,7 @@ export class RowSelect extends Observable {
 		if(e.key == " ") {
 			e.preventDefault();
 			e.stopPropagation()
-			this.toggle(this.lastIndex);
+			this.toggle(this.list.store.get(this.lastIndex) as RecordType);
 			return;
 		}
 
@@ -344,24 +312,17 @@ export class RowSelect extends Observable {
 			index = this.lastIndex - 1
 		}
 		if (e.shiftKey && this.multiSelect) {
-
-			const selected = this.selected;
-
 			if ((e.key == "ArrowDown" && index > this.shiftStartIndex!) || (e.key == "ArrowUp" && index < this.shiftStartIndex!)) {
-
-				if (selected.indexOf(index) == -1) {
-					selected.push(index);
-				}
+				const record = this.list.store.get(index) as RecordType;
+				this.add(record);
 			} else {
-				const removeIndex = selected.indexOf(this.lastIndex);
-				if (removeIndex > -1) {
-					selected.splice(removeIndex, 1);
-				}
+				const record = this.list.store.get(this.lastIndex) as RecordType;
+				this.remove(record);
 			}
-			change = this.setSelected(selected, true);
 		} else {
 			if(!this.listHasCheckbox()) {
-				change = this.setSelected([index], true);
+				this.clear();
+				this.add(this.list.store.get(index) as RecordType)
 			}
 
 			this.list.focusRow(index);
@@ -381,11 +342,11 @@ export class RowSelect extends Observable {
 
 }
 
-export type RowSelectConfig = Config<RowSelect, RowSelectEventMap<RowSelect>, "list">
+export type RowSelectConfig<StoreType extends Store = Store> = Config<RowSelect<StoreType>, RowSelectEventMap<RowSelect, StoreType>, "list">
 
 /**
  * Shorthand function to create {@see RowSelect}
  *
  * @param config
  */
-export const rowselect = (config: RowSelectConfig) => createComponent(new RowSelect(config.list), config);
+export const rowselect = <StoreType extends Store = Store>(config: RowSelectConfig<StoreType>) => createComponent(new RowSelect<StoreType>(config.list), config);

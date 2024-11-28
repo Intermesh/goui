@@ -3,11 +3,8 @@
  * @copyright Copyright 2023 Intermesh BV
  * @author Merijn Schering <mschering@intermesh.nl>
  */
-import {Config, Listener, ObservableListenerOpts} from "../component/Observable.js";
-import {ArrayUtil} from "../util/ArrayUtil.js";
-import {Collection, CollectionEventMap} from "../util/Collection.js";
-import {Component, createComponent} from "../component/Component.js";
-import {Window} from "../component/index.js";
+import {Component, Config, createComponent, Listener, ObservableListenerOpts} from "../component";
+import {ArrayUtil, Collection, CollectionEventMap} from "../util";
 
 /**
  * Comparator interface for sorting data
@@ -98,6 +95,24 @@ export class Store<RecordType extends StoreRecord  = StoreRecord> extends Collec
 	 * Sort the data on field and direction
 	 */
 	public sort: Comparator[] = [];
+
+	/**
+	 * Defines the field that holds the record ID
+	 */
+	public idField: string = "id";
+
+	/**
+	 * Find record by ID
+	 *
+	 * @param id
+	 */
+	public findById(id: any) {
+		return this.find((r => r[this.idField] == id));
+	}
+
+	public findIndexById(id: any) {
+		return this.findIndex((r => r[this.idField] == id));
+	}
 
 	/**
 	 * Register of all components bound to this store using {@see bindStore()}

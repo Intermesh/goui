@@ -274,7 +274,7 @@ export class CheckboxSelectColumn extends TableColumn {
 
 		// add to selection model if value is true
 		if(val && table.rowSelection) {
-			table.rowSelection.add(rowIndex);
+			table.rowSelection.add(record);
 		}
 
 		return checkbox({
@@ -285,19 +285,19 @@ export class CheckboxSelectColumn extends TableColumn {
 						ev.stopPropagation()
 					});
 
-					field.value = table.rowSelection!.selected.indexOf(rowIndex) > -1;
+					field.value = table.rowSelection!.isSelected(record);
 
 					table.rowSelection!.on("selectionchange", () => {
-						field.value = table.rowSelection!.selected.indexOf(rowIndex) > -1;
+						field.value = table.rowSelection!.isSelected(record);
 					});
 
 				},
 				change: (field, newValue, oldValue) => {
-					const index = table.store.indexOf(record);
+
 					if (newValue) {
-						table.rowSelection!.add(index);
+						table.rowSelection!.add(record);
 					} else {
-						table.rowSelection!.remove(index);
+						table.rowSelection!.remove(record);
 					}
 
 				}

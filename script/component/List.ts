@@ -5,10 +5,10 @@
  */
 
 import {assignComponentConfig, comp, Component, ComponentEventMap, createComponent} from "./Component.js";
-import {Store, StoreComponent, StoreRecord} from "../data/Store.js";
+import {Store, StoreComponent, StoreRecord, storeRecordType} from "../data";
 import {t} from "../Translate.js";
-import {E} from "../util/Element.js";
-import {rowselect, RowSelect, RowSelectConfig} from "./table/index.js";
+import {E} from "../util";
+import {rowselect, RowSelect, RowSelectConfig} from "./table";
 import {Config, Listener, ObservableListenerOpts} from "./Observable.js";
 import {Window} from "./Window.js";
 import {Sortable} from "./Sortable.js";
@@ -17,25 +17,6 @@ export type RowRenderer = (record: any, row: HTMLElement, list: any, storeIndex:
 
 export type listStoreType<ListType> = ListType extends List<infer StoreType> ? StoreType : never;
 
-type DragData = {
-	/**
-	 * List component it was dragged from
-	 */
-	cmp: List
-	/**
-	 * Row being dragged
-	 */
-	row: HTMLTableRowElement;
-	/**
-	 * Store index of element being dragged
-	 */
-	storeIndex:number
-
-	/**
-	 * Store record
-	 */
-	record: any
-}
 /**
  * @inheritDoc
  */
@@ -159,8 +140,6 @@ export interface ListEventMap<Type> extends ComponentEventMap<Type> {
 
 }
 
-export type DROP_POSITION = "before" | "after" | "on";
-
 export interface List<StoreType extends Store = Store> extends Component {
 	on<K extends keyof ListEventMap<this>, L extends Listener>(eventName: K, listener: Partial<ListEventMap<this>>[K], options?: ObservableListenerOpts): L;
 	un<K extends keyof ListEventMap<this>>(eventName: K, listener: Partial<ListEventMap<this>>[K]): boolean
@@ -181,7 +160,7 @@ export class List<StoreType extends Store = Store> extends Component implements 
 	protected emptyStateTag: keyof HTMLElementTagNameMap = 'li';
 	private emptyEl?: HTMLElement
 
-	private rowSelect?: RowSelect;
+	private rowSelect?: RowSelect<StoreType, storeRecordType<StoreType>>;
 
 	/**
 	 * Allow items to be dragged
@@ -222,7 +201,7 @@ export class List<StoreType extends Store = Store> extends Component implements 
 		if (typeof rowSelectionConfig != "boolean") {
 			if (!this.rowSelect) {
 				(rowSelectionConfig as RowSelectConfig).list = this as never;
-				this.rowSelect = rowselect(rowSelectionConfig as RowSelectConfig);
+				this.rowSelect = rowselect(rowSelectionConfig as RowSelectConfig<StoreType>);
 			} else {
 				assignComponentConfig(this.rowSelect, rowSelectionConfig);
 			}
@@ -295,9 +274,9 @@ export class List<StoreType extends Store = Store> extends Component implements 
 		sortable.on("dragstart",(sortable1, ev, dragData) => {
 
 			//Multiselect movement support here. Don't move selection if the dragged element wasn't part of the selection
-			if(this.rowSelect && this.rowSelect.multiSelect && this.rowSelect.selected.length > 1 && this.rowSelect.selected.indexOf(dragData.fromIndex) > -1) {
-				dragData.dataSet.selectedRowIndexes = this.rowSelect.selected;
-				ev.setDragComponent(comp({cls: "card pad", html: this.rowSelect.selected.length + " selected rows"}))
+			if(this.rowSelect && this.rowSelect.multiSelect && this.rowSelect.getSelected().length > 1 && this.rowSelect.isSelected(this.store.get(dragData.fromIndex) as storeRecordType<StoreType>)) {
+				dragData.dataSet.selectedRowIndexes = this.rowSelect.getSelected();
+				ev.setDragComponent(comp({cls: "card pad", html: this.rowSelect.getSelected().length + " selected rows"}))
 			} else {
 				dragData.dataSet.selectedRowIndexes = [dragData.fromIndex];
 			}
@@ -356,7 +335,7 @@ export class List<StoreType extends Store = Store> extends Component implements 
 
 		// Remove row from selection too if it's not caused by a store load. Then we want to maintain the selection.
 		if (!this.store.loading && this.rowSelection) {
-			this.rowSelection.remove(index, true);
+			this.rowSelection.remove(item, true);
 		}
 	}
 
@@ -393,10 +372,9 @@ export class List<StoreType extends Store = Store> extends Component implements 
 
 				if (!ev.shiftKey && !ev.ctrlKey && (ev.key == "ArrowDown" || ev.key == "ArrowUp")) {
 
-					const selected = this.rowSelect!.selected;
+					const selected = this.rowSelect!.getSelected();
 					if (selected.length) {
-						const storeIndex = selected[0]
-						this.fire("navigate", this, storeIndex);
+						this.fire("navigate", this, selected[0].storeIndex);
 					}
 				}
 			});
@@ -416,9 +394,9 @@ export class List<StoreType extends Store = Store> extends Component implements 
 		this.renderRows(this.store.all());
 
 		if (this.rowSelect) {
-			this.rowSelect.on('rowselect', (rowSelect, storeIndex) => {
+			this.rowSelect.on('rowselect', (rowSelect, row) => {
 
-				const tr = this.getRowElements()[storeIndex];
+				const tr = this.getRowElements()[row.storeIndex];
 
 				if (!tr) {
 					//row not rendered (yet?). selected class will also be addded on render
@@ -430,10 +408,10 @@ export class List<StoreType extends Store = Store> extends Component implements 
 				//tr.focus();
 			});
 
-			this.rowSelect.on('rowdeselect', (rowSelect, storeIndex) => {
-				const tr = this.getRowElements()[storeIndex];
+			this.rowSelect.on('rowdeselect', (rowSelect, row) => {
+				const tr = this.getRowElements()[row.storeIndex];
 				if (!tr) {
-					console.error("No row found for selected index: " + storeIndex + ". Maybe it's not rendered yet?");
+					console.error("No row found for selected index: " + row.storeIndex + ". Maybe it's not rendered yet?");
 					return;
 				}
 				tr.classList.remove('selected');
@@ -505,7 +483,7 @@ export class List<StoreType extends Store = Store> extends Component implements 
 			});
 		} // else NO-OP renderder will be responsible for appending html to the row @see Table
 
-		if (this.rowSelection && this.rowSelection.selected.indexOf(storeIndex) > -1) {
+		if (this.rowSelection && this.rowSelection.isSelected(record)) {
 			row.classList.add("selected");
 		}
 		return row;

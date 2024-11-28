@@ -4,8 +4,7 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {Listener, Observable, ObservableEventMap, ObservableListenerOpts} from "../component/Observable.js";
-import {ArrayUtil} from "./ArrayUtil.js";
+import {Listener, Observable, ObservableEventMap, ObservableListenerOpts} from "../component";
 
 /**
  * @inheritDoc
