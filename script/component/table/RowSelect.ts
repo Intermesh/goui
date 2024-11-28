@@ -64,7 +64,7 @@ export class SelectedRow<StoreType extends Store, RecordType extends StoreRecord
 	}
 
 	get storeIndex() {
-		return this.store.findIndexById(this.id);
+		return this.store.findIndex((r => r == this.record || (r[this.store.idField]!= undefined && r[this.store.idField] == this.id)));
 	}
 
 	get id() {
@@ -87,10 +87,19 @@ export class RowSelect<StoreType extends Store = Store, RecordType extends Store
 	public lastIndex = -1;
 	private shiftStartIndex?: number;
 
+	/**
+	 * Enable multi selection
+	 */
 	public multiSelect = true;
+
 	private hasKeyUpListener: Boolean = false;
 	private readonly fireSelectionChange: () => void;
 
+	/**
+	 * Constructor
+	 *
+	 * @param list
+	 */
 	constructor(readonly list: List) {
 		super();
 
@@ -138,12 +147,18 @@ export class RowSelect<StoreType extends Store = Store, RecordType extends Store
 		return this._listHasCheckbox;
 	}
 
+	/**
+	 * Clear the selection
+	 */
 	public clear() {
 		while(this.selected.length) {
 			this.remove(this.selected[0].record );
 		}
 	}
 
+	/**
+	 * Select all
+	 */
 	public selectAll() {
 		const store = this.list.store as StoreType;
 		for (let i = 0, c = store.count(); i < c; i++) {
@@ -151,6 +166,10 @@ export class RowSelect<StoreType extends Store = Store, RecordType extends Store
 		}
 	}
 
+	/**
+	 * Check if a record is selected
+	 * @param record
+	 */
 	public isSelected(record: RecordType) {
 		return this.getSelectedIndex(record) > -1;
 	}
@@ -161,7 +180,7 @@ export class RowSelect<StoreType extends Store = Store, RecordType extends Store
 		const id = record[idField];
 
 		for(let i = 0, l = this.selected.length; i < l; i++) {
-			if(this.selected[i].id == id) {
+			if((id != undefined && this.selected[i].id == id) || this.selected[i].record == record) {
 				return i;
 			}
 		}
@@ -245,6 +264,7 @@ export class RowSelect<StoreType extends Store = Store, RecordType extends Store
 	 * @param silent Don't fire events
 	 */
 	public remove(record:RecordType, silent = false) {
+
 		const index = this.getSelectedIndex(record);
 
 		if(index == -1) {

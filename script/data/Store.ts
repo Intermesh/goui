@@ -206,8 +206,11 @@ export class Store<RecordType extends StoreRecord  = StoreRecord> extends Collec
 	 * @protected
 	 */
 	protected internalLoad(append: boolean): Promise<RecordType[]> {
-		this.loadData(ArrayUtil.multiSort(this.items, this.sort), append);
-		return Promise.resolve(this.items)
+		// async so it works the same as data source stores. This way this.loading is true wghen loadData() is called
+		return new Promise(resolve => setTimeout(() => {
+			this.loadData(ArrayUtil.multiSort(this.items, this.sort), append);
+			resolve(this.items);
+		}));
 	}
 
 	/**
