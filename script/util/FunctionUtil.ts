@@ -10,7 +10,7 @@ type Func = ((...args: any[]) => any);
  * @category Utility
  *
  */
-export class BufferedFunction {
+export class BufferedFunction<F extends (...args: any) => any> {
 	private id: number | undefined;
 
 	/**
@@ -18,7 +18,7 @@ export class BufferedFunction {
 	 * @param delay Delay to execute function
 	 * @param fn Function to buffer
 	 */
-	constructor(readonly delay: number, readonly fn: Function) {
+	constructor(readonly delay: number, readonly fn: F) {
 		this.delay = delay;
 		this.fn = fn;
 	}
@@ -27,8 +27,9 @@ export class BufferedFunction {
 	 * Bugger the function with the delay set on this class
 	 *
 	 * @param args
+	 * @param scope
 	 */
-	buffer(args: any[] = [], scope:any) {
+	buffer(args: any[] = [], scope:any) : Promise<ReturnType<F>> {
 		this.cancel();
 
 		return new Promise(resolve => {
@@ -71,9 +72,9 @@ export class FunctionUtil {
 	 * @param delay
 	 * @param fn
 	 */
-	public static buffer(delay: number, fn: Function) {
-		const bf = new BufferedFunction(delay, fn);
-		return function(this:any, ...args: any[]) {
+	public static buffer<F extends (...args: any) => any>(delay: number, fn: F) {
+		const bf = new BufferedFunction<F>(delay, fn);
+		return function(this:any, ...args: Parameters<F>) {
 			return bf.buffer(args, this);
 		};
 	}
@@ -85,9 +86,9 @@ export class FunctionUtil {
 	 * @param delay
 	 * @param fn
 	 */
-	public static delay(delay: number, fn: Function) {
+	public static delay<F extends (...args: any) => any>(delay: number, fn: F) {
 		return function(this:any, ...args: any[]) {
-			const bf = new BufferedFunction(delay, fn);
+			const bf = new BufferedFunction<F>(delay, fn);
 			bf.buffer(args, this);
 		};
 	}
@@ -101,17 +102,19 @@ export class FunctionUtil {
 	 * @link https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame
 	 * @param fn
 	 */
-	public static onRepaint(fn: Function) {
+	public static onRepaint<F extends (...args: any) => any>(fn: F)  {
 
 		let frame = -1;
 
-		return function(this:any, ...args: any[]) {
+		return function(this:any, ...args: Parameters<F>) :Promise<ReturnType<F>> {
 			if (frame > -1) {
 				cancelAnimationFrame(frame);
 			}
 
-			frame = window.requestAnimationFrame(() => {
-				fn.apply(this, args);
+			return new Promise(resolve => {
+				frame = window.requestAnimationFrame(() => {
+					resolve(fn.apply(this, args));
+				});
 			});
 		}
 	}
