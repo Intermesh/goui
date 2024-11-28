@@ -319,15 +319,7 @@ export const checkboxselectcolumn = (config?: CheckboxColumnConfig) => createCom
 export const menucolumn = (...items:Component[]) => column({
 		width: 48,
 		id: "btn",
-		// headerRenderer: (col: TableColumn, headerEl: HTMLTableCellElement, table: Table) => {
-		// 	headerEl.style.position = "sticky";
-		// 	headerEl.style.right = "0";
-		// 	return "";
-		// },
 		renderer: (columnValue: any, record, td, table, rowIndex) => {
-			// td.style.position = "sticky";
-			// td.style.right = "0";
-
 			items.forEach(i => {
 				i.dataSet.table = table;
 				i.dataSet.rowIndex = rowIndex;

@@ -645,7 +645,13 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 	}
 
 	private calcStickyRight(index: number) {
-		return 0;
+		let r = 0;
+		for(let i = index + 1, l = this.columns.length; i < l; i++) {
+			if(this.columns[i].width) {
+				r += this.columns[i].width!;
+			}
+		}
+		return r;
 	}
 }
 
