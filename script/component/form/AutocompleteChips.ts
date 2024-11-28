@@ -179,7 +179,7 @@ export class AutocompleteChips<T extends List = List> extends ChipsField {
 		return el;
 	}
 
-	private onInput(ev: KeyboardEvent) {
+	private onInput(_ev: Event) {
 		this.menuButton.menu!.show();
 		this.fire("autocomplete", this, this.editor.el.innerText);
 	}

@@ -203,7 +203,7 @@ export class AutocompleteField<T extends List = List> extends InputField {
 		return el;
 	}
 
-	private onInput(_ev: KeyboardEvent) {
+	private onInput(_ev: Event) {
 		this.menuButton.menu!.show();
 		this.fire("autocomplete", this, this.input!.value);
 	}
