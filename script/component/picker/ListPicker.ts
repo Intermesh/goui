@@ -67,7 +67,7 @@ export class ListPicker<ListType extends List = List> extends Component {
 	}
 
 	public onSelect() {
-		const selected = this.list.rowSelection!.selected;
+		const selected = this.list.rowSelection!.getSelected();
 		if (selected.length) {
 			this.fire("select", this, selected[0].record);
 		}
