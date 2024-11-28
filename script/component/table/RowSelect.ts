@@ -14,8 +14,9 @@ import {Store, StoreRecord, storeRecordType} from "../../data";
 
 export interface RowSelectEventMap<Type extends Observable, StoreType extends Store = Store, RecordType extends StoreRecord = storeRecordType<StoreType>>  extends ObservableEventMap<Type> {
 	/**
-	 * Fires when selection changes. When holding arrow on keyboard it will only fire once at key up to prevent
-	 * flooding the server with requests
+	 * Fires when selection changes.
+	 * This function is buffered. So when adding/removing selected items or when holding arrow on keyboard it
+	 * will only fire once at key up to prevent flooding the server with requests.
 	 *
 	 * @example get store record in list config
 	 * ```
@@ -93,7 +94,7 @@ export class RowSelect<StoreType extends Store = Store, RecordType extends Store
 	public multiSelect = true;
 
 	private hasKeyUpListener: Boolean = false;
-	private readonly fireSelectionChange: () => void;
+	private readonly fireSelectionChange: () => Promise<void>;
 
 	/**
 	 * Constructor
