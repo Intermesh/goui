@@ -150,6 +150,29 @@ export class ContainerField<ValueType extends ContainerFieldValue = ContainerFie
 		})
 	}
 
+	protected internalGetValue()  {
+
+		// we have to clone the value to avoid side effects when the value is modified outside the form's
+		// scope. We don't want any external modifications to leak in here because reference is a value.
+		const formProps: ValueType = structuredClone(this._value) as ValueType || {};
+
+		this.findFields().forEach((field: any) => {
+			//for Extjs compat try .getName() and .getValue()
+			const fieldName = (field.getName ? field.getName() : field.name) as keyof ValueType
+			const fieldVal = field.getValue ? field.getValue() : field.value;
+
+			if (fieldName) {
+				if(field.disabled) {
+					delete formProps[fieldName];
+				} else {
+					formProps[fieldName] = fieldVal;
+				}
+			}
+		});
+
+		return formProps;
+	}
+
 	protected validate() {
 		super.validate();
 		let invalid;
