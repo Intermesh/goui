@@ -94,6 +94,9 @@ export class AutocompleteField<T extends List = List> extends InputField {
 			icon: "expand_more",
 			type: "button",
 			handler: () => {
+				if(this.list.rowSelection) {
+					this.list.rowSelection.clear();
+				}
 				this.fire("autocomplete", this, "");
 			},
 			menu: this.menu
@@ -184,8 +187,11 @@ export class AutocompleteField<T extends List = List> extends InputField {
 
 				case 'ArrowDown':
 					ev.preventDefault();
-					this.fire("autocomplete", this, this.input!.value);
+					this.fire("autocomplete", this, "");
 					this.menuButton.menu!.show();
+					if(this.list.rowSelection) {
+						this.list.rowSelection.clear();
+					}
 					this.list.focus();
 					break;
 

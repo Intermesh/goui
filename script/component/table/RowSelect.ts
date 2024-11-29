@@ -155,6 +155,8 @@ export class RowSelect<StoreType extends Store = Store, RecordType extends Store
 		while(this.selected.length) {
 			this.remove(this.selected[0].record );
 		}
+
+		this.lastIndex = -1;
 	}
 
 	/**
@@ -277,6 +279,11 @@ export class RowSelect<StoreType extends Store = Store, RecordType extends Store
 		this.selected.splice(index, 1);
 
 		if(!silent) {
+
+			if(selectedRow.storeIndex ==  -1) {
+				//record is not in store anymore.
+				return;
+			}
 			this.fire('rowdeselect', this, selectedRow);
 			this.fireSelectionChange();
 		}
@@ -321,17 +328,16 @@ export class RowSelect<StoreType extends Store = Store, RecordType extends Store
 
 		let index = 0, change = false;
 		if (e.key == "ArrowDown") {
-			if (this.lastIndex == this.list.store.count() - 1) {
-				return;
-			}
-
 			index = this.lastIndex + 1
 		} else if (e.key == "ArrowUp") {
-			if (this.lastIndex == 0) {
-				return;
-			}
 			index = this.lastIndex - 1
 		}
+
+		// check if index is out of bounds
+		if(index < 0 || index > this.list.store.count() - 1) {
+			return;
+		}
+
 		if (e.shiftKey && this.multiSelect) {
 			if ((e.key == "ArrowDown" && index > this.shiftStartIndex!) || (e.key == "ArrowUp" && index < this.shiftStartIndex!)) {
 				const record = this.list.store.get(index) as RecordType;
