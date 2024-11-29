@@ -99,6 +99,27 @@ export class AutocompleteField<T extends List = List> extends InputField {
 				}
 				this.fire("autocomplete", this, "");
 			},
+			listeners: {
+				render: comp => {
+					comp.el.addEventListener("keydown", (ev:KeyboardEvent)=> {
+
+						switch (ev.key) {
+
+							case 'ArrowDown':
+
+								ev.preventDefault();
+								if(this.list.rowSelection) {
+									this.list.rowSelection.clear();
+								}
+								this.fire("autocomplete", this, "");
+
+								this.menuButton.menu!.show();
+								this.list.focus();
+								break;
+						}
+					});
+				}
+			},
 			menu: this.menu
 		});
 
