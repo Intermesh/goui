@@ -236,7 +236,7 @@ export class Format {
 
 
 	public static duration(value: number, zeroPad:boolean = false): string {
-		if (value < 0) {
+		if (!value) {
 			return "";
 		}
 		let retStr = "";
