@@ -208,8 +208,10 @@ export class AutocompleteField<T extends List = List> extends InputField {
 
 				case 'ArrowDown':
 					ev.preventDefault();
-					this.fire("autocomplete", this, this.input.value);
-					this.menuButton.menu!.show();
+					if(this.menuButton.menu!.hidden) {
+						this.fire("autocomplete", this, "");
+						this.menuButton.menu!.show();
+					}
 					if(this.list.rowSelection) {
 						this.list.rowSelection.clear();
 					}
