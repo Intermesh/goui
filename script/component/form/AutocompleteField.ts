@@ -255,6 +255,18 @@ export class AutocompleteField<T extends List = List> extends InputField {
 		this.fire("autocomplete", this, this.input!.value);
 	}
 
+	reset() {
+		// By clearing the store the arrow down will reload the store and not select the last selected item.
+		this.list.store.clear();
+		super.reset();
+	}
+
+	clear() {
+		// By clearing the store the arrow down will reload the store and not select the last selected item.
+		this.list.store.clear();
+		super.clear();
+	}
+
 }
 
 type AutoCompleteConfig<T extends List, Map extends ObservableEventMap<any>, Required extends keyof AutocompleteField<T>> = FieldConfig<AutocompleteField<T>, Map, Required> &
