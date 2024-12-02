@@ -583,6 +583,9 @@ $formFieldBorderRadius: util.dp(10);
 	&.duration {
 		.control {
 			line-height: util.dp(46);
+			display: flex;
+			flex-direction: row;
+			align-items: center;
 		}
 
 		input.hour {

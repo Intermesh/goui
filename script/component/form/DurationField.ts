@@ -64,7 +64,7 @@ export class DurationField extends Field {
 	}
 
 	protected createControl(): HTMLElement | undefined {
-		const ctrl = E("div").cls("goui hbox");
+		const ctrl = E("div").cls("goui");
 
 
 		const onBlur = function(this:any) {
