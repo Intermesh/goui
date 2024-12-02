@@ -29,8 +29,8 @@ export type StoreRecord = Record<string, any>
  */
 export interface StoreComponent<StoreType extends Store = Store, RecordType extends StoreRecord = StoreRecord> extends Component {
 	onStoreLoadException: (store:StoreType, reason:any) => void;
-	onBeforeStoreLoad: (store:StoreType) => void
-	onStoreLoad: (store:StoreType, records: RecordType[]) => void;
+	onBeforeStoreLoad: (store:StoreType, append: boolean) => void
+	onStoreLoad: (store:StoreType, records: RecordType[], append: boolean) => void;
 	onRecordRemove: (collection: StoreType, item: RecordType, index: number) => void;
   onRecordAdd: (collection: StoreType, item: RecordType, index: number) => void
 }
@@ -265,6 +265,7 @@ export class Store<RecordType extends StoreRecord  = StoreRecord> extends Collec
 
 		const onScroll = () => {
 			const pixelsLeft = el.scrollHeight - el.scrollTop - el.offsetHeight;
+			console.log(pixelsLeft, el.offsetHeight);
 			if (pixelsLeft < 100) {
 				if (!this.loading && this.hasNext()) {
 					void this.loadNext(true);
