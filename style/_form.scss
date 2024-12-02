@@ -166,11 +166,8 @@ $formFieldBorderRadius: util.dp(10);
 
 			span.box-label {
 				//put here and not below for extra strong rules
-				padding: util.dp(11) util.dp(12);
-
-				font-weight:normal;
+				padding: util.dp(11) util.dp(18);
 				margin:0;
-
 			}
 		}
 
@@ -728,8 +725,14 @@ $formFieldBorderRadius: util.dp(10);
 				}
 
 				.box-label {
-					i {
+					display:flex;
+					align-items: center;
+					i.icon {
+						vertical-align: middle;
 						margin-right: util.dp(8);
+						width: util.dp(24);
+						height: util.dp(24);
+						line-height: util.dp(24);
 					}
 				}
 			}
@@ -738,8 +741,10 @@ $formFieldBorderRadius: util.dp(10);
 			.radio {
 
 				background-color: config.$colorBackgroundInput;
-				border: config.$borderWidth solid config.$colorOutline;
+				border: config.$borderWidth solid config.$colorBorder;
 				border-radius: util.dp(12);
+				overflow: hidden; //otherwise selected color overflows
+				font-weight: 600;
 
 				&:focus-visible {
 					border-color: config.$colorMain;
@@ -772,6 +777,9 @@ $formFieldBorderRadius: util.dp(10);
 						i.icon {
 							vertical-align: middle;
 							margin-right: util.dp(8);
+							width: util.dp(24);
+							height: util.dp(24);
+							line-height: util.dp(24);
 						}
 					}
 
