@@ -318,8 +318,15 @@ export class List<StoreType extends Store = Store> extends Component implements 
 	}
 
 
-	public onBeforeStoreLoad() {
+	public onBeforeStoreLoad(store:StoreType, append: boolean) {
 		this.mask()
+
+		if(this.store.loaded && !append) {
+			// when loading (not reloading, then this.store.loaded is false) we want to reset the parent's scrolltop
+			if(this.parent && this.parent.el.scrollTop) {
+				this.parent.el.scrollTop = 0;
+			}
+		}
 	}
 
 	public onStoreLoad() {
