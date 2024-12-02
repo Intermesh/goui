@@ -9,10 +9,9 @@ import {Config, Listener, Observable, ObservableEventMap, ObservableListenerOpts
 import {Button} from "../Button.js";
 import {tbar, Toolbar} from "../Toolbar.js";
 import {t} from "../../Translate.js";
-import {E} from "../../util/index.js";
+import {E} from "../../util";
 import {MaterialIcon} from "../MaterialIcon.js";
-import {Menu} from "../menu/index.js";
-
+import {Menu} from "../menu";
 
 /**
  * @inheritDoc
