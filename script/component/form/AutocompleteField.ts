@@ -98,6 +98,8 @@ export class AutocompleteField<T extends List = List> extends InputField {
 					this.list.rowSelection.clear();
 				}
 				this.fire("autocomplete", this, "");
+
+				this.input.focus();
 			},
 			listeners: {
 				render: comp => {
@@ -114,7 +116,7 @@ export class AutocompleteField<T extends List = List> extends InputField {
 								this.fire("autocomplete", this, "");
 
 								this.menuButton.menu!.show();
-								this.list.focus();
+								this.input.focus();
 								break;
 						}
 					});
@@ -126,9 +128,13 @@ export class AutocompleteField<T extends List = List> extends InputField {
 		this.fireChangeOnBlur = true;
 	}
 
-
 	protected createInput() : HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement{
 		const control = document.createElement("input");
+
+		// select the text so users can type right away
+		control.addEventListener("focus", function() {
+			this.select();
+		})
 
 		if (this.invalidMsg) {
 			this.applyInvalidMsg();
@@ -209,13 +215,26 @@ export class AutocompleteField<T extends List = List> extends InputField {
 				case 'ArrowDown':
 					ev.preventDefault();
 					if(this.menuButton.menu!.hidden) {
+						if(!this.list.store.loaded) {
+							this.fire("autocomplete", this, "");
+						}
+						this.menuButton.menu!.show();
+					} else if(this.list.rowSelection) {
+						this.list.rowSelection.selectNext();
+					}
+
+					break;
+
+				case 'ArrowUp':
+					ev.preventDefault();
+					if(this.menuButton.menu!.hidden) {
 						this.fire("autocomplete", this, "");
 						this.menuButton.menu!.show();
 					}
 					if(this.list.rowSelection) {
-						this.list.rowSelection.clear();
+						this.list.rowSelection.selectPrevious();
 					}
-					this.list.focus();
+
 					break;
 
 				case 'Escape':
@@ -223,7 +242,6 @@ export class AutocompleteField<T extends List = List> extends InputField {
 						this.menu.hide();
 						ev.preventDefault();
 						ev.stopPropagation();
-						this.focus();
 					}
 					break;
 			}

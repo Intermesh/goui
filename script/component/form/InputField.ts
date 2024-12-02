@@ -35,6 +35,16 @@ export abstract class InputField extends Field {
 		}
 	}
 
+
+	/**
+	 * Selects all the text in the field
+	 *
+	 * [MDN Reference](https://developer.mozilla.org/docs/Web/API/HTMLInputElement/select)
+	 */
+	public select() {
+		(this._input as HTMLInputElement).select();
+	}
+
 	protected createControl() : HTMLElement {
 		this._input = this.createInput();
 		return this._input;

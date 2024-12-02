@@ -169,6 +169,28 @@ export class RowSelect<StoreType extends Store = Store, RecordType extends Store
 		}
 	}
 
+	public selectNext() {
+		return this.incrementSelect(1);
+	}
+
+	private incrementSelect(inc = 1) {
+
+		const index = this.lastIndex + inc;
+		if(index < 0 || index > this.list.store.count() - 1) {
+			return this.lastIndex;
+		}
+
+		this.clear();
+		this.add(this.list.store.get(index) as RecordType)
+
+		this.lastIndex = index;
+		return index;
+	}
+
+	public selectPrevious() {
+		return this.incrementSelect(-1);
+	}
+
 	/**
 	 * Check if a record is selected
 	 * @param record
@@ -258,6 +280,8 @@ export class RowSelect<StoreType extends Store = Store, RecordType extends Store
 
 		this.fire('rowselect', this, selectedRow);
 		this.fireSelectionChange();
+
+		this.lastIndex = selectedRow.storeIndex;
 	}
 
 	/**

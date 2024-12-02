@@ -40,6 +40,7 @@ export class ListPicker<ListType extends List = List> extends Component {
 		//datachanged fires for each row. With buffer = 0 only fires once at load
 		this.list.store.on("datachanged", () => {
 			if(this.list.store.count() > 0) {
+				this.list.rowSelection!.clear();
 				this.list.rowSelection!.add(this.list.store.first()!)
 			}
 		}, {buffer: 0})
