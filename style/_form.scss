@@ -573,6 +573,8 @@ $formFieldBorderRadius: util.dp(10);
 	}
 	textarea {
 		line-height: config.$baseLineHeight;
+		//show textarea as 2 lines by default so it's clear it's a text area
+		min-height: (config.$baseLineHeight * 2) + util.dp(22); // add padding
 	}
 
 	&.time {
@@ -961,13 +963,6 @@ $formFieldBorderRadius: util.dp(10);
 	//& + .goui-fieldset {
 	//	border-top: $borderWidth solid $colorBorder;
 	//}
-}
-
-.textarea {
-	textarea
-	{
-		min-height: util.dp(42);
-	}
 }
 
 
