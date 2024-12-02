@@ -655,8 +655,12 @@ export class Component extends Observable {
 	 * scaled easily for different themes.
 	 *
 	 */
-	set width(width: number) {
-		this.el.style.width = (width / 10) + "rem";
+	set width(width: number | "auto") {
+		if(width == "auto") {
+			this.el.style.width = "auto";
+		} else {
+			this.el.style.width = (width / 10) + "rem";
+		}
 	}
 
 	get width() {
@@ -670,6 +674,51 @@ export class Component extends Observable {
 			return parseFloat(styleWidth);
 		} else if(styleWidth.substring(styleWidth.length - 2) == "px") {
 			return Component.pxToRem(parseFloat(styleWidth));
+		}
+		return 0;
+	}
+
+	/**
+	 * Set the minimum width in scalable pixels
+	 *
+	 * The width is applied in rem units divided by 10. Because the font-size of the html
+	 * element has a font-size of 62.5% this is equals the amount of pixels, but it can be
+	 * scaled easily for different themes.
+	 *
+	 */
+	set minWidth(width: number) {
+		this.el.style.minWidth = (width / 10) + "rem";
+	}
+
+	get minWidth() {
+		const w = this.el.style.minWidth;
+		if(w.substring(w.length - 3) == "rem") {
+			return parseFloat(w);
+		} else if(w.substring(w.length - 2) == "px") {
+			return Component.pxToRem(parseFloat(w));
+		}
+		return 0;
+	}
+
+
+	/**
+	 * Set the minimum height in scalable pixels
+	 *
+	 * The width is applied in rem units divided by 10. Because the font-size of the html
+	 * element has a font-size of 62.5% this is equals the amount of pixels, but it can be
+	 * scaled easily for different themes.
+	 *
+	 */
+	set minHeight(height: number) {
+		this.el.style.minHeight = (height / 10) + "rem";
+	}
+
+	get minHeight() {
+		const h = this.el.style.minHeight;
+		if(h.substring(h.length - 3) == "rem") {
+			return parseFloat(h);
+		} else if(h.substring(h.length - 2) == "px") {
+			return Component.pxToRem(parseFloat(h));
 		}
 		return 0;
 	}
