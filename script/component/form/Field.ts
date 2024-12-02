@@ -172,9 +172,12 @@ export abstract class Field extends Component {
 	protected valueOnFocus?: FieldValue;
 
 	/**
-	 * Validate the field on blur
+	 * Validate the field on blur.
+	 *
+	 * Not recommended as it's causing annoying GUI jumping when adding the validation messages. It causes to click
+	 * next to the desired element.
 	 */
-	public validateOnBlur = true;
+	public validateOnBlur = false;
 
 	/**
 	 * Fires a change event if the field's value is different since it got focus
@@ -732,7 +735,15 @@ false
 	}
 
 	/**
-	 * Checks if the field is valid
+	 * Check if the field is marked invalid without doing any validation
+	 */
+	public isMarkedInvalid() {
+		return this.invalidMsg != "";
+	}
+
+	/**
+	 * Checks if the field is valid. It performs validation too.
+	 * If you want to check if the field is marked as invalid without validation use isMarkedInvalid()
 	 */
 	public isValid() {
 		if (this.invalidMsg != "") {
