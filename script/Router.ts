@@ -69,12 +69,12 @@ export class Router extends Observable {
 
 	/**
 	 * Set route path without executing matching routes.
-	 *
-	 * @param path
 	 */
-	public setPath(path: string) {
+	public setPath(...pathParts: any[]) {
+
+		const path = pathParts.map(p => p ?? "").join("/");
 		//this._setPath = path; //to cancel event
-		if (path != window.location.hash) {
+		if ("#" + path != window.location.hash) {
 			this.suspendEvent = true;
 			const oldPath = this.getPath();
 			window.location.hash = path;
@@ -161,6 +161,7 @@ export class Router extends Observable {
 		}
 
 		this.params = match;
+
 		const result = handler.apply({}, match);
 
 		window.scrollTo(0,0);
@@ -181,17 +182,20 @@ export class Router extends Observable {
 	/**
 	 * Go to the give router path
 	 *
-	 * @param path
+
 	 * @return Promise<Router>
 	 */
-	public goto(path: string) {
+	public goto(...pathParts: any[]) :Promise<Router> {
+
+		const path = pathParts.map(p => p ?? "").join("/");
+
 		const p = new Promise((resolve, reject) => {
 			this.on("change", (path1, oldPath) => {
 				resolve(this);
 			}, {once: true});
 		});
 		window.location.hash = path || "";
-		return p;
+		return p as Promise<Router>;
 	}
 }
 
