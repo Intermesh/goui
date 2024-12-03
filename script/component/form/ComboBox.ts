@@ -10,12 +10,13 @@ import {column, Table, table} from "../table/index.js";
 import {createComponent} from "../Component.js";
 import {Format} from "../../util/index.js";
 import {FieldConfig} from "./Field.js";
+import {t} from "../../Translate";
 
 export type ComboBoxStoreConfig<DS extends AbstractDataSource = AbstractDataSource> = Partial<DataSourceStoreConfig<DS, any>>
 
 export type ComboRenderer = (field:ComboBox, record:any) => string;
 
-export const ComboBoxDefaultRenderer:ComboRenderer = (field,r)=> r[field.displayProperty];
+export const ComboBoxDefaultRenderer:ComboRenderer = (field,r)=> r ? r[field.displayProperty] : t("Not found");
 
 /**
  * Combo box
