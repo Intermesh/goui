@@ -265,7 +265,7 @@ export class Store<RecordType extends StoreRecord  = StoreRecord> extends Collec
 
 		const onScroll = () => {
 			const pixelsLeft = el.scrollHeight - el.scrollTop - el.offsetHeight;
-			console.log(pixelsLeft, el.offsetHeight);
+
 			if (pixelsLeft < 100) {
 				if (!this.loading && this.hasNext()) {
 					void this.loadNext(true);
