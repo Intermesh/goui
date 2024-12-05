@@ -12,3 +12,4 @@ export * from './FunctionUtil.js';
 export * from './ObjectUtil.js';
 export * from './QuoteStripper.js';
 export * from './BrowserStorage.js';
+export * from './String.js';
