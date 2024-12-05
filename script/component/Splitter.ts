@@ -36,7 +36,7 @@ export class Splitter extends DraggableComponent {
 	public minSize = 50;
 
 	/**
-	 * The maximim size it will set. Note that you can also put a max-width or max-height on the element with css.
+	 * The maximum size it will set. Note that you can also put a max-width or max-height on the element with css.
 	 */
 	public maxSize?: number;
 
@@ -93,13 +93,43 @@ export class Splitter extends DraggableComponent {
 		return this.resizeWidth ? {width: this._resizeComponent!.width} : {height: this._resizeComponent!.height};
 	}
 
+
+	/**
+	 * If a splitter is between two containers. It will check the minWidth of the container next to the container
+	 * we are resizing so it will not go bigger than allowed by the minWidth.
+	 *
+	 * @private
+	 */
+	private initAutoMaxWidth() {
+		const prev = this.previousSibling(),
+			next = this.nextSibling();
+
+		if(!prev || !next) {
+			return;
+		}
+
+		if(prev == this._resizeComponent && next.minWidth) {
+			return Component.remToPx(prev.width + next.width - next.minWidth);
+		}
+
+		if(next == this._resizeComponent && prev.minWidth) {
+			return Component.remToPx(next.width + prev.width - prev.minWidth);
+		}
+	}
+
 	protected internalRender(): HTMLElement {
 		const el = super.internalRender();
+
+		let autoMaxWidth:number|undefined = undefined;
 
 		this.on("dragstart", (comp, dragData, e) => {
 			//resize width if this is a vertical splitter
 			if (this.resizeWidth === undefined) {
 				this.resizeWidth = this.el.offsetHeight > this.el.offsetWidth;
+			}
+
+			if (this.resizeWidth) {
+				autoMaxWidth = this.initAutoMaxWidth();
 			}
 
 			// if invert is undefined then autodetect based on the component order
@@ -129,6 +159,13 @@ export class Splitter extends DraggableComponent {
 				if (this.maxSize) {
 					width = Math.min(this.maxSize, width);
 				}
+
+				if (autoMaxWidth) {
+					width = Math.min(autoMaxWidth, width);
+				}
+
+				console.log(autoMaxWidth, width);
+
 				this._resizeComponent!.width = width * 10 / REM_UNIT_SIZE ;
 
 			} else {

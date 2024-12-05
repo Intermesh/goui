@@ -663,7 +663,7 @@ export class Component extends Observable {
 		}
 	}
 
-	get width() {
+	get width() : number {
 		const px = this.el.offsetWidth;
 		if(px) {
 			return Component.pxToRem(px);
@@ -671,7 +671,7 @@ export class Component extends Observable {
 
 		const styleWidth = this.el.style.width;
 		if(styleWidth.substring(styleWidth.length - 3) == "rem") {
-			return parseFloat(styleWidth);
+			return parseFloat(styleWidth) * 10;
 		} else if(styleWidth.substring(styleWidth.length - 2) == "px") {
 			return Component.pxToRem(parseFloat(styleWidth));
 		}
@@ -693,7 +693,7 @@ export class Component extends Observable {
 	get minWidth() {
 		const w = this.el.style.minWidth;
 		if(w.substring(w.length - 3) == "rem") {
-			return parseFloat(w);
+			return parseFloat(w) * 10;
 		} else if(w.substring(w.length - 2) == "px") {
 			return Component.pxToRem(parseFloat(w));
 		}
