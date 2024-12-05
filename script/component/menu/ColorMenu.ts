@@ -8,6 +8,7 @@ import {Menu} from "./Menu.js";
 import {btn} from "../Button.js";
 import {Config, Listener, ObservableListenerOpts} from "../Observable.js";
 import {Component, ComponentEventMap, createComponent} from "../Component.js";
+import {t} from "../../Translate";
 
 /**
  * @inheritDoc
@@ -83,7 +84,7 @@ export class ColorMenu extends Menu {
 		super();
 		this.items.add(btn({
 			itemId: "auto",
-			text: "Auto",
+			text: t("Auto"),
 			cls: this.value == "" ? "pressed" : "",
 
 			handler: () => {
