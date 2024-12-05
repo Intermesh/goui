@@ -716,7 +716,7 @@ export class Component extends Observable {
 	get minHeight() {
 		const h = this.el.style.minHeight;
 		if(h.substring(h.length - 3) == "rem") {
-			return parseFloat(h);
+			return parseFloat(h) * 10;
 		} else if(h.substring(h.length - 2) == "px") {
 			return Component.pxToRem(parseFloat(h));
 		}

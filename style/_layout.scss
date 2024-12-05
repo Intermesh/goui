@@ -36,6 +36,24 @@ html {
 	}
 }
 
+%hr {
+	border: 0;
+	z-index: 1;
+	padding: 0;
+	width: config.$borderWidth * 5;
+	display: block;
+	margin: 0 (-2 * config.$borderWidth);
+	background-color: transparent;
+	color: config.$colorBorder;
+	background:linear-gradient(90deg, transparent config.$borderWidth * 2, currentColor config.$borderWidth * 2 config.$borderWidth * 3, transparent config.$borderWidth * 3);
+
+	&.draggable {
+		cursor: col-resize;
+	}
+
+	height: auto; //was needed to override group-office extjs style
+}
+
 // Stack items horizontally
 // For border layout use width's on north and south and add class "go-scroll" on center
 .goui.hbox {
@@ -57,8 +75,7 @@ html {
 	}
 
 	> hr {
-		@extend %vr;
-		height: auto; //was needed to override group-office extjs style
+		@extend %hr;
 	}
 
 	.break {
@@ -85,6 +102,24 @@ html {
 		flex:none; //setting flex none prevents squishing of elements with no flex setting.
 		min-height: 0; // this prevents children from growing larger than the container. We usually don't want that. If you need this then set min-height to "auto".
 
+	}
+
+	> hr {
+		border: 0;
+		z-index: 1;
+		padding: 0;
+		height: config.$borderWidth * 5;
+		display: block;
+		margin: (-2 * config.$borderWidth) 0;
+		background-color: transparent;
+		color: config.$colorBorder;
+		background:linear-gradient(180deg, transparent config.$borderWidth * 2, currentColor config.$borderWidth * 2 config.$borderWidth * 3, transparent config.$borderWidth * 3);
+
+		&.draggable {
+			cursor: row-resize;
+		}
+
+		width: auto; //was needed to override group-office extjs style
 	}
 }
 
@@ -180,22 +215,6 @@ html {
 	}
 }
 
-
-%vr {
-	border: 0;
-	z-index: 1;
-	padding: 0;
-	width: config.$borderWidth * 5;
-	display: block;
-	margin: 0 (-2 * config.$borderWidth);
-	background-color: transparent;
-	color: config.$colorBorder;
-	background:linear-gradient(90deg, transparent config.$borderWidth * 2, currentColor config.$borderWidth * 2 config.$borderWidth * 3, transparent config.$borderWidth * 3);
-
-	&.draggable {
-		cursor: col-resize;
-	}
-}
 .goui.hbox.mobile-cards {
 	height: 100%;
 }

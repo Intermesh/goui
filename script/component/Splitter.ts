@@ -93,6 +93,40 @@ export class Splitter extends DraggableComponent {
 		return this.resizeWidth ? {width: this._resizeComponent!.width} : {height: this._resizeComponent!.height};
 	}
 
+	/**
+	 * If a splitter is between two containers. It will check the minWidth of the container next to the container
+	 * we are resizing so it will not go bigger than allowed by the minWidth.
+	 *
+	 * @private
+	 */
+	private initAutoMaxHeight() {
+		const prev = this.previousSibling(),
+			next = this.nextSibling();
+
+		if(!prev || !next) {
+			return;
+		}
+
+		if(prev == this._resizeComponent && next.minHeight) {
+			const r1 = prev.el.getBoundingClientRect(),
+				r2 = next.el.getBoundingClientRect(),
+				gap = r2.y - r1.height - r1.y;
+
+			console.log(r1, r2, gap);
+
+			console.log(Component.remToPx(next.minHeight));
+
+			return r1.height + r2.height - gap - Component.remToPx(next.minHeight);
+		}
+
+		if(next == this._resizeComponent && prev.minHeight) {
+			const r1 = prev.el.getBoundingClientRect(),
+				r2 = next.el.getBoundingClientRect(),
+				gap = r2.y - r1.height - r1.y;
+
+			return r2.height + r1.height - gap - Component.remToPx( prev.minHeight);
+		}
+	}
 
 	/**
 	 * If a splitter is between two containers. It will check the minWidth of the container next to the container
@@ -109,18 +143,26 @@ export class Splitter extends DraggableComponent {
 		}
 
 		if(prev == this._resizeComponent && next.minWidth) {
-			return Component.remToPx(prev.width + next.width - next.minWidth);
+			const r1 = prev.el.getBoundingClientRect(),
+				r2 = next.el.getBoundingClientRect(),
+				gap = r2.x - r1.width - r1.x;
+
+			return r1.width + r2.width - gap - Component.remToPx(next.minWidth);
 		}
 
 		if(next == this._resizeComponent && prev.minWidth) {
-			return Component.remToPx(next.width + prev.width - prev.minWidth);
+			const r1 = prev.el.getBoundingClientRect(),
+				r2 = next.el.getBoundingClientRect(),
+				gap = r2.x - r1.width - r1.x;
+
+			return r2.width + r1.width - gap - Component.remToPx( prev.minWidth);
 		}
 	}
 
 	protected internalRender(): HTMLElement {
 		const el = super.internalRender();
 
-		let autoMaxWidth:number|undefined = undefined;
+		let autoMax:number|undefined = undefined;
 
 		this.on("dragstart", (comp, dragData, e) => {
 			//resize width if this is a vertical splitter
@@ -129,7 +171,9 @@ export class Splitter extends DraggableComponent {
 			}
 
 			if (this.resizeWidth) {
-				autoMaxWidth = this.initAutoMaxWidth();
+				autoMax = this.initAutoMaxWidth();
+			} else {
+				autoMax = this.initAutoMaxHeight();
 			}
 
 			// if invert is undefined then autodetect based on the component order
@@ -156,16 +200,9 @@ export class Splitter extends DraggableComponent {
 
 				let width = dragData.data.startWidth + offset;
 
-				// if (this.maxSize) {
-				// 	width = Math.min(this.maxSize, width);
-				// }
-
-				if (autoMaxWidth) {
-					width = Math.min(autoMaxWidth, width);
+				if (autoMax) {
+					width = Math.min(autoMax, width);
 				}
-
-				console.log(autoMaxWidth, width);
-
 				this._resizeComponent!.width = width * 10 / REM_UNIT_SIZE ;
 
 			} else {
@@ -176,9 +213,9 @@ export class Splitter extends DraggableComponent {
 				}
 
 				let height = dragData.data.startHeight + offset;
-				// if (this.maxSize) {
-				// 	height = Math.min(this.maxSize, height);
-				// }
+				if (autoMax) {
+					height = Math.min(autoMax, height);
+				}
 				this._resizeComponent!.height = height * 10 / REM_UNIT_SIZE;
 
 			}
