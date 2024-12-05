@@ -30,15 +30,15 @@ export class Splitter extends DraggableComponent {
 	 */
 	public invert?: boolean;
 
-	/**
-	 * The minimum size it will set. Note that you can also put a min-width or min-height on the element with css.
-	 */
-	public minSize = 50;
+	// /**
+	//  * The minimum size it will set. Note that you can also put a min-width or min-height on the element with css.
+	//  */
+	// public minSize = 50;
 
-	/**
-	 * The maximum size it will set. Note that you can also put a max-width or max-height on the element with css.
-	 */
-	public maxSize?: number;
+	// /**
+	//  * The maximum size it will set. Note that you can also put a max-width or max-height on the element with css.
+	//  */
+	// public maxSize?: number;
 
 	/**
 	 *
@@ -154,11 +154,11 @@ export class Splitter extends DraggableComponent {
 					offset *= -1;
 				}
 
-				let width = Math.max(this.minSize, dragData.data.startWidth + offset);
+				let width = dragData.data.startWidth + offset;
 
-				if (this.maxSize) {
-					width = Math.min(this.maxSize, width);
-				}
+				// if (this.maxSize) {
+				// 	width = Math.min(this.maxSize, width);
+				// }
 
 				if (autoMaxWidth) {
 					width = Math.min(autoMaxWidth, width);
@@ -175,10 +175,10 @@ export class Splitter extends DraggableComponent {
 					offset *= -1;
 				}
 
-				let height = Math.max(this.minSize, dragData.data.startHeight + offset);
-				if (this.maxSize) {
-					height = Math.min(this.maxSize, height);
-				}
+				let height = dragData.data.startHeight + offset;
+				// if (this.maxSize) {
+				// 	height = Math.min(this.maxSize, height);
+				// }
 				this._resizeComponent!.height = height * 10 / REM_UNIT_SIZE;
 
 			}
