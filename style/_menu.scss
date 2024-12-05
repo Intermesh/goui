@@ -161,20 +161,27 @@ button.goui-button.has-menu:not(.with-icon) {
 }
 
 
-.goui-menu-color {
+menu.goui-dropdown.goui-menu-color {
+	overflow: auto;
 	width: 5 * util.dp(38);
-	> button {
+	display:flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: center;
+	> li:first-child {
 		// "Auto" button
-		width: 5 * util.dp(38);
-		text-align: center;
-		margin-bottom: util.dp(12);
+		width: 100%;
+
+		button {
+			margin-bottom: util.dp(12);
+			.text {
+				text-align: center;
+			}
+		}
 	}
-	div {
-		display:flex;
-		flex-direction: row;
-		flex-wrap: wrap;
-		align-items: center;
-		justify-content: center;
+	//div {
+
 		button {
 			text-align: center;
 			div {
@@ -187,7 +194,7 @@ button.goui-button.has-menu:not(.with-icon) {
 			}
 		}
 
-	}
+	//}
 }
 
 menu.main-menu, menu.west-menu {
