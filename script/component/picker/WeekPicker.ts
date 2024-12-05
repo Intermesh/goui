@@ -1,20 +1,22 @@
 /**
  * @license https://github.com/Intermesh/goui/blob/main/LICENSE MIT License
- * @copyright Copyright 2023 Intermesh BV
- * @author Michael de Hart <mdhart@intermesh.nl>
+ * @copyright Copyright 2024 Intermesh BV
+ * @author Merijn Schering <mschering@intermesh.nl>
  */
 
 import {comp, Component, ComponentEventMap, createComponent} from "../Component.js";
-import {DateTime, Format} from "../../util";
+import {DateTime} from "../../util";
 import {Config, Listener, ObservableListenerOpts} from "../Observable.js";
 import {fieldset, NumberField, numberfield} from "../form";
 import {btn} from "../Button";
-import {Menu, menu} from "../menu";
-import {t} from "../../Translate";
-
-// import {Button} from "../Button";
 export interface WeekPickerEventMap<Type> extends ComponentEventMap<Type> {
-	'select': (datepicker: Type, date: DateTime|undefined) => false | void
+	/**
+	 * Fires when a week is selected
+	 *
+	 * @param datepicker
+	 * @param date
+	 */
+	select: (datepicker: Type, date: DateTime) => false | void
 }
 
 export interface WeekPicker extends Component{
@@ -23,6 +25,11 @@ export interface WeekPicker extends Component{
 	fire<K extends keyof WeekPickerEventMap<this>>(eventName: K, ...args: Parameters<WeekPickerEventMap<Component>[K]>): boolean;
 }
 
+/**
+ * Week picker
+ *
+ * Select a week of the year
+ */
 export class WeekPicker extends Component {
 
 	private _value: DateTime
@@ -30,15 +37,8 @@ export class WeekPicker extends Component {
 
 	protected baseCls = "weekpicker"
 
-
-	minDate?: DateTime;
-
-	maxDate?: DateTime;
-
-	// private footer: HTMLElement;
-	private numberField: NumberField;
+	private yearField: NumberField;
 	private weekMenu: Component;
-
 
 	constructor() {
 		super();
@@ -53,11 +53,10 @@ export class WeekPicker extends Component {
 					btn({
 						icon: "chevron_left",
 						handler: () => {
-							this.numberField.value!--;
-
+							this.yearField.value!--;
 						}
 					}),
-					this.numberField = numberfield({
+					this.yearField = numberfield({
 						decimals: 0,
 						value: this.value.getYear(),
 						listeners: {
@@ -69,7 +68,7 @@ export class WeekPicker extends Component {
 					btn({
 						icon: "chevron_right",
 						handler: () => {
-							this.numberField.value!++;
+							this.yearField.value!++;
 						}
 					}),
 				),
@@ -91,10 +90,10 @@ export class WeekPicker extends Component {
 	}
 
 	private changeYear() {
-		if(!this.numberField) {
+		if(!this.yearField) {
 			return;
 		}
-		const curDate = DateTime.createFromFormat(this.numberField.value + "-01-01", "Y-m-d")!;
+		const curDate = DateTime.createFromFormat(this.yearField.value + "-01-01", "Y-m-d")!;
 		curDate.addDays(-curDate.getWeekDay());
 		if(curDate.format("W") != "1") {
 			curDate.addDays(7);
@@ -114,7 +113,7 @@ export class WeekPicker extends Component {
 			if(curDate.format("Y-W") == selectedWeek) {
 				cls = "primary filled";
 			} else {
-				cls = week == currentWeek && this.numberField.value == currentYear ? "primary outlined" : "";
+				cls = week == currentWeek && this.yearField.value == currentYear ? "primary outlined" : "";
 			}
 
 			this.weekMenu.items.add(btn({
@@ -131,4 +130,11 @@ export class WeekPicker extends Component {
 	}
 }
 
+/**
+ * Create a week picker
+ *
+ * Can select a week of the year
+ *
+ * @param config
+ */
 export const weekpicker = (config?: Config<WeekPicker, WeekPickerEventMap<WeekPicker>>) => createComponent(new WeekPicker(), config);
