@@ -125,13 +125,6 @@ export class Router extends Observable {
 
 		const oldPath = this.loadedPath;
 
-		if (this.suspendEvent) {
-			setTimeout(() => {
-				this.suspendEvent = false;
-			});
-
-			return Promise.resolve();
-		}
 
 
 		this.loadedPath = path;
@@ -161,6 +154,15 @@ export class Router extends Observable {
 		}
 
 		this.params = match;
+
+		if (this.suspendEvent) {
+			setTimeout(() => {
+				this.suspendEvent = false;
+			});
+
+			return Promise.resolve();
+		}
+
 
 		const result = handler.apply({}, match);
 
