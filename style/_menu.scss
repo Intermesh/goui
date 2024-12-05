@@ -144,7 +144,7 @@ menu.goui-dropdown {
 
 }
 
-button.goui-button.with-text.has-menu {
+button.goui-button.has-menu:not(.with-icon) {
 	padding-right: util.dp(36);
 
 	&:after {

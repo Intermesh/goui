@@ -275,7 +275,7 @@ export class Button extends Component {
 	}
 
 	get text() {
-		return this._text + "";
+		return this._text == undefined ? "" : this._text;
 	}
 
 	/**
