@@ -658,15 +658,11 @@ export class Component extends Observable {
 	 * scaled easily for different themes.
 	 *
 	 */
-	set width(width: number | "auto") {
-		if(width == "auto") {
-			this.el.style.width = "auto";
-		} else {
-			this.el.style.width = (width / 10) + "rem";
-		}
+	set width(width: number) {
+		this.el.style.width = (width / 10) + "rem";
 	}
 
-	get width() : number {
+	get width()  {
 		const px = this.el.offsetWidth;
 		if(px) {
 			return Component.pxToRem(px);
