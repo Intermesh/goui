@@ -67,7 +67,7 @@ export interface DataSourceForm<ValueType extends BaseEntity = DefaultEntity> ex
 
 export class DataSourceForm<ValueType extends BaseEntity = DefaultEntity> extends Form<ValueType> {
 
-	protected currentId?: EntityID
+	public currentId?: EntityID
 
 	constructor(public dataSource: AbstractDataSource<ValueType>) {
 		super();
