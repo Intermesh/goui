@@ -8,7 +8,7 @@ import {assignComponentConfig, comp, Component, ComponentEventMap, createCompone
 import {Store, StoreComponent, StoreRecord, storeRecordType} from "../data";
 import {t} from "../Translate.js";
 import {E, ObjectUtil} from "../util";
-import {rowselect, RowSelect, RowSelectConfig, Table} from "./table";
+import {rowselect, RowSelect, RowSelectConfig, SelectedRow, Table} from "./table";
 import {Config, Listener, ObservableListenerOpts} from "./Observable.js";
 import {Window} from "./Window.js";
 import {Sortable} from "./Sortable.js";
@@ -293,7 +293,7 @@ export class List<StoreType extends Store = Store> extends Component implements 
 				dragData.dataSet.selectedRowIndexes = this.rowSelect.getSelected();
 				ev.setDragComponent(comp({cls: "card pad", html: this.rowSelect.getSelected().length + " selected rows"}))
 			} else {
-				dragData.dataSet.selectedRowIndexes = [dragData.fromIndex];
+				dragData.dataSet.selectedRowIndexes = [new SelectedRow(this.store, this.store.get(dragData.fromIndex)!)];
 			}
 		});
 
