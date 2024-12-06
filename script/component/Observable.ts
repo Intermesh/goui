@@ -291,6 +291,9 @@ type CompFuncs =  "buildState" |
 	"items" |
 	"parent"
 
+// sometimes setters have a different type than the getters. TS prefers the getter type but not if we omit all the getters.
+// For example get width() and set width() in component
+type LoseGetters<MyType> = Omit<MyType, { [K in keyof MyType]: K extends `get ${string}` ? K : never }[keyof MyType]>;
 
 type WritablePartial<T> = {
 	-readonly [P in keyof T]?: T[P];
@@ -311,7 +314,7 @@ export type Config<Cmp extends Observable, EventMap extends ObservableEventMap<O
 	WritablePartial<
 		//somehow this breaks generic class sometimes : (
 		// Omit<Cmp, Required & FunctionPropertyNames<Cmp>>
-	Omit<Cmp, CompFuncs >
+	Omit<LoseGetters<Cmp>, CompFuncs >
 	>
 
 	&

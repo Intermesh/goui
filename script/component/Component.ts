@@ -658,8 +658,12 @@ export class Component extends Observable {
 	 * scaled easily for different themes.
 	 *
 	 */
-	set width(width: number) {
-		this.el.style.width = (width / 10) + "rem";
+	set width(width: number | "auto") {
+		if(width == "auto") {
+			this.el.style.width = "auto";
+		} else {
+			this.el.style.width = (width / 10) + "rem";
+		}
 	}
 
 	get width()  {
@@ -748,8 +752,12 @@ export class Component extends Observable {
 	 *
 	 * @see width
 	 */
-	set height(height: number) {
-		this.el.style.height = (height / 10) + "rem";
+	set height(height: number | "auto") {
+		if(height == "auto") {
+			this.el.style.height = "auto";
+		} else {
+			this.el.style.height = (height / 10) + "rem";
+		}
 	}
 
 	get height() {
