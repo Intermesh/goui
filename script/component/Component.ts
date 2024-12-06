@@ -251,7 +251,10 @@ export class Component extends Observable {
 		this.items.on("add", (_collection, item, index) => {
 
 			item.parent = this;
-			item.onAdded(index);
+			//@ts-ignore hack for ext comps. They have a supr() method
+			if(!item.supr) {
+				item.onAdded(index);
+			}
 
 			if (this.rendered) {
 				this.renderItem(item);
@@ -921,14 +924,24 @@ export class Component extends Observable {
 	}
 
 	/**
-	 * Can be overriden to wrap the component
+	 * Can be overridden to wrap the component
 	 *
 	 * @param item
 	 * @protected
 	 */
 	protected renderItem(item: Component) {
-		// getInsertBefore check for ext components. They don't have it.
-		item.render(this.itemContainerEl, item.getInsertBefore ? item.getInsertBefore() : undefined);
+
+		//@ts-ignore Support extjs components in GOUI
+		if(item.supr) {
+			item.render(this.itemContainerEl, undefined);
+			//@ts-ignore Support extjs components in GOUI
+			if(item.doLayout) {
+				//@ts-ignore Support extjs components in GOUI
+				item.doLayout();
+			}
+		} else {
+			item.render(this.itemContainerEl, item.getInsertBefore());
+		}
 	}
 
 	/**
