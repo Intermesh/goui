@@ -17,8 +17,6 @@ import {Config, Listener, ObservableListenerOpts} from "../Observable.js";
 import {t} from "../../Translate.js";
 
 
-type GroupByRenderer = (groupBy: any, record: any, thEl: HTMLTableCellElement, table: Table) => string | Promise<string> | Component | Promise<Component>;
-
 
 export interface Table<StoreType extends Store = Store> extends List<StoreType>  {
 	on<K extends keyof ListEventMap<this>, L extends Listener>(eventName: K, listener: Partial<ListEventMap<this>>[K], options?: ObservableListenerOpts): L;
@@ -186,17 +184,8 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 	 */
 	public headers = true;
 
-	/**
-	 * Group the table by this property.
-	 */
-	public groupBy?: string;
 
 	protected emptyStateTag: keyof HTMLElementTagNameMap = 'caption'
-
-	/**
-	 * Group renderer function
-	 */
-	public groupByRenderer: GroupByRenderer = groupBy => groupBy ?? t("None")
 
 	private minCellWidth = 30
 
@@ -278,12 +267,7 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 		super.renderBody();
 	}
 
-	private rerender() {
-		const el = this.el;
-		this.groupEl = undefined;
-		el.innerHTML = "";
-		this.renderBody();
-	}
+
 
 	private columnMenu: Menu | undefined;
 
@@ -487,7 +471,7 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 
 		const s = this.store.sort;
 
-		let sortIndex = 0;
+		let sortIndex = Math.max(0, s.length - 1); // when multiple sorts are given we edit the last. Useful when groupBy is used.
 
 		if (s[sortIndex]) {
 			if (s[sortIndex].property == dataIndex) {
@@ -558,65 +542,35 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 		}, 0);
 	}
 
-	private lastGroup?: string;
-	private groupEl?: HTMLTableSectionElement;
+
 
 	protected renderGroup(record: any): HTMLElement {
+
 		if (!this.groupBy) {
-			if (!this.groupEl) {
-				this.groupEl = document.createElement('tbody');
-				this.el.append(this.groupEl);
-			}
-			return this.groupEl;
+			const groupEl = document.createElement('tbody');
+			this.el.append(groupEl);
+			return groupEl;
 		}
 
-		const groupBy = ObjectUtil.get(record, this.groupBy);
+		const tr = document.createElement("tr");
+		tr.classList.add("group");
 
-		// console.warn(this.groupEl,groupBy, this.lastGroup)
-		if (!this.groupEl || groupBy != this.lastGroup) {
-			const tr = document.createElement("tr");
-			tr.classList.add("group");
+		const th = document.createElement("th");
+		th.colSpan = this.columns.length;
 
-			const th = document.createElement("th");
-			th.colSpan = this.columns.length;
+		this.renderGroupToEl(record, th);
 
-			const r = this.groupByRenderer(groupBy, record, th, this);
+		tr.append(th);
 
-			if(r) {
-				if (typeof r === "string") {
-					th.innerHTML = r;
-				} else if (r instanceof Component) {
-					r.render(th);
-				} else if (r instanceof Promise) {
-					r.then((s) => {
+		const groupEl = document.createElement('tbody');
+		groupEl.append(tr);
 
-						if (!s) {
-							return;
-						}
+		this.el.append(groupEl);
 
-						if (s instanceof Component) {
-							s.render(th);
-						} else {
-							th.innerHTML = s;
-						}
-					})
-				} else {
-					console.warn("Renderer returned invalid value: ", r);
-				}
-			}
-
-			tr.append(th);
-
-			this.groupEl = document.createElement('tbody');
-			this.groupEl!.append(tr);
-
-			this.el!.append(this.groupEl);
-
-
-			this.lastGroup = groupBy;
-		}
-		return this.groupEl;
+		return groupEl;
 	}
+
+
 
 	public onRecordRemove(collection: StoreType, item: StoreRecord, index: number) {
 
@@ -627,12 +581,9 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 		}
 
 		super.onRecordRemove(collection, item, index)
-//console.warn(groupEl, groupEl?.children.length);
+
 		//cleanup group if only group header is left
 		if(groupEl && groupEl.children.length == 1) {
-			if(groupEl == this.groupEl) {
-				this.groupEl = undefined;
-			}
 			groupEl.remove();
 		}
 	}

@@ -7,13 +7,16 @@
 import {assignComponentConfig, comp, Component, ComponentEventMap, createComponent} from "./Component.js";
 import {Store, StoreComponent, StoreRecord, storeRecordType} from "../data";
 import {t} from "../Translate.js";
-import {E} from "../util";
-import {rowselect, RowSelect, RowSelectConfig} from "./table";
+import {E, ObjectUtil} from "../util";
+import {rowselect, RowSelect, RowSelectConfig, Table} from "./table";
 import {Config, Listener, ObservableListenerOpts} from "./Observable.js";
 import {Window} from "./Window.js";
 import {Sortable} from "./Sortable.js";
 
 export type RowRenderer = (record: any, row: HTMLElement, list: any, storeIndex: number) => string | Component[] | void;
+
+export type GroupByRenderer = (groupBy: any, record: any, list: List) => string | Promise<string> | Component | Promise<Component>;
+
 
 export type listStoreType<ListType> = ListType extends List<infer StoreType> ? StoreType : never;
 
@@ -189,9 +192,21 @@ export class List<StoreType extends Store = Store> extends Component implements 
 	 */
 	public scrollLoad = false;
 
+
+	/**
+	 * Group the table by this property.
+	 */
+	public groupBy?: string;
+	/**
+	 * Group renderer function
+	 */
+	public groupByRenderer: GroupByRenderer = groupBy => groupBy ?? t("None")
+
+
 	protected itemTag: keyof HTMLElementTagNameMap = 'li'
 
-	// protected fragment?: DocumentFragment;
+
+	private lastGroup?: string;
 
 	/**
 	 * Row selection object
@@ -349,7 +364,12 @@ export class List<StoreType extends Store = Store> extends Component implements 
 	//todo inserting doesn't work with groups yet. It can only append to the last
 	public onRecordAdd(collection: StoreType, item: StoreRecord, index: number) {
 
-		const container = this.renderGroup(item)
+		let container = this.groupEl || this.el;
+
+		const newGroup = this.isNewGroup(item);
+		if(newGroup !== false) {
+			container = this.groupEl = this.renderGroup(item);
+		}
 
 		const row = this.renderRow(item, index);
 		if (index == collection.count() - 1) {
@@ -449,12 +469,27 @@ export class List<StoreType extends Store = Store> extends Component implements 
 		return {rowEl: rows[index], index: index};
 	}
 
+	protected rerender() {
+		const el = this.el;
+		this.groupEl = undefined;
+		this.lastGroup = undefined;
+		el.innerHTML = "";
+		this.renderBody();
+	}
+
+	private groupEl: HTMLElement | undefined;
+
 	protected renderRows(records: any[]) {
+		let container = this.groupEl || this.el;
 
 		for (let i = 0, l = records.length; i < l; i++) {
-			const container = this.renderGroup(records[i]),
-				row = this.renderRow(records[i], i);
 
+			const newGroup = this.isNewGroup(records[i]);
+			if(newGroup !== false) {
+				container = this.groupEl = this.renderGroup(records[i]);
+			}
+
+			const row = this.renderRow(records[i], i);
 			container.append(row);
 			this.onRowAppend(row, records[i], i);
 		}
@@ -462,13 +497,67 @@ export class List<StoreType extends Store = Store> extends Component implements 
 		this.fire("renderrows", this, records);
 	}
 
+	protected isNewGroup(record:any) {
+
+		const groupBy = this.groupBy ? ObjectUtil.get(record, this.groupBy) : "";
+
+		if(this.lastGroup != groupBy) {
+			this.lastGroup = groupBy;
+			return groupBy;
+		} else
+		{
+			return false;
+		}
+	}
+
 	protected onRowAppend(row: HTMLElement, record: any, index: number) {
 
 	}
 
-	protected renderGroup(record: any): HTMLElement | DocumentFragment {
+	protected renderGroup(record: any): HTMLElement {
 		// return this.fragment!;
+		if(this.groupBy) {
+			const li = document.createElement("li");
+			li.classList.add("group");
+
+			this.renderGroupToEl(record, li);
+
+			this.el.append(li);
+
+		}
 		return this.el;
+	}
+
+
+	protected renderGroupToEl(record: any, groupDisplayEl:HTMLElement) {
+
+		const groupBy = ObjectUtil.get(record, this.groupBy!);
+		const r = this.groupByRenderer(groupBy, record, this);
+
+		if(r) {
+			if (typeof r === "string") {
+				groupDisplayEl.innerHTML = r;
+			} else if (r instanceof Component) {
+				r.render(groupDisplayEl);
+			} else if (r instanceof Promise) {
+				r.then((s) => {
+
+					if (!s) {
+						return;
+					}
+
+					if (s instanceof Component) {
+						s.render(groupDisplayEl);
+					} else {
+						groupDisplayEl.innerHTML = s;
+					}
+				})
+			} else {
+				console.warn("Renderer returned invalid value: ", r);
+			}
+
+
+		}
 	}
 
 	protected renderRow(record: any, storeIndex: number): HTMLElement {
