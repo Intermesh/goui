@@ -164,7 +164,7 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 						}
 					}
 				} else {
-					td.innerText = value ? value : "";
+					td.innerText = value != undefined && value != null ? value : "";
 				}
 
 

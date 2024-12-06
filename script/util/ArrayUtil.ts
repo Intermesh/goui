@@ -56,6 +56,13 @@ export class ArrayUtil {
 			if (a === b) { // If the values are the same, do not switch positions.
 				return 0;
 			}
+			if(a == undefined) {
+				a = "";
+			}
+
+			if(b == undefined) {
+				b = "";
+			}
 
 			// If b > a, multiply by -1 to get the reverse direction.
 			return a > b ? direction : -1 * direction;
