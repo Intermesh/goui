@@ -135,7 +135,7 @@ export class ContainerField<ValueType extends ContainerFieldValue = ContainerFie
 		this.findFields().forEach((field:any) => {
 			const name = field.getName ? field.getName() : field.name;
 			// We cast to any[] for Ext compatibility. We try setValue() for Ext if it exists
-			if(v[name]) {
+			if(name in v) {
 				if(field.setValue) {
 					field.setValue(v[name]);
 				} else {
