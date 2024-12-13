@@ -148,23 +148,35 @@ export class DataSourceStore<
 		if (!this.relations) {
 			return records;
 		}
-		const promises = [];
+		const promises:Promise<any>[] = [];
 
 		for (const relationName in this.relations) {
 			const rel = this.relations[relationName as keyof DefaultEntity]!;
 
-			let id;
+			let ids;
 			for (let i = 0, l = records.length; i < l; i++) {
-				id = ObjectUtil.get(records[i], rel.path);
+				ids = ObjectUtil.get(records[i], rel.path);
 
-				if (id) {
-					promises.push(rel.dataSource.single(id).then((e) => {
+				if (!ids) {
+					continue;
+				}
+
+				if (!Array.isArray(ids)) {
+					promises.push(rel.dataSource.single(ids).then((e) => {
 						if (e) {
 							records[i][relationName as (keyof dataSourceEntityType<DataSource>)] = e as never;
 						}
 					}));
+				} else {
+					records[i][relationName as  (keyof dataSourceEntityType<DataSource>)] = [] as never;
+					promises.concat(...ids.map(id => rel.dataSource.single(id).then((e) => {
+						if (e) {
+							records[i][relationName].push(e);
+						}
+					})));
 				}
 			}
+
 		}
 
 		return Promise.all(promises).then(() => records);

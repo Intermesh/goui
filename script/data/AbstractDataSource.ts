@@ -417,6 +417,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	 * @param id
 	 */
 	public async single(id: EntityID): Promise<EntityType | undefined> {
+		id = id+"";
 		if(!id) {
 			return Promise.resolve(undefined);
 		}
