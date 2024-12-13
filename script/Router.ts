@@ -3,7 +3,7 @@
  * @copyright Copyright 2023 Intermesh BV
  * @author Merijn Schering <mschering@intermesh.nl>
  */
-import {Listener, Observable, ObservableEventMap, ObservableListenerOpts} from "./component/Observable.js";
+import {Listener, Observable, ObservableEventMap, ObservableListenerOpts} from "./component";
 
 export interface Route {
 	re: RegExp
@@ -45,11 +45,13 @@ export class Router extends Observable {
 
 	private params: string[] = [];
 
+	private routing = false;
+
 	constructor() {
 		super();
 
 		window.addEventListener('hashchange', () => {
-			this.start();
+			void this.start();
 		}, false);
 	}
 
@@ -98,7 +100,7 @@ export class Router extends Observable {
 	 * @param handler Is called with the arguments matched in the route regexp. May return Promise so the router start()
 	 *  promise will resolve when this promise is resolved.
 	 */
-	add(re: RegExp | RouterMethod, handler?: RouterMethod) {
+	public add(re: RegExp | RouterMethod, handler?: RouterMethod) {
 
 		if (this.debug) {
 			console.debug("Router add: ", re);
@@ -120,12 +122,10 @@ export class Router extends Observable {
 	/**
 	 * Start the router and run the matching route handlers
 	 */
-	public start(): Promise<void> {
+	public async start() {
 		const path = this.getPath();
 
 		const oldPath = this.loadedPath;
-
-
 
 		this.loadedPath = path;
 
@@ -141,12 +141,10 @@ export class Router extends Observable {
 		}
 
 		//nothing matched so we load the default
-
-		return this.defaultRoute ? this.handleRoute(this.defaultRoute, [], oldPath) : Promise.resolve();
-
+		return this.defaultRoute ? this.handleRoute(this.defaultRoute, [], oldPath) : null;
 	}
 
-	private handleRoute(handler: Function, match: string[], oldPath: string) {
+	private async handleRoute(handler: Function, match: string[], oldPath: string) {
 
 		for (let n = 0, l = match.length; n < l; n++) {
 			//could be undefined
@@ -164,13 +162,23 @@ export class Router extends Observable {
 		}
 
 
-		const result = handler.apply({}, match);
+		this.routing = true;
+		try {
+			const result = handler.apply({}, match);
+			window.scrollTo(0,0);
+			this.fire("change", this.getPath(), oldPath);
 
-		window.scrollTo(0,0);
+			return result;
+		} finally {
+			this.routing = false;
+		}
+	}
 
-		this.fire("change", this.getPath(), oldPath);
-
-		return result instanceof Promise ? result : Promise.resolve();
+	/**
+	 * Returns true if the router is currently handling a routing task.
+	 */
+	public isRouting() {
+		return this.routing;
 	}
 
 
@@ -178,7 +186,7 @@ export class Router extends Observable {
 	 * Reload current page.
 	 */
 	public reload() {
-		this.start();
+		return this.start();
 	}
 
 	/**
@@ -187,7 +195,7 @@ export class Router extends Observable {
 
 	 * @return Promise<Router>
 	 */
-	public goto(...pathParts: any[]) :Promise<Router> {
+	public goto(...pathParts: any[]) : Promise<Router> {
 
 		const path = pathParts.map(p => p ?? "").join("/");
 
