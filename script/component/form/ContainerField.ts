@@ -105,7 +105,11 @@ export class ContainerField<ValueType extends ContainerFieldValue = ContainerFie
 	 */
 	public clear() {
 		this.findFields().forEach((field) => {
-			field.clear();
+			if(field.clear) {
+				field.clear();
+			} else {
+				field.reset(); // for Ext
+			}
 		})
 	}
 
