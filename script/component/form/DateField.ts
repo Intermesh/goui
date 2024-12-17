@@ -101,6 +101,13 @@ export class DateField extends InputField {
 				if (Tindex == -1) {
 					v = this.appendTime(v);
 				}
+
+				//reformat to strip off timezone info
+				const dt = DateTime.createFromFormat(v, this.outputFormat());
+				if(dt) {
+					v = dt.format(this.outputFormat())
+				}
+
 			} else {
 				if (Tindex != -1) {
 					const parts = v.split("T");
