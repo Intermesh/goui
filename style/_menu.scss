@@ -161,15 +161,15 @@ button.goui-button.has-menu:not(.with-icon) {
 }
 
 
-menu.goui-dropdown.goui-menu-color {
+menu.goui-dropdown.goui-menu-color, .goui-menu-color {
 	overflow: auto;
-	width: 5 * util.dp(38);
+	width: (10 * util.dp(38)) + util.dp(32);
 	display:flex;
 	flex-direction: row;
 	flex-wrap: wrap;
 	align-items: center;
 	justify-content: center;
-	> li:first-child {
+	> li:first-child,> button:first-child  {
 		// "Auto" button
 		width: 100%;
 
@@ -180,21 +180,18 @@ menu.goui-dropdown.goui-menu-color {
 			}
 		}
 	}
-	//div {
 
-		button {
-			text-align: center;
-			div {
-				//color dot
-				display: inline-block;
-				width: util.dp(16);
-				height: util.dp(16);
-				border-radius: 50%;
-				border: 1px solid config.$colorOutline;
-			}
+	button {
+		text-align: center;
+		div {
+			//color dot
+			display: inline-block;
+			width: util.dp(16);
+			height: util.dp(16);
+			border-radius: 50%;
+			border: 1px solid config.$colorOutline;
 		}
-
-	//}
+	}
 }
 
 menu.main-menu, menu.west-menu {

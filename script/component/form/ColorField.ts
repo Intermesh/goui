@@ -77,7 +77,7 @@ export class ColorField extends Field {
 	}
 
 	protected internalSetValue(v?: any) {
-		this.control!.style.backgroundColor = "#" + v;
+		this.control!.style.backgroundColor =  v ? "#" + v : "";
 	}
 }
 

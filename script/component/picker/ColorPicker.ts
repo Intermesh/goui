@@ -7,6 +7,7 @@
 import {btn, ButtonEventMap} from "../Button.js";
 import {Config, Listener, ObservableListenerOpts} from "../Observable.js";
 import {comp, Component, ComponentEventMap, createComponent} from "../Component.js";
+import {t} from "../../Translate";
 
 /**
  * @inheritDoc
@@ -47,7 +48,7 @@ export class ColorPicker extends Component {
 	 */
 	public updateButton = true;
 
-	protected baseCls = "goui-dropdown goui-menu-color"
+	protected baseCls = "goui-menu-color"
 
 	protected colors = [
 		// '000000', //Black
@@ -85,8 +86,18 @@ export class ColorPicker extends Component {
 
 	constructor() {
 		super();
+		this.items.add(btn({
+			itemId: "auto",
+			text: t("Auto"),
+			cls: this.value == "" ? "pressed" : "",
+
+			handler: () => {
+				this.value = "";
+				this.fire("select", this, "");
+			}
+		}))
 		this.items.add(
-			comp({}, ...this.colors
+			 ...this.colors
 				.map(color => btn({
 					itemId: color,
 					cls: this.value == "#" + color ? 'with-icon pressed' : 'with-icon',
@@ -102,7 +113,7 @@ export class ColorPicker extends Component {
 						this.fire("select", this, this.value );
 					}
 				}))
-			)
+
 		);
 	}
 
