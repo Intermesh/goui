@@ -11,7 +11,7 @@ import {
 	dataSourceEntityType,
 	DefaultEntity,
 	QueryParams,
-	Filter
+	Filter, EntityID
 } from "./AbstractDataSource.js";
 import {ObjectUtil} from "../util/index.js";
 import {comp, createComponent, ObservableListener} from "../component/index.js";
@@ -151,11 +151,12 @@ export class DataSourceStore<
 		const promises:Promise<any>[] = [];
 
 		for (const relationName in this.relations) {
+
 			const rel = this.relations[relationName as keyof DefaultEntity]!;
 
 			let ids;
-			for (let i = 0, l = records.length; i < l; i++) {
-				ids = ObjectUtil.get(records[i], rel.path);
+			for (const record of records) {
+				ids = ObjectUtil.get(record, rel.path);
 
 				if (!ids) {
 					continue;
@@ -164,16 +165,17 @@ export class DataSourceStore<
 				if (!Array.isArray(ids)) {
 					promises.push(rel.dataSource.single(ids).then((e) => {
 						if (e) {
-							records[i][relationName as (keyof dataSourceEntityType<DataSource>)] = e as never;
+							record[relationName as (keyof dataSourceEntityType<DataSource>)] = e as never;
 						}
 					}));
 				} else {
-					records[i][relationName as  (keyof dataSourceEntityType<DataSource>)] = [] as never;
-					promises.concat(...ids.map(id => rel.dataSource.single(id).then((e) => {
-						if (e) {
-							records[i][relationName].push(e);
-						}
-					})));
+					const idToEntity = (id:EntityID) => {
+						return rel.dataSource.single(id);
+					}
+					promises.push(Promise.all(ids.map(idToEntity)).then((entities:any) => {
+						record[relationName as (keyof dataSourceEntityType<DataSource>)] = entities;
+					}));
+
 				}
 			}
 
