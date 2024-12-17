@@ -109,11 +109,11 @@
 	}
 
 	&.outlined {
-		border: config.$borderWidth solid config.$colorTextSecondary;
+		border: config.$borderWidth solid config.$colorOutline;
 
 		&:hover {
 			color: white;
-			background-color: config.$colorTextSecondary;
+			background-color: config.$colorHover;
 		}
 
 
@@ -150,7 +150,7 @@
 //	> button {box-shadow: none; border: 1px solid $colorOutline;}
 	> .goui-button {
 		box-shadow: none;
-		border: config.$borderWidth solid config.$colorBorder;
+		border: config.$borderWidth solid config.$colorOutline;
 		&.active {
 			background-color: config.$colorFocus;
 		}
