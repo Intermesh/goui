@@ -87,7 +87,7 @@ export class SearchButton extends Button {
 		}
 		this.getSearchTBar().show();
 
-		this.searchField.focus();
+		this.searchField.select();
 	}
 
 	public reset() {
