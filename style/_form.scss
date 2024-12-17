@@ -915,7 +915,7 @@ $formFieldBorderRadius: util.dp(10);
 			}
 			&:checked::after  {
 				transform: scale(1.5) translateX(util.dp(14));
-				background-color:config.$colorMain;
+				background-color: config.$colorMain;
 			}
 			//&:active::after { // focus
 			//	transform: scale(1.75);
