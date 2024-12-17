@@ -35,7 +35,8 @@ $formFieldBorderRadius: util.dp(10);
 
 .goui.group {
 	display:flex;
-	align-items: start;
+	//align-items: start;
+	align-items: stretch;
 
 	.goui-form-field, .goui-display-field {
 		margin: 0;
