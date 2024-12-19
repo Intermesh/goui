@@ -38,7 +38,7 @@
 	border: config.$borderWidth solid config.$colorBorderWindow;
 	border-radius: util.dp(12);
 	z-index: config.$zIndexWindow;
-	overflow: hidden;
+	//overflow: hidden; taken off to allow resizer draghandles to be outside of the window
 	min-height: util.dp(160);
 	min-width: util.dp(160);
 
