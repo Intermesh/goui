@@ -286,127 +286,36 @@ export class Window extends DraggableComponent {
 		}
 	}
 
-
-
 	private initResizable() {
 
-
-		const saveState = FunctionUtil.buffer(200, () => {
-			void this.saveState();
-		});
-
-		const onDragStart = (comp1:DraggableComponent, dragData:DragData) => {
+		const drop = FunctionUtil.buffer(200, () => {
+				void this.saveState();
+		}),
+		dragstart = (_comp:DraggableComponent, dragData:DragData) => {
 			dragData.data.startWidth = this.width;
 			dragData.data.startHeight = this.height;
 			dragData.data.startLeft = parseFloat(this.el.style.left);
 			dragData.data.startTop = parseFloat(this.el.style.top);
+		},
+		dragHandles = {
+			right: (_, d) => 	this.resizeWidth(d),
+			left: (_, d) => 		this.resizeWidth(d,true),
+			bottom: (_, d) => 	this.resizeHeight(d),
+			top: (_, d) => 		this.resizeHeight(d,true),
+			bottomright: (_, d) => {this.resizeWidth(d);		this.resizeHeight(d);},
+			bottomleft: (_, d) => {this.resizeWidth(d,true);	this.resizeHeight(d);},
+			topright: (_, d) => {	this.resizeWidth(d);			this.resizeHeight(d,true);},
+			topleft: (_, d) => {	this.resizeWidth(d,true);	this.resizeHeight(d,true);}
+		} as {[name:string]: (comp:DraggableComponent, d:DragData) => void}
+
+
+		for(const name in dragHandles) {
+			draggable({
+				cls: "resizer "+name,
+				setPosition: false,
+				listeners: {dragstart,drag: dragHandles[name],drop}
+			}).render(this.el);
 		}
-
-		draggable({
-			cls: "resizer right",
-			setPosition: false,
-			listeners: {
-				dragstart: onDragStart,
-				drag: (comp1, dragData, e) => {
-					this.resizeWidth(dragData);
-				},
-
-			}
-		}).render(this.el);
-
-
-		draggable({
-			cls: "resizer left",
-			setPosition: false,
-			listeners: {
-				dragstart: onDragStart,
-				drag: (comp1, dragData, e) => {
-					this.resizeWidth(dragData, true);
-				},
-				drop: saveState
-			}
-		}).render(this.el);
-
-
-		draggable({
-			cls: "resizer bottom",
-			setPosition: false,
-			listeners: {
-				dragstart: onDragStart,
-				drag: (comp1, dragData, e) => {
-					this.resizeHeight(dragData, false);
-				},
-				drop: saveState
-			}
-		}).render(this.el);
-
-
-		draggable({
-			cls: "resizer top",
-			setPosition: false,
-			listeners: {
-				dragstart: onDragStart,
-				drag: (comp1, dragData, e) => {
-					this.resizeHeight(dragData, true);
-				},
-				drop: saveState
-			}
-		}).render(this.el);
-
-
-		draggable({
-			cls: "resizer bottomright",
-			setPosition: false,
-			listeners: {
-				dragstart: onDragStart,
-				drag: (comp1, dragData, e) => {
-					this.resizeHeight(dragData, false);
-					this.resizeWidth(dragData, false);
-				},
-				drop: saveState
-			}
-		}).render(this.el);
-
-		draggable({
-			cls: "resizer bottomleft",
-			setPosition: false,
-			listeners: {
-				dragstart: onDragStart,
-				drag: (comp1, dragData, e) => {
-					this.resizeHeight(dragData, false);
-					this.resizeWidth(dragData, true);
-				},
-				drop: saveState
-			}
-
-		}).render(this.el);
-
-		draggable({
-			cls: "resizer topright",
-			setPosition: false,
-			listeners: {
-				dragstart: onDragStart,
-				drag: (comp1, dragData, e) => {
-					this.resizeHeight(dragData, true);
-					this.resizeWidth(dragData, false);
-				},
-				drop: saveState
-			}
-		}).render(this.el);
-
-		draggable({
-			cls: "resizer topleft",
-			setPosition: false,
-			listeners: {
-				dragstart: onDragStart,
-				drag: (comp1, dragData, e) => {
-					this.resizeHeight(dragData, true);
-					this.resizeWidth(dragData, true);
-				},
-				drop: saveState
-			}
-		}).render(this.el);
-
 	}
 
 	protected buildState() {
