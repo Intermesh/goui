@@ -85,19 +85,34 @@ export interface Table<StoreType extends Store = Store> extends List<StoreType> 
  *  ```
  */
 export class Table<StoreType extends Store = Store> extends List<StoreType> {
+	private _columns: TableColumn[];
 
+	/**
+	 * The table columns
+	 *
+	 * @param columns
+	 */
+	public set columns(columns:TableColumn[]) {
+		this._columns = columns
+		if(this.rendered) {
+			this.rerender();
+		}
+	}
+
+	public get columns() {
+		return this._columns;
+	}
 	/**
 	 *
 	 * @param store Store to provide data
 	 * @param columns The table columns
 	 */
-	constructor(store: StoreType, public columns: TableColumn[]) {
+	constructor(store: StoreType,  columns: TableColumn[]) {
+
 		super(store, (record, row, me, storeIndex) => {
 
-
 			let left = 0, stickyLeft = true, index = -1;
-			for (let c of this.columns) {
-
+			for (let c of this._columns) {
 				index++
 
 				c.parent = this;
@@ -172,6 +187,8 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 
 		}, "table");
 
+		this._columns = columns;
+
 	}
 
 	/**
@@ -232,7 +249,7 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 	 * @param id
 	 */
 	public findColumnById(id: string) {
-		return this.columns.find((col) => {
+		return this._columns.find((col) => {
 			return col.id == id;
 		});
 	}
@@ -254,7 +271,7 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 		if(!this.headersRow) {
 			return false;
 		}
-		const index = this.columns.findIndex((col) => {
+		const index = this._columns.findIndex((col) => {
 			return col.id == id;
 		});
 
@@ -272,7 +289,7 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 	protected buildState(): ComponentState {
 		const cols: any = {};
 
-		this.columns.forEach((c) => {
+		this._columns.forEach((c) => {
 			cols[c.id] = {
 				width: c.width,
 				hidden: c.hidden
@@ -313,7 +330,7 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 				removeOnClose: false
 			});
 
-			this.columns.forEach((c) => {
+			this._columns.forEach((c) => {
 				if (c.header && c.hidable) {
 					this.columnMenu!.items.add(checkbox({
 						label: c.header,
@@ -382,7 +399,7 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 		const colGroup = document.createElement("colgroup");
 
 		let index = -1;
-		for (let h of this.columns) {
+		for (let h of this._columns) {
 			index++;
 			if (h.hidden) {
 				continue;
@@ -420,7 +437,7 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 		})
 
 		let index = -1, left = 0,  stickyLeft = true;
-		for (let h of this.columns) {
+		for (let h of this._columns) {
 			index++;
 			if (h.hidden) {
 				continue;
@@ -548,7 +565,7 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 	 */
 	private fixColumnWidths() {
 
-		this.columns.forEach(col => {
+		this._columns.forEach(col => {
 			if (!col.hidden) {
 				col.width = Table.pxToRem(col.headerEl!.offsetWidth);
 				col.headerEl!.style.width = col.width / 10 + "rem";
@@ -566,7 +583,7 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 	 */
 	private calcTableWidth(untilColumnIndex: number = -1) {
 
-		return this.columns.reduce((previousValue: number, nextValue: TableColumn, currentIndex: number) => {
+		return this._columns.reduce((previousValue: number, nextValue: TableColumn, currentIndex: number) => {
 			if (nextValue.hidden || (untilColumnIndex > -1 && currentIndex >= untilColumnIndex)) {
 				return previousValue;
 			}
@@ -589,7 +606,7 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 		tr.classList.add("group");
 
 		const th = document.createElement("th");
-		th.colSpan = this.columns.length;
+		th.colSpan = this._columns.length;
 
 		this.renderGroupToEl(record, th);
 
@@ -630,9 +647,9 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 
 	private calcStickyRight(index: number) {
 		let r = 0;
-		for(let i = index + 1, l = this.columns.length; i < l; i++) {
-			if(this.columns[i].width) {
-				r += this.columns[i].width!;
+		for(let i = index + 1, l = this._columns.length; i < l; i++) {
+			if(this._columns[i].width) {
+				r += this._columns[i].width!;
 			}
 		}
 		return r;
@@ -646,4 +663,14 @@ export type TableConfig<TableType extends Table = Table> = Omit<Config<TableType
  *
  * @param config
  */
-export const table = <StoreType extends Store = Store>(config: TableConfig<Table<StoreType>>) => createComponent(new Table<StoreType>(config.store, config.columns), config);
+export const table = <StoreType extends Store = Store>
+
+	(config: TableConfig<Table<StoreType>>) => {
+		const tbl = new Table<StoreType>(config.store, config.columns);
+
+		const cfg:any = config;
+		delete cfg.columns;
+		delete cfg.store;
+
+		return createComponent(tbl, cfg, []);
+	};
