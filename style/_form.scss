@@ -1248,12 +1248,19 @@ div.color-dot {
 		//}
 	}
 	.goui-form-field, .goui-display-field {
+		min-width: util.dp(200);
 		.wrap {
-			margin-left: util.dp(100);
+			//margin-left: util.dp(100);
 			align-items: center;
 
 			.label {
 				top: auto;
+				left: auto;
+				flex: 1;
+				position: relative;
+				max-width: util.dp(100);
+				overflow: hidden;
+				//mask-image: linear-gradient(to right, white 80%, transparent);
 			}
 
 			.control {
