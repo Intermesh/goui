@@ -122,12 +122,11 @@ export class CardContainer extends Component {
 
 		const old = this._activeItem;
 		this._activeItem = index;
+
+		this.setCardVisibilities();
 		if (old !== index) {
 			this.fire("cardchange", this, index, old);
 		}
-
-
-		this.setCardVisibilities();
 	}
 
 	/**
