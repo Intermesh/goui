@@ -15,6 +15,7 @@ import {TableColumn} from "./TableColumns.js";
 import {List, ListEventMap} from "../List.js";
 import {Config, Listener, ObservableListenerOpts} from "../Observable.js";
 import {t} from "../../Translate.js";
+import HTML = Mocha.reporters.HTML;
 
 
 
@@ -117,9 +118,9 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 				if (c.sticky) {
 					td.classList.add("sticky-col");
 					if (stickyLeft)
-						td.style.left = left + "px";
+						td.style.left = left / 10 + "rem";
 					else
-						td.style.right = this.calcStickyRight(index) + "px";
+						td.style.right = this.calcStickyRight(index) / 10 + "rem";
 				} else {
 					stickyLeft = false;
 				}
@@ -236,6 +237,38 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 		});
 	}
 
+	/**
+	 * Scroll a column into view
+	 *
+	 * Note: If you use sticky columns it might be necessary to use:
+	 *
+	 * ```
+	 * style: {
+	 * 	scrollPaddingRight: "8rem" // fix for scrollIntoView and sticky column
+	 * },
+	 * ```
+	 * @param id
+	 * @param opts
+	 */
+	public scrollToColumn(id: string, opts?: boolean | ScrollIntoViewOptions) {
+		if(!this.headersRow) {
+			return false;
+		}
+		const index = this.columns.findIndex((col) => {
+			return col.id == id;
+		});
+
+		if(!index) {
+			return false;
+		}
+
+		const header = this.headersRow.childNodes.item(index) as HTMLElement
+		header.scrollIntoView(opts);
+
+
+		return true;
+	}
+
 	protected buildState(): ComponentState {
 		const cols: any = {};
 
@@ -326,9 +359,9 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 
 			splitter.on("drag", (cmp, dragData) => {
 				const w = dragData.data.startWidth + dragData.x - dragData.startX;
-				header.style.width = w + "px"
+				header.style.width = Table.pxToRem(w) / 10 + "rem"
 				h.width = w;
-				this.el!.style.width = this.calcTableWidth() + "px";
+				this.el!.style.width = this.calcTableWidth() / 10 + "rem";
 			});
 
 			splitter.on("drop", () => {
@@ -357,7 +390,7 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 			const col = document.createElement("col");
 
 			if (h.width) {
-				col.style.width = h.width + "px";
+				col.style.width = h.width / 10 + "rem";
 			}
 
 			if (h.align) {
@@ -395,7 +428,7 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 			const header = document.createElement("th");
 
 			if (h.width) {
-				header.style.width = h.width + "px";
+				header.style.width = (h.width / 10) + "rem";
 			}
 
 			if (h.align) {
@@ -410,9 +443,9 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 				header.classList.add("sticky-col");
 
 				if(stickyLeft) {
-					header.style.left = left + "px";
+					header.style.left = (left / 10) + "rem";
 				}else{
-					header.style.right = this.calcStickyRight(index) + "px";
+					header.style.right = (this.calcStickyRight(index) / 10) + "rem";
 				}
 				if(h.width)
 					left += h.width;
@@ -517,13 +550,13 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 
 		this.columns.forEach(col => {
 			if (!col.hidden) {
-				col.width = col.headerEl!.offsetWidth;
-				col.headerEl!.style.width = col.width + "px";
+				col.width = Table.pxToRem(col.headerEl!.offsetWidth);
+				col.headerEl!.style.width = col.width / 10 + "rem";
 			}
 		});
 
 		this.el!.style.minWidth = "";
-		this.el!.style.width = this.calcTableWidth() + "px";
+		this.el!.style.width = this.calcTableWidth() / 10 + "rem";
 	}
 
 	/**
