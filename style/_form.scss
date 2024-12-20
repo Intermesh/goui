@@ -4,6 +4,7 @@
 @use 'sass:math';
 @use "normalize";
 @use "shadows";
+@use "button";
 
 $formFieldBorderRadius: util.dp(10);
 
@@ -181,16 +182,23 @@ $formFieldBorderRadius: util.dp(10);
 				padding: util.dp(11) util.dp(18);
 				margin:0;
 			}
+
+			input:checked + span.box-label.outlined, input:checked + span.box-label {
+				background-color: config.$colorFocus;
+				color: inherit;
+			}
+			
 		}
 
-		input:checked + span.box-label.outlined, input:checked + span.box-label {
-			background-color: config.$colorFocus;
-			color: inherit;
-		}
+		
 
 		span.box-label {
 			@extend .goui-button;
+
+
 		}
+
+		
 		input {
 			margin: 0;
 		}

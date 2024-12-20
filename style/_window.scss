@@ -43,6 +43,16 @@
 	min-width: util.dp(160);
 
 
+	:first-child {
+		border-top-right-radius: util.dp(12);
+    border-top-left-radius: util.dp(12);
+	}
+
+	:last-child {
+		border-bottom-right-radius: util.dp(12);
+    border-bottom-left-radius: util.dp(12);
+	}
+	
 	.resizer {
 		border: 0;
 		position: absolute;
@@ -199,6 +209,7 @@
 	.goui-toolbar:first-child, .goui-toolbar:last-child {
 		padding: util.dp(12) util.dp(18);
 		//background-color: $colorWindowHeader;
+		
 	}
 
 	.goui-cardmenu {
