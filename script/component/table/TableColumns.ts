@@ -91,7 +91,7 @@ export class TableColumn extends Observable {
 	sortable = false
 
 	/**
-	 * Width in pixels
+	 * Width in rem units
 	 */
 	width?: number
 

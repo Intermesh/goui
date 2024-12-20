@@ -96,6 +96,18 @@
 
       th {
 
+        &.primary {
+          color: config.$colorPrimary;
+        }
+
+        &.secondary {
+          color: config.$colorSecondary;
+        }
+        &.accent {
+          color: config.$colorAccent;
+        }
+
+
         background-color: config.$surfaceLow;
 				font: config.$fontBase;
 				font-size: config.$fontSize * .8;
