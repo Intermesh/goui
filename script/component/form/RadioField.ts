@@ -12,7 +12,7 @@ import {MaterialIcon} from "../MaterialIcon.js";
 
 
 interface RadioOption {
-	value?: string
+	value?: string|number|null
 	text: string,
 	icon?: MaterialIcon
 }
@@ -20,8 +20,8 @@ interface RadioOption {
 export type RadioType = 'box' | 'button' | 'list';
 
 export interface Radiofield {
-	set value(v: string | undefined)
-	get value(): string | undefined
+	set value(v: string | number | null)
+	get value(): string | number | null
 }
 
 /**
@@ -43,8 +43,8 @@ export interface Radiofield {
  */
 export class RadioField extends Field {
 
-	private inputs: { [key: string]: HTMLInputElement } = {};
-	private _options?: RadioOption[];
+	private inputs: HTMLInputElement[]  = [];
+	private _options: RadioOption[] = [];
 
 	readonly type: RadioType;
 	protected baseCls = 'goui-form-field radiogroup';
@@ -89,7 +89,7 @@ export class RadioField extends Field {
 
 		if(this._options) {
 			this.control!.empty();
-			this.inputs = {};
+			this.inputs = [];
 		}
 
 		options.forEach((o) => {
@@ -104,15 +104,15 @@ export class RadioField extends Field {
 			btn.name = this.domName;
 			btn.readOnly = this.readOnly;
 
-			if(!o.value) {
-				o.value = "";
-			}
+			// if(!o.value) {
+			// 	o.value = "";
+			// }
 
-			btn.value = o.value;
+			//btn.value = o.value;
 			if (this._value == o.value) {
 				btn.checked = true;
 			}
-			this.inputs[o.value] = btn;
+			this.inputs.push(btn);
 
 
 			const lbl = E('span').cls('box-label')
@@ -128,17 +128,19 @@ export class RadioField extends Field {
 				lbl
 			).cls('control'));
 		});
+
+		this._options = options;
 	}
 
 	public get options() {
-		return this._options ?? [];
+		return this._options;
 	}
 
-	protected internalGetValue(): string | number | boolean | any[] | Record<string, any> | undefined {
+	protected internalGetValue(): string | number | boolean | any[] | Record<string, any> | undefined | null {
 		if(this.rendered) {
-			for (let v in this.inputs) {
-				if (this.inputs[v].checked) {
-					return v;
+			for(let i = 0, l = this._options.length;i < l; i++) {
+				if (this.inputs[i].checked) {
+					return this._options[i].value;
 				}
 			}
 		}
@@ -146,8 +148,9 @@ export class RadioField extends Field {
 	}
 
 	protected internalSetValue(v?: any) {
-		if (v && v in this.inputs)
-			this.inputs[v].checked = true;
+		for(let i = 0, l = this._options.length;i < l; i++) {
+			this.inputs[i].checked = this._options[i].value == v;
+		}
 	}
 
 
