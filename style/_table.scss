@@ -250,16 +250,16 @@
 
 .bg-lowest, .card, .main {
 
-	.goui-table {
+  tr.data {
 		td.sticky-col {
 			background-color: config.$surfaceLowest;
 		}
-		tr.data:hover {
+		&:hover {
 			td.sticky-col {
 				background-color: color-mix(in srgb, config.$surfaceLowest, #000 4%);
 			}
 		}
-		tr.data.selected {
+		&.selected {
 			td.sticky-col {
 				background-color: color-mix(in srgb, config.$surfaceLowest, #000 8%);
 			}
@@ -269,16 +269,16 @@
 
 .bg-low {
 
-	.goui-table {
+	tr.data {
 		td.sticky-col {
 			background-color: config.$surfaceLow;
 		}
-		tr.data:hover {
+		&:hover {
 			td.sticky-col {
 				background-color: color-mix(in srgb, config.$surfaceLow, #000 4%);
 			}
 		}
-		tr.data.selected {
+		&.selected {
 			td.sticky-col {
 				background-color: color-mix(in srgb, config.$surfaceLow, #000 8%);
 			}
@@ -288,7 +288,7 @@
 
 .bg-mid {
 
-	.goui-table {
+	tr.data {
 		td.sticky-col {
 			background-color: config.$surfaceMid;
 		}
@@ -297,7 +297,7 @@
 				background-color: color-mix(in srgb, config.$surfaceMid, #000 4%);
 			}
 		}
-		tr.data.selected {
+		&.selected {
 			td.sticky-col {
 				background-color: color-mix(in srgb, config.$surfaceMid, #000 8%);
 			}
@@ -308,16 +308,16 @@
 
 .bg-high {
 
-	.goui-table {
+	tr.data{
 		td.sticky-col {
 			background-color: config.$surfaceHigh;
 		}
-		tr.data:hover {
+		&:hover {
 			td.sticky-col {
 				background-color: color-mix(in srgb, config.$surfaceHigh, #000 4%);
 			}
 		}
-		tr.data.selected {
+		&.selected {
 			td.sticky-col {
 				background-color: color-mix(in srgb, config.$surfaceHigh, #000 8%);
 			}
@@ -327,16 +327,16 @@
 
 .bg-highest {
 
-	.goui-table {
+	tr.data {
 		td.sticky-col {
 			background-color: config.$surfaceHighest;
 		}
-		tr.data:hover {
+		&:hover {
 			td.sticky-col {
 				background-color: color-mix(in srgb, config.$surfaceHighest, #000 4%);
 			}
 		}
-		tr.data.selected {
+		&.selected {
 			td.sticky-col {
 				background-color: color-mix(in srgb, config.$surfaceHighest, #000 8%);
 			}
