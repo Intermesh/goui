@@ -249,6 +249,7 @@ export class CheckboxSelectColumn extends TableColumn {
 	constructor(id = "checkboxselect") {
 		super(id);
 		this.hidable = false;
+		this.sticky = true;
 
 		this.cls = "checkbox-select-column";
 	}
