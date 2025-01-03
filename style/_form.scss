@@ -62,6 +62,30 @@ $formFieldBorderRadius: util.dp(10);
 				border: config.$borderWidth solid config.$colorOutline;
 			}
 		}
+
+		&:not(:first-child) {
+			.wrap {
+				border-top-left-radius: 0;
+				border-bottom-left-radius: 0;
+
+				span.box-label {
+					border-top-left-radius: 0;
+					border-bottom-left-radius: 0;
+				}
+			}
+		}
+		&:not(:last-child) {
+			.wrap {
+				border-right-width: 0;
+				border-top-right-radius: 0;
+				border-bottom-right-radius: 0;
+
+				span.box-label {
+					border-top-right-radius: 0;
+					border-bottom-right-radius: 0;
+				}
+			}
+		}
 	}
 
 	>.goui-display-field {
@@ -92,29 +116,7 @@ $formFieldBorderRadius: util.dp(10);
 		}
 	}
 
-	&>:not(:first-child) {
-		.wrap {
-			border-top-left-radius: 0;
-			border-bottom-left-radius: 0;
 
-			span.box-label {
-				border-top-left-radius: 0;
-				border-bottom-left-radius: 0;
-			}
-		}
-	}
-	&>:not(:last-child) {
-		.wrap {
-			border-right-width: 0;
-			border-top-right-radius: 0;
-			border-bottom-right-radius: 0;
-
-			span.box-label {
-				border-top-right-radius: 0;
-				border-bottom-right-radius: 0;
-			}
-		}
-	}
 }
 
 
@@ -396,7 +398,7 @@ $formFieldBorderRadius: util.dp(10);
 			//width: 100%;
 			//outline: none;
 			color: config.$colorText;
-			display: block;// for text area which has inline-block by default and gets some extra margin
+			display: flex;// for text area which has inline-block by default and gets some extra margin
 			overflow: hidden;
 			text-overflow: ellipsis;
 			white-space: nowrap;
