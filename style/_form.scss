@@ -1052,7 +1052,7 @@ form {
 		flex-wrap: wrap;
 		column-gap: util.dp(12);
 		row-gap: 0;
-		align-items: stretch;
+		align-items: start;
 		>* {
 			flex: 1;
 		}
