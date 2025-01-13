@@ -132,7 +132,7 @@ export interface MergeResponse<EntityType extends BaseEntity> {
 /**
  * @category Data
  */
-export type EntityID = string | number;
+export type EntityID = string;
 
 // /**
 //  * @category Data
