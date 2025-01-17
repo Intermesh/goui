@@ -109,11 +109,11 @@ export class SelectField extends InputField {
 		return this._store;
 	}
 
-	set value(v: string|number|null) {
+	set value(v) {
 		super.value = v ?? "__NULL__";
 	}
 
-	get value() : string | number | null {
+	get value() {
 
 		if(!this.rendered) {
 			return (this._value === '__NULL__') ? null : this._value as any;
