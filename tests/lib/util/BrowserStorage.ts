@@ -1,7 +1,7 @@
 import {expect} from "chai";
 import {BrowserStore} from "../../../script/util/BrowserStorage.js";
-import {comp, Component} from "../../../script/component/Component.js";
 import {indexedDB} from "fake-indexeddb";
+import { describe } from "mocha";
 
 window["indexedDB"] = indexedDB;
 
