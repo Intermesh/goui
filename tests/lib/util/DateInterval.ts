@@ -37,15 +37,12 @@ describe('DateInterval class', () => {
 
 	describe("Test diff1()", () => {
 
-		it("Should create diff", () => {
+		it("Should create negative diff", () => {
 
 			const start = DateTime.createFromFormat("2023-03-20 10:15", "Y-m-d H:i")!;
-
 			const end = DateTime.createFromFormat("2023-05-01 09:12", "Y-m-d H:i")!;
-
-			const diff = start.diff(end);
-
-			expect(diff.toIso8601()).to.equal("P1M10DT22H57M");
+			const diff = end.diff(start);
+			expect(diff.toIso8601()).to.equal("-P1M10DT22H57M");
 		})
 	})
 
@@ -55,13 +52,9 @@ describe('DateInterval class', () => {
 		it("Should create date from Dutch format", () => {
 
 			const start = DateTime.createFromFormat("2023-01-01 10:15", "Y-m-d H:i")!;
-
 			const end = DateTime.createFromFormat("2023-02-15 16:30", "Y-m-d H:i")!;
 
 			const diff = start.diff(end);
-
-			console.log(diff);
-
 
 			const s = diff.toIso8601();
 

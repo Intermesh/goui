@@ -215,7 +215,7 @@ export class DateInterval {
 	 * @link https://en.wikipedia.org/wiki/ISO_8601#Durations
 	 */
 	toIso8601() {
-		return 'P' + (this.years > 0 ? this.years + 'Y' : '') +
+		return (this.invert ? "-" : "") + 'P' + (this.years > 0 ? this.years + 'Y' : '') +
 			(this.months > 0 ? this.months + 'M' : '') +
 			(this.days > 0 ? this.days + 'D' : '') +
 			((this.hours || this.minutes || this.seconds) ? 'T' +
