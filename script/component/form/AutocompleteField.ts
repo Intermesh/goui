@@ -33,8 +33,8 @@ export interface AutocompleteField<T extends List = List> extends InputField {
 	un<K extends keyof AutocompleteEventMap<this>>(eventName: K, listener: Partial<AutocompleteEventMap<this>>[K]): boolean
 	fire<K extends keyof AutocompleteEventMap<this>>(eventName: K, ...args: Parameters<AutocompleteEventMap<Component>[K]>): boolean
 	get input(): HTMLInputElement
-	get value(): string|undefined
-	set value(v: string|undefined)
+	get value(): string|number|null|undefined
+	set value(v: string|number|null|undefined)
 }
 
 /**

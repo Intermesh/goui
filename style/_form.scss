@@ -47,12 +47,6 @@ $formFieldBorderRadius: util.dp(10);
 	//align-items: start;
 	align-items: stretch;
 
-	> * {
-		background-color: config.$surfaceLowest;
-		//transition: z-index 100ms step-end;
-		//z-index: 1;
-	}
-
 	.goui-form-field, .goui-display-field {
 		margin: 0;
 		width: auto;
@@ -1071,7 +1065,7 @@ form {
 		flex-wrap: wrap;
 		column-gap: util.dp(12);
 		row-gap: 0;
-		align-items: stretch;
+		align-items: start;
 		>* {
 			flex: 1;
 		}

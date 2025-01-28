@@ -1,6 +1,6 @@
 import {expect} from "chai";
 import {router} from "../script/Router.js";
-
+import { describe } from "mocha";
 describe('Router class', () => {
 	describe("goto", () => {
 

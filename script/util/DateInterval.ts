@@ -109,20 +109,30 @@ export class DateInterval {
 	 */
 	public setFromDates(start:DateTime, end:DateTime) {
 
-		this._start = start;
-		this._end = end;
+		if(start.date < end.date) {
+			this._start = start;
+			this._end =  end;
+			this.invert = false;
+		} else {
+			this._start = end;
+			this._end =  start;
+			this.invert = true;
+		}
 
-		let monthDays = end.clone().setDate(0).getDate(),
-			sihdmy = [0, 0, 0, 0, 0, end.getYear() - start.getYear()],
+		let monthDays = this._end.clone().setDate(0).getDate(),
+			sihdmy = [0, 0, 0, 0, 0, this._end.getYear() - this._start.getYear()],
 			it = 0,
 			map = {getSeconds: 60, getMinutes: 60, getHours: 24, getDate: monthDays, getMonth: 12};
 		for (let i in map) {
 			let fn = i as 'getSeconds' | 'getMinutes' | 'getHours' | 'getDate' | 'getMonth';
-			if (sihdmy[it] + end[fn]() < start[fn]()) {
+
+			const startRes = this._start[fn](),
+				endRes = this._end[fn]();
+			if (sihdmy[it] + endRes < startRes) {
 				sihdmy[it + 1]--;
-				sihdmy[it] += map[fn] - start[fn]() + end[fn]();
-			} else if (sihdmy[it] + end[fn]() > start[fn]()) {
-				sihdmy[it] += end[fn]() - start[fn]();
+				sihdmy[it] += map[fn] - startRes + endRes;
+			} else if (sihdmy[it] + endRes >= startRes) {
+				sihdmy[it] += endRes - startRes;
 			}
 			it++;
 		}
@@ -133,6 +143,7 @@ export class DateInterval {
 		this.days = sihdmy[3];
 		this.months = sihdmy[4];
 		this.years = sihdmy[5];
+
 	}
 
 	/**
@@ -204,7 +215,7 @@ export class DateInterval {
 	 * @link https://en.wikipedia.org/wiki/ISO_8601#Durations
 	 */
 	toIso8601() {
-		return 'P' + (this.years > 0 ? this.years + 'Y' : '') +
+		return (this.invert ? "-" : "") + 'P' + (this.years > 0 ? this.years + 'Y' : '') +
 			(this.months > 0 ? this.months + 'M' : '') +
 			(this.days > 0 ? this.days + 'D' : '') +
 			((this.hours || this.minutes || this.seconds) ? 'T' +

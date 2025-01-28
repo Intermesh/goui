@@ -1,6 +1,6 @@
 import {expect} from "chai";
-import {Collection} from "../../../script/util/Collection.js";
-import {comp, Component} from "../../../script/component/Component.js";
+import {Collection, comp, Component} from "../../../script";
+import {describe} from "mocha";
 
 describe('Collection class', () => {
 
