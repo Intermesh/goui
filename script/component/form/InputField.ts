@@ -52,6 +52,19 @@ export abstract class InputField extends Field {
 
 	protected createInput() : HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement{
 		const control = document.createElement("input");
+
+		//hack or detecting browser autofill and make label float
+		control.addEventListener("animationstart", ({target, animationName}) => {
+			switch (animationName) {
+				case 'onautofillstart':
+					this.el.classList.toggle("has-value", true);
+					break;
+				// case 'onautofillcancel':
+				// 	this.fireChange();
+				// 	break;
+			}
+		}, false);
+
 		control.on("change", (e)=> {
 			this.fireChange();
 		});

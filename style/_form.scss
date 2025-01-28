@@ -8,7 +8,15 @@
 
 $formFieldBorderRadius: util.dp(10);
 
+@keyframes onautofillstart {
+	from {/**/}
+	to {/**/}
+}
 
+@keyframes onautofillcancel {
+	from {/**/}
+	to {/**/}
+}
 
 .checkbox-group {
 	//reset fieldset defaults
@@ -563,6 +571,8 @@ $formFieldBorderRadius: util.dp(10);
 		}
 	}
 
+
+
 	&.no-floating-label, &.has-value, &:focus-within {
 		div.label {
 			top: 0;
@@ -584,6 +594,15 @@ $formFieldBorderRadius: util.dp(10);
 			&:focus {
 				color: config.$colorMain;
 			}
+		}
+
+
+		input:-webkit-autofill {
+			background-color: transparent !important;
+			animation-name: onautofillstart;
+		}
+		input:not(:-webkit-autofill) {
+			animation-name: onautofillcancel;
 		}
 
 		input, .wrap > select {
