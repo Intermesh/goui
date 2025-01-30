@@ -24,9 +24,9 @@
         }
       }
 
-			tr.data:focus-visible {
-				background-color: config.$colorFocus;
-			}
+      tr.data:focus-visible {
+          background-color: config.$colorFocus;
+      }
     }
 
   }

@@ -35,6 +35,18 @@ ul.goui-tree {
 
 	li {
 
+		&.selected {
+			> .node {
+				background-color: config.$colorSelectedRow;
+				outline: none;
+				color: config.$colorSelectedRowText;
+
+				a, i.icon {
+					color: inherit;
+				}
+			}
+		}
+
 		margin-top: -1px;
 		cursor: pointer;
 

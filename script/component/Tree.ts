@@ -1,11 +1,11 @@
 import {List, ListEventMap, RowRenderer} from "./List.js";
-import {store, Store, StoreRecord} from "../data/index.js";
+import {store, Store, StoreRecord} from "../data";
 import {Component, createComponent} from "./Component.js";
-import {E} from "../util/index.js";
+import {E} from "../util";
 import {Config, Listener, ObservableListenerOpts} from "./Observable.js";
 import {MaterialIcon} from "./MaterialIcon.js";
-import {checkbox} from "./form/index.js";
-
+import {checkbox} from "./form";
+import {RowSelect} from "./table";
 
 export const TreeRowRenderer: RowRenderer = (record, row, me:Tree, storeIndex) => {
 
@@ -381,13 +381,6 @@ export class Tree extends List<Store<TreeRecord>> {
 		if (this.draggable) {
 			row.draggable = true;
 		}
-
-		row.addEventListener("contextmenu", (e) => {
-			e.stopPropagation();
-			e.preventDefault();
-			const sub = this._expand(row);
-			sub.reload();
-		})
 
 		row.getElementsByClassName("caret")[0].on("click", (e) => {
 
