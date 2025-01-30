@@ -105,6 +105,8 @@ html {
 	}
 
 	> hr {
+
+		width: auto; //was needed to override group-office extjs style
 		border: 0;
 		z-index: 1;
 		padding: 0;
@@ -119,7 +121,6 @@ html {
 			cursor: row-resize;
 		}
 
-		width: auto; //was needed to override group-office extjs style
 	}
 }
 

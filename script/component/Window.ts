@@ -125,6 +125,17 @@ export class Window extends DraggableComponent {
 	 */
 	private focussedBeforeOpen?: Element;
 
+	private _itemContainerEl?: HTMLElement;
+
+	protected get itemContainerEl() {
+		if(!this._itemContainerEl) {
+			this._itemContainerEl = document.createElement("div");
+			this._itemContainerEl.classList.add("item-container");
+			this.el.appendChild(this._itemContainerEl);
+		}
+		return this._itemContainerEl;
+	}
+
 	// /**
 	//  * Focus first item if possible.
 	//  * @param o
