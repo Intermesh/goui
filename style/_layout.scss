@@ -46,12 +46,11 @@ html {
 	background-color: transparent;
 	color: config.$colorBorder;
 	background:linear-gradient(90deg, transparent config.$borderWidth * 2, currentColor config.$borderWidth * 2 config.$borderWidth * 3, transparent config.$borderWidth * 3);
-
+	height: auto; //was needed to override group-office extjs style
 	&.draggable {
 		cursor: col-resize;
 	}
 
-	height: auto; //was needed to override group-office extjs style
 }
 
 // Stack items horizontally

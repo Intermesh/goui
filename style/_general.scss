@@ -233,6 +233,7 @@ hr.goui {
 	background-color: config.$colorTextSecondary;
 	background-size: cover;
 	border-radius: 50%;
+	border: 1px solid var(--fg-line);
 	width: config.$baseLineHeight + util.dp(22);
 	height: config.$baseLineHeight + util.dp(22);
 	line-height: config.$baseLineHeight + util.dp(22);
