@@ -255,7 +255,7 @@
 		.body {
 			display: flex;
 			flex-direction: row;
-			align-items: center;
+			align-items: start;
 			i {
 				font-size: util.dp(44);
 				color: config.$colorError;
@@ -263,6 +263,10 @@
 			}
 			.text {
 				flex: 1;
+				height: 100%;
+				width: 100%;
+				overflow: auto;
+				word-wrap: break-word;
 			}
 		}
 	}
