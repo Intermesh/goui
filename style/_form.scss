@@ -1066,9 +1066,10 @@ form {
 		column-gap: util.dp(12);
 		row-gap: 0;
 		align-items: start;
-		>* {
-			flex: 1;
-		}
+		// messes up items that need their own width
+		//>* {
+		//	flex: 1;
+		//}
 	}
 
 	// to make button align with form field
