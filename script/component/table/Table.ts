@@ -122,27 +122,6 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 				}
 				const td = document.createElement("td");
 
-				if (c.align) {
-					td.style.textAlign = c.align;
-				}
-
-				if (c.cls) {
-					td.classList.add(...c.cls.split(" "));
-				}
-
-				if (c.sticky) {
-					td.classList.add("sticky-col");
-					if (stickyLeft)
-						td.style.left = left / 10 + "rem";
-					else
-						td.style.right = this.calcStickyRight(index) / 10 + "rem";
-				} else {
-					stickyLeft = false;
-				}
-
-				if (c.width)
-					left += c.width;
-
 				let value = undefined;
 				try {
 					value = c.property ? ObjectUtil.get(record, c.property) : undefined;
@@ -180,6 +159,27 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 				} else {
 					td.innerText = value != undefined && value != null ? value : "";
 				}
+
+				if (c.align) {
+					td.style.textAlign = c.align;
+				}
+
+				if (c.cls) {
+					td.classList.add(...c.cls.split(" "));
+				}
+
+				if (c.sticky) {
+					td.classList.add("sticky-col");
+					if (stickyLeft)
+						td.style.left = left / 10 + "rem";
+					else
+						td.style.right = this.calcStickyRight(index) / 10 + "rem";
+				} else {
+					stickyLeft = false;
+				}
+
+				if (c.width)
+					left += c.width;
 
 
 				row.append(td);
@@ -444,6 +444,17 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 			}
 			const header = document.createElement("th");
 
+			if (h.headerRenderer) {
+				const r = h.headerRenderer(h, header, this);
+				if (typeof r === "string") {
+					header.innerHTML = r;
+				} else if (r instanceof Component) {
+					r.render(header);
+				}
+			} else {
+				header.innerHTML = h.header || "";
+			}
+
 			if (h.width) {
 				header.style.width = (h.width / 10) + "rem";
 			}
@@ -471,17 +482,6 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 				stickyLeft = false;
 			}
 
-			if (h.headerRenderer) {
-				const r = h.headerRenderer(h, header, this);
-				if (typeof r === "string") {
-					header.innerHTML = r;
-				} else if (r instanceof Component) {
-					r.render(header);
-				}
-			} else {
-				header.innerHTML = h.header || "";
-			}
-
 			h.headerEl = header;
 
 			if (h.resizable) {
@@ -505,7 +505,6 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 					})
 				}
 			}
-
 
 			this.headersRow.appendChild(header);
 		}
