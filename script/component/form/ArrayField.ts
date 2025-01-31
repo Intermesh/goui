@@ -104,6 +104,8 @@ export class ArrayField<Type extends FieldValue = Record<string, any>> extends F
 
 		this.items.add(field);
 
+		field.focus();
+
 		return field;
 	}
 
