@@ -219,7 +219,7 @@ html {
 	height: 100%;
 }
 
-@media only screen and ((max-width: config.$breakpointMedium) or (max-height: config.$breakpointMedium)) {
+@media only screen and ((max-width: config.$breakpointMedium)) {
 
 	.goui.not-medium-device {
 		display: none !important;
@@ -234,7 +234,7 @@ html {
 		}
 	}
 }
-@media only screen and ((max-width: config.$breakpointSmall) or (max-height: config.$breakpointSmall)) {
+@media only screen and ((max-width: config.$breakpointSmall)) {
 	.not-small-device {
 		display: none !important;
 	}
@@ -250,14 +250,14 @@ html {
 	}
 }
 
-@media only screen and ((min-width: config.$breakpointMedium) and (min-height: config.$breakpointMedium)) {
+@media only screen and ((min-width: config.$breakpointMedium)) {
 	.goui.for-medium-device {
 		display: none !important;
 	}
 }
 
 
-@media only screen and (min-width: config.$breakpointSmall) and (min-height: config.$breakpointSmall) {
+@media only screen and (min-width: config.$breakpointSmall) {
 	.goui.for-small-device {
 		display: none !important;
 	}
