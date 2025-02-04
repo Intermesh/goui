@@ -25,7 +25,7 @@ export class HiddenField extends Field {
 }
 
 /**
- * Shorthand function to create {@see HiddenField}
+ * Shorthand function to create {@link HiddenField}
  *
  * @param config
  */

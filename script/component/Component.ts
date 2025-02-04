@@ -959,7 +959,7 @@ export class Component extends Observable {
 	/**
 	 * Find the item by element ID, itemId property, Component instance or custom function.
 	 *
-	 * If you want to search the component tree hierarchy use {@see findChild()}
+	 * If you want to search the component tree hierarchy use {@link findChild()}
 	 *
 	 */
 	public findItem(predicate: FindComponentPredicate): Component | undefined {
@@ -998,7 +998,7 @@ export class Component extends Observable {
 	/**
 	 * Find a child at any level by element ID, itemId property, Component instance or custom function.
 	 *
-	 * It cascades down the component hierarchy. See also {@see findChildByType}
+	 * It cascades down the component hierarchy. See also {@link findChildByType}
 	 *
 	 */
 	public findChild(predicate: FindComponentPredicate): Component | undefined {
@@ -1018,7 +1018,7 @@ export class Component extends Observable {
 	/**
 	 * Find children at any level by element ID, itemId property, Component instance or custom function.
 	 *
-	 * It cascades down the component hierarchy. See also {@see findChildByType}
+	 * It cascades down the component hierarchy. See also {@link findChildByType}
 	 *
 	 */
 	public findChildren(predicate: FindComponentPredicate): Component[] {
@@ -1191,7 +1191,7 @@ export class Component extends Observable {
  *
  * Shows a mask over the entire (position:relative) element it's in.
  *
- * Used in {@see Body.mask()}
+ * Used in {@link Body.mask()}
  */
 export class Mask extends Component {
 
@@ -1208,14 +1208,14 @@ export class Mask extends Component {
 }
 
 /**
- * Shorthand function to create a {@see Mask} component
+ * Shorthand function to create a {@link Mask} component
  *
  * @param config
  */
 export const mask = (config?: Config<Mask>) => createComponent(new Mask(), config);
 
 /**
- * Shorthand function to create {@see Component}
+ * Shorthand function to create {@link Component}
  */
 export const comp = (config?: Config<Component>, ...items: Component[]) => createComponent(new Component(config?.tagName), config, items);
 

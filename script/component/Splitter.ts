@@ -235,6 +235,6 @@ type SplitterConfig = Config<Splitter> & {
 }
 
 /**
- * Shorthand function to create {@see Splitter}
+ * Shorthand function to create {@link Splitter}
  */
 export const splitter = (config: SplitterConfig) => createComponent(new Splitter(config.resizeComponentPredicate), config);

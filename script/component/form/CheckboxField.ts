@@ -106,7 +106,7 @@ export type CheckboxFieldConfig = Omit<FieldConfig<CheckboxField, FieldEventMap<
 }
 
 /**
- * Shorthand function to create {@see CheckboxField}
+ * Shorthand function to create {@link CheckboxField}
  *
  * @param config
  */

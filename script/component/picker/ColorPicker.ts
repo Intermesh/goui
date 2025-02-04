@@ -159,7 +159,7 @@ export class ColorPicker extends Component {
 }
 
 /**
- * Shorthand function to create {@see ColorPicker}
+ * Shorthand function to create {@link ColorPicker}
  *
  * @param config
  */

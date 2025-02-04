@@ -64,7 +64,7 @@ export class TextField extends InputField {
 }
 
 /**
- * Shorthand function to create {@see TextField}
+ * Shorthand function to create {@link TextField}
  *
  * @param config
  */

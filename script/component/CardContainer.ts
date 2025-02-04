@@ -156,7 +156,7 @@ export class CardContainer extends Component {
 }
 
 /**
- * Shorthand function to create {@see CardContainer}
+ * Shorthand function to create {@link CardContainer}
  *
  * @param config
  * @param items

@@ -57,7 +57,7 @@ export class Paginator extends Toolbar {
 }
 
 /**
- * Shorthand function to create {@see Paginator}
+ * Shorthand function to create {@link Paginator}
  *
  * @param config
  */

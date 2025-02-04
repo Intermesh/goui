@@ -225,7 +225,7 @@ export type FormConfig<ValueType extends ContainerFieldValue = ContainerFieldVal
 	handler?: FormHandler<ValueType>;
 }
 /**
- * Shorthand function to create {@see Form}
+ * Shorthand function to create {@link Form}
  *
  * @param config
  * @param items

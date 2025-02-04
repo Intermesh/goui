@@ -115,7 +115,7 @@ export class Store<RecordType extends StoreRecord  = StoreRecord> extends Collec
 	}
 
 	/**
-	 * Register of all components bound to this store using {@see bindStore()}
+	 * Register of all components bound to this store using {@link bindStore()}
 	 * @private
 	 */
 	protected readonly components: Component[] = [];
@@ -321,7 +321,7 @@ export type StoreConfig<RecordType extends StoreRecord = StoreRecord> =
 	>;
 
 /**
- * Shorthand function to create a {@see Store}
+ * Shorthand function to create a {@link Store}
  *
  * @param config
  */

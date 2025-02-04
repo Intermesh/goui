@@ -86,7 +86,7 @@ class Root extends Component {
  *
  * There's only one body so use this variable.
  *
- * To create a Single Page Application one typically would add a {@see CardContainer} to the body.
+ * To create a Single Page Application one typically would add a {@link CardContainer} to the body.
  *
  * @example
  * ```

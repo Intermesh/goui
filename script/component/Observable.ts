@@ -22,7 +22,7 @@ export interface ObservableEventMap<Type> {
  *
  * A listener can be passed as a function or a config option.
  *
- * {@see ObservableListenerWithOpts}
+ * {@link ObservableListenerWithOpts}
  */
 export type ObservableListener<Map extends ObservableEventMap<Observable>> = {
 	[P in keyof Map]?: ObservableListenerWithOpts<Map[P]> | Map[P]

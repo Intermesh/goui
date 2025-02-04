@@ -658,7 +658,7 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 export type TableConfig<TableType extends Table = Table> = Omit<Config<TableType, ListEventMap<TableType>, "store" | "columns">, "rowSelection">
 
 /**
- * Shorthand function to create {@see Table}
+ * Shorthand function to create {@link Table}
  *
  * @param config
  */

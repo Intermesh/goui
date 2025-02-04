@@ -354,7 +354,7 @@ export class DraggableComponent extends Component {
 }
 
 /**
- * Shorthand function to create {@see DraggableComponent}
+ * Shorthand function to create {@link DraggableComponent}
  *
  * @param config
  * @param items

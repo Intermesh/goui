@@ -411,7 +411,7 @@ export class Menu extends Toolbar {
 }
 
 /**
- * Shorthand function to create {@see Menu}
+ * Shorthand function to create {@link Menu}
  *
  * @param config
  * @param items

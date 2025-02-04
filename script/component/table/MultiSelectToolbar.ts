@@ -48,9 +48,9 @@ export class MultiSelectToolbar extends Toolbar {
 
 
 /**
- * Create a {@see MultiSelectToolbar} component
+ * Create a {@link MultiSelectToolbar} component
  *
- * {@see Toolbar} for an example
+ * You can add this to a Toolbar
  *
  * @param config
  * @param items

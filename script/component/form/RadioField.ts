@@ -157,7 +157,7 @@ export class RadioField extends Field {
 }
 
 /**
- * Shorthand function to create {@see RadioField}
+ * Shorthand function to create {@link RadioField}
  *
  * @param config
  */

@@ -106,7 +106,7 @@ export type ComboBoxConfig<Type extends ComboBox = ComboBox> = FieldConfig<Type,
 };
 
 /**
- * Shorthand function to create {@see ComboBox}
+ * Shorthand function to create {@link ComboBox}
  *
  * @link https://goui.io/#form/Select
  * @param config

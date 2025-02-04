@@ -322,7 +322,7 @@ export class Button extends Component {
 }
 
 /**
- * Shorthand function to create {@see Button}
+ * Shorthand function to create {@link Button}
  *
  * @param config
  */

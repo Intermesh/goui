@@ -39,7 +39,7 @@ type RecordBuilder<EntityType, StoreRecord> = (entity: EntityType) => Promise<St
 /**
  * DataSourceStore class
  *
- * Uses an {@see AbstractDataSource} to present data in the view.
+ * Uses an {@link AbstractDataSource} to present data in the view.
  * @category Data
  */
 export class DataSourceStore<
@@ -258,7 +258,7 @@ export class DataSourceStore<
 	private filters: Record<string, any> = {};
 
 	/**
-	 * Set a filter for the {@see AbstractDataSource::query()} method
+	 * Set a filter for the {@link AbstractDataSource::query()} method
 	 *
 	 * @param ref A reference name so it can be replaced later by the component.
 	 * @param filter
@@ -330,7 +330,7 @@ export type DataSourceStoreConfig<DataSource extends AbstractDataSource, RecordT
 
 
 /**
- * Shorthand function to create a {@see DataSourceStore}
+ * Shorthand function to create a {@link DataSourceStore}
  *
  * @param config
  */

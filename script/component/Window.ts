@@ -750,7 +750,7 @@ type WindowConfig = Omit<Config<Window, WindowEventMap<Window>>, "close" | "maxi
 
 
 /**
- * Shorthand function to create {@see Window}
+ * Shorthand function to create {@link Window}
  *
  * @param config
  * @param items

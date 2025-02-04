@@ -456,7 +456,7 @@ class DateRangeFieldYearMenu extends Menu {
 
 
 /**
- * Shorthand function to create {@see DateField}
+ * Shorthand function to create {@link DateField}
  *
  * @param config
  */

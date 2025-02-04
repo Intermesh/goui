@@ -242,7 +242,7 @@ export class RestDataSource<EntityType extends BaseEntity = DefaultEntity> exten
 		if(!Array.isArray(response.data)) {
 			throw "Invalid query response";
 		}
-		// immediately add data so we don't have to fetch it when data is retrieved using {@see get()} or {@see single()}
+		// immediately add data so we don't have to fetch it when data is retrieved using {@link get()} or {@link single()}
 		this.entityFromServerResponse(response).forEach((r:EntityType) => {
 			if(!this.data[r.id!]) {
 				this.add(r);

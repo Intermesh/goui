@@ -129,7 +129,7 @@ export class ArrayField<Type extends FieldValue = Record<string, any>> extends F
 
 
 /**
- * Shorthand function to create {@see ArrayField}
+ * Shorthand function to create {@link ArrayField}
  *
  * @see https://github.com/Intermesh/goui-docs/blob/main/script/form/ArrayFieldPage.ts
  *

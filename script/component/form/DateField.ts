@@ -170,7 +170,7 @@ export class DateField extends InputField {
 }
 
 /**
- * Shorthand function to create {@see DateField}
+ * Shorthand function to create {@link DateField}
  *
  * @param config
  */

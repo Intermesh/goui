@@ -293,7 +293,7 @@ type ChipsConfig = FieldConfig<ChipsField, FieldEventMap<ChipsField>> &
 	// Add the function properties as they are filtered out
 	Partial<Pick<ChipsField, "textInputToValue" | "chipRenderer">>
 /**
- * Shorthand function to create {@see ChipsField}
+ * Shorthand function to create {@link ChipsField}
  *
  * @param config
  */

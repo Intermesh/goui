@@ -247,7 +247,7 @@ export class ContainerField<ValueType extends ContainerFieldValue = ContainerFie
 }
 
 /**
- * Shorthand function to create {@see ContainerField}
+ * Shorthand function to create {@link ContainerField}
  *
  * @param config
  * @param items

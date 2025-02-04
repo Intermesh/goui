@@ -24,17 +24,13 @@ export interface Toolbar extends Component {
  * tbar({},
  * 		btn({
  * 			text: "Menu",
- * 			menu: Menu.create({
- * 				// expandLeft: true,
+ * 			menu: menu({
  * 				},
  *
  * 					btn({
  * 						text: "Hello World",
  * 						handler: () => {
- * 							Window.create({
- * 								title: "Hello World",
- * 								items: [Component.create({tagName: "h1", cls: "pad", html: "Just saying hi!"})]
- * 							}).open();
+ *
  * 						}
  * 					})
  * 			})
@@ -218,7 +214,7 @@ export class Toolbar extends Component {
 }
 
 /**
- * Create a {@see Toolbar} Component
+ * Create a {@link Toolbar} Component
  *
  * @example
  * ```

@@ -656,7 +656,7 @@ export class HtmlField extends Field {
 
 
 /**
- * Shorthand function to create {@see HtmlField}
+ * Shorthand function to create {@link HtmlField}
  *
  * @param config
  */

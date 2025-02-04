@@ -63,7 +63,7 @@ export class Avatar extends Component {
 
 
 /**
- * Shorthand function to create {@see Avatar}
+ * Shorthand function to create {@link Avatar}
  *
  * @param config
  */

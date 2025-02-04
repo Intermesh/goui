@@ -12,7 +12,7 @@ import {t} from "../Translate.js";
 import {RouterEventMap} from "../Router.js";
 
 /**
- * The response of the {@see AbstractDataSource.get()} method
+ * The response of the {@link AbstractDataSource.get()} method
  * @category Data
  */
 export interface GetResponse<EntityType extends BaseEntity> {
@@ -246,8 +246,8 @@ type GetData = {
  * 'change' event to update themselves. This approach reduces the amount of code that has
  * to be written and maintained.
  *
- * Use a {@see DataSourceStore} in components to list data from datasources.
- * The {@see Form} component can also load from a datasource.
+ * Use a {@link DataSourceStore} in components to list data from datasources.
+ * The {@link Form} component can also load from a datasource.
  *
  * @category Data
  */

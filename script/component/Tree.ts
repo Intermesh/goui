@@ -430,7 +430,7 @@ export class Tree extends List<Store<TreeRecord>> {
 type TreeConfig = Omit<Config<Tree, TreeEventMap<Tree>>, "rowSelection">
 
 /**
- * Shorthand function to create {@see Table}
+ * Shorthand function to create {@link Table}
  *
  * @param config
  */

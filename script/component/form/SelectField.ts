@@ -133,7 +133,7 @@ export class SelectField extends InputField {
 }
 
 /**
- * Shorthand function to create {@see SelectField}
+ * Shorthand function to create {@link SelectField}
  *
  * @param config
  */

@@ -137,7 +137,7 @@ export class SearchButton extends Button {
 }
 
 /**
- * Shorthand function to create {@see SearchButton}
+ * Shorthand function to create {@link SearchButton}
  *
  * @example
  * ```

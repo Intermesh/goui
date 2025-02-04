@@ -144,7 +144,7 @@ export class AutocompleteField<T extends List = List> extends InputField {
 
 	/**
 	 * Method that transforms a record from the TablePicker store to a value for this field.
-	 * This is not necessarily a text value. In conjunction with {@see valueToTextField()} this
+	 * This is not necessarily a text value. In conjunction with {@link valueToTextField()} this
 	 * could also be an ID of an object for example.
 	 */
 	public pickerRecordToValue (_field: this, record:storeRecordType<listStoreType<T>>) : any {
@@ -276,7 +276,7 @@ type AutoCompleteConfig<T extends List, Map extends ObservableEventMap<any>, Req
 
 
 /**
- * Shorthand function to create an {@see AutocompleteField}
+ * Shorthand function to create an {@link AutocompleteField}
  *
  * @param config
  */

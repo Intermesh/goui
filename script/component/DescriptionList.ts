@@ -78,7 +78,7 @@ export class DescriptionList extends Component {
 }
 
 /**
- * Shorthand function to create {@see DescriptionList}
+ * Shorthand function to create {@link DescriptionList}
  *
  * @param config
  * @param items

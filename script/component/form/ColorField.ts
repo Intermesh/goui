@@ -82,7 +82,7 @@ export class ColorField extends Field {
 }
 
 /**
- * Shorthand function to create {@see TextField}
+ * Shorthand function to create {@link TextField}
  *
  * @param config
  */

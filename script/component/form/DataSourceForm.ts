@@ -179,7 +179,7 @@ export type DataSourceFormConfig<ValueType extends BaseEntity =  DefaultEntity> 
 
 
 /**
- * Shorthand function to create {@see DataSourceForm}
+ * Shorthand function to create {@link DataSourceForm}
  *
  * @param config
  * @param items

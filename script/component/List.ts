@@ -187,7 +187,7 @@ export class List<StoreType extends Store = Store> extends Component implements 
 
 
 	/**
-	 * When enabled, it will register it's container as scrolling element to the {@see Store}.
+	 * When enabled, it will register it's container as scrolling element to the {@link Store}.
 	 * @see Store.addScrollLoader();
 	 */
 	public scrollLoad = false;
@@ -608,7 +608,7 @@ export class List<StoreType extends Store = Store> extends Component implements 
 export type ListConfig<StoreType extends Store> = Omit<Config<List<StoreType>, ListEventMap<List<StoreType>>, "store" | "renderer">, "rowSelection">
 
 /**
- * Shorthand function to create {@see Table}
+ * Shorthand function to create {@link Table}
  *
  * @param config
  */

@@ -20,7 +20,7 @@ export interface FieldEventMap<Type> extends ComponentEventMap<Type> {
 	/**
 	 * Fires when the field changes. It fires on blur.
 	 *
-	 * Note: this event does not fire on {@see ContainerField} and {@see Form}
+	 * Note: this event does not fire on {@link ContainerField} and {@link Form}
 	 *
 	 * @param field
 	 */
@@ -70,7 +70,7 @@ export interface FieldEventMap<Type> extends ComponentEventMap<Type> {
 	/**
 	 * Fires when validated
 	 *
-	 * Use {@see setInvalid()} to mark field invalid
+	 * Use {@link setInvalid()} to mark field invalid
 	 *
 	 * @param field
 	 */
@@ -79,7 +79,7 @@ export interface FieldEventMap<Type> extends ComponentEventMap<Type> {
 	/**
 	 * Fires when the field is invalid
 	 *
-	 * Use {@see setInvalid()} to mark field invalid
+	 * Use {@link setInvalid()} to mark field invalid
 	 *
 	 * @param field
 	 */
@@ -505,7 +505,7 @@ export abstract class Field extends Component {
 	}
 
 	/**
-	 * Get the old value before user modifications were made after {@see trackReset()}
+	 * Get the old value before user modifications were made after {@link trackReset()}
 	 */
 	public getOldValue() {
 		return this.resetValue;

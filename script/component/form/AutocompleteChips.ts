@@ -39,7 +39,7 @@ export class AutocompleteChips<T extends List = List> extends ChipsField {
 	/**
 	 * Constructor
 	 *
-	 * @param list The drop down list or {@see Table}.
+	 * @param list The drop down list or {@link Table}.
 	 * @param buffer
 	 */
 	constructor(readonly list: T, private buffer = 300) {
@@ -125,7 +125,7 @@ export class AutocompleteChips<T extends List = List> extends ChipsField {
 
 	/**
 	 * Method that transforms a record from the TablePicker store to a value for this field.
-	 * This is not necessarily a text value. In conjunction with {@see valueToTextField()} this
+	 * This is not necessarily a text value. In conjunction with {@link valueToTextField()} this
 	 * could also be an ID of an object for example.
 	 *
 	 * @param field
@@ -217,7 +217,7 @@ type AutoCompleteChipsConfig<ListType extends List = List> = FieldConfig<Autocom
 	// Add the function properties as they are filtered out
 	Partial<Pick<AutocompleteChips<ListType>, "textInputToValue" | "chipRenderer" | "pickerRecordToValue">>
 /**
- * Shorthand function to create {@see AutocompleteChips}
+ * Shorthand function to create {@link AutocompleteChips}
  *
  * @param config
  */

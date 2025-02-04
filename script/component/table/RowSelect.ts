@@ -396,7 +396,7 @@ export class RowSelect<StoreType extends Store = Store, RecordType extends Store
 export type RowSelectConfig<StoreType extends Store = Store> = Config<RowSelect<StoreType>, RowSelectEventMap<RowSelect, StoreType>, "list">
 
 /**
- * Shorthand function to create {@see RowSelect}
+ * Shorthand function to create {@link RowSelect}
  *
  * @param config
  */

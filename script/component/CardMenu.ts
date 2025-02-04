@@ -151,7 +151,7 @@ export class CardMenu extends Component {
 
 
 /**
- * Shorthand function to create {@see CardMenu}
+ * Shorthand function to create {@link CardMenu}
  *
  * @param config
  * @param items

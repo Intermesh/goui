@@ -15,7 +15,7 @@ const defaultDisplayFieldRenderer: DisplayFieldRenderer = (v:any, field:DisplayF
  *
  * Component used to display data only.
  *
- * A {@see Form} can be used to edit data but also to present data using display fields
+ * A {@link Form} can be used to edit data but also to present data using display fields
  */
 export class DisplayField extends Field {
 
@@ -91,7 +91,7 @@ type DisplayFieldConfig = FieldConfig<DisplayField, FieldEventMap<DisplayField>>
 }
 
 /**
- * Shortcut function to create a {@see DisplayField}
+ * Shortcut function to create a {@link DisplayField}
  *
  * @param config
  * @param items

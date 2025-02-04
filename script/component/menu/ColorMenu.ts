@@ -158,7 +158,7 @@ export class ColorMenu extends Menu {
 }
 
 /**
- * Shorthand function to create {@see ColorMenu}
+ * Shorthand function to create {@link ColorMenu}
  *
  * @param config
  */
