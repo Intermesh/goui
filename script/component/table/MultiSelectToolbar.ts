@@ -50,7 +50,28 @@ export class MultiSelectToolbar extends Toolbar {
 /**
  * Create a {@link MultiSelectToolbar} component
  *
- * You can add this to a Toolbar
+ * You can add this to a {@link Toolbar}
+ *
+ * @example
+ * ```
+ * tbar({},
+ *    mstbar({
+ * 			table: usrTbl.table
+ * 		},
+ * 	    '->',
+ * 			btn({
+ * 				icon: "delete",
+ * 				handler: async (btn) => {
+ * 					const msTB = btn.parent as MultiSelectToolbar, ids = msTB.table.rowSelection!.getSelected().map((row) => row.id);
+ * 					const result = await userDS.confirmDestroy(ids);
+ * 					if (result != false) {
+ * 						msTB.hide();
+ * 					}
+ * 				}
+ * 			})
+ * 		)
+ * );
+ *
  *
  * @param config
  * @param items
