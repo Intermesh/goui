@@ -185,7 +185,7 @@ export interface QueryParams {
 }
 
 
-export interface QueryResponse {
+export interface QueryResponse<EntityType> {
 	/**
 	 * The entity ID's in the correct order
 	 */
@@ -200,6 +200,13 @@ export interface QueryResponse {
 	 * The state of the query on the server
 	 */
 	queryState?: string
+
+	/**
+	 * Some data sources may return full data objects because not all backends support sync like JMAP.
+	 *
+	 * For REST it makes more sense to return the full objects with query.
+	 */
+	list?:EntityType[];
 }
 
 /**
@@ -442,14 +449,15 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 		return p;
 	}
 
-	private returnGet(id: EntityID) {
+	protected returnGet(data: EntityType) {
+		const id = data.id;
 		let r;
 		if(!this.getIds[id]) {
 			return;
 		}
 		while (r = this.getIds[id].resolves.shift()) {
 			// this.getIds[id].rejects.shift();
-			r.call(this, structuredClone(this.data[id]));
+			r.call(this, data);
 		}
 		delete this.getIds[id];
 	}
@@ -499,7 +507,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 				}
 			}
 			if (this.hasData(id, this.getIds[id].properties)) {
-				this.returnGet(id);
+				this.returnGet(structuredClone(this.data[id]));
 			} else
 			{
 				if(lastProps && lastProps != this.getIds[id].properties) {
@@ -533,7 +541,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 							Object.freeze(e);
 						}
 						this.add(e);
-						this.returnGet(e.id!);
+						this.returnGet(e);
 					});
 
 					response.notFound?.forEach((id) => {
@@ -935,7 +943,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	 *
 	 * @link https://jmap.io/spec-core.html#query
 	 */
-	public async query(params: QueryParams = {}): Promise<QueryResponse> {
+	public async query(params: QueryParams = {}): Promise<QueryResponse<EntityType>> {
 		let r = await this.internalQuery(params);
 		return this.checkState(r.queryState, r);
 	}
@@ -974,7 +982,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	 * Handle the query to the remote
 	 * @param params
 	 */
-	protected abstract internalQuery(params: QueryParams): Promise<QueryResponse>;
+	protected abstract internalQuery(params: QueryParams): Promise<QueryResponse<EntityType>>;
 
 
 	/**

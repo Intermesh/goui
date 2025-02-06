@@ -235,7 +235,7 @@ export class RestDataSource<EntityType extends BaseEntity = DefaultEntity> exten
 	}
 
 
-	protected async internalQuery(params: QueryParams): Promise<QueryResponse> {
+	protected async internalQuery(params: QueryParams): Promise<QueryResponse<EntityType>> {
 
 		const response = await this.request("", this.queryParamsToRequestOptions(params), this.queryParamsToUrlParams(params));
 
@@ -243,19 +243,13 @@ export class RestDataSource<EntityType extends BaseEntity = DefaultEntity> exten
 			throw "Invalid query response";
 		}
 		// immediately add data so we don't have to fetch it when data is retrieved using {@link get()} or {@link single()}
-		this.entityFromServerResponse(response).forEach((r:EntityType) => {
-			if(!this.data[r.id!]) {
-
-				// freeze to mark as complete
-				Object.freeze(r);
-				this.add(r);
-			}
-		});
+		this.entityFromServerResponse(response);
 
 		const ids = response.data.map((r:EntityType) => r.id);
 
 		return {
 			ids: ids,
+			list: response.data,
 			total: response.total
 		}
 	}

@@ -58,7 +58,7 @@ export class DataSourceStore<
 	/**
 	 * The server properties required
 	 */
-	public properties?: string[] = [];
+	public properties: string[] = [];
 
 	/**
 	 * Reload when the datasource changes
@@ -136,9 +136,15 @@ export class DataSourceStore<
 			}
 		}
 
-		const getResponse = await this.dataSource.get(queryResponse.ids);
+		let list;
+		if(queryResponse.list) {
+			list = queryResponse.list as dataSourceEntityType<DataSource>[];
+		} else {
+			const getResponse = await this.dataSource.get(queryResponse.ids, this.properties);
+			list = getResponse.list as dataSourceEntityType<DataSource>[];
+		}
 
-		const entities = await this.fetchRelations(getResponse.list as dataSourceEntityType<DataSource>[]),
+		const entities = await this.fetchRelations(list),
 			records = await Promise.all(entities.map(this.buildRecord));
 
 		this.loadData(records, append);
