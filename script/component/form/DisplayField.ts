@@ -6,8 +6,7 @@
 
 import {Field, FieldConfig, FieldEventMap} from "./Field.js";
 import {Component, createComponent} from "../Component.js";
-import {Config} from "../Observable.js";
-import {DateTime, Format} from "../../util/index.js";
+import {DateTime, Format} from "../../util";
 
 const defaultDisplayFieldRenderer: DisplayFieldRenderer = (v:any, field:DisplayField) => v ?? ""
 /**
@@ -57,17 +56,32 @@ export class DisplayField extends Field {
 	protected internalSetValue(v?: any) {
 
 		// if(this.control) {
-			const setFn = (str:string) => {
-				if(this.escapeValue) {
-					str = Format.escapeHTML(str);
-				}
-				if(!this.renderTagOnly) {
-					this.control!.innerHTML = str;
+			const setFn = (str:string|Component) => {
+				if(str instanceof Component) {
+
+
+					if (!this.renderTagOnly) {
+						str.render(this.control);
+					} else {
+						str.render(this.el);
+					}
+
+					this.on("remove", ()=> {
+						(str as Component).remove();
+					})
 				} else {
-					this.el.innerHTML = str;
+					if (this.escapeValue) {
+						str = Format.escapeHTML(str);
+					}
+					if (!this.renderTagOnly) {
+						this.control!.innerHTML = str;
+					} else {
+						this.el.innerHTML = str;
+					}
+					if (this.hideWhenEmpty) {
+						this.hidden = str == "";
+					}
 				}
-				if(this.hideWhenEmpty)
-					this.hidden = str == "";
 			}, str = this.renderer(v, this);
 
 			str instanceof Promise ? str.then(setFn) : setFn(str);
@@ -81,7 +95,7 @@ export class DisplayField extends Field {
 		}
 	}
 }
-type DisplayFieldRenderer = (v:any, field:DisplayField) => string|Promise<string>;
+type DisplayFieldRenderer = (v:any, field:DisplayField) => string|Promise<string>|Component|Promise<Component>;
 type DisplayFieldConfig = FieldConfig<DisplayField, FieldEventMap<DisplayField>> & {
 
 	/**

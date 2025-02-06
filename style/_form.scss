@@ -400,7 +400,8 @@ $formFieldBorderRadius: util.dp(10);
 			//width: 100%;
 			//outline: none;
 			color: config.$colorText;
-			display: flex;// for text area which has inline-block by default and gets some extra margin
+			//display: flex;// for text area which has inline-block by default and gets some extra margin. But it breaks overflow ellipsis
+
 			overflow: hidden;
 			text-overflow: ellipsis;
 			white-space: nowrap;
@@ -1030,6 +1031,8 @@ $formFieldBorderRadius: util.dp(10);
 		img {
 			max-width: 100%;
 		}
+
+		overflow: auto;
 
 		//placeholder support
 		&:empty:before {
