@@ -14,9 +14,6 @@ import {draggable} from "../DraggableComponent.js";
 import {TableColumn} from "./TableColumns.js";
 import {List, ListEventMap} from "../List.js";
 import {Config, Listener, ObservableListenerOpts} from "../Observable.js";
-import {t} from "../../Translate.js";
-import HTML = Mocha.reporters.HTML;
-
 
 
 export interface Table<StoreType extends Store = Store> extends List<StoreType>  {
