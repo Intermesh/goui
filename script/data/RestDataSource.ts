@@ -179,7 +179,7 @@ export class RestDataSource<EntityType extends BaseEntity = DefaultEntity> exten
 		});
 	}
 
-	protected async internalGet(ids: EntityID[]): Promise<GetResponse<EntityType>> {
+	protected async internalGet(ids: EntityID[], properties:string[]): Promise<GetResponse<EntityType>> {
 
 		const promises: Promise<EntityType>[] = [];
 		ids.forEach((id) => {
@@ -245,6 +245,9 @@ export class RestDataSource<EntityType extends BaseEntity = DefaultEntity> exten
 		// immediately add data so we don't have to fetch it when data is retrieved using {@link get()} or {@link single()}
 		this.entityFromServerResponse(response).forEach((r:EntityType) => {
 			if(!this.data[r.id!]) {
+
+				// freeze to mark as complete
+				Object.freeze(r);
 				this.add(r);
 			}
 		});

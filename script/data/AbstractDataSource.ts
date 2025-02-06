@@ -6,7 +6,7 @@
 
 import {Observable, ObservableEventMap, ObservableListenerOpts, root, Window} from "../component/index.js";
 import {Comparator} from "./Store.js";
-import {FunctionUtil, ObjectUtil} from "../util/index.js";
+import {ArrayUtil, FunctionUtil, ObjectUtil} from "../util/index.js";
 import {BrowserStore} from "../util/BrowserStorage.js";
 import {t} from "../Translate.js";
 import {RouterEventMap} from "../Router.js";
@@ -235,7 +235,8 @@ interface DestroyData {
 
 type GetData = {
 	resolves: ((value: any | undefined) => void)[],
-	rejects: ((reason?: any) => void)[]
+	rejects: ((reason?: any) => void)[],
+	properties: string[]
 }
 
 /**
@@ -345,8 +346,9 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	 * It will return a list of entities ordered by the requested ID's
 	 *
 	 * @param ids
+	 * @param properties
 	 */
-	public async get(ids?: EntityID[]): Promise<GetResponse<EntityType>> {
+	public async get(ids?: EntityID[], properties: string[] = []): Promise<GetResponse<EntityType>> {
 
 		const promises: Promise<EntityType | undefined>[] = [], order: Record<EntityID, number> = {};
 
@@ -358,7 +360,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 		ids.forEach((id, index) => {
 			//keep order for sorting the result
 			order[id] = index++;
-			promises.push(this.single(id));
+			promises.push(this.single(id, properties));
 		})
 
 		// Call class method to fetch additional
@@ -408,6 +410,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 		return id;
 	}
 
+
 	/**
 	 * Get a single entity.
 	 *
@@ -415,8 +418,9 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	 * be joined together in a single HTTP request to the server.
 	 *
 	 * @param id
+	 * @param properties
 	 */
-	public async single(id: EntityID): Promise<EntityType | undefined> {
+	public async single(id: EntityID, properties:string[] = []): Promise<EntityType | undefined> {
 		id = id+"";
 		if(!id) {
 			return Promise.resolve(undefined);
@@ -425,11 +429,13 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 			if (!this.getIds[id]) {
 				this.getIds[id] = {
 					resolves: [resolve],
-					rejects: [reject]
+					rejects: [reject],
+					properties: properties
 				}
 			} else {
 				this.getIds[id].resolves.push(resolve);
 				this.getIds[id].rejects.push(reject);
+				this.getIds[id].properties = ArrayUtil.unique(this.getIds[id].properties.concat(properties));
 			}
 		}) as Promise<EntityType | undefined>;
 		this.delayedGet();
@@ -448,6 +454,31 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 		delete this.getIds[id];
 	}
 
+	private hasData(id: EntityID, properties: string[]): boolean {
+		if(!this.data[id]) {
+			return false;
+		}
+
+		// object is fetched complete
+		if(Object.isFrozen(this.data[id])) {
+			return true;
+		}
+
+		// want full data but dat wasn't fetched in full
+		if(properties.length == 0) {
+			return false;
+		}
+
+		for(const prop of properties) {
+			if(!(prop in this.data[id])) {
+				return false;
+			}
+		}
+
+		return true;
+
+	}
+
 	/**
 	 * Does the actual getting of entities. First checks if present in this onbject, otherwise it will be requested
 	 * from the remote source.
@@ -456,49 +487,66 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	 */
 	protected async doGet() {
 
-		const unknownIds: EntityID[] = [];
+		const serverFetches: {properties: string[], ids: EntityID[]}[] = [];
+
+		let unknownIds: EntityID[] = [], lastProps;
 		for (let id in this.getIds) {
-			if (this.data[id]) {
-				this.returnGet(id);
-			} else if(this.persist) {
+
+			if(!this.data[id] && this.persist) {
 				const data = await this.browserStore.getItem(id);
 				if (data) {
 					this.data[id] = data;
-					this.returnGet(id);
-				} else {
-					unknownIds.push(id);
 				}
-			} else {
+			}
+			if (this.hasData(id, this.getIds[id].properties)) {
+				this.returnGet(id);
+			} else
+			{
+				if(lastProps && lastProps != this.getIds[id].properties) {
+						serverFetches.push({properties: lastProps, ids: unknownIds});
+						unknownIds = [];
+				}
 				unknownIds.push(id);
+				lastProps = this.getIds[id].properties;
+
 			}
 		}
 
-		if (!unknownIds.length) {
+		if(unknownIds.length >0) {
+			serverFetches.push({properties: lastProps as [], ids: unknownIds});
+		}
+
+		if (!serverFetches.length) {
 			// Can we return without a server call? State won't be checked.
 			// In the detail view we call an additional validateState() function to do this to
 			// save a lot of empty calls.
 			return;
 		}
 
-		this.internalGet(unknownIds)
-			.then(response => this.checkState(response.state, response))
-			.then(response => {
-				response.list.forEach((e) => {
-					this.add(e);
-					this.returnGet(e.id!);
-				});
+		for(const f of serverFetches) {
+			this.internalGet(f.ids, f.properties)
+				.then(response => this.checkState(response.state, response))
+				.then(response => {
+					response.list.forEach((e) => {
+						if(!f.properties.length) {
+							// freeze to mark it as with complete property set
+							Object.freeze(e);
+						}
+						this.add(e);
+						this.returnGet(e.id!);
+					});
 
-				response.notFound?.forEach((id) => {
-					let r;
-					while (r = this.getIds[id].resolves.shift()) {
-						r.call(this, undefined);
-					}
-					delete this.getIds[id];
-				});
-			}).catch((e)=>{
+					response.notFound?.forEach((id) => {
+						let r;
+						while (r = this.getIds[id].resolves.shift()) {
+							r.call(this, undefined);
+						}
+						delete this.getIds[id];
+					});
+				}).catch((e) => {
 				//reject all
 				unknownIds.forEach((id) => {
-					if(this.getIds[id]) {
+					if (this.getIds[id]) {
 						let r;
 						while (r = this.getIds[id].rejects.shift()) {
 							r.call(this, e);
@@ -507,6 +555,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 					}
 				})
 			});
+		}
 
 	}
 
@@ -514,9 +563,10 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	 * Implements getting entities from a remote source
 	 *
 	 * @param ids
+	 * @param properties
 	 * @protected
 	 */
-	protected abstract internalGet(ids: EntityID[]): Promise<GetResponse<EntityType>>;
+	protected abstract internalGet(ids: EntityID[], properties:string[]): Promise<GetResponse<EntityType>>;
 
 	/**
 	 * Create entity

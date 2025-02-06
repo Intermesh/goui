@@ -55,8 +55,10 @@ export class DataSourceStore<
 	 */
 	public relations?: Relation<DefaultEntity>;
 
-	// public properties?: string[] = [];
-
+	/**
+	 * The server properties required
+	 */
+	public properties?: string[] = [];
 
 	/**
 	 * Reload when the datasource changes
@@ -315,16 +317,40 @@ export type DataSourceStoreConfig<DataSource extends AbstractDataSource, RecordT
 	Omit<StoreConfig<RecordType>, "listeners"> &
 
 	{
+		/**
+		 * The server properties required
+		 */
+		properties?: string[],
+
+		/**
+		 * Query parameters to send
+		 */
 		queryParams?: QueryParams,
 
+		/**
+		 * Data source
+		 */
 		dataSource: DataSource,
 
+		/**
+		 * Function to build a record from the entity.
+		 * Defaults to returning just the entity
+		 */
 		buildRecord?: RecordBuilder<dataSourceEntityType<DataSource>, RecordType>,
 
+		/**
+		 * Fetch relations of the entity
+		 */
 		relations?: Relation<DefaultEntity>,
 
+		/**
+		 * Event listeners
+		 */
 		listeners?: ObservableListener<StoreEventMap<DataSourceStore<DataSource, RecordType>,RecordType>>
 
+		/**
+		 * Filters for the query
+		 */
 		filters?: Record<string, Record<string, any>>
 	}
 

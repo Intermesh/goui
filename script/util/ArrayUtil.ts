@@ -98,4 +98,15 @@ export class ArrayUtil {
 		array.splice(to, 0, array.splice(from, 1)[0]);
 		return array;
 	};
+
+	/**
+	 * Deduplicate an array
+	 *
+	 * @param array
+	 */
+	public static unique = function <T extends any[]>(array:T) {
+		// A set is unique: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set
+		let s = new Set(array);
+		return [...s]
+	};
 }
