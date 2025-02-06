@@ -468,7 +468,8 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 		}
 
 		// object is fetched complete
-		if(Object.isFrozen(this.data[id])) {
+		//@ts-ignore
+		if(this.data[id].__isComplete) {
 			return true;
 		}
 
@@ -507,7 +508,10 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 				}
 			}
 			if (this.hasData(id, this.getIds[id].properties)) {
-				this.returnGet(structuredClone(this.data[id]));
+				const data = structuredClone(this.data[id]);
+				//@ts-ignore
+				delete data.__isComplete;
+				this.returnGet(data);
 			} else
 			{
 				if(lastProps && lastProps != this.getIds[id].properties) {
@@ -536,12 +540,16 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 				.then(response => this.checkState(response.state, response))
 				.then(response => {
 					response.list.forEach((e) => {
+						const data = structuredClone(e);
 						if(!f.properties.length) {
 							// freeze to mark it as with complete property set
-							Object.freeze(e);
+							// Object.freeze(e);
+							//@ts-ignore
+							e.__isComplete = true;
 						}
 						this.add(e);
-						this.returnGet(e);
+
+						this.returnGet(data);
 					});
 
 					response.notFound?.forEach((id) => {
