@@ -82,6 +82,8 @@ export class DataSourceForm<ValueType extends BaseEntity = DefaultEntity> extend
 					data = await this.dataSource.update(this.currentId!, v as ValueType);
 				} else {
 					data = await this.dataSource.create(v);
+
+					this.currentId = data.id;
 				}
 
 				if (data) {
