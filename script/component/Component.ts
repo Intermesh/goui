@@ -768,7 +768,7 @@ export class Component extends Observable {
 
 		const styleHeight = this.el.style.height;
 		if(styleHeight.substring(styleHeight.length - 3) == "rem") {
-			return parseFloat(styleHeight);
+			return parseFloat(styleHeight) * 10;
 		} else if(styleHeight.substring(styleHeight.length - 2) == "px") {
 			return Component.pxToRem(parseFloat(styleHeight));
 		}
