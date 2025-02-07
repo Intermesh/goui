@@ -11,13 +11,13 @@ export class Avatar extends Component {
 
 	protected baseCls = "goui-avatar";
 
-	static colors = [
+	public static colors = [
 		'C62828', 'AD1457', '6A1B9A', '4527A0', '283593', '1565C0', '0277BD', '00838F',
 		'00695C', '2E7D32', '558B2F', '9E9D24', 'F9A825', 'FF8F00', 'EF6C00', '424242'
 	];
 
 	set displayName(displayName: string) {
-		this.text = this.initials(displayName);
+		this.text = Avatar.initials(displayName);
 		this.title = displayName;
 
 		let j = 0;
@@ -49,9 +49,8 @@ export class Avatar extends Component {
 	 * @param {string} name
 	 * @returns {string}
 	 */
-	private initials(name: string) {
+	public static initials(name: string): string {
 		const parts = name.split(" "), l = parts.length;
-
 		if (l > 2) {
 			parts.splice(1, l - 2);
 		}
