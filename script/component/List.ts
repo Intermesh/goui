@@ -158,7 +158,7 @@ export class List<StoreType extends Store = Store> extends Component implements 
 	/**
 	 * Shown when the list is empty.
 	 */
-	public emptyStateHtml = `<div class="goui-empty-state"><i class="icon">article</i><p>${t("Nothing to show")}</p></div>`
+	public emptyStateHtml = `<div class="goui-empty-state"><i class="icon">article</i><p>${t("No items found")}</p></div>`
 
 	protected emptyStateTag: keyof HTMLElementTagNameMap = 'li';
 	private emptyEl?: HTMLElement
