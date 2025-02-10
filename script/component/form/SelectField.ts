@@ -9,6 +9,8 @@ import {createComponent} from "../Component.js";
 import {Store} from "../../data/index.js";
 import {Config} from "../Observable.js";
 import {InputField} from "./InputField.js";
+import {btn} from "../Button";
+import {E} from "../../util";
 
 /**
  * Select component option
@@ -50,6 +52,17 @@ export class SelectField extends InputField {
 	protected createInput() {
 		return document.createElement("select")
 			.on('change', _ => this.fireChange());
+	}
+
+	protected createControl() {
+
+		this._input = this.createInput();
+
+		this._input.on("click", ()=> this.validate());
+
+		return E('div',
+			this._input
+		).cls("+select-wrapper");
 	}
 
 	// turned off fireChangeOnBlur but override onFocusIn() to get the oldValue

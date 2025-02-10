@@ -583,7 +583,7 @@ $formFieldBorderRadius: util.dp(10);
 	}
 
 	&.text, &.number, &.date, &.time, &.textarea, &.select, &.duration, &.recurrence {
-		input, textarea, .wrap > select {
+		input, textarea, .select-wrapper > select {
 			@extend %input;
 
 			&:focus {
@@ -600,7 +600,7 @@ $formFieldBorderRadius: util.dp(10);
 			animation-name: onautofillcancel;
 		}
 
-		input, .wrap > select {
+		input, .select-wrapper > select {
 			height: util.dp(46); //padding 11 * 2 + line height 24. Needed to be set for Safari with input.time and date.
 		}
 	}
@@ -964,25 +964,40 @@ $formFieldBorderRadius: util.dp(10);
 		position: relative;
 		.wrap {
 			select {
-				padding-right: util.dp(30);
+				padding-right: util.dp(40);
 				background-image: none;
 				appearance: none;
 				overflow: hidden;
 				text-overflow: ellipsis;
 				white-space: nowrap;
 			}
-		}
-		&:after {
-			position: absolute;
-			display: inline-block;
-			top: config.$baseLineHeight - util.dp(6);
-			right: util.dp(8);
-			@extend %icon;
-			color: config.$colorTextSecondary;
-			font-size: 2rem;
-			margin-right: 0;
-			content: "expand_more";
-			pointer-events: none;
+			.label {
+				z-index: 2;
+			}
+
+			.select-wrapper {
+
+				position: relative;
+
+
+				&:after {
+					border-left: config.$borderWidth solid config.$colorBorder;
+					position: absolute;
+					display: inline-block;
+					top: 0;//config.$baseLineHeight - util.dp(8);;
+					padding: 1.4rem 1.1rem;
+					right: config.$borderWidth * -1;
+					@extend %icon;
+					color: config.$colorTextSecondary;
+					font-size: 2rem;
+					z-index: 2;
+					//margin-right: config.$borderWidth * -1;
+					background-color: config.$colorBackgroundInput;
+
+					content: "expand_more";
+					pointer-events: none;
+				}
+			}
 		}
 	} // end select
 
