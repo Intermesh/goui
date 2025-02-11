@@ -33,9 +33,9 @@ export class RestDataSource<EntityType extends BaseEntity = DefaultEntity> exten
 		id = id || "restDataSource";
 		super(id);
 
-		if(uri.substring(-1,1) != "/") {
-			this.uri  = uri + "/";
-		}
+		// if(uri.slice(-1) != "/") {
+		// 	this.uri  = uri + "/";
+		// }
 
 		// We can't persist with REST stores as we can't sync data like with JMAP
 		this.persist = false;
@@ -51,10 +51,6 @@ export class RestDataSource<EntityType extends BaseEntity = DefaultEntity> exten
 	public read(id :number|number[], path: string="", options: RequestInit={}){
 		if(typeof id === "number") {
 			path += "/" + id;
-		} else {
-			if(path != "" && path.substring(-1,1) != "/") {
-				// path = path + "/";
-			}
 		}
 		return this.request(path, options);
 	}
@@ -68,7 +64,8 @@ export class RestDataSource<EntityType extends BaseEntity = DefaultEntity> exten
 
 		Object.assign(opts, options);
 
-		if (path != "" && path.substring(0, 1) != "") {
+		// if path does not start with slash or uri does not end with slash
+		if (path != '' && path.slice(0,1) !== '/' && this.uri.slice(-1) !== '/') {
 			path = "/" + path;
 		}
 
