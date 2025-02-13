@@ -107,15 +107,27 @@ export class Tree extends Table<TreeStore> {
 
 		this.setupExpandOnDragOver(row, record, storeIndex);
 
+		if(this.expandedRecordCache[record.id]) {
+			void this.expand(record, storeIndex,  row.getElementsByClassName("node")[0]);
+		}
+
 		return row;
 	}
 
+
+	private expandedRecordCache:Record<string, true> = {};
+
 	private async expand(record: any, storeIndex: number, node: Element) {
+
+
 		if(this.fire("beforeexpand", this,  record, storeIndex) === false) {
 			return;
 		}
 
 		return this.populateChildren(record, storeIndex).then(() => {
+
+			this.expandedRecordCache[record.id] = true;
+
 			this.store.expand(record);
 			node.classList.add("expanded");
 			this.fire("expand", this, record, storeIndex);
@@ -127,6 +139,10 @@ export class Tree extends Table<TreeStore> {
 		if(this.fire("beforecollapse", this,  record, storeIndex) === false) {
 			return;
 		}
+
+
+
+		delete this.expandedRecordCache[record.id];
 
 		this.store.collapse(record);
 		node.classList.remove("expanded");
@@ -170,13 +186,21 @@ export class Tree extends Table<TreeStore> {
 				//expand tree node if dragging over for 1 second
 				dragOverTimeout = setTimeout(() => {
 					const node = row.getElementsByClassName("node")[0];
-					void this.expand(record, storeIndex, node);
+					if(!node.has(".expanded")) {
+						void this.expand(record, storeIndex, node);
+					}
 				}, 1000);
 			});
 
 		})
 
 		row.addEventListener("dragleave", (e)=>{
+			if(dragOverTimeout) {
+				clearTimeout(dragOverTimeout);
+			}
+		})
+
+		this.on("drop", () => {
 			if(dragOverTimeout) {
 				clearTimeout(dragOverTimeout);
 			}

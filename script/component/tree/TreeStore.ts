@@ -7,8 +7,8 @@ export class TreeStore extends Store<TreeRecord> {
 
 	constructor(records?: TreeRecord[]) {
 		super(records);
-
 	}
+
 
 	protected onAdd(record: TreeRecord) {
 		if(record.expanded) {
@@ -32,6 +32,10 @@ export class TreeStore extends Store<TreeRecord> {
 			const child = record.children[i];
 			child.level = level;
 
+			if(this.findIndexById(child.id) > -1) {
+				debugger;
+			}
+
 			// the node might have gotten sub nodes recursively in onAdded() -> expand(). So we have to fast forward them here.
 			let currItem = this.items.at(startIndex);
 			while(currItem && currItem.level && currItem.level >= level) {
@@ -45,6 +49,7 @@ export class TreeStore extends Store<TreeRecord> {
 
 
 	collapse(record: TreeRecord) {
+
 		let startIndex = this.findIndex(r => r == record);
 		startIndex++;
 		const level =  record.level ? record.level + 1 : 1;

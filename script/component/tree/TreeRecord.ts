@@ -4,7 +4,7 @@ export type TreeRecord = {
 	/**
 	 * Unique ID of the node
 	 */
-	id?: string,
+	id: string,
 
 	/**
 	 * Text of the node
