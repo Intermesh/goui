@@ -5,7 +5,7 @@ import {E} from "../util";
 import {Config, Listener, ObservableListenerOpts} from "./Observable.js";
 import {MaterialIcon} from "./MaterialIcon.js";
 import {checkbox} from "./form";
-import {RowSelect} from "./table";
+import {RowSelect, SelectedRow} from "./table";
 
 export const TreeRowRenderer: RowRenderer = (record, row, me:Tree, storeIndex) => {
 
@@ -178,7 +178,14 @@ export class Tree extends List<Store<TreeRecord>> {
 		}
 
 		this.emptyStateHtml = "";
+
+		this.on("render", this.onRender, {bind: this});
 	}
+
+	private onRender() {
+		this.bindRowSelections(this);
+	}
+
 
 	public set data(records:TreeRecord[]) {
 		this.store.loadData(records);
@@ -284,11 +291,42 @@ export class Tree extends List<Store<TreeRecord>> {
 			}
 		}, {once: true})
 
-
-
 		top.fire("expand", top, tree, record, storeIndex);
 
 		return tree;
+	}
+
+	private onBeforeRowSelect(rowSelect:RowSelect, row:SelectedRow<any>, append:boolean) {
+
+		if(append) {
+			return;
+		}
+
+		const topTree = this.findTopTree();
+
+		topTree.cascadeTree((subTree) => {
+			if(subTree != topTree) {
+				(subTree as Tree).rowSelection!.clear();
+			}
+		})
+	}
+
+	/**
+	 * Cascade down the component hierarchy
+	 *
+	 * @param fn When the function returns false then the cascading will be stopped. The current Component will be finished!
+	 */
+	private cascadeTree(fn: (comp: Component) => boolean | void) {
+		if (fn(this) === false) {
+			return this;
+		}
+		if (this.store.data) {
+			for (let rec of this.store.data) {
+				rec.subTree && rec.subTree.cascadeTree(fn);
+			}
+		}
+
+		return this;
 	}
 
 	private renderSubTree(row: HTMLElement, record:TreeRecord, storeIndex:number): Tree {
@@ -315,15 +353,26 @@ export class Tree extends List<Store<TreeRecord>> {
 			sub.data = record.children;
 		}
 
+		//important that this happens before configuring the row selection as these events must fire before the rowselection
+		//catches the row click
+		["rowclick", "rowdblclick", "rowcontextmenu", "rowmousedown", "drop", "dropallowed"].forEach( (e) => {
+			this.relayEvent(sub, e);
+		})
+
+		if(this.rowSelection) {
+			sub.rowSelectionConfig = {
+				multiSelect: this.rowSelection.multiSelect
+			}
+		}
+		// this.bindRowSelections(sub);
+
 		// set the data on parent if store is loaded by an expand event.
 		// this way the data can be retrieved in full using the top tree's data get accessor. eg. tree.data
 		sub.store.on("load", (store1, records, append) => {
 			record.children = store1.data;
 		});
 
-		["rowclick", "rowdblclick", "rowcontextmenu", "rowmousedown", "drop", "dropallowed"].forEach( (e) => {
-			this.relayEvent(sub, e);
-		})
+
 
 		record.subTree = sub;
 
@@ -335,6 +384,13 @@ export class Tree extends List<Store<TreeRecord>> {
 		sub.render(wrap);
 
 		return sub;
+	}
+
+
+	private bindRowSelections(tree:Tree) {
+		if(tree.rowSelection) {
+			tree.rowSelection.on("beforerowselect", this.onBeforeRowSelect, {bind: this});
+		}
 	}
 
 	public onRecordRemove(collection: Store<TreeRecord>, item: StoreRecord, index: number) {

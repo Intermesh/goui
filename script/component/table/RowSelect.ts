@@ -41,7 +41,22 @@ export interface RowSelectEventMap<Type extends Observable, StoreType extends St
 	 * @param rowSelect
 	 * @param storeIndex
 	 */
-	rowselect: (rowSelect: Type, row: SelectedRow<StoreType, RecordType>) => void
+	beforerowselect: (rowSelect: Type, row: SelectedRow<StoreType, RecordType>, append: boolean) => false|void
+
+	/**
+	 * Fires when a row is deselected
+	 *
+	 * @param rowSelect
+	 * @param storeIndex
+	 */
+	beforerowdeselect: (rowSelect: Type, row: SelectedRow<StoreType, RecordType>) => false|void
+
+	/**
+	 * Fires when a row is selected
+	 * @param rowSelect
+	 * @param storeIndex
+	 */
+	rowselect: (rowSelect: Type, row: SelectedRow<StoreType, RecordType>, append: boolean) => void
 
 	/**
 	 * Fires when a row is deselected
@@ -225,21 +240,34 @@ export class RowSelect<StoreType extends Store = Store, RecordType extends Store
 
 		const store = list.store;
 
+		e.preventDefault();
+
 		if (e.shiftKey && this.multiSelect) {
 
 			const start = Math.min(index, this.lastIndex);
 			const end = Math.max(index, this.lastIndex);
 
+			console.log(list.store.data, start, end);
+
 			for (let i = start; i <= end; i++) {
-				this.add(store.get(i) as RecordType);
+				const record = store.get(i);
+				if(record) {
+					this.add(record as RecordType, true);
+				}
 			}
 
 		} else if ((e.ctrlKey || e.metaKey || this.listHasCheckbox()) && this.multiSelect)  {
-			this.toggle(store.get(index) as RecordType)
+			const record = store.get(index);
+			if(record) {
+				this.toggle(record as RecordType)
+			}
 		} else {
 
 			if(e.ctrlKey || e.metaKey) {
-				this.toggle(store.get(index) as RecordType)
+				const record = store.get(index);
+				if(record) {
+					this.toggle(record as RecordType)
+				}
 				this.lastIndex = index;
 				return;
 			} else {
@@ -260,25 +288,39 @@ export class RowSelect<StoreType extends Store = Store, RecordType extends Store
 	 * @private
 	 */
 	private onRowClick(list: List, index: number, e: MouseEvent|KeyboardEvent) {
-			if(e.shiftKey || e.ctrlKey || e.metaKey || this.listHasCheckbox()) {
+
+		// if(list != this.list) {
+		// 	// rowclick event is relayed for a tree and we don't need that here
+		// 	return;
+		// }
+
+
+		if(e.shiftKey || e.ctrlKey || e.metaKey || this.listHasCheckbox()) {
 			return;
 		}
+
+		e.preventDefault();
+
 		this.clear();
 		this.add(list.store.get(index) as RecordType)
 
 		this.lastIndex = index;
 	}
 
-	public add(record:RecordType) {
+	public add(record:RecordType, append = false) {
 		if(this.isSelected(record)) {
 			return;
 		}
 
 		const selectedRow = new SelectedRow<StoreType, RecordType>(this.list.store as StoreType, record);
 
+		if(this.fire("beforerowselect", this, selectedRow, append) === false) {
+			return;
+		}
+
 		this.selected.push(selectedRow);
 
-		this.fire('rowselect', this, selectedRow);
+		this.fire('rowselect', this, selectedRow, append);
 		this.fireSelectionChange();
 
 		this.lastIndex = selectedRow.storeIndex;
@@ -299,6 +341,10 @@ export class RowSelect<StoreType extends Store = Store, RecordType extends Store
 		}
 
 		const selectedRow = this.selected[index];
+
+		if(this.fire("beforerowdeselect", this, selectedRow) === false) {
+			return;
+		}
 
 		this.selected.splice(index, 1);
 
@@ -325,7 +371,7 @@ export class RowSelect<StoreType extends Store = Store, RecordType extends Store
 			if(!this.multiSelect) {
 				this.clear();
 			}
-			this.add(record);
+			this.add(record, true);
 		}
 	}
 
@@ -365,7 +411,7 @@ export class RowSelect<StoreType extends Store = Store, RecordType extends Store
 		if (e.shiftKey && this.multiSelect) {
 			if ((e.key == "ArrowDown" && index > this.shiftStartIndex!) || (e.key == "ArrowUp" && index < this.shiftStartIndex!)) {
 				const record = this.list.store.get(index) as RecordType;
-				this.add(record);
+				this.add(record, true);
 			} else {
 				const record = this.list.store.get(this.lastIndex) as RecordType;
 				this.remove(record);
