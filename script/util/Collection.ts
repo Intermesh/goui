@@ -98,6 +98,8 @@ export class Collection<CollectionItem> extends Observable implements Iterable<C
 			}
 			this.items.push(item);
 
+			this.onAdd(item, index);
+
 			this.fire("add", this, item, index);
 			this.fire("datachanged", this);
 		});
@@ -122,10 +124,10 @@ export class Collection<CollectionItem> extends Observable implements Iterable<C
 				return -1;
 			}
 			this.items.splice(index, 0, item);
-
 			this.fire("add", this, item, index);
 			this.fire("datachanged", this);
 
+			this.onAdd(item, index);
 			index++;
 		});
 
@@ -203,6 +205,9 @@ export class Collection<CollectionItem> extends Observable implements Iterable<C
 		}
 
 		this.items.splice(index, 1);
+
+
+		this.onRemove(item, index);
 
 		this.fire("remove", this, item, index);
 		this.fire("datachanged", this);
@@ -305,4 +310,11 @@ export class Collection<CollectionItem> extends Observable implements Iterable<C
 	}
 
 
+	protected onAdd(item: CollectionItem, index: number) {
+
+	}
+
+	protected onRemove(item: CollectionItem, index: number) {
+
+	}
 }
