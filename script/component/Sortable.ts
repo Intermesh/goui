@@ -356,13 +356,13 @@ export class Sortable<Type extends Component> extends Observable {
 
 		dragData.dragSrc!.classList.remove("drag-src");
 
+		root.el.cls("-dragging");
+
 		if((!this.dropOn && !this.dropBetween) || dragData.group != this.group || !this.dropAllowed()) {
 			dragData.dragSrc = undefined;
 			this.fire("dragend", this, e, dragData);
 			return;
 		}
-
-		root.el.cls("-dragging");
 
 		Sortable.getDropPin().hidden = true;
 
