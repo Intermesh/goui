@@ -233,7 +233,7 @@ export class Sortable<Type extends Component> extends Observable {
 			}
 
 			if(!this.dropOn && !this.dropBetween) {
-				return false;
+				return;
 			}
 
 			dragData.overEl = e.target.closest(this.sortableChildSelector) as HTMLElement;
@@ -241,9 +241,6 @@ export class Sortable<Type extends Component> extends Observable {
 			if(!this.dropAllowed()) {
 				return;
 			}
-
-			e.preventDefault();
-			e.stopPropagation();
 
 			const dropPin = Sortable.getDropPin();
 
@@ -268,10 +265,10 @@ export class Sortable<Type extends Component> extends Observable {
 					dragData.pos = "on";
 				}
 
-
-
 				switch(dragData.pos) {
 					case "before":
+						e.preventDefault();
+						e.stopPropagation();
 						e.dataTransfer!.dropEffect = "move";
 						dropPin.hidden = false;
 						dropPin.el.style.top = (rect.y - this.gap(dragData.overEl)) + "px";
@@ -280,12 +277,20 @@ export class Sortable<Type extends Component> extends Observable {
 						break;
 
 					case "on":
+						if(!this.dropOn) {
+							return;
+						}
 						e.dataTransfer!.dropEffect = "copy";
 						dropPin.hidden = true;
+
+						e.preventDefault();
+						e.stopPropagation();
 
 						break;
 
 					case "after":
+						e.preventDefault();
+						e.stopPropagation();
 						e.dataTransfer!.dropEffect = "move";
 						dropPin.hidden = false;
 						dropPin.el.style.top = (rect.y + rect.height + this.gap(dragData.overEl)) + "px";
