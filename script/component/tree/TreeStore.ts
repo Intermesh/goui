@@ -1,5 +1,5 @@
 import {Store, StoreConfig} from "../../data/Store";
-import {createComponent} from "../../component";
+import {Component, createComponent} from "../../component";
 import {TreeRecord} from "./TreeRecord";
 
 
@@ -11,6 +11,9 @@ export class TreeStore extends Store<TreeRecord> {
 
 
 	protected onAdd(record: TreeRecord) {
+		if(!record.id){
+			record.id = 'gen-' + Component.uniqueID()
+		}
 		if(record.expanded) {
 			this.expand(record);
 		}
@@ -31,10 +34,6 @@ export class TreeStore extends Store<TreeRecord> {
 		for(let i = 0, l = record.children.length; i < l; i++) {
 			const child = record.children[i];
 			child.level = level;
-
-			if(this.findIndexById(child.id) > -1) {
-				debugger;
-			}
 
 			// the node might have gotten sub nodes recursively in onAdded() -> expand(). So we have to fast forward them here.
 			let currItem = this.items.at(startIndex);

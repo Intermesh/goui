@@ -240,7 +240,7 @@ export class RowSelect<StoreType extends Store = Store, RecordType extends Store
 
 		const store = list.store;
 
-		e.preventDefault();
+		// e.preventDefault();
 
 		if (e.shiftKey && this.multiSelect) {
 

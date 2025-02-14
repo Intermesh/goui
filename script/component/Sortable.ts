@@ -227,6 +227,7 @@ export class Sortable<Type extends Component> extends Observable {
 		})
 
 		component.el.on("dragover", (e) => {
+
 			if(dragData.group != this.group) {
 				return;
 			}
@@ -236,7 +237,6 @@ export class Sortable<Type extends Component> extends Observable {
 			}
 
 			dragData.overEl = e.target.closest(this.sortableChildSelector) as HTMLElement;
-
 
 			if(!this.dropAllowed()) {
 				return;

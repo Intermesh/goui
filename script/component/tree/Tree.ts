@@ -1,4 +1,4 @@
-import {Table} from "./../table";
+import {Table, TableColumn} from "./../table";
 import {createComponent} from ".././Component";
 import {Config, Listener, ObservableListenerOpts} from "./../Observable.js";
 import {ListEventMap} from "../List";
@@ -67,7 +67,7 @@ export interface Tree extends Table<TreeStore> {
 export type NodeProvider = (record?:TreeRecord) => TreeRecord[] | Promise<TreeRecord[]>;
 
 export class Tree extends Table<TreeStore> {
-	constructor(protected nodeProvider: NodeProvider, columns = [new TreeColumn("text")]) {
+	constructor(protected nodeProvider: NodeProvider, columns:TableColumn[] = [new TreeColumn("text")]) {
 		super(new TreeStore(), columns);
 
 		this.headers = columns.length > 1;
@@ -85,6 +85,7 @@ export class Tree extends Table<TreeStore> {
 	public async reload() {
 		const root = await this.nodeProvider(undefined);
 		this.store.loadData(root, false);
+		return root;
 	}
 
 	protected renderRow(record: any, storeIndex: number): HTMLElement {
@@ -209,4 +210,4 @@ export class Tree extends Table<TreeStore> {
 	}
 }
 
-export const tree = (config: Config<Tree, TreeEventMap<Tree>> & {nodeProvider: NodeProvider}) => createComponent(new Tree(config.nodeProvider), config);
+export const tree = (config: Config<Tree, TreeEventMap<Tree>> & {nodeProvider: NodeProvider}) => createComponent(new Tree(config.nodeProvider, config.columns ?? [new TreeColumn("text")]), config);
