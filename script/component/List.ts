@@ -300,8 +300,6 @@ export class List<StoreType extends Store = Store> extends Component implements 
 		sortable.on("dragend", (sortable1, ev, dragData1) => {
 			delete dragData1.dataSet.selectedRowIndexes;
 		})
-
-		//sortable.on("")
 	}
 
 	protected onKeyDown(e: KeyboardEvent) {

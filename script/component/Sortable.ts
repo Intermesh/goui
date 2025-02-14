@@ -2,7 +2,6 @@ import {Listener, Observable, ObservableEventMap, ObservableListenerOpts} from "
 import {comp, Component} from "./Component.js";
 import {root} from "./Root.js";
 
-
 type SortableDragEvent = DragEvent & {
 	target: HTMLElement,
 
@@ -93,7 +92,6 @@ const dragData: DragData = {
 	dataSet: {}
 }
 
-
 /**
  * Enables sorting of child elements inside a container
  */
@@ -120,7 +118,6 @@ export class Sortable<Type extends Component> extends Observable {
 	 */
 	public updateDom = false;
 
-
 	private _gap: number|undefined;
 
 	private static _dropPin: Component | undefined;
@@ -138,7 +135,6 @@ export class Sortable<Type extends Component> extends Observable {
 		return Sortable._dropPin;
 	}
 
-
 	private static _dragImg: Component | undefined;
 
 	private static getDragImg() {
@@ -152,7 +148,6 @@ export class Sortable<Type extends Component> extends Observable {
 		}
 		return Sortable._dragImg;
 	}
-
 
 	/**
 	 * Find the index of the item in the list of sortables
@@ -171,7 +166,6 @@ export class Sortable<Type extends Component> extends Observable {
 
 		return index;
 	}
-
 
 	/**
 	 * Constructor
@@ -308,13 +302,7 @@ export class Sortable<Type extends Component> extends Observable {
 	}
 
 	private dropAllowed() {
-
 		if(dragData.overEl) {
-
-			if (dragData.dragSrc!.contains(dragData.overEl)) {
-				return false;
-			}
-
 			dragData.toIndex = this.findIndex(dragData.overEl);
 			if (dragData.pos == "after") {
 				dragData.toIndex++;
@@ -324,9 +312,7 @@ export class Sortable<Type extends Component> extends Observable {
 		}
 
 		return this.fire("dropallowed", dragData.toComponent, dragData.toIndex, dragData.fromIndex, dragData.pos == "on", dragData.fromComponent, dragData.dataSet);
-
 	}
-
 
 	/**
 	 * Calculates the gap between two rows to place the drop pin between them
@@ -390,15 +376,12 @@ export class Sortable<Type extends Component> extends Observable {
 
 					case "after":
 						dragData.overEl.parentNode!.insertBefore(dragData.dragSrc!, dragData.overEl.nextSibling);
-
 						break;
 				}
 			}
 		}
 
-
 		dragData.dragSrc = undefined;
-
 
 		this.fire("sort", dragData.toComponent, dragData.toIndex, dragData.fromIndex, dragData.pos == "on", dragData.fromComponent, dragData.dataSet);
 		this.fire("dragend", this, e, dragData);
