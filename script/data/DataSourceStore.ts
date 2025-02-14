@@ -70,7 +70,6 @@ export class DataSourceStore<
 	 * @param entity
 	 */
 	public buildRecord: RecordBuilder<dataSourceEntityType<DataSource>, RecordType> = async (entity) => <RecordType><unknown>entity;
-	// private bufferedLoad?: (...args:any[]) => Promise<StoreRecord[]>;
 
 	constructor(public dataSource:DataSource) {
 		super();
@@ -94,9 +93,7 @@ export class DataSourceStore<
 
 	bindComponent(comp: StoreComponent<this, RecordType>) {
 		super.bindComponent(comp);
-
 		this.listen();
-
 	}
 
 	private listen() {

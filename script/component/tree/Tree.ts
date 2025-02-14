@@ -64,11 +64,11 @@ export interface Tree extends Table<TreeStore> {
 	fire<K extends keyof TreeEventMap<this>>(eventName: K, ...args: Parameters<TreeEventMap<any>[K]>): boolean
 }
 
-export type NodeProvider = (record?:TreeRecord) => TreeRecord[] | Promise<TreeRecord[]>;
+export type NodeProvider = (record:TreeRecord | undefined, store: TreeStore) => TreeRecord[] | Promise<TreeRecord[]>;
 
 export class Tree extends Table<TreeStore> {
 	constructor(protected nodeProvider: NodeProvider, columns:TableColumn[] = [new TreeColumn("text")]) {
-		super(new TreeStore(), columns);
+		super(new TreeStore(nodeProvider), columns);
 
 		this.headers = columns.length > 1;
 
@@ -77,15 +77,8 @@ export class Tree extends Table<TreeStore> {
 		this.cls = "no-row-lines";
 
 		this.on("render", async () => {
-			const root = await this.nodeProvider(undefined);
-			this.store.loadData(root);
+			void this.store.load();
 		})
-	}
-
-	public async reload() {
-		const root = await this.nodeProvider(undefined);
-		this.store.loadData(root, false);
-		return root;
 	}
 
 	protected renderRow(record: any, storeIndex: number): HTMLElement {
@@ -125,14 +118,13 @@ export class Tree extends Table<TreeStore> {
 			return;
 		}
 
-		return this.populateChildren(record, storeIndex).then(() => {
 
-			this.expandedRecordCache[record.id] = true;
+		this.expandedRecordCache[record.id] = true;
 
-			this.store.expand(record);
-			node.classList.add("expanded");
-			this.fire("expand", this, record, storeIndex);
-		})
+		await this.store.expand(record);
+		node.classList.add("expanded");
+		this.fire("expand", this, record, storeIndex);
+
 	}
 
 	private collapse(record: any, node: Element, storeIndex: number) {
@@ -141,23 +133,12 @@ export class Tree extends Table<TreeStore> {
 			return;
 		}
 
-
-
 		delete this.expandedRecordCache[record.id];
 
 		this.store.collapse(record);
 		node.classList.remove("expanded");
 
 		this.fire("collapse", this, record, storeIndex);
-	}
-
-	private async populateChildren(record: TreeRecord, storeIndex: number) {
-		// we already loaded the store
-		if(record.children != undefined) {
-			return;
-		}
-
-		record.children = await this.nodeProvider(record);
 	}
 
 	/**

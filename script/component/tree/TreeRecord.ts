@@ -6,18 +6,13 @@ export type TreeRecord = {
 	 */
 	id?: string,
 
-	/**
-	 * Text of the node
-	 */
-	text: string
-
+	[key:string]:any,
 	/**
 	 * Child nodes. If not present then it can be populated on the "expand" event.
 	 */
 	children?: TreeRecord[],
 
 	expanded?: boolean
-
 
 	level?: number,
 
