@@ -101,15 +101,13 @@ export class Tree extends Table<TreeStore> {
 
 		this.setupExpandOnDragOver(row, record, storeIndex);
 
-		if(this.expandedRecordCache[record.id]) {
-			void this.expand(record, storeIndex,  row.getElementsByClassName("node")[0]);
-		}
+
 
 		return row;
 	}
 
 
-	private expandedRecordCache:Record<string, true> = {};
+
 
 	private async expand(record: any, storeIndex: number, node: Element) {
 
@@ -117,9 +115,6 @@ export class Tree extends Table<TreeStore> {
 		if(this.fire("beforeexpand", this,  record, storeIndex) === false) {
 			return;
 		}
-
-
-		this.expandedRecordCache[record.id] = true;
 
 		await this.store.expand(record);
 		node.classList.add("expanded");
@@ -133,7 +128,6 @@ export class Tree extends Table<TreeStore> {
 			return;
 		}
 
-		delete this.expandedRecordCache[record.id];
 
 		this.store.collapse(record);
 		node.classList.remove("expanded");
