@@ -186,7 +186,7 @@ export class HtmlField extends Field {
 						this.execCmd("foreColor", color || "#000000")
 					},
 					beforeshow: (menu) => {
-						(<ColorMenu>menu).value = (this.tbar!.findItem("foreColor")!.el.style.color || "");
+						(<ColorMenu>menu).value = (this.tbar!.findChild("foreColor")!.el.style.color || "");
 					}
 				}
 			}),
@@ -231,7 +231,7 @@ export class HtmlField extends Field {
 						this.execCmd("backColor", color || "#ffffff")
 					},
 					beforeshow: (menu) => {
-						(<ColorMenu>menu).value = (this.tbar!.findItem("backColor")!.el.style.color || "");
+						(<ColorMenu>menu).value = (this.tbar!.findChild("backColor")!.el.style.color || "");
 					}
 				}
 			}),
@@ -302,9 +302,9 @@ export class HtmlField extends Field {
 			const config = this.commands[cmd];
 
 			if (config.updateFn) {
-				config.updateFn.call(this, <Button>t.findItem(cmd)!);
+				config.updateFn.call(this, <Button>t.findChild(cmd)!);
 			} else {
-				t.findItem(cmd)!.el.classList.toggle("pressed", document.queryCommandState(cmd));
+				t.findChild(cmd)!.el.classList.toggle("pressed", document.queryCommandState(cmd));
 			}
 		}
 
@@ -317,9 +317,9 @@ export class HtmlField extends Field {
 		const t = this.tbar!, config = this.commands[cmd];
 		if (config) {
 			if (config.updateFn) {
-				config.updateFn.call(this, <Button>t.findItem(cmd)!);
+				config.updateFn.call(this, <Button>t.findChild(cmd)!);
 			} else {
-				t.findItem(cmd)!.el.classList.toggle("pressed", document.queryCommandState(cmd));
+				t.findChild(cmd)!.el.classList.toggle("pressed", document.queryCommandState(cmd));
 			}
 		}
 
@@ -350,7 +350,8 @@ export class HtmlField extends Field {
 		}
 
 		this.tbar = tbar({
-			cls: "frame html-field-toolbar"
+			cls: "frame html-field-toolbar",
+			overflowMenu: true
 		});
 
 		for (const cmd of this.toolbarItems) {
@@ -378,31 +379,11 @@ export class HtmlField extends Field {
 			}
 		}
 
-		root.items.add(this.tbar);
-
-
 		return this.tbar;
 	}
 
-	protected showToolbar() {
-		const rect = this.el.getBoundingClientRect();
-
-		//must be rendered before we can calc height
-		this.getToolbar().show();
-		const h = this.getToolbar().el.offsetHeight;
-		const style = this.getToolbar().el.style;
-		const maxX = Math.max(8, window.innerWidth - this.getToolbar().el.offsetWidth);
-
-		style.left = Math.min(maxX, rect.x + window.scrollX + 12) + "px";
-		style.top = (window.scrollY + Math.max(8, rect.y - h + 6) ) + "px";
-	}
-
-	protected hideToolbar() {
-		this.getToolbar().hide();
-	}
-
-
 	protected createControl(): undefined | HTMLElement {
+
 
 		const el = this.el;
 
@@ -434,13 +415,12 @@ export class HtmlField extends Field {
 
 		this.editor.addEventListener("focus", () => {
 			document.addEventListener("selectionchange", selectionChangeFn);
-			this.showToolbar();
 		});
 
 		this.editor.addEventListener("blur", (e) => {
 			document.removeEventListener("selectionchange", selectionChangeFn);
 			if (!(e.relatedTarget instanceof HTMLElement) || !this.getToolbar().el.contains(e.relatedTarget)) {
-				this.hideToolbar();
+
 			} else {
 				this.editor!.focus();
 			}
@@ -465,6 +445,11 @@ export class HtmlField extends Field {
 
 
 		return this.editor;
+	}
+
+	protected internalRender(): HTMLElement {
+		this.getToolbar().render(this.wrap);
+		return super.internalRender();
 	}
 
 	// private isChildOfEditor(el:Node): boolean {

@@ -59,8 +59,7 @@
 
 	&.pressed {
 		box-shadow: inset -2px -2px -2 config.$colorOutline; // underline
-		background-color: config.$colorMain;
-		color: white;
+		background-color: config.$colorSelectedRow;
 		&:hover {
 			filter: brightness(120%);
 		}

@@ -8,9 +8,10 @@ import {comp, Component, ComponentEventMap, createComponent, hr} from "../Compon
 import {root} from "../Root.js";
 import {Toolbar} from "../Toolbar.js";
 import {Config, Listener, ObservableListenerOpts} from "../Observable.js";
+import {AbstractMenu} from "../AbstractMenu";
 
 
-export interface Menu extends Toolbar {
+export interface Menu extends AbstractMenu {
 	on<K extends keyof ComponentEventMap<this>, L extends Listener>(eventName: K, listener: Partial<ComponentEventMap<this>>[K], options?: ObservableListenerOpts): L
 	un<K extends keyof ComponentEventMap<this>>(eventName: K, listener: Partial<ComponentEventMap<this>>[K]): boolean
 	fire<K extends keyof ComponentEventMap<this>>(eventName: K, ...args: Parameters<ComponentEventMap<any>[K]>): boolean
@@ -87,7 +88,7 @@ export interface Menu extends Toolbar {
  * 	});
  * ```
  */
-export class Menu extends Toolbar {
+export class Menu extends AbstractMenu {
 	private _parentMenu?: Menu | Toolbar | boolean;
 
 	constructor() {

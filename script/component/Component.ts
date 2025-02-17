@@ -450,16 +450,35 @@ export class Component extends Observable {
 	public render(parentEl?: Node, insertBefore?: Node) {
 
 		if (this._rendered) {
-			throw new Error("Already rendered");
+			//throw new Error("Already rendered");
+
+			//move to new parent
+			this.addToDom(parentEl, insertBefore);
+			return this.el;
 		}
 
 		this.fire("beforerender", this);
+		this.addToDom(parentEl, insertBefore);
 
+		// It actually makes more sense to me to render before inserting to the DOM. Perhaps
+		// that also performs better but there is a problem with rendering ExtJS components inside GOUI
+		// components if we do that. ExtJS relies on the elements alread being in the DOM tree.
+		// For now we have to do it afterwards.
+		this.internalRender();
+
+		this._rendered = true;
+
+		this.fire("render", this);
+
+		return this.el;
+	}
+
+	private addToDom(parentEl: Node | undefined, insertBefore: Node | undefined) {
 		// If parent is already rendered then we must determine the DOM index of this child item
 		// if parent is rendering then we can simply add it
 		if (!parentEl) {
 
-			if(this.renderTo) {
+			if (this.renderTo) {
 				parentEl = this.renderTo;
 			} else {
 
@@ -476,18 +495,6 @@ export class Component extends Observable {
 		} else {
 			parentEl.insertBefore(this.el, insertBefore);
 		}
-
-		// It actually makes more sense to me to render before inserting to the DOM. Perhaps
-		// that also performs better but there is a problem with rendering ExtJS components inside GOUI
-		// components if we do that. ExtJS relies on the elements alread being in the DOM tree.
-		// For now we have to do it afterwards.
-		this.internalRender();
-
-		this._rendered = true;
-
-		this.fire("render", this);
-
-		return this.el;
 	}
 
 	/**

@@ -226,26 +226,15 @@ export class Button extends Component {
 		return this._menu;
 	}
 
-	// public showMenu() {
-	//
-	// 	if(!this._menu) {
-	// 		return;
-	// 	}
-	//
-	// 	if(!this._menu.hidden) {
-	// 		return;
-	// 	}
-	//
-	// 	// noinspection PointlessBooleanExpressionJS
-	// 	if (this.fire("beforeshowmenu", this, this._menu) === false) {
-	// 		return;
-	// 	}
-	//
-	//
-	// 	this._menu.show();
-	//
-	// 	this.fire("showmenu", this, this._menu!);
-	// }
+	public cascade(fn: (comp: Component) => (boolean | void)): this {
+		super.cascade(fn);
+
+		if(this.menu) {
+			this.menu.cascade(fn);
+		}
+
+		return this;
+	}
 
 	protected internalRemove() {
 		if (this.menu) {

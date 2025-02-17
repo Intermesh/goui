@@ -157,6 +157,33 @@ export class Collection<CollectionItem> extends Observable implements Iterable<C
 	}
 
 	/**
+	 * Pop the last item off the collection
+	 */
+	public pop() {
+		const lastIndex = this.count() - 1;
+		if(lastIndex == -1) {
+			return undefined;
+		} else {
+			const last = this.get(lastIndex);
+			this.removeAt(lastIndex);
+			return last;
+		}
+	}
+
+	/**
+	 * Shift the first item off the collection
+	 */
+	public shift() {
+		const first = this.get(0);
+		if(first === undefined) {
+			return undefined;
+		} else {
+			this.removeAt(0);
+			return first;
+		}
+	}
+
+	/**
 	 * Find the index of an item. Returns -1 if not found.
 	 * @param item
 	 */

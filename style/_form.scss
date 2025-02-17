@@ -451,10 +451,10 @@ $formFieldBorderRadius: util.dp(10);
 			padding: 0 !important;
 			border-radius: 0 $formFieldBorderRadius $formFieldBorderRadius 0;
 
-			border-left: config.$borderWidth solid config.$colorOutline;// !important; //importants for Window rule for border top
-			border-top: 0 !important;
-			border-right: 0 !important;
-			border-bottom: 0 !important;
+			border-left: config.$borderWidth solid config.$colorOutline;
+			border-top: 0;
+			border-right: 0;
+			border-bottom: 0;
 
 			min-height: auto;
 
@@ -465,8 +465,12 @@ $formFieldBorderRadius: util.dp(10);
 				padding: util.dp(6);
 			}
 
+
+
 			.goui-button {
-				color: config.$colorTextSecondary;
+				&:not(.pressed) {
+					color: config.$colorTextSecondary;
+				}
 				border-radius: 0;
 				i.icon {
 					font-size: util.dp(20);
@@ -1038,6 +1042,25 @@ $formFieldBorderRadius: util.dp(10);
 		}
 	}
 
+
+
+	div.label {
+		top: 0;
+		left: util.dp(16);
+		font-size: util.sp(13);
+	}
+
+	.wrap {
+		display:block;
+
+		.goui.goui-toolbar.html-field-toolbar {
+			border: none;
+			border-bottom: config.$borderWidth solid config.$colorBorder;
+			border-left: none;
+			border-radius: 0;
+		}
+	}
+
 	div.editor {
 		@extend %input;
 		@extend .normalize;
@@ -1066,13 +1089,7 @@ $formFieldBorderRadius: util.dp(10);
 	}
 }
 
-.goui.goui-toolbar.html-field-toolbar {
-	position: absolute;
-	z-index: config.$zIndexMenu;
-	flex-wrap: wrap;
-	max-width: 100%;
-	@extend .z8;
-}
+
 
 form {
 	// for loading mask
