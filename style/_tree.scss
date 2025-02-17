@@ -13,6 +13,7 @@ table.tree {
 		align-content: center;
 		align-items: center;
 
+
 		.dragging & { // https://stackoverflow.com/questions/7110353/html5-dragleave-fired-when-hovering-a-child-element
 			pointer-events: none;
 		}
@@ -35,7 +36,6 @@ table.tree {
 			flex-shrink: 0;
 			width: util.dp(24);
 			height: util.dp(24);
-
 			&:before {
 				@extend %icon;
 				content: "arrow_right";
@@ -43,6 +43,7 @@ table.tree {
 		}
 
 		.indent {
+			flex-shrink: 0;
 			display:inline-block;
 			width: util.dp(24);
 		}
