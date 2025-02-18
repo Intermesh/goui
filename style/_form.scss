@@ -584,6 +584,15 @@ $formFieldBorderRadius: util.dp(10);
 	&.number {
 		input {
 			text-align: right;
+			&::-webkit-outer-spin-button,
+			&::-webkit-inner-spin-button {
+				/* display: none; <- Crashes Chrome on hover */
+				-webkit-appearance: none;
+				margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+			}
+
+			-moz-appearance:textfield; /* Firefox */
+
 		}
 	}
 

@@ -31,6 +31,7 @@ export class NumberField extends InputField {
 		super();
 
 		this.type = "number";
+
 	}
 
 	protected validate() {
