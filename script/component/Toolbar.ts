@@ -7,7 +7,7 @@
 import {comp, Component, ComponentEventMap, hr} from "./Component.js";
 import {btn, Button} from "./Button.js";
 import {Config, Listener, ObservableListenerOpts} from "./Observable.js";
-import {menu, Menu} from "./menu/index.js";
+import {menu} from "./menu/index.js";
 import {AbstractMenu} from "./AbstractMenu";
 import {FunctionUtil} from "../util";
 
@@ -41,31 +41,31 @@ export interface Toolbar extends Component {
  */
 export class Toolbar extends AbstractMenu {
 
+	/**
+	 * Set to true if the toolbar might be larger than its container. In that case the buttons will overflow in to a menu
+	 * button.
+	 */
+	public overflowMenu = false;
+
 	protected baseCls = "goui-toolbar"
 
 	private overflowMenuBtn?: Button;
 
-	public overflowMenu = false;
-
-
-
+	private overflowSpacer?: Component;
+	private gap?: number;
 
 	render(parentEl?: Node, insertBefore?: Node): HTMLElement {
 		if(this.overflowMenu) {
 			this.initOverFlowMenu();
 		}
 		const el = super.render(parentEl, insertBefore);
-		if(this.overflowMenu) {
-			//settimeout needed for browser to render first
-			setTimeout(() => {
-				this.fillOverFlowMenu();
-			})
 
-			// const ro = new ResizeObserver(FunctionUtil.onRepaint( () => {
-			// 	this.fillOverFlowMenu();
-			// }));
-			//
-			// ro.observe(this.el);
+		if(this.overflowMenu) {
+			const ro = new ResizeObserver( FunctionUtil.onRepaint((entries) => {
+				this.syncOverFlowMenu();
+			}));
+
+			ro.observe(this.el);
 
 		}
 
@@ -79,31 +79,86 @@ export class Toolbar extends AbstractMenu {
 			menu: menu()
 		});
 
+		this.overflowSpacer = comp({flex: 1, style:{padding:"0", margin:"0"}});
+		this.items.add(this.overflowSpacer, this.overflowMenuBtn);
 	}
 
-	private fillOverFlowMenu() {
+	private moveLastToMenu() {
+		const last = this.items.get(this.items.count() - 3);
 
-
-		const move = () => {
-			const last = this.items.pop();
-
-			if(!last)	{
-				return;
-			}
-			if(!last.text && last.title) {
-				last.text = last.title;
-			}
-
-			this.overflowMenuBtn!.menu!.items.insert(0, last);
+		if(!last)	{
+			return false;
 		}
 
-		while(this.el.scrollWidth > this.el.offsetWidth) {
-			move()
-		}
-		move();
+		// cache the width the item takes in the toolbar as it might be different in the menu,
+		// take a minimum of 40 px as a quick fix for separators. The margin of the separator is not part of the with.
+		last.dataSet.tbWidth = Math.max(last.el.getBoundingClientRect().width + this.gap!, 40);
+		last.dataSet.tbText = last.text;
 
-		const spacer = comp({flex: 1});
-		this.items.add(spacer, this.overflowMenuBtn!);
+		if(!last.text && last.title) {
+			last.text = last.title;
+		}
+
+		this.overflowMenuBtn!.menu!.items.insert(0, last);
+
+		return true;
+	}
+
+	private moveFirstToToolbar()  {
+		const first = this.overflowMenuBtn!.menu!.items.first();
+
+		if(!first)	{
+			return false;
+		}
+
+		first.text = first.dataSet.tbText;
+		//insert before spacer
+		this.items.insert(this.items.count() - 2, first);
+		return true;
+	}
+
+	private firstToolBarItemWidth() {
+		const first = this.overflowMenuBtn!.menu!.items.first();
+		if(!first) {
+			return 0;
+		}
+
+		return first.dataSet.tbWidth;
+	}
+
+
+	private syncOverFlowMenu() {
+
+		if(!this.overflowMenuBtn) {
+			return;
+		}
+
+		if(!this.gap) {
+			this.gap = parseFloat(window.getComputedStyle(this.el)["gap"]);
+		}
+
+		const moreBtnWidth = this.overflowMenuBtn.el.getBoundingClientRect().width + this.gap;
+		this.overflowMenuBtn.hide();
+
+		if(this.overflowSpacer!.el.getBoundingClientRect().width < moreBtnWidth) {
+			while (this.overflowSpacer!.el.getBoundingClientRect().width < moreBtnWidth) {
+				if(!this.moveLastToMenu()) {
+					break;
+				}
+			}
+
+		} else {
+			// add buttons back to the toolbar if they fit
+			while(this.overflowSpacer!.el.getBoundingClientRect().width > (moreBtnWidth + this.firstToolBarItemWidth())) {
+				if(!this.moveFirstToToolbar()) {
+					break;
+				}
+			}
+		}
+
+		if(this.overflowMenuBtn.menu!.items.count()) {
+			this.overflowMenuBtn.show();
+		}
 	}
 }
 

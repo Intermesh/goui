@@ -98,8 +98,15 @@ menu.goui-dropdown {
 		}
 
 		hr {
+
 			margin: util.dp(12) util.dp(12); //same as button
 			color: config.$colorDivider;
+		}
+
+		&:first-child {
+			hr {
+				display: none;
+			}
 		}
 	}
 

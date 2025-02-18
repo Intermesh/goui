@@ -221,6 +221,7 @@
 	> hr {
 		height: util.dp(24);
 		border-top: 0;
+		padding: 0;
 		border-right: config.$borderWidth solid currentColor;
 		margin: 0 util.dp(8);
 	}
