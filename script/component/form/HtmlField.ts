@@ -780,11 +780,15 @@ class ImageResizer {
 	}
 
 	private onKeyDown(ev: KeyboardEvent) {
-		this.unwrap();
 		if(ev.key == "Delete" || ev.key == "Backspace") {
-			this.img!.remove();
-			ev.preventDefault();
+			if(this.img && this.wrapper?.parentElement) {
+				this.unwrap();
+				this.img!.remove();
+				ev.preventDefault();
+				return;
+			}
 		}
+		this.unwrap();
 	}
 }
 

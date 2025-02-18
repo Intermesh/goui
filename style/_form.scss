@@ -1052,7 +1052,7 @@ $formFieldBorderRadius: util.dp(10);
 	}
 
 	.wrap {
-		display:block;
+		flex-flow: column nowrap;
 
 		.goui.goui-toolbar.html-field-toolbar {
 			border: none;
