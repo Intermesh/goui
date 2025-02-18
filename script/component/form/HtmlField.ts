@@ -19,6 +19,8 @@ import {root} from "../Root.js";
 import {MaterialIcon} from "../MaterialIcon.js";
 import {Window} from "../Window.js";
 import {t} from "../../Translate.js";
+import {fieldset} from "./Fieldset";
+import {textarea, TextAreaField} from "./TextareaField";
 
 
 /**
@@ -82,7 +84,8 @@ type ToolbarItems = "-" | "bold" | "italic" | "underline" | "strikeThrough" |
 	"indent" |
 	"outdent" |
 	"image" |
-	"createLink"
+	"createLink" |
+	"sourceEdit"
 
 
 /**
@@ -168,7 +171,10 @@ export class HtmlField extends Field {
 		"outdent",
 		"-",
 		"image",
-		"createLink"
+		"createLink",
+		"-",
+		"sourceEdit"
+
 	];
 
 	private commands: Record<string, CmdConfig> = {
@@ -252,6 +258,15 @@ export class HtmlField extends Field {
 		insertUnorderedList: {icon: 'format_list_bulleted', title: "Bullet list"},
 		indent: {icon: 'format_indent_increase', title: "Indent"},
 		outdent: {icon: 'format_indent_decrease', title: "Outdent"},
+
+		sourceEdit: {
+			icon: "code",
+			title: t("Edit source"),
+			applyFn: () => {
+				const w = new SourceEditWindow(this);
+				w.show();
+			}
+		},
 		createLink: {
 			icon: "link",
 			title: "Create link",
@@ -638,6 +653,43 @@ export class HtmlField extends Field {
 
 	}
 }
+
+
+class SourceEditWindow extends Window {
+	private textArea: TextAreaField;
+	constructor(private field:HtmlField) {
+		super();
+
+		this.title = t("Source edit");
+		this.modal = true;
+
+		this.width = 1000;
+		this.height = 800;
+
+		this.items.add(fieldset({flex: 1, cls: "vbox"},
+
+			this.textArea = textarea({
+				flex: 1,
+				name: "source",
+				value: field.value
+			}),
+
+			tbar({},
+				"->",
+				btn({
+					text: t("Save"),
+					cls: "filled primary",
+					handler: () => {
+						this.field.value = this.textArea.value + "";
+						this.close();
+					}
+				})
+				)
+
+			))
+	}
+}
+
 
 
 /**

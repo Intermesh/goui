@@ -468,10 +468,11 @@ $formFieldBorderRadius: util.dp(10);
 
 
 			.goui-button {
+				border-radius: 0;
 				&:not(.pressed) {
 					color: config.$colorTextSecondary;
 				}
-				border-radius: 0;
+
 				i.icon {
 					font-size: util.dp(20);
 				}
