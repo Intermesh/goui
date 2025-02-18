@@ -250,6 +250,11 @@ export class Component extends Observable {
 
 		this.items.on("add", (_collection, item, index) => {
 
+			// check if moved from another parent
+			if(item.parent) {
+				item.detach();
+			}
+
 			item.parent = this;
 			//@ts-ignore hack for ext comps. They have a supr() method
 			if(!item.supr) {
@@ -512,8 +517,9 @@ export class Component extends Observable {
 		let refItem: Node | undefined = undefined;
 		//find nearest rendered item
 		for (let i = index + 1, l = this.parent!.items.count(); i < l; i++) {
-			if (this.parent!.items.get(i)!.rendered) {
-				refItem = this.parent!.items.get(i)!.el;
+			const beforeItem = this.parent!.items.get(i)!;
+			if (beforeItem.rendered) {
+				refItem = beforeItem.el;
 				break;
 			}
 		}
@@ -522,7 +528,7 @@ export class Component extends Observable {
 	}
 
 	/**
-	 * Remove component from the component tree and destroy it's dom.
+	 * Remove component from the component tree
 	 */
 	public remove() {
 		if (!this.fire("beforeremove", this)) {
@@ -538,7 +544,10 @@ export class Component extends Observable {
 
 	protected internalRemove() {
 		this.items.clear();
+		this.detach();
+	}
 
+	protected detach() {
 		// remove this item from parent the Component
 		if (this.parent) {
 
