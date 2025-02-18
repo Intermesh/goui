@@ -322,7 +322,7 @@ export class Window extends DraggableComponent {
 
 		for(const name in dragHandles) {
 			draggable({
-				cls: "resizer "+name,
+				cls: "resizer " + name,
 				setPosition: false,
 				listeners: {dragstart,drag: dragHandles[name],drop}
 			}).render(this.el);

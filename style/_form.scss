@@ -1081,6 +1081,14 @@ $formFieldBorderRadius: util.dp(10);
 			transition: all 200ms linear;
 		}
 
+
+		.img-wrapper {
+			border: config.$borderWidth dashed config.$colorPrimary;
+			border-radius: config.$borderRadius;
+			position:relative;
+			display: inline-block;
+		}
+
 	}
 
 	&:focus-within {

@@ -21,6 +21,7 @@ import {Window} from "../Window.js";
 import {t} from "../../Translate.js";
 import {fieldset} from "./Fieldset";
 import {textarea, TextAreaField} from "./TextareaField";
+import {draggable} from "../DraggableComponent";
 
 
 /**
@@ -104,6 +105,7 @@ export class HtmlField extends Field {
 	private editor: HTMLDivElement | undefined;
 
 	private tbar?: Toolbar;
+	private imageResizer: ImageResizer;
 
 	constructor() {
 		super("div");
@@ -112,6 +114,9 @@ export class HtmlField extends Field {
 		// avoid inline css for Content-Security-Policys
 		document.execCommand("useCSS", false, "true");
 		document.execCommand("styleWithCSS", false, "false");
+
+
+		this.imageResizer = new ImageResizer(this);
 
 	}
 
@@ -458,7 +463,6 @@ export class HtmlField extends Field {
 			this.onPaste(ev);
 		});
 
-
 		return this.editor;
 	}
 
@@ -687,6 +691,100 @@ class SourceEditWindow extends Window {
 				)
 
 			))
+	}
+}
+
+
+class ImageResizer {
+	private wrapper?: HTMLDivElement;
+	private img?:HTMLImageElement
+	constructor(private field:HtmlField) {
+		field.el.addEventListener("mousedown", ev => this.onMouseDown(ev as MouseEvent & {target:HTMLElement}));
+		field.el.addEventListener("keydown", ev => this.onKeyDown(ev));
+	}
+
+	private onMouseDown(ev:MouseEvent & {target:HTMLElement}) {
+		if (ev.target && ev.target.tagName === 'IMG' && !ev.target.closest('.img-wrapper')) {
+			ev.preventDefault();
+
+			this.img = ev.target as HTMLImageElement;
+			this.wrap()
+			return;
+		}
+
+		const closestWrapper = ev.target.closest('.img-wrapper');
+		if (!closestWrapper) {
+			this.unwrap();
+		}
+	}
+
+	private wrap() {
+		if(!this.img) {
+			return;
+		}
+		if(!this.wrapper) {
+			this.wrapper = document.createElement("div");
+			this.wrapper.classList.add("img-wrapper");
+
+			let startWidth = 0, startHeight = 0;
+
+			['left', 'right', 'top', 'bottom'].forEach((pos) => {
+				draggable({
+					cls: "resizer " + pos,
+					setPosition: false,
+					listeners: {
+						dragstart: (comp1, dragData, e) => {
+							startWidth = this.wrapper!.offsetWidth;
+							startHeight = this.wrapper!.offsetHeight;
+						},
+						drag: (comp1, dragData, e) => {
+
+							if(pos == "left" || pos == "right") {
+								let deltaX = dragData.x - dragData.startX;
+								if (pos == "left") {
+									deltaX = 0 - deltaX;
+								}
+								const newWidth = Math.max(50, startWidth + deltaX),
+									newHeight = Math.floor(newWidth * startHeight / startWidth);
+								this.img!.style.width = newWidth + "px";
+								this.img!.style.height = newHeight + "px";
+							} else {
+								let deltaY = dragData.y - dragData.startY;
+								if (pos == "top") {
+									deltaY = 0 - deltaY;
+								}
+								const newHeight = Math.max(50, startHeight + deltaY),
+									newWidth = Math.floor(newHeight * startWidth / startHeight);
+								this.img!.style.width = newWidth + "px";
+								this.img!.style.height = newHeight + "px";
+							}
+						}
+					}
+				}).render(this.wrapper);
+			})
+		}
+
+		if(!this.img.parentElement) {
+			return;
+		}
+		this.img.parentElement.insertBefore(this.wrapper, this.img);
+		this.wrapper.appendChild(this.img);
+	}
+
+	private unwrap() {
+		if(!this.wrapper || !this.wrapper.parentElement) {
+			return;
+		}
+		this.wrapper.parentElement.insertBefore(this.img!, this.wrapper);
+		this.wrapper.remove();
+	}
+
+	private onKeyDown(ev: KeyboardEvent) {
+		this.unwrap();
+		if(ev.key == "Delete" || ev.key == "Backspace") {
+			this.img!.remove();
+			ev.preventDefault();
+		}
 	}
 }
 
