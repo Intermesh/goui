@@ -1223,11 +1223,7 @@ div.color-dot {
 			}
 
 			&.selected {
-				background-color: config.$colorSelectedRow;
-				color: white;
-				.goui-button {
-					color: white;
-				}
+				background-color: config.$colorFocus;
 			}
 
 			.goui-button {
