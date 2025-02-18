@@ -189,7 +189,7 @@ export class Menu extends AbstractMenu {
 			return super.renderItem(item);
 		}
 
-		const insertBefore = this.getInsertBefore();
+		const insertBefore = this.getInsertBeforeForMenuItem(item);
 
 		if (!insertBefore) {
 			this.itemContainerEl.appendChild(this.wrapLI(item));
@@ -198,13 +198,38 @@ export class Menu extends AbstractMenu {
 		}
 	}
 
+	/**
+	 * Finds the DOM node in the parent's children to insert before when rendering a child component
+	 *
+	 * @protected
+	 */
+	protected getInsertBeforeForMenuItem(item: Component) {
+		if (!this.rendered) {
+			return undefined;
+		}
+
+		const index = this.items.indexOf(item);
+
+		let refItem: HTMLElement | undefined = undefined;
+		//find nearest rendered item
+		for (let i = index + 1, l = this.items.count(); i < l; i++) {
+			const beforeItem = this.items.get(i)!;
+			if (beforeItem.rendered) {
+				refItem = beforeItem.el.parentElement ?? undefined;
+				break;
+			}
+		}
+
+		return refItem;
+	}
+
 	private wrapLI(item: Component) {
 
 		const li = document.createElement("li");
 
 		item.render(li);
 
-		//cleanup li when item is removed
+		// cleanup li when item is removed
 		item.on("remove", () => {
 			li.remove();
 		});
