@@ -75,6 +75,7 @@ export class AutocompleteChips<T extends List = List> extends ChipsField {
 		if(!this.list.rowSelection!.multiSelect) {
 
 			this.list.on("rowclick", () => {
+				this.addSelected();
 				this.menu.hide();
 			});
 
