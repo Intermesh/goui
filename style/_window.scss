@@ -51,9 +51,6 @@
 		border-radius: util.dp(12);
 	}
 
-	
-
-
 	&.modal {
 		@extend .z24;
 		border: 0;
@@ -68,13 +65,17 @@
 	&.collapsed {
 		height: util.dp(74) !important;
 		min-height: 0;
-		.collapse-btn {
-			i:after {
-				content: "expand_less";
+		.item-container {
+
+			.collapse-btn {
+				i:after {
+					content: "expand_less";
+				}
 			}
-		}
-		>*:not(.header) {
-			display: none;
+
+			> *:not(.header) {
+				display: none;
+			}
 		}
 	}
 

@@ -410,8 +410,6 @@ export class Window extends DraggableComponent {
 
 			this.focussedBeforeOpen = document.activeElement || undefined;
 
-
-
 			if (!this.rendered) {
 
 				root.items.add(this);
