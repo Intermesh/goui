@@ -111,9 +111,10 @@ export class HtmlField extends Field {
 		super("div");
 		this.value = "";
 
-		// avoid inline css for Content-Security-Policys
 		document.execCommand("useCSS", false, "true");
 		document.execCommand("styleWithCSS", false, "false");
+		document.execCommand("AutoUrlDetect", false, "true");
+
 
 
 		this.imageResizer = new ImageResizer(this);
@@ -513,8 +514,9 @@ export class HtmlField extends Field {
 		const sel = window.getSelection();
 		const range = sel!.getRangeAt(0);
 		const clone = range.cloneRange();
-		clone.setStart(range.startContainer, range.startOffset);
-		clone.setEnd(range.startContainer, range.startOffset + count);
+
+		clone.setStart(range.startContainer, range.startOffset - count);
+		clone.setEnd(range.startContainer, range.startOffset);
 		clone.deleteContents();
 	}
 
@@ -524,12 +526,25 @@ export class HtmlField extends Field {
 		this.clearInvalid();
 
 		//track first 3 chars of sentence for auto lists below
-		if (ev.key == "Enter" || ev.key == "Backspace") {
+		if (ev.key == "Enter") {
 			this.lineIndex = 0;
 			this.lineSequence = "";
-		} else if (this.lineIndex < 3 && ev.key.length == 1) {
-			this.lineIndex++;
-			this.lineSequence += ev.key;
+
+		} else if (this.lineIndex < 5) {
+
+			if(ev.key == "Backspace") {
+				if (this.lineIndex > 0) {
+					this.lineIndex--;
+					this.lineSequence = this.lineSequence.substring(0, this.lineSequence.length - 1);
+				}
+			} else if(ev.key.length == 1) {
+				this.lineIndex++;
+				this.lineSequence += ev.key;
+			} else if(ev.key == "Tab") {
+				// for auto list code below 1. becomes list
+				this.lineIndex++;
+				this.lineSequence += " ";
+			}
 		}
 
 		if (
@@ -540,25 +555,32 @@ export class HtmlField extends Field {
 			//Firefox wants two??
 			this.execCmd('InsertHtml', browser.isFirefox() ? '<br />' : '<br /><br />');
 			this.focus();
-		} else if (ev.key == "Tab") {
-			ev.preventDefault();
-			if (document.queryCommandState('insertorderedlist') || document.queryCommandState('insertunorderedlist')) {
-				this.execCmd(ev.shiftKey ? 'outdent' : 'indent');
-			} else {
-				this.execCmd('InsertText', '\t');
-			}
-			this.focus();
-		} else if (ev.key == " ") {
+		} if (ev.key == " " || ev.key == "Tab") {
 
 			// Auto lists
 			if (this.lineSequence == "1. ") {
-				this.execCmd("insertOrderedList");
 				HtmlField.removeCharsFromCursorPos(2);
+				this.execCmd("insertOrderedList");
+
+				this.lineIndex = 0;
+				this.lineSequence = "";
+
 				ev.preventDefault();
 			} else if (this.lineSequence == "- ") {
-				this.execCmd("insertUnorderedList");
 				HtmlField.removeCharsFromCursorPos(1);
+				this.execCmd("insertUnorderedList");
+
+				this.lineIndex = 0;
+				this.lineSequence = "";
 				ev.preventDefault();
+			} else if(ev.key == "Tab") {
+				ev.preventDefault();
+				if (document.queryCommandState('insertorderedlist') || document.queryCommandState('insertunorderedlist')) {
+					this.execCmd(ev.shiftKey ? 'outdent' : 'indent');
+				} else {
+					this.execCmd('InsertText', '\t');
+				}
+				this.focus();
 			}
 
 		} else if (browser.isMac()) {

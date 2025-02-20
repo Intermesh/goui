@@ -11,7 +11,8 @@
 		padding: 0;
 		box-sizing: content-box;
 		overflow: visible;
-		text-align: left;
+		// is this needed? In FF the editor adds align=center and that doesn't work with this css
+		//text-align: left;
 		overflow-wrap: break-word;
 		&:focus {
 			outline: none; //remove safari outline
