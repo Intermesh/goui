@@ -582,7 +582,7 @@ $formFieldBorderRadius: util.dp(10);
 	}
 
 	&.number {
-		input {
+		input.control {
 			text-align: right;
 			&::-webkit-outer-spin-button,
 			&::-webkit-inner-spin-button {
