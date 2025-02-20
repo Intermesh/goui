@@ -8,7 +8,7 @@ table.tree {
 		position: relative;
 		border-top: 1px solid transparent;
 		border-bottom: 1px solid transparent;
-		padding: util.dp(4) 0;
+		//padding: util.dp(4) 0;
 		display: flex;
 		align-content: center;
 		align-items: center;
@@ -26,6 +26,9 @@ table.tree {
 			overflow: hidden;
 			text-overflow: ellipsis;
 			text-decoration: none;
+			display: block;
+			flex: 1;
+			height: 100%;
 		}
 
 		i {
@@ -65,134 +68,3 @@ table.tree {
 
 }
 
-
-
-ul.goui-tree {
-	display:block;
-	list-style-type: none;
-	margin: 0;
-	padding: 0;
-
-	&.no-icons {
-		.node i.icon {
-			display:none;
-		}
-	}
-
-
-	.wrap {
-		overflow: hidden;
-	}
-
-	ul {
-		height: 0; // height will be set by JS in Tree component
-
-		transition: transform .2s cubic-bezier(0.65, 0, 0.35, 1),height .2s cubic-bezier(0.65, 0, 0.35, 1);
-		transform: translateY(-100%);
-
-		> li{
-			//>.node {
-			padding-left: util.dp(24);
-			//}
-		}
-	}
-
-
-	li {
-
-		&.selected {
-			> .node {
-				background-color: config.$colorSelectedRow;
-				outline: none;
-				color: config.$colorSelectedRowText;
-
-				a, i.icon {
-					color: inherit;
-				}
-			}
-		}
-
-		margin-top: -1px;
-		cursor: pointer;
-
-		.goui-form-field {
-			margin: 0;
-			.control {
-				padding: 0;
-			}
-		}
-
-
-		&.drag-over {
-
-			&.on {
-				> .node {
-					background-color: config.$colorHover;
-				}
-			}
-
-		}
-
-		> .node {
-			position: relative;
-			border-top: 1px solid transparent;
-			border-bottom: 1px solid transparent;
-			padding: util.dp(4) 0;
-			display: flex;
-			align-content: center;
-			align-items: center;
-
-			.dragging & { // https://stackoverflow.com/questions/7110353/html5-dragleave-fired-when-hovering-a-child-element
-				pointer-events: none;
-			}
-
-			a, label {
-				color: config.$colorText;
-				margin-left: util.dp(8);
-				cursor: pointer;
-				white-space: nowrap;
-				overflow: hidden;
-				text-overflow: ellipsis;
-				text-decoration: none;
-			}
-
-			i {
-				flex-shrink: 0;
-			}
-
-			.caret {
-				flex-shrink: 0;
-				width: util.dp(24);
-				height: util.dp(24);
-				&:before {
-					@extend %icon;
-					content: "arrow_right";
-				}
-			}
-		}
-
-		&.expanded {
-			> .wrap > ul {
-				transform: translateY(0);
-			}
-			>.node {
-				.caret:before {
-					content: "arrow_drop_down";
-				}
-			}
-		}
-
-		&.no-children {
-			> .node{
-				.caret:before {
-					content: none;
-				}
-			}
-		}
-	}
-
-
-
-
-
-}
