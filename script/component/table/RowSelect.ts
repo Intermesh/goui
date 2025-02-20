@@ -195,11 +195,18 @@ export class RowSelect<StoreType extends Store = Store, RecordType extends Store
 			return this.lastIndex;
 		}
 
-		this.clear();
-		this.add(this.list.store.get(index) as RecordType)
+		this.selectIndex(index);
 
 		this.lastIndex = index;
 		return index;
+	}
+
+	public selectIndex(index:number) {
+		this.clear();
+		const r = this.list.store.get(index);
+		if(r) {
+			this.add(r as RecordType);
+		}
 	}
 
 	public selectPrevious() {

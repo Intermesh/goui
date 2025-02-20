@@ -48,10 +48,7 @@ export class AutocompleteChips<T extends List = List> extends ChipsField {
 		this.menu = menu({
 				cls: "goui-dropdown scroll",
 				removeOnClose: false,
-				height: 300,
-				listeners: {
-					hide: this.onMenuHide.bind(this)
-				}
+				height: 300
 			},
 			list
 		);
@@ -81,9 +78,9 @@ export class AutocompleteChips<T extends List = List> extends ChipsField {
 				this.menu.hide();
 			});
 
-			// this.list.store.on("datachanged", () => {
-			// 	this.list.rowSelection!.selected = [0];
-			// }, {buffer: 0});
+			this.list.store.on("datachanged", () => {
+				this.list.rowSelection!.selectIndex(0);
+			}, {buffer: 0});
 		} else {
 			const syncSelection = () => {
 				this.list.rowSelection!.clear();
@@ -147,50 +144,49 @@ export class AutocompleteChips<T extends List = List> extends ChipsField {
 
 		this.editor.el.addEventListener('input', FunctionUtil.buffer(this.buffer, this.onInput.bind(this)))
 
-		this.editor.el.addEventListener('keydown', (ev) => {
-
-			switch ((ev as KeyboardEvent).key) {
-
-				case 'Enter':
-					if(!this.menu.hidden) {
-						ev.preventDefault();
-						this.menu.hide();
-					}
-					break;
-
-				case 'ArrowDown':
-					ev.preventDefault();
-					this.menuButton.menu!.show();
-
-					this.list.focusRow(0);
-					break;
-
-				case 'Escape':
-					if (!this.menu.hidden) {
-						this.menu.hide();
-						ev.preventDefault();
-						ev.stopPropagation();
-						this.focus();
-					}
-					break;
-			}
-		});
 
 		return el;
 	}
 
-	private onInput(_ev: Event) {
-		this.menuButton.menu!.show();
-		this.fire("autocomplete", this, this.editor.el.innerText);
-	}
+	protected onEditorKeyDown(ev: KeyboardEvent) {
+		super.onEditorKeyDown(ev);
 
-	private onMenuHide() {
-		if(!this.menu.rendered) {
-			return;
+		switch ((ev as KeyboardEvent).key) {
+
+			case 'ArrowDown':
+				ev.preventDefault();
+				this.menuButton.menu!.show();
+
+				this.list.focusRow(0);
+				break;
+
+			case 'Escape':
+				if (!this.menu.hidden) {
+					this.menu.hide();
+					ev.preventDefault();
+					ev.stopPropagation();
+					this.focus();
+				}
+				break;
 		}
 
-		//TODO on enter the row is not selected
+	}
 
+	protected onEnter(ev: KeyboardEvent) {
+		if(!this.list.rowSelection!.getSelected().length) {
+			super.onEnter(ev);
+		} else {
+			this.addSelected();
+		}
+
+		if(!this.menu.hidden) {
+			ev.preventDefault();
+			this.menu.hide();
+		}
+	}
+
+
+	private addSelected() {
 		const newValues = this.list.rowSelection!.getSelected().map((row) => {
 			return this.pickerRecordToValue(this, row.record as storeRecordType<listStoreType<T>>);
 		});
@@ -211,6 +207,13 @@ export class AutocompleteChips<T extends List = List> extends ChipsField {
 			this.value = this.value.concat(newValues);
 		}
 	}
+
+	private onInput(_ev: Event) {
+		this.menuButton.menu!.show();
+		this.fire("autocomplete", this, this.editor.el.innerText);
+	}
+
+
 }
 
 type AutoCompleteChipsConfig<ListType extends List = List> = FieldConfig<AutocompleteChips<ListType>, AutocompleteChipsEventMap<AutocompleteChips<ListType>>, "list"> &

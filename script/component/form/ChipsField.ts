@@ -124,35 +124,14 @@ export class ChipsField extends Field {
 	// 	super.value = v;
 	// }
 
-	private onEditorKeyDown(ev: KeyboardEvent) {
+	protected onEditorKeyDown(ev: KeyboardEvent) {
 
 		this.clearInvalid();
 
 		switch (ev.key) {
 			case "Enter":
-				ev.preventDefault();
-				const chip =  this.createChip();
-				this.textInputToValue(this._editor!.text).then((value) => {
-					if(!value) {
-						return;
-					}
-
-					let r = this.chipRenderer(chip, value);
-
-					if(r instanceof Promise) {
-						r.then(() => {
-							this.items.insert(-1, chip);
-							this.value = this.value.concat([value]);
-						});
-					} else {
-						this.items.insert(-1, chip);
-						this.value = this.value.concat([value]);
-					}
-				});
-
-				this._editor!.text = "";
-
-			break;
+				this.onEnter(ev);
+				break;
 
 			case "ArrowRight":
 				if(this.selectedIndex > -1) {
@@ -187,6 +166,30 @@ export class ChipsField extends Field {
 				}
 				break;
 		}
+	}
+
+	protected onEnter(ev: KeyboardEvent) {
+		ev.preventDefault();
+		const chip = this.createChip();
+		this.textInputToValue(this._editor!.text).then((value) => {
+			if (!value) {
+				return;
+			}
+
+			let r = this.chipRenderer(chip, value);
+
+			if (r instanceof Promise) {
+				r.then(() => {
+					this.items.insert(-1, chip);
+					this.value = this.value.concat([value]);
+				});
+			} else {
+				this.items.insert(-1, chip);
+				this.value = this.value.concat([value]);
+			}
+		});
+
+		this._editor!.text = "";
 	}
 
 	private createChip() {
