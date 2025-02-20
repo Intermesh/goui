@@ -156,6 +156,8 @@ export class AutocompleteChips<T extends List = List> extends ChipsField {
 
 			case 'ArrowDown':
 				ev.preventDefault();
+
+				this.fire("autocomplete", this, this.editor.el.innerText);
 				this.menuButton.menu!.show();
 
 				this.list.focusRow(0);

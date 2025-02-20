@@ -112,6 +112,9 @@ export class Menu extends AbstractMenu {
 	 */
 	public alignToInheritWidth = false;
 
+
+	public constrainToViewport = true;
+
 	/**
 	 * The element it renders to. By default it's rendered to the root element of GOUI.
 	 */
@@ -291,7 +294,7 @@ export class Menu extends AbstractMenu {
 		}
 
 		//aligns down by default. If it runs off screen then align on top
-		if(y + this.el.offsetHeight > window.innerHeight) {
+		if(this.constrainToViewport && y + this.el.offsetHeight > window.innerHeight) {
 			if(this.isSubMenu()) {
 				y = rect.bottom;
 			} else {
@@ -303,7 +306,7 @@ export class Menu extends AbstractMenu {
 		}
 
 		//aligns left by default. If it runs off screen then align right
-		if(x + this.el.offsetWidth > window.innerWidth) {
+		if(this.constrainToViewport && x + this.el.offsetWidth > window.innerWidth) {
 
 			if(this.isSubMenu()) {
 				x = rect.left;

@@ -76,17 +76,17 @@ export class AutocompleteField<T extends List = List> extends InputField {
 		});
 
 		this.menu = menu({
-				height: 300,
-				cls: "scroll",
-				listeners: {
-					hide: (menu) => {
-						if(menu.rendered) {
-							const inputField = menu.findAncestorByType(InputField)!;
-							inputField.focus();
-						}
+			height: 300,
+			cls: "scroll",
+			listeners: {
+				hide: (menu) => {
+					if(menu.rendered) {
+						const inputField = menu.findAncestorByType(InputField)!;
+						inputField.focus();
 					}
 				}
-			},
+			}
+		},
 			this.picker
 		);
 
