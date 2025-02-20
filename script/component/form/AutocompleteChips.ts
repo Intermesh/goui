@@ -97,6 +97,10 @@ export class AutocompleteChips<T extends List = List> extends ChipsField {
 			this.list.store.on("datachanged", () => {
 				syncSelection()
 			}, {buffer: 0});
+
+			this.menu.on("hide", () => {
+				this.addSelected()
+			})
 		}
 
 
