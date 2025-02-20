@@ -48,6 +48,7 @@ class Chip extends Component {
 		this.title = text;
 	}
 }
+export type ChipRendered = (chip:Component, value: any) => Promise<void> | void
 /**
  * Chips component
  */
@@ -72,7 +73,7 @@ export class ChipsField extends Field {
 	 * Renders a value to the chip component
 	 * @param value
 	 */
-	public chipRenderer = async (chip:Component, value: any) => {
+	public chipRenderer : ChipRendered = (chip:Component, value: any) => {
 		chip.text = value;
 	}
 
@@ -135,10 +136,18 @@ export class ChipsField extends Field {
 					if(!value) {
 						return;
 					}
-					return this.chipRenderer(chip, value).then(() => {
+
+					let r = this.chipRenderer(chip, value);
+
+					if(r instanceof Promise) {
+						r.then(() => {
+							this.items.insert(-1, chip);
+							this.value = this.value.concat([value]);
+						});
+					} else {
 						this.items.insert(-1, chip);
-						this.value.push(value);
-					})
+						this.value = this.value.concat([value]);
+					}
 				});
 
 				this._editor!.text = "";

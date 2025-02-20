@@ -1208,19 +1208,18 @@ div.color-dot {
 			display:block;
 			flex: 1;
 			overflow: hidden;
-
+			padding: 0  util.dp(8);
 		}
-
 
 		.chip {
 			display: flex;
 			flex-direction: row;
 			float: left;
-			border-radius: util.dp(20);
+			border-radius: util.dp(8);
 			background-color: var(--bg-highest);
-			padding: util.dp(3) util.dp(12);
-			margin: util.dp(8) util.dp(4);
-			max-width: util.dp(120);
+			padding: util.dp(3) util.dp(10);
+			margin: util.dp(5) util.dp(4);
+			max-width: util.dp(240);
 			min-width: util.dp(60);
 			cursor: default;
 
