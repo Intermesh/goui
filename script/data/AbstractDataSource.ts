@@ -403,11 +403,11 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 
 	protected async add(data: EntityType) {
 
-		this.data[data.id!] = data;
-
 		if (!this.persist) {
 			return Promise.resolve(data);
 		}
+
+		this.data[data.id!] = data;
 		await this.browserStore.setItem(data.id!, data);
 		return data;
 	}
