@@ -8,7 +8,6 @@ import {Component, ComponentEventMap, createComponent} from "../Component.js";
 import {DateTime} from "../../util/DateTime.js";
 import {E} from "../../util/Element.js";
 import {Config, Listener, ObservableListenerOpts} from "../Observable.js";
-import {t} from "../../Translate.js";
 
 // import {Button} from "../Button";
 export interface DatePickerEventMap<Type> extends ComponentEventMap<Type> {

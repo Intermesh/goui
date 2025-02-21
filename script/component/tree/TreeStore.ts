@@ -1,7 +1,6 @@
-import {Store, StoreConfig} from "../../data/Store";
-import {Component, createComponent, NodeProvider} from "../../component";
+import {Store} from "../../data/Store";
+import {Component, NodeProvider} from "../../component";
 import {TreeRecord} from "./TreeRecord";
-import {ArrayUtil} from "../../util";
 
 
 export class TreeStore extends Store<TreeRecord> {

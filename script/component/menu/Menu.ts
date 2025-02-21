@@ -4,7 +4,7 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {comp, Component, ComponentEventMap, createComponent, hr} from "../Component.js";
+import {Component, ComponentEventMap, createComponent, hr} from "../Component.js";
 import {root} from "../Root.js";
 import {Toolbar} from "../Toolbar.js";
 import {Config, Listener, ObservableListenerOpts} from "../Observable.js";

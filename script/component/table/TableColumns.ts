@@ -6,11 +6,11 @@
 
 import {Config, Listener, Observable, ObservableEventMap, ObservableListenerOpts} from "../Observable.js";
 import {Table} from "./Table.js";
-import {Component, ComponentEventMap, createComponent} from "../Component.js";
+import {Component, createComponent} from "../Component.js";
 import {Format} from "../../util/index.js";
 import {checkbox, CheckboxField} from "../form/index.js";
 import {btn} from "../Button.js";
-import {Menu, menu} from "../menu/index.js";
+import {menu} from "../menu/index.js";
 
 /**
  * Return HTML or component to render into the table cell. Can also be async.

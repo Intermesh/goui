@@ -9,7 +9,6 @@ import {Comparator} from "./Store.js";
 import {ArrayUtil, FunctionUtil, ObjectUtil} from "../util/index.js";
 import {BrowserStore} from "../util/BrowserStorage.js";
 import {t} from "../Translate.js";
-import {RouterEventMap} from "../Router.js";
 
 /**
  * The response of the {@link AbstractDataSource.get()} method

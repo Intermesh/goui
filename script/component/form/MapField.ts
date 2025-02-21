@@ -6,8 +6,6 @@
 
 import {Field, FieldConfig, FieldEventMap} from "./Field.js";
 import {createComponent} from "../Component.js";
-import {btn} from "../Button.js";
-import {Config, Observable} from "../Observable.js";
 
 type MapFieldConfig = FieldConfig<MapField, FieldEventMap<MapField>, "buildField">;
 type FieldBuilder = (value: MapFieldValue|undefined) => Field;

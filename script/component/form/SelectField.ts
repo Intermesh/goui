@@ -7,9 +7,7 @@
 import {FieldConfig, FieldEventMap} from "./Field.js";
 import {createComponent} from "../Component.js";
 import {Store} from "../../data/index.js";
-import {Config} from "../Observable.js";
 import {InputField} from "./InputField.js";
-import {btn} from "../Button";
 import {E} from "../../util";
 
 /**

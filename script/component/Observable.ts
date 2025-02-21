@@ -5,7 +5,7 @@
  */
 
 import {FunctionUtil} from "../util/FunctionUtil.js";
-import {comp, ComponentEventMap} from "./Component.js";
+import {ComponentEventMap} from "./Component.js";
 
 /**
  * Component events

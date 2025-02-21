@@ -9,6 +9,7 @@ import {DateTime} from "../../util";
 import {Config, Listener, ObservableListenerOpts} from "../Observable.js";
 import {fieldset, NumberField, numberfield} from "../form";
 import {btn} from "../Button";
+
 export interface WeekPickerEventMap<Type> extends ComponentEventMap<Type> {
 	/**
 	 * Fires when a week is selected

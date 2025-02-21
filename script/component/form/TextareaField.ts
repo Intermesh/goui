@@ -3,9 +3,7 @@
  * @copyright Copyright 2023 Intermesh BV
  * @author Merijn Schering <mschering@intermesh.nl>
  */
-import {TextField} from "./TextField.js";
 import {createComponent} from "../Component.js";
-import {Config} from "../Observable.js";
 import {FieldConfig, FieldEventMap} from "./Field.js";
 import {InputField} from "./InputField.js";
 

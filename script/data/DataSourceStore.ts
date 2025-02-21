@@ -10,11 +10,12 @@ import {
 	Changes,
 	dataSourceEntityType,
 	DefaultEntity,
-	QueryParams,
-	Filter, EntityID
+	EntityID,
+	Filter,
+	QueryParams
 } from "./AbstractDataSource.js";
 import {ObjectUtil} from "../util/index.js";
-import {comp, createComponent, ObservableListener} from "../component/index.js";
+import {createComponent, ObservableListener} from "../component/index.js";
 
 
 /**

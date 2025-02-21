@@ -1,10 +1,13 @@
 import {
 	AbstractDataSource,
-	BaseEntity, Changes,
-	CommitResponse, DefaultEntity,
+	BaseEntity,
+	Changes,
+	CommitResponse,
+	DefaultEntity,
 	EntityID,
 	GetResponse,
-	QueryParams, QueryResponse,
+	QueryParams,
+	QueryResponse,
 	SetRequest
 } from "./AbstractDataSource.js";
 

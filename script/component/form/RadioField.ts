@@ -7,7 +7,6 @@
 import {E} from "../../util/Element.js";
 import {Component, createComponent} from "../Component.js";
 import {Field, FieldConfig, FieldEventMap} from "./Field.js";
-import {Config} from "../Observable.js";
 import {MaterialIcon} from "../MaterialIcon.js";
 
 
