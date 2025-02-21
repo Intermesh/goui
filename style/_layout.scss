@@ -272,7 +272,7 @@ html {
 	overflow:hidden;
 	@extend .z2;
 
-	.goui-toolbar{
+	> .goui-toolbar {
 		margin-bottom: util.dp(24);
 	}
 }
