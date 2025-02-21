@@ -94,13 +94,17 @@ export class DataSourceForm<ValueType extends BaseEntity = DefaultEntity> extend
 
 				if(e.type == "invalidProperties") {
 					this.handleServerValidation(e);
+				}
+
+				if(this.fire('saveerror', this, e) === false) {
 					return;
 				}
 
 				console.error(t("Error"), e);
-				if(this.fire('saveerror', this, e) !== false) {
+				if(e.type != "invalidProperties") {
 					void Window.error(e);
 				}
+
 			}
 		}
 	}
