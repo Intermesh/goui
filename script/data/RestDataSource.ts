@@ -80,10 +80,22 @@ export class RestDataSource<EntityType extends BaseEntity = DefaultEntity> exten
 
 		const response = await fetch(url, opts);
 		if(!response.ok) {
-			const body = await response.text();
-			throw new Error("Request error: " + response.status + " " + response.statusText + "\n\n" + body);
+			throw await this.createErrorFromResponse(response);
 		}
 		return await response.json();
+	}
+
+	/**
+	 * Override to create JMAP style errors. Form handles for example:
+	 *
+	 * {type:"invalidProperties", validationErrors: {fieldName: {description: "some error description"}}}
+	 *
+	 * @param response
+	 * @protected
+	 */
+	protected async createErrorFromResponse(response:Response) : Promise<any> {
+		const body = await response.text();
+		return new Error("Request error: " + response.status + " " + response.statusText + "\n\n" + body);
 	}
 
 	/**
@@ -116,6 +128,7 @@ export class RestDataSource<EntityType extends BaseEntity = DefaultEntity> exten
 					body: this.dataToPostBody(params.update[id])
 				})
 					.then((data:any) => {
+
 						if(!response.updated) {
 							response.updated = {};
 						}
