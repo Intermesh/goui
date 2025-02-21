@@ -103,10 +103,10 @@ export class ContainerField<ValueType extends ContainerFieldValue = ContainerFie
 	/**
 	 * @inheritDoc
 	 */
-	public clear() {
+	public clear(setValue:boolean = true) {
 		this.findFields().forEach((field) => {
 			if(field.clear) {
-				field.clear();
+				field.clear(setValue);
 			} else {
 				field.reset(); // for Ext
 			}

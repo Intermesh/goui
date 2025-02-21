@@ -597,11 +597,19 @@ export abstract class Field extends Component {
 
 	/**
 	 * Clears the field to it's original state set in the code.
+	 *
+	 *
+	 * @param setValue When the form loads it's cleared but we don't need to set the value
+	 *
 	 */
-	public clear() {
-		this.value = this.defaultValue;
+	public clear(setValue:boolean = true) {
+		if(setValue) {
+			this.value = this.defaultValue;
+		}
 		this.resetValue = undefined;
-		this.trackReset();
+		if(setValue) {
+			this.trackReset();
+		}
 		this.clearInvalid();
 	}
 

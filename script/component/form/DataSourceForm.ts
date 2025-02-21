@@ -106,6 +106,9 @@ export class DataSourceForm<ValueType extends BaseEntity = DefaultEntity> extend
 	}
 
 	private handleServerValidation(error: any) {
+
+		console.error(error);
+
 		for(const propertyName in error.validationErrors) {
 			const field = this.findField(propertyName);
 			if(!field) {
@@ -133,8 +136,13 @@ export class DataSourceForm<ValueType extends BaseEntity = DefaultEntity> extend
 	}
 
 
-	clear() {
-		super.clear();
+	/**
+	 * Clear the form and set it to the original unloaded state
+	 *
+	 * @param setValue When the form loads it's cleared but we don't need to set the value
+	 */
+	clear(setValue:boolean = true) {
+		super.clear(setValue);
 		delete this.currentId;
 	}
 
@@ -152,7 +160,7 @@ export class DataSourceForm<ValueType extends BaseEntity = DefaultEntity> extend
 		this.mask();
 
 		try {
-			this.clear();
+			this.clear(false);
 			this.currentId = id;
 			let entity = await this.dataSource!.single(id);
 			if (!entity) {
