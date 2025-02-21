@@ -178,6 +178,7 @@ export class Form<ValueType extends ContainerFieldValue = ContainerFieldValue> e
 			let handlerResponse = undefined;
 			if (this.handler) {
 				try {
+					this.mask();
 					handlerResponse = await this.handler!(this);
 
 				} catch (e: any) {
@@ -187,6 +188,8 @@ export class Form<ValueType extends ContainerFieldValue = ContainerFieldValue> e
 					Notifier.error(msg);
 					return false;
 
+				} finally {
+					this.unmask();
 				}
 			}
 			this.fire("submit", this, handlerResponse);

@@ -101,8 +101,6 @@ export class DataSourceForm<ValueType extends BaseEntity = DefaultEntity> extend
 				if(this.fire('saveerror', this, e) !== false) {
 					void Window.error(e);
 				}
-			} finally {
-				this.unmask();
 			}
 		}
 	}
