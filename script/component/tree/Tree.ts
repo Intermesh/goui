@@ -66,6 +66,9 @@ export interface Tree extends Table<TreeStore> {
 
 export type NodeProvider = (record:TreeRecord | undefined, store: TreeStore) => TreeRecord[] | Promise<TreeRecord[]>;
 
+/**
+ * Tree component
+ */
 export class Tree extends Table<TreeStore> {
 	constructor(protected nodeProvider: NodeProvider, columns:TableColumn[] = [new TreeColumn("text")]) {
 		super(new TreeStore(nodeProvider), columns);
@@ -90,9 +93,9 @@ export class Tree extends Table<TreeStore> {
 			const isExpanded = node.has(".expanded");
 
 			if(isExpanded) {
-				this.collapse(record, node, storeIndex);
+				this.internalCollapse(record, storeIndex, node);
 			} else {
-				void this.expand(record, storeIndex, node);
+				void this.internalExpand(record, storeIndex, node);
 			}
 
 			e.preventDefault();
@@ -101,16 +104,34 @@ export class Tree extends Table<TreeStore> {
 
 		this.setupExpandOnDragOver(row, record, storeIndex);
 
-
-
 		return row;
 	}
 
+	/**
+	 * Expand a tree node
+	 *
+	 * @param record
+	 */
+	public expand(record: any) {
+		const index = this.store.findIndex(i => i == record);
+		const row = this.getRowElements()[index];
 
+		return this.internalExpand(record, index, row);
+	}
 
+	/**
+	 * Collapse a tree node
+	 *
+	 * @param record
+	 */
+	public collapse(record: any) {
+		const index = this.store.findIndex(i => i == record);
+		const row = this.getRowElements()[index];
 
-	private async expand(record: any, storeIndex: number, node: Element) {
+		return this.internalCollapse(record, index, row);
+	}
 
+	private async internalExpand(record: any, storeIndex: number, node: Element) {
 
 		if(this.fire("beforeexpand", this,  record, storeIndex) === false) {
 			return;
@@ -122,12 +143,11 @@ export class Tree extends Table<TreeStore> {
 
 	}
 
-	private collapse(record: any, node: Element, storeIndex: number) {
+	private internalCollapse(record: any, storeIndex: number, node: Element ) {
 
 		if(this.fire("beforecollapse", this,  record, storeIndex) === false) {
 			return;
 		}
-
 
 		this.store.collapse(record);
 		node.classList.remove("expanded");
@@ -163,7 +183,7 @@ export class Tree extends Table<TreeStore> {
 				dragOverTimeout = setTimeout(() => {
 					const node = row.getElementsByClassName("node")[0];
 					if(!node.has(".expanded")) {
-						void this.expand(record, storeIndex, node);
+						void this.internalExpand(record, storeIndex, node);
 					}
 				}, 1000);
 			});
@@ -185,4 +205,9 @@ export class Tree extends Table<TreeStore> {
 	}
 }
 
+/**
+ * Generator function for a {@link Tree} component
+ *
+ * @param config
+ */
 export const tree = (config: Config<Tree, TreeEventMap<Tree>> & {nodeProvider: NodeProvider}) => createComponent(new Tree(config.nodeProvider, config.columns ?? [new TreeColumn("text")]), config);
