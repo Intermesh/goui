@@ -32,6 +32,7 @@ class Chip extends Component {
 			btn({
 				title: t("Remove"),
 				icon: "cancel",
+				cls: "small",
 				handler: (btn) => {
 					this.fire("deleteclick", this);
 				}
