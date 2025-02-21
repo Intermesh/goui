@@ -600,6 +600,7 @@ export abstract class Field extends Component {
 	 */
 	public clear() {
 		this.value = this.defaultValue;
+		this.resetValue = undefined;
 		this.trackReset();
 		this.clearInvalid();
 	}

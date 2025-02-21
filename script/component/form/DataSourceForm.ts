@@ -154,6 +154,7 @@ export class DataSourceForm<ValueType extends BaseEntity = DefaultEntity> extend
 		this.mask();
 
 		try {
+			this.clear();
 			this.currentId = id;
 			let entity = await this.dataSource!.single(id);
 			if (!entity) {
