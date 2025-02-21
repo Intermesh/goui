@@ -5,7 +5,6 @@
  */
 import {DateTime, Timezone} from "./DateTime.js";
 import {t} from "../Translate.js";
-import Autolinker from "autolinker";
 
 /**
  * Formatting utilities
@@ -76,10 +75,7 @@ export class Format {
 			return "";
 		}
 		return this.nl2br(
-			Autolinker.link(
-				this.escapeHTML(text),
-				{stripPrefix: false, stripTrailingSlash: false, newWindow: true, phone: false}
-			)
+			this.escapeHTML(text)
 		);
 	}
 
