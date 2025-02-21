@@ -86,9 +86,9 @@ export class TreeStore extends Store<TreeRecord> {
 			this.insert(startIndex++, child);
 
 			// the node might have gotten sub nodes recursively in onAdded() -> expand(). So we have to fast forward them here.
-			let currItem = this.items.at(startIndex);
+			let currItem = this.items[startIndex];
 			while(currItem && currItem.level && currItem.level >= level) {
-				currItem = this.items.at(++startIndex);
+				currItem = this.items[++startIndex];
 			}
 
 		}
