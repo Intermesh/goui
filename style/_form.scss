@@ -6,7 +6,6 @@
 @use "shadows";
 @use "button";
 
-$formFieldBorderRadius: util.dp(10);
 
 @keyframes onautofillstart {
 	from {/**/}
@@ -125,7 +124,7 @@ $formFieldBorderRadius: util.dp(10);
 %control-pit {
 	overflow:hidden;
 	transition: border-color 100ms linear;
-	border-radius: $formFieldBorderRadius;
+	border-radius: config.$borderRadius;
 	background-color: config.$colorBackgroundInput;
 	border: config.$borderWidth solid config.$colorOutline;
 	//outline: config.$borderWidth solid config.$colorOutline;
@@ -449,7 +448,7 @@ $formFieldBorderRadius: util.dp(10);
 		menu.goui-toolbar {
 
 			padding: 0 !important;
-			border-radius: 0 $formFieldBorderRadius $formFieldBorderRadius 0;
+			border-radius: 0 config.$borderRadius config.$borderRadius 0;
 
 			border-left: config.$borderWidth solid config.$colorOutline;
 			border-top: 0;
@@ -531,7 +530,7 @@ $formFieldBorderRadius: util.dp(10);
 			transition: border-color 100ms linear;
 			background-color: config.$colorBackgroundInput;
 			border: config.$borderWidth solid config.$colorOutline;
-			border-radius: 0 0 $formFieldBorderRadius $formFieldBorderRadius;
+			border-radius: 0 0 config.$borderRadius config.$borderRadius;
 			padding: util.dp(3) util.dp(18);
 		}
 
@@ -1155,7 +1154,7 @@ form {
 	@extend .z8;
 	border: config.$borderWidth solid config.$colorMain;
 	border-top: 0;
-	border-radius: 0 0 $formFieldBorderRadius $formFieldBorderRadius;
+	border-radius: 0 0 config.$borderRadius config.$borderRadius;
 	background-color: white;
 
 }
@@ -1180,7 +1179,7 @@ form {
 }
 
 div.color-dot {
-	border-radius: $formFieldBorderRadius;
+	border-radius: config.$borderRadius;
 	margin: util.dp(11); //match input
 	height: config.$baseLineHeight;
 	flex: 1;

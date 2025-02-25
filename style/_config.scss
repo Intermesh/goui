@@ -67,13 +67,15 @@ $colorNoticeBg: var(--bg-notice) !default;
 
 
 $borderRadius: util.dp(8) !default;
+$formFieldBorderRadius: util.dp(10) !default;
+$buttonBorderRadius: util.dp(12) !default;
 $padding: util.dp(8) !default;
 
 $curveStandard: cubic-bezier(0.4, 0.0, 0.2, 1) !default;
 
 $baseLineHeight: util.sp(24) !default;
 $fontSize: util.sp(18) !default;
-$fontFamily: Lato, Arial, Helvetica;
+$fontFamily: Lato, Arial, Helvetica !default;
 $fontBase: #{$fontSize}/$baseLineHeight $fontFamily !default;
 
 $zIndexWindow: 200 !default;
