@@ -306,8 +306,6 @@ export class RowSelect<StoreType extends Store = Store, RecordType extends Store
 			return;
 		}
 
-		e.preventDefault();
-
 		this.clear();
 		this.add(list.store.get(index) as RecordType)
 
