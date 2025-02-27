@@ -17,6 +17,7 @@ export class Avatar extends Component {
 	];
 
 	set displayName(displayName: string) {
+
 		this.text = Avatar.initials(displayName);
 		this.title = displayName;
 
