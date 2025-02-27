@@ -14,6 +14,8 @@ const defaultDisplayFieldRenderer: DisplayFieldRenderer = (v:any, field:DisplayF
  *
  * Component used to display data only.
  *
+ * Use cls: "pit" to style as an editable form field.
+ *
  * A {@link Form} can be used to edit data but also to present data using display fields
  */
 export class DisplayField extends Field {
@@ -59,10 +61,11 @@ export class DisplayField extends Field {
 			const setFn = (str:string|Component) => {
 				if(str instanceof Component) {
 
-
 					if (!this.renderTagOnly) {
+						this.control!.innerHTML = "";
 						str.render(this.control);
 					} else {
+						this.el.innerHTML = "";
 						str.render(this.el);
 					}
 
