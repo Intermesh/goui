@@ -51,7 +51,7 @@
 		}
 	}
 	&.notice {
-		background:config.$colorNoticeBg;
+		background: config.$colorNoticeBg;
 		border:2px solid config.$colorNoticeBorder;
 		color: config.$colorNotice;
 		&:before {

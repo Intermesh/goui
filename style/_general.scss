@@ -382,3 +382,18 @@ hr.goui {
 		top: 0;
 	}
 }
+
+.error {
+	color: config.$colorError;
+}
+.warning {
+	color: config.$colorWarning;
+}
+
+.success {
+	color: config.$colorSuccess;
+}
+
+.notice {
+	color: config.$colorNotice;
+}
