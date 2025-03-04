@@ -279,10 +279,6 @@ html {
 	background-color: var(--bg-lowest);
 	overflow:hidden;
 	@extend .z2;
-
-	> .goui-toolbar {
-		margin-bottom: util.dp(24);
-	}
 }
 
 
