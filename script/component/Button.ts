@@ -279,7 +279,7 @@ export class Button extends Component {
 			this.el.classList.remove("with-icon");
 		}
 
-		this.iconEl!.innerText = icon + "";
+		this.iconEl!.innerText = icon ?? "";
 	}
 
 	get icon() {
