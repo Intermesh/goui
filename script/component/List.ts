@@ -424,13 +424,12 @@ export class List<StoreType extends Store = Store> extends Component implements 
 				const tr = this.getRowElements()[row.storeIndex];
 
 				if (!tr) {
-					//row not rendered (yet?). selected class will also be addded on render
+					//row not rendered (yet?). selected class will also be added on render
 					return;
 				}
 				tr.classList.add('selected');
 
-				// focus so it scrolls in view
-				//tr.focus();
+				tr.scrollIntoView(false);
 			});
 
 			this.rowSelect.on('rowdeselect', (rowSelect, row) => {
@@ -445,6 +444,7 @@ export class List<StoreType extends Store = Store> extends Component implements 
 	}
 
 	public focusRow(index: number) {
+
 		const tr = this.getRowElements()[index];
 		if (!tr) {
 			return false;

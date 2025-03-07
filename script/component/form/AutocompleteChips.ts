@@ -155,16 +155,34 @@ export class AutocompleteChips<T extends List = List> extends ChipsField {
 
 	protected onEditorKeyDown(ev: KeyboardEvent) {
 		super.onEditorKeyDown(ev);
-
 		switch ((ev as KeyboardEvent).key) {
 
 			case 'ArrowDown':
+
 				ev.preventDefault();
+				ev.stopPropagation();
 
-				this.fire("autocomplete", this, this.editor.el.innerText);
-				this.menuButton.menu!.show();
+				if(this.menuButton.menu!.hidden) {
+					if(!this.list.store.loaded) {
+						this.fire("autocomplete", this, "");
+					}
+					this.menuButton.menu!.show();
+				} else if(this.list.rowSelection) {
+					this.list.rowSelection.selectNext();
+				}
 
-				this.list.focusRow(0);
+				break;
+
+			case 'ArrowUp':
+				ev.preventDefault();
+				ev.stopPropagation();
+				if(this.menuButton.menu!.hidden) {
+					this.fire("autocomplete", this, "");
+					this.menuButton.menu!.show();
+				} else if(this.list.rowSelection) {
+					this.list.rowSelection.selectPrevious();
+				}
+
 				break;
 
 			case 'Escape':

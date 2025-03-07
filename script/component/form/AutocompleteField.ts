@@ -214,6 +214,7 @@ export class AutocompleteField<T extends List = List> extends InputField {
 
 				case 'ArrowDown':
 					ev.preventDefault();
+					ev.stopPropagation();
 					if(this.menuButton.menu!.hidden) {
 						if(!this.list.store.loaded) {
 							this.fire("autocomplete", this, "");
@@ -227,11 +228,11 @@ export class AutocompleteField<T extends List = List> extends InputField {
 
 				case 'ArrowUp':
 					ev.preventDefault();
+					ev.stopPropagation();
 					if(this.menuButton.menu!.hidden) {
 						this.fire("autocomplete", this, "");
 						this.menuButton.menu!.show();
-					}
-					if(this.list.rowSelection) {
+					} else if(this.list.rowSelection) {
 						this.list.rowSelection.selectPrevious();
 					}
 

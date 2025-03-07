@@ -394,6 +394,7 @@ export class RowSelect<StoreType extends Store = Store, RecordType extends Store
 			return;
 		}
 
+		console.log(e.key);
 		if (e.key != "ArrowDown" && e.key != "ArrowUp") {
 			return;
 		}
@@ -407,6 +408,8 @@ export class RowSelect<StoreType extends Store = Store, RecordType extends Store
 		} else if (e.key == "ArrowUp") {
 			index = this.lastIndex - 1
 		}
+
+		console.log(index,this.list.store.count());
 
 		// check if index is out of bounds
 		if(index < 0 || index > this.list.store.count() - 1) {

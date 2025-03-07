@@ -110,6 +110,9 @@ export class ChipsField extends Field {
 		this._editor!.el.addEventListener("focus", (ev) => {
 			this.clearSelection();
 		})
+		this._editor!.el.addEventListener("blur", () => {
+			this._editor!.el.innerText = "";
+		})
 		//this._editor.render(this.chipsContainer!);
 
 		this.items.add(this._editor);
