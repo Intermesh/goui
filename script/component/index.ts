@@ -22,3 +22,4 @@ export * from './Toolbar.js';
 export * from './Window.js';
 export * from './tree/index.js';
 export * from './Sortable.js';
+export * from './OverlayToolbarButton.js';

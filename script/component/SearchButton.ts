@@ -11,28 +11,27 @@ import {TextField, textfield} from "./form/TextField.js";
 import {Component, createComponent} from "./Component.js";
 import {FunctionUtil} from "../util/FunctionUtil.js";
 import {Config, Listener, ObservableListenerOpts} from "./Observable.js";
+import {OverlayToolbarButton, OverlayToolbarButtonEventMap} from "./OverlayToolbarButton";
 
 
 /**
  * @inheritDoc
  */
-export interface SearchButtonEventMap<Type> extends ButtonEventMap<Type> {
+export interface SearchButtonEventMap<Type> extends OverlayToolbarButtonEventMap<Type> {
 
 	input: (searchBtn: Type, text: string) => void
 
 	reset: (searchBtn: Type) => void
 }
 
-export interface SearchButton extends Button {
+export interface SearchButton extends OverlayToolbarButton {
 	on<K extends keyof SearchButtonEventMap<this>, L extends Listener>(eventName: K, listener: Partial<SearchButtonEventMap<this>>[K], options?: ObservableListenerOpts): L;
 	un<K extends keyof SearchButtonEventMap<this>>(eventName: K, listener: Partial<SearchButtonEventMap<this>>[K]): boolean
 	fire<K extends keyof SearchButtonEventMap<this>>(eventName: K, ...args: Parameters<SearchButtonEventMap<Component>[K]>): boolean
 }
 
-export class SearchButton extends Button {
+export class SearchButton extends OverlayToolbarButton {
 	private searchField: TextField;
-	private searchTBar?: Toolbar;
-	private mainTbar?: Toolbar;
 
 	private buffer = 300;
 
@@ -67,27 +66,19 @@ export class SearchButton extends Button {
 					e.stopPropagation();
 				}
 
-				if(e.key == "Escape") {
-					e.preventDefault();
-					e.stopPropagation();
-					this.close();
-				}
+				// if(e.key == "Escape") {
+				// 	e.preventDefault();
+				// 	e.stopPropagation();
+				// 	this.close();
+				// }
 			})
 		})
 
+		this.items.add(this.searchField);
 
-
-	}
-
-	public handler = (button: Button, ev?: MouseEvent) => {
-
-		this.mainTbar = button.findAncestorByType(Toolbar);
-		if(!this.mainTbar) {
-			throw "Search button must be inside a Toolbar";
-		}
-		this.getSearchTBar().show();
-
-		this.searchField.select();
+		this.on("open", () => {
+			this.searchField.select()
+		})
 	}
 
 	public reset() {
@@ -100,11 +91,6 @@ export class SearchButton extends Button {
 		this.el.classList.remove("filled");
 	}
 
-	public close() {
-		this.searchTBar!.hide();
-		this.mainTbar!.show();
-		this.focus();
-	}
 
 	private onInput() {
 		this.el.classList.toggle("accent", !!this.searchField.value);
@@ -112,28 +98,6 @@ export class SearchButton extends Button {
 		this.fire("input", this, this.searchField.value as string);
 	}
 
-	private getSearchTBar() {
-
-		if (!this.searchTBar) {
-			this.searchTBar = tbar({
-					cls: "search"
-				},
-
-				btn({
-					icon: "chevron_left",
-					title: t("Back"),
-					handler: () => {
-						this.close();
-					}
-				}),
-				this.searchField
-			);
-
-			this.mainTbar!.items.add(this.searchTBar);
-		}
-
-		return this.searchTBar;
-	}
 }
 
 /**

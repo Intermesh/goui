@@ -74,7 +74,7 @@ export class DisplayField extends Field {
 					})
 				} else {
 					if (this.escapeValue) {
-						str = Format.escapeHTML(str);
+						str = str.htmlEncode();
 					}
 					if (!this.renderTagOnly) {
 						this.control!.innerHTML = str;

@@ -176,14 +176,14 @@
 	// toolbar inside a toolbar will be an overlay
 	> .goui.goui-toolbar {
 		position: absolute;
-		top: 0;
+		//top: 0; //allows create link field to overflow parent toolbar on top
 		left: 0;
 		right: 0;
 		bottom: 0;
 		background-color: config.$surfaceLow;
 	}
 
-	&.search {
+	&.overlay {
 		z-index: 1;
 	}
 

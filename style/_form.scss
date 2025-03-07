@@ -1220,6 +1220,7 @@ div.color-dot {
 			max-width: util.dp(240);
 			min-width: util.dp(60);
 			cursor: default;
+			line-height: 2.4rem;
 
 			> span {
 				flex: 1;

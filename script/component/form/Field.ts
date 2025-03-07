@@ -632,7 +632,7 @@ export abstract class Field extends Component {
 	 */
 	public isEmpty() {
 		const v = this.value;
-		return v === undefined || v === null || v === "";
+		return v === undefined || v === null || v === "" || (Array.isArray(v) && v.length == 0) ;
 	}
 
 	protected validate() {

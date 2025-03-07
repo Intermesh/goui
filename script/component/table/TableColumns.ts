@@ -14,6 +14,14 @@ import {menu} from "../menu/index.js";
 
 /**
  * Return HTML or component to render into the table cell. Can also be async.
+ *
+ * Make sure the HTML it returns is HTML encoded so it's not vulnerable for XSS attacks.
+ *
+ * To create a multi line cell you can use h3,h4 and h5. For example:
+ *
+ * ```
+ * return `<h3>${record.name.htmlEncode()}</h3><h4>${record.description.htmlEncode()}</h4><h5>${Format.smartDateTime(record.modifiedAt)}</h5>`
+ * ```
  */
 export type TableColumnRenderer = (columnValue: any, record: any, td: HTMLTableCellElement, table: Table, storeIndex: number, column: TableColumn) => string | Promise<string> | Component | Promise<Component>;
 export type HeaderRenderer = (col: TableColumn, headerEl: HTMLTableCellElement, table: Table) => string | Component;
