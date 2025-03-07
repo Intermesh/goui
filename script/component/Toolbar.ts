@@ -4,7 +4,7 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {comp, Component, ComponentEventMap, hr} from "./Component.js";
+import {assignComponentConfig, comp, Component, ComponentEventMap, hr} from "./Component.js";
 import {btn, Button} from "./Button.js";
 import {Config, Listener, ObservableListenerOpts} from "./Observable.js";
 import {menu} from "./menu/index.js";
@@ -203,7 +203,7 @@ export class Toolbar extends AbstractMenu {
 export const tbar = (config?: Config<Toolbar>, ...items: (Component | "->" | "-")[]) => {
 	const c = new Toolbar();
 	if (config) {
-		Object.assign(c, config);
+		assignComponentConfig(c, config);
 	}
 
 	c.items.add(...tbarItems(items));
