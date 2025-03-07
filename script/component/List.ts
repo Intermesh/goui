@@ -429,7 +429,7 @@ export class List<StoreType extends Store = Store> extends Component implements 
 				}
 				tr.classList.add('selected');
 
-				tr.scrollIntoView(false);
+				tr.scrollIntoView({block: "nearest", inline: "nearest"});
 			});
 
 			this.rowSelect.on('rowdeselect', (rowSelect, row) => {
