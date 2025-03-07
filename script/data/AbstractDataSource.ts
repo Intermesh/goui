@@ -512,25 +512,27 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 		let unknownIds: EntityID[] = [], lastProps;
 		for (let id in this.getIds) {
 
+			const props = this.getIds[id].properties;
+
 			if(!this.data[id] && this.persist) {
 				const data = await this.browserStore.getItem(id);
 				if (data) {
 					this.data[id] = data;
 				}
 			}
-			if (this.hasData(id, this.getIds[id].properties)) {
+			if (this.hasData(id, props)) {
 				const data = structuredClone(this.data[id]);
 				//@ts-ignore
 				delete data.__isComplete;
 				this.returnGet(data);
 			} else
 			{
-				if(lastProps && lastProps != this.getIds[id].properties) {
+				if(lastProps && lastProps !=props) {
 						serverFetches.push({properties: lastProps, ids: unknownIds});
 						unknownIds = [];
 				}
 				unknownIds.push(id);
-				lastProps = this.getIds[id].properties;
+				lastProps = props;
 
 			}
 		}
