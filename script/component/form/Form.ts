@@ -15,19 +15,28 @@ import {t} from "../../Translate.js";
 export type FormHandler<ValueType extends ContainerFieldValue = ContainerFieldValue> = ((form: Form<ValueType>) => any | Promise<any>) | undefined;
 
 export interface FormEventMap<Type, ValueType extends ContainerFieldValue = ContainerFieldValue> extends FieldEventMap<Type> {
+
 	/**
 	 * Fires when the form is valid and submitted. The event is fired after calling the handler.
 	 *
 	 * @param form
 	 */
-	submit: (form: Type, handlerResponse: any) => any,
+	beforesubmit: (form: Type) => void|false,
+
+
+	/**
+	 * Fires when the form is valid and submitted. The event is fired after calling the handler.
+	 *
+	 * @param form
+	 */
+	submit: (form: Type, handlerResponse: any) => void,
 
 	/**
 	 * Not fired by the framework. But comes in handy when you extend this form and add a cancel button
 	 *
 	 * @param form
 	 */
-	cancel: (form: Type) => any
+	cancel: (form: Type) => void
 }
 
 export interface Form<ValueType extends ContainerFieldValue = ContainerFieldValue> extends ContainerField<ValueType> {
@@ -174,6 +183,10 @@ export class Form<ValueType extends ContainerFieldValue = ContainerFieldValue> e
 
 		if (this.isValid()) {
 			el.cls(['+valid', '-invalid']);
+
+			if(this.fire("beforesubmit", this) === false) {
+				return false;
+			}
 
 			let handlerResponse = undefined;
 			if (this.handler) {

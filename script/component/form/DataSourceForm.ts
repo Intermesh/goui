@@ -76,7 +76,9 @@ export class DataSourceForm<ValueType extends BaseEntity = DefaultEntity> extend
 			try {
 				let data,
 					v = this.currentId ? this.modified : this.value;
-				this.fire('beforesave', this, v);
+				if(this.fire('beforesave', this, v) === false) {
+					return;
+				}
 
 				if (!this.isNew) {
 					data = await this.dataSource.update(this.currentId!, v as ValueType);
