@@ -64,6 +64,11 @@ export class CheckboxField extends InputField {
 		this._labelEl = lbl;
 	}
 
+	protected renderIcon() {
+		if(	this._labelEl && this.iconEl) {
+			this._labelEl?.insertBefore(this.iconEl, this._labelEl?.firstChild);
+		}
+	}
 
 
 	protected createControl() {

@@ -69,9 +69,11 @@
 				border-top-left-radius: 0;
 				border-bottom-left-radius: 0;
 
+
 				span.box-label {
 					border-top-left-radius: 0;
 					border-bottom-left-radius: 0;
+					border-left: 0;
 				}
 			}
 		}
@@ -174,8 +176,6 @@
 		}
 	}
 
-
-
 	&.button{
 		.control {
 			flex-wrap: nowrap;
@@ -190,20 +190,19 @@
 				background-color: config.$colorFocus;
 				color: inherit;
 			}
-			
 		}
-
-		
 
 		span.box-label {
 			@extend .goui-button;
-
-
+			i.icon {
+				vertical-align: middle;
+				margin-right: util.dp(8);
+			}
 		}
-
 		
 		input {
 			margin: 0;
+			padding-left: 0; //icon is rendered in label
 		}
 
 	}

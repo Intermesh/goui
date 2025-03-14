@@ -107,7 +107,7 @@ export abstract class Field extends Component {
 	private _wrap?: HTMLDivElement;
 	protected _labelEl?: HTMLElement;
 	private _icon: MaterialIcon | "" | undefined;
-	private iconEl?: HTMLElement;
+	protected iconEl?: HTMLElement;
 
 	/**
 	 * Tracks if the field currently has focus.
@@ -299,6 +299,8 @@ export abstract class Field extends Component {
 			this.wrap!.append(label);
 		}
 
+		this.renderIcon();
+
 		if (this.control) {
 			this.wrap.append(this.control.cls('+control'));
 
@@ -306,8 +308,6 @@ export abstract class Field extends Component {
 				this.control.title = this.title;
 			}
 		}
-
-
 
 		this.renderButtons();
 
@@ -465,6 +465,9 @@ export abstract class Field extends Component {
 	public set icon(icon: MaterialIcon | "" | undefined) {
 		this._icon = icon;
 		this.createIcon();
+		if(this.rendered) {
+			this.renderIcon();
+		}
 	}
 
 	public get hint() {
@@ -778,10 +781,6 @@ false
 
 			this.el.classList.add("with-icon");
 
-			if(this.wrap) {
-				this.wrap.insertBefore(this.iconEl, this.wrap.firstChild);
-			}
-
 			return this.iconEl;
 		} else {
 			if(this.iconEl) {
@@ -789,7 +788,12 @@ false
 				this.el.classList.remove("with-icon");
 			}
 		}
+	}
 
+	protected renderIcon() {
+		if(this.wrap && this.iconEl) {
+			this.wrap.insertBefore(this.iconEl, this.wrap.firstChild);
+		}
 	}
 }
 
