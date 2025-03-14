@@ -279,6 +279,10 @@ html {
 	background-color: var(--bg-lowest);
 	overflow:hidden;
 	@extend .z2;
+
+	> .goui-fieldset:first-child {
+		margin-top: dp(16);
+	}
 }
 
 
