@@ -564,7 +564,8 @@ export class Window extends DraggableComponent {
 					break;
 				}
 			} else {
-				msg = msg.message;
+				// Javascript errors have message and JMAP errors have description
+				msg = msg.message ?? msg.description;
 			}
 		}
 
