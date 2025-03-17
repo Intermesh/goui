@@ -281,7 +281,7 @@ export class Menu extends AbstractMenu {
 
 		if(this.alignToInheritWidth) {
 			// make the menu at least as wide as the component it aligns too.
-			this.el.style.width = rect.width + "px";
+			this.el.style.minWidth = rect.width + "px";
 		}
 
 		// make sure menu is not wider than screen

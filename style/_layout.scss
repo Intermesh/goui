@@ -164,6 +164,10 @@ html {
 	padding: util.dp(24) util.dp(18) !important;
 }
 
+.goui.border {
+	border: config.$borderWidth solid config.$colorBorder !important;
+}
+
 .goui.border-bottom {
 	border-bottom: config.$borderWidth solid config.$colorBorder !important;
 }
