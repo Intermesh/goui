@@ -27,8 +27,8 @@ export interface AutocompleteChips<T extends List> extends ChipsField {
  * Chips component that auto completes user input
  */
 export class AutocompleteChips<T extends List = List> extends ChipsField {
-	private readonly menu: Menu;
-	private readonly menuButton: Button;
+	protected readonly menu: Menu;
+	protected readonly menuButton: Button;
 	private valuesToCompare?: string[];
 
 	//disable create
@@ -48,7 +48,7 @@ export class AutocompleteChips<T extends List = List> extends ChipsField {
 		this.menu = menu({
 				cls: "goui-dropdown scroll",
 				removeOnClose: false,
-				height: 300
+				height: 400
 			},
 			list
 		);

@@ -293,6 +293,9 @@ export class CheckboxSelectColumn extends TableColumn {
 					field.el.addEventListener("mousedown", (ev) => {
 						ev.stopPropagation()
 					});
+					field.el.addEventListener("click", (ev) => {
+						ev.stopPropagation()
+					});
 
 					field.value = table.rowSelection!.isSelected(record);
 

@@ -40,7 +40,7 @@ export class ObjectUtil {
 
 		const parts = ObjectUtil.explodePointer(pointer);
 
-		let part, cur = structuredClone(obj);
+		let part, cur= obj;// = structuredClone(obj);
 
 		while(part = parts.shift()) {
 			if(!(part in cur) && parts.length) {
