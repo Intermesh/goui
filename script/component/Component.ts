@@ -270,7 +270,14 @@ export class Component extends Observable {
 		this.items.on("remove", (_collection, item) => {
 			if (item.parent) {
 				item.parent = undefined;
-				item.remove();
+				if((item as any).supr) {
+
+					// compat with extjs components
+					(item as any).destroy();
+
+				} else {
+					item.remove();
+				}
 			}
 		});
 	}
