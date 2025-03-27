@@ -19,6 +19,11 @@
 		}
 	}
 
+	img {
+		// alt text wraps through other text when img's are small.
+		overflow-wrap: normal;
+	}
+
 	pre {
 		white-space: pre-wrap;
 	}
