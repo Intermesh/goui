@@ -569,6 +569,12 @@
 		}
 	}
 
+	.box-label {
+		&:empty {
+			display: none !important;
+		}
+	}
+
 
 
 	&.no-floating-label, &.has-value, &:focus-within {
