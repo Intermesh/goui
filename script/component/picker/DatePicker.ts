@@ -58,20 +58,20 @@ export class DatePicker extends Component {
 
 		this.el.append(
 			this.menu = E('header',
-				E('button', E('i', "chevron_left").cls("icon")).cls(["goui-button", "nav", "with-icon"], true).on('click', _ => {
+				E('button', E('i', "chevron_left").cls("icon")).attr("type", "button").cls(["goui-button", "nav", "with-icon"], true).on('click', _ => {
 					this.moveMonth(-1)
 				}),
-				this.monthEl = E('button').cls("goui-button").on('click', _ => {
+				this.monthEl = E('button').cls("goui-button").attr("type", "button").on('click', _ => {
 					this.months.cls('!active');
 					this.years.cls('-active');
 				}),
-				this.yearEl = E('button').cls("goui-button").on('click', _ => {
+				this.yearEl = E('button').cls("goui-button").attr("type", "button").on('click', _ => {
 					this.years.cls('!active');
 					this.months.cls('-active');
 					// scroll half way
 					this.years.scrollTop = (this.years.scrollHeight / 2) - (this.years.clientHeight / 2);
 				}),
-				E('button', E('i', "chevron_right").cls("icon")).cls(["goui-button", "nav", "with-icon"], true).on('click', _ => {
+				E('button', E('i', "chevron_right").cls("icon")).attr("type", "button").cls(["goui-button", "nav", "with-icon"], true).on('click', _ => {
 					this.moveMonth(1)
 				})
 			),
