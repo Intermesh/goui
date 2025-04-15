@@ -58,18 +58,18 @@
 
 	.collapse-btn {
 		i:after {
-			content: "expand_more";
+			content: "expand_less";
 		}
 	}
 
 	&.collapsed {
 		height: util.dp(74) !important;
-		min-height: 0;
+		min-height: 0 !important;
 		.item-container {
 
 			.collapse-btn {
 				i:after {
-					content: "expand_less";
+					content: "expand_more";
 				}
 			}
 
