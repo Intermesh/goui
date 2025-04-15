@@ -42,7 +42,7 @@ export class NumberField extends InputField {
 		if (this.max !== undefined && v && v > this.max) {
 			this.setInvalid(t("Number is bigger than the maximum of {max}.").replace("{max}", this.max.toLocaleString()));
 		}
-		if (this.min !== undefined &&  (!v || v < this.min)) {
+		if (this.min !== undefined &&  (v === undefined || v < this.min)) {
 			this.setInvalid(t("Number is bigger than the maximum of {max}.").replace("{max}", this.min.toLocaleString()));
 		}
 	}
