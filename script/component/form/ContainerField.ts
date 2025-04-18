@@ -134,6 +134,24 @@ export class ContainerField<ValueType extends ContainerFieldValue = ContainerFie
 		return false;
 	}
 
+
+	/**
+	 * Add some additional values to the form.
+	 * setting the value will reset the entire form or container. Patching will leave the other values alone.
+	 * @param v
+	 */
+	public patch(v: Partial<ValueType>) {
+		for(const name in v) {
+			const field = this.findField(name);
+			if(!field) {
+				throw "Field " + name + " not found";
+			}
+
+			field.value = v[name];
+		}
+		return this;
+	}
+
 	protected internalSetValue(v: Partial<ValueType>) {
 
 		this.findFields().forEach((field:any) => {
