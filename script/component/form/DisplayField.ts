@@ -58,7 +58,7 @@ export class DisplayField extends Field {
 	protected internalSetValue(v?: any) {
 
 		// if(this.control) {
-			const setFn = (str:string|Component) => {
+			const setFn = (str:number|string|Component) => {
 				if(str instanceof Component) {
 
 					if (!this.renderTagOnly) {
@@ -73,13 +73,13 @@ export class DisplayField extends Field {
 						(str as Component).remove();
 					})
 				} else {
-					if (this.escapeValue) {
+					if (this.escapeValue && (typeof str == 'string')) {
 						str = str.htmlEncode();
 					}
 					if (!this.renderTagOnly) {
-						this.control!.innerHTML = str;
+						this.control!.innerHTML = str + "";
 					} else {
-						this.el.innerHTML = str;
+						this.el.innerHTML = str + "";
 					}
 					if (this.hideWhenEmpty) {
 						this.hidden = str == "";
