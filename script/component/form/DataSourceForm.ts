@@ -80,7 +80,10 @@ export class DataSourceForm<ValueType extends BaseEntity = DefaultEntity> extend
 					return;
 				}
 
-				if (!this.isNew) {
+				//save because it changes when this.currentId is set
+				const isNew = this.isNew;
+
+				if (!isNew) {
 					data = await this.dataSource.update(this.currentId!, v as ValueType);
 				} else {
 					data = await this.dataSource.create(v);
@@ -89,7 +92,7 @@ export class DataSourceForm<ValueType extends BaseEntity = DefaultEntity> extend
 				}
 
 				if (data) {
-					this.fire('save', this, data, this.isNew);
+					this.fire('save', this, data, isNew);
 				}
 
 			} catch (e:any) {
