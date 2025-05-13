@@ -20,6 +20,8 @@ export class DateRangeField extends Field {
 
 	private static f = "Y-m-d";
 	private valueDisplay: Component;
+	private fromPicker: DatePicker;
+	private untilPicker: DatePicker;
 	constructor() {
 		super();
 
@@ -35,6 +37,25 @@ export class DateRangeField extends Field {
 
 			this.fireChange();
 		})
+
+
+		this.fromPicker = datepicker();
+		this.fromPicker.on("select", (datepicker, date) => {
+			this.value = ">=" + this.fromPicker.value.format(DateRangeField.f);
+
+			this.button.menu?.close()
+
+			this.fireChange();
+		})
+		this.untilPicker = datepicker();
+		this.untilPicker.on("select", (datepicker, date) => {
+			this.value = "<" + this.untilPicker.value.addDays(1).format(DateRangeField.f);
+
+			this.button.menu?.close()
+
+			this.fireChange();
+		})
+
 
 		this.button = this.createButton();
 
@@ -196,7 +217,22 @@ export class DateRangeField extends Field {
 							this.startPicker, this.endPicker
 						)
 					)
-				})
+				}),
+
+				btn({
+					text: t("From"),
+					menu: menu({},
+						this.fromPicker
+					)
+				}),
+
+				btn({
+					text: t("Until"),
+					menu: menu({},
+						this.untilPicker
+					)
+				}),
+
 			)
 		});
 	}
@@ -207,18 +243,35 @@ export class DateRangeField extends Field {
 		if (!v) {
 			this.valueDisplay.text = "";
 		} else {
-			const parts = v.split("..");
 
-			const date1 = DateTime.createFromFormat(parts[0], DateRangeField.f)
+			if(v.indexOf("..") > -1) {
+				const parts = v.split("..");
 
-			if (date1) {
-				this.valueDisplay.text = date1.format(Format.dateFormat);
+				const date1 = DateTime.createFromFormat(parts[0], DateRangeField.f)
 
-				if (parts[0] != parts[1]) {
-					const date2 = DateTime.createFromFormat(parts[1], DateRangeField.f);
+				if (date1) {
+					this.valueDisplay.text = date1.format(Format.dateFormat);
 
-					if (date2) {
-						this.valueDisplay.text += " - " + date2.format(Format.dateFormat);
+					if (parts[0] != parts[1]) {
+						const date2 = DateTime.createFromFormat(parts[1], DateRangeField.f);
+
+						if (date2) {
+							this.valueDisplay.text += " - " + date2.format(Format.dateFormat);
+						}
+					}
+				}
+			} else {
+				if(v.substring(0,2) == ">=") {
+					const date = DateTime.createFromFormat(v.substring(2,v.length) , DateRangeField.f);
+
+					if(date) {
+						this.valueDisplay.text = "> " + date.format(Format.dateFormat)
+					}
+				} else if(v.substring(0,1) == "<") {
+					const date = DateTime.createFromFormat(v.substring(1,v.length) , DateRangeField.f);
+
+					if(date) {
+						this.valueDisplay.text = "<= " + date.addDays(-1).format(Format.dateFormat)
 					}
 				}
 			}
