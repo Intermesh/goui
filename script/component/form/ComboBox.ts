@@ -138,6 +138,9 @@ export type ComboBoxConfig<Type extends ComboBox = ComboBox> = FieldConfig<Type,
 	 */
 	renderer?:ComboRenderer,
 
+	/**
+	 * Select the first record on render
+	 */
 	selectFirst?:boolean
 };
 
