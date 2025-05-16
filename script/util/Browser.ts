@@ -5,6 +5,9 @@
  */
 
 
+import {Notifier} from "../Notifier.js";
+import {t} from "../Translate.js";
+
 /**
  * Browser utility to interact with the browser functions
  *
@@ -120,8 +123,9 @@ class Browser {
 	 * Copy text to clip board
 	 *
 	 * @param {string} text
+	 * @param notify
 	 */
-	public copyTextToClipboard(text: string) {
+	public copyTextToClipboard(text: string, notify = true) {
 		const al = <HTMLElement>document.activeElement;
 		if (!navigator.clipboard) {
 			//fallback on workaround with textarea element
@@ -131,12 +135,21 @@ class Browser {
 			textArea.focus();
 			textArea.select();
 
+			let successful = false;
+
 			try {
-				const successful = document.execCommand('copy');
+				successful = document.execCommand('copy');
 				const msg = successful ? 'successful' : 'unsuccessful';
-				console.log('Fallback: Copying text command was ' + msg);
 			} catch (err) {
 				console.error('Fallback: Oops, unable to copy', err);
+			}
+
+			if(notify) {
+				if (successful) {
+					Notifier.success(t("Text was copied to the clipboard successfully"));
+				} else {
+					Notifier.error(t("Sorry, the text could not be copied to the clipboard"));
+				}
 			}
 
 			document.body.removeChild(textArea);
@@ -148,11 +161,19 @@ class Browser {
 
 		navigator.clipboard.writeText(text).then(function () {
 			console.log('Async: Copying to clipboard was successful!');
+
+			if(notify) {
+				Notifier.success(t("Text was copied to the clipboard successfully"));
+			}
+
 			if (al && al.focus) {
 				al.focus();
 			}
 		}, function (err) {
 			console.error('Async: Could not copy text: ', err);
+			if(notify) {
+				Notifier.error(t("Sorry, the text could not be copied to the clipboard"));
+			}
 		});
 	}
 }

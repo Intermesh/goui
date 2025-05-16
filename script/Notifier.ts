@@ -4,8 +4,7 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {comp} from "./component/Component.js";
-import {root} from "./component/Root.js";
+import {comp, root} from "./component/index";
 
 /**
  * Notify factory
