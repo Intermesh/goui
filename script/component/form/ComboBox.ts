@@ -36,11 +36,26 @@ export class ComboBox<DS extends AbstractDataSource = AbstractDataSource> extend
 	 */
 	public filter?: Filter;
 
-	constructor(public readonly dataSource:DS, public readonly displayProperty = "name", public readonly valueProperty = "id", protected renderer:ComboRenderer = ComboBoxDefaultRenderer, storeConfig:ComboBoxStoreConfig<DS> = {
-		queryParams: {
-			limit: 50
-		}
-	}) {
+	/**
+	 * Constructor
+	 * @param dataSource
+	 * @param displayProperty
+	 * @param valueProperty
+	 * @param renderer
+	 * @param storeConfig
+	 * @param selectFirst Selects the first record on render
+	 */
+	constructor(
+		public readonly dataSource:DS,
+		public readonly displayProperty = "name",
+		public readonly valueProperty = "id",
+		protected renderer:ComboRenderer = ComboBoxDefaultRenderer, storeConfig:ComboBoxStoreConfig<DS> = {
+			queryParams: {
+				limit: 50
+			}
+		},
+		protected selectFirst: boolean = false
+		) {
 
 		storeConfig.dataSource = dataSource;
 
@@ -78,6 +93,25 @@ export class ComboBox<DS extends AbstractDataSource = AbstractDataSource> extend
 			this.list.store.setFilter("combo", this.filter);
 			await this.list.store.load();
 		});
+
+		if(selectFirst) {
+			this.on('render', this.selectFirstRecord, {bind: this});
+		}
+	}
+
+	protected async selectFirstRecord() {
+		//auto select first entry if no value set
+		if(!this.value) {
+			const oldLimit = this.list.store.queryParams.limit;
+			this.list.store.queryParams.limit = 1;
+			const records = await this.list.store.load()
+			this.list.store.queryParams.limit = oldLimit;
+			//recheck cmp.value because window may have been loaded simultaneously.
+			if(!this.value && records.length) {
+				this.value = records[0].id;
+				this.trackReset();
+			}
+		}
 	}
 
 	pickerRecordToValue(_field: this, record: any): string {
@@ -102,7 +136,9 @@ export type ComboBoxConfig<Type extends ComboBox = ComboBox> = FieldConfig<Type,
 	/**
 	 * Renders the value in the list and input field. Must return plain text.
 	 */
-	renderer?:ComboRenderer
+	renderer?:ComboRenderer,
+
+	selectFirst?:boolean
 };
 
 /**
@@ -115,4 +151,4 @@ export const combobox = (config: ComboBoxConfig) => createComponent(new ComboBox
 	queryParams: {
 		limit: 50
 	}
-}), config);
+}, config.selectFirst ?? false), config);
