@@ -271,6 +271,7 @@ hr.goui {
 	z-index: config.$zIndexMask;
 	position:fixed;
 	height: 1px;
+	width: 1px;
 	background-color: config.$colorMain;
 	pointer-events: none;
 	&:after {
@@ -281,7 +282,7 @@ hr.goui {
 		width: util.dp(8);
 		height: util.dp(8);
 		position: absolute;
-		left: 0;
+		left: util.dp(-4);
 		top: util.dp(-4);
 	}
 }

@@ -113,6 +113,11 @@ export class Sortable<Type extends Component> extends Observable {
 	public dropBetween = true;
 
 	/**
+	 * Set to true when items are stacked horizontally
+	 */
+	public horizontal = false;
+
+	/**
 	 * Move the DOM nodes. Often GOUI components have underlying data stores that need to be updated. The components update
 	 * the UI already when the data in their store changes.
 	 */
@@ -132,6 +137,7 @@ export class Sortable<Type extends Component> extends Observable {
 
 			root.items.add(Sortable._dropPin);
 		}
+
 		return Sortable._dropPin;
 	}
 
@@ -243,21 +249,7 @@ export class Sortable<Type extends Component> extends Observable {
 			if(dragData.overEl) {
 
 				const rect = dragData.overEl.getBoundingClientRect();
-				// console.log(dragData.overEl, rect);
-				if(this.dropBetween) {
-					const betweenZone = this.dropOn ? 10 : rect.height / 2;
-					dragData.pos = "before";
-					if(e.y > rect.y + betweenZone)
-					{
-						dragData.pos = "on";
-					}
-
-					if(e.y > rect.y + rect.height - betweenZone) {
-						dragData.pos = "after";
-					}
-				} else {
-					dragData.pos = "on";
-				}
+				dragData.pos = this.getDragPos(rect, e);
 
 				switch(dragData.pos) {
 					case "before":
@@ -265,9 +257,16 @@ export class Sortable<Type extends Component> extends Observable {
 						e.stopPropagation();
 						e.dataTransfer!.dropEffect = "move";
 						dropPin.hidden = false;
-						dropPin.el.style.top = (rect.y - this.gap(dragData.overEl)) + "px";
-						dropPin.el.style.left = rect.x + "px";
-						dropPin.el.style.width = rect.width + "px";
+
+						if(this.horizontal) {
+							dropPin.el.style.top = rect.y + "px"; // (rect.y - this.gap(dragData.overEl)) + "px";
+							dropPin.el.style.left = (rect.x - this.gap(dragData.overEl)) + "px";
+							dropPin.el.style.height = rect.height + "px";
+						} else {
+							dropPin.el.style.top = (rect.y - this.gap(dragData.overEl)) + "px";
+							dropPin.el.style.left = rect.x + "px";
+							dropPin.el.style.width = rect.width + "px";
+						}
 						break;
 
 					case "on":
@@ -287,9 +286,18 @@ export class Sortable<Type extends Component> extends Observable {
 						e.stopPropagation();
 						e.dataTransfer!.dropEffect = "move";
 						dropPin.hidden = false;
-						dropPin.el.style.top = (rect.y + rect.height + this.gap(dragData.overEl)) + "px";
-						dropPin.el.style.left = rect.x + "px";
-						dropPin.el.style.width = rect.width + "px";
+
+						if(this.horizontal) {
+							dropPin.el.style.top = rect.y + "px";
+							dropPin.el.style.left = (rect.x + rect.width + this.gap(dragData.overEl)) + "px";
+							dropPin.el.style.height = rect.height + "px";
+							dropPin.el.style.width = "";
+						} else {
+							dropPin.el.style.top = (rect.y + rect.height + this.gap(dragData.overEl)) + "px";
+							dropPin.el.style.left = rect.x + "px";
+							dropPin.el.style.width = rect.width + "px";
+							dropPin.el.style.height = "";
+						}
 
 						break;
 				}
@@ -299,6 +307,37 @@ export class Sortable<Type extends Component> extends Observable {
 			}
 
 		})
+	}
+
+	private getDragPos(rect: DOMRect, e:DragEvent) {
+		let pos: DROP_POSITION;
+		if (this.dropBetween) {
+			if(this.horizontal) {
+				const betweenZone = this.dropOn ? 10 : rect.width / 2;
+				pos = "before";
+				if (e.x > rect.x + betweenZone) {
+					pos = "on";
+				}
+
+				if (e.x > rect.x + rect.width - betweenZone) {
+					pos = "after";
+				}
+			} else {
+				const betweenZone = this.dropOn ? 10 : rect.height / 2;
+				pos = "before";
+				if (e.y > rect.y + betweenZone) {
+					pos = "on";
+				}
+
+				if (e.y > rect.y + rect.height - betweenZone) {
+					pos = "after";
+				}
+			}
+		} else {
+			pos = "on";
+		}
+
+		return pos;
 	}
 
 	private dropAllowed() {
@@ -325,22 +364,38 @@ export class Sortable<Type extends Component> extends Observable {
 			return this._gap;
 		}
 
-		const item2 = item.nextElementSibling ?? item.previousElementSibling;
-		if(item2 === null) {
-			return 0;
+		let item2 = item.nextElementSibling, r1, r2;
+
+		if(item2 == null) {
+			item2 =  item.previousElementSibling;
+			if(item2 === null) {
+				return 0;
+			}
+
+			r1 = item2.getBoundingClientRect();
+			r2 = item.getBoundingClientRect();
+
+		} else {
+			r1 = item.getBoundingClientRect();
+			r2 = item2.getBoundingClientRect();
 		}
 
-		const r1 = item.getBoundingClientRect(), r2 = item2.getBoundingClientRect();
+		this._gap = this.horizontal
+			? (r1.x + r1.width - r2.x) / 2
+			: (r1.y + r1.height - r2.y) / 2
 
-		this._gap = (Math.max(r2.y, r1.y) - Math.min(r1.y, r2.y) - r1.height) / 2;
 
 		return this._gap;
 	}
 
 	private endDrag(e:DragEvent) {
 
-		if(!dragData.dragSrc) {
+		if(dragData.group != this.group) {
+			//not our item
+			return;
+		}
 
+		if(!dragData.dragSrc) {
 			this.fire("dragend", this, e, dragData);
 			return;
 		}
@@ -349,7 +404,7 @@ export class Sortable<Type extends Component> extends Observable {
 
 		root.el.cls("-dragging");
 
-		if((!this.dropOn && !this.dropBetween) || dragData.group != this.group || !this.dropAllowed()) {
+		if((!this.dropOn && !this.dropBetween) || !this.dropAllowed()) {
 			dragData.dragSrc = undefined;
 			this.fire("dragend", this, e, dragData);
 			return;
