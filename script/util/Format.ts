@@ -262,7 +262,7 @@ export class Format {
 		if(!bytes)
 			return '';
 		const i = Math.floor( Math.log(bytes) / Math.log(1024) );
-		return (bytes / Math.pow(1024, i) ).toFixed(2) + ' ' + ['B', 'kB', 'MB', 'GB', 'TB'][i];
+		return (bytes / Math.pow(1024, i) ).toFixed(i?2:0) + ' ' + ['B', 'kB', 'MB', 'GB', 'TB'][i];
 	}
 
 
