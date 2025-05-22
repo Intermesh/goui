@@ -99,11 +99,6 @@ export class TableColumn extends Observable {
 	sortable = false
 
 	/**
-	 * Drag to reorder
-	 */
-	draggable = false
-
-	/**
 	 * Width in rem units
 	 */
 	width?: number

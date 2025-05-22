@@ -390,6 +390,8 @@ export class Sortable<Type extends Component> extends Observable {
 
 	private endDrag(e:DragEvent) {
 
+		Sortable.getDropPin().hidden = true;
+
 		if(dragData.group != this.group) {
 			//not our item
 			return;
@@ -410,7 +412,7 @@ export class Sortable<Type extends Component> extends Observable {
 			return;
 		}
 
-		Sortable.getDropPin().hidden = true;
+
 
 		if(dragData.overEl) {
 

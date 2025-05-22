@@ -6,9 +6,9 @@
 
 import {comp, Component, ComponentState, createComponent} from "../Component.js";
 import {Store, StoreRecord} from "../../data/Store.js";
-import {ObjectUtil} from "../../util/ObjectUtil.js";
+import {ObjectUtil} from "../../util/index";
 import {menu, Menu} from "../menu/Menu.js";
-import {checkbox} from "../form/CheckboxField.js";
+import {checkbox} from "../form/index";
 import {Notifier} from "../../Notifier.js";
 import {draggable} from "../DraggableComponent.js";
 import {TableColumn} from "./TableColumns.js";
@@ -215,6 +215,11 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 	private headersRow?: HTMLTableRowElement;
 
 	protected itemTag: keyof HTMLElementTagNameMap = 'tr';
+
+	/**
+	 * Allow reordering columns by drag and drop
+	 */
+	public reorderColumns = true;
 
 
 	protected getRowElements() : HTMLElement[] {
@@ -501,8 +506,8 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 			} else {
 				stickyLeft = false;
 
-				if(h.draggable) {
-					header.draggable = h.draggable;
+				if(this.reorderColumns) {
+					header.draggable = true;
 				}
 			}
 
@@ -542,17 +547,30 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 	protected initSortable() {
 		super.initSortable();
 
-		const headerSorter = new Sortable(this, 'th[draggable="true"]');
-		headerSorter.dropOn = false;
-		headerSorter.dropBetween = true;
-		headerSorter.horizontal = true;
-		headerSorter.group = "header-sortable-" + Component.uniqueID();
+		if(this.reorderColumns) {
+			const headerSorter = new Sortable(this, 'th');
+			headerSorter.dropOn = false;
+			headerSorter.dropBetween = true;
+			headerSorter.horizontal = true;
+			headerSorter.group = "header-sortable-" + Component.uniqueID();
 
-		headerSorter.on("sort", (toComp, toIndex, fromIndex , droppedOn, fromComp, dragDataSet) => {
-			this.columnSort = ArrayUtil.move(this.getColumnSort(), fromIndex, toIndex);
-			this.saveState();
-			this.rerender();
-		});
+			headerSorter.on("sort", (toComp, toIndex, fromIndex, droppedOn, fromComp, dragDataSet) => {
+				this.columnSort = ArrayUtil.move(this.getColumnSort(), fromIndex, toIndex);
+				this.saveState();
+				this.rerender();
+			});
+
+			headerSorter.on("dropallowed",(dropComp, toIndex, fromIndex, droppedOn, fromComp, dragDataSet) => {
+				const cols = this.columns;
+
+				if(!cols[toIndex]) {
+					return false;
+				} else {
+					return !cols[toIndex].sticky;
+				}
+
+			})
+		}
 	}
 
 	private onSort(dataIndex: string, header: HTMLTableCellElement) {
