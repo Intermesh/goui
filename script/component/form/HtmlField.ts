@@ -371,7 +371,8 @@ export class HtmlField extends Field {
 
 		this.tbar = tbar({
 			cls: "frame html-field-toolbar",
-			overflowMenu: true
+			overflowMenu: true,
+			overflowMenuBtnConfig: {tabIndex: -1}
 		});
 
 		for (const cmd of this.toolbarItems) {
@@ -386,7 +387,7 @@ export class HtmlField extends Field {
 					icon: config.icon,
 					menu: config.menu,
 					title: config.title,
-					tabIndex: 0, //needed for Safari. Otherwise the blur event doesn't have this button as relatedTarget.
+					tabIndex: -1, // We don't want to tab through all tb buttons. Needed for Safari as well, otherwise the blur event doesn't have this button as relatedTarget.
 												// See in this.editor.addEventListener("blur", below
 					handler: (btn) => {
 						if (!config.applyFn) {

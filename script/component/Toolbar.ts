@@ -5,7 +5,7 @@
  */
 
 import {assignComponentConfig, comp, Component, ComponentEventMap, hr} from "./Component.js";
-import {btn, Button} from "./Button.js";
+import {btn, Button, ButtonConfig} from "./Button.js";
 import {Config, Listener, ObservableListenerOpts} from "./Observable.js";
 import {menu} from "./menu/index.js";
 import {AbstractMenu} from "./AbstractMenu";
@@ -54,6 +54,13 @@ export class Toolbar extends AbstractMenu {
 	private overflowSpacer?: Component;
 	private gap?: number;
 
+	/**
+	 * Configuration for the overflowMenu button
+	 *
+	 * @link this.overflowMenu
+ 	 */
+	public overflowMenuBtnConfig:undefined|ButtonConfig = undefined;
+
 	render(parentEl?: Node, insertBefore?: Node): HTMLElement {
 		if(this.overflowMenu) {
 			this.initOverFlowMenu();
@@ -74,10 +81,13 @@ export class Toolbar extends AbstractMenu {
 
 	private initOverFlowMenu() {
 
-		this.overflowMenuBtn = btn({
-			icon: "more_vert",
-			menu: menu()
-		});
+		const cfg = this.overflowMenuBtnConfig || {};
+		if(!cfg.icon) {
+			cfg.icon = "more_vert";
+		}
+		cfg.menu = menu()
+
+		this.overflowMenuBtn = btn(cfg);
 
 		this.overflowSpacer = comp({flex: 1, style:{padding:"0", margin:"0"}});
 		this.items.add(this.overflowSpacer, this.overflowMenuBtn);

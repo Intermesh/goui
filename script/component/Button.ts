@@ -309,10 +309,10 @@ export class Button extends Component {
 		return this._textEl;
 	}
 }
-
+export type ButtonConfig<Type extends Button = Button> = Config<Type, ButtonEventMap<Type>>;
 /**
  * Shorthand function to create {@link Button}
  *
  * @param config
  */
-export const btn = (config?: Config<Button, ButtonEventMap<Button>>) => createComponent(new Button(), config);
+export const btn = (config?: ButtonConfig) => createComponent(new Button(), config);
