@@ -84,7 +84,7 @@ export class Button extends Component {
 	 * The handler only fires on the primary mouse button and when the button is duoble clicked it will
 	 * only fire once!
 	 */
-	public handler?: (button: this, ev?: MouseEvent) => any;
+	public handler?: (button: Button, ev?: MouseEvent) => any;
 
 	private _menu?: Menu;
 
