@@ -14,6 +14,8 @@ import {draggable} from "../DraggableComponent.js";
 import {TableColumn} from "./TableColumns.js";
 import {List, ListEventMap} from "../List.js";
 import {Config, Listener, ObservableListenerOpts} from "../Observable.js";
+import {Sortable} from "../Sortable";
+import {ArrayUtil} from "../../util/index";
 
 
 export interface Table<StoreType extends Store = Store> extends List<StoreType>  {
@@ -82,7 +84,7 @@ export interface Table<StoreType extends Store = Store> extends List<StoreType> 
  *  ```
  */
 export class Table<StoreType extends Store = Store> extends List<StoreType> {
-	private _columns: TableColumn[];
+	private _columns!: Record<string,TableColumn>;
 
 	/**
 	 * The table columns
@@ -90,14 +92,17 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 	 * @param columns
 	 */
 	public set columns(columns:TableColumn[]) {
-		this._columns = columns
+		this._columns = {};
+		columns.forEach(c => {
+			this._columns[c.id] = c;
+		})
 		if(this.rendered) {
 			this.rerender();
 		}
 	}
 
 	public get columns() {
-		return this._columns;
+		return Object.values(this._columns);
 	}
 	/**
 	 *
@@ -109,7 +114,8 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 		super(store, (record, row, me, storeIndex) => {
 
 			let left = 0, stickyLeft = true, index = -1;
-			for (let c of this._columns) {
+			for (let id of this.getColumnSort()) {
+				const c = this._columns[id];
 				index++
 
 				c.parent = this;
@@ -184,7 +190,7 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 
 		}, "table");
 
-		this._columns = columns;
+		this.columns = columns;
 
 	}
 
@@ -246,9 +252,7 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 	 * @param id
 	 */
 	public findColumnById(id: string) {
-		return this._columns.find((col) => {
-			return col.id == id;
-		});
+		return this._columns[id] ?? undefined;
 	}
 
 	/**
@@ -268,11 +272,9 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 		if(!this.headersRow) {
 			return false;
 		}
-		const index = this._columns.findIndex((col) => {
-			return col.id == id;
-		});
+		const index = this.getColumnSort().indexOf(id)
 
-		if(!index) {
+		if(index === -1) {
 			return false;
 		}
 
@@ -286,16 +288,35 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 	protected buildState(): ComponentState {
 		const cols: any = {};
 
-		this._columns.forEach((c) => {
-			cols[c.id] = {
-				width: c.width,
-				hidden: c.hidden
+		for(const id in this._columns) {
+			cols[id] = {
+				width: this._columns[id].width,
+				hidden: this._columns[id].hidden
 			}
-		});
+		}
 
 		return {
 			sort: this.store.sort,
-			columns: cols
+			columns: cols,
+			columnSort: this.columnSort
+		}
+	}
+
+	protected columnSort: string[]|undefined;
+
+	private getColumnSort() {
+		if(this.columnSort) {
+			if(this.columnSort.length != this.columns.length) {
+				// add missing id's
+				for(const id in this._columns) {
+					if(this.columnSort!.indexOf(id) === -1) {
+						this.columnSort!.push(id);
+					}
+				}
+			}
+			return this.columnSort;
+		} else {
+			return this.columns.map(c => c.id);
 		}
 	}
 
@@ -314,8 +335,6 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 		super.renderBody();
 	}
 
-
-
 	private columnMenu: Menu | undefined;
 
 	private showColumnMenu(ev: MouseEvent) {
@@ -327,7 +346,9 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 				removeOnClose: false
 			});
 
-			this._columns.forEach((c) => {
+			for (let id of this.getColumnSort()) {
+				const c = this._columns[id];
+
 				if (c.header && c.hidable) {
 					this.columnMenu!.items.add(checkbox({
 						label: c.header,
@@ -342,7 +363,7 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 						}
 					}));
 				}
-			});
+			};
 		}
 
 		this.columnMenu.showAt(ev);
@@ -396,7 +417,8 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 		const colGroup = document.createElement("colgroup");
 
 		let index = -1;
-		for (let h of this._columns) {
+		for (let id of this.getColumnSort()) {
+			const h = this._columns[id];
 			index++;
 			if (h.hidden) {
 				continue;
@@ -434,7 +456,8 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 		})
 
 		let index = -1, left = 0,  stickyLeft = true;
-		for (let h of this._columns) {
+		for (let id of this.getColumnSort()) {
+			const h = this._columns[id];
 			index++;
 			if (h.hidden) {
 				continue;
@@ -477,6 +500,10 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 
 			} else {
 				stickyLeft = false;
+
+				if(h.draggable) {
+					header.draggable = h.draggable;
+				}
 			}
 
 			h.headerEl = header;
@@ -510,6 +537,22 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 		this.el!.appendChild(thead);
 
 		return this.headersRow
+	}
+
+	protected initSortable() {
+		super.initSortable();
+
+		const headerSorter = new Sortable(this, 'th[draggable="true"]');
+		headerSorter.dropOn = false;
+		headerSorter.dropBetween = true;
+		headerSorter.horizontal = true;
+		headerSorter.group = "header-sortable-" + Component.uniqueID();
+
+		headerSorter.on("sort", (toComp, toIndex, fromIndex , droppedOn, fromComp, dragDataSet) => {
+			this.columnSort = ArrayUtil.move(this.getColumnSort(), fromIndex, toIndex);
+			this.saveState();
+			this.rerender();
+		});
 	}
 
 	private onSort(dataIndex: string, header: HTMLTableCellElement) {
@@ -561,12 +604,13 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 	 */
 	private fixColumnWidths() {
 
-		this._columns.forEach(col => {
+		for (let id of this.getColumnSort()) {
+			const col = this._columns[id];
 			if (!col.hidden) {
 				col.width = Table.pxToRem(col.headerEl!.offsetWidth);
 				col.headerEl!.style.width = col.width / 10 + "rem";
 			}
-		});
+		};
 
 		this.el!.style.minWidth = "";
 		this.el!.style.width = this.calcTableWidth() / 10 + "rem";
@@ -579,7 +623,7 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 	 */
 	private calcTableWidth(untilColumnIndex: number = -1) {
 
-		return this._columns.reduce((previousValue: number, nextValue: TableColumn, currentIndex: number) => {
+		return this.columns.reduce((previousValue: number, nextValue: TableColumn, currentIndex: number) => {
 			if (nextValue.hidden || (untilColumnIndex > -1 && currentIndex >= untilColumnIndex)) {
 				return previousValue;
 			}
@@ -602,7 +646,7 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 		tr.classList.add("group");
 
 		const th = document.createElement("th");
-		th.colSpan = this._columns.length;
+		th.colSpan = this.columns.length;
 
 		this.renderGroupToEl(record, th);
 
@@ -615,8 +659,6 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 
 		return groupEl;
 	}
-
-
 
 	public onRecordRemove(collection: StoreType, item: StoreRecord, index: number) {
 
@@ -643,9 +685,13 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 
 	private calcStickyRight(index: number) {
 		let r = 0;
-		for(let i = index + 1, l = this._columns.length; i < l; i++) {
-			if(this._columns[i].width) {
-				r += this._columns[i].width!;
+
+		const sort = this.getColumnSort();
+
+		for(let i = index + 1, l = sort.length; i < l; i++) {
+			const id = sort[i];
+			if(this._columns[id].width) {
+				r += this._columns[id].width!;
 			}
 		}
 		return r;
