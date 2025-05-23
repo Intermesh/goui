@@ -2,20 +2,30 @@ import {Button, ButtonConfig} from "./Button";
 import {Component, createComponent} from "./Component";
 
 export class CollapseButton extends Button {
-	constructor(private collapseEl:Component) {
+	constructor(private collapseEl:Component | ((btn:CollapseButton) => Component)) {
 		super();
 
-		this.icon = collapseEl.hidden ? "expand_more" : "expand_less";
+		this.on("beforerender", () => {
+			this.icon = this.getCollapseEl().hidden ? "expand_more" : "expand_less";
+		});
 
 		this.handler = () => {
-
-			if (this.collapseEl.hidden) {
-				this.collapseEl.hidden = false;
+			const el = this.getCollapseEl();
+			if (el.hidden) {
+				el.hidden = false;
 				this.icon = "expand_less";
 			} else {
-				this.collapseEl.hidden = true;
+				el.hidden = true;
 				this.icon = "expand_more";
 			}
+		}
+	}
+
+	private getCollapseEl() {
+		if(this.collapseEl instanceof Component) {
+			return this.collapseEl;
+		} else {
+			return this.collapseEl(this);
 		}
 	}
 }
