@@ -303,7 +303,7 @@ export class Component extends Observable {
 	}
 
 	/**
-	 * Restore state of the component in this function. It's called before render in init().
+	 * Restore state of the component in this function. It's called during rendering.
 	 *
 	 * @see saveState();
 	 * @param state

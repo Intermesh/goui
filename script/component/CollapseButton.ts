@@ -1,8 +1,20 @@
 import {Button, ButtonConfig} from "./Button";
-import {Component, createComponent} from "./Component";
+import {Component, ComponentState, createComponent} from "./Component";
 
+type CollapseEl = ((btn:CollapseButton) => Component) | Component
+
+/**
+ * Button that can be used to hide and show another component
+ * Use "stateId" to remember the collapsed state,.
+ */
 export class CollapseButton extends Button {
-	constructor(private collapseEl:Component | ((btn:CollapseButton) => Component)) {
+
+	/**
+	 * Constructor
+	 *
+	 * @param collapseEl Pass a component or a function that returns the component after render
+	 */
+	constructor(private collapseEl:CollapseEl) {
 		super();
 
 		this.on("beforerender", () => {
@@ -18,6 +30,22 @@ export class CollapseButton extends Button {
 				el.hidden = true;
 				this.icon = "expand_more";
 			}
+
+			this.saveState();
+		}
+	}
+
+	protected buildState(): ComponentState {
+		return {
+			collapsed: this.getCollapseEl().hidden
+		}
+	}
+
+	protected restoreState(state: ComponentState) {
+		super.restoreState(state);
+
+		if("collapsed" in state) {
+			this.getCollapseEl().hidden = state.collapsed;
 		}
 	}
 
@@ -30,4 +58,15 @@ export class CollapseButton extends Button {
 	}
 }
 
-export const collapsebtn = (config: ButtonConfig<CollapseButton> & {collapseEl: Component}) => createComponent(new CollapseButton(config.collapseEl), config);
+/**
+ * Button that can be used to hide and show another component
+ * Use "stateId" to remember the collapsed state.
+ *
+ * @param config
+ */
+export const collapsebtn = (config: ButtonConfig<CollapseButton> & {
+	/**
+	 * Pass a component or a function that returns the component after render
+	 */
+	collapseEl: CollapseEl
+}) => createComponent(new CollapseButton(config.collapseEl), config);
