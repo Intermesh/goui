@@ -263,7 +263,7 @@ export class RowSelect<StoreType extends Store = Store, RecordType extends Store
 				}
 			}
 
-		} else if ((e.ctrlKey || e.metaKey || this.listHasCheckbox()) && this.multiSelect)  {
+		} else if ((e.ctrlKey || e.metaKey ) && this.multiSelect)  {
 			const record = store.get(index);
 			if(record) {
 				this.toggle(record as RecordType)
@@ -296,13 +296,7 @@ export class RowSelect<StoreType extends Store = Store, RecordType extends Store
 	 */
 	private onRowClick(list: List, index: number, e: MouseEvent|KeyboardEvent) {
 
-		// if(list != this.list) {
-		// 	// rowclick event is relayed for a tree and we don't need that here
-		// 	return;
-		// }
-
-
-		if(e.shiftKey || e.ctrlKey || e.metaKey || this.listHasCheckbox()) {
+		if(e.shiftKey || e.ctrlKey || e.metaKey) {
 			return;
 		}
 
