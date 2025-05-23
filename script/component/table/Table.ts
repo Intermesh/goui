@@ -191,7 +191,6 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 		}, "table");
 
 		this.columns = columns;
-
 	}
 
 	/**
@@ -285,7 +284,6 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 
 		const header = this.headersRow.childNodes.item(index) as HTMLElement
 		header.scrollIntoView(opts);
-
 
 		return true;
 	}
@@ -411,9 +409,7 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 			return splitter;
 
 		} else {
-
 			return comp({tagName: "hr"});
-
 		}
 	}
 
@@ -444,7 +440,6 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 
 			colGroup.appendChild(col);
 		}
-
 
 		this.el!.appendChild(colGroup);
 
@@ -649,8 +644,6 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 
 		}, 0);
 	}
-
-
 
 	protected renderGroup(record: any): HTMLElement {
 

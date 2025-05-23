@@ -4,7 +4,7 @@
  * @author Michael de Hart <mdhart@intermesh.nl>
  */
 
-import {assignComponentConfig, comp, Component, ComponentEventMap, createComponent} from "./Component.js";
+import {assignComponentConfig, comp, Component, ComponentEventMap, createComponent, span} from "./Component.js";
 import {Store, StoreComponent, StoreRecord, storeRecordType} from "../data";
 import {t} from "../Translate.js";
 import {E, ObjectUtil} from "../util";
@@ -14,10 +14,7 @@ import {Window} from "./Window.js";
 import {Sortable} from "./Sortable.js";
 
 export type RowRenderer = (record: any, row: HTMLElement, list: any, storeIndex: number) => string | Component[] | void;
-
 export type GroupByRenderer = (groupBy: any, record: any, list: List) => string | Promise<string> | Component | Promise<Component>;
-
-
 export type listStoreType<ListType> = ListType extends List<infer StoreType> ? StoreType : never;
 
 /**
@@ -197,6 +194,12 @@ export class List<StoreType extends Store = Store> extends Component implements 
 	 * Group the table by this property.
 	 */
 	public groupBy?: string;
+
+	/**
+	 * Makes the groups collapsible
+	 */
+	public groupByCollapsible = true;
+
 	/**
 	 * Group renderer function
 	 */
@@ -521,13 +524,59 @@ export class List<StoreType extends Store = Store> extends Component implements 
 			this.renderGroupToEl(record, li);
 
 			this.el.append(li);
-
 		}
 		return this.el;
 	}
 
+	private wrapGroupByCollapsible(groupDisplayEl:HTMLElement) {
+
+		// this component will replace the original
+		const groupDisplayComp = comp();
+
+		const groupRow = comp({
+				cls: "hbox"
+			},
+			span({
+				itemId: "expander",
+				cls: "icon",
+				text: "expand_more"
+			}),
+			groupDisplayComp
+		);
+
+		groupRow.render(groupDisplayEl);
+
+		groupRow.el.addEventListener("click", (ev) => {
+			this.toggleGroup(groupRow);
+		});
+
+		return groupDisplayComp.el;
+	}
+
+	private toggleGroup(groupRow:Component) {
+		const groupContainer = groupRow.el.closest("tbody");
+		if (!groupContainer) {
+			return
+		}
+
+		const icon = groupRow.findChild("expander")!;
+		icon.text == "expand_more" ? icon.text = "chevron_right" : icon.text = "expand_more";
+
+		const dataRows = groupContainer.querySelectorAll("tr.data");
+
+		dataRows.forEach((row) => {
+			const tableRow = row as HTMLTableRowElement;
+
+			tableRow.style.display == "none" ? tableRow.style.display = "" : tableRow.style.display = "none";
+		});
+	}
+
 
 	protected renderGroupToEl(record: any, groupDisplayEl:HTMLElement) {
+
+		if(this.groupByCollapsible) {
+			groupDisplayEl = this.wrapGroupByCollapsible(groupDisplayEl);
+		}
 
 		const groupBy = ObjectUtil.get(record, this.groupBy!);
 		const r = this.groupByRenderer(groupBy, record, this);
@@ -553,8 +602,6 @@ export class List<StoreType extends Store = Store> extends Component implements 
 			} else {
 				console.warn("Renderer returned invalid value: ", r);
 			}
-
-
 		}
 	}
 
@@ -583,7 +630,6 @@ export class List<StoreType extends Store = Store> extends Component implements 
 		return row;
 	}
 
-
 	private onMouseEvent(e: UIEvent & { target: HTMLElement }, type: any) {
 
 		const row = this.findRowByEvent(e),
@@ -598,10 +644,7 @@ export class List<StoreType extends Store = Store> extends Component implements 
 	private findRowByEvent(e: UIEvent & { target: HTMLElement }) {
 		return e.target.closest(".data") as HTMLElement;
 	}
-
 }
-
-
 
 export type ListConfig<StoreType extends Store> = Omit<Config<List<StoreType>, ListEventMap<List<StoreType>>, "store" | "renderer">, "rowSelection">
 
