@@ -125,11 +125,6 @@
 		transform: translate(-50%, -50%);
 	}
 
-	.goui-toolbar:first-child, .goui-toolbar:last-child {
-		padding: util.dp(12) util.dp(18);
-		//background-color: $colorWindowHeader;
-		
-	}
 
 	.goui-cardmenu {
 		//background-color: $colorWindowHeader;
@@ -138,6 +133,7 @@
 	}
 
 	.header {
+		padding: util.dp(12) util.dp(18);
 		height: util.dp(74);
 		background-color: config.$surfaceHigh;
 		position: relative;
