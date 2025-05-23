@@ -169,7 +169,7 @@
 	user-select: none;
 	-moz-user-select: none;
 	-webkit-user-select: none;
-	padding: util.dp(8) util.dp(16);
+	padding: util.dp(8) 0;//util.dp(16);
 	min-height: util.dp(62);
 	margin: 0;
 
@@ -200,6 +200,9 @@
 		line-height: normal;
 		font-weight: normal;
 		padding: 0;
+		&:first-child {
+			padding-left: util.dp(16);
+		}
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
@@ -212,7 +215,10 @@
 		font-size: util.sp(20);
 		font-weight: normal;
 		line-height: normal;
-		padding: util.dp(11) 0;
+		padding: 0;
+		&:first-child {
+			padding-left: util.dp(16);
+		}
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
@@ -229,6 +235,11 @@
 	.goui-form-field {
 		//adjust to match button height. Take off 3px of padding at top and bottom
 		align-self: center;
+		padding: 0 util.dp(8) 0 0;
+
+		&:first-child {
+			padding-left: util.dp(16);
+		}
 		.hint {
 			display: none;
 			padding-bottom: 0;
