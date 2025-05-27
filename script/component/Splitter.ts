@@ -7,7 +7,7 @@ import {Component, ComponentState, createComponent, FindComponentPredicate, REM_
 import {DraggableComponent} from "./DraggableComponent.js";
 import {Config} from "./Observable.js";
 
-
+type ResizeComponent = Component | ((splitter:Splitter) => Component);
 /**
  * Splitter
  *
@@ -42,39 +42,25 @@ export class Splitter extends DraggableComponent {
 
 	/**
 	 *
-	 * @param resizeComponentPredicate 	The component to resize in height or width.
+	 * @param resizeComponent 	The component to resize in height or width.
 	 *    Can be a component ID, itemId property, Component instance or custom function
 	 *
 	 */
-	constructor(private resizeComponentPredicate: FindComponentPredicate) {
+	constructor(resizeComponent: ResizeComponent) {
 		super("hr");
 
 		// determine resize component as early as possible. This is just before the parent component renders.
 		// Then the sizes can be set before the resizeComponent renders itself.
 		this.on("added", (comp, index, parent) => {
 			parent.on("beforerender", () => {
-				this.findResizeComponent(resizeComponentPredicate);
+				this._resizeComponent = resizeComponent instanceof Component ? resizeComponent : resizeComponent(this);
+
+				const state = this.getState();
+				if (state) {
+					this.applyStateToResizeComp(state);
+				}
 			});
 		});
-	}
-
-	private findResizeComponent(resizeComponentPredicate:FindComponentPredicate) {
-		// find component to resize if it's an id string
-		if (!(resizeComponentPredicate instanceof Component)) {
-			this._resizeComponent = this.parent!.findChild(this.resizeComponentPredicate)!;
-
-			if (!this._resizeComponent) {
-				console.warn(this.resizeComponentPredicate);
-				throw "Splitter could not find component to resize!";
-			}
-		} else {
-			this._resizeComponent = resizeComponentPredicate;
-		}
-
-		const state = this.getState();
-		if (state) {
-			this.applyStateToResizeComp(state);
-		}
 	}
 
 	private applyStateToResizeComp(state: ComponentState) {
@@ -231,10 +217,10 @@ export class Splitter extends DraggableComponent {
 
 
 type SplitterConfig = Config<Splitter> & {
-	resizeComponentPredicate: FindComponentPredicate
+	resizeComponent: ResizeComponent
 }
 
 /**
  * Shorthand function to create {@link Splitter}
  */
-export const splitter = (config: SplitterConfig) => createComponent(new Splitter(config.resizeComponentPredicate), config);
+export const splitter = (config: SplitterConfig) => createComponent(new Splitter(config.resizeComponent), config);
