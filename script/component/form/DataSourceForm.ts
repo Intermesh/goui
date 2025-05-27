@@ -141,6 +141,7 @@ export class DataSourceForm<ValueType extends BaseEntity = DefaultEntity> extend
 		this.fire('load', this, data);
 		if (data) {
 			this.value = data;
+			this.trackReset();
 		}
 	}
 

@@ -195,6 +195,22 @@ export class ContainerField<ValueType extends ContainerFieldValue = ContainerFie
 		return formProps;
 	}
 
+	public getOldValue(): any {
+		const old:any = {};
+		this.findFields().forEach((field: any) => {
+			//for Extjs compat try .getName() and .getValue()
+			const fieldName = (field.getName ? field.getName() : field.name) as keyof ValueType
+
+			if (fieldName) {
+				if(!field.disabled) {
+					old[fieldName] = field.resetValue;
+				}
+			}
+		});
+
+		return old;
+	}
+
 	protected validate() {
 		super.validate();
 		let invalid;
