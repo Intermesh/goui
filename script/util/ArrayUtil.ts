@@ -95,6 +95,10 @@ export class ArrayUtil {
 	 * @param to
 	 */
 	public static move = function <T extends any[]>(array:T, from:number, to:number) {
+		// because we remove it from the array the to should be 1 less
+		if(to > from) {
+			to--;
+		}
 		array.splice(to, 0, array.splice(from, 1)[0]);
 		return array;
 	};
