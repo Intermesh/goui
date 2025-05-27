@@ -312,14 +312,14 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 			if(this.columnSort.length != this.columns.length) {
 				// add missing id's
 				for(const id in this._columns) {
-					if(this.columnSort!.indexOf(id) === -1) {
+					if(!this._columns[id].hidden && this.columnSort!.indexOf(id) === -1) {
 						this.columnSort!.push(id);
 					}
 				}
 			}
 			return this.columnSort;
 		} else {
-			return this.columns.map(c => c.id);
+			return this.columns.filter(c => !c.hidden).map(c => c.id);
 		}
 	}
 
@@ -349,7 +349,7 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 				removeOnClose: false
 			});
 
-			for (let id of this.getColumnSort()) {
+			for (let id in this._columns) {
 				const c = this._columns[id];
 
 				if (c.header && c.hidable) {
@@ -529,7 +529,6 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 					})
 				}
 			}
-
 			this.headersRow.appendChild(header);
 		}
 
@@ -550,7 +549,10 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 			headerSorter.group = "header-sortable-" + Component.uniqueID();
 
 			headerSorter.on("sort", (toComp, toIndex, fromIndex, droppedOn, fromComp, dragDataSet) => {
+				console.log(this.getColumnSort(), fromIndex, toIndex);
 				this.columnSort = ArrayUtil.move(this.getColumnSort(), fromIndex, toIndex);
+
+				console.log(this.columnSort);
 				this.saveState();
 				this.rerender();
 			});
