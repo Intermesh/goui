@@ -549,10 +549,7 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 			headerSorter.group = "header-sortable-" + Component.uniqueID();
 
 			headerSorter.on("sort", (toComp, toIndex, fromIndex, droppedOn, fromComp, dragDataSet) => {
-				console.log(this.getColumnSort(), fromIndex, toIndex);
 				this.columnSort = ArrayUtil.move(this.getColumnSort(), fromIndex, toIndex);
-
-				console.log(this.columnSort);
 				this.saveState();
 				this.rerender();
 			});
