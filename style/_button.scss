@@ -17,6 +17,9 @@
 	font: config.$fontBase;
 	font-weight: 600;
 	line-height: util.dp(24); //match icon
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
 
 	//min-height: dp(46); // line-height + padding. This broke chips. Don't know why it was here.
 
