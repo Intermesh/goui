@@ -6,7 +6,7 @@ import {
 	DataSourceStoreConfig,
 	QueryFilter,
 } from "../../data";
-import {column, Table, table} from "../table";
+import {column, Table, table, TableConfig} from "../table";
 import {Config} from "../Observable";
 import {createComponent} from "../Component";
 import {Format} from "../../util";
@@ -39,11 +39,11 @@ export class ComboBox<DS extends AbstractDataSource = AbstractDataSource> extend
 		queryParams: {
 			limit: 50
 		}
-	}) {
+	}, tableConfig?: Partial<TableConfig>) {
 
 		storeConfig.dataSource = dataSource;
 
-		const dropDownTable = table({
+		const dropDownTable = table(Object.assign({
 			headers: false,
 			fitParent: true,
 			store: datasourcestore(storeConfig as DataSourceStoreConfig<any, any>),
@@ -58,7 +58,7 @@ export class ComboBox<DS extends AbstractDataSource = AbstractDataSource> extend
 					}
 				})
 			]
-		})
+		}, tableConfig))
 
 		super(dropDownTable);
 
@@ -101,7 +101,10 @@ export type ComboBoxConfig<Type extends ComboBox = ComboBox> = Config<Type, Auto
 	/**
 	 * Renders the value in the list and input field. Must return plain text.
 	 */
-	renderer?:ComboRenderer
+	renderer?:ComboRenderer,
+
+
+	tableConfig?: Partial<TableConfig>
 };
 
 /**
@@ -110,8 +113,9 @@ export type ComboBoxConfig<Type extends ComboBox = ComboBox> = Config<Type, Auto
  * @link https://goui.io/#form/Select
  * @param config
  */
-export const combobox = (config: ComboBoxConfig) => createComponent(new ComboBox(config.dataSource, config.displayProperty ?? "name", config.valueProperty ?? "id", config.renderer ?? ComboBoxDefaultRenderer, config.storeConfig ?? {
+export const combobox = (config: ComboBoxConfig) => createComponent(
+	new ComboBox(config.dataSource, config.displayProperty ?? "name", config.valueProperty ?? "id", config.renderer ?? ComboBoxDefaultRenderer, config.storeConfig ?? {
 	queryParams: {
 		limit: 50
 	}
-}), config);
+}, config.tableConfig ?? {}), config);
