@@ -1,6 +1,6 @@
 import {AutocompleteEventMap, AutocompleteField} from "./AutocompleteField.js";
 import {
-	AbstractDataSource,
+	AbstractDataSource, dataSourceEntityType,
 	DataSourceStore,
 	datasourcestore,
 	DataSourceStoreConfig,
@@ -43,6 +43,7 @@ export class ComboBox<DS extends AbstractDataSource = AbstractDataSource> extend
 	 * @param valueProperty
 	 * @param renderer
 	 * @param storeConfig
+	 * @param tableConfig
 	 * @param selectFirst Selects the first record on render
 	 */
 	constructor(
@@ -75,7 +76,7 @@ export class ComboBox<DS extends AbstractDataSource = AbstractDataSource> extend
 					}
 				})
 			]
-		}, tableConfig))
+		}, tableConfig)) as Table<DataSourceStore<DS, dataSourceEntityType<DS>>>
 
 		super(dropDownTable);
 
