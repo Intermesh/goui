@@ -9,6 +9,7 @@ import {t} from "../../Translate";
 import {Config, Listener, ObservableListenerOpts} from "../Observable";
 import {Component, createComponent} from "../Component";
 import {Window} from "../Window";
+import {Format} from "../../util/index";
 
 
 export interface DataSourceFormEventMap<Type, ValueType extends BaseEntity = DefaultEntity> extends FormEventMap<Type> {
@@ -111,7 +112,7 @@ export class DataSourceForm<ValueType extends BaseEntity = DefaultEntity> extend
 				continue;
 			}
 
-			field.setInvalid(error.validationErrors[propertyName].description);
+			field.setInvalid(Format.escapeHTML(error.validationErrors[propertyName].description));
 		}
 
 		const invalid = this.findFirstInvalid();
