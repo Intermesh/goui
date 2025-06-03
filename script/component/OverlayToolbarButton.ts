@@ -69,7 +69,7 @@ export class OverlayToolbarButton extends Button {
 					hidden: true,
 					listeners: {
 						show: () => {
-							document.body.addEventListener("mousedown", this.closeOnClick, {once: true})
+							document.body.addEventListener("mousedown", this.closeOnClick)
 							this.fire("open", this);
 						}
 					}
