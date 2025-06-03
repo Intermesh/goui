@@ -743,10 +743,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 			return this.destroy(id);
 		})).finally(() => {
 			root.unmask();
-		}).catch((e:any) => {
-			Window.error(e);
-		})
-
+		});
 	}
 
 	/**
