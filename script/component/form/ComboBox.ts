@@ -11,9 +11,10 @@ import {createComponent} from "../Component.js";
 import {Format} from "../../util/index.js";
 import {FieldConfig} from "./Field.js";
 import {t} from "../../Translate";
+import {List} from "../List";
 
 export type ComboBoxStoreConfig<DS extends AbstractDataSource = AbstractDataSource> = Partial<DataSourceStoreConfig<DS, any>>
-
+export type ComboBoxDS<ComboBoxType> = ComboBoxType extends ComboBox<infer DS> ? DS : never;
 export type ComboRenderer = (field:ComboBox, record:any) => string;
 
 export const ComboBoxDefaultRenderer:ComboRenderer = (field,r)=> r ? r[field.displayProperty] : t("Not found");
@@ -134,7 +135,7 @@ export type ComboBoxConfig<Type extends ComboBox = ComboBox> = FieldConfig<Type,
 	/**
 	 * Config for the {@link DataSourceStore}
 	 */
-	storeConfig?:ComboBoxStoreConfig,
+	storeConfig?:ComboBoxStoreConfig<ComboBoxDS<Type>>,
 	/**
 	 * Renders the value in the list and input field. Must return plain text.
 	 */
@@ -155,8 +156,12 @@ export type ComboBoxConfig<Type extends ComboBox = ComboBox> = FieldConfig<Type,
  * @param config
  */
 export const combobox = (config: ComboBoxConfig) => createComponent(
-	new ComboBox(config.dataSource, config.displayProperty ?? "name", config.valueProperty ?? "id", config.renderer ?? ComboBoxDefaultRenderer, config.storeConfig ?? {
-	queryParams: {
-		limit: 50
-	}
-}, config.tableConfig ?? {}, config.selectFirst ?? false), config);
+	new ComboBox(
+		config.dataSource,
+		config.displayProperty ?? "name",
+		config.valueProperty ?? "id",
+		config.renderer ?? ComboBoxDefaultRenderer,
+		config.storeConfig ?? {	queryParams: {limit: 50}},
+		config.tableConfig ?? {}, config.selectFirst ?? false
+	),
+	config);
