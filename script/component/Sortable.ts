@@ -187,7 +187,11 @@ export class Sortable<Type extends Component> extends Observable {
 			if(!this.group) {
 				this.group = "sortable-" + Component.uniqueID();
 			}
-			e.stopPropagation();
+
+			// does this item belong to us? Not sure if this is efficient. Perhaps two sortables on the same el is madness.
+			if(this.findSortables().indexOf(e.target) === -1) {
+				return;
+			}
 
 			// had to add this class because otherwise dragleave fires immediately on child nodes: https://stackoverflow.com/questions/7110353/html5-dragleave-fired-when-hovering-a-child-element
 			root.el.cls("+dragging");
@@ -216,13 +220,11 @@ export class Sortable<Type extends Component> extends Observable {
 
 		component.el.on("drop", (e)=> {
 			e.preventDefault();
-			e.stopPropagation();
 			this.endDrag(e);
 		})
 
 		component.el.on("dragend", (e)=> {
 			e.preventDefault();
-			e.stopPropagation();
 			this.endDrag(e);
 		})
 
