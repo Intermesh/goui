@@ -190,7 +190,7 @@ export class AutocompleteField<T extends List = List> extends InputField {
 
 		this.buttons = this.buttons || [];
 		if(this.clearable) {
-			this.buttons.push(btn({icon:'clear', handler: () => this.value = ""}))
+			this.buttons.push(btn({icon:'clear', handler: () => this.value = null}))
 		}
 		this.buttons.push(this.menuButton);
 

@@ -311,6 +311,10 @@ export class RowSelect<StoreType extends Store = Store, RecordType extends Store
 			return;
 		}
 
+		if(!this.multiSelect) {
+			this.clear();
+		}
+
 		const selectedRow = new SelectedRow<StoreType, RecordType>(this.list.store as StoreType, record);
 
 		if(this.fire("beforerowselect", this, selectedRow, append) === false) {

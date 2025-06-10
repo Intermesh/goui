@@ -93,11 +93,33 @@ export interface CommitError {
  * @category Data
  */
 export interface Changes {
+	/**
+	 * Created entity ID's given by the server.
+	 */
 	created?: EntityID[]
+	/**
+	 * Updated entity ID's
+	 */
 	updated?: EntityID[]
+
+	/**
+	 * Destroyed entity ID's
+	 */
 	destroyed?: EntityID[],
+
+	/**
+	 * New server state
+	 */
 	newState?: string,
+
+	/**
+	 * Old state before these changes
+	 */
 	oldState?: string,
+
+	/**
+	 * True if there are more changes to follow from the server
+	 */
 	hasMoreChanges?: boolean
 }
 
@@ -743,10 +765,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 			return this.destroy(id);
 		})).finally(() => {
 			root.unmask();
-		}).catch((e:any) => {
-			Window.error(e);
-		})
-
+		});
 	}
 
 	/**
@@ -927,7 +946,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 			await this.setState(response.newState);
 
 			this.fire("change", this, {
-				created: response.created ? Object.keys(response.created) : [],
+				created: response.created ? Object.values(response.created).map(c=> c.id) : [],
 				updated: response.updated ? Object.keys(response.updated) : [],
 				destroyed: response.destroyed || [],
 				oldState: response.oldState,
