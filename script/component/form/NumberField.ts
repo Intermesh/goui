@@ -39,11 +39,11 @@ export class NumberField extends InputField {
 		if (v && isNaN(v)) {
 			this.setInvalid("Incorrect number format");
 		}
-		if (this.max !== undefined && v && v > this.max) {
+		if (this.max !== undefined && !this.isEmptyNumber(v) && v! > this.max) {
 			this.setInvalid(t("Number is bigger than the maximum of {max}.").replace("{max}", this.max.toLocaleString()));
 		}
-		if (this.min !== undefined &&  (v === undefined || v < this.min)) {
-			this.setInvalid(t("Number is bigger than the maximum of {max}.").replace("{max}", this.min.toLocaleString()));
+		if (this.min !== undefined &&  (this.isEmptyNumber(v) || v! < this.min)) {
+			this.setInvalid(t("Number is smaller than the maximum of {min}.").replace("{min}", this.min.toLocaleString()));
 		}
 	}
 
