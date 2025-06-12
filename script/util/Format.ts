@@ -75,8 +75,20 @@ export class Format {
 			return "";
 		}
 		return this.nl2br(
-			this.escapeHTML(text)
+			this.convertUrisToAnchors(
+				this.escapeHTML(text)
+			)
 		);
+	}
+
+	public static convertUrisToAnchors(html: string): string {
+		// Regular expression to match URIs (http, https, ftp, etc.) that are not inside <a> tags
+		const uriRegex = /(?<!<a[^>]*>)(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])(?!<\/a>)/ig;
+
+		// Replace URIs with anchor tags
+		return html.replace(uriRegex, (uri) => {
+			return `<a href="${uri}" target="_blank" rel="noopener noreferrer">${uri}</a>`;
+		});
 	}
 
 	/**

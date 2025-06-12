@@ -14,6 +14,10 @@ export class ToolTip extends Component {
 
 	public renderTo? = root.el;
 
+	public delay = 300;
+	private timeout: any = undefined;
+	private closeTimeout: any;
+
 	constructor() {
 		super("menu");
 		this.baseCls = "goui-dropdown";
@@ -21,13 +25,35 @@ export class ToolTip extends Component {
 
 	set target(targetEl: HTMLElement) {
 		targetEl.on('mouseenter',(e: MouseEvent) => {
-			e.stopPropagation();
-			this.open(e);
+			// e.stopPropagation();
+			this.timeout = setTimeout(() =>{
+				this.open(e);
+			}, this.delay)
+
 		}).on('mouseleave',(e: MouseEvent) => {
-			this.remove();
+			if(this.timeout) {
+				clearTimeout(this.timeout);
+				this.timeout = undefined;
+			}
+
+			//close delay to allow moving into tooltip
+			this.closeTimeout = setTimeout(() => {
+				this.remove();
+			}, 100);
 		});
-		// just in case it doesn't go away.
+
+		// keep tooltip open if moving mouse into the tooltip
+		this.el.on("mouseenter", () =>{
+			if(this.closeTimeout) {
+				clearTimeout(this.closeTimeout);
+				this.closeTimeout = undefined;
+			}
+		});
+
+		//close immediately when leaving tooltip
 		this.el.on('mouseleave',(e: MouseEvent) => {
+			clearTimeout(this.timeout);
+			this.timeout = undefined;
 			this.remove();
 		})
 	}
