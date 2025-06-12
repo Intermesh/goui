@@ -19,6 +19,7 @@ export * from './Root.js';
 export * from './SearchButton.js';
 export * from './Splitter.js';
 export * from './Toolbar.js';
+export * from './ToolTip.js';
 export * from './Window.js';
 export * from './tree/index.js';
 export * from './Sortable.js';
