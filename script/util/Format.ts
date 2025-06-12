@@ -81,6 +81,11 @@ export class Format {
 		);
 	}
 
+	/**
+	 * Convert URI's in HTML to anchor tags.
+	 *
+	 * @param html
+	 */
 	public static convertUrisToAnchors(html: string): string {
 		// Regular expression to match URIs (http, https, ftp, etc.) that are not inside <a> tags
 		const uriRegex = /(?<!<a[^>]*>)(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])(?!<\/a>)/ig;
