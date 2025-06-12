@@ -246,6 +246,10 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 				}
 			}
 		}
+
+		if(state.columnSort) {
+			this.columnSort = state.columnSort;
+		}
 	}
 
 	/**
