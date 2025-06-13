@@ -3,18 +3,26 @@ import {Config} from "./Observable";
 import {root} from "./Root";
 
 /**
- * TIP: For long HTML tooltips use the render event:
+ * Tooltip component
  *
+ * @example TIP: For long HTML tooltips use the render event:
+ * ```
  * tooltip({
  * 	listeners: {'render': (me) => {me.html = 'Long text'}},
  * 	target: someDiv
  * });
+ * ```
  */
 export class ToolTip extends Component {
 
 	public renderTo? = root.el;
 
+	/**
+	 * Tooltip shows with a delay in ms
+	 */
 	public delay = 300;
+
+
 	private timeout: any = undefined;
 	private closeTimeout: any;
 
@@ -80,4 +88,17 @@ export class ToolTip extends Component {
 	}
 }
 
+/**
+ * Creates as {@link ToolTip} Component
+ *
+ * @param config
+ *
+ * @example
+ * ```
+ * tooltip({
+ * 	text: "Hi I am the tooltip",
+ * 	target: cmp.el
+ * });
+ * ```
+ */
 export const tooltip = (config?: Config<ToolTip>) => createComponent(new ToolTip(), config);
