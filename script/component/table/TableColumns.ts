@@ -22,6 +22,8 @@ import {menu} from "../menu/index.js";
  * ```
  * return `<h3>${record.name.htmlEncode()}</h3><h4>${record.description.htmlEncode()}</h4><h5>${Format.smartDateTime(record.modifiedAt)}</h5>`
  * ```
+ *
+ * You can also return a component  like a {@link Button} or {@link Toolbar}. On a toolbar the CSS class "compact" is recommended.
  */
 export type TableColumnRenderer = (columnValue: any, record: any, td: HTMLTableCellElement, table: Table, storeIndex: number, column: TableColumn) => string | Promise<string> | Component | Promise<Component> | undefined;
 export type HeaderRenderer = (col: TableColumn, headerEl: HTMLTableCellElement, table: Table) => string | Component;

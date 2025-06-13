@@ -186,6 +186,14 @@
 		background-color: config.$surfaceLow;
 	}
 
+	&.compact {
+		gap: util.dp(4);
+		padding:0;
+		>.goui-button {
+			padding: util.dp(3);
+		}
+	}
+
 	&.overlay {
 		z-index: 1;
 	}
