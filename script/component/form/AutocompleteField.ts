@@ -75,12 +75,16 @@ export class AutocompleteField<T extends List = List> extends InputField {
 			this.fire('select', this, record);
 		});
 
+
 		this.menu = menu({
 			height: 300,
 			cls: "scroll",
 			listeners: {
 				hide: (menu) => {
 					if(menu.rendered) {
+						if(this.value == undefined) {
+							this.input.value = "";
+						}
 						const inputField = menu.findAncestorByType(InputField)!;
 						inputField.focus();
 					}
@@ -252,6 +256,7 @@ export class AutocompleteField<T extends List = List> extends InputField {
 	}
 
 	private onInput(_ev: Event) {
+		this.value = null;
 		this.menuButton.menu!.show();
 		this.fire("autocomplete", this, this.input!.value);
 	}
