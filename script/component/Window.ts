@@ -365,28 +365,6 @@ export class Window extends DraggableComponent {
 		}
 	}
 
-	private constrainViewport() {
-		if(this.el.offsetWidth > window.innerWidth) {
-			this.width = window.innerWidth * 10 / REM_UNIT_SIZE;
-			this.el.style.left = "0";
-		} else {
-			const maxLeft = window.innerWidth - this.el.offsetWidth;
-			if(this.el.offsetLeft > maxLeft) {
-				this.el.style.left = maxLeft + "px";
-			}
-		}
-
-		if(this.el.offsetHeight > window.innerHeight) {
-			this.height = window.innerHeight * 10 / REM_UNIT_SIZE;
-			this.el.style.top = "0";
-		} else {
-			const maxTop = window.innerHeight - this.el.offsetHeight;
-			if(this.el.offsetTop > maxTop) {
-				this.el.style.top = maxTop + "px";
-			}
-		}
-	}
-
 	/**
 	 * Open the window by rendering it into the DOM body element
 	 * Use show()
@@ -438,7 +416,7 @@ export class Window extends DraggableComponent {
 					this.center();
 				}
 				// debugger;
-				this.constrainViewport();
+				this.constrainTo(window);
 			}
 			this.focus();
 		}

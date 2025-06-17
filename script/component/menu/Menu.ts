@@ -284,14 +284,8 @@ export class Menu extends AbstractMenu {
 			this.el.style.minWidth = rect.width + "px";
 		}
 
-		// make sure menu is not wider than screen
-		if(this.el.offsetWidth > window.innerWidth) {
-			this.el.style.width = window.innerWidth + "px";
-		}
-
-		if(this.el.offsetHeight > window.innerHeight) {
-			this.el.style.height = window.innerHeight + "px";
-		}
+		// make sure menu is not off screen
+		this.constrainTo(window);
 
 		//aligns down by default. If it runs off screen then align on top
 		if(this.constrainToViewport && y + this.el.offsetHeight > window.innerHeight) {
@@ -422,6 +416,8 @@ export class Menu extends AbstractMenu {
 		this.y = coords.y;
 
 		this.show();
+
+		this.constrainTo(window);
 	}
 
 	/**

@@ -19,6 +19,8 @@ menu.goui-dropdown {
 	max-height: 100vh;
 	max-width: 100vw;
 
+	overflow-y: auto;
+
 	display: block;
 	z-index: config.$zIndexMenu;
 	list-style: none;

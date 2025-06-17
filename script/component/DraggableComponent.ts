@@ -4,9 +4,9 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {Component, ComponentEventMap, createComponent} from "./Component.js";
+import {Component, ComponentEventMap, Constraints, createComponent} from "./Component.js";
 import {Config, Listener, ObservableListenerOpts} from "./Observable.js";
-import {FunctionUtil} from "../util/FunctionUtil.js";
+import {FunctionUtil} from "../util/index.js";
 
 
 /**
@@ -57,12 +57,7 @@ export interface DragData {
 	data: any
 }
 
-interface ConstrainBox {
-	left: number,
-	right: number,
-	bottom: number,
-	top: number
-}
+
 
 /**
  * @inheritDoc
@@ -103,9 +98,9 @@ export class DraggableComponent extends Component {
 
 	protected dragData?: DragData;
 
-	private constrainBox?: ConstrainBox;
+	private constrainBox?: Constraints;
 	private _dragConstrainTo: Window | HTMLElement = window
-	private _dragConstrainPad?: Partial<ConstrainBox>;
+	private _dragConstrainPad?: Partial<Constraints>;
 
 	/**
 	 * Update left and top css properties when dragging
@@ -230,51 +225,16 @@ export class DraggableComponent extends Component {
 	 * @param el
 	 * @param pad Supply paddings
 	 */
-	public dragConstrainTo(el: HTMLElement | Window, pad?: Partial<ConstrainBox>) {
+	public dragConstrainTo(el: HTMLElement | Window, pad?: Partial<Constraints>) {
 		this._dragConstrainTo = el;
 		this._dragConstrainPad = pad;
 	}
 
-	private calcConstrainBox(el: HTMLElement | Window, pad?: Partial<ConstrainBox>): ConstrainBox {
-		let box = {
-			left: 0,
-			right: 0,
-			bottom: 0,
-			top: 0
-		};
 
-		if (el instanceof Window) {
-			//window is a special case. The page might be scrolled and we want to constrain to the viewport then.
-			box.right = window.innerWidth;
-			box.bottom = window.innerHeight;
-		} else {
-			const rect = el.getBoundingClientRect();
-			box.left = rect.left;
-			box.right = rect.right;
-			box.bottom = rect.bottom;
-			box.top = rect.top;
-		}
-
-		if (pad) {
-			if (pad.left)
-				box.left += pad.left;
-
-			if (pad.right)
-				box.right -= pad.right;
-
-			if (pad.top)
-				box.top += pad.top;
-
-			if (pad.bottom)
-				box.bottom -= pad.bottom;
-		}
-
-		return box;
-	}
 
 	private onDragStart(e: MouseEvent) {
 		e.preventDefault();
-		this.constrainBox = this.calcConstrainBox(this._dragConstrainTo, this._dragConstrainPad);
+		this.constrainBox = this.elToConstraints(this._dragConstrainTo, this._dragConstrainPad);
 
 		const onDrag = FunctionUtil.onRepaint((e: MouseEvent) => {
 			this.onDrag(e);
@@ -319,37 +279,6 @@ export class DraggableComponent extends Component {
 		this.dragData!.x = Math.max(this.constrainBox.left + this.dragData!.grabOffsetLeft, Math.min(this.dragData!.x, maxLeft))
 
 		return;
-	}
-
-	/**
-	 * Constrain the component to the given element
-	 *
-	 * @param el
-	 * @param pad
-	 */
-	public constrainTo(el: HTMLElement | Window, pad?: Partial<ConstrainBox>) {
-		const constraints = this.calcConstrainBox(el, pad);
-
-		let maxTop = constraints.bottom - this.el.offsetHeight,
-			maxLeft = constraints.right - this.el.offsetWidth,
-			minTop = 0,
-			minLeft = 0;
-
-		if (this.el.offsetTop > maxTop) {
-			console.warn("Contraining to top " + maxTop);
-			this.el.style.top = maxTop + "px";
-		} else if (this.el.offsetTop < minTop) {
-			console.warn("Contraining to top " + minTop);
-			this.el.style.top = minTop + "px";
-		}
-
-		if (this.el.offsetLeft > maxLeft) {
-			console.warn("Contraining to left " + maxLeft);
-			this.el.style.left = maxLeft + "px";
-		} else if (this.el.offsetLeft < minLeft) {
-			console.warn("Contraining to left " + minLeft);
-			this.el.style.left = minLeft + "px";
-		}
 	}
 }
 

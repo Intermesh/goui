@@ -21,10 +21,13 @@ export class ToolTip extends Component {
 	 * Tooltip shows with a delay in ms
 	 */
 	public delay = 300;
+	public closeDelay = 100;
 
 
 	private timeout: any = undefined;
 	private closeTimeout: any;
+	private observer: MutationObserver|undefined;
+	private targetEl?: HTMLElement;
 
 	constructor() {
 		super("menu");
@@ -32,6 +35,8 @@ export class ToolTip extends Component {
 	}
 
 	set target(targetEl: HTMLElement) {
+
+		this.targetEl = targetEl
 		targetEl.on('mouseenter',(e: MouseEvent) => {
 			// e.stopPropagation();
 			this.timeout = setTimeout(() =>{
@@ -47,7 +52,7 @@ export class ToolTip extends Component {
 			//close delay to allow moving into tooltip
 			this.closeTimeout = setTimeout(() => {
 				this.remove();
-			}, 100);
+			}, this.closeDelay);
 		});
 
 		// keep tooltip open if moving mouse into the tooltip
@@ -62,13 +67,46 @@ export class ToolTip extends Component {
 		this.el.on('mouseleave',(e: MouseEvent) => {
 			clearTimeout(this.timeout);
 			this.timeout = undefined;
-			this.remove();
+			this.closeTimeout = setTimeout(() => {
+				this.remove();
+			}, this.closeDelay);
 		})
+	}
+
+	protected internalRender(): HTMLElement {
+
+		if(!this.observer) {
+			this.observer  = new MutationObserver((mutationsList) => {
+				mutationsList.forEach((mutation) => {
+					mutation.removedNodes.forEach((removedNode) => {
+						if (removedNode === this.targetEl) {
+							this.observer!.disconnect(); // Optional: stop observing after removal
+							this.remove();
+						}
+					});
+				});
+			});
+		}
+		this.observer.observe(this.targetEl!.parentNode!, {childList: true});
+
+		return super.internalRender();
+	}
+
+	protected internalRemove() {
+		this.observer?.disconnect();
+		super.internalRemove();
 	}
 
 	open(e: MouseEvent) {
 		this.render();
 		this.align({top:e.y,bottom:e.y, left:e.x,right: e.x} as DOMRect);
+		const pad = Component.remToPx(16);
+		this.constrainTo(window, {
+			top: pad,
+			left: pad,
+			bottom: pad,
+			right: pad
+		});
 	}
 
 	private align(rect: DOMRect) {

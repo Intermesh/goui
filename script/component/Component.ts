@@ -33,6 +33,28 @@ const html = document.querySelector('html')!;
 export const REM_UNIT_SIZE = parseFloat(window.getComputedStyle(html).fontSize);
 
 
+export interface Constraints {
+	/**
+	 * Left in px
+	 */
+	left: number,
+	/**
+	 * Right in px
+	 */
+	right: number,
+
+	/**
+	 * Bottom in px
+	 */
+	bottom: number,
+
+	/**
+	 * Top in px
+	 */
+	top: number
+}
+
+
 export interface ComponentEventMap<Type> extends ObservableEventMap<Type> {
 	/**
 	 * Fires when the component renders and is added to the DOM
@@ -1206,7 +1228,97 @@ export class Component extends Observable {
 		}, {once: true});
 
 	}
+
+
+	protected elToConstraints(el: HTMLElement | Window, pad?: Partial<Constraints>): Constraints {
+		let box = {
+			left: 0,
+			right: 0,
+			bottom: 0,
+			top: 0
+		};
+
+		if (el instanceof Window) {
+			//window is a special case. The page might be scrolled and we want to constrain to the viewport then.
+			box.right = window.innerWidth;
+			box.bottom = window.innerHeight;
+		} else {
+			const rect = el.getBoundingClientRect();
+			box.left = rect.left;
+			box.right = rect.right;
+			box.bottom = rect.bottom;
+			box.top = rect.top;
+		}
+
+		if (pad) {
+			if (pad.left)
+				box.left += pad.left;
+
+			if (pad.right)
+				box.right -= pad.right;
+
+			if (pad.top)
+				box.top += pad.top;
+
+			if (pad.bottom)
+				box.bottom -= pad.bottom;
+		}
+
+		return box;
+	}
+
+	/**
+	 * Constrain the component to the given element.
+	 *
+	 * Note that this only works on absolute positioned elements
+	 *
+	 * @param el
+	 * @param pad
+	 */
+	public constrainTo(el: HTMLElement | Window, pad?: Partial<Constraints>) {
+		const constraints = this.elToConstraints(el, pad);
+
+		const maxWidth = constraints.right - constraints.left,
+			maxHeight = constraints.bottom - constraints.top;
+
+		if(this.el.offsetWidth > maxWidth) {
+			this.width = maxWidth * 10 / REM_UNIT_SIZE;
+			this.el.style.left = constraints.left + "px";
+		} else {
+			const maxLeft = constraints.right - this.el.offsetWidth,
+				minLeft = constraints.left;
+
+			if (this.el.offsetLeft > maxLeft) {
+				console.warn("Contraining to left " + maxLeft);
+				this.el.style.left = maxLeft + "px";
+			} else if (this.el.offsetLeft < minLeft) {
+				console.warn("Contraining to left " + minLeft);
+				this.el.style.left = minLeft + "px";
+			}
+		}
+
+		if(this.el.offsetHeight > maxHeight) {
+			this.height = maxHeight * 10 / REM_UNIT_SIZE;
+			this.el.style.top = constraints.top + "px";
+		} else {
+			const maxTop = constraints.bottom - this.el.offsetHeight,
+				minTop = constraints.top;
+
+			if (this.el.offsetTop > maxTop) {
+				console.warn("Contraining to left " + maxTop);
+				this.el.style.top = maxTop + "px";
+			} else if (this.el.offsetTop < minTop) {
+				console.warn("Contraining to left " + minTop);
+				this.el.style.top = minTop + "px";
+			}
+		}
+
+
+
+	}
 }
+
+
 
 
 /**
