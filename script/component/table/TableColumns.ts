@@ -183,6 +183,22 @@ export class DateColumn extends TableColumn {
  */
 export const datecolumn = (config: TableColumnConfig) => createComponent(new DateColumn(config.id), config);
 
+export class BoolColumn extends TableColumn {
+	renderer = (v: string) => {
+		return v ? '<i class="icon">check</i>' : "";
+	}
+	align: align = "center"
+	width = 64
+}
+
+/**
+ * Create a column showing a boolean value as check or empty
+ *
+ * @param config
+ */
+export const boolcolumn = (config: TableColumnConfig) => createComponent(new BoolColumn(config.id), config);
+
+
 
 export interface CheckboxColumnEventMap<Type> extends TableColumnEventMap<Type> {
 
