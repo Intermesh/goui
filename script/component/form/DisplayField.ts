@@ -82,7 +82,7 @@ export class DisplayField extends Field {
 						this.el.innerHTML = str + "";
 					}
 					if (this.hideWhenEmpty) {
-						this.hidden = str == "";
+						this.hidden = !str;
 					}
 				}
 			}, str = this.renderer(v, this);

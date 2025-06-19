@@ -5,6 +5,7 @@
  */
 import {DateTime, Timezone} from "./DateTime.js";
 import {t} from "../Translate.js";
+import {DateInterval} from "./DateInterval";
 
 /**
  * Formatting utilities
@@ -248,31 +249,30 @@ export class Format {
 	}
 
 
-	public static duration(value: number, zeroPad:boolean = false): string {
-		if (!value) {
+	/**
+	 * Format a duration of minutes in user time format like H:i
+	 *
+	 * @param minutes
+	 */
+	public static duration(minutes: number): string {
+		if (!minutes) {
 			return "";
 		}
-		let retStr = "";
-		const hours = Math.floor(value / 60), minutes = value % 60;;
-		if(zeroPad && hours < 10) {
-			retStr += "0";
-		}
-		retStr += hours + ":";
-		retStr += ((minutes < 10) ? "0" + minutes : minutes);
-		return retStr;
+
+		return DateInterval.createFromSeconds( minutes * 60).format("e:I");
 	}
 
-	public static shortTime(v: string): string {
-		let arV = v.split(":");
-		if (arV.length < 2 || arV.length > 3) {
-			return '';
-		}
-		return arV[0] + ":" + arV[1];
-	}
-
+	/**
+	 * Parse h:i time string and convert to minutes
+	 *
+	 * @param timeStr
+	 */
 	public static minutes(timeStr: string): number {
-		const parts = timeStr.split(':');
-		return parseInt(parts[0]) * 60 + parseInt(parts[1]);
+		const di = DateInterval.createFromFormat(timeStr);
+		if(!di) {
+			throw "Failed to parse time string";
+		}
+		return di.getTotalMinutes()!;
 	}
 
 	public static fileSize(bytes:number): string {

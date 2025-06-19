@@ -429,14 +429,14 @@ export class DateTime {
 	 *
 	 * @param date Can be a date object, a unix timestamp or date string (see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date#date_time_string_format)
 	 */
-	constructor(date?: Date | DateTime | number | string) {
+	constructor(date?: Date | DateTime | number | string ) {
 
 		if( (date instanceof Date)) {
 			this.date = structuredClone(date);
 		} else if (date instanceof DateTime) {
 			this.date = structuredClone(date.date);
 		} else {
-			this.date = date ? new Date(date) : new Date();
+			this.date = date !== undefined ? new Date(date) : new Date();
 		}
 	}
 
@@ -510,9 +510,7 @@ export class DateTime {
 	 * @param end
 	 */
 	public diff(end: DateTime) {
-		const di = new DateInterval();
-		di.setFromDates(this, end);
-		return di;
+		return DateInterval.createFromDates(this, end);
 	}
 
 	/**

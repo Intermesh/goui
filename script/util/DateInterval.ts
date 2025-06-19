@@ -84,6 +84,7 @@ export class DateInterval {
 
 		'H': dateInterval => pad(dateInterval.hours),
 		'h': dateInterval => dateInterval.hours.toString(),
+		'e': dateInterval => (dateInterval.getTotalHours() ?? "") + "",
 
 		'I': dateInterval => pad(dateInterval.minutes),
 		'i': dateInterval => dateInterval.minutes.toString(),
@@ -102,32 +103,42 @@ export class DateInterval {
 
 
 	/**
-	 * Set interval from the time elapsed bewtween to datetime objects
+	 * Populate the number of hours, minutes and seconds from a number of seconds.
+	 *
+	 * @param seconds
+	 */
+	public static createFromSeconds(seconds:number) {
+		return DateInterval.createFromDates(new DateTime(0), new DateTime(seconds * 1000));
+	}
+
+
+	/**
+	 * Set interval from the time elapsed between to datetime objects
 	 *
 	 * @param start
 	 * @param end
 	 */
-	public setFromDates(start:DateTime, end:DateTime) {
-
+	public static createFromDates(start:DateTime, end:DateTime) {
+		const di = new DateInterval();
 		if(start.date < end.date) {
-			this._start = start;
-			this._end =  end;
-			this.invert = false;
+			di._start = start;
+			di._end =  end;
+			di.invert = false;
 		} else {
-			this._start = end;
-			this._end =  start;
-			this.invert = true;
+			di._start = end;
+			di._end =  start;
+			di.invert = true;
 		}
 
-		let monthDays = this._end.clone().setDate(0).getDate(),
-			sihdmy = [0, 0, 0, 0, 0, this._end.getYear() - this._start.getYear()],
+		let monthDays = di._end.clone().setDate(0).getDate(),
+			sihdmy = [0, 0, 0, 0, 0, di._end.getYear() - di._start.getYear()],
 			it = 0,
 			map = {getSeconds: 60, getMinutes: 60, getHours: 24, getDate: monthDays, getMonth: 12};
 		for (let i in map) {
 			let fn = i as 'getSeconds' | 'getMinutes' | 'getHours' | 'getDate' | 'getMonth';
 
-			const startRes = this._start[fn](),
-				endRes = this._end[fn]();
+			const startRes = di._start[fn](),
+				endRes = di._end[fn]();
 			if (sihdmy[it] + endRes < startRes) {
 				sihdmy[it + 1]--;
 				sihdmy[it] += map[fn] - startRes + endRes;
@@ -137,13 +148,14 @@ export class DateInterval {
 			it++;
 		}
 
-		this.seconds = sihdmy[0];
-		this.minutes = sihdmy[1];
-		this.hours = sihdmy[2];
-		this.days = sihdmy[3];
-		this.months = sihdmy[4];
-		this.years = sihdmy[5];
+		di.seconds = sihdmy[0];
+		di.minutes = sihdmy[1];
+		di.hours = sihdmy[2];
+		di.days = sihdmy[3];
+		di.months = sihdmy[4];
+		di.years = sihdmy[5];
 
+		return di;
 	}
 
 	/**
@@ -167,10 +179,10 @@ export class DateInterval {
 	 *
 	 * Only available if this diff was created using {@link DateTime.diff}
 	 */
-	public getTotalMinutes(){
+	public getTotalMinutes() : number|undefined {
 
 		if(this._start && this._end) {
-			return Math.abs(this._start.getTime() - this._end.getTime()) / 60000;
+			return Math.floor(Math.abs(this._start.getTime() - this._end.getTime()) / 60000);
 		}
 
 		if(this.days || this.months || this.years){
@@ -178,6 +190,20 @@ export class DateInterval {
 		}
 
 		return this.hours * 60 + this.minutes;
+	}
+
+	/**
+	 * Calculates total number of hours but without minutes and seconds that have elapsed between two dates.
+	 *
+	 * Only available if this diff was created using {@link DateTime.diff}
+	 */
+	public getTotalHours() : number|undefined {
+
+		if(this._start && this._end) {
+			return Math.floor(Math.abs(this._start.getTime() - this._end.getTime()) / 3600000 );
+		}
+
+		return undefined;
 	}
 
 
@@ -227,6 +253,8 @@ export class DateInterval {
 	/**
 	 * Format the interval to a string.
 	 *
+	 * Note: It follows the PHP DateInterval spec except for the "a" and "j" signs.
+	 *
 	 * You can use the following characters. You can escape a character with a \ to output it as given:
 	 *
 	 * Y	Years, numeric, at least 2 digits with leading 0, eg.	01, 03
@@ -235,12 +263,13 @@ export class DateInterval {
 	 * m	Months, numeric, eg.	1, 3, 12
 	 * D	Days, numeric, at least 2 digits with leading 0, eg.	01, 03, 31
 	 * d	Days, numeric, eg.	1, 3, 31
-	 * a	Total number of days as a result of a {@link DateTime.diff} or (unknown) otherwise, eg.	4, 18, 8123
+	 * a	Total number of days but without time as a result of a {@link DateTime.diff} or (unknown) otherwise, eg.	4, 18, 8123
 	 * H	Hours, numeric, at least 2 digits with leading 0, eg.	01, 03, 23
 	 * h	Hours, numeric, eg.	1, 3, 23
+	 * e 	Total number of hours but without the minutes and seconds as a result of a {@link DateTime.diff} or (unknown) otherwise, eg.	4, 18, 8123
 	 * I	Minutes, numeric, at least 2 digits with leading 0, eg.	01, 03, 59
 	 * i	Minutes, numeric, eg.	1, 3, 59
-	 * j  The total number of minutes as a result of a {@link DateTime.diff} or (unknown) if this duration holds more than hours and minutes and seconds, eg.	4, 18, 8123
+	 * j  The total number of minutes but without seconds as a result of a {@link DateTime.diff} or (unknown) if this duration holds more than hours and minutes and seconds, eg.	4, 18, 8123
 	 * S	Seconds, numeric, at least 2 digits with leading 0, eg.	01, 03, 57
 	 * s	Seconds, numeric, eg.	1, 3, 57
 	 * F	Microseconds, numeric, at least 6 digits with leading 0, eg.	007701, 052738, 428291
@@ -319,7 +348,7 @@ export class DateInterval {
 	/**
 	 * Create date by given format. See {@link DateInterval.format}.
 	 *
-	 * Does not support "a". "j" can only be used alone.
+	 * Does not support "a" and "e". "j" can only be used alone.
 	 *
 	 * @example
 	 * ```
