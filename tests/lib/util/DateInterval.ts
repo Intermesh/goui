@@ -21,6 +21,16 @@ describe('DateInterval class', () => {
 
 	});
 
+	describe("Test setFromSeconds()", () => {
+
+		it("Should parse seconds", () => {
+			const c = DateInterval.setFromSeconds((86400 * 159) + 3600 + 1800 + 30); //159 days + 1 hour + 30 min + 30sec
+			expect(c.format("a, h:i:s")).to.equal("159, 1:30:30");
+		});
+
+
+	});
+
 	describe("Test diff1()", () => {
 
 		it("Should create diff", () => {

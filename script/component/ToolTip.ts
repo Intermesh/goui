@@ -37,39 +37,25 @@ export class ToolTip extends Component {
 	set target(targetEl: HTMLElement) {
 
 		this.targetEl = targetEl
-		targetEl.on('mouseenter',(e: MouseEvent) => {
-			// e.stopPropagation();
-			this.timeout = setTimeout(() =>{
+		targetEl.on('mouseenter',e => {
+			this.timeout = setTimeout(() => {
 				this.open(e);
 			}, this.delay)
-
-		}).on('mouseleave',(e: MouseEvent) => {
-			if(this.timeout) {
-				clearTimeout(this.timeout);
-				this.timeout = undefined;
-			}
-
-			//close delay to allow moving into tooltip
-			this.closeTimeout = setTimeout(() => {
-				this.remove();
-			}, this.closeDelay);
+		}).on('mouseleave',_e => {
+			this.close()
+		}).on('contextmenu', _e => {
+			this.close()
 		});
 
-		// keep tooltip open if moving mouse into the tooltip
-		this.el.on("mouseenter", () =>{
+		this.el.on("mouseenter", () => {
+			// keep tooltip open if moving mouse into the tooltip
 			if(this.closeTimeout) {
 				clearTimeout(this.closeTimeout);
 				this.closeTimeout = undefined;
 			}
-		});
-
-		//close immediately when leaving tooltip
-		this.el.on('mouseleave',(e: MouseEvent) => {
-			clearTimeout(this.timeout);
-			this.timeout = undefined;
-			this.closeTimeout = setTimeout(() => {
-				this.remove();
-			}, this.closeDelay);
+		}).on('mouseleave',(e: MouseEvent) => {
+			//close when leaving tooltip
+			this.close()
 		})
 	}
 
@@ -97,7 +83,7 @@ export class ToolTip extends Component {
 		super.internalRemove();
 	}
 
-	open(e: MouseEvent) {
+	private open(e: MouseEvent) {
 		this.render();
 		this.align({top:e.y,bottom:e.y, left:e.x,right: e.x} as DOMRect);
 		const pad = Component.remToPx(16);
@@ -107,6 +93,17 @@ export class ToolTip extends Component {
 			bottom: pad,
 			right: pad
 		});
+	}
+
+	private close() {
+		if(this.timeout) {
+			clearTimeout(this.timeout);
+			this.timeout = undefined;
+		}
+		//close delay to allow moving into tooltip
+		this.closeTimeout = setTimeout(() => {
+			this.remove();
+		}, this.closeDelay);
 	}
 
 	private align(rect: DOMRect) {
