@@ -87,12 +87,12 @@ export class Format {
 	 * @param html
 	 */
 	public static convertUrisToAnchors(html: string): string {
-		// Regular expression to match URIs (http, https, ftp, etc.) that are not inside <a> tags
-		const uriRegex = /(?<!<a[^>]*>)(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])(?!<\/a>)/ig;
+		// Regular expression to match URIs that are not inside anchor tags
+		const uriRegex = /(?<!<a[^>]*>)(?<!href=["'])(https?:\/\/[^\s<]+)(?!<\/a>)(?!["'])/g;
 
-		// Replace URIs with anchor tags
-		return html.replace(uriRegex, (uri) => {
-			return `<a href="${uri}" target="_blank" rel="noopener noreferrer">${uri}</a>`;
+		// Replace matched URIs with anchor tags
+		return html.replace(uriRegex, (url) => {
+			return `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`;
 		});
 	}
 

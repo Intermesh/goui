@@ -21,6 +21,7 @@ import {t} from "../../Translate.js";
 import {fieldset} from "./Fieldset";
 import {textarea, TextAreaField} from "./TextareaField";
 import {draggable} from "../DraggableComponent";
+import {Format} from "../../util/index";
 
 
 /**
@@ -97,9 +98,14 @@ export class HtmlField extends Field {
 	protected baseCls = 'goui-form-field goui-html-field'
 
 	/**
-	 * When the field is empty this will be dispklayed inside the field
+	 * When the field is empty this will be displayed inside the field
 	 */
 	public placeholder: string | undefined;
+
+	/**
+	 * Automatically detect URL input and change them into anchor tags
+	 */
+	public autoLink = true;
 
 	private editor: HTMLDivElement | undefined;
 
@@ -114,10 +120,7 @@ export class HtmlField extends Field {
 		document.execCommand("styleWithCSS", false, "false");
 		document.execCommand("AutoUrlDetect", false, "true");
 
-
-
 		this.imageResizer = new ImageResizer(this);
-
 	}
 
 	// noinspection JSUnusedGlobalSymbols
@@ -408,9 +411,7 @@ export class HtmlField extends Field {
 
 		const el = this.el;
 
-		el.addEventListener("click", () => {
-			this.editor!.focus();
-		});
+
 
 		//grab value before creating this.editor otherwise it will return the input value
 		const v = this.value;
@@ -431,14 +432,28 @@ export class HtmlField extends Field {
 
 		el.appendChild(this.editor);
 
+
+
+		return this.editor;
+	}
+
+	protected internalRender(): HTMLElement {
+		this.getToolbar().render(this.wrap);
+		const el = super.internalRender();
+
+
+		el.addEventListener("click", () => {
+			this.editor!.focus();
+		});
+
 		//buffer a bit for performance
 		const selectionChangeFn = FunctionUtil.buffer(300, () => this.updateToolbar());
 
-		this.editor.addEventListener("focus", () => {
+		this.editor!.addEventListener("focus", () => {
 			document.addEventListener("selectionchange", selectionChangeFn);
 		});
 
-		this.editor.addEventListener("blur", (e) => {
+		this.editor!.addEventListener("blur", (e) => {
 			document.removeEventListener("selectionchange", selectionChangeFn);
 			if (!(e.relatedTarget instanceof HTMLElement) || !this.getToolbar().el.contains(e.relatedTarget)) {
 
@@ -447,50 +462,37 @@ export class HtmlField extends Field {
 			}
 		});
 
-		this.editor.addEventListener("keydown", (ev) => {
+		this.editor!.addEventListener("keydown", (ev) => {
 			this.onKeyDown(ev);
 		});
 
-		this.editor.addEventListener("drop", ev => {
+		if(this.autoLink) {
+			const bufferedKeyUp = FunctionUtil.buffer(500, (ev) => {
+				this.onKeyUp(ev);
+			});
+
+			this.editor!.addEventListener("keyup", bufferedKeyUp);
+		}
+
+		this.editor!.addEventListener("drop", ev => {
 			this.onDrop(ev);
 		});
 
-		this.editor.addEventListener("dragover", ev => {
+		this.editor!.addEventListener("dragover", ev => {
 			// Prevent default behavior (Prevent file from being opened)
 			ev.preventDefault();
 		});
 
-		this.editor.addEventListener('paste', ev => {
+		this.editor!.addEventListener('paste', ev => {
 			this.onPaste(ev);
 		});
 
-		return this.editor;
+		return el;
 	}
-
-	protected internalRender(): HTMLElement {
-		this.getToolbar().render(this.wrap);
-		return super.internalRender();
-	}
-
-	// private isChildOfEditor(el:Node): boolean {
-	// 	let p = el.parentNode;
-	// 	if(p == this.editor) {
-	// 		return true;
-	// 	}
-	//
-	// 	if(!p || p == document.body) {
-	// 		return false;
-	// 	}
-	//
-	// 	return this.isChildOfEditor(p);
-	//
-	// }
-
 
 	protected internalSetValue(v?: any) {
 		if (this.editor) {
 			this.editor.innerHTML = v;
-			//Image.replaceImages(this.editor);
 		}
 	}
 
@@ -678,6 +680,75 @@ export class HtmlField extends Field {
 		});
 
 	}
+
+	private onKeyUp(ev: KeyboardEvent) {
+
+		if(ev.key != "Enter" && ev.key != " " && ev.key != "Tab") {
+			return;
+		}
+
+		const caretIndex = this.getCaretPosition();
+		const v = this.value;
+		const anchored = Format.convertUrisToAnchors(v);
+
+		if(anchored == v) {
+			return;
+		}
+
+		this.value = anchored;
+
+		this.setCaretPosition(caretIndex);
+	}
+
+
+	private getCaretPosition(): number {
+		let caretOffset = 0;
+		const selection = window.getSelection();
+		if (selection && selection.rangeCount > 0) {
+			const range = selection.getRangeAt(0);
+			const preCaretRange = range.cloneRange();
+			preCaretRange.selectNodeContents(this.editor!);
+			preCaretRange.setEnd(range.endContainer, range.endOffset);
+			caretOffset = preCaretRange.toString().length;
+		}
+		return caretOffset;
+	}
+
+
+	private setCaretPosition( offset: number): void {
+		const element = this.editor!;
+		element.focus();
+		const selection = window.getSelection();
+		if (!selection) return;
+
+		// Helper to recursively find the node and offset
+		function setRange(node: Node, chars: { count: number }): boolean {
+			if (node.nodeType === Node.TEXT_NODE) {
+				if (node.textContent) {
+					if (chars.count <= node.textContent.length) {
+						const range = document.createRange();
+						range.setStart(node, chars.count);
+						range.collapse(true);
+						selection!.removeAllRanges();
+						selection!.addRange(range);
+						return true;
+					} else {
+						chars.count -= node.textContent.length;
+					}
+				}
+			} else {
+				for (let i = 0; i < node.childNodes.length; i++) {
+					if (setRange(node.childNodes[i], chars)) {
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+
+		setRange(element, { count: offset });
+	}
+
 }
 
 
