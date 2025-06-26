@@ -50,7 +50,6 @@ export interface Button extends Component {
 	on<K extends keyof ButtonEventMap<this>, L extends Listener>(eventName: K, listener: Partial<ButtonEventMap<this>>[K], options?: ObservableListenerOpts): L
 	un<K extends keyof ButtonEventMap<this>>(eventName: K, listener: Partial<ButtonEventMap<this>>[K]): boolean
 	fire<K extends keyof ButtonEventMap<this>>(eventName: K, ...args: Parameters<ButtonEventMap<any>[K]>): boolean
-	get el(): HTMLButtonElement
 }
 
 /**
@@ -68,6 +67,9 @@ export interface Button extends Component {
  *
  */
 export class Button extends Component {
+
+	public readonly el!: HTMLButtonElement;
+
 	private _iconEl?: HTMLElement;
 	private _textEl?: HTMLElement;
 

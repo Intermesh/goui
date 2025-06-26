@@ -185,10 +185,15 @@ export class Component extends Observable {
 	/**
 	 * Component constructor
 	 *
-	 * @param tagName The tagname used for the root HTMLElement of this component
+	 * @param tagName The tag name used for the root HTMLElement of this component
 	 */
-	constructor(readonly tagName: keyof HTMLElementTagNameMap = "div") {
+	constructor(tagName: keyof HTMLElementTagNameMap = "div") {
 		super();
+		this.el = this.initEl(tagName);
+	}
+
+	protected initEl(tagName: keyof HTMLElementTagNameMap) {
+		return document.createElement(tagName)
 	}
 
 	/**
@@ -227,6 +232,8 @@ export class Component extends Observable {
 	 * When this item is added to a Component this is set to the parent Component
 	 */
 	public parent?: Component;
+
+	public readonly el: HTMLElement;
 
 	/**
 	 * Normally components are rendered to its parent component's element. But in some cases like menu's it's desired
@@ -378,14 +385,6 @@ export class Component extends Observable {
 		return this._rendered;
 	}
 
-	private _el?: HTMLElement;
-
-	get el() {
-		if (!this._el) {
-			this._el = document.createElement(this.tagName);
-		}
-		return this._el;
-	}
 
 	/**
 	 * Class name to add to element

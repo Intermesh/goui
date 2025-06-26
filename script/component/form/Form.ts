@@ -44,9 +44,6 @@ export interface Form<ValueType extends ContainerFieldValue = ContainerFieldValu
 	un<K extends keyof FormEventMap<this, ValueType>>(eventName: K, listener: Partial<FormEventMap<this, ValueType>>[K]): boolean
 	fire<K extends keyof FormEventMap<this, ValueType>>(eventName: K, ...args: Parameters<FormEventMap<any, ValueType>[K]>): boolean
 
-	get el(): HTMLFormElement
-
-
 }
 
 /**
@@ -94,6 +91,8 @@ export class Form<ValueType extends ContainerFieldValue = ContainerFieldValue> e
 	constructor() {
 		super("form");
 	}
+
+	public readonly el!: HTMLFormElement;
 
 
 	/**

@@ -188,7 +188,7 @@ export class Menu extends AbstractMenu {
 
 	protected renderItem(item: Component) {
 
-		if(item.tagName == "li") {
+		if(item.el.tagName == "LI") {
 			return super.renderItem(item);
 		}
 

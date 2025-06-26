@@ -354,4 +354,6 @@ export type Config<Cmp extends Observable, EventMap extends ObservableEventMap<O
 	 * 	@see Observable.on()
 	 */
 	listeners?: ObservableListener<EventMap>
+
+	tagName?: keyof HTMLElementTagNameMap
 }

@@ -5,6 +5,7 @@
  */
 
 import {Component} from "./Component.js";
+import {Theme} from "typedoc";
 
 
 /**
@@ -15,36 +16,34 @@ import {Component} from "./Component.js";
 class Root extends Component {
 
 	protected internalRender() {
+		debugger;
 		this.renderItems();
 		return this.el;
 	}
-
-	private _rootEl?: HTMLElement;
-
-	get el() {
-		if (!this._rootEl) {
-
-			let rootEl = document.getElementById("goui");
-			if(!rootEl) {
-				rootEl = document.createElement("div");
-				rootEl.id = "goui";
-
-				document.body.append(rootEl);
-			}
-
-
-			this._rootEl = rootEl;
-		}
-
-		return this._rootEl;
-	}
-
 	get rendered() {
 		return true;
 	}
 
+	protected initEl(tagName: keyof HTMLElementTagNameMap){
+		const existingRoot = document.getElementById("goui");
+		if(existingRoot) {
+			return existingRoot;
+		} else
+		{
+			this.renderTo = document.body;
+			return super.initEl(tagName);
+		}
+	}
+
 	constructor() {
 		super();
+
+		this.id = "goui";
+
+		if(this.renderTo) {
+			document.body.append(this.el);
+		}
+
 		this.items.on("beforeadd", () => {
 
 			// const link = document.createElement('link');

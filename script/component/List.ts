@@ -240,9 +240,8 @@ export class List<StoreType extends Store = Store> extends Component implements 
 		return this.rowSelect;
 	}
 
-	get el(): HTMLElement {
-		return super.el;
-	}
+
+
 
 	protected internalRender() {
 		const el = super.internalRender();
