@@ -14,14 +14,8 @@ export interface Route {
 /**
  * @inheritDoc
  */
-export interface RouterEventMap<Type extends Observable> extends ObservableEventMap<Type> {
-	change: (path: string, oldPath: string) => void
-}
-
-export interface Router extends Observable {
-	on<K extends keyof RouterEventMap<this>, L extends Listener>(eventName: K, listener: RouterEventMap<this>[K], options?: ObservableListenerOpts): L
-	un<K extends keyof RouterEventMap<this>>(eventName: K, listener: RouterEventMap<this>[K]): boolean
-	fire<K extends keyof RouterEventMap<this>>(eventName: K, ...args: Parameters<RouterEventMap<any>[K]>): boolean
+export interface RouterEventMap extends ObservableEventMap {
+	change: { path: string, oldPath: string}
 }
 
 export type RouterMethod = (...args: string[]) => Promise<any> | any;
@@ -31,7 +25,7 @@ export type RouterMethod = (...args: string[]) => Promise<any> | any;
  *
  * @see router
  */
-export class Router extends Observable {
+export class Router extends Observable<RouterEventMap> {
 
 	private routes: Route[] = [];
 
@@ -80,7 +74,7 @@ export class Router extends Observable {
 			this.suspendEvent = true;
 			const oldPath = this.getPath();
 			window.location.hash = path;
-			this.fire("change", this.getPath(), oldPath);
+			this.fire("change", {path: this.getPath(), oldPath});
 		}
 	}
 
@@ -166,7 +160,7 @@ export class Router extends Observable {
 		try {
 			const result = handler.apply({}, match);
 			window.scrollTo(0,0);
-			this.fire("change", this.getPath(), oldPath);
+			this.fire("change", {path: this.getPath(), oldPath});
 
 			return result;
 		} finally {
@@ -200,7 +194,7 @@ export class Router extends Observable {
 		const path = pathParts.map(p => p ?? "").join("/");
 
 		const p = new Promise((resolve, reject) => {
-			this.on("change", (path1, oldPath) => {
+			this.on("change", () => {
 				resolve(this);
 			}, {once: true});
 		});

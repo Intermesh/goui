@@ -52,4 +52,4 @@ export class Fieldset extends Component {
  * @param config
  * @param items
  */
-export const fieldset = (config?: Config<Fieldset, FieldEventMap<Fieldset>>, ...items: Component[]) => createComponent(new Fieldset(), config, items);
+export const fieldset = (config?: Config<Fieldset>, ...items: Component[]) => createComponent(new Fieldset(), config, items);

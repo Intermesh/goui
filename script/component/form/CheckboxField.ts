@@ -47,7 +47,7 @@ export class CheckboxField extends InputField {
 			super.focus(o);
 		} else {
 			this.input.focus(o);
-			this.fire("focus", this, o);
+			this.fire("focus", {options:o});
 		}
 	}
 
@@ -106,7 +106,7 @@ export class CheckboxField extends InputField {
 	}
 }
 
-export type CheckboxFieldConfig = Omit<FieldConfig<CheckboxField, FieldEventMap<CheckboxField>>, "type"> & {
+export type CheckboxFieldConfig = Omit<FieldConfig<CheckboxField>, "type"> & {
 	type?: CheckBoxType
 }
 

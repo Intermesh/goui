@@ -10,19 +10,13 @@ import {E} from "../../util/Element.js";
 import {Config, Listener, ObservableListenerOpts} from "../Observable.js";
 
 // import {Button} from "../Button";
-export interface DatePickerEventMap<Type> extends ComponentEventMap<Type> {
+export interface DatePickerEventMap extends ComponentEventMap {
 
-	'select': (datepicker: Type, date: DateTime|undefined) => false | void
-	'select-range': (datepicker: Type, start: DateTime|undefined, end: DateTime|undefined) => false | void
+	'select': {date: DateTime|undefined}
+	'select-range': {start: DateTime|undefined, end: DateTime|undefined}
 }
 
-export interface DatePicker extends Component{
-	on<K extends keyof DatePickerEventMap<this>, L extends Listener>(eventName: K, listener: Partial<DatePickerEventMap<this>>[K], options?: ObservableListenerOpts): L;
-	un<K extends keyof DatePickerEventMap<this>>(eventName: K, listener: Partial<DatePickerEventMap<this>>[K]): boolean
-	fire<K extends keyof DatePickerEventMap<this>>(eventName: K, ...args: Parameters<DatePickerEventMap<Component>[K]>): boolean;
-}
-
-export class DatePicker extends Component {
+export class DatePicker extends Component<DatePickerEventMap> {
 
 	public showWeekNbs: boolean
 	public value: DateTime
@@ -289,9 +283,9 @@ export class DatePicker extends Component {
 			if (!this.enableRangeSelect || start == end) {
 				const v = new DateTime(start.attr('data-date'));
 				this.value = v;
-				this.fire('select', this, v);
+				this.fire('select', {date:v});
 			} else {
-				this.fire('select-range', this, new DateTime(start.attr('data-date')), new DateTime(end.attr('data-date')));
+				this.fire('select-range', {start: new DateTime(start.attr('data-date')), end: new DateTime(end.attr('data-date'))});
 			}
 		};
 
@@ -307,4 +301,4 @@ export class DatePicker extends Component {
 	}
 }
 
-export const datepicker = (config?: Config<DatePicker, DatePickerEventMap<DatePicker>>) => createComponent(new DatePicker(), config);
+export const datepicker = (config?: Config<DatePicker>) => createComponent(new DatePicker(), config);

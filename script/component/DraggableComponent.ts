@@ -62,13 +62,13 @@ export interface DragData {
 /**
  * @inheritDoc
  */
-export interface DraggableComponentEventMap<Type> extends ComponentEventMap<Type> {
+export interface DraggableComponentEventMap extends ComponentEventMap {
 	/**
 	 * Fires when the component is dropped
 	 *
 	 * @param comp
 	 */
-	drop: (comp: Type, dragData: DragData, e: MouseEvent) => void
+	drop: {dragData: DragData, ev: MouseEvent}
 
 	/**
 	 * Fires contanty while the component is being dragged
@@ -76,7 +76,7 @@ export interface DraggableComponentEventMap<Type> extends ComponentEventMap<Type
 	 * @param dragData
 	 * @param e
 	 */
-	drag: (comp: Type, dragData: DragData, e: MouseEvent) => void;
+	drag: {dragData: DragData, ev: MouseEvent}
 
 	/**
 	 * Return false to prevent drag
@@ -84,17 +84,10 @@ export interface DraggableComponentEventMap<Type> extends ComponentEventMap<Type
 	 * @param comp
 	 * @param e
 	 */
-	dragstart: (comp: Type, dragData: DragData, e: MouseEvent) => false | void;
+	dragstart: {dragData: DragData, ev: MouseEvent}
 }
 
-
-export interface DraggableComponent {
-	on<K extends keyof DraggableComponentEventMap<this>, L extends Listener>(eventName: K, listener: Partial<DraggableComponentEventMap<this>>[K], options?: ObservableListenerOpts): L;
-
-	fire<K extends keyof DraggableComponentEventMap<this>>(eventName: K, ...args: Parameters<DraggableComponentEventMap<any>[K]>): boolean
-}
-
-export class DraggableComponent extends Component {
+export class DraggableComponent<EventMap extends DraggableComponentEventMap = DraggableComponentEventMap> extends Component<EventMap> {
 
 	protected dragData?: DragData;
 
@@ -206,7 +199,7 @@ export class DraggableComponent extends Component {
 		};
 
 
-		if (this.fire('dragstart', this, this.dragData, e) !== false) {
+		if (this.fire('dragstart', {dragData: this.dragData, ev: e}) !== false) {
 			this.onDragStart(e);
 		}
 	};
@@ -244,7 +237,7 @@ export class DraggableComponent extends Component {
 		document.addEventListener('mouseup', (e) => {
 			document.removeEventListener('mousemove', onDrag);
 
-			this.fire("drop", this, this.dragData!, e);
+			this.fire("drop", {dragData: this.dragData!, ev: e});
 
 		}, {once: true});
 	}
@@ -263,7 +256,7 @@ export class DraggableComponent extends Component {
 			this.el.style.left = (d.startOffsetLeft + d.x - d.startX) + "px";
 		}
 
-		this.fire("drag", this, this.dragData!, e);
+		this.fire("drag", {dragData: this.dragData!, ev: e});
 	}
 
 	private constrainCoords() {
@@ -288,4 +281,4 @@ export class DraggableComponent extends Component {
  * @param config
  * @param items
  */
-export const draggable = (config?: Config<DraggableComponent, DraggableComponentEventMap<DraggableComponent>>, ...items: Component[]) => createComponent(new DraggableComponent(config?.tagName), config, items);
+export const draggable = (config?: Config<DraggableComponent>, ...items: Component[]) => createComponent(new DraggableComponent(config?.tagName), config, items);

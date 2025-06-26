@@ -12,11 +12,7 @@ import {Component, createComponent} from "../Component.js";
 export type ContainerFieldValue = Record<string, any>;
 
 
-export interface ContainerField<ValueType extends ContainerFieldValue = ContainerFieldValue> extends Field {
-	on<K extends keyof FieldEventMap<this>, L extends Listener>(eventName: K, listener: Partial<FieldEventMap<this>>[K], options?: ObservableListenerOpts): L;
-	un<K extends keyof FieldEventMap<this>>(eventName: K, listener: Partial<FieldEventMap<this>>[K]): boolean
-	fire<K extends keyof FieldEventMap<this>>(eventName: K, ...args: Parameters<FieldEventMap<Component>[K]>): boolean
-
+export interface ContainerField<EventMap extends FieldEventMap = FieldEventMap, ValueType extends ContainerFieldValue = ContainerFieldValue> extends Field<EventMap> {
 	set value(v: Partial<ValueType>)
 	get value(): ValueType
 }
@@ -26,7 +22,7 @@ export interface ContainerField<ValueType extends ContainerFieldValue = Containe
  *
  * The value that it returns is an object with the field names as keys.
  */
-export class ContainerField<ValueType extends ContainerFieldValue = ContainerFieldValue> extends Field {
+export class ContainerField<EventMap extends FieldEventMap = FieldEventMap, ValueType extends ContainerFieldValue = ContainerFieldValue> extends Field<EventMap> {
 
 	constructor(tagName: keyof HTMLElementTagNameMap = "div") {
 		super(tagName);
@@ -273,7 +269,7 @@ export class ContainerField<ValueType extends ContainerFieldValue = ContainerFie
 		const fields = this.findFields();
 		if (fields.length) {
 			fields[0].focus(o);
-			this.fire("focus", this, o);
+			this.fire("focus", {options:o});
 		} else {
 			super.focus(o);
 		}
@@ -286,4 +282,4 @@ export class ContainerField<ValueType extends ContainerFieldValue = ContainerFie
  * @param config
  * @param items
  */
-export const containerfield = (config?: FieldConfig<ContainerField, FieldEventMap<ContainerField>>, ...items: Component[]) => createComponent(new ContainerField(config?.tagName ?? 'div'), config, items);
+export const containerfield = (config?: FieldConfig<ContainerField>, ...items: Component[]) => createComponent(new ContainerField(config?.tagName ?? 'div'), config, items);

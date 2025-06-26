@@ -10,7 +10,7 @@ import {createComponent} from "../Component.js";
 /**
  * @inheritDoc
  */
-type ArrayFieldConfig<Type extends FieldValue = Record<string, any>> = FieldConfig<ArrayField<Type>, FieldEventMap<ArrayField<Type>>, "buildField">
+type ArrayFieldConfig<Type extends FieldValue = Record<string, any>> = FieldConfig<ArrayField<Type>, "buildField">
 
 type FieldBuilder<Type extends FieldValue = Record<string, any>> = (value: Type) => Field;
 

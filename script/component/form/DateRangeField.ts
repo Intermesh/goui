@@ -28,7 +28,7 @@ export class DateRangeField extends Field {
 		this.startPicker = datepicker();
 		this.endPicker = datepicker();
 
-		this.endPicker.on("select", (datepicker, date) => {
+		this.endPicker.on("select", () => {
 			this.value = this.startPicker.value.format(DateRangeField.f) +
 				".." +
 				this.endPicker.value.format(DateRangeField.f);
@@ -40,7 +40,7 @@ export class DateRangeField extends Field {
 
 
 		this.fromPicker = datepicker();
-		this.fromPicker.on("select", (datepicker, date) => {
+		this.fromPicker.on("select", (te) => {
 			this.value = ">=" + this.fromPicker.value.format(DateRangeField.f);
 
 			this.button.menu?.close()
@@ -48,7 +48,7 @@ export class DateRangeField extends Field {
 			this.fireChange();
 		})
 		this.untilPicker = datepicker();
-		this.untilPicker.on("select", (datepicker, date) => {
+		this.untilPicker.on("select", () => {
 			this.value = "<" + this.untilPicker.value.addDays(1).format(DateRangeField.f);
 
 			this.button.menu?.close()
@@ -505,12 +505,9 @@ class DateRangeFieldYearMenu extends Menu {
 	}
 }
 
-
-
-
 /**
  * Shorthand function to create {@link DateField}
  *
  * @param config
  */
-export const daterangefield = (config?: FieldConfig<DateRangeField, FieldEventMap<DateRangeField>>) => createComponent(new DateRangeField(), config);
+export const daterangefield = (config?: FieldConfig<DateRangeField>) => createComponent(new DateRangeField(), config);

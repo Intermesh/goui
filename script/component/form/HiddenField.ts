@@ -29,4 +29,4 @@ export class HiddenField extends Field {
  *
  * @param config
  */
-export const hiddenfield = (config?: Config<HiddenField, FieldEventMap<HiddenField>>) => createComponent(new HiddenField(), config);
+export const hiddenfield = (config?: Config<HiddenField>) => createComponent(new HiddenField(), config);

@@ -4,15 +4,10 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {FunctionUtil} from "../util/FunctionUtil.js";
-import {ComponentEventMap} from "./Component.js";
+import {FunctionUtil} from "../util/index";
+import {ComponentEventMap} from "./Component";
 
-/**
- * Component events
- *
- * @see ComponentEventMap
- */
-export interface ObservableEventMap<Type> {
+export interface ObservableEventMap {
 
 }
 
@@ -24,15 +19,19 @@ export interface ObservableEventMap<Type> {
  *
  * {@link ObservableListenerWithOpts}
  */
-export type ObservableListener<Map extends ObservableEventMap<Observable>> = {
-	[P in keyof Map]?: ObservableListenerWithOpts<Map[P]> | Map[P]
+export type ListenersConfig<Comp extends Observable, Map extends ObservableEventMap> = {
+	[P in keyof Map]?: ObservableListenerWithOpts<Listener<Comp, Map[P]>> | Listener<Comp, Map[P]>
 };
 
-export type Listener<Comp extends Observable = Observable> = (sender: Comp, ...args: any[]) => false|void
-//
-// export type ObservableListener2<Comp extends Observable<Map>, Map extends ObservableEventMap2> =  {
-// 	[P in keyof Map]?: Map[P] extends Func ? ObservableListenerWithOpts<Map[P]> | Listener<Comp, Parameters<Map[P]>> : never
-// };
+export type InferComponentEventMap<ObservableType> = ObservableType extends Observable<infer EventMap extends ObservableEventMap> ? EventMap : never;
+
+
+export type Listener<Comp extends Observable, EventData> = (this:Comp, ev:EventData & {
+	/**
+	 * The component that dispatched the event
+	 */
+	readonly target:Comp
+}) => any;
 
 
 /**
@@ -81,20 +80,30 @@ interface ObservableListenerWithOpts<fn> extends ObservableListenerOpts {
  *
  * Adds event listener functionality
  */
-export class Observable {
+export class Observable<EventMapType extends ObservableEventMap = ObservableEventMap> {
 
-	private lisnrs: {
-		[key: string]: { listener: Function, unbindkey: Listener, options?: ObservableListenerOpts }[]
-	} | undefined;
+	/**
+	 * We need this dummy property to infer the eventmap with InferComponentEventMap:
+	 *
+	 * This limitation is discussed in GitHub issues like #26242 and #32794, which request better inference for
+	 * generic parameters in classes and interfaces. The workaround of adding a dummy property is frequently mentioned in such discussions.
+	 *
+	 * @protected
+	 */
+	protected _eventMapAnchor!: EventMapType;
+
+	private lisnrs: any
 
 	/**
 	 * Add a listener
+	 *
+	 * @todo test un() when using buffer
 	 *
 	 * @param eventName
 	 * @param listener
 	 * @param options
 	 */
-	public on<key extends keyof ObservableEventMap<this>, L extends Listener>(eventName: keyof ObservableEventMap<this>, listener: ObservableEventMap<this>[key], options?: ObservableListenerOpts) : L {
+	public on<key extends keyof EventMapType>(eventName: key, listener: Listener<this, EventMapType[key]>, options?: ObservableListenerOpts) {
 
 		//store original listener for the un() method. Because options may change the function
 		const unbindkey = listener;
@@ -127,8 +136,7 @@ export class Observable {
 			this.lisnrs[eventName].push({listener: listener!, options: options, unbindkey: unbindkey});
 		}
 
-		return unbindkey;
-
+		return this;
 	}
 
 	/**
@@ -136,17 +144,18 @@ export class Observable {
 	 * @param eventName
 	 * @protected
 	 */
-	protected onFirstListenerAdded(eventName: string) {
+	protected onFirstListenerAdded(eventName: keyof EventMapType) {
 
 	}
 
-	private once(eventName: keyof ObservableEventMap<Observable>, listener: Function) {
+	private once<K extends keyof EventMapType>(eventName: K, listener: Listener<this, EventMapType[K]>) {
 
 		//because of the settimeout it can run multiple times within the same event loop
 		let executed = false;
-		return (...args: any[]) => {
+		return (ev:any) => {
+			let ret;
 			if(!executed) {
-				listener.apply(null, args);
+				ret = listener.call(this, ev);
 			}
 
 			executed = true;
@@ -154,6 +163,8 @@ export class Observable {
 			setTimeout(() => {
 				this.un(eventName, listener);
 			})
+
+			return ret;
 		};
 	}
 
@@ -164,7 +175,7 @@ export class Observable {
 	 * @param eventName
 	 * @param listener
 	 */
-	public un(eventName: keyof ObservableEventMap<this>, listener: Function) {
+	public un<K extends keyof EventMapType>(eventName: K, listener: Listener<this, EventMapType[K]>) {
 		if (!this.lisnrs || !this.lisnrs[eventName]) {
 			return false;
 		}
@@ -191,12 +202,12 @@ export class Observable {
 	 * When a listener returns false this function will return false too.
 	 *
 	 * @param eventName
-	 * @param args
+	 * @param ev
 	 */
-	public fire<K extends keyof ObservableEventMap<this>>(eventName: K, ...args: Parameters<ObservableEventMap<this>[K]>) {
+	public fire<K extends keyof EventMapType>(eventName: K, ev: EventMapType[K]) {
 
 		if(Observable.DEBUG) {
-			console.log(eventName, ...args);
+			console.log(eventName, ev);
 		}
 
 		if (!this.lisnrs || !this.lisnrs[eventName]) {
@@ -207,7 +218,7 @@ export class Observable {
 
 		for (let l of this.lisnrs[eventName]) {
 
-			if (l.listener.apply(null, args) === false) {
+			if (l.listener.call(this, ev) === false) {
 				ret = false;
 			}
 		}
@@ -215,7 +226,7 @@ export class Observable {
 		return ret;
 	}
 
-	protected relayEvent(comp:Observable, type: any) {
+	protected relayEvent(comp:Observable<ObservableEventMap>, type: any) {
 		//@ts-ignore
 		comp.on(type, (...args:any[]) =>{
 			//@ts-ignore
@@ -309,7 +320,7 @@ type WritablePartial<T> = {
  * 	Partial<Pick<ChipsField, "textInputToValue" | "chipRenderer">>
  * ```
  */
-export type Config<Cmp extends Observable, EventMap extends ObservableEventMap<Observable> = ComponentEventMap<Cmp>, Required extends keyof Cmp = never> =
+export type Config<Cmp extends Observable, Required extends keyof Cmp = never> =
 
 	WritablePartial<
 		//somehow this breaks generic class sometimes : (
@@ -353,7 +364,10 @@ export type Config<Cmp extends Observable, EventMap extends ObservableEventMap<O
 	 *
 	 * 	@see Observable.on()
 	 */
-	listeners?: ObservableListener<EventMap>
+	listeners?: ListenersConfig<Cmp, InferComponentEventMap<Cmp>>
 
+	/**
+	 * The tagname of the HTMLElement created by the component
+	 */
 	tagName?: keyof HTMLElementTagNameMap
 }

@@ -7,7 +7,7 @@
 import {Field, FieldConfig, FieldEventMap} from "./Field.js";
 import {createComponent} from "../Component.js";
 
-type MapFieldConfig = FieldConfig<MapField, FieldEventMap<MapField>, "buildField">;
+type MapFieldConfig = FieldConfig<MapField, "buildField">;
 type FieldBuilder = (value: MapFieldValue|undefined) => Field;
 type MapFieldValue = any;
 

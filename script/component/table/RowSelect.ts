@@ -12,7 +12,7 @@ import {Table} from "./Table.js";
 import {CheckboxSelectColumn} from "./TableColumns.js";
 import {Store, StoreRecord, storeRecordType} from "../../data";
 
-export interface RowSelectEventMap<Type extends Observable, StoreType extends Store = Store, RecordType extends StoreRecord = storeRecordType<StoreType>>  extends ObservableEventMap<Type> {
+export interface RowSelectEventMap<StoreType extends Store = Store, RecordType extends StoreRecord = storeRecordType<StoreType>> extends ObservableEventMap {
 	/**
 	 * Fires when selection changes.
 	 * This function is buffered. So when adding/removing selected items or when holding arrow on keyboard it
@@ -34,14 +34,33 @@ export interface RowSelectEventMap<Type extends Observable, StoreType extends St
 	 * ```
 	 * @param rowSelect
 	 */
-	selectionchange: (rowSelect: Type, selected: SelectedRow<StoreType, RecordType>[]) => void
+	selectionchange: {selected: SelectedRow<StoreType, RecordType>[]}
+
+	/**
+	 * Fires before a row is selected.
+	 *
+	 * Can be cancelled by returning false.
+	 * @param rowSelect
+	 * @param storeIndex
+	 */
+	beforerowselect: {row: SelectedRow<StoreType, RecordType>, append: boolean}
+
+	/**
+	 * Fires when a row is deselected.
+	 *
+	 * Can be cancelled by returning false.
+	 *
+	 * @param rowSelect
+	 * @param storeIndex
+	 */
+	beforerowdeselect: {row: SelectedRow<StoreType, RecordType>}
 
 	/**
 	 * Fires when a row is selected
 	 * @param rowSelect
 	 * @param storeIndex
 	 */
-	beforerowselect: (rowSelect: Type, row: SelectedRow<StoreType, RecordType>, append: boolean) => false|void
+	rowselect: {row: SelectedRow<StoreType, RecordType>, append: boolean}
 
 	/**
 	 * Fires when a row is deselected
@@ -49,29 +68,7 @@ export interface RowSelectEventMap<Type extends Observable, StoreType extends St
 	 * @param rowSelect
 	 * @param storeIndex
 	 */
-	beforerowdeselect: (rowSelect: Type, row: SelectedRow<StoreType, RecordType>) => false|void
-
-	/**
-	 * Fires when a row is selected
-	 * @param rowSelect
-	 * @param storeIndex
-	 */
-	rowselect: (rowSelect: Type, row: SelectedRow<StoreType, RecordType>, append: boolean) => void
-
-	/**
-	 * Fires when a row is deselected
-	 *
-	 * @param rowSelect
-	 * @param storeIndex
-	 */
-	rowdeselect: (rowSelect: Type, row: SelectedRow<StoreType, RecordType>) => void
-}
-
-export interface RowSelect<StoreType extends Store = Store, RecordType extends StoreRecord = storeRecordType<StoreType>>{
-	on<K extends keyof RowSelectEventMap<this, StoreType, RecordType>, L extends Listener>(eventName: K, listener: Partial<RowSelectEventMap<this, StoreType, RecordType>>[K], options?: ObservableListenerOpts): L
-
-	fire<K extends keyof RowSelectEventMap<this, StoreType, RecordType>>(eventName: K, ...args: Parameters<RowSelectEventMap<any, StoreType, RecordType>[K]>): boolean
-
+	rowdeselect: {row: SelectedRow<StoreType, RecordType>}
 }
 
 
@@ -92,7 +89,7 @@ export class SelectedRow<StoreType extends Store, RecordType extends StoreRecord
 /**
  * Row selection model
  */
-export class RowSelect<StoreType extends Store = Store, RecordType extends StoreRecord = storeRecordType<StoreType>> extends Observable {
+export class RowSelect<StoreType extends Store = Store, RecordType extends StoreRecord = storeRecordType<StoreType>> extends Observable<RowSelectEventMap> {
 
 	private readonly selected: SelectedRow<StoreType, RecordType>[] = [];
 
@@ -124,16 +121,16 @@ export class RowSelect<StoreType extends Store = Store, RecordType extends Store
 			this.onKeyDown(e);
 		})
 
-		this.list.on('rowmousedown', (table, index, row, e) => {
-			this.onRowMouseDown(table, index, e);
+		this.list.on('rowmousedown', (ev) => {
+			this.onRowMouseDown(ev.target, ev.storeIndex, ev.ev);
 		});
 
-		this.list.on('rowclick', (table, index, row, e) => {
-			this.onRowClick(table, index, e);
+		this.list.on('rowclick', (ev) => {
+			this.onRowClick(ev.target, ev.storeIndex, ev.ev);
 		});
 
 		const fireSelectionChange = () => {
-			this.fire('selectionchange', this, this.selected);
+			this.fire('selectionchange', {selected: this.selected});
 		}
 
 		//buffer selection change so it doesn't fire many changes if rowSelection.add is called in a loop.
@@ -315,18 +312,18 @@ export class RowSelect<StoreType extends Store = Store, RecordType extends Store
 			this.clear();
 		}
 
-		const selectedRow = new SelectedRow<StoreType, RecordType>(this.list.store as StoreType, record);
+		const row = new SelectedRow<StoreType, RecordType>(this.list.store as StoreType, record);
 
-		if(this.fire("beforerowselect", this, selectedRow, append) === false) {
+		if(this.fire("beforerowselect", {row, append}) === false) {
 			return;
 		}
 
-		this.selected.push(selectedRow);
+		this.selected.push(row);
 
-		this.fire('rowselect', this, selectedRow, append);
+		this.fire('rowselect',  {row, append});
 		this.fireSelectionChange();
 
-		this.lastIndex = selectedRow.storeIndex;
+		this.lastIndex = row.storeIndex;
 	}
 
 	/**
@@ -343,9 +340,9 @@ export class RowSelect<StoreType extends Store = Store, RecordType extends Store
 			return;
 		}
 
-		const selectedRow = this.selected[index];
+		const row = this.selected[index];
 
-		if(this.fire("beforerowdeselect", this, selectedRow) === false) {
+		if(this.fire("beforerowdeselect", {row}) === false) {
 			return;
 		}
 
@@ -353,11 +350,11 @@ export class RowSelect<StoreType extends Store = Store, RecordType extends Store
 
 		if(!silent) {
 
-			if(selectedRow.storeIndex ==  -1) {
+			if(row.storeIndex ==  -1) {
 				//record is not in store anymore.
 				return;
 			}
-			this.fire('rowdeselect', this, selectedRow);
+			this.fire('rowdeselect', {row});
 			this.fireSelectionChange();
 		}
 	}
@@ -435,7 +432,7 @@ export class RowSelect<StoreType extends Store = Store, RecordType extends Store
 		if (change && !this.hasKeyUpListener) {
 			this.hasKeyUpListener = true;
 			this.list.el.addEventListener('keyup', () => {
-				this.fire('selectionchange', this, this.selected);
+				this.fire('selectionchange', {selected: this.selected});
 				this.hasKeyUpListener = false;
 			}, {once: true});
 		}
@@ -445,7 +442,7 @@ export class RowSelect<StoreType extends Store = Store, RecordType extends Store
 
 }
 
-export type RowSelectConfig<StoreType extends Store = Store> = Config<RowSelect<StoreType>, RowSelectEventMap<RowSelect, StoreType>, "list">
+export type RowSelectConfig<StoreType extends Store = Store> = Config<RowSelect<StoreType>, "list">
 
 /**
  * Shorthand function to create {@link RowSelect}

@@ -21,14 +21,14 @@ import {DateTime} from "../util/index.js";
 /**
  * @inheritDoc
  */
-export interface WindowEventMap<Type> extends DraggableComponentEventMap<Type> {
+export interface WindowEventMap extends DraggableComponentEventMap {
 	/**
 	 * Fires when the window is closed
 	 *
 	 * @param window
 	 * @param byUser True if the user closed it
 	 */
-	close: (window: Type, byUser: boolean) => void
+	close: { byUser: boolean}
 
 	/**
 	 * Fires before closing window
@@ -37,27 +37,21 @@ export interface WindowEventMap<Type> extends DraggableComponentEventMap<Type> {
 	 * @param window
 	 * @param byUser True if the user closed it
 	 */
-	beforeclose: (window: Type, byUser: boolean) => void
+	beforeclose: { byUser: boolean}
 
 	/**
 	 * Fires when the window is maximized
 	 *
 	 * @param window
 	 */
-	maximize: (window: Type) => void
+	maximize: {}
 
 	/**
 	 * Fires when the window is restored after being maximized
 	 *
 	 * @param window
 	 */
-	unmaximize: (window: Type) => void
-}
-
-export interface Window extends DraggableComponent{
-	on<K extends keyof WindowEventMap<this>, L extends Listener>(eventName: K, listener: Partial<WindowEventMap<this>>[K], options?: ObservableListenerOpts): L;
-	un<K extends keyof WindowEventMap<this>>(eventName: K, listener: Partial<WindowEventMap<this>>[K]): boolean
-	fire<K extends keyof WindowEventMap<this>>(eventName: K, ...args: Parameters<WindowEventMap<any>[K]>): boolean
+	unmaximize: {}
 }
 
 /**
@@ -74,7 +68,7 @@ export interface Window extends DraggableComponent{
  * win.open();
  * ```
  */
-export class Window extends DraggableComponent {
+export class Window<EventMap extends WindowEventMap = WindowEventMap> extends DraggableComponent<EventMap> {
 
 	constructor() {
 		super();
@@ -299,32 +293,46 @@ export class Window extends DraggableComponent {
 
 	private initResizable() {
 
-		const drop = FunctionUtil.buffer(200, () => {
+		const drop =  FunctionUtil.buffer(200, () => {
 				void this.saveState();
 		}),
-		dragstart = (_comp:DraggableComponent, dragData:DragData) => {
+		dragstart = ({dragData}:{dragData:DragData}) => {
 			dragData.data.startWidth = this.width;
 			dragData.data.startHeight = this.height;
 			dragData.data.startLeft = parseFloat(this.el.style.left);
 			dragData.data.startTop = parseFloat(this.el.style.top);
 		},
 		dragHandles = {
-			right: (_, d) => 	this.resizeWidth(d),
-			left: (_, d) => 		this.resizeWidth(d,true),
-			bottom: (_, d) => 	this.resizeHeight(d),
-			top: (_, d) => 		this.resizeHeight(d,true),
-			bottomright: (_, d) => {this.resizeWidth(d);		this.resizeHeight(d);},
-			bottomleft: (_, d) => {this.resizeWidth(d,true);	this.resizeHeight(d);},
-			topright: (_, d) => {	this.resizeWidth(d);			this.resizeHeight(d,true);},
-			topleft: (_, d) => {	this.resizeWidth(d,true);	this.resizeHeight(d,true);}
-		} as {[name:string]: (comp:DraggableComponent, d:DragData) => void}
+			right: ({dragData}: { dragData: DragData }) => this.resizeWidth(dragData),
+			left: ({dragData}: { dragData: DragData }) => this.resizeWidth(dragData, true),
+			bottom: ( {dragData}: { dragData: DragData }) => this.resizeHeight(dragData),
+			top: ({dragData}: { dragData: DragData }) => this.resizeHeight(dragData, true),
+			bottomright: ( {dragData}: { dragData: DragData }) => {
+				this.resizeWidth(dragData);
+				this.resizeHeight(dragData);
+			},
+			bottomleft: ({dragData}: { dragData: DragData }) => {
+				this.resizeWidth(dragData, true);
+				this.resizeHeight(dragData);
+			},
+			topright: ({dragData}: { dragData: DragData }) => {
+				this.resizeWidth(dragData);
+				this.resizeHeight(dragData, true);
+			},
+			topleft: ( {dragData}: { dragData: DragData }) => {
+				this.resizeWidth(dragData, true);
+				this.resizeHeight(dragData, true);
+			}
+		};
 
 
 		for(const name in dragHandles) {
 			draggable({
 				cls: "resizer " + name,
 				setPosition: false,
-				listeners: {dragstart,drag: dragHandles[name],drop}
+				listeners: {
+					dragstart,
+					drag: dragHandles[name as keyof typeof dragHandles],drop}
 			}).render(this.el);
 		}
 	}
@@ -475,11 +483,11 @@ export class Window extends DraggableComponent {
 	}
 
 	protected internalClose(byUser = false) {
-		if (this.fire("beforeclose", this, byUser) === false) {
+		if (this.fire("beforeclose", {byUser}) === false) {
 			return;
 		}
 		this.remove();
-		this.fire("close", this, byUser);
+		this.fire("close", {byUser});
 	}
 
 	/**
@@ -723,7 +731,7 @@ export class Window extends DraggableComponent {
 
 }
 
-type WindowConfig = Omit<Config<Window, WindowEventMap<Window>>, "close" | "maximize" | "center" | "dragConstrainTo" | "constrainTo" | "calcConstrainBox">;
+type WindowConfig = Omit<Config<Window>, "close" | "maximize" | "center" | "dragConstrainTo" | "constrainTo" | "calcConstrainBox">;
 
 
 /**

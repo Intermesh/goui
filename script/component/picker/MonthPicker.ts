@@ -10,28 +10,24 @@ import {Config, Listener, ObservableListenerOpts} from "../Observable.js";
 import {fieldset, NumberField, numberfield} from "../form";
 import {btn} from "../Button";
 
-export interface MonthPickerEventMap<Type> extends ComponentEventMap<Type> {
+export interface MonthPickerEventMap extends ComponentEventMap {
 	/**
 	 * Fires when a Month is selected
 	 *
 	 * @param datepicker
 	 * @param date
 	 */
-	select: (datepicker: Type, date: DateTime) => false | void
+	select: { date: DateTime}
 }
 
-export interface MonthPicker extends Component{
-	on<K extends keyof MonthPickerEventMap<this>, L extends Listener>(eventName: K, listener: Partial<MonthPickerEventMap<this>>[K], options?: ObservableListenerOpts): L;
-	un<K extends keyof MonthPickerEventMap<this>>(eventName: K, listener: Partial<MonthPickerEventMap<this>>[K]): boolean
-	fire<K extends keyof MonthPickerEventMap<this>>(eventName: K, ...args: Parameters<MonthPickerEventMap<Component>[K]>): boolean;
-}
+
 
 /**
  * Month picker
  *
  * Select a Month of the year
  */
-export class MonthPicker extends Component {
+export class MonthPicker extends Component<MonthPickerEventMap> {
 
 	private _value: DateTime
 	private now: DateTime
@@ -120,7 +116,7 @@ export class MonthPicker extends Component {
 				cls,
 				handler: btn => {
 					this.value = DateTime.createFromFormat(btn.dataSet.date, 'Y-m-d')!
-					this.fire("select", this, this.value);
+					this.fire("select", {date:this.value});
 				}
 			}))
 			curDate.addMonths(1);
@@ -135,4 +131,4 @@ export class MonthPicker extends Component {
  *
  * @param config
  */
-export const monthpicker = (config?: Config<MonthPicker, MonthPickerEventMap<MonthPicker>>) => createComponent(new MonthPicker(), config);
+export const monthpicker = (config?: Config<MonthPicker>) => createComponent(new MonthPicker(), config);

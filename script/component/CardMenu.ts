@@ -71,20 +71,20 @@ export class CardMenu extends Component {
 				this.cardContainer = this.parent!.findChildByType(CardContainer)!;
 			}
 
-			this.cardContainer!.on("cardchange", (cardContainer, index) => {
+			this.cardContainer!.on("cardchange", () => {
 				this.updateActiveTab();
 			});
 
 			this.createMenu();
 
-			this.cardContainer.items.on("remove", (collection, item, index) => {
+			this.cardContainer.items.on("remove", ({index}) => {
 				const cardMenuItem = this.findItem('card-' + index);
 				if(cardMenuItem) {
 					cardMenuItem.remove();
 				}
 			});
 
-			this.cardContainer.items.on("add", (collection, item, index) => {
+			this.cardContainer.items.on("add", () => {
 				this.createMenu();
 			})
 

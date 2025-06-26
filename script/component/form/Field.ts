@@ -16,7 +16,7 @@ import {Menu} from "../menu";
 /**
  * @inheritDoc
  */
-export interface FieldEventMap<Type> extends ComponentEventMap<Type> {
+export interface FieldEventMap extends ComponentEventMap {
 	/**
 	 * Fires when the field changes. It fires on blur.
 	 *
@@ -24,7 +24,7 @@ export interface FieldEventMap<Type> extends ComponentEventMap<Type> {
 	 *
 	 * @param field
 	 */
-	change: (field: Type, newValue: any, oldValue: any) => void
+	change: { newValue: any, oldValue: any}
 
 	/**
 	 * Fires when setValue() is called
@@ -35,7 +35,7 @@ export interface FieldEventMap<Type> extends ComponentEventMap<Type> {
 	 * @param newValue
 	 * @param oldValue
 	 */
-	beforesetvalue: (field: Type, e:{value: any, oldValue: any}) => void
+	beforesetvalue: {e:{value: any, oldValue: any}}
 
 	/**
 	 * Fires when setValue() is called
@@ -46,7 +46,7 @@ export interface FieldEventMap<Type> extends ComponentEventMap<Type> {
 	 * @param newValue
 	 * @param oldValue
 	 */
-	beforegetvalue: (field: Type, e:{value: any}) => void
+	beforegetvalue: {e:{value: any}}
 
 	/**
 	 * Fires when setValue() is called
@@ -55,7 +55,7 @@ export interface FieldEventMap<Type> extends ComponentEventMap<Type> {
 	 * @param newValue
 	 * @param oldValue
 	 */
-	setvalue: (field: Type, newValue: any, oldValue: any) => void
+	setvalue: {newValue: any, oldValue: any}
 
 
 	/**
@@ -65,7 +65,7 @@ export interface FieldEventMap<Type> extends ComponentEventMap<Type> {
 	 * @param newValue
 	 * @param oldValue
 	 */
-	reset: (field: Type, newValue: any, oldValue: any) => void
+	reset: {newValue: any, oldValue: any}
 
 	/**
 	 * Fires when validated
@@ -74,7 +74,7 @@ export interface FieldEventMap<Type> extends ComponentEventMap<Type> {
 	 *
 	 * @param field
 	 */
-	validate: (field: Type) => void
+	validate: {}
 
 	/**
 	 * Fires when the field is invalid
@@ -83,25 +83,16 @@ export interface FieldEventMap<Type> extends ComponentEventMap<Type> {
 	 *
 	 * @param field
 	 */
-	invalid: (field: Type) => void
+	invalid: {}
 }
-
 
 export type FieldValue = string|number|boolean|any[]|undefined|null|Record<string,any>;
-
-
-export interface Field extends Component {
-	on<K extends keyof FieldEventMap<this>, L extends Listener>(eventName: K, listener: Partial<FieldEventMap<this>>[K], options?: ObservableListenerOpts): L;
-	un<K extends keyof FieldEventMap<this>>(eventName: K, listener: Partial<FieldEventMap<this>>[K]): boolean
-	fire<K extends keyof FieldEventMap<this>>(eventName: K, ...args: Parameters<FieldEventMap<any>[K]>): boolean
-}
-
 /**
  * Base class for a form field
  *
  * Field components should at least implement "createControl" and "internalSetValue".
  */
-export abstract class Field extends Component {
+export abstract class Field<EventMap extends FieldEventMap = FieldEventMap> extends Component<EventMap> {
 	private _buttons?: Button[];
 	private toolbar?: Toolbar;
 	private _wrap?: HTMLDivElement;
@@ -530,18 +521,18 @@ export abstract class Field extends Component {
 	 */
 	public set value(v: FieldValue) {
 		// Store old value through getter because it might do some extra processing. Like DateField does.
-		const old = this.value;
-		if(v === old) {
+		const oldValue = this.value;
+		if(v === oldValue) {
 			return;
 		}
 		this._value = v;
 
-		const e = {value: v, oldValue: old};
-		this.fire("beforesetvalue", this, e);
+		const e = {value: v, oldValue: oldValue};
+		this.fire("beforesetvalue", {e});
 		this._value = e.value;
 		this.internalSetValue(this._value);
 		this.checkHasValue();
-		this.fire("setvalue", this, this._value, old);
+		this.fire("setvalue", {newValue: this._value, oldValue});
 	}
 
 	protected checkHasValue() {
@@ -566,8 +557,8 @@ export abstract class Field extends Component {
 	 */
 	protected fireChange() {
 		const v = this.value;
-		this.fire("setvalue", this, v, this.valueOnFocus);
-		this.fire("change", this, v, this.valueOnFocus);
+		this.fire("setvalue", {newValue: v, oldValue: this.valueOnFocus});
+		this.fire("change", {newValue: v, oldValue: this.valueOnFocus});
 		this.valueOnFocus = v;
 
 		this.checkHasValue();
@@ -576,7 +567,7 @@ export abstract class Field extends Component {
 	public get value() {
 		let v = this.internalGetValue();
 		const e = {value: v};
-		this.fire("beforegetvalue", this, e);
+		this.fire("beforegetvalue", {e});
 
 		return e.value;
 	}
@@ -590,11 +581,11 @@ export abstract class Field extends Component {
 	 * @see setValue()
 	 */
 	public reset() {
-		const old = this.value;
+		const oldValue = this.value;
 		this.value = this.resetValue;
 		this.clearInvalid();
-		this.fire("reset", this, this.resetValue, old);
-		this.fire("change", this, this.resetValue, old);
+		this.fire("reset", {newValue: this.resetValue, oldValue});
+		this.fire("change", {newValue: this.resetValue, oldValue});
 	}
 
 
@@ -797,7 +788,7 @@ false
 	}
 }
 
-export type FieldConfig<Cmp extends Field, EventMap extends ObservableEventMap<Observable> = ComponentEventMap<Cmp>, Required extends keyof Cmp = never> = Omit<Config<Cmp, EventMap, Required>,
+export type FieldConfig<Cmp extends Field, Required extends keyof Cmp = never> = Omit<Config<Cmp, Required>,
 	"isValid" |
 	"clearInvalid" |
 	"isEmtpy" |

@@ -10,17 +10,12 @@ export interface ChipsField {
 	set value(v: FieldValue[])
 }
 
-export interface ChipEventMap<Type> extends ComponentEventMap<Type> {
-	deleteclick: (chip: Type) => any
+export interface ChipEventMap extends ComponentEventMap {
+	deleteclick: {}
 }
 
-interface Chip extends Component {
-	on<K extends keyof ChipEventMap<this>, L extends Listener>(eventName: K, listener: Partial<ChipEventMap<this>>[K], options?: ObservableListenerOpts): L
-	un<K extends keyof ChipEventMap<this>>(eventName: K, listener: Partial<ChipEventMap<this>>[K]): boolean
-	fire<K extends keyof ChipEventMap<this>>(eventName: K, ...args: Parameters<ChipEventMap<any>[K]>): boolean
-}
 
-class Chip extends Component {
+class Chip extends Component<ChipEventMap> {
 	private textComponent: Component;
 	constructor() {
 		super();
@@ -34,7 +29,7 @@ class Chip extends Component {
 				icon: "cancel",
 				cls: "small",
 				handler: (btn) => {
-					this.fire("deleteclick", this);
+					this.fire("deleteclick", {});
 				}
 			})
 		);
@@ -53,7 +48,7 @@ export type ChipRendered = (chip:Component, value: any) => Promise<void> | void
 /**
  * Chips component
  */
-export class ChipsField extends Field {
+export class ChipsField<EventMap extends FieldEventMap = FieldEventMap> extends Field<EventMap> {
 
 	protected baseCls = 'goui-form-field chips';
 	private _editor?: Component;
@@ -305,7 +300,7 @@ export class ChipsField extends Field {
 
 }
 
-type ChipsConfig = FieldConfig<ChipsField, FieldEventMap<ChipsField>> &
+type ChipsConfig = FieldConfig<ChipsField> &
 	// Add the function properties as they are filtered out
 	Partial<Pick<ChipsField, "textInputToValue" | "chipRenderer">>
 /**

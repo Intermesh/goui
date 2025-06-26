@@ -51,7 +51,7 @@ export class Splitter extends DraggableComponent {
 
 		// determine resize component as early as possible. This is just before the parent component renders.
 		// Then the sizes can be set before the resizeComponent renders itself.
-		this.on("added", (comp, index, parent) => {
+		this.on("added", ({parent}) => {
 			parent.on("beforerender", () => {
 				this._resizeComponent = resizeComponent instanceof Component ? resizeComponent : resizeComponent(this);
 
@@ -150,7 +150,7 @@ export class Splitter extends DraggableComponent {
 
 		let autoMax:number|undefined = undefined;
 
-		this.on("dragstart", (comp, dragData, e) => {
+		this.on("dragstart", ({dragData}) => {
 			//resize width if this is a vertical splitter
 			if (this.resizeWidth === undefined) {
 				this.resizeWidth = this.el.offsetHeight > this.el.offsetWidth;
@@ -176,7 +176,7 @@ export class Splitter extends DraggableComponent {
 			}
 		});
 
-		this.on("drag", (dc, dragData, ev) => {
+		this.on("drag", ({dragData}) => {
 			if (this.resizeWidth) {
 				let offset = dragData.x - dragData.startX;
 

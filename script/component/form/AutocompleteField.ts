@@ -15,23 +15,20 @@ import {Menu, menu} from "../menu/index.js";
 import {storeRecordType} from "../../data/index.js";
 import {InputField} from "./InputField.js";
 
-export interface AutocompleteEventMap<Type> extends FieldEventMap<Type> {
+export interface AutocompleteEventMap extends FieldEventMap {
 	/**
 	 * Fires when suggestions need to load
 	 *
 	 * @param form
 	 */
-	autocomplete: (field: Type, input: string) => any
+	autocomplete: {input: string}
 	/**
 	 * Fires when an item is selected from the list
 	 */
-	select: (field: Type, record: any) => any
+	select: {record: any}
 }
 
-export interface AutocompleteField<T extends List = List> extends InputField {
-	on<K extends keyof AutocompleteEventMap<this>, L extends Listener>(eventName: K, listener: Partial<AutocompleteEventMap<this>>[K], options?: ObservableListenerOpts): L
-	un<K extends keyof AutocompleteEventMap<this>>(eventName: K, listener: Partial<AutocompleteEventMap<this>>[K]): boolean
-	fire<K extends keyof AutocompleteEventMap<this>>(eventName: K, ...args: Parameters<AutocompleteEventMap<Component>[K]>): boolean
+export interface AutocompleteField<T extends List = List, EventMap extends AutocompleteEventMap = AutocompleteEventMap> extends InputField<EventMap> {
 	get input(): HTMLInputElement
 	get value(): string|number|null|undefined
 	set value(v: string|number|null|undefined)
@@ -40,7 +37,7 @@ export interface AutocompleteField<T extends List = List> extends InputField {
 /**
  * Autocomplete field
  */
-export class AutocompleteField<T extends List = List> extends InputField {
+export class AutocompleteField<T extends List = List, EventMap extends AutocompleteEventMap = AutocompleteEventMap> extends InputField<EventMap> {
 
 
 	public readonly menu: Menu;
@@ -64,15 +61,15 @@ export class AutocompleteField<T extends List = List> extends InputField {
 			list: list
 		});
 
-		this.picker.on("select", (tablePicker, record) => {
+		this.picker.on("select", ( {target,record}) => {
 
-			tablePicker.list.findAncestorByType(Menu)!.hide();
+			target.list.findAncestorByType(Menu)!.hide();
 			this.focus();
 
 			//set value after focus for change event
 			this.value = this.pickerRecordToValue(this, record);
 
-			this.fire('select', this, record);
+			this.fire('select', {record});
 		});
 
 
@@ -80,12 +77,12 @@ export class AutocompleteField<T extends List = List> extends InputField {
 			height: 300,
 			cls: "scroll",
 			listeners: {
-				hide: (menu) => {
-					if(menu.rendered) {
+				hide: ({target}) => {
+					if(target.rendered) {
 						if(this.value == undefined) {
 							this.input.value = "";
 						}
-						const inputField = menu.findAncestorByType(InputField)!;
+						const inputField = target.findAncestorByType(InputField)!;
 						inputField.focus();
 					}
 				}
@@ -101,13 +98,13 @@ export class AutocompleteField<T extends List = List> extends InputField {
 				if(this.list.rowSelection) {
 					this.list.rowSelection.clear();
 				}
-				this.fire("autocomplete", this, "");
+				this.fire("autocomplete", {input: ""});
 
 				this.input.focus();
 			},
 			listeners: {
-				render: comp => {
-					comp.el.addEventListener("keydown", (ev:KeyboardEvent)=> {
+				render: ({target}) => {
+					target.el.addEventListener("keydown", (ev:KeyboardEvent)=> {
 
 						switch (ev.key) {
 
@@ -117,7 +114,7 @@ export class AutocompleteField<T extends List = List> extends InputField {
 								if(this.list.rowSelection) {
 									this.list.rowSelection.clear();
 								}
-								this.fire("autocomplete", this, "");
+								this.fire("autocomplete", {input: ""});
 
 								this.menuButton.menu!.show();
 								this.input.focus();
@@ -221,7 +218,7 @@ export class AutocompleteField<T extends List = List> extends InputField {
 					ev.stopPropagation();
 					if(this.menuButton.menu!.hidden) {
 						if(!this.list.store.loaded) {
-							this.fire("autocomplete", this, "");
+							this.fire("autocomplete", {input: ""});
 						}
 						this.menuButton.menu!.show();
 					} else if(this.list.rowSelection) {
@@ -234,7 +231,7 @@ export class AutocompleteField<T extends List = List> extends InputField {
 					ev.preventDefault();
 					ev.stopPropagation();
 					if(this.menuButton.menu!.hidden) {
-						this.fire("autocomplete", this, "");
+						this.fire("autocomplete", {input: ""});
 						this.menuButton.menu!.show();
 					} else if(this.list.rowSelection) {
 						this.list.rowSelection.selectPrevious();
@@ -258,7 +255,7 @@ export class AutocompleteField<T extends List = List> extends InputField {
 	private onInput(_ev: Event) {
 		this.value = null;
 		this.menuButton.menu!.show();
-		this.fire("autocomplete", this, this.input!.value);
+		this.fire("autocomplete", {input: this.input!.value});
 	}
 
 	reset() {
@@ -275,7 +272,7 @@ export class AutocompleteField<T extends List = List> extends InputField {
 
 }
 
-type AutoCompleteConfig<T extends List, Map extends ObservableEventMap<any>, Required extends keyof AutocompleteField<T>> = FieldConfig<AutocompleteField<T>, Map, Required> &
+type AutoCompleteConfig<T extends List, Required extends keyof AutocompleteField<T>> = FieldConfig<AutocompleteField<T>, Required> &
 // Add the function properties as they are filtered out
 	Partial<Pick<AutocompleteField<T>, "pickerRecordToValue" | "valueToTextField">>;
 
@@ -286,4 +283,4 @@ type AutoCompleteConfig<T extends List, Map extends ObservableEventMap<any>, Req
  *
  * @param config
  */
-export const autocomplete = <T extends List> (config: AutoCompleteConfig<T, AutocompleteEventMap<AutocompleteField<T>>, "list">) => createComponent(new AutocompleteField(config.list), config);
+export const autocomplete = <T extends List> (config: AutoCompleteConfig<T, "list">) => createComponent(new AutocompleteField(config.list), config);

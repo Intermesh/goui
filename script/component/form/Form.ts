@@ -5,45 +5,38 @@
  */
 
 import {ContainerField, ContainerFieldValue} from "./ContainerField.js";
-import {Listener, ObservableListenerOpts} from "../Observable.js";
+import {Config, Listener, ObservableListenerOpts} from "../Observable.js";
 import {Notifier} from "../../Notifier.js";
 import {Component, createComponent} from "../Component.js";
 import {Field, FieldConfig, FieldEventMap} from "./Field.js";
 import {t} from "../../Translate.js";
 
 
-export type FormHandler<ValueType extends ContainerFieldValue = ContainerFieldValue> = ((form: Form<ValueType>) => any | Promise<any>) | undefined;
+export type FormHandler<FormType extends Form> = (<F extends FormType>(form: F) => any | Promise<any>) | undefined;
 
-export interface FormEventMap<Type, ValueType extends ContainerFieldValue = ContainerFieldValue> extends FieldEventMap<Type> {
-
-	/**
-	 * Fires when the form is valid and submitted. The event is fired after calling the handler.
-	 *
-	 * @param form
-	 */
-	beforesubmit: (form: Type) => void|false,
-
+export interface FormEventMap extends FieldEventMap {
 
 	/**
 	 * Fires when the form is valid and submitted. The event is fired after calling the handler.
 	 *
 	 * @param form
 	 */
-	submit: (form: Type, handlerResponse: any) => void,
+	beforesubmit: {}
+
+
+	/**
+	 * Fires when the form is valid and submitted. The event is fired after calling the handler.
+	 *
+	 * @param form
+	 */
+	submit: {handlerResponse: any},
 
 	/**
 	 * Not fired by the framework. But comes in handy when you extend this form and add a cancel button
 	 *
 	 * @param form
 	 */
-	cancel: (form: Type) => void
-}
-
-export interface Form<ValueType extends ContainerFieldValue = ContainerFieldValue> extends ContainerField<ValueType> {
-	on<K extends keyof FormEventMap<this, ValueType>, L extends Listener>(eventName: K, listener: Partial<FormEventMap<this,ValueType>>[K], options?: ObservableListenerOpts): L
-	un<K extends keyof FormEventMap<this, ValueType>>(eventName: K, listener: Partial<FormEventMap<this, ValueType>>[K]): boolean
-	fire<K extends keyof FormEventMap<this, ValueType>>(eventName: K, ...args: Parameters<FormEventMap<any, ValueType>[K]>): boolean
-
+	cancel: {}
 }
 
 /**
@@ -77,7 +70,7 @@ export interface Form<ValueType extends ContainerFieldValue = ContainerFieldValu
  * ```
  *
  */
-export class Form<ValueType extends ContainerFieldValue = ContainerFieldValue> extends ContainerField<ValueType> {
+export class Form<EventMap extends FormEventMap = FormEventMap, ValueType extends ContainerFieldValue = ContainerFieldValue> extends ContainerField<EventMap, ValueType> {
 
 	/**
 	 * When this is set to true, the field will use the values set as their original value, used for resetting and
@@ -102,7 +95,7 @@ export class Form<ValueType extends ContainerFieldValue = ContainerFieldValue> e
 	 *
 	 * @param form
 	 */
-	public handler: FormHandler<ValueType>;
+	public handler: FormHandler<this>;
 
 	protected internalRender() {
 		const el = super.internalRender();
@@ -204,7 +197,7 @@ export class Form<ValueType extends ContainerFieldValue = ContainerFieldValue> e
 					this.unmask();
 				}
 			}
-			this.fire("submit", this, handlerResponse);
+			this.fire("submit", {handlerResponse});
 
 			return true;
 
@@ -228,21 +221,21 @@ export class Form<ValueType extends ContainerFieldValue = ContainerFieldValue> e
 	}
 
 }
-export type FormConfig<ValueType extends ContainerFieldValue = ContainerFieldValue> =
-	FieldConfig<Form<ValueType>, FormEventMap<Form<ValueType>>> & {
-	/**
-	 * Executed when form is submitted.
-	 *
-	 * If a promise is returned the "submit" event will fire after it has been resolved.
-	 *
-	 * @param form
-	 */
-	handler?: FormHandler<ValueType>;
-}
+// export type FormConfig<EventMap extends FormEventMap = FormEventMap, ValueType extends ContainerFieldValue = ContainerFieldValue> =
+// 	FieldConfig<Form<EventMap, ValueType>> & {
+// 	/**
+// 	 * Executed when form is submitted.
+// 	 *
+// 	 * If a promise is returned the "submit" event will fire after it has been resolved.
+// 	 *
+// 	 * @param form
+// 	 */
+// 	handler?: Form<EventMap, ValueType>;
+// }
 /**
  * Shorthand function to create {@link Form}
  *
  * @param config
  * @param items
  */
-export const form = <ValueType extends ContainerFieldValue = ContainerFieldValue>(config?: FormConfig<ValueType>, ...items: Component[]) => createComponent(new Form<ValueType>, config, items);
+export const form = <ValueType extends ContainerFieldValue = ContainerFieldValue>(config?: Config<Form>, ...items: Component[]) => createComponent(new Form<FormEventMap, ValueType>, config, items);

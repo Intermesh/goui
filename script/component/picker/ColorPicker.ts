@@ -12,20 +12,14 @@ import {t} from "../../Translate";
 /**
  * @inheritDoc
  */
-export interface ColorPickerEventMap<Type> extends ComponentEventMap<Type> {
+export interface ColorPickerEventMap extends ComponentEventMap {
 	/**
 	 * Fires when color is selected
 	 *
 	 * @param colorPicker
 	 * @param color Hexadecimal color. eg. "000000"
 	 */
-	select: (colorPicker: Type, color: string) => void
-}
-
-export interface ColorPicker extends Component {
-	on<K extends keyof ColorPickerEventMap<ColorPicker>, L extends Listener>(eventName: K, listener: Partial<ColorPickerEventMap<ColorPicker>>[K], options?: ObservableListenerOpts): L
-	un<K extends keyof ColorPickerEventMap<this>>(eventName: K, listener: Partial<ColorPickerEventMap<this>>[K]): boolean
-	fire<K extends keyof ColorPickerEventMap<ColorPicker>>(eventName: K, ...args: Parameters<ColorPickerEventMap<Component>[K]>): boolean
+	select: {color: string}
 }
 
 /**
@@ -39,7 +33,7 @@ export interface ColorPicker extends Component {
  * });
  * ```
  */
-export class ColorPicker extends Component {
+export class ColorPicker extends Component<ColorPickerEventMap> {
 
 	private _value = ""
 
@@ -93,7 +87,7 @@ export class ColorPicker extends Component {
 
 			handler: () => {
 				this.value = "";
-				this.fire("select", this, "");
+				this.fire("select", {color: ""});
 			}
 		}))
 		this.items.add(
@@ -102,15 +96,15 @@ export class ColorPicker extends Component {
 					itemId: color,
 					cls: this.value == "#" + color ? 'with-icon pressed' : 'with-icon',
 					listeners: {
-						beforerender: (btn) => {
+						beforerender: ({target}) => {
 							const colorDiv = document.createElement("div");
 							colorDiv.style.backgroundColor = "#" + color;
-							btn.el.appendChild(colorDiv)
+							target.el.appendChild(colorDiv)
 						}
 					},
 					handler: (btn) => {
 						this.value = btn.itemId + "";
-						this.fire("select", this, this.value );
+						this.fire("select", {color: this.value} );
 					}
 				}))
 
@@ -163,4 +157,4 @@ export class ColorPicker extends Component {
  *
  * @param config
  */
-export const colorpicker = (config?: Config<ColorPicker, ColorPickerEventMap<ColorPicker>>) => createComponent(new ColorPicker(), config);
+export const colorpicker = (config?: Config<ColorPicker>) => createComponent(new ColorPicker(), config);

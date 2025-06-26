@@ -15,7 +15,7 @@ import {
 	QueryParams
 } from "./AbstractDataSource.js";
 import {ObjectUtil} from "../util/index.js";
-import {createComponent, ObservableListener} from "../component/index.js";
+import {createComponent, ListenersConfig} from "../component/index.js";
 
 
 /**
@@ -92,7 +92,7 @@ export class DataSourceStore<
 		}
 	}
 
-	bindComponent(comp: StoreComponent<this, RecordType>) {
+	bindComponent(comp: StoreComponent<RecordType>) {
 		super.bindComponent(comp);
 		this.listen();
 	}
@@ -104,7 +104,7 @@ export class DataSourceStore<
 		}
 	}
 
-	unbindComponent(comp: StoreComponent<this,RecordType>) {
+	unbindComponent(comp: StoreComponent<RecordType>) {
 		super.unbindComponent(comp);
 
 		if(!this.components.length) {
@@ -350,7 +350,7 @@ export type DataSourceStoreConfig<DataSource extends AbstractDataSource, RecordT
 		/**
 		 * Event listeners
 		 */
-		listeners?: ObservableListener<StoreEventMap<DataSourceStore<DataSource, RecordType>,RecordType>>
+		listeners?: ListenersConfig<DataSourceStore<DataSource, RecordType>, StoreEventMap<RecordType>>
 
 		/**
 		 * Filters for the query

@@ -8,7 +8,7 @@ import {Component, ComponentEventMap, createComponent} from "./Component.js";
 import {Config, Listener, ObservableListenerOpts} from "./Observable.js";
 
 
-export interface CardContainerEventMap<Type> extends ComponentEventMap<Type> {
+export interface CardContainerEventMap extends ComponentEventMap {
 	/**
 	 * Fires before adding an item. Return false to abort.
 	 *
@@ -16,16 +16,9 @@ export interface CardContainerEventMap<Type> extends ComponentEventMap<Type> {
 	 * @param item
 	 * @param index
 	 */
-	cardchange: (container: Type, index: number | undefined, oldIndex: number | undefined) => false | void
+	cardchange: {index: number | undefined, oldIndex: number | undefined}
 
 }
-
-export interface CardContainer extends Component {
-	on<K extends keyof CardContainerEventMap<this>, L extends Listener>(eventName: K, listener: Partial<CardContainerEventMap<this>>[K], options?: ObservableListenerOpts): L
-	un<K extends keyof CardContainerEventMap<this>>(eventName: K, listener: Partial<CardContainerEventMap<this>>[K]): boolean
-	fire<K extends keyof CardContainerEventMap<this>>(eventName: K, ...args: Parameters<CardContainerEventMap<any>[K]>): boolean;
-}
-
 /**
  * Card container
  *
@@ -52,7 +45,7 @@ export interface CardContainer extends Component {
  * ```
  *
  */
-export class CardContainer extends Component {
+export class CardContainer extends Component<CardContainerEventMap> {
 
 	private _activeItem?: number;
 
@@ -61,10 +54,10 @@ export class CardContainer extends Component {
 	constructor() {
 		super();
 
-		this.items.on("beforeadd", (card, item) => {
+		this.items.on("beforeadd", ({item}) => {
 			item.hide();
-			item.on('show', comp => {
-				const index = this.findItemIndex(comp);
+			item.on('show', ({target}) => {
+				const index = this.findItemIndex(target);
 				this.activeItem = index;
 			});
 
@@ -83,8 +76,8 @@ export class CardContainer extends Component {
 			this.items.forEach((item) => {
 				// if items are hidden then defer rendering until item is shown
 				if (item.hidden) {
-					item.on("show", (item) => {
-						this.renderItem(item);
+					item.on("show", ({target}) => {
+						this.renderItem(target);
 					}, {once: true})
 				} else {
 					this.renderItem(item);
@@ -120,12 +113,12 @@ export class CardContainer extends Component {
 			index = ref;
 		}
 
-		const old = this._activeItem;
+		const oldIndex = this._activeItem;
 		this._activeItem = index;
 
 		this.setCardVisibilities();
-		if (old !== index) {
-			this.fire("cardchange", this, index, old);
+		if (oldIndex !== index) {
+			this.fire("cardchange", {index, oldIndex});
 		}
 	}
 
@@ -161,4 +154,4 @@ export class CardContainer extends Component {
  * @param config
  * @param items
  */
-export const cards = (config?: Config<CardContainer, CardContainerEventMap<CardContainer>>, ...items: Component[]) => createComponent(new CardContainer(), config, items);
+export const cards = (config?: Config<CardContainer>, ...items: Component[]) => createComponent(new CardContainer(), config, items);

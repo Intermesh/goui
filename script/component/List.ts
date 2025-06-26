@@ -5,13 +5,13 @@
  */
 
 import {assignComponentConfig, comp, Component, ComponentEventMap, createComponent, span} from "./Component.js";
-import {Store, StoreComponent, StoreRecord, storeRecordType} from "../data";
+import {Store, StoreComponent, StoreEventMap, StoreRecord, storeRecordType} from "../data";
 import {t} from "../Translate.js";
 import {E, ObjectUtil} from "../util";
 import {rowselect, RowSelect, RowSelectConfig, SelectedRow, Table} from "./table";
 import {Config, Listener, ObservableListenerOpts} from "./Observable.js";
 import {Window} from "./Window.js";
-import {Sortable} from "./Sortable.js";
+import {Sortable, SortableEventMap} from "./Sortable.js";
 
 export type RowRenderer = (record: any, row: HTMLElement, list: any, storeIndex: number) => string | Component[] | void;
 export type GroupByRenderer = (groupBy: any, record: any, list: List) => string | Promise<string> | Component | Promise<Component>;
@@ -20,20 +20,20 @@ export type listStoreType<ListType> = ListType extends List<infer StoreType> ? S
 /**
  * @inheritDoc
  */
-export interface ListEventMap<Type> extends ComponentEventMap<Type> {
+export interface ListEventMap extends ComponentEventMap {
 	/**
 	 * Fires when the user scrolled to the bottom
 	 *
 	 * @param list
 	 */
-	scrolleddown: (list: Type) => void
+	scrolleddown: {}
 	/**
 	 * Fires when the user sorts the list by a property
 	 *
 	 * @param list
 	 * @param property
 	 */
-	sort: (list: Type, property: string) => void
+	sort: {property: string}
 
 	/**
 	 * Fires when the user sorts the list by drag and drop
@@ -41,7 +41,7 @@ export interface ListEventMap<Type> extends ComponentEventMap<Type> {
 	 * @param list
 	 * @param dataIndex
 	 */
-	sortchange: (list: Type, record: any, dropIndex: number, oldIndex: number) => void
+	sortchange: {record: any, dropIndex: number, oldIndex: number}
 
 	/**
 	 * Fires when a row is mousedowned
@@ -50,7 +50,7 @@ export interface ListEventMap<Type> extends ComponentEventMap<Type> {
 	 * @param storeIndex
 	 * @param ev
 	 */
-	rowmousedown: (list: Type, storeIndex: number, row: HTMLElement, ev: MouseEvent) => void
+	rowmousedown: {storeIndex: number, row: HTMLElement, ev: MouseEvent}
 
 	/**
 	 * Fires when a row is clicked
@@ -59,7 +59,7 @@ export interface ListEventMap<Type> extends ComponentEventMap<Type> {
 	 * @param storeIndex
 	 * @param ev
 	 */
-	rowclick: (list: Type, storeIndex: number, row: HTMLElement, ev: MouseEvent|KeyboardEvent) => void
+	rowclick: {storeIndex: number, row: HTMLElement, ev: MouseEvent|KeyboardEvent}
 
 	/**
 	 * Fires when a row is double clicked
@@ -68,7 +68,7 @@ export interface ListEventMap<Type> extends ComponentEventMap<Type> {
 	 * @param storeIndex
 	 * @param ev
 	 */
-	rowdblclick: (list: Type, storeIndex: number, row: HTMLElement, ev: MouseEvent) => void
+	rowdblclick: {storeIndex: number, row: HTMLElement, ev: MouseEvent}
 
 
 	/**
@@ -84,7 +84,7 @@ export interface ListEventMap<Type> extends ComponentEventMap<Type> {
 	 *
 	 * @param list
 	 */
-	delete: (list: Type) => void,
+	delete: {},
 
 	/**
 	 * Fires when a row is right clicked
@@ -93,7 +93,7 @@ export interface ListEventMap<Type> extends ComponentEventMap<Type> {
 	 * @param storeIndex
 	 * @param ev
 	 */
-	rowcontextmenu: (list: Type, storeIndex: number, row: HTMLElement, ev: MouseEvent) => void
+	rowcontextmenu: {storeIndex: number, row: HTMLElement, ev: MouseEvent}
 
 	/**
 	 * Fires when records are rendered into rows.
@@ -101,7 +101,7 @@ export interface ListEventMap<Type> extends ComponentEventMap<Type> {
 	 * @param list
 	 * @param records
 	 */
-	renderrows: (list: Type, records: any[]) => void;
+	renderrows: {records: any[]};
 
 	/**
 	 * Fires when a row is clicked or navigated with arrows
@@ -110,7 +110,7 @@ export interface ListEventMap<Type> extends ComponentEventMap<Type> {
 	 * @param storeIndex
 	 * @param record
 	 */
-	navigate: (list: Type, storeIndex: number) => void
+	navigate: {storeIndex: number}
 
 	/**
 	 * Fires when something was dropped
@@ -122,7 +122,7 @@ export interface ListEventMap<Type> extends ComponentEventMap<Type> {
 	 * @param fromComponent The component where the item is dragged from. When the same sort group is used it can be another component
 	 * @param dragDataSet Arbitrary drag data components may set. A list adds dragDataSet.selectedRowIndexes: The row indexes when a multiselect is dragged. If the record dragged is not part of the selection then it will contain the single dragged record.
 	 */
-	drop: (toComponent: Type, toIndex:number, fromIndex: number, droppedOn:boolean, fromComp: Component, dragDataSet: Record<string, any>) => void
+	drop: {toIndex:number, fromIndex: number, droppedOn:boolean, fromComp: Component, dragDataSet: Record<string, any>}
 
 	/**
 	 * Fires when the items are dragged over this list.
@@ -136,22 +136,17 @@ export interface ListEventMap<Type> extends ComponentEventMap<Type> {
 	 * @param fromComp The component the element was dragged from if "group" is used to drop to other components
 	 * @param dragDataSet Arbitrary drag data components may set. A list adds dragDataSet.selectedRowIndexes: The row indexes when a multiselect is dragged. If the record dragged is not part of the selection then it will contain the single dragged record.
 	 */
-	dropallowed: (toComponent: Type, toIndex:number, fromIndex: number, droppedOn:boolean, fromComp: Component, dragDataSet: Record<string, any>) => void
+	dropallowed: {toIndex:number, fromIndex: number, droppedOn:boolean, fromComp: Component, dragDataSet: Record<string, any>}
 
 }
 
-export interface List<StoreType extends Store = Store> extends Component {
-	on<K extends keyof ListEventMap<this>, L extends Listener>(eventName: K, listener: Partial<ListEventMap<this>>[K], options?: ObservableListenerOpts): L;
-	un<K extends keyof ListEventMap<this>>(eventName: K, listener: Partial<ListEventMap<this>>[K]): boolean
-	fire<K extends keyof ListEventMap<this>>(eventName: K, ...args: Parameters<ListEventMap<any>[K]>): boolean
-}
 
 /**
  * List component
  *
  * Create a list with a custom item renderer. Also capable of selecting rows.
  */
-export class List<StoreType extends Store = Store> extends Component implements StoreComponent<StoreType> {
+export class List<EventMapType extends ListEventMap = ListEventMap, StoreType extends Store = Store> extends Component<EventMapType> implements StoreComponent<StoreType> {
 	/**
 	 * Shown when the list is empty.
 	 */
@@ -280,27 +275,27 @@ export class List<StoreType extends Store = Store> extends Component implements 
 		}
 		sortable.group = this.sortableGroup;
 
-		sortable.on("sort", (toComp, toIndex, fromIndex , droppedOn, fromComp, dragDataSet) => {
-			return this.fire("drop", toComp, toIndex, fromIndex, droppedOn, fromComp, dragDataSet);
+		sortable.on("sort", (ev) => {
+			return this.fire("drop", ev);
 		});
 
-		sortable.on("dropallowed", (toComp, toIndex, fromIndex , droppedOn, fromComp, dragDataSet) => {
-			return this.fire("dropallowed", this, toIndex, fromIndex, droppedOn, fromComp, dragDataSet);
+		sortable.on("dropallowed", (ev) => {
+			return this.fire("dropallowed", ev);
 		});
 
-		sortable.on("dragstart",(sortable1, ev, dragData) => {
+		sortable.on("dragstart",(ev) => {
 
 			//Multiselect movement support here. Don't move selection if the dragged element wasn't part of the selection
-			if(this.rowSelect && this.rowSelect.multiSelect && this.rowSelect.getSelected().length > 1 && this.rowSelect.isSelected(this.store.get(dragData.fromIndex) as storeRecordType<StoreType>)) {
-				dragData.dataSet.selectedRowIndexes = this.rowSelect.getSelected();
-				ev.setDragComponent(comp({cls: "card pad", html: this.rowSelect.getSelected().length + " selected rows"}))
+			if(this.rowSelect && this.rowSelect.multiSelect && this.rowSelect.getSelected().length > 1 && this.rowSelect.isSelected(this.store.get(ev.dragData.fromIndex) as storeRecordType<StoreType>)) {
+				ev.dragData.dataSet.selectedRowIndexes = this.rowSelect.getSelected();
+				ev.ev.setDragComponent(comp({cls: "card pad", html: this.rowSelect.getSelected().length + " selected rows"}))
 			} else {
-				dragData.dataSet.selectedRowIndexes = [new SelectedRow(this.store, this.store.get(dragData.fromIndex)!)];
+				ev.dragData.dataSet.selectedRowIndexes = [new SelectedRow(this.store, this.store.get(ev.dragData.fromIndex)!)];
 			}
 		});
 
-		sortable.on("dragend", (sortable1, ev, dragData1) => {
-			delete dragData1.dataSet.selectedRowIndexes;
+		sortable.on("dragend", (ev) => {
+			delete ev.dragData.dataSet.selectedRowIndexes;
 		})
 	}
 
@@ -314,7 +309,7 @@ export class List<StoreType extends Store = Store> extends Component implements 
 			const r = this.getFocussedRow();
 			if(r) {
 				e.preventDefault();
-				this.fire("rowclick", this, r.index, r.rowEl, e);
+				this.fire("rowclick", {storeIndex: r.index, row: r.rowEl, ev:e});
 			}
 		}
 	}
@@ -327,16 +322,16 @@ export class List<StoreType extends Store = Store> extends Component implements 
 		}
 	}
 
-	public onStoreLoadException(store:StoreType, reason:any) {
-		void Window.error(reason);
+	public onStoreLoadException(ev:StoreEventMap['loadexception']) {
+		void Window.error(ev.reason);
 		this.unmask();
 	}
 
 
-	public onBeforeStoreLoad(store:StoreType, append: boolean) {
+	public onBeforeStoreLoad(ev:StoreEventMap['beforeload']) {
 		this.mask()
 
-		if(this.store.loaded && !append) {
+		if(this.store.loaded && !ev.append) {
 			// when loading (not reloading, then this.store.loaded is false) we want to reset the parent's scrolltop
 			if(this.parent && this.parent.el.scrollTop) {
 				this.parent.el.scrollTop = 0;
@@ -351,35 +346,35 @@ export class List<StoreType extends Store = Store> extends Component implements 
 		}
 	}
 
-	public onRecordRemove(collection: StoreType, item: any, index: number) {
+	public onRecordRemove(ev:StoreEventMap<any>['remove']) {
 		const rows = this.getRowElements();
-		rows[index]?.remove();
+		rows[ev.index]?.remove();
 
 		// Remove row from selection too if it's not caused by a store load. Then we want to maintain the selection.
 		if (!this.store.loading && this.rowSelection) {
-			this.rowSelection.remove(item, true);
+			this.rowSelection.remove(ev.item, true);
 		}
 	}
 
 	//todo inserting doesn't work with groups yet. It can only append to the last
-	public onRecordAdd(collection: StoreType, item: StoreRecord, index: number) {
+	public onRecordAdd(ev:any) {
 
 		let container = this.groupEl || this.el;
 
-		const newGroup = this.isNewGroup(item);
+		const newGroup = this.isNewGroup(ev.item);
 		if(newGroup !== false) {
-			container = this.groupEl = this.renderGroup(item);
+			container = this.groupEl = this.renderGroup(ev.item);
 		}
 
-		const row = this.renderRow(item, index);
-		if (index == collection.count() - 1) {
+		const row = this.renderRow(ev.item, ev.index);
+		if (ev.index == ev.target.count() - 1) {
 			container.append(row);
 		} else {
-			const before = this.getRowElements()[index];
+			const before = this.getRowElements()[ev.index];
 			before.parentElement!.insertBefore(row, before);
 		}
 
-		this.onRowAppend(row, item, index);
+		this.onRowAppend(row, ev.item, ev.index);
 	}
 
 	protected getRowElements(): HTMLElement[] {
@@ -387,9 +382,9 @@ export class List<StoreType extends Store = Store> extends Component implements 
 	}
 
 	private initNavigateEvent() {
-		this.on('rowmousedown', (list, storeIndex, row, ev) => {
-			if (!ev.shiftKey && !ev.ctrlKey) {
-				this.fire("navigate", this, storeIndex);
+		this.on('rowmousedown', (ev) => {
+			if (!ev.ev.shiftKey && !ev.ev.ctrlKey) {
+				this.fire("navigate", {storeIndex: ev.storeIndex});
 			}
 		});
 
@@ -401,7 +396,7 @@ export class List<StoreType extends Store = Store> extends Component implements 
 
 					const selected = this.rowSelect!.getSelected();
 					if (selected.length) {
-						this.fire("navigate", this, selected[0].storeIndex);
+						this.fire("navigate", {storeIndex: selected[0].storeIndex});
 					}
 				}
 			});
@@ -421,9 +416,9 @@ export class List<StoreType extends Store = Store> extends Component implements 
 		this.renderRows(this.store.all());
 
 		if (this.rowSelect) {
-			this.rowSelect.on('rowselect', (rowSelect, row) => {
+			this.rowSelect.on('rowselect', (ev) => {
 
-				const tr = this.getRowElements()[row.storeIndex];
+				const tr = this.getRowElements()[ev.row.storeIndex];
 
 				if (!tr) {
 					//row not rendered (yet?). selected class will also be added on render
@@ -434,10 +429,10 @@ export class List<StoreType extends Store = Store> extends Component implements 
 				tr.scrollIntoView({block: "nearest", inline: "nearest"});
 			});
 
-			this.rowSelect.on('rowdeselect', (rowSelect, row) => {
-				const tr = this.getRowElements()[row.storeIndex];
+			this.rowSelect.on('rowdeselect', (ev) => {
+				const tr = this.getRowElements()[ev.row.storeIndex];
 				if (!tr) {
-					console.error("No row found for selected index: " + row.storeIndex + ". Maybe it's not rendered yet?");
+					console.error("No row found for selected index: " + ev.row.storeIndex + ". Maybe it's not rendered yet?");
 					return;
 				}
 				tr.classList.remove('selected');
@@ -494,7 +489,7 @@ export class List<StoreType extends Store = Store> extends Component implements 
 			this.onRowAppend(row, records[i], i);
 		}
 
-		this.fire("renderrows", this, records);
+		this.fire("renderrows", {records});
 	}
 
 	protected isNewGroup(record:any) {
@@ -635,7 +630,7 @@ export class List<StoreType extends Store = Store> extends Component implements 
 			index = row ? this.getRowElements().indexOf(row) : -1;
 
 		if (index !== -1) {
-			this.fire(type, this, index, row, e);
+			this.fire(type, {storeIndex: index, row, ev: e});
 		}
 	}
 
@@ -645,11 +640,11 @@ export class List<StoreType extends Store = Store> extends Component implements 
 	}
 }
 
-export type ListConfig<StoreType extends Store> = Omit<Config<List<StoreType>, ListEventMap<List<StoreType>>, "store" | "renderer">, "rowSelection">
+export type ListConfig<EventMapType extends ListEventMap, StoreType extends Store> = Omit<Config<List<EventMapType, StoreType>, "store" | "renderer">, "rowSelection">
 
 /**
  * Shorthand function to create {@link Table}
  *
  * @param config
  */
-export const list = <StoreType extends Store>(config: ListConfig<StoreType>): List<StoreType> => createComponent(new List(config.store, config.renderer), config);
+export const list = <StoreType extends Store>(config: ListConfig<ListEventMap, StoreType>): List<ListEventMap, StoreType> => createComponent(new List(config.store, config.renderer), config);

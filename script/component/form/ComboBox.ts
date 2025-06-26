@@ -131,7 +131,7 @@ export class ComboBox<DS extends AbstractDataSource = AbstractDataSource> extend
 	}
 }
 
-export type ComboBoxConfig<Type extends ComboBox = ComboBox> = FieldConfig<Type, AutocompleteEventMap<Type>, "dataSource"> & {
+export type ComboBoxConfig<Type extends ComboBox = ComboBox> = FieldConfig<Type, "dataSource"> & {
 	/**
 	 * Config for the {@link DataSourceStore}
 	 */

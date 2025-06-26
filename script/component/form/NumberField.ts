@@ -157,4 +157,4 @@ export class NumberField extends InputField {
 	}
 }
 
-export const numberfield = (config?: FieldConfig<NumberField, FieldEventMap<NumberField>>) => createComponent(new NumberField(), config);
+export const numberfield = (config?: FieldConfig<NumberField>) => createComponent(new NumberField(), config);

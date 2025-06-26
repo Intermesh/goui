@@ -15,7 +15,7 @@ type ButtonType = "button" | "submit" | "reset";
 /**
  * @inheritDoc
  */
-export interface ButtonEventMap<Type> extends ComponentEventMap<Type> {
+export interface ButtonEventMap extends ComponentEventMap {
 	/**
 	 * Fires before showing the button menu. Return false to abort.
 	 *
@@ -23,7 +23,7 @@ export interface ButtonEventMap<Type> extends ComponentEventMap<Type> {
 	 * @param item
 	 * @param index
 	 */
-	beforeshowmenu: (button: Type, menu: Menu) => false | void
+	beforeshowmenu: {menu: Menu}
 
 	/**
 	 * Fires when the button menu is shown
@@ -32,7 +32,7 @@ export interface ButtonEventMap<Type> extends ComponentEventMap<Type> {
 	 * @param menu
 	 * @param ev
 	 */
-	showmenu: (button: Type, menu: Menu) => false | void,
+	showmenu: {menu: Menu}
 
 	/**
 	 * Fires when the button is clicked.
@@ -43,14 +43,9 @@ export interface ButtonEventMap<Type> extends ComponentEventMap<Type> {
 	 * @param button
 	 * @param ev
 	 */
-	click: (button: Type, ev: MouseEvent) => void
+	click: {ev: MouseEvent}
 }
 
-export interface Button extends Component {
-	on<K extends keyof ButtonEventMap<this>, L extends Listener>(eventName: K, listener: Partial<ButtonEventMap<this>>[K], options?: ObservableListenerOpts): L
-	un<K extends keyof ButtonEventMap<this>>(eventName: K, listener: Partial<ButtonEventMap<this>>[K]): boolean
-	fire<K extends keyof ButtonEventMap<this>>(eventName: K, ...args: Parameters<ButtonEventMap<any>[K]>): boolean
-}
 
 /**
  * Button component
@@ -66,7 +61,7 @@ export interface Button extends Component {
  * ```
  *
  */
-export class Button extends Component {
+export class Button<EventMap extends ButtonEventMap= ButtonEventMap> extends Component<EventMap> {
 
 	public readonly el!: HTMLButtonElement;
 
@@ -86,7 +81,7 @@ export class Button extends Component {
 	 * The handler only fires on the primary mouse button and when the button is duoble clicked it will
 	 * only fire once!
 	 */
-	public handler?: (button: Button, ev?: MouseEvent) => any;
+	public handler?: (button: this, ev?: MouseEvent) => any;
 
 	private _menu?: Menu;
 
@@ -165,13 +160,13 @@ export class Button extends Component {
 			this.el.addEventListener("click", this.onMenuButtonClick.bind(this));
 		}
 
-		el.addEventListener("click", (e) => {
+		el.addEventListener("click", (ev) => {
 			// check detail for being the first click. We don't want double clicks to call the handler twice.
 			// the detail property contains the click count. When spacebar is used it will be 0
 			// Michael had problems with e.detail < 2 but we don't remember why. Discuss when we run into this.
-			if (this.handler && e.button == 0 && (this.allowFastClick || e.detail < 2)) {
+			if (this.handler && ev.button == 0 && (this.allowFastClick || ev.detail < 2)) {
 
-				this.handler.call(this, this, e);
+				this.handler.call(this, this, ev);
 
 				// close dropdown menu if handler is set
 				const topMenu = this.findTopMenu();
@@ -181,7 +176,7 @@ export class Button extends Component {
 				}
 			}
 
-			this.fire("click", this, e);
+			this.fire("click", {ev});
 		});
 
 		return el;
@@ -212,9 +207,9 @@ export class Button extends Component {
 			menu.removeOnClose = false;
 			menu.isDropdown = true;
 
-			menu.on("beforeshow", (m) => {
-				if(!m.alignTo) {
-					m.alignTo = this.el;
+			menu.on("beforeshow", ({target}) => {
+				if(!target.alignTo) {
+					target.alignTo = this.el;
 				}
 			});
 
@@ -311,10 +306,10 @@ export class Button extends Component {
 		return this._textEl;
 	}
 }
-export type ButtonConfig<Type extends Button = Button> = Config<Type, ButtonEventMap<Type>>;
 /**
  * Shorthand function to create {@link Button}
  *
  * @param config
  */
-export const btn = (config?: ButtonConfig) => createComponent(new Button(), config);
+export const btn = (config?: Config<Button>) => createComponent(new Button(), config);
+

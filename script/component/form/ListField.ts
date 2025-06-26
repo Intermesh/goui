@@ -12,26 +12,22 @@ import {Listener, ObservableListenerOpts} from "../Observable.js";
 import {listpicker} from "../picker/index.js";
 import {List} from "../List.js";
 
-export interface ListFieldEventMap<Type> extends FieldEventMap<Type> {
+export interface ListFieldEventMap extends FieldEventMap {
 
 	/**
 	 * Fires when an item is selected from the list
 	 */
-	select: (field: Type, record: any) => any
+	select: {record: any}
 }
 
-export interface ListField<ListType extends List> extends Field {
-	on<K extends keyof ListFieldEventMap<this>, L extends Listener>(eventName: K, listener: Partial<ListFieldEventMap<this>>[K], options?: ObservableListenerOpts): L
-	un<K extends keyof ListFieldEventMap<this>>(eventName: K, listener: Partial<ListFieldEventMap<this>>[K]): boolean
-	fire<K extends keyof ListFieldEventMap<this>>(eventName: K, ...args: Parameters<ListFieldEventMap<Component>[K]>): boolean
-}
+
 
 /**
  * ColorField component
  *
  * @see Form
  */
-export class ListField<ListType extends List = List> extends Field {
+export class ListField<ListType extends List = List> extends Field<ListFieldEventMap> {
 
 	public readonly menu: Menu;
 	protected readonly menuButton: Button;
@@ -49,24 +45,24 @@ export class ListField<ListType extends List = List> extends Field {
 
 		});
 
-		this.picker.on("select", (tablePicker, record) => {
+		this.picker.on("select", ({target, record}) => {
 
-			tablePicker.list.findAncestorByType(Menu)!.hide();
+			target.list.findAncestorByType(Menu)!.hide();
 			this.focus();
 
 			//set value after focus for change event
 			this.value = this.pickerRecordToValue(this, record);
 
-			this.fire('select', this, record);
+			this.fire('select',  {record});
 		});
 
 		this.menu = menu({
 				height: 300,
 				cls: "scroll",
 				listeners: {
-					hide: (menu) => {
-						if (menu.rendered) {
-							const f = menu.findAncestorByType(ListField)!;
+					hide: ({target}) => {
+						if (target.rendered) {
+							const f = target.findAncestorByType(ListField)!;
 							f.focus();
 						}
 					}
@@ -134,7 +130,7 @@ export class ListField<ListType extends List = List> extends Field {
 }
 
 
-export type ListFieldConfig <T extends List> = FieldConfig<ListField<T>, ListFieldEventMap<ListField<T>>, "list"> &
+export type ListFieldConfig <T extends List> = FieldConfig<ListField<T>, "list"> &
 	Partial<Pick<ListField<T>, "pickerRecordToValue" | "renderValue">>;
 
 /**

@@ -2,7 +2,7 @@ import {
 	AbstractDataSource,
 	BaseEntity,
 	Changes,
-	CommitResponse,
+	CommitResponse, DataSourceEventMap,
 	DefaultEntity,
 	EntityID,
 	GetResponse,
@@ -19,7 +19,7 @@ import {
  *
  * @category Data
  */
-export class RestDataSource<EntityType extends BaseEntity = DefaultEntity> extends AbstractDataSource<EntityType> {
+export class RestDataSource<EntityType extends BaseEntity = DefaultEntity> extends AbstractDataSource<DataSourceEventMap, EntityType> {
 
 	/**
 	 * Constructor

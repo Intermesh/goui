@@ -8,25 +8,20 @@ import {Component, createComponent} from "../Component.js";
 import {FunctionUtil} from "../../util/index.js";
 import {storeRecordType} from "../../data/index.js";
 
-export interface AutocompleteChipsEventMap<Type> extends FieldEventMap<Type> {
+export interface AutocompleteChipsEventMap extends FieldEventMap {
 	/**
 	 * Fires when suggestions need to load
 	 *
 	 * @param form
 	 */
-	autocomplete: (field: Type, input: string) => any
+	autocomplete: {input: string}
 }
 
-export interface AutocompleteChips<T extends List> extends ChipsField {
-	on<K extends keyof AutocompleteChipsEventMap<this>, L extends Listener>(eventName: K, listener: Partial<AutocompleteChipsEventMap<this>>[K], options?: ObservableListenerOpts): L
-	un<K extends keyof AutocompleteChipsEventMap<this>>(eventName: K, listener: Partial<AutocompleteChipsEventMap<this>>[K]): boolean
-	fire<K extends keyof AutocompleteChipsEventMap<this>>(eventName: K, ...args: Parameters<AutocompleteChipsEventMap<Component>[K]>): boolean
-}
 
 /**
  * Chips component that auto completes user input
  */
-export class AutocompleteChips<T extends List = List> extends ChipsField {
+export class AutocompleteChips<T extends List = List, EventMap extends AutocompleteChipsEventMap = AutocompleteChipsEventMap> extends ChipsField<EventMap> {
 	protected readonly menu: Menu;
 	protected readonly menuButton: Button;
 	private valuesToCompare?: string[];
@@ -57,7 +52,7 @@ export class AutocompleteChips<T extends List = List> extends ChipsField {
 			icon: "expand_more",
 			type: "button",
 			handler: (button, ev) => {
-				this.fire("autocomplete", this, "");
+				this.fire("autocomplete", {input: ""});
 			},
 			menu: this.menu
 		});
@@ -164,7 +159,7 @@ export class AutocompleteChips<T extends List = List> extends ChipsField {
 
 				if(this.menuButton.menu!.hidden) {
 					if(!this.list.store.loaded) {
-						this.fire("autocomplete", this, "");
+						this.fire("autocomplete", {input:""});
 					}
 					this.menuButton.menu!.show();
 				} else if(this.list.rowSelection) {
@@ -177,7 +172,7 @@ export class AutocompleteChips<T extends List = List> extends ChipsField {
 				ev.preventDefault();
 				ev.stopPropagation();
 				if(this.menuButton.menu!.hidden) {
-					this.fire("autocomplete", this, "");
+					this.fire("autocomplete", {input: ""});
 					this.menuButton.menu!.show();
 				} else if(this.list.rowSelection) {
 					this.list.rowSelection.selectPrevious();
@@ -235,13 +230,13 @@ export class AutocompleteChips<T extends List = List> extends ChipsField {
 
 	private onInput(_ev: Event) {
 		this.menuButton.menu!.show();
-		this.fire("autocomplete", this, this.editor.el.innerText);
+		this.fire("autocomplete", {input: this.editor.el.innerText});
 	}
 
 
 }
 
-type AutoCompleteChipsConfig<ListType extends List = List> = FieldConfig<AutocompleteChips<ListType>, AutocompleteChipsEventMap<AutocompleteChips<ListType>>, "list"> &
+type AutoCompleteChipsConfig<ListType extends List = List> = FieldConfig<AutocompleteChips<ListType>, "list"> &
 	// Add the function properties as they are filtered out
 	Partial<Pick<AutocompleteChips<ListType>, "textInputToValue" | "chipRenderer" | "pickerRecordToValue">>
 /**

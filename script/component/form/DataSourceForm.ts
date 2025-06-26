@@ -4,7 +4,7 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 import {Form, FormEventMap} from "./Form.js";
-import {AbstractDataSource, BaseEntity, DefaultEntity, EntityID} from "../../data/index.js";
+import {AbstractDataSource, BaseEntity, DataSourceEventMap, DefaultEntity, EntityID} from "../../data/index.js";
 import {t} from "../../Translate.js";
 import {Listener, ObservableListenerOpts} from "../Observable.js";
 import {Component, createComponent} from "../Component.js";
@@ -13,7 +13,7 @@ import {FieldConfig} from "./Field.js";
 import {Format} from "../../util/index";
 
 
-export interface DataSourceFormEventMap<Type, ValueType extends BaseEntity = DefaultEntity> extends FormEventMap<Type> {
+export interface DataSourceFormEventMap<ValueType extends BaseEntity = DefaultEntity> extends FormEventMap {
 
 	/**
 	 * Fires when the entity is saved successfully
@@ -21,7 +21,7 @@ export interface DataSourceFormEventMap<Type, ValueType extends BaseEntity = Def
 	 * @param data
 	 * @param isNew
 	 */
-	save: (form: Type, data: ValueType, isNew:boolean) => any
+	save: {data: ValueType, isNew:boolean}
 
 	/**
 	 * Fires when an error occurred when saving
@@ -32,14 +32,14 @@ export interface DataSourceFormEventMap<Type, ValueType extends BaseEntity = Def
 	 * @param form
 	 * @param data
 	 */
-	saveerror: (form: Type, error: any) => any
+	saveerror: {error: any}
 
 	/**
 	 * When the data is fetched from the store. but before it is put into the fields
 	 * @param form
 	 * @param data the entity from the store
 	 */
-	load: (form: Type, data: ValueType) => any,
+	load: {data: ValueType},
 
 	/**
 	 * Fires when an error occurred when loading.
@@ -50,34 +50,29 @@ export interface DataSourceFormEventMap<Type, ValueType extends BaseEntity = Def
 	 * @param form
 	 * @param data
 	 */
-	loaderror: (form: Type, error: any) => any
+	loaderror: {error: any}
 
 	/**
 	 * When the data in the fields is serialized to a single json object to be posted to the server.
 	 * @param form
 	 * @param data
 	 */
-	beforesave: (form: Type, data: Partial<ValueType>) => void,
+	beforesave: {data: Partial<ValueType>}
 }
 
-export interface DataSourceForm<ValueType extends BaseEntity = DefaultEntity> extends Form<ValueType> {
-	on<K extends keyof DataSourceFormEventMap<this, ValueType>, L extends Listener>(eventName: K, listener: Partial<DataSourceFormEventMap<this,ValueType>>[K], options?: ObservableListenerOpts): L
-	un<K extends keyof DataSourceFormEventMap<this, ValueType>>(eventName: K, listener: Partial<DataSourceFormEventMap<this,ValueType>>[K]): boolean
-	fire<K extends keyof DataSourceFormEventMap<this, ValueType>>(eventName: K, ...args: Parameters<DataSourceFormEventMap<any, ValueType>[K]>): boolean
-}
 
-export class DataSourceForm<ValueType extends BaseEntity = DefaultEntity> extends Form<ValueType> {
+export class DataSourceForm<ValueType extends BaseEntity = DefaultEntity> extends Form<DataSourceFormEventMap<ValueType>, ValueType> {
 
 	public currentId?: EntityID
 
-	constructor(public dataSource: AbstractDataSource<ValueType>) {
+	constructor(public dataSource: AbstractDataSource<DataSourceEventMap, ValueType>) {
 		super();
 
 		this.handler = async form1 => {
 			try {
 				let data,
 					v = this.currentId ? this.modified : this.value;
-				if(this.fire('beforesave', this, v) === false) {
+				if(this.fire('beforesave', {data:v}) === false) {
 					return;
 				}
 
@@ -93,7 +88,7 @@ export class DataSourceForm<ValueType extends BaseEntity = DefaultEntity> extend
 				}
 
 				if (data) {
-					this.fire('save', this, data, isNew);
+					this.fire('save', {data, isNew});
 				}
 
 			} catch (e:any) {
@@ -102,7 +97,7 @@ export class DataSourceForm<ValueType extends BaseEntity = DefaultEntity> extend
 					this.handleServerValidation(e);
 				}
 
-				if(this.fire('saveerror', this, e) === false) {
+				if(this.fire('saveerror', {error: e}) === false) {
 					return;
 				}
 
@@ -139,7 +134,7 @@ export class DataSourceForm<ValueType extends BaseEntity = DefaultEntity> extend
 	public create(data: any) {
 		this.clear();
 
-		this.fire('load', this, data);
+		this.fire('load', {data});
 		if (data) {
 			this.value = data;
 			this.trackReset();
@@ -177,11 +172,11 @@ export class DataSourceForm<ValueType extends BaseEntity = DefaultEntity> extend
 			if (!entity) {
 				throw "Failed to load entity with id " + id;
 			}
-			this.fire('load', this, entity);
+			this.fire('load', {data:entity});
 			this.value = entity as ValueType;
 		} catch (e:any) {
 			console.error(t("Error"), e);
-			if(this.fire('loaderror', this, e) !== false) {
+			if(this.fire('loaderror', {error: e}) !== false) {
 				void Window.error(e);
 			}
 		} finally {
@@ -193,7 +188,7 @@ export class DataSourceForm<ValueType extends BaseEntity = DefaultEntity> extend
 export type DataSourceFormConfig<ValueType extends BaseEntity =  DefaultEntity> =
 
 
-		FieldConfig<DataSourceForm<ValueType>, DataSourceFormEventMap<DataSourceForm<ValueType>, ValueType>, "dataSource">
+		FieldConfig<DataSourceForm<ValueType>, "dataSource">
 
 
 

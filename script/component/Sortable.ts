@@ -18,7 +18,7 @@ type SortableDragEvent = DragEvent & {
 	setDragComponent: (comp:Component) => void
 };
 
-export interface SortableEventMap<Type> extends ObservableEventMap<Type> {
+export interface SortableEventMap extends ObservableEventMap {
 
 	/**
 	 * Fires when the items are sorted
@@ -30,7 +30,7 @@ export interface SortableEventMap<Type> extends ObservableEventMap<Type> {
 	 * @param fromComp The component the element was dragged from if "group" is used to drop to other components
 	 * @param dragDataSet Arbitrary data set to dragData in dragstart event
 	 */
-	sort: (dropComp:Type, toIndex:number, fromIndex:number, droppedOn: boolean, fromComp:Component, dragDataSet:Record<string, any>) => void,
+	sort: {dropComp: Component, toIndex:number, fromIndex:number, droppedOn: boolean, fromComp:Component, dragDataSet:Record<string, any>},
 
 	/**
 	 * Fires when the items are dragged over this sortable.
@@ -40,10 +40,10 @@ export interface SortableEventMap<Type> extends ObservableEventMap<Type> {
 	 * @param dropComp The component the element was dropped on
 	 * @param fromIndex Move from index
 	 * @param toIndex To index
-	 * @param droppedOn Dropped on the toIndex or moved to this index
+	 * @param dropPos Dropped on the toIndex or moved to this index
 	 * @param fromComp The component the element was dragged from if "group" is used to drop to other components
 	 */
-	dropallowed: (dropComp:Type, toIndex:number, fromIndex:number, droppedOn: boolean, fromComp:Component, dragDataSet:Record<string, any>) => void,
+	dropallowed: {dropComp: Component, toIndex:number, fromIndex:number, droppedOn: boolean, fromComp:Component, dragDataSet:Record<string, any>},
 
 	/**
 	 * Fires when dragging starts.
@@ -55,16 +55,12 @@ export interface SortableEventMap<Type> extends ObservableEventMap<Type> {
 	 * @param sortable
 	 * @param ev
 	 */
-	dragstart: (sortable:Sortable<any>, ev:SortableDragEvent, dragData:DragData) => void
+	dragstart: {ev:SortableDragEvent, dragData:DragData}
 
-	dragend: (sortable:Sortable<any>, ev:DragEvent, dragData:DragData) => void
+	dragend: {ev:DragEvent, dragData:DragData}
 }
 
-export interface Sortable<Type extends Component> {
-	on<K extends keyof SortableEventMap<Type>, L extends Listener>(eventName: K, listener: Partial<SortableEventMap<Type>>[K], options?: ObservableListenerOpts): L;
-	un<K extends keyof SortableEventMap<Type>>(eventName: K, listener: Partial<SortableEventMap<Type>>[K]): boolean
-	fire<K extends keyof SortableEventMap<Type>>(eventName: K, ...args: Parameters<SortableEventMap<any>[K]>): boolean
-}
+
 type DROP_POSITION = "before" | "after" | "on";
 
 
@@ -95,7 +91,7 @@ const dragData: DragData = {
 /**
  * Enables sorting of child elements inside a container
  */
-export class Sortable<Type extends Component> extends Observable {
+export class Sortable<Type extends Component> extends Observable<SortableEventMap> {
 
 	/**
 	 * Only allow drag and drop to Sortable's from the same group
@@ -214,7 +210,7 @@ export class Sortable<Type extends Component> extends Observable {
 				}
 				});
 
-			this.fire("dragstart", this, ev, dragData);
+			this.fire("dragstart", {ev, dragData});
 
 		})
 
@@ -352,7 +348,7 @@ export class Sortable<Type extends Component> extends Observable {
 			dragData.toIndex = 0;
 		}
 
-		return this.fire("dropallowed", dragData.toComponent, dragData.toIndex, dragData.fromIndex, dragData.pos == "on", dragData.fromComponent, dragData.dataSet);
+		return this.fire("dropallowed", {dropComp: dragData.toComponent,toIndex: dragData.toIndex, fromIndex: dragData.fromIndex, droppedOn: dragData.pos == "on", fromComp: dragData.fromComponent, dragDataSet: dragData.dataSet});
 	}
 
 	/**
@@ -390,7 +386,7 @@ export class Sortable<Type extends Component> extends Observable {
 		return this._gap;
 	}
 
-	private endDrag(e:DragEvent) {
+	private endDrag(ev:DragEvent) {
 
 		Sortable.getDropPin().hidden = true;
 
@@ -400,7 +396,7 @@ export class Sortable<Type extends Component> extends Observable {
 		}
 
 		if(!dragData.dragSrc) {
-			this.fire("dragend", this, e, dragData);
+			this.fire("dragend", {ev, dragData});
 			return;
 		}
 
@@ -410,11 +406,9 @@ export class Sortable<Type extends Component> extends Observable {
 
 		if((!this.dropOn && !this.dropBetween) || !this.dropAllowed()) {
 			dragData.dragSrc = undefined;
-			this.fire("dragend", this, e, dragData);
+			this.fire("dragend", {ev, dragData});
 			return;
 		}
-
-
 
 		if(dragData.overEl) {
 
@@ -442,8 +436,8 @@ export class Sortable<Type extends Component> extends Observable {
 
 		dragData.dragSrc = undefined;
 
-		this.fire("sort", dragData.toComponent, dragData.toIndex, dragData.fromIndex, dragData.pos == "on", dragData.fromComponent, dragData.dataSet);
-		this.fire("dragend", this, e, dragData);
+		this.fire("sort", {dropComp: dragData.toComponent, toIndex: dragData.toIndex, fromIndex: dragData.fromIndex, droppedOn: dragData.pos == "on", fromComp: dragData.fromComponent, dragDataSet: dragData.dataSet});
+		this.fire("dragend", {ev, dragData});
 	}
 
 	private findSortables() {

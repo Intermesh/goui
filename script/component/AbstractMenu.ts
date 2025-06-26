@@ -1,9 +1,9 @@
-import {Component} from "./Component";
+import {Component, ComponentEventMap} from "./Component";
 import {Button} from "./Button";
 import {Menu} from "./menu";
 
 
-export abstract class AbstractMenu extends Component {
+export abstract class AbstractMenu<EventMap extends ComponentEventMap = ComponentEventMap> extends Component<EventMap> {
 	/**
 	 * Used by keyboard nav
 	 * @protected
@@ -47,7 +47,7 @@ export abstract class AbstractMenu extends Component {
 
 	private setupKeyboardNav() {
 
-		this.items.on("add", (collection, item, index) => {
+		this.items.on("add", ({item, index}) => {
 
 			item.el.addEventListener("click", () => {
 				this.focusedItemIndex = index;

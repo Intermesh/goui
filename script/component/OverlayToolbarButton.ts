@@ -10,20 +10,14 @@ import {assignComponentConfig, comp, Component, createComponent} from "./Compone
 import {SearchButtonEventMap} from "./SearchButton";
 
 
-export interface OverlayToolbarButtonEventMap<Type> extends ButtonEventMap<Type> {
+export interface OverlayToolbarButtonEventMap extends ButtonEventMap {
 
-	open: (btn: Type) => void
+	open: {}
 
-	close: (btn: Type) => void
+	close: {}
 }
 
-export interface OverlayToolbarButton extends Button {
-	on<K extends keyof OverlayToolbarButtonEventMap<this>, L extends Listener>(eventName: K, listener: Partial<OverlayToolbarButtonEventMap<this>>[K], options?: ObservableListenerOpts): L;
-	un<K extends keyof OverlayToolbarButtonEventMap<this>>(eventName: K, listener: Partial<OverlayToolbarButtonEventMap<this>>[K]): boolean
-	fire<K extends keyof OverlayToolbarButtonEventMap<this>>(eventName: K, ...args: Parameters<OverlayToolbarButtonEventMap<Component>[K]>): boolean
-}
-
-export class OverlayToolbarButton extends Button {
+export class OverlayToolbarButton<EventMap extends OverlayToolbarButtonEventMap = OverlayToolbarButtonEventMap> extends Button<EventMap> {
 
 	private overlayTbar?: Toolbar;
 	private mainTbar?: Toolbar;
@@ -49,7 +43,7 @@ export class OverlayToolbarButton extends Button {
 		this.overlayTbar!.hide();
 		this.mainTbar!.show();
 		this.focus();
-		this.fire("close", this);
+		this.fire("close", {});
 	}
 
 	private closeOnClick:any;
@@ -107,7 +101,7 @@ export class OverlayToolbarButton extends Button {
 /**
  * Shorthand function to create {@link OverlayToolbarButton}
  */
-export const overlaytoolbarbutton = (config?: Config<OverlayToolbarButton, ButtonEventMap<OverlayToolbarButton>>, ...items: (Component | "->" | "-")[]) => {
+export const overlaytoolbarbutton = (config?: Config<OverlayToolbarButton>, ...items: (Component | "->" | "-")[]) => {
 	const c = new OverlayToolbarButton();
 	if (config) {
 		assignComponentConfig(c, config);

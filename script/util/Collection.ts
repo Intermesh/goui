@@ -10,35 +10,35 @@ import {Listener, Observable, ObservableEventMap, ObservableListenerOpts} from "
  * @inheritDoc
  * @category Utility
  */
-export interface CollectionEventMap<Type, CollectionItem> extends ObservableEventMap<Type> {
+export type CollectionEventMap<CollectionItem> = {
 
 	/**
 	 * Fires before adding an item. Return false to abort.
 	 *
 	 * @param window
 	 */
-	beforeadd: (collection: Type, item: CollectionItem, index: number) => void | false
+	beforeadd: {item: CollectionItem, index: number}
 
 	/**
 	 * Fires after adding an item.
 	 *
 	 * @param window
 	 */
-	add: (collection: Type, item: CollectionItem, index: number) => void
+	add: {item: CollectionItem, index: number}
 
 	/**
 	 * Fires after removing an item.
 	 *
 	 * @param window
 	 */
-	remove: (collection: Type, item: CollectionItem, index: number) => void
+	remove: {item: CollectionItem, index: number}
 
 	/**
 	 * Fires before removing an item. Return false to abort.
 	 *
 	 * @param window
 	 */
-	beforeremove: (collection: Type, item: CollectionItem, index: number) => void | false
+	beforeremove: {item: CollectionItem, index: number}
 
 	/**
 	 * Fires when a row is removed or added.
@@ -53,25 +53,17 @@ export interface CollectionEventMap<Type, CollectionItem> extends ObservableEven
 	 *
 	 * @param collection
 	 */
-	datachanged: (collection: Type) => void
+	datachanged: {}
 }
 
-/**
- *
- * @category Utility
- */
-export interface Collection<CollectionItem> extends Observable {
-	on<K extends keyof CollectionEventMap<this, CollectionItem>, L extends Listener>(eventName: K, listener: Partial<CollectionEventMap<this, CollectionItem>>[K], options?: ObservableListenerOpts): L;
-	un<K extends keyof CollectionEventMap<this, CollectionItem>>(eventName: K, listener: Partial<CollectionEventMap<this, CollectionItem>>[K]): boolean
-	fire<K extends keyof CollectionEventMap<this, CollectionItem>>(eventName: K, ...args: Parameters<CollectionEventMap<Collection<CollectionItem>, CollectionItem>[K]>): boolean
-}
+
 
 /**
  * Collection of items
  *
  * @category Utility
  */
-export class Collection<CollectionItem> extends Observable implements Iterable<CollectionItem> {
+export class Collection<CollectionItem, MapType extends CollectionEventMap<CollectionItem> = CollectionEventMap<CollectionItem>> extends Observable<MapType> implements Iterable<CollectionItem> {
 	protected readonly items: CollectionItem[];
 
 	constructor(items: CollectionItem[] = []) {
@@ -93,15 +85,15 @@ export class Collection<CollectionItem> extends Observable implements Iterable<C
 		items.forEach((item) => {
 			index = this.items.length;
 
-			if (!this.fire("beforeadd", this, item, index)) {
+			if (!this.fire("beforeadd", {item, index})) {
 				return -1;
 			}
 			this.items.push(item);
 
 			this.onAdd(item, index);
 
-			this.fire("add", this, item, index);
-			this.fire("datachanged", this);
+			this.fire("add", {item, index});
+			this.fire("datachanged", {});
 		});
 
 		return index;
@@ -120,12 +112,12 @@ export class Collection<CollectionItem> extends Observable implements Iterable<C
 
 		items.forEach((item) => {
 
-			if (!this.fire("beforeadd", this, item, index)) {
+			if (!this.fire("beforeadd", {item, index})) {
 				return -1;
 			}
 			this.items.splice(index, 0, item);
-			this.fire("add", this, item, index);
-			this.fire("datachanged", this);
+			this.fire("add", {item, index});
+			this.fire("datachanged", {});
 
 			this.onAdd(item, index);
 			index++;
@@ -227,7 +219,7 @@ export class Collection<CollectionItem> extends Observable implements Iterable<C
 			return false;
 		}
 
-		if (!this.fire("beforeremove", this, item, index)) {
+		if (!this.fire("beforeremove", {item, index})) {
 			return false;
 		}
 
@@ -236,7 +228,7 @@ export class Collection<CollectionItem> extends Observable implements Iterable<C
 
 		this.onRemove(item, index);
 
-		this.fire("remove", this, item, index);
+		this.fire("remove",  {item, index});
 		this.fire("datachanged", this);
 
 		return true;

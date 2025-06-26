@@ -2,18 +2,12 @@ import {Component, createComponent} from "../Component.js";
 import {E} from "../../util/index.js";
 import {checkbox, CheckboxFieldConfig} from "./CheckboxField.js";
 import {Config} from "../Observable.js";
-
-
 export class CheckboxGroup extends Component {
 	private _itemContainerEl?: HTMLDivElement;
-
 	constructor() {
 		super("fieldset");
-
 		this.baseCls = "checkbox-group";
-
 	}
-
 	set options(options: CheckboxFieldConfig[]) {
 		this.items.replace(...options.map(o => {
 			o.type = "button";

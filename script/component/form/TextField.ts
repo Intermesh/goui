@@ -67,9 +67,4 @@ export class TextField extends InputField {
  *
  * @param config
  */
-export const textfield = (config?: FieldConfig<TextField, FieldEventMap<TextField>>) => createComponent(new TextField(), config);
-
-
-const c: FieldConfig<TextField, FieldEventMap<TextField>> = {
-
-}
+export const textfield = (config?: FieldConfig<TextField>) => createComponent(new TextField(), config);

@@ -148,4 +148,4 @@ export class SelectField extends InputField {
  *
  * @param config
  */
-export const select = (config?: FieldConfig<SelectField, FieldEventMap<SelectField>>) => createComponent(new SelectField(), config);
+export const select = (config?: FieldConfig<SelectField>) => createComponent(new SelectField(), config);

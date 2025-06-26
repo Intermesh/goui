@@ -41,14 +41,14 @@ export class ColorField extends Field {
 
 	private createPicker() {
 		const picker = new ColorPicker();
-		picker.on('select', (colorPicker, val) => {
+		picker.on('select', ({color}) => {
 
 			this.pickerButton.menu!.hide();
 			this.clearInvalid();
 			this.focus();
 
 			//important to set value after focus so change event will fire on focusout
-			this.value = val;
+			this.value = color;
 		});
 
 		return picker;
@@ -85,4 +85,4 @@ export class ColorField extends Field {
  *
  * @param config
  */
-export const colorfield = (config?: FieldConfig<ColorField, FieldEventMap<ColorField>>) => createComponent(new ColorField(), config);
+export const colorfield = (config?: FieldConfig<ColorField>) => createComponent(new ColorField(), config);

@@ -5,18 +5,14 @@
  */
 
 import {assignComponentConfig, comp, Component, ComponentEventMap, hr} from "./Component.js";
-import {btn, Button, ButtonConfig} from "./Button.js";
-import {Config, Listener, ObservableListenerOpts} from "./Observable.js";
+import {btn, Button} from "./Button.js";
+import {Config} from "./Observable.js";
 import {menu} from "./menu/index.js";
 import {AbstractMenu} from "./AbstractMenu";
 import {FunctionUtil} from "../util";
 
 
-export interface Toolbar extends Component {
-	on<K extends keyof ComponentEventMap<this>, L extends Listener>(eventName: K, listener: Partial<ComponentEventMap<this>>[K], options?: ObservableListenerOpts): L
-	un<K extends keyof ComponentEventMap<this>>(eventName: K, listener: Partial<ComponentEventMap<this>>[K]): boolean
-	fire<K extends keyof ComponentEventMap<this>>(eventName: K, ...args: Parameters<ComponentEventMap<any>[K]>): boolean
-}
+
 /**
  * Toolbar Component
  *
@@ -59,7 +55,7 @@ export class Toolbar extends AbstractMenu {
 	 *
 	 * @link this.overflowMenu
  	 */
-	public overflowMenuBtnConfig:undefined|ButtonConfig = undefined;
+	public overflowMenuBtnConfig:undefined|Config<Button> = undefined;
 
 	render(parentEl?: Node, insertBefore?: Node): HTMLElement {
 		if(this.overflowMenu) {

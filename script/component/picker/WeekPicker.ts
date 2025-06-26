@@ -10,28 +10,23 @@ import {Config, Listener, ObservableListenerOpts} from "../Observable.js";
 import {fieldset, NumberField, numberfield} from "../form";
 import {btn} from "../Button";
 
-export interface WeekPickerEventMap<Type> extends ComponentEventMap<Type> {
+export interface WeekPickerEventMap extends ComponentEventMap {
 	/**
 	 * Fires when a week is selected
 	 *
 	 * @param datepicker
 	 * @param date
 	 */
-	select: (datepicker: Type, date: DateTime) => false | void
+	select: {date: DateTime}
 }
 
-export interface WeekPicker extends Component{
-	on<K extends keyof WeekPickerEventMap<this>, L extends Listener>(eventName: K, listener: Partial<WeekPickerEventMap<this>>[K], options?: ObservableListenerOpts): L;
-	un<K extends keyof WeekPickerEventMap<this>>(eventName: K, listener: Partial<WeekPickerEventMap<this>>[K]): boolean
-	fire<K extends keyof WeekPickerEventMap<this>>(eventName: K, ...args: Parameters<WeekPickerEventMap<Component>[K]>): boolean;
-}
 
 /**
  * Week picker
  *
  * Select a week of the year
  */
-export class WeekPicker extends Component {
+export class WeekPicker extends Component<WeekPickerEventMap> {
 
 	private _value: DateTime
 	private now: DateTime
@@ -123,7 +118,7 @@ export class WeekPicker extends Component {
 				cls,
 				handler: btn => {
 					this.value = DateTime.createFromFormat(btn.dataSet.date, 'Y-m-d')!
-					this.fire("select", this, this.value);
+					this.fire("select", {date: this.value});
 				}
 			}))
 			curDate.addDays(7);
@@ -138,4 +133,4 @@ export class WeekPicker extends Component {
  *
  * @param config
  */
-export const weekpicker = (config?: Config<WeekPicker, WeekPickerEventMap<WeekPicker>>) => createComponent(new WeekPicker(), config);
+export const weekpicker = (config?: Config<WeekPicker>) => createComponent(new WeekPicker(), config);

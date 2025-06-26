@@ -27,7 +27,7 @@ import {Format} from "../../util/index";
 /**
  * @inheritDoc
  */
-export interface HtmlFieldEventMap<Type> extends FieldEventMap<Type> {
+export interface HtmlFieldEventMap extends FieldEventMap {
 	/**
 	 * Fires before adding an item. Return false to abort.
 	 *
@@ -35,7 +35,7 @@ export interface HtmlFieldEventMap<Type> extends FieldEventMap<Type> {
 	 * @param item
 	 * @param index
 	 */
-	updatetoolbar: (htmlfield: Type) => void
+	updatetoolbar: {}
 
 	/**
 	 * Fires when an image is selected, pasted or dropped into the field
@@ -44,7 +44,7 @@ export interface HtmlFieldEventMap<Type> extends FieldEventMap<Type> {
 	 * @param file
 	 * @param img The img element in the editor
 	 */
-	insertimage: (htmlfield: Type, file: File, img: HTMLImageElement) => void
+	insertimage: {file: File, img: HTMLImageElement}
 
 	/**
 	 * Fires when a non image is pasted or dropped into the field
@@ -53,15 +53,11 @@ export interface HtmlFieldEventMap<Type> extends FieldEventMap<Type> {
 	 * @param file
 	 * @param img
 	 */
-	attach: (htmlfield: Type, file: File) => void
+	attach: {file: File}
 }
 
 
-export interface HtmlField extends Field {
-	on<K extends keyof HtmlFieldEventMap<HtmlField>, L extends Listener>(eventName: K, listener: Partial<HtmlFieldEventMap<HtmlField>>[K], options?: ObservableListenerOpts): L
-	un<K extends keyof HtmlFieldEventMap<this>>(eventName: K, listener: Partial<HtmlFieldEventMap<this>>[K]): boolean
-	fire<K extends keyof HtmlFieldEventMap<HtmlField>>(eventName: K, ...args: Parameters<HtmlFieldEventMap<Component>[K]>): boolean
-
+export interface HtmlField extends Field<HtmlFieldEventMap> {
 	set value(v: string)
 	get value(): string
 }
@@ -94,7 +90,7 @@ type ToolbarItems = "-" | "bold" | "italic" | "underline" | "strikeThrough" |
  *
  * @see Form
  */
-export class HtmlField extends Field {
+export class HtmlField extends Field<HtmlFieldEventMap> {
 	protected baseCls = 'goui-form-field goui-html-field'
 
 	/**
@@ -196,11 +192,11 @@ export class HtmlField extends Field {
 			menu: colormenu({
 				updateButton: false,
 				listeners: {
-					select: (menu, color) => {
+					select: ( {color}) => {
 						this.execCmd("foreColor", color || "#000000")
 					},
-					beforeshow: (menu) => {
-						(<ColorMenu>menu).value = (this.tbar!.findChild("foreColor")!.el.style.color || "");
+					beforeshow: ({target}) => {
+						target.value = (this.tbar!.findChild("foreColor")!.el.style.color || "");
 					}
 				}
 			}),
@@ -241,11 +237,11 @@ export class HtmlField extends Field {
 			menu: colormenu({
 				updateButton: false,
 				listeners: {
-					select: (menu, color) => {
+					select: ( {color}) => {
 						this.execCmd("backColor", color || "#ffffff")
 					},
-					beforeshow: (menu) => {
-						(<ColorMenu>menu).value = (this.tbar!.findChild("backColor")!.el.style.color || "");
+					beforeshow: ({target}) => {
+						target.value = (this.tbar!.findChild("backColor")!.el.style.color || "");
 					}
 				}
 			}),
@@ -625,7 +621,7 @@ export class HtmlField extends Field {
 			if (file.type.match(/^image\//)) {
 				this.handleImage(file);
 			} else {
-				this.fire("attach", this, file);
+				this.fire("attach", {file});
 			}
 		});
 	}
@@ -655,7 +651,7 @@ export class HtmlField extends Field {
 				imgEl.setAttribute('style', `max-width: 100%;height:auto;aspect-ratio: ${width} / ${height};`);
 			})
 
-			this.fire("insertimage", this, file, imgEl);
+			this.fire("insertimage", {file, img: imgEl});
 		}
 	}
 
@@ -672,7 +668,7 @@ export class HtmlField extends Field {
 			if (file.type.match(/^image\//)) {
 				this.handleImage(file);
 			} else {
-				this.fire("attach", this, file);
+				this.fire("attach", {file});
 			}
 			e.preventDefault();
 
@@ -826,11 +822,11 @@ class ImageResizer {
 					cls: "resizer " + pos,
 					setPosition: false,
 					listeners: {
-						dragstart: (comp1, dragData, e) => {
+						dragstart: () => {
 							startWidth = this.wrapper!.offsetWidth;
 							startHeight = this.wrapper!.offsetHeight;
 						},
-						drag: (comp1, dragData, e) => {
+						drag: ({dragData}) => {
 
 							if(pos == "left" || pos == "right") {
 								let deltaX = dragData.x - dragData.startX;
@@ -892,4 +888,4 @@ class ImageResizer {
  *
  * @param config
  */
-export const htmlfield = (config?: FieldConfig<HtmlField, HtmlFieldEventMap<HtmlField>>) => createComponent(new HtmlField(), config);
+export const htmlfield = (config?: FieldConfig<HtmlField>) => createComponent(new HtmlField(), config);

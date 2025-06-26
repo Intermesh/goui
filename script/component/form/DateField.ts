@@ -174,4 +174,4 @@ export class DateField extends InputField {
  *
  * @param config
  */
-export const datefield = (config?: FieldConfig<DateField, FieldEventMap<DateField>>) => createComponent(new DateField(), config);
+export const datefield = (config?: FieldConfig<DateField>) => createComponent(new DateField(), config);

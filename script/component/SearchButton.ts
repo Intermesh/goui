@@ -17,20 +17,15 @@ import {OverlayToolbarButton, OverlayToolbarButtonEventMap} from "./OverlayToolb
 /**
  * @inheritDoc
  */
-export interface SearchButtonEventMap<Type> extends OverlayToolbarButtonEventMap<Type> {
+export interface SearchButtonEventMap extends OverlayToolbarButtonEventMap {
 
-	input: (searchBtn: Type, text: string) => void
+	input: {text: string}
 
-	reset: (searchBtn: Type) => void
+	reset: {}
 }
 
-export interface SearchButton extends OverlayToolbarButton {
-	on<K extends keyof SearchButtonEventMap<this>, L extends Listener>(eventName: K, listener: Partial<SearchButtonEventMap<this>>[K], options?: ObservableListenerOpts): L;
-	un<K extends keyof SearchButtonEventMap<this>>(eventName: K, listener: Partial<SearchButtonEventMap<this>>[K]): boolean
-	fire<K extends keyof SearchButtonEventMap<this>>(eventName: K, ...args: Parameters<SearchButtonEventMap<Component>[K]>): boolean
-}
 
-export class SearchButton extends OverlayToolbarButton {
+export class SearchButton extends OverlayToolbarButton<SearchButtonEventMap> {
 	private searchField: TextField;
 
 	private buffer = 300;
@@ -85,8 +80,8 @@ export class SearchButton extends OverlayToolbarButton {
 		this.searchField.reset();
 		this.close();
 
-		this.fire("reset", this);
-		this.fire("input", this, "");
+		this.fire("reset", {});
+		this.fire("input", {text: ""});
 		this.el.classList.remove("accent");
 		this.el.classList.remove("filled");
 	}
@@ -95,7 +90,7 @@ export class SearchButton extends OverlayToolbarButton {
 	private onInput() {
 		this.el.classList.toggle("accent", !!this.searchField.value);
 		this.el.classList.toggle("filled", !!this.searchField.value);
-		this.fire("input", this, this.searchField.value as string);
+		this.fire("input", {text: this.searchField.value});
 	}
 
 }
@@ -121,6 +116,5 @@ export class SearchButton extends OverlayToolbarButton {
  * ```
  *
  * @param config
- * @param items
  */
-export const searchbtn = (config?: Config<SearchButton, SearchButtonEventMap<SearchButton>>) => createComponent(new SearchButton(), config);
+export const searchbtn = (config?: Config<SearchButton>) => createComponent(new SearchButton(), config);

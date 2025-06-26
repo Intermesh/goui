@@ -27,26 +27,32 @@ export type StoreRecord = Record<string, any>
 /**
  * Interface for a component that uses a store to present data
  */
-export interface StoreComponent<StoreType extends Store = Store, RecordType extends StoreRecord = StoreRecord> extends Component {
-	onStoreLoadException: (store:StoreType, reason:any) => void;
-	onBeforeStoreLoad: (store:StoreType, append: boolean) => void
-	onStoreLoad: (store:StoreType, records: RecordType[], append: boolean) => void;
-	onRecordRemove: (collection: StoreType, item: RecordType, index: number) => void;
-  onRecordAdd: (collection: StoreType, item: RecordType, index: number) => void
+export interface StoreComponent<StoreType extends Store = Store,RecordType extends StoreRecord = StoreRecord> extends Component {
+	onStoreLoadException: (ev:StoreEventMap<RecordType>['loadexception'] & {target: StoreType}) => void;
+ 	onBeforeStoreLoad: (ev:StoreEventMap<RecordType>['beforeload'] & {target: StoreType}) => void
+	onStoreLoad: (ev:StoreEventMap<RecordType>['load'] & {target: StoreType}) => void;
+	onRecordRemove: (ev:StoreEventMap<RecordType>['remove'] & {target: StoreType}) => void;
+  onRecordAdd: (ev:StoreEventMap<RecordType>['add'] & {target: StoreType}) => void
 }
+
 
 
 /**
  * @inheritDoc
  */
-export interface StoreEventMap<Type, RecordType> extends CollectionEventMap<Type, RecordType> {
+export interface StoreEventMap<RecordType extends StoreRecord = StoreRecord> extends CollectionEventMap<RecordType> {
 	/**
 	 * Fires when data is loaded into the store
 	 *
 	 * @param store
 	 * @param append Whether the records were added to the store.
 	 */
-	beforeload: (store: Type, append: boolean) => void
+	beforeload: {
+		/**
+		 * Whether the records were added to the store.
+		 */
+		append: boolean
+	}
 	/**
 	 * Fires when data is loaded into the store
 	 *
@@ -54,7 +60,17 @@ export interface StoreEventMap<Type, RecordType> extends CollectionEventMap<Type
 	 * @param records
 	 * @param append Whether the records were added to the store.
 	 */
-	load: (store: Type, records: RecordType[], append: boolean) => void
+	load: {
+		/**
+		 * Whether the records were added to the store.
+		 */
+		append: boolean,
+
+		/**
+		 * The loaded records
+		 */
+		records: RecordType[]
+	}
 
 	/**
 	 * Fires when data load failed
@@ -62,15 +78,14 @@ export interface StoreEventMap<Type, RecordType> extends CollectionEventMap<Type
 	 * @param store
 	 * @param reason
 	 */
-	loadexception: (store: Type, reason:any) => void
+	loadexception: {
+		/**
+		 * Whether the records were added to the store.
+		 */
+		reason: any
+	}
 }
 
-export interface Store<RecordType extends StoreRecord = StoreRecord > {
-	on<K extends keyof StoreEventMap<this, RecordType>, L extends Listener>(eventName: K, listener: Partial<StoreEventMap<this, RecordType>>[K], options?: ObservableListenerOpts): L
-	un<K extends keyof StoreEventMap<this, RecordType>, L extends Listener>(eventName: K, listener: Partial<StoreEventMap<this, RecordType>>[K]): boolean
-	fire<K extends keyof StoreEventMap<this, RecordType>>(eventName: K, ...args: Parameters<StoreEventMap<any, RecordType>[K]>): boolean
-
-}
 
 export type storeRecordType<StoreType> = StoreType extends Store<infer RecordType> ? RecordType : never;
 
@@ -79,7 +94,7 @@ export type storeRecordType<StoreType> = StoreType extends Store<infer RecordTyp
  *
  * @category Data
  */
-export class Store<RecordType extends StoreRecord  = StoreRecord> extends Collection<RecordType> {
+export class Store<RecordType extends StoreRecord  = StoreRecord> extends Collection<RecordType, StoreEventMap<RecordType>> {
 
 	// private static stores: Record<string, Store> = {};
 	//
@@ -143,7 +158,7 @@ export class Store<RecordType extends StoreRecord  = StoreRecord> extends Collec
 	public loadData(records: RecordType[], append = true) {
 		append ? this.add(...records) : this.replace(...records);
 		this._loaded = true;
-		this.fire("load", this, records, append);
+		this.fire("load", {records, append});
 
 	}
 
@@ -220,11 +235,11 @@ export class Store<RecordType extends StoreRecord  = StoreRecord> extends Collec
 	 * @param append
 	 */
 	public load(append = false): Promise<RecordType[]> {
-		this.fire("beforeload", this, append);
+		this.fire("beforeload",  {append});
 		this._loading = this.internalLoad(append)
 			.catch(reason => {
 				console.error(reason)
-				this.fire("loadexception", this, reason);
+				this.fire("loadexception", {reason});
 				throw reason;
 			})
 			.finally(() => {
@@ -277,7 +292,7 @@ export class Store<RecordType extends StoreRecord  = StoreRecord> extends Collec
 		el.addEventListener("scroll", onScroll, {passive: true});
 
 		// this will fill the empty space on firt load.
-		this.on("load", (store, records, append) => {
+		this.on("load", () => {
 			// use set timeout otherwise this.loading is still true
 			setTimeout(() => {
 				onScroll();
@@ -291,7 +306,7 @@ export class Store<RecordType extends StoreRecord  = StoreRecord> extends Collec
 
 export type StoreConfig<RecordType extends StoreRecord = StoreRecord> =
 
-	Omit<Config<Store<RecordType>, StoreEventMap<Store<RecordType>, RecordType>>,
+	Omit<Config<Store<RecordType>>,
 
 		"hasNext" |
 		"loadPrevious" |

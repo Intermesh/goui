@@ -13,21 +13,14 @@ import {t} from "../../Translate";
 /**
  * @inheritDoc
  */
-export interface ColorMenuEventMap<Type> extends ComponentEventMap<Type> {
+export interface ColorMenuEventMap extends ComponentEventMap {
 	/**
 	 * Fires when color is selected
 	 *
 	 * @param menu
 	 * @param color Hexadecimal color. eg. "000000"
 	 */
-	select: (menu: Type, color: string) => void
-}
-
-export interface ColorMenu {
-	on<K extends keyof ColorMenuEventMap<ColorMenu>, L extends Listener>(eventName: K, listener: Partial<ColorMenuEventMap<ColorMenu>>[K], options?: ObservableListenerOpts): L
-
-	fire<K extends keyof ColorMenuEventMap<ColorMenu>>(eventName: K, ...args: Parameters<ColorMenuEventMap<Component>[K]>): boolean
-
+	select: {color: string}
 }
 
 /**
@@ -41,7 +34,7 @@ export interface ColorMenu {
  * });
  * ```
  */
-export class ColorMenu extends Menu {
+export class ColorMenu extends Menu<ColorMenuEventMap> {
 
 	private _value = ""
 
@@ -89,7 +82,7 @@ export class ColorMenu extends Menu {
 
 			handler: () => {
 				this.value = "";
-				this.fire("select", this, "");
+				this.fire("select", {color: ""});
 			}
 		}));
 
@@ -98,15 +91,15 @@ export class ColorMenu extends Menu {
 				itemId: "#" + color,
 				cls: this.value == color ? 'with-icon pressed' : 'with-icon',
 				listeners: {
-					beforerender: (btn) => {
+					beforerender: ({target}) => {
 						const colorDiv = document.createElement("div");
 						colorDiv.style.backgroundColor = "#" + color;
-						btn.el.appendChild(colorDiv)
+						target.el.appendChild(colorDiv)
 					}
 				},
 				handler: (btn) => {
 					this.value = btn.itemId + "";
-					this.fire("select", this, this.value);
+					this.fire("select", {color: this.value});
 				}
 			}))
 		});
@@ -162,4 +155,4 @@ export class ColorMenu extends Menu {
  *
  * @param config
  */
-export const colormenu = (config?: Config<ColorMenu, ColorMenuEventMap<ColorMenu>>) => createComponent(new ColorMenu(), config);
+export const colormenu = (config?: Config<ColorMenu>) => createComponent(new ColorMenu(), config);

@@ -6,32 +6,24 @@
 
 
 import {
-	Config,
-	Listener,
+	Config, InferComponentEventMap,
+	ListenersConfig,
 	Observable,
-	ObservableEventMap,
-	ObservableListener,
-	ObservableListenerOpts,
+	ObservableEventMap
 } from "./Observable.js";
 import {State} from "../State.js";
 import {browser, Collection} from "../util/index.js";
+import {Store} from "../data/index";
 
 /**
  * A component identifier by id, itemId, Component instance or custom function
  */
 export type FindComponentPredicate = string | number | Component | ((comp: Component) => boolean | void);
 
-// interface ClassTypeOf<T> {
-// 	new(...args: any[]): T
-// }
-
 type ClassTypeOf<T> = abstract new (...args: any[]) => T;
-
-// type ClassTypeOf<T> = Function & { prototype: T };
 
 const html = document.querySelector('html')!;
 export const REM_UNIT_SIZE = parseFloat(window.getComputedStyle(html).fontSize);
-
 
 export interface Constraints {
 	/**
@@ -55,78 +47,71 @@ export interface Constraints {
 }
 
 
-export interface ComponentEventMap<Type> extends ObservableEventMap<Type> {
+export interface ComponentEventMap extends ObservableEventMap {
 	/**
 	 * Fires when the component renders and is added to the DOM
 	 *
 	 * @see Component.render()
-	 * @param comp
 	 */
-	render: (comp: Type) => void
+	render: {}
 
 	/**
 	 * Fires just before rendering
 	 *
 	 * @see Component.render()
-	 * @param comp
 	 */
-	beforerender: (comp: Type) => void
+	beforerender: {}
 
 	/**
-	 * Fires before the element is removed. You can cancel the remove by returning false
+	 * Fires before the element is removed. You can cancel the remove by returning false.
 	 *
 	 * @see Component.remove()
-	 * @param comp
 	 */
-	beforeremove: (comp: Type) => false | void
+	beforeremove: {}
 
 	/**
 	 * Fires after the component has been removed
 	 *
 	 * @see Component.remove()
-	 * @param comp
 	 */
-	remove: (comp: Type) => void
+	remove: {}
 
 	/**
 	 * Fires before show. You can cancel the show by returning false
 	 *
 	 * @see Component.show()
-	 * @param comp
+
 	 */
-	beforeshow: (comp: Type) => false | void
+	beforeshow: {}
 
 	/**
 	 * Fires after showing the component
 	 *
 	 * @see Component.show()
-	 * @param comp
+
 	 */
-	show: (comp: Type) => void
+	show: {}
 
 	/**
 	 * Fires before hide. You can cancel the hide by returning false.
 	 *
 	 * @see Component.hide()
-	 * @param comp
+
 	 */
-	beforehide: (comp: Type) => false | void
+	beforehide: {}
 
 	/**
 	 * Fires after hiding the component
 	 *
 	 * @see Component.show()
-	 * @param comp
+
 	 */
-	hide: (comp: Type) => void,
+	hide: {},
 
 	/**
 	 * Fires on focus
-	 *
-	 * @param comp
-	 * @param o
 	 */
-	focus: (comp: Type, o?: FocusOptions) => void
+	focus: {options?: FocusOptions}
 
 	/**
 	 * Fires when this component is added to a parent but before rendering
@@ -134,28 +119,23 @@ export interface ComponentEventMap<Type> extends ObservableEventMap<Type> {
 	 * @param me
 	 * @param index the index in the parents' items
 	 */
-	added: (comp: Type, index: number, parent: Component) => void
+	added: {index: number, parent: Component}
 
 	/**
 	 * Fires when the component is disabled
 	 *
-	 * @param comp
+
 	 */
-	disable: (comp: Type) => void
+	disable: {}
 
 	/**
 	 * Fires when the component is enabled
 	 *
-	 * @param comp
+
 	 */
-	enable: (comp: Type) => void
+	enable: {}
 }
 
-export interface Component extends Observable {
-	on<K extends keyof ComponentEventMap<Component>, L extends Listener>(eventName: K, listener: Partial<ComponentEventMap<Component>>[K], options?: ObservableListenerOpts): L
-	un<K extends keyof ComponentEventMap<this>>(eventName: K, listener: Partial<ComponentEventMap<this>>[K]): boolean
-	fire<K extends keyof ComponentEventMap<Component>>(eventName: K, ...args: Parameters<ComponentEventMap<any>[K]>): boolean
-}
 
 /**
  * State object for saving and restoring state of component in browser storage for example
@@ -177,7 +157,7 @@ export type ComponentState = Record<string, any>;
  * })
  * ```
  */
-export class Component extends Observable {
+export class Component<EventMapType extends ComponentEventMap = ComponentEventMap> extends Observable<EventMapType> {
 
 	protected _cls?: string;
 	private maskTimeout?: any;
@@ -277,35 +257,35 @@ export class Component extends Observable {
 
 	private initItems() {
 
-		this.items.on("add", (_collection, item, index) => {
+		this.items.on("add", e => {
 
 			// check if moved from another parent
-			if(item.parent) {
-				item.detach();
+			if(e.item.parent) {
+				e.item.detach();
 			}
 
-			item.parent = this;
+			e.item.parent = this;
 			//@ts-ignore hack for ext comps. They have a supr() method
 			if(!item.supr) {
-				item.onAdded(index);
+				e.item.onAdded(e.index);
 			}
 
 			if (this.rendered) {
-				this.renderItem(item);
+				this.renderItem(e.item);
 			}
 
 		});
 
-		this.items.on("remove", (_collection, item) => {
-			if (item.parent) {
-				item.parent = undefined;
-				if((item as any).supr) {
+		this.items.on("remove", (e) => {
+			if (e.item.parent) {
+				e.item.parent = undefined;
+				if((e.item as any).supr) {
 
 					// compat with extjs components
-					(item as any).destroy();
+					(e.item as any).destroy();
 
 				} else {
-					item.remove();
+					e.item.remove();
 				}
 			}
 		});
@@ -320,7 +300,7 @@ export class Component extends Observable {
 	 */
 	public onAdded(index:number) {
 		// fires before render! Menu uses this to modify item.parent
-		this.fire("added", this, index, this.parent!);
+		this.fire("added", {index: index, parent: this.parent!});
 	}
 
 	protected getState() {
@@ -490,7 +470,7 @@ export class Component extends Observable {
 			return this.el;
 		}
 
-		this.fire("beforerender", this);
+		this.fire("beforerender", {});
 		this.addToDom(parentEl, insertBefore);
 
 		// It actually makes more sense to me to render before inserting to the DOM. Perhaps
@@ -604,7 +584,7 @@ export class Component extends Observable {
 		const eventName = hidden ? "hide" : "show";
 
 		// noinspection PointlessBooleanExpressionJS
-		if (this.fire("before" + eventName as keyof ComponentEventMap<Component>, this) === false) {
+		if (this.fire("before" + eventName as keyof EventMapType, {} as any) === false) {
 			return;
 		}
 
@@ -861,7 +841,7 @@ export class Component extends Observable {
 		// setTimeout needed for chrome :(
 		// setTimeout(() => {
 			this.el.focus(o);
-			this.fire("focus", this, o);
+			this.fire("focus", {options: o});
 		// });
 	}
 
@@ -1385,10 +1365,8 @@ export const a = (config: Config<Component> & {href?:string, target?: string}, .
 
 export const progress = (config?: Config<Component>) => createComponent(new Component("progress"), config);
 
-export type BaseConfig = {
-	listeners?:ObservableListener<any>
-}
-export const createComponent = <T extends Observable, C extends BaseConfig>(comp: T, config?: C, items?: Component[]): T => {
+
+export const createComponent = <T extends Observable, C>(comp: T, config?: C, items?: Component[]): T => {
 
 	if (config) {
 		assignComponentConfig(comp, config)
@@ -1400,7 +1378,7 @@ export const createComponent = <T extends Observable, C extends BaseConfig>(comp
 }
 
 
-export function assignComponentConfig<T extends Observable, C extends BaseConfig>(comp: T, config: C) {
+export function assignComponentConfig<T extends Observable>(comp: T, config: any) {
 	if (config.listeners) {
 		assignComponentListeners(comp, config.listeners);
 		delete config.listeners;
@@ -1408,17 +1386,34 @@ export function assignComponentConfig<T extends Observable, C extends BaseConfig
 	Object.assign(comp as any, config);
 }
 
-export function assignComponentListeners<T extends Observable>(comp:T, listeners: ObservableListener<any>) {
+export function assignComponentListeners<T extends Observable>(comp:T, listeners: ListenersConfig<T, InferComponentEventMap<T>>) {
 
-	for (let key in listeners) {
-		const eventName = key as keyof ObservableEventMap<any>;
-		if (typeof listeners[eventName] == 'function') {
-			comp.on(eventName, listeners[eventName] as never);
+	for (let key in listeners as any) {
+		const eventName = key as keyof ObservableEventMap, l = listeners[eventName] as any;
+		if (l.fn) {
+			const fn = l.fn as never;
+			delete l.fn;
+			comp.on(eventName, fn, l);
 		} else {
-			const o = listeners[eventName];
-			const fn = o.fn as never;
-			delete o.fn;
-			comp.on(eventName, fn, o);
+			comp.on(eventName, listeners[eventName] as never);
 		}
 	}
 }
+
+const test = comp().on("focus", ({target}) => {
+	target.id
+})
+
+const test2 = comp({
+	listeners: {
+		focus: {
+			once: true,
+			fn : ({target, options}) => {
+				options?.preventScroll
+			}
+		}
+
+	}
+})
+
+

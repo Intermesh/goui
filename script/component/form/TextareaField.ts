@@ -65,4 +65,4 @@ export class TextAreaField extends InputField {
  *
  * @param config
  */
-export const textarea = (config?: FieldConfig<TextAreaField, FieldEventMap<TextAreaField>>) => createComponent(new TextAreaField(), config);
+export const textarea = (config?: FieldConfig<TextAreaField>) => createComponent(new TextAreaField(), config);

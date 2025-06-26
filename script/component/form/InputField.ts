@@ -1,6 +1,6 @@
-import {Field} from "./Field.js";
+import {Field, FieldEventMap} from "./Field.js";
 
-export abstract class InputField extends Field {
+export abstract class InputField<EventMap extends FieldEventMap = FieldEventMap> extends Field<EventMap> {
 
 	protected _input: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement | undefined;
 
@@ -31,7 +31,7 @@ export abstract class InputField extends Field {
 			super.focus(o);
 		} else {
 			this._input.focus(o);
-			this.fire("focus", this, o);
+			this.fire("focus", {options: o});
 		}
 	}
 

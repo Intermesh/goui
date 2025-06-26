@@ -185,4 +185,4 @@ export class DurationField extends Field {
 	}
 }
 
-export const durationfield = (config?: FieldConfig<DurationField, FieldEventMap<DurationField>>) => createComponent(new DurationField(config?.outputFormat ?? "h:I"), config);
+export const durationfield = (config?: FieldConfig<DurationField>) => createComponent(new DurationField(config?.outputFormat ?? "h:I"), config);

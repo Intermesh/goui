@@ -7,18 +7,11 @@ import {Config, Listener, ObservableListenerOpts} from "../Observable.js";
 export type listPickerListType<ListPickerType> = ListPickerType extends ListPicker<infer ListType> ? ListType : never;
 
 
-export interface ListPickerEventMap<Type extends ListPicker<List>> extends ComponentEventMap<Type> {
-	select: (listPicker: Type, record: storeRecordType<listStoreType<listPickerListType<Type>>>) => false | void
+export interface ListPickerEventMap extends ComponentEventMap {
+	select: {record: any}
 }
 
-export interface ListPicker<ListType extends List = List> extends Component {
-	on<K extends keyof ListPickerEventMap<this>, L extends Listener>(eventName: K, listener: Partial<ListPickerEventMap<this>>[K], options?: ObservableListenerOpts): L;
-	un<K extends keyof ListPickerEventMap<this>>(eventName: K, listener: Partial<ListPickerEventMap<this>>[K]): boolean
-	fire<K extends keyof ListPickerEventMap<this>>(eventName: K, ...args: Parameters<ListPickerEventMap<any>[K]>): boolean
-}
-
-
-export class ListPicker<ListType extends List = List> extends Component {
+export class ListPicker<ListType extends List = List> extends Component<ListPickerEventMap> {
 
 	constructor(public readonly list: ListType) {
 		super();
@@ -29,7 +22,7 @@ export class ListPicker<ListType extends List = List> extends Component {
 		this.items.add(list);
 
 		// set value on click and enter
-		this.list.on("rowclick", (table, rowIndex, row, ev) => {
+		this.list.on("rowclick", () => {
 			this.onSelect();
 		});
 
@@ -70,7 +63,7 @@ export class ListPicker<ListType extends List = List> extends Component {
 	public onSelect() {
 		const selected = this.list.rowSelection!.getSelected();
 		if (selected.length) {
-			this.fire("select", this, selected[0].record);
+			this.fire("select", {record: selected[0].record});
 		}
 	}
 
@@ -79,20 +72,8 @@ export class ListPicker<ListType extends List = List> extends Component {
 export type ListPickerConfig<ListType extends List>  =
 	Config<
 		ListPicker<ListType>,
-		ListPickerEventMap<ListPicker<ListType>>,
 		"list"
 	>
-
-// type ListPickerConfig<ListType extends List>  =
-// 	Omit<Config<
-// 		ListPicker<ListType>,
-// 		ListPickerEventMap<ListPicker<ListType>>
-// 	>, "list">
-// 	&
-// 	{
-// 		list: ListType
-// 	}
-
 
 /**
  * Shorthand function to create {@link Table}

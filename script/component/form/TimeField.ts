@@ -110,12 +110,12 @@ export class TimeField extends InputField {
 				isDropdown: true,
 				cls: "hbox",
 				listeners: {
-					beforehide: (menu) => {
+					beforehide: ({target}) => {
 						// cancel hide if field still has focus
 						if(this.el.contains(document.activeElement)) {
 							//hide menu when clicked elsewhere
 							window.addEventListener("mousedown", (ev) => {
-								menu.close();
+								target.close();
 							}, {once: true});
 
 							return false;
@@ -258,4 +258,4 @@ export class TimeField extends InputField {
  *
  * @param config
  */
-export const timefield = (config?: FieldConfig<TimeField, FieldEventMap<TextField>>) => createComponent(new TimeField(), config);
+export const timefield = (config?: FieldConfig<TimeField>) => createComponent(new TimeField(), config);

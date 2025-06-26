@@ -160,4 +160,4 @@ export class RadioField extends Field {
  *
  * @param config
  */
-export const radio = (config?: FieldConfig<RadioField, FieldEventMap<RadioField>>) => createComponent(new RadioField(config?.type || 'box'), config);
+export const radio = (config?: FieldConfig<RadioField>) => createComponent(new RadioField(config?.type || 'box'), config);

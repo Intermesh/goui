@@ -7,7 +7,7 @@
 import {Observable, ObservableEventMap, ObservableListenerOpts, root, Window} from "../component/index.js";
 import {Comparator} from "./Store.js";
 import {ArrayUtil, FunctionUtil, ObjectUtil} from "../util/index.js";
-import {BrowserStore} from "../util/BrowserStorage.js";
+import {BrowserStore} from "../util/index";
 import {t} from "../Translate.js";
 
 /**
@@ -233,21 +233,14 @@ export interface QueryResponse<EntityType> {
 /**
  * @category Data
  */
-export interface DataSourceEventMap<Type extends Observable> extends ObservableEventMap<Type> {
+export interface DataSourceEventMap extends ObservableEventMap{
 	/**
 	 * Fires when data changed in the store
 	 */
-	change: (dataSource: Type, changes: Changes) => void
+	change: {changes: Changes}
 }
 
 export type dataSourceEntityType<DS> = DS extends AbstractDataSource<infer EntityType> ? EntityType : never;
-
-
-export interface AbstractDataSource<EntityType extends BaseEntity = DefaultEntity>  extends Observable {
-	on<K extends keyof DataSourceEventMap<this>>(eventName: K, listener: DataSourceEventMap<this>[K], options?: ObservableListenerOpts): DataSourceEventMap<this>[K]
-	un<K extends keyof DataSourceEventMap<this>>(eventName: K, listener: DataSourceEventMap<this>[K]): boolean
-	fire<K extends keyof DataSourceEventMap<this>>(eventName: K, ...args: Parameters<DataSourceEventMap<this>[K]>): boolean
-}
 
 type SaveData<EntityType extends BaseEntity> = {
 	data: Partial<EntityType>,
@@ -280,7 +273,7 @@ type GetData = {
  *
  * @category Data
  */
-export abstract class AbstractDataSource<EntityType extends BaseEntity = DefaultEntity> extends Observable {
+export abstract class AbstractDataSource<EventMap extends DataSourceEventMap = DataSourceEventMap,  EntityType extends BaseEntity = DefaultEntity> extends Observable<EventMap> {
 	/**
 	 * JMAP state
 	 *
@@ -837,7 +830,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 			await this.reset();
 		}
 		if (hasAChange) {
-			this.fire("change", this, allChanges);
+			this.fire("change", {changes: allChanges});
 		}
 
 	}
@@ -945,12 +938,14 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 
 			await this.setState(response.newState);
 
-			this.fire("change", this, {
-				created: response.created ? Object.values(response.created).map(c=> c.id) : [],
-				updated: response.updated ? Object.keys(response.updated) : [],
-				destroyed: response.destroyed || [],
-				oldState: response.oldState,
-				newState: response.newState
+			this.fire("change", {
+				changes: {
+					created: response.created ? Object.values(response.created).map(c => c.id) : [],
+					updated: response.updated ? Object.keys(response.updated) : [],
+					destroyed: response.destroyed || [],
+					oldState: response.oldState,
+					newState: response.newState
+				}
 			});
 		})
 			.catch(e => {
@@ -1050,12 +1045,14 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 
 		await this.setState(response.newState);
 
-		this.fire("change", this, {
-			created: [],
-			updated: response.updated ? Object.keys(response.updated) : [],
-			destroyed: response.destroyed || [],
-			oldState: response.oldState,
-			newState: response.newState
+		this.fire("change", {
+			changes: {
+				created: [],
+				updated: response.updated ? Object.keys(response.updated) : [],
+				destroyed: response.destroyed || [],
+				oldState: response.oldState,
+				newState: response.newState
+			}
 		});
 
 		return response;

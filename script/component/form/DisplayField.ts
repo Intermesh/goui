@@ -99,7 +99,7 @@ export class DisplayField extends Field {
 	}
 }
 type DisplayFieldRenderer = (v:any, field:DisplayField) => string|Promise<string>|Component|Promise<Component>;
-type DisplayFieldConfig = FieldConfig<DisplayField, FieldEventMap<DisplayField>> & {
+type DisplayFieldConfig = FieldConfig<DisplayField> & {
 
 	/**
 	 * Renderer function for the value of the field

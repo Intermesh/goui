@@ -1,5 +1,6 @@
-import {Button, ButtonConfig} from "./Button";
+import {Button} from "./Button";
 import {Component, ComponentState, createComponent} from "./Component";
+import {Config} from "./Observable";
 
 type CollapseEl = ((btn:CollapseButton) => Component) | Component
 
@@ -64,7 +65,7 @@ export class CollapseButton extends Button {
  *
  * @param config
  */
-export const collapsebtn = (config: ButtonConfig<CollapseButton> & {
+export const collapsebtn = (config: Config<CollapseButton> & {
 	/**
 	 * Pass a component or a function that returns the component after render
 	 */

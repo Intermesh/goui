@@ -11,11 +11,6 @@ import {Config, Listener, ObservableListenerOpts} from "../Observable.js";
 import {AbstractMenu} from "../AbstractMenu";
 
 
-export interface Menu extends AbstractMenu {
-	on<K extends keyof ComponentEventMap<this>, L extends Listener>(eventName: K, listener: Partial<ComponentEventMap<this>>[K], options?: ObservableListenerOpts): L
-	un<K extends keyof ComponentEventMap<this>>(eventName: K, listener: Partial<ComponentEventMap<this>>[K]): boolean
-	fire<K extends keyof ComponentEventMap<this>>(eventName: K, ...args: Parameters<ComponentEventMap<any>[K]>): boolean
-}
 
 /**
  * Menu class
@@ -88,7 +83,7 @@ export interface Menu extends AbstractMenu {
  * 	});
  * ```
  */
-export class Menu extends AbstractMenu {
+export class Menu<EventMap extends ComponentEventMap = ComponentEventMap> extends AbstractMenu<EventMap> {
 	private _parentMenu?: Menu | Toolbar | boolean;
 
 	constructor() {
@@ -441,7 +436,7 @@ export class Menu extends AbstractMenu {
  * @param config
  * @param items
  */
-export const menu = (config?: Config<Menu, ComponentEventMap<Menu>>, ...items: ( Component | "-")[]) => {
+export const menu = (config?: Config<Menu>, ...items: ( Component | "-")[]) => {
 
 	return createComponent(new Menu(), config, items.map(i => {
 		if(i == "-") {
