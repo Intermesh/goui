@@ -8,7 +8,7 @@ import {
 	AbstractDataSource,
 	BaseEntity,
 	Changes,
-	dataSourceEntityType,
+	dataSourceEntityType, DataSourceEventMap,
 	DefaultEntity,
 	EntityID,
 	Filter,
@@ -25,7 +25,7 @@ type Relation<EntityType extends BaseEntity> = Partial<Record<keyof EntityType, 
 	/**
 	 * Data source to get relation from
 	 */
-	dataSource: AbstractDataSource<EntityType>,
+	dataSource: AbstractDataSource<DataSourceEventMap, EntityType>,
 
 	/**
 	 * JSON pointer to relation key
@@ -44,8 +44,10 @@ type RecordBuilder<EntityType, StoreRecord> = (entity: EntityType) => Promise<St
  * @category Data
  */
 export class DataSourceStore<
-	DataSource extends AbstractDataSource = AbstractDataSource,
-	RecordType extends StoreRecord = dataSourceEntityType<DataSource>> extends Store<RecordType> {
+		DataSource extends AbstractDataSource = AbstractDataSource,
+		RecordType extends StoreRecord = dataSourceEntityType<DataSource>
+	>
+	extends Store<RecordType> {
 
 	public queryParams: Omit<QueryParams, "sort"> = {};
 
@@ -86,13 +88,13 @@ export class DataSourceStore<
 	 *
 	 * @protected
 	 */
-	protected onDSChange(DataSource:DataSource, changes: Changes) {
+	protected onDSChange(ev:any) {
 		if (this.loaded && this.monitorChanges && !this.loading) {
 			void this.reload();
 		}
 	}
 
-	bindComponent(comp: StoreComponent<RecordType>) {
+	bindComponent(comp: StoreComponent<this, RecordType>) {
 		super.bindComponent(comp);
 		this.listen();
 	}
@@ -104,7 +106,7 @@ export class DataSourceStore<
 		}
 	}
 
-	unbindComponent(comp: StoreComponent<RecordType>) {
+	unbindComponent(comp: StoreComponent<this, RecordType>) {
 		super.unbindComponent(comp);
 
 		if(!this.components.length) {

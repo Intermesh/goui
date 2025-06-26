@@ -31,10 +31,10 @@ export class TreeColumn extends TableColumn {
 			const c = checkbox({
 				value: record.check,
 				listeners: {
-					change:(field, newValue, oldValue) => {
+					change:( {newValue}) => {
 						record.check = newValue;
 
-						(tree as Tree).fire("checkchange",  this, record, storeIndex, newValue);
+						(tree as Tree).fire("checkchange", {record, storeIndex, checked:newValue});
 					}
 				}
 			});
@@ -63,4 +63,4 @@ export class TreeColumn extends TableColumn {
 	}
 }
 
-export const treecolumn = (config: Config<TreeColumn, TableColumnEventMap<TreeColumn>, "id">) => createComponent(new TreeColumn(config.id), config);
+export const treecolumn = (config: Config<TreeColumn, "id">) => createComponent(new TreeColumn(config.id), config);

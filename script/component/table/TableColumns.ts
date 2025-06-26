@@ -31,7 +31,7 @@ export type HeaderRenderer = (col: TableColumn, headerEl: HTMLTableCellElement, 
 export type align = "left" | "right" | "center";
 
 
-export interface TableColumnEventMap<Type> extends ObservableEventMap<Type> {
+export interface TableColumnEventMap extends ObservableEventMap {
 
 
 	/**
@@ -43,16 +43,10 @@ export interface TableColumnEventMap<Type> extends ObservableEventMap<Type> {
 	 * @param storeIndex
 	 * @param td
 	 */
-	render: (column: Type, result: string | Promise<string> | Component | Promise<Component> | undefined, record:any, storeIndex:number, td: HTMLTableCellElement) => void
+	render: {result: string | Promise<string> | Component | Promise<Component> | undefined, record:any, storeIndex:number, td: HTMLTableCellElement}
 }
 
-export interface TableColumn extends Observable {
-	on<K extends keyof TableColumnEventMap<this>, L extends Listener>(eventName: K, listener: Partial<TableColumnEventMap<this>>[K], options?: ObservableListenerOpts): L
-	un<K extends keyof TableColumnEventMap<this>>(eventName: K, listener: Partial<TableColumnEventMap<this>>[K]): boolean
-	fire<K extends keyof TableColumnEventMap<this>>(eventName: K, ...args: Parameters<TableColumnEventMap<any>[K]>): boolean
-}
-
-export class TableColumn extends Observable {
+export class TableColumn<EventMap extends TableColumnEventMap = TableColumnEventMap> extends Observable<EventMap> {
 
 
 	public parent: Table | undefined;
@@ -141,7 +135,7 @@ export class TableColumn extends Observable {
 	sticky?: boolean
 }
 
-type TableColumnConfig = Config<TableColumn, TableColumnEventMap<TableColumn>> & {
+type TableColumnConfig = Config<TableColumn> & {
 	/**
 	 * The ID of the column which is also the default for the column 'property'
 	 */
@@ -200,7 +194,7 @@ export const boolcolumn = (config: TableColumnConfig) => createComponent(new Boo
 
 
 
-export interface CheckboxColumnEventMap<Type> extends TableColumnEventMap<Type> {
+export interface CheckboxColumnEventMap extends TableColumnEventMap {
 
 	/**
 	 * Fires when the checkbox is checked by the user
@@ -211,16 +205,10 @@ export interface CheckboxColumnEventMap<Type> extends TableColumnEventMap<Type> 
 	 * @param record
 	 * @param storeIndex
 	 */
-	change: (column: Type, checkbox:CheckboxField, checked: boolean, record:any, storeIndex:number) => void
+	change: {checkbox:CheckboxField, checked: boolean, record:any, storeIndex:number}
 }
 
-export interface CheckboxColumn extends TableColumn {
-	on<K extends keyof CheckboxColumnEventMap<this>, L extends Listener>(eventName: K, listener: Partial<CheckboxColumnEventMap<this>>[K], options?: ObservableListenerOpts): L
-	un<K extends keyof CheckboxColumnEventMap<this>>(eventName: K, listener: Partial<CheckboxColumnEventMap<this>>[K]): boolean
-	fire<K extends keyof CheckboxColumnEventMap<this>>(eventName: K, ...args: Parameters<CheckboxColumnEventMap<any>[K]>): boolean
-}
-
-export class CheckboxColumn extends TableColumn {
+export class CheckboxColumn extends TableColumn<CheckboxColumnEventMap> {
 	constructor(id: string) {
 		super(id);
 
@@ -231,16 +219,16 @@ export class CheckboxColumn extends TableColumn {
 		return checkbox({
 			value: val,
 			listeners: {
-				change: (field, newValue, oldValue) => {
+				change: ({target, newValue, oldValue}) => {
 					record[column.property] = newValue;
 
-					this.fire("change", this,  field, newValue, record, rowIndex);
+					this.fire("change", {checkbox:target, checked:newValue, record, storeIndex: rowIndex});
 				},
-				render: (field) => {
+				render: ({target}) => {
 
 					table.el.addEventListener("keydown", (e) => {
 						if(e.key == " " && e.target == td.parentNode) {
-							field.value = !field.value;
+							target.value = !target.value;
 						}
 					});
 				},
@@ -251,7 +239,7 @@ export class CheckboxColumn extends TableColumn {
 
 
 
-type CheckboxColumnConfig = Config<CheckboxColumn, CheckboxColumnEventMap<TableColumn>> & {
+type CheckboxColumnConfig = Config<CheckboxColumn> & {
 	/**
 	 * The ID of the column which is also the default for the column 'property'
 	 */
@@ -284,7 +272,7 @@ export class CheckboxSelectColumn extends TableColumn {
 
 		return checkbox({
 			listeners: {
-				change: (field, newValue, oldValue) => {
+				change: ({newValue}) => {
 
 					if (newValue) {
 						table.rowSelection!.selectAll();
@@ -307,22 +295,22 @@ export class CheckboxSelectColumn extends TableColumn {
 		return checkbox({
 			value: val,
 			listeners: {
-				render: (field) => {
-					field.el.addEventListener("mousedown", (ev) => {
+				render: ({target}) => {
+					target.el.addEventListener("mousedown", (ev) => {
 						ev.stopPropagation()
 					});
-					field.el.addEventListener("click", (ev) => {
+					target.el.addEventListener("click", (ev) => {
 						ev.stopPropagation()
 					});
 
-					field.value = table.rowSelection!.isSelected(record);
+					target.value = table.rowSelection!.isSelected(record);
 
 					table.rowSelection!.on("selectionchange", () => {
-						field.value = table.rowSelection!.isSelected(record);
+						target.value = table.rowSelection!.isSelected(record);
 					});
 
 				},
-				change: (field, newValue, oldValue) => {
+				change: ( {newValue}) => {
 
 					if (newValue) {
 						table.rowSelection!.add(record);

@@ -691,8 +691,8 @@ export class Window<EventMap extends WindowEventMap = WindowEventMap> extends Dr
 						closable: false,
 						width: 600,
 						listeners: {
-							focus: (w) => {
-								w.findChild("yes")!.focus();
+							focus: ({target}) => {
+								target.findChild("yes")!.focus();
 							}
 						}
 					},

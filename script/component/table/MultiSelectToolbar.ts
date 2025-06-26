@@ -17,9 +17,9 @@ export class MultiSelectToolbar extends Toolbar {
 	constructor(readonly table: Table) {
 		super();
 
-		this.table.rowSelection!.on("selectionchange", (tableRowSelect) => {
+		this.table.rowSelection!.on("selectionchange", ({target}) => {
 
-			const l = tableRowSelect.getSelected().length;
+			const l = target.getSelected().length;
 
 			this.hidden = l < 2;
 
@@ -76,7 +76,7 @@ export class MultiSelectToolbar extends Toolbar {
  * @param config
  * @param items
  */
-export const mstbar = (config: Config<MultiSelectToolbar, ComponentEventMap<MultiSelectToolbar>, "table">, ...items: (Component | "->" | "-")[]) => {
+export const mstbar = (config: Config<MultiSelectToolbar, "table">, ...items: (Component | "->" | "-")[]) => {
 
 	const c = new MultiSelectToolbar(config.table);
 	if (config) {

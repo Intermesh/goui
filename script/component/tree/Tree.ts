@@ -7,7 +7,7 @@ import {TreeColumn} from "./TreeColumn";
 import {TreeRecord} from "./TreeRecord";
 
 
-export interface TreeEventMap<Type> extends ListEventMap<Type> {
+export interface TreeEventMap extends ListEventMap {
 	/**
 	 * Fires before a node expands
 	 *
@@ -19,7 +19,7 @@ export interface TreeEventMap<Type> extends ListEventMap<Type> {
 	 * @param record The record of the expanding node
 	 * @param storeIndex The index of the record in the store
 	 */
-	beforeexpand: (tree:Type, record:TreeRecord, storeIndex: number) => void|false;
+	beforeexpand: {record:TreeRecord, storeIndex: number}
 	/**
 	 * Fires when a node expands
 	 *
@@ -27,7 +27,7 @@ export interface TreeEventMap<Type> extends ListEventMap<Type> {
 	 * @param record The record of the expanding node
 	 * @param storeIndex The index of the record in the store
 	 */
-	expand: (tree:Type, record:TreeRecord, storeIndex: number) => void;
+	expand: {record:TreeRecord, storeIndex: number}
 
 
 	/**
@@ -37,7 +37,7 @@ export interface TreeEventMap<Type> extends ListEventMap<Type> {
 	 * @param record The record of the collapsing node
 	 * @param storeIndex The index of the record in the store
 	 */
-	beforecollapse: (tree:Type, record:TreeRecord, storeIndex: number) => void|false;
+	beforecollapse: {record:TreeRecord, storeIndex: number}
 
 	/**
 	 * Fires when a node collapses
@@ -46,7 +46,7 @@ export interface TreeEventMap<Type> extends ListEventMap<Type> {
 	 * @param record The record of the collapsing node
 	 * @param storeIndex The index of the record in the store
 	 */
-	collapse: (tree:Type, record:TreeRecord, storeIndex: number) => void;
+	collapse: {record:TreeRecord, storeIndex: number}
 
 	/**
 	 * Fires when a node collapses
@@ -55,13 +55,7 @@ export interface TreeEventMap<Type> extends ListEventMap<Type> {
 	 * @param record The record of the collapsing node
 	 * @param storeIndex The index of the record in the store
 	 */
-	checkchange: (tree:Type, record:TreeRecord, storeIndex: number, checked:boolean) => void;
-}
-
-export interface Tree extends Table<TreeStore> {
-	on<K extends keyof TreeEventMap<this>, L extends Listener>(eventName: K, listener: Partial<TreeEventMap<this>>[K], options?: ObservableListenerOpts): L;
-	un<K extends keyof TreeEventMap<this>>(eventName: K, listener: Partial<TreeEventMap<this>>[K]): boolean
-	fire<K extends keyof TreeEventMap<this>>(eventName: K, ...args: Parameters<TreeEventMap<any>[K]>): boolean
+	checkchange: {record:TreeRecord, storeIndex: number, checked:boolean}
 }
 
 export type NodeProvider = (record:TreeRecord | undefined, store: TreeStore) => TreeRecord[] | Promise<TreeRecord[]>;
@@ -69,7 +63,7 @@ export type NodeProvider = (record:TreeRecord | undefined, store: TreeStore) => 
 /**
  * Tree component
  */
-export class Tree extends Table<TreeStore> {
+export class Tree<EventMap extends TreeEventMap = TreeEventMap> extends Table<TreeStore, EventMap> {
 	constructor(protected nodeProvider: NodeProvider, columns:TableColumn[] = [new TreeColumn("text")]) {
 		super(new TreeStore(nodeProvider), columns);
 
@@ -133,26 +127,26 @@ export class Tree extends Table<TreeStore> {
 
 	private async internalExpand(record: any, storeIndex: number, node: Element) {
 
-		if(this.fire("beforeexpand", this,  record, storeIndex) === false) {
+		if(this.fire("beforeexpand", {record, storeIndex}) === false) {
 			return;
 		}
 
 		await this.store.expand(record);
 		node.classList.add("expanded");
-		this.fire("expand", this, record, storeIndex);
+		this.fire("expand", {record, storeIndex});
 
 	}
 
 	private internalCollapse(record: any, storeIndex: number, node: Element ) {
 
-		if(this.fire("beforecollapse", this,  record, storeIndex) === false) {
+		if(this.fire("beforecollapse", {record, storeIndex}) === false) {
 			return;
 		}
 
 		this.store.collapse(record);
 		node.classList.remove("expanded");
 
-		this.fire("collapse", this, record, storeIndex);
+		this.fire("collapse", {record, storeIndex});
 	}
 
 	/**
@@ -210,4 +204,4 @@ export class Tree extends Table<TreeStore> {
  *
  * @param config
  */
-export const tree = (config: Config<Tree, TreeEventMap<Tree>> & {nodeProvider: NodeProvider}) => createComponent(new Tree(config.nodeProvider, config.columns ?? [new TreeColumn("text")]), config);
+export const tree = (config: Config<Tree> & {nodeProvider: NodeProvider}) => createComponent(new Tree(config.nodeProvider, config.columns ?? [new TreeColumn("text")]), config);

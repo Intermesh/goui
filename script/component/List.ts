@@ -146,7 +146,7 @@ export interface ListEventMap extends ComponentEventMap {
  *
  * Create a list with a custom item renderer. Also capable of selecting rows.
  */
-export class List<EventMapType extends ListEventMap = ListEventMap, StoreType extends Store = Store> extends Component<EventMapType> implements StoreComponent<StoreType> {
+export class List<StoreType extends Store = Store, EventMapType extends ListEventMap = ListEventMap> extends Component<EventMapType> implements StoreComponent<StoreType> {
 	/**
 	 * Shown when the list is empty.
 	 */
@@ -640,11 +640,11 @@ export class List<EventMapType extends ListEventMap = ListEventMap, StoreType ex
 	}
 }
 
-export type ListConfig<EventMapType extends ListEventMap, StoreType extends Store> = Omit<Config<List<EventMapType, StoreType>, "store" | "renderer">, "rowSelection">
+export type ListConfig<EventMapType extends ListEventMap, StoreType extends Store> = Omit<Config<List<StoreType, EventMapType>, "store" | "renderer">, "rowSelection">
 
 /**
  * Shorthand function to create {@link Table}
  *
  * @param config
  */
-export const list = <StoreType extends Store>(config: ListConfig<ListEventMap, StoreType>): List<ListEventMap, StoreType> => createComponent(new List(config.store, config.renderer), config);
+export const list = <StoreType extends Store>(config: ListConfig<ListEventMap, StoreType>): List<StoreType, ListEventMap> => createComponent(new List(config.store, config.renderer), config);

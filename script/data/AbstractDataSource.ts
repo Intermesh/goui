@@ -240,7 +240,7 @@ export interface DataSourceEventMap extends ObservableEventMap{
 	change: {changes: Changes}
 }
 
-export type dataSourceEntityType<DS> = DS extends AbstractDataSource<infer EntityType> ? EntityType : never;
+export type dataSourceEntityType<DS> = DS extends AbstractDataSource<infer EventMap,infer EntityType> ? EntityType : never;
 
 type SaveData<EntityType extends BaseEntity> = {
 	data: Partial<EntityType>,

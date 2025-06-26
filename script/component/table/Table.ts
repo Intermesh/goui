@@ -5,24 +5,17 @@
  */
 
 import {comp, Component, ComponentState, createComponent} from "../Component.js";
-import {Store, StoreRecord} from "../../data/Store.js";
-import {ObjectUtil} from "../../util/index";
+import {Store} from "../../data/Store.js";
+import {ArrayUtil, ObjectUtil} from "../../util/index";
 import {menu, Menu} from "../menu/Menu.js";
 import {checkbox} from "../form/index";
 import {Notifier} from "../../Notifier.js";
 import {draggable} from "../DraggableComponent.js";
 import {TableColumn} from "./TableColumns.js";
 import {List, ListEventMap} from "../List.js";
-import {Config, Listener, ObservableListenerOpts} from "../Observable.js";
+import {Config} from "../Observable.js";
 import {Sortable} from "../Sortable";
-import {ArrayUtil} from "../../util/index";
 
-
-export interface Table<StoreType extends Store = Store> extends List<StoreType>  {
-	on<K extends keyof ListEventMap<this>, L extends Listener>(eventName: K, listener: Partial<ListEventMap<this>>[K], options?: ObservableListenerOpts): L;
-	un<K extends keyof ListEventMap<this>>(eventName: K, listener: Partial<ListEventMap<this>>[K]): boolean
-	fire<K extends keyof ListEventMap<this>>(eventName: K, ...args: Parameters<ListEventMap<any>[K]>): boolean
-}
 
 /**
  * Table component
@@ -83,7 +76,7 @@ export interface Table<StoreType extends Store = Store> extends List<StoreType> 
  * 	});
  *  ```
  */
-export class Table<StoreType extends Store = Store> extends List<StoreType> {
+export class Table<StoreType extends Store = Store, EventMap extends ListEventMap = ListEventMap> extends List<StoreType, EventMap > {
 	private _columns!: Record<string,TableColumn>;
 
 	/**
@@ -136,7 +129,7 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 				if (c.renderer) {
 					const r = c.renderer(value, record, td, this, storeIndex, c);
 
-					c.fire("render", c, r, record, storeIndex, td);
+					c.fire("render", {result:r, record, storeIndex, td});
 
 					if (r) {
 
@@ -362,8 +355,8 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 						name: c.id,
 						value: !c.hidden,
 						listeners: {
-							change: (field) => {
-								c.hidden = !field.value;
+							change: ({target}) => {
+								c.hidden = !target.value;
 								this.saveState();
 								this.rerender();
 							}
@@ -386,7 +379,7 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 
 			splitter.parent = this;
 
-			splitter.on("dragstart", (cmp, dragData) => {
+			splitter.on("dragstart", ({dragData}) => {
 				if (!this.colsAreFixed) {
 					this.fixColumnWidths();
 				}
@@ -399,7 +392,7 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 				});
 			});
 
-			splitter.on("drag", (cmp, dragData) => {
+			splitter.on("drag", ( {dragData}) => {
 				const w = dragData.data.startWidth + dragData.x - dragData.startX;
 				header.style.width = Table.pxToRem(w) / 10 + "rem"
 				h.width = w;
@@ -552,13 +545,13 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 			headerSorter.horizontal = true;
 			headerSorter.group = "header-sortable-" + Component.uniqueID();
 
-			headerSorter.on("sort", (toComp, toIndex, fromIndex, droppedOn, fromComp, dragDataSet) => {
+			headerSorter.on("sort", ({toIndex, fromIndex}) => {
 				this.columnSort = ArrayUtil.move(this.getColumnSort(), fromIndex, toIndex);
 				this.saveState();
 				this.rerender();
 			});
 
-			headerSorter.on("dropallowed",(dropComp, toIndex, fromIndex, droppedOn, fromComp, dragDataSet) => {
+			headerSorter.on("dropallowed",( {toIndex}) => {
 				const cols = this.columns;
 
 				if(!cols[toIndex]) {
@@ -572,7 +565,7 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 	}
 
 	private onSort(dataIndex: string, header: HTMLTableCellElement) {
-		this.fire("sort", this, dataIndex);
+		this.fire("sort", {property: dataIndex});
 
 		const s = this.store.sort;
 
@@ -674,15 +667,15 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 		return groupEl;
 	}
 
-	public onRecordRemove(collection: StoreType, item: StoreRecord, index: number) {
+	public onRecordRemove(ev:any) {
 
 		let groupEl;
 		if(this.groupBy) {
 			const rows = this.getRowElements();
-			groupEl = rows[index]?.parentElement;
+			groupEl = rows[ev.index]?.parentElement;
 		}
 
-		super.onRecordRemove(collection, item, index)
+		super.onRecordRemove(ev);
 
 		//cleanup group if only group header is left
 		if(groupEl && groupEl.children.length == 1) {
@@ -712,7 +705,7 @@ export class Table<StoreType extends Store = Store> extends List<StoreType> {
 	}
 }
 
-export type TableConfig<TableType extends Table = Table> = Omit<Config<TableType, ListEventMap<TableType>, "store" | "columns">, "rowSelection">
+export type TableConfig<TableType extends Table = Table> = Omit<Config<TableType, "store" | "columns">, "rowSelection">
 
 /**
  * Shorthand function to create {@link Table}
