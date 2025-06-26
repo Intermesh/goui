@@ -5,7 +5,6 @@
  */
 
 import {FunctionUtil} from "../util/index";
-import {ComponentEventMap} from "./Component";
 
 export interface ObservableEventMap {
 
@@ -90,7 +89,7 @@ export class Observable<EventMapType extends ObservableEventMap = ObservableEven
 	 *
 	 * @protected
 	 */
-	protected _eventMapAnchor!: EventMapType;
+	// protected _eventMapAnchor!: EventMapType;
 
 	private lisnrs: any
 

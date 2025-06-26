@@ -4,7 +4,7 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {Listener, Observable, ObservableEventMap, ObservableListenerOpts} from "../component";
+import {Observable} from "../component";
 
 /**
  * @inheritDoc
