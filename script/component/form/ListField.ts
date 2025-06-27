@@ -75,10 +75,8 @@ export class ListField<ListType extends List = List> extends Field<ListFieldEven
 			icon: "expand_more",
 			type: "button",
 			handler: () => {
-				//this.fire("autocomplete", this, "");
 				void this.list.store.load();
 				this.picker.show();
-
 			},
 			menu: this.menu
 		});

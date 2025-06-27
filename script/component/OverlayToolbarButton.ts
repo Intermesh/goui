@@ -64,7 +64,7 @@ export class OverlayToolbarButton<EventMap extends OverlayToolbarButtonEventMap 
 					listeners: {
 						show: () => {
 							document.body.addEventListener("mousedown", this.closeOnClick)
-							this.fire("open", this);
+							this.fire("open", {});
 						}
 					}
 				},

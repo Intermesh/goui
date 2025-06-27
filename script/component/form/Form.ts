@@ -176,7 +176,7 @@ export class Form<ValueType extends ContainerFieldValue = ContainerFieldValue, E
 		if (this.isValid()) {
 			el.cls(['+valid', '-invalid']);
 
-			if(this.fire("beforesubmit", this) === false) {
+			if(this.fire("beforesubmit", {}) === false) {
 				return false;
 			}
 

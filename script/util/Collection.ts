@@ -229,7 +229,7 @@ export class Collection<CollectionItem, MapType extends CollectionEventMap<Colle
 		this.onRemove(item, index);
 
 		this.fire("remove",  {item, index});
-		this.fire("datachanged", this);
+		this.fire("datachanged", {});
 
 		return true;
 	}

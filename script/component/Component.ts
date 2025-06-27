@@ -475,7 +475,7 @@ export class Component<EventMapType extends ComponentEventMap = ComponentEventMa
 
 		this._rendered = true;
 
-		this.fire("render", this);
+		this.fire("render", {});
 
 		return this.el;
 	}
@@ -533,13 +533,13 @@ export class Component<EventMapType extends ComponentEventMap = ComponentEventMa
 	 * Remove component from the component tree
 	 */
 	public remove() {
-		if (!this.fire("beforeremove", this)) {
+		if (!this.fire("beforeremove", {})) {
 			return false;
 		}
 
 		this.internalRemove();
 
-		this.fire("remove", this);
+		this.fire("remove", {});
 
 		return true;
 	}
@@ -584,7 +584,7 @@ export class Component<EventMapType extends ComponentEventMap = ComponentEventMa
 
 		this.internalSetHidden(hidden);
 
-		this.fire(eventName, this);
+		this.fire(eventName, {});
 
 	}
 
@@ -635,10 +635,10 @@ export class Component<EventMapType extends ComponentEventMap = ComponentEventMa
 	set disabled(disabled: boolean) {
 		if (!disabled) {
 			this.el.removeAttribute("disabled");
-			this.fire("enable", this);
+			this.fire("enable", {});
 		} else {
 			this.el.setAttribute("disabled", "");
-			this.fire("disable", this);
+			this.fire("disable", {});
 		}
 	}
 

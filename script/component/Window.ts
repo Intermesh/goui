@@ -515,7 +515,7 @@ export class Window<EventMap extends WindowEventMap = WindowEventMap> extends Dr
 		this.collapsed = false;
 		this.el.classList.add('maximized');
 
-		this.fire("maximize", this);
+		this.fire("maximize", {});
 
 		return this;
 	}
@@ -526,7 +526,7 @@ export class Window<EventMap extends WindowEventMap = WindowEventMap> extends Dr
 	public unmaximize() {
 		this.el.classList.remove('maximized');
 
-		this.fire("unmaximize", this);
+		this.fire("unmaximize", {});
 
 		return this;
 	}

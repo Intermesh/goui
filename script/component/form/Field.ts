@@ -618,7 +618,7 @@ export abstract class Field<EventMap extends FieldEventMap = FieldEventMap> exte
 			this.applyInvalidMsg();
 		}
 
-		this.fire("invalid", this);
+		this.fire("invalid", {});
 	}
 
 	/**
@@ -637,7 +637,7 @@ export abstract class Field<EventMap extends FieldEventMap = FieldEventMap> exte
 			this.setInvalid(t("This field is required"));
 		}
 
-		this.fire("validate", this);
+		this.fire("validate", {});
 	}
 
 	protected internalRemove() {

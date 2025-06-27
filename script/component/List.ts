@@ -5,13 +5,13 @@
  */
 
 import {assignComponentConfig, comp, Component, ComponentEventMap, createComponent, span} from "./Component.js";
-import {Store, StoreComponent, StoreEventMap, StoreRecord, storeRecordType} from "../data";
+import {Store, StoreComponent, StoreEventMap, storeRecordType} from "../data";
 import {t} from "../Translate.js";
 import {E, ObjectUtil} from "../util";
 import {rowselect, RowSelect, RowSelectConfig, SelectedRow, Table} from "./table";
-import {Config, Listener, ObservableListenerOpts} from "./Observable.js";
+import {Config} from "./Observable.js";
 import {Window} from "./Window.js";
-import {Sortable, SortableEventMap} from "./Sortable.js";
+import {Sortable} from "./Sortable.js";
 
 export type RowRenderer = (record: any, row: HTMLElement, list: any, storeIndex: number) => string | Component[] | void;
 export type GroupByRenderer = (groupBy: any, record: any, list: List) => string | Promise<string> | Component | Promise<Component>;
@@ -22,123 +22,150 @@ export type listStoreType<ListType> = ListType extends List<infer StoreType> ? S
  */
 export interface ListEventMap extends ComponentEventMap {
 	/**
-	 * Fires when the user scrolled to the bottom
-	 *
-	 * @param list
+	 * Fires when the user scrolled to the bottom.
 	 */
-	scrolleddown: {}
-	/**
-	 * Fires when the user sorts the list by a property
-	 *
-	 * @param list
-	 * @param property
-	 */
-	sort: {property: string}
+	scrolleddown: {};
 
 	/**
-	 * Fires when the user sorts the list by drag and drop
-	 *
-	 * @param list
-	 * @param dataIndex
+	 * Fires when the user sorts the list by a property.
 	 */
-	sortchange: {record: any, dropIndex: number, oldIndex: number}
+	sort: {
+		/** The property being sorted by. */
+		property: string;
+	};
 
 	/**
-	 * Fires when a row is mousedowned
-	 *
-	 * @param list
-	 * @param storeIndex
-	 * @param ev
+	 * Fires when the user sorts the list by drag and drop.
 	 */
-	rowmousedown: {storeIndex: number, row: HTMLElement, ev: MouseEvent}
+	sortchange: {
+		/** The record being moved. */
+		record: any;
+		/** The new index after dropping. */
+		dropIndex: number;
+		/** The previous index before moving. */
+		oldIndex: number;
+	};
 
 	/**
-	 * Fires when a row is clicked
-	 *
-	 * @param list
-	 * @param storeIndex
-	 * @param ev
+	 * Fires when a row is mousedowned.
 	 */
-	rowclick: {storeIndex: number, row: HTMLElement, ev: MouseEvent|KeyboardEvent}
+	rowmousedown: {
+		/** The index in the store. */
+		storeIndex: number;
+		/** The row element. */
+		row: HTMLElement;
+		/** The mouse event. */
+		ev: MouseEvent;
+	};
 
 	/**
-	 * Fires when a row is double clicked
-	 *
-	 * @param list
-	 * @param storeIndex
-	 * @param ev
+	 * Fires when a row is clicked.
 	 */
-	rowdblclick: {storeIndex: number, row: HTMLElement, ev: MouseEvent}
-
+	rowclick: {
+		/** The index in the store. */
+		storeIndex: number;
+		/** The row element. */
+		row: HTMLElement;
+		/** The mouse or keyboard event. */
+		ev: MouseEvent | KeyboardEvent;
+	};
 
 	/**
-	 * Fires when the delete key is pressed
+	 * Fires when a row is double clicked.
+	 */
+	rowdblclick: {
+		/** The index in the store. */
+		storeIndex: number;
+		/** The row element. */
+		row: HTMLElement;
+		/** The mouse event. */
+		ev: MouseEvent;
+	};
+
+	/**
+	 * Fires when the delete key is pressed.
 	 *
 	 * @example
 	 * ```
 	 * delete: async (list) => {
-	 * 	const ids = list.rowSelection!.selected.map(index => list.store.get(index)!.id);
-	 * 	await jmapds("Foo").confirmDestroy(ids);
+	 *   const ids = list.rowSelection!.selected.map(index => list.store.get(index)!.id);
+	 *   await jmapds("Foo").confirmDestroy(ids);
 	 * }
 	 * ```
-	 *
-	 * @param list
 	 */
-	delete: {},
+	delete: {};
 
 	/**
-	 * Fires when a row is right clicked
-	 *
-	 * @param list
-	 * @param storeIndex
-	 * @param ev
+	 * Fires when a row is right clicked.
 	 */
-	rowcontextmenu: {storeIndex: number, row: HTMLElement, ev: MouseEvent}
+	rowcontextmenu: {
+		/** The index in the store. */
+		storeIndex: number;
+		/** The row element. */
+		row: HTMLElement;
+		/** The mouse event. */
+		ev: MouseEvent;
+	};
 
 	/**
 	 * Fires when records are rendered into rows.
-	 *
-	 * @param list
-	 * @param records
 	 */
-	renderrows: {records: any[]};
+	renderrows: {
+		/** The records rendered into rows. */
+		records: any[];
+	};
 
 	/**
-	 * Fires when a row is clicked or navigated with arrows
-	 *
-	 * @param list
-	 * @param storeIndex
-	 * @param record
+	 * Fires when a row is clicked or navigated with arrows.
 	 */
-	navigate: {storeIndex: number}
+	navigate: {
+		/** The index in the store. */
+		storeIndex: number;
+	};
 
 	/**
-	 * Fires when something was dropped
+	 * Fires when something was dropped.
 	 *
-	 * @param toComponent The component where it's dropped on. Usually this component but with trees it can be a nested list.
-	 * @param fromIndex The index in the fromComponent of the item being dragged
-	 * @param toIndex The index where it's dropped in this list
-	 * @param droppedOn True if dropped on a node and not between
-	 * @param fromComponent The component where the item is dragged from. When the same sort group is used it can be another component
-	 * @param dragDataSet Arbitrary drag data components may set. A list adds dragDataSet.selectedRowIndexes: The row indexes when a multiselect is dragged. If the record dragged is not part of the selection then it will contain the single dragged record.
+	 * @remarks
+	 * - `dragDataSet.selectedRowIndexes`: The row indexes when a multiselect is dragged.
+	 *   If the record dragged is not part of the selection then it will contain the single dragged record.
 	 */
-	drop: {toIndex:number, fromIndex: number, droppedOn:boolean, fromComp: Component, dragDataSet: Record<string, any>}
+	drop: {
+		/** The index where it's dropped in this list. */
+		toIndex: number;
+		/** The index in the source component of the item being dragged. */
+		fromIndex: number;
+		/** True if dropped on a node and not between. */
+		droppedOn: boolean;
+		/** The component where the item is dragged from. */
+		source: Component;
+		/** Arbitrary drag data components may set. */
+		dragDataSet: Record<string, any>;
+	};
 
 	/**
 	 * Fires when the items are dragged over this list.
 	 *
-	 * Return false to disallow dropping
+	 * Return false to disallow dropping.
 	 *
-	 * @param dropComp The component the element was dropped on
-	 * @param fromIndex Move from index
-	 * @param toIndex To index
-	 * @param droppedOn Dropped on the toIndex or moved to this index
-	 * @param fromComp The component the element was dragged from if "group" is used to drop to other components
-	 * @param dragDataSet Arbitrary drag data components may set. A list adds dragDataSet.selectedRowIndexes: The row indexes when a multiselect is dragged. If the record dragged is not part of the selection then it will contain the single dragged record.
+	 * @remarks
+	 * - `dragDataSet.selectedRowIndexes`: The row indexes when a multiselect is dragged.
+	 *   If the record dragged is not part of the selection then it will contain the single dragged record.
 	 */
-	dropallowed: {toIndex:number, fromIndex: number, droppedOn:boolean, fromComp: Component, dragDataSet: Record<string, any>}
-
+	dropallowed: {
+		/** The index where it's dropped in this list. */
+		toIndex: number;
+		/** The index in the source component of the item being dragged. */
+		fromIndex: number;
+		/** True if dropped on a node and not between. */
+		droppedOn: boolean;
+		/** The component where the item is dragged from. */
+		source: Component;
+		/** Arbitrary drag data components may set. */
+		dragDataSet: Record<string, any>;
+	};
 }
+
 
 
 /**
@@ -302,7 +329,7 @@ export class List<StoreType extends Store = Store, EventMapType extends ListEven
 	protected onKeyDown(e: KeyboardEvent) {
 		if (e.key == "Delete" || e.metaKey && e.key == "Backspace") {
 			e.preventDefault();
-			this.fire("delete", this);
+			this.fire("delete", {});
 		}
 
 		if(e.key == "Enter") {
@@ -530,7 +557,8 @@ export class List<StoreType extends Store = Store, EventMapType extends ListEven
 		const groupRow = comp({
 				cls: "hbox"
 			},
-			span({
+			comp({
+				tagName: "i",
 				itemId: "expander",
 				cls: "icon",
 				text: "expand_more"

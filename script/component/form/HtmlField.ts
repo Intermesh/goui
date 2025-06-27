@@ -327,7 +327,7 @@ export class HtmlField extends Field<HtmlFieldEventMap> {
 			}
 		}
 
-		this.fire("updatetoolbar", this);
+		this.fire("updatetoolbar", {});
 	}
 
 	private execCmd(cmd: string, value?: any) {
