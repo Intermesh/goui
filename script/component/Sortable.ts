@@ -41,7 +41,6 @@ export interface SortableEventMap extends ObservableEventMap {
 	 *
 	 * Return false to disallow dropping.
 	 *
-	 * @todo dropComp was removed
 	 */
 	dropallowed: {
 		/** The original index of the moved item. */
