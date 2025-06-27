@@ -29,31 +29,34 @@ import {Format} from "../../util/index";
  */
 export interface HtmlFieldEventMap extends FieldEventMap {
 	/**
-	 * Fires before adding an item. Return false to abort.
-	 *
-	 * @param container
-	 * @param item
-	 * @param index
+	 * Fires when the toolbar updates based on the current editor state. For example when entering bold text the bold
+	 * button activates.
 	 */
 	updatetoolbar: {}
 
 	/**
 	 * Fires when an image is selected, pasted or dropped into the field
-	 *
-	 * @param htmlfield
-	 * @param file
-	 * @param img The img element in the editor
 	 */
-	insertimage: {file: File, img: HTMLImageElement}
+	insertimage: {
+		/**
+		 * The insert File object
+		 */
+		file: File,
+		/**
+		 * The img element in the editor
+		 */
+		img: HTMLImageElement
+	}
 
 	/**
 	 * Fires when a non image is pasted or dropped into the field
-	 *
-	 * @param htmlfield
-	 * @param file
-	 * @param img
 	 */
-	attach: {file: File}
+	attach: {
+		/**
+		 * The insert File object
+		 */
+		file: File
+	}
 }
 
 

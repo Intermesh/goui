@@ -18,61 +18,88 @@ import {Menu} from "../menu";
  */
 export interface FieldEventMap extends ComponentEventMap {
 	/**
-	 * Fires when the field changes. It fires on blur.
+	 * Fires when the field is changed by the user. It fires on blur.
 	 *
 	 * Note: this event does not fire on {@link ContainerField} and {@link Form}
 	 *
 	 * @param field
 	 */
-	change: { newValue: any, oldValue: any}
+	change: {
+		/**
+		 * The new field value
+		 */
+		readonly newValue: any,
+
+		/**
+		 * The previous value before the change.
+		 */
+		readonly oldValue: any
+	}
 
 	/**
-	 * Fires when setValue() is called
+	 * Fires when the value is set programmatically
 	 *
-	 * You can alter this._value
-	 *
-	 * @param field
-	 * @param newValue
-	 * @param oldValue
 	 */
-	beforesetvalue: {value: any, oldValue: any}
+	beforesetvalue: {
+		/**
+		 * The new field value.
+		 *
+		 * It's possible to change the value in this event
+		 */
+		value: any,
+
+		/**
+		 * The old field value
+		 */
+		readonly oldValue: any
+	}
 
 	/**
-	 * Fires when setValue() is called
-	 *
-	 * You can alter this._value
-	 *
-	 * @param field
-	 * @param newValue
-	 * @param oldValue
+	 * Fires when the value is retrieved
 	 */
-	beforegetvalue: {value: any}
+	beforegetvalue: {
+		/**
+		 * The field value
+		 *
+		 * It's possible to change that value in this event
+		 */
+		value: any
+	}
 
 	/**
-	 * Fires when setValue() is called
-	 *
-	 * @param field
-	 * @param newValue
-	 * @param oldValue
+	 * Fires when the field value is set
 	 */
-	setvalue: {newValue: any, oldValue: any}
+	setvalue: {
+		/**
+		 * The new field value
+		 */
+		readonly newValue: any,
+		/**
+		 * The old field value before it was set
+		 */
+		readonly oldValue: any
+	}
 
 
 	/**
 	 * Fires when field is reset
-	 *
-	 * @param field
-	 * @param newValue
-	 * @param oldValue
 	 */
-	reset: {newValue: any, oldValue: any}
+	reset: {
+		/**
+		 * The new value the field resets to
+		 */
+		readonly newValue: any,
+
+		/**
+		 * The field value before the reset action
+		 */
+		readonly oldValue: any
+	}
 
 	/**
 	 * Fires when validated
 	 *
 	 * Use {@link setInvalid()} to mark field invalid
-	 *
-	 * @param field
 	 */
 	validate: {}
 

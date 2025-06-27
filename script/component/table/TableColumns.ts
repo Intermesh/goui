@@ -36,18 +36,29 @@ export interface TableColumnEventMap extends ObservableEventMap {
 
 	/**
 	 * Fires when a table column renders
-	 *
-	 * @param column
-	 * @param result The result of the column renderer function
-	 * @param record
-	 * @param storeIndex
-	 * @param td
 	 */
-	render: {result: string | Promise<string> | Component | Promise<Component> | undefined, record:any, storeIndex:number, td: HTMLTableCellElement}
+	render: {
+		/**
+		 * The result of the column renderer function
+		 */
+		result: string | Promise<string> | Component | Promise<Component> | undefined,
+		/**
+		 * The store record
+		 */
+		record:any,
+		/**
+		 * The record index in the store
+		 */
+		storeIndex:number,
+
+		/**
+		 * The table's td element
+		 */
+		td: HTMLTableCellElement
+	}
 }
 
 export class TableColumn<EventMap extends TableColumnEventMap = TableColumnEventMap> extends Observable<EventMap> {
-
 
 	public parent: Table | undefined;
 
@@ -198,14 +209,13 @@ export interface CheckboxColumnEventMap extends TableColumnEventMap {
 
 	/**
 	 * Fires when the checkbox is checked by the user
-	 *
-	 * @param column
-	 * @param checkbox
-	 * @param checked
-	 * @param record
-	 * @param storeIndex
 	 */
-	change: {checkbox:CheckboxField, checked: boolean, record:any, storeIndex:number}
+	change: {
+		checkbox:CheckboxField,
+		checked: boolean,
+		record:any,
+		storeIndex:number
+	}
 }
 
 export class CheckboxColumn extends TableColumn<CheckboxColumnEventMap> {

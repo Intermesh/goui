@@ -32,26 +32,21 @@ export interface RowSelectEventMap<StoreType extends Store = Store, RecordType e
 	 * 				}
 	 * 			}
 	 * ```
-	 * @param rowSelect
 	 */
 	selectionchange: {selected: SelectedRow<StoreType, RecordType>[]}
 
 	/**
 	 * Fires before a row is selected.
 	 *
-	 * Can be cancelled by returning false.
-	 * @param rowSelect
-	 * @param storeIndex
+	 * Can be canceled by returning false.
+	 *
 	 */
 	beforerowselect: {row: SelectedRow<StoreType, RecordType>, append: boolean}
 
 	/**
 	 * Fires when a row is deselected.
 	 *
-	 * Can be cancelled by returning false.
-	 *
-	 * @param rowSelect
-	 * @param storeIndex
+	 * Can be canceled by returning false.
 	 */
 	beforerowdeselect: {row: SelectedRow<StoreType, RecordType>}
 
@@ -72,14 +67,30 @@ export interface RowSelectEventMap<StoreType extends Store = Store, RecordType e
 }
 
 
+/**
+ * Represents a row selected from a store. This class provides utilities to interact with the
+ * selected row and its associated store, such as retrieving its index or ID.
+ */
 export class SelectedRow<StoreType extends Store, RecordType extends StoreRecord = storeRecordType<StoreType> > {
+	/**
+	 * Constructs a new instance of the class with the provided store and record.
+	 *
+	 * @param store - The store associated with this instance.
+	 * @param record - The record or data associated with this instance.
+	 */
 	constructor(readonly store:StoreType, readonly record: RecordType) {
 	}
 
+	/**
+	 * The index in the associated store
+	 */
 	get storeIndex() {
 		return this.store.findIndex((r => r == this.record || (r[this.store.idField]!= undefined && r[this.store.idField] == this.id)));
 	}
 
+	/**
+	 * The record ID
+	 */
 	get id() {
 		return this.record[this.store.idField];
 	}
