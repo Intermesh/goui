@@ -11,39 +11,24 @@ import {Config, Listener, ObservableListenerOpts} from "./Observable.js";
 export interface CardContainerEventMap extends ComponentEventMap {
 	/**
 	 * Fires before adding an item. Return false to abort.
-	 *
-	 * @param container
-	 * @param item
-	 * @param index
 	 */
-	cardchange: {index: number | undefined, oldIndex: number | undefined}
+	cardchange: {
+		/**
+		 * The new zero based active index of the cardcontainer
+		 */
+		index: number | undefined,
+
+		/**
+		 * The old zero based active index of the cardcontainer
+		 */
+		oldIndex: number | undefined
+	}
 
 }
 /**
  * Card container
  *
  * Holds multiple components but only shows one.
- *
- *
- * @example
- * ```
- * const cards = CardContainer.create({
- * 	tagName: "main",
- * 	items: [
- * 		Component.create({
- * 			cls: "pad",
- * 			html: "<h1>Tab 1</h1><p>Tab 1 content</p>",
- * 			id: "tab1"
- * 		}),
- * 		Component.create({
- * 			cls: "pad",
- * 			html: "<h1>Tab 2</h1><p>Tab2 content</p>",
- * 			id: "tab2"
- * 		})
- * 	]
- * });
- * ```
- *
  */
 export class CardContainer extends Component<CardContainerEventMap> {
 

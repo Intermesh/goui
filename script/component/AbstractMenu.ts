@@ -6,10 +6,10 @@ import {Menu} from "./menu";
 export abstract class AbstractMenu<EventMap extends ComponentEventMap = ComponentEventMap> extends Component<EventMap> {
 	/**
 	 * Used by keyboard nav
+	 * 
 	 * @protected
 	 */
 	protected orientation = "horizontal";
-
 
 	constructor() {
 		super("menu");
@@ -21,10 +21,7 @@ export abstract class AbstractMenu<EventMap extends ComponentEventMap = Componen
 	 */
 	public openedMenu?:Menu;
 
-
 	private focusedItemIndex = -1;
-
-
 
 	/**
 	 * Find the first menu in the tree of submenu's

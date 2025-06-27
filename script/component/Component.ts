@@ -113,7 +113,23 @@ export interface ComponentEventMap extends ObservableEventMap {
 	 * @param me
 	 * @param index the index in the parents' items
 	 */
-	added: {index: number, parent: Component}
+	added: {
+		/**
+		 * Represents the index of an element in the parents' item collection.
+		 * The value is zero-based, meaning an index of 0 indicates the first element.
+		 */
+		index: number,
+		/**
+		 * Represents the parent component in a hierarchical structure.
+		 * This property holds a reference to the parent `Component`,
+		 * allowing for relationships and communication between
+		 * components in the system.
+		 *
+		 * It is commonly used to establish and manage component
+		 * dependencies and to maintain the structural hierarchy.
+		 */
+		parent: Component
+	}
 
 	/**
 	 * Fires when the component is disabled

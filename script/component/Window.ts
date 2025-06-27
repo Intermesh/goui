@@ -24,49 +24,45 @@ import {DateTime} from "../util/index.js";
 export interface WindowEventMap extends DraggableComponentEventMap {
 	/**
 	 * Fires when the window is closed
-	 *
-	 * @param window
-	 * @param byUser True if the user closed it
 	 */
-	close: { byUser: boolean}
+	close: {
+		/**
+		 * Indicates whether an action or event is performed or initiated by a user.
+		 * This boolean variable is typically set to `true` if the user is responsible for the action,
+		 * otherwise it is set to `false`.
+		 */
+		byUser: boolean
+	}
 
 	/**
 	 * Fires before closing window
 	 * return false to cancel close
-	 *
-	 * @param window
-	 * @param byUser True if the user closed it
 	 */
-	beforeclose: { byUser: boolean}
+	beforeclose: {
+		/**
+		 * Indicates whether an action or event is performed or initiated by a user.
+		 * This boolean variable is typically set to `true` if the user is responsible for the action,
+		 * otherwise it is set to `false`.
+		 */
+		byUser: boolean
+	}
 
 	/**
 	 * Fires when the window is maximized
-	 *
-	 * @param window
 	 */
 	maximize: {}
 
 	/**
 	 * Fires when the window is restored after being maximized
-	 *
-	 * @param window
 	 */
 	unmaximize: {}
 }
 
 /**
- * Window component
+ * Represents a configurable and interactive window component. The `Window` class extends `DraggableComponent` and
+ * provides functionalities such as maximizing, resizing, collapsing, and modal behavior.
  *
- * @example
- *
- * ```
- * const win = Window.create({
- * 	title: "Hello World",
- * 	items: [Component.create({tagName: "h1", cls: "pad", html: "Just saying hi!"})]
- * });
- *
- * win.open();
- * ```
+ * @template EventMap Type used for the event map for this class.
  */
 export class Window<EventMap extends WindowEventMap = WindowEventMap> extends DraggableComponent<EventMap> {
 

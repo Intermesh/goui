@@ -4,13 +4,12 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {btn, Button, ButtonEventMap} from "./Button.js";
-import {tbar, Toolbar} from "./Toolbar.js";
+import {btn} from "./Button.js";
 import {t} from "../Translate.js";
 import {TextField, textfield} from "./form/TextField.js";
-import {Component, createComponent} from "./Component.js";
+import {createComponent} from "./Component.js";
 import {FunctionUtil} from "../util/FunctionUtil.js";
-import {Config, Listener, ObservableListenerOpts} from "./Observable.js";
+import {Config} from "./Observable.js";
 import {OverlayToolbarButton, OverlayToolbarButtonEventMap} from "./OverlayToolbarButton";
 
 
@@ -19,14 +18,33 @@ import {OverlayToolbarButton, OverlayToolbarButtonEventMap} from "./OverlayToolb
  */
 export interface SearchButtonEventMap extends OverlayToolbarButtonEventMap {
 
-	input: {text: string}
+	/**
+	 * Represents an input object containing a text property.
+	 */
+	input: {
+		/**
+		 * The text that was entered by the user
+		 */
+		text: string
+	}
 
+	/**
+	 * Fires when the search button resets to the empty stats
+	 */
 	reset: {}
 }
 
-
+/**
+ * Represents a search button with an integrated text field for input and related functionality.
+ * The `SearchButton` class extends `OverlayToolbarButton` with specialized behavior for search operations, including debounced input handling and event firing.
+ *
+ * Events:
+ * - `open`: Triggered when the search button is activated.
+ * - `reset`: Triggered when the search input field is reset.
+ * - `input`: Triggered when the input value in the search field changes.
+ */
 export class SearchButton extends OverlayToolbarButton<SearchButtonEventMap> {
-	private searchField: TextField;
+	private readonly searchField: TextField;
 
 	private buffer = 300;
 

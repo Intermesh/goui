@@ -7,6 +7,12 @@
 import {Component, createComponent} from "./Component.js";
 import {Config} from "./Observable.js";
 
+/**
+ * The Avatar class represents a graphical avatar component that displays a user's initials, background color, or an optional image.
+ * It is configurable with a display name, image URL, and will dynamically generate background colors based on the display name.
+ *
+ * @extends Component
+ */
 export class Avatar extends Component {
 
 	protected baseCls = "goui-avatar";

@@ -12,11 +12,26 @@ import {SearchButtonEventMap} from "./SearchButton";
 
 export interface OverlayToolbarButtonEventMap extends ButtonEventMap {
 
+	/**
+	 * Fires when the overlay toolbar opens
+	 */
 	open: {}
 
+	/**
+	 * Fires when the overlay toolbar closes
+	 */
 	close: {}
 }
 
+/**
+ * Represents a button component that toggles between a main toolbar and an overlay toolbar.
+ * Primarily used within a toolbar structure to handle button interactions that display additional controls in an overlay.
+ *
+ * For example the search button or a multi select toolbar that activates when selecting multiple items
+ *
+ * @template EventMap - The event map type for the button.
+ * @extends Button
+ */
 export class OverlayToolbarButton<EventMap extends OverlayToolbarButtonEventMap = OverlayToolbarButtonEventMap> extends Button<EventMap> {
 
 	private overlayTbar?: Toolbar;

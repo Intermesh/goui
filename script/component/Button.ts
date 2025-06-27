@@ -12,6 +12,13 @@ import {router} from "../Router.js";
 
 type ButtonType = "button" | "submit" | "reset";
 
+interface ButtonMenuEvent {
+	/**
+	 * The button's menu
+	 */
+	menu: Menu
+}
+
 /**
  * @inheritDoc
  */
@@ -23,7 +30,7 @@ export interface ButtonEventMap extends ComponentEventMap {
 	 * @param item
 	 * @param index
 	 */
-	beforeshowmenu: {menu: Menu}
+	beforeshowmenu: ButtonMenuEvent
 
 	/**
 	 * Fires when the button menu is shown
@@ -32,7 +39,7 @@ export interface ButtonEventMap extends ComponentEventMap {
 	 * @param menu
 	 * @param ev
 	 */
-	showmenu: {menu: Menu}
+	showmenu: ButtonMenuEvent
 
 	/**
 	 * Fires when the button is clicked.
@@ -40,10 +47,15 @@ export interface ButtonEventMap extends ComponentEventMap {
 	 * You can also pass a handler function to the button config
 	 *
 	 * @see ButtonConfig.handler
-	 * @param button
-	 * @param ev
 	 */
-	click: {ev: MouseEvent}
+	click: {
+		/**
+		 * The original browser MouseEvent object
+		 *
+		 * @link https://developer.mozilla.org/en-US/docs/Web/API/MouseEvents
+		 */
+		ev: MouseEvent
+	}
 }
 
 

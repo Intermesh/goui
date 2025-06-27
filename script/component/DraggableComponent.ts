@@ -57,34 +57,40 @@ export interface DragData {
 	data: any
 }
 
+export interface DraggableEvent {
+	/**
+	 * Represents the data associated with a drag-and-drop operation.
+	 * Typically includes details about the item being dragged and its metadata.
+	 */
+	dragData: DragData,
 
+	/**
+	 * The original browser MouseEvent object
+	 *
+	 * @link https://developer.mozilla.org/en-US/docs/Web/API/MouseEvents
+	 */
+	ev: MouseEvent
+}
 
 /**
  * @inheritDoc
  */
 export interface DraggableComponentEventMap extends ComponentEventMap {
-	/**
-	 * Fires when the component is dropped
-	 *
-	 * @param comp
-	 */
-	drop: {dragData: DragData, ev: MouseEvent}
 
 	/**
-	 * Fires contanty while the component is being dragged
-	 * @param comp
-	 * @param dragData
-	 * @param e
+	 * Fires when the component is dropped
 	 */
-	drag: {dragData: DragData, ev: MouseEvent}
+	drop: DraggableEvent
+
+	/**
+	 * Fires constantly while the component is being dragged
+	 */
+	drag: DraggableEvent
 
 	/**
 	 * Return false to prevent drag
-	 *
-	 * @param comp
-	 * @param e
 	 */
-	dragstart: {dragData: DragData, ev: MouseEvent}
+	dragstart: DraggableEvent
 }
 
 export class DraggableComponent<EventMap extends DraggableComponentEventMap = DraggableComponentEventMap> extends Component<EventMap> {
@@ -99,7 +105,6 @@ export class DraggableComponent<EventMap extends DraggableComponentEventMap = Dr
 	 * Update left and top css properties when dragging
 	 */
 	public setPosition?: boolean;
-
 
 	/**
 	 * Enable dragging

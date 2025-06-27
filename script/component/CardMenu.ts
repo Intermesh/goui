@@ -12,36 +12,6 @@ import {Config} from "./Observable.js";
 
 /**
  * Menu for cards to create a tab panel
- *
- * @example
- *
- * this.personal = Personal.create();
- *
- * this.cardContainer = CardContainer.create({
- * 	cls: "cards",
- * 	items: [
- * 		this.personal
- * 	]
- * });
- *
- * this.cardMenu = CardMenu.create({
- * 	cardContainer: this.cardContainer,
- * 	items: [
- *
- * 		// Dynamically load module and add it to card container when this button is clicked
- * 		CardMenuAsyncItem.create({
- * 			text: "Contracts",
- * 			import: "Contracts"
- * 		}),
- *
- * 		// Dynamically load module and add it to card container when this button is clicked
- * 		CardMenuAsyncItem.create({
- * 			text: "Invoices",
- * 			import: "Invoices"
- * 		})
- * 	]
- * });
- *
  */
 
 export class CardMenu extends Component {
