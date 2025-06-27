@@ -254,16 +254,10 @@ export class List<StoreType extends Store = Store, EventMapType extends ListEven
 	constructor(readonly store: StoreType, readonly renderer: RowRenderer, tagName: keyof HTMLElementTagNameMap = "ul") {
 		super(tagName);
 		this.tabIndex = 0;
-
-
 	}
-
-	get rowSelection(): RowSelect | undefined {
+	get rowSelection() {
 		return this.rowSelect;
 	}
-
-
-
 
 	protected internalRender() {
 		const el = super.internalRender();
