@@ -14,24 +14,18 @@ import {t} from "../../Translate";
  */
 export interface ColorPickerEventMap extends ComponentEventMap {
 	/**
-	 * Fires when color is selected
-	 *
-	 * @param colorPicker
-	 * @param color Hexadecimal color. eg. "000000"
+	 * Fires when a color is selected
 	 */
-	select: {color: string}
+	select: {
+		/**
+		 * Hexadecimal color. eg. "000000"
+		 */
+		color: string
+	}
 }
 
 /**
  * Color menu component
- *
- * @example
- * ```
- * Button.create({
- * 	text: "Color",
- * 	menu: ColorPicker.create()
- * });
- * ```
  */
 export class ColorPicker extends Component<ColorPickerEventMap> {
 

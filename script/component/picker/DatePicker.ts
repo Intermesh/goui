@@ -12,7 +12,19 @@ import {Config, Listener, ObservableListenerOpts} from "../Observable.js";
 // import {Button} from "../Button";
 export interface DatePickerEventMap extends ComponentEventMap {
 
-	'select': {date: DateTime|undefined}
+	/**
+	 * Fires when a date is selected
+	 */
+	'select': {
+		/**
+		 * The selected date
+		 */
+		date: DateTime|undefined
+	}
+
+	/**
+	 * Fires when a range is selected
+	 */
 	'select-range': {start: DateTime|undefined, end: DateTime|undefined}
 }
 

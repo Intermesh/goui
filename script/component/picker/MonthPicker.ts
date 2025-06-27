@@ -13,14 +13,14 @@ import {btn} from "../Button";
 export interface MonthPickerEventMap extends ComponentEventMap {
 	/**
 	 * Fires when a Month is selected
-	 *
-	 * @param datepicker
-	 * @param date
 	 */
-	select: { date: DateTime}
+	select: {
+		/**
+		 * The selected start date of the month
+		 */
+		date: DateTime
+	}
 }
-
-
 
 /**
  * Month picker

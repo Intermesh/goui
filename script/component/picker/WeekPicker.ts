@@ -13,11 +13,13 @@ import {btn} from "../Button";
 export interface WeekPickerEventMap extends ComponentEventMap {
 	/**
 	 * Fires when a week is selected
-	 *
-	 * @param datepicker
-	 * @param date
 	 */
-	select: {date: DateTime}
+	select: {
+		/**
+		 * The selected start date of the week
+		 */
+		date: DateTime
+	}
 }
 
 

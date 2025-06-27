@@ -11,8 +11,8 @@ import {btn, Button} from "../Button.js";
 import {Config} from "../Observable.js";
 
 export class MultiSelectToolbar extends Toolbar {
-	private label: Component;
-	private backBtn: Button;
+	private readonly label: Component;
+	private readonly backBtn: Button;
 
 	constructor(readonly table: Table) {
 		super();
