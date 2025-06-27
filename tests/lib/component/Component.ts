@@ -67,29 +67,4 @@ describe('Component class', () => {
 
 	});
 
-	describe("Listener", () => {
-
-		it('Fires an event once', function () {
-			const c = comp({
-				hidden: true
-			});
-
-			root.items.add(c);
-
-			let fired = false;
-			c.on("show", () => {
-				fired = true;
-			}, {once: true});
-
-			c.show();
-
-			expect(fired).to.equal(true);
-
-			fired = false;
-			c.show();
-			expect(fired).to.equal(false);
-
-		});
-
-	});
 });

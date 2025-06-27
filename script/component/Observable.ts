@@ -131,9 +131,9 @@ export class Observable<EventMapType extends ObservableEventMap = ObservableEven
 			this.onFirstListenerAdded(eventName);
 		}
 		if (options?.unshift) {
-			this.lisnrs[eventName].unshift({listener: listener!, options: options, unbindkey: unbindkey});
+			this.lisnrs[eventName].unshift({listener: listener, options: options, unbindkey: unbindkey});
 		} else {
-			this.lisnrs[eventName].push({listener: listener!, options: options, unbindkey: unbindkey});
+			this.lisnrs[eventName].push({listener: listener, options: options, unbindkey: unbindkey});
 		}
 
 		return this;

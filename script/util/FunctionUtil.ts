@@ -11,7 +11,7 @@ type Func = ((...args: any[]) => any);
  *
  */
 export class BufferedFunction<F extends (...args: any) => any> {
-	private id: number | undefined;
+	private id: any;
 
 	/**
 	 * Constructor
@@ -33,7 +33,7 @@ export class BufferedFunction<F extends (...args: any) => any> {
 		this.cancel();
 
 		return new Promise(resolve => {
-			this.id = window.setTimeout(() => {
+			this.id = setTimeout(() => {
 				this.cancel();
 				resolve(this.fn.apply(scope, args));
 			}, this.delay);
