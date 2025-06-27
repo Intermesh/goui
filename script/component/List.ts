@@ -231,7 +231,7 @@ export class List<StoreType extends Store = Store, EventMapType extends ListEven
 	protected itemTag: keyof HTMLElementTagNameMap = 'li'
 
 
-	private lastGroup?: string;
+	protected lastGroup?: string;
 
 	/**
 	 * Row selection object
@@ -493,7 +493,7 @@ export class List<StoreType extends Store = Store, EventMapType extends ListEven
 		this.renderBody();
 	}
 
-	private groupEl: HTMLElement | undefined;
+	protected groupEl: HTMLElement | undefined;
 
 	protected renderRows(records: any[]) {
 		let container = this.groupEl || this.el;

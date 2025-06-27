@@ -674,12 +674,15 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 			const rows = this.getRowElements();
 			groupEl = rows[ev.index]?.parentElement;
 		}
-
 		super.onRecordRemove(ev);
 
 		//cleanup group if only group header is left
 		if(groupEl && groupEl.children.length == 1) {
 			groupEl.remove();
+			if(this.groupEl == groupEl) {
+				this.groupEl = undefined;
+				this.lastGroup = undefined;
+			}
 		}
 	}
 
