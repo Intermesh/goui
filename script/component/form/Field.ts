@@ -35,7 +35,7 @@ export interface FieldEventMap extends ComponentEventMap {
 	 * @param newValue
 	 * @param oldValue
 	 */
-	beforesetvalue: {e:{value: any, oldValue: any}}
+	beforesetvalue: {value: any, oldValue: any}
 
 	/**
 	 * Fires when setValue() is called
@@ -46,7 +46,7 @@ export interface FieldEventMap extends ComponentEventMap {
 	 * @param newValue
 	 * @param oldValue
 	 */
-	beforegetvalue: {e:{value: any}}
+	beforegetvalue: {value: any}
 
 	/**
 	 * Fires when setValue() is called
@@ -528,7 +528,7 @@ export abstract class Field<EventMap extends FieldEventMap = FieldEventMap> exte
 		this._value = v;
 
 		const e = {value: v, oldValue: oldValue};
-		this.fire("beforesetvalue", {e});
+		this.fire("beforesetvalue", e);
 		this._value = e.value;
 		this.internalSetValue(this._value);
 		this.checkHasValue();
@@ -567,7 +567,7 @@ export abstract class Field<EventMap extends FieldEventMap = FieldEventMap> exte
 	public get value() {
 		let v = this.internalGetValue();
 		const e = {value: v};
-		this.fire("beforegetvalue", {e});
+		this.fire("beforegetvalue", e);
 
 		return e.value;
 	}

@@ -45,7 +45,7 @@ export interface CardContainerEventMap extends ComponentEventMap {
  * ```
  *
  */
-export class CardContainer extends Component<CardContainerEventMap> {
+export class CardContainer<EventMap extends CardContainerEventMap = CardContainerEventMap> extends Component<EventMap> {
 
 	private _activeItem?: number;
 
