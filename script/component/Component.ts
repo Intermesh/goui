@@ -1394,23 +1394,3 @@ export function assignComponentListeners<T extends Observable>(comp:T, listeners
 	}
 }
 
-const test = comp().on("focus", ({target}) => {
-	target.id
-})
-
-const test2 = comp({
-	listeners: {
-		render: ev => {
-
-		},
-		focus: {
-			once: true,
-			fn : ({target, options}) => {
-				options?.preventScroll
-			}
-		}
-
-	}
-})
-
-

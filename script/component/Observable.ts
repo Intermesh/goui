@@ -245,16 +245,7 @@ export class Observable<EventMapType extends ObservableEventMap = ObservableEven
 	}
 }
 
-
-// export type WithOptional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
-// export type WithRequired<T, K extends keyof T> = Pick<T, K> & Partial<Omit<T, K>>;
 type Writeable<T> = { -readonly [P in keyof T]: T[P] };
-
-
-
-
-// export type FunctionPropertyNames<T> = { [K in keyof T]: T[K] extends (...args: any[]) => any ? K : never }[keyof T]
-
 
 type CompFuncs =  "buildState" |
 	"cascade" |
