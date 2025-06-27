@@ -240,7 +240,7 @@ export interface DataSourceEventMap extends ObservableEventMap{
 	change: {changes: Changes}
 }
 
-export type dataSourceEntityType<DS> = DS extends AbstractDataSource<infer EventMap,infer EntityType> ? EntityType : never;
+export type dataSourceEntityType<DS> = DS extends AbstractDataSource<infer EntityType> ? EntityType : never;
 
 type SaveData<EntityType extends BaseEntity> = {
 	data: Partial<EntityType>,
@@ -273,7 +273,7 @@ type GetData = {
  *
  * @category Data
  */
-export abstract class AbstractDataSource<EventMap extends DataSourceEventMap = DataSourceEventMap,  EntityType extends BaseEntity = DefaultEntity> extends Observable<EventMap> {
+export abstract class AbstractDataSource<EntityType extends BaseEntity = DefaultEntity, EventMap extends DataSourceEventMap = DataSourceEventMap> extends Observable<EventMap> {
 	/**
 	 * JMAP state
 	 *

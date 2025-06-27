@@ -61,11 +61,11 @@ export interface DataSourceFormEventMap<ValueType extends BaseEntity = DefaultEn
 }
 
 
-export class DataSourceForm<ValueType extends BaseEntity = DefaultEntity> extends Form<DataSourceFormEventMap<ValueType>, ValueType> {
+export class DataSourceForm<ValueType extends BaseEntity = DefaultEntity> extends Form<ValueType, DataSourceFormEventMap<ValueType>> {
 
 	public currentId?: EntityID
 
-	constructor(public dataSource: AbstractDataSource<DataSourceEventMap, ValueType>) {
+	constructor(public dataSource: AbstractDataSource<ValueType, DataSourceEventMap>) {
 		super();
 
 		this.handler = async form1 => {

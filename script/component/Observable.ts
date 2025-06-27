@@ -4,7 +4,7 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {FunctionUtil} from "../util/index";
+import {FunctionUtil} from "../util/FunctionUtil";
 
 export interface ObservableEventMap {
 
@@ -89,7 +89,8 @@ export class Observable<EventMapType extends ObservableEventMap = ObservableEven
 	 *
 	 * @protected
 	 */
-	// protected _eventMapAnchor!: EventMapType;
+	protected _eventMapAnchor!: EventMapType;
+
 
 	private lisnrs: any
 
@@ -214,6 +215,9 @@ export class Observable<EventMapType extends ObservableEventMap = ObservableEven
 		}
 
 		let ret = true;
+
+		// @ts-ignore
+		ev.target = this;
 
 		for (let l of this.lisnrs[eventName]) {
 

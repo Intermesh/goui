@@ -25,7 +25,7 @@ type Relation<EntityType extends BaseEntity> = Partial<Record<keyof EntityType, 
 	/**
 	 * Data source to get relation from
 	 */
-	dataSource: AbstractDataSource<DataSourceEventMap, EntityType>,
+	dataSource: AbstractDataSource<EntityType, DataSourceEventMap>,
 
 	/**
 	 * JSON pointer to relation key

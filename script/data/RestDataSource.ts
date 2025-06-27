@@ -19,7 +19,7 @@ import {
  *
  * @category Data
  */
-export class RestDataSource<EntityType extends BaseEntity = DefaultEntity> extends AbstractDataSource<DataSourceEventMap, EntityType> {
+export class RestDataSource<EntityType extends BaseEntity = DefaultEntity> extends AbstractDataSource<EntityType, DataSourceEventMap> {
 
 	/**
 	 * Constructor

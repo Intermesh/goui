@@ -70,7 +70,7 @@ export interface FormEventMap extends FieldEventMap {
  * ```
  *
  */
-export class Form<EventMap extends FormEventMap = FormEventMap, ValueType extends ContainerFieldValue = ContainerFieldValue> extends ContainerField<EventMap, ValueType> {
+export class Form<ValueType extends ContainerFieldValue = ContainerFieldValue, EventMap extends FormEventMap = FormEventMap> extends ContainerField<EventMap, ValueType> {
 
 	/**
 	 * When this is set to true, the field will use the values set as their original value, used for resetting and
@@ -238,4 +238,4 @@ export class Form<EventMap extends FormEventMap = FormEventMap, ValueType extend
  * @param config
  * @param items
  */
-export const form = <ValueType extends ContainerFieldValue = ContainerFieldValue>(config?: Config<Form>, ...items: Component[]) => createComponent(new Form<FormEventMap, ValueType>, config, items);
+export const form = <ValueType extends ContainerFieldValue = ContainerFieldValue>(config?: Config<Form>, ...items: Component[]) => createComponent(new Form<ValueType, FormEventMap>, config, items);

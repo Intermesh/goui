@@ -5,15 +5,9 @@
  */
 
 
-import {
-	Config, InferComponentEventMap,
-	ListenersConfig,
-	Observable,
-	ObservableEventMap
-} from "./Observable.js";
+import {Config, InferComponentEventMap, ListenersConfig, Observable, ObservableEventMap} from "./Observable.js";
 import {State} from "../State.js";
 import {browser, Collection} from "../util/index.js";
-import {Store} from "../data/index";
 
 /**
  * A component identifier by id, itemId, Component instance or custom function
@@ -266,7 +260,7 @@ export class Component<EventMapType extends ComponentEventMap = ComponentEventMa
 
 			e.item.parent = this;
 			//@ts-ignore hack for ext comps. They have a supr() method
-			if(!item.supr) {
+			if(!e.item.supr) {
 				e.item.onAdded(e.index);
 			}
 
@@ -1406,6 +1400,9 @@ const test = comp().on("focus", ({target}) => {
 
 const test2 = comp({
 	listeners: {
+		render: ev => {
+
+		},
 		focus: {
 			once: true,
 			fn : ({target, options}) => {
