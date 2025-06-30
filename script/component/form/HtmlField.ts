@@ -687,7 +687,15 @@ export class HtmlField extends Field<HtmlFieldEventMap> {
 		this.convertUrisToAnchors();
 	}
 
+	/**
+	 * Converts plain text URIs within the editor's content into anchor (link) elements.
+	 * This method traverses the DOM structure of the editor, identifies URIs in text nodes,
+	 * and replaces them with clickable anchor elements, while preserving the user's current selection.
+	 */
 	private convertUrisToAnchors() {
+
+		const sel = document.getSelection();
+
 		function walk(node: Node) {
 
 			if(node.nodeType == Node.ELEMENT_NODE && (node as HTMLElement).tagName == "A") {
@@ -698,8 +706,13 @@ export class HtmlField extends Field<HtmlFieldEventMap> {
 			//walk nodes recursively
 			node.childNodes.forEach(walk);
 
+			if(sel && node == sel.anchorNode) {
+				// don't mess with the node the user is currently editing
+				return;
+			}
+
 			if(node.nodeType == Node.TEXT_NODE) {
-				if (node.textContent?.indexOf("http")) {
+				if (node.textContent && node.textContent.indexOf("http") > -1) {
 					const anchored = Format.convertUrisToAnchors(node.textContent);
 					if (anchored != node.textContent) {
 						const tmp = document.createElement("span");

@@ -89,7 +89,7 @@ export class Format {
 	 */
 	public static convertUrisToAnchors(text: string): string {
 		// Regular expression to match URIs that are not inside anchor tags
-		const uriRegex = /(https?:\/\/[^\s]+|ftp:\/\/[^\s]+)/g;
+		const uriRegex = /(https?:\/\/[^\s]+|ftp:\/\/[^\s]+)/ig;
 
 		// Replace matched URIs with anchor tags
 		return text.replace(uriRegex, (url) => {
