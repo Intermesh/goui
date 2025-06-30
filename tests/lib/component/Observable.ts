@@ -40,10 +40,7 @@ describe('Observale class', () => {
 
 			let bufferedFire = 0;
 			c.on("show", () => {
-
 				bufferedFire++;
-
-				console.log(bufferedFire);
 			}, {buffer: 10});
 
 			c.show();
@@ -91,6 +88,43 @@ describe('Observale class', () => {
 				},11);
 			}, 11);
 
+		});
+
+
+		it('Binds scope to listener', function () {
+
+
+			class Test {
+
+				private count = 0;
+				constructor() {
+					const c = comp({
+						hidden: true
+					});
+					c.on("show", this.onShow, {bind: this});
+					root.items.add(c);
+
+					c.show();
+					expect(this.count).to.equal(1);
+
+					c.hide();
+
+					c.un("show", this.onShow);
+
+					c.show();
+
+					expect(this.count).to.equal(1);
+
+				}
+				private foo = "bar";
+				public onShow() {
+					expect(this.foo).to.equal("bar");
+
+					this.count++;
+				}
+			}
+
+			new Test();
 		});
 
 	});
