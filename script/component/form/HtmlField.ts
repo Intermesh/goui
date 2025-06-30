@@ -195,7 +195,7 @@ export class HtmlField extends Field<HtmlFieldEventMap> {
 			menu: colormenu({
 				updateButton: false,
 				listeners: {
-					select: ( {color}) => {
+					select: ({color}) => {
 						this.execCmd("foreColor", color || "#000000")
 					},
 					beforeshow: ({target}) => {
@@ -240,7 +240,7 @@ export class HtmlField extends Field<HtmlFieldEventMap> {
 			menu: colormenu({
 				updateButton: false,
 				listeners: {
-					select: ( {color}) => {
+					select: ({color}) => {
 						this.execCmd("backColor", color || "#ffffff")
 					},
 					beforeshow: ({target}) => {
@@ -279,7 +279,7 @@ export class HtmlField extends Field<HtmlFieldEventMap> {
 			title: "Create link",
 			applyFn: () => {
 				const url = prompt(t("Enter URL"), "https://");
-				if(url)
+				if (url)
 					this.execCmd("createLink", url);
 			}
 		},
@@ -407,11 +407,6 @@ export class HtmlField extends Field<HtmlFieldEventMap> {
 
 	protected createControl(): undefined | HTMLElement {
 
-
-		const el = this.el;
-
-
-
 		//grab value before creating this.editor otherwise it will return the input value
 		const v = this.value;
 
@@ -426,12 +421,9 @@ export class HtmlField extends Field<HtmlFieldEventMap> {
 
 		if (v) {
 			this.editor.innerHTML = v;
-			// Image.replaceImages(this.editor);
 		}
 
-		el.appendChild(this.editor);
-
-
+		this.el.appendChild(this.editor);
 
 		return this.editor;
 	}
@@ -465,7 +457,7 @@ export class HtmlField extends Field<HtmlFieldEventMap> {
 			this.onKeyDown(ev);
 		});
 
-		if(this.autoLink) {
+		if (this.autoLink) {
 			const bufferedKeyUp = FunctionUtil.buffer(500, (ev) => {
 				this.onKeyUp(ev);
 			});
@@ -511,6 +503,11 @@ export class HtmlField extends Field<HtmlFieldEventMap> {
 	private lineIndex = 0;
 	private lineSequence = "";
 
+	/**
+	 * Removes a specified number of characters from the current cursor position in the selected text range.
+	 *
+	 * @param count - The number of characters to remove starting from the cursor's current position.
+	 */
 	private static removeCharsFromCursorPos(count: number) {
 		const sel = window.getSelection();
 		const range = sel!.getRangeAt(0);
@@ -533,15 +530,15 @@ export class HtmlField extends Field<HtmlFieldEventMap> {
 
 		} else if (this.lineIndex < 5) {
 
-			if(ev.key == "Backspace") {
+			if (ev.key == "Backspace") {
 				if (this.lineIndex > 0) {
 					this.lineIndex--;
 					this.lineSequence = this.lineSequence.substring(0, this.lineSequence.length - 1);
 				}
-			} else if(ev.key.length == 1) {
+			} else if (ev.key.length == 1) {
 				this.lineIndex++;
 				this.lineSequence += ev.key;
-			} else if(ev.key == "Tab") {
+			} else if (ev.key == "Tab") {
 				// for auto list code below 1. becomes list
 				this.lineIndex++;
 				this.lineSequence += " ";
@@ -556,7 +553,8 @@ export class HtmlField extends Field<HtmlFieldEventMap> {
 			//Firefox wants two??
 			this.execCmd('InsertHtml', browser.isFirefox() ? '<br />' : '<br /><br />');
 			this.focus();
-		} if (ev.key == " " || ev.key == "Tab") {
+		}
+		if (ev.key == " " || ev.key == "Tab") {
 
 			// Auto lists
 			if (this.lineSequence == "1. ") {
@@ -574,7 +572,7 @@ export class HtmlField extends Field<HtmlFieldEventMap> {
 				this.lineIndex = 0;
 				this.lineSequence = "";
 				ev.preventDefault();
-			} else if(ev.key == "Tab") {
+			} else if (ev.key == "Tab") {
 				ev.preventDefault();
 				if (document.queryCommandState('insertorderedlist') || document.queryCommandState('insertunorderedlist')) {
 					this.execCmd(ev.shiftKey ? 'outdent' : 'indent');
@@ -682,74 +680,39 @@ export class HtmlField extends Field<HtmlFieldEventMap> {
 
 	private onKeyUp(ev: KeyboardEvent) {
 
-		if(ev.key != "Enter" && ev.key != " " && ev.key != "Tab") {
+		if (ev.key != "Enter" && ev.key != " " && ev.key != "Tab") {
 			return;
 		}
 
-		const caretIndex = this.getCaretPosition();
-		const v = this.value;
-		const anchored = Format.convertUrisToAnchors(v);
-
-		if(anchored == v) {
-			return;
-		}
-
-		this.value = anchored;
-
-		this.setCaretPosition(caretIndex);
+		this.convertUrisToAnchors();
 	}
 
+	private convertUrisToAnchors() {
+		function walk(node: Node) {
 
-	private getCaretPosition(): number {
-		let caretOffset = 0;
-		const selection = window.getSelection();
-		if (selection && selection.rangeCount > 0) {
-			const range = selection.getRangeAt(0);
-			const preCaretRange = range.cloneRange();
-			preCaretRange.selectNodeContents(this.editor!);
-			preCaretRange.setEnd(range.endContainer, range.endOffset);
-			caretOffset = preCaretRange.toString().length;
-		}
-		return caretOffset;
-	}
+			if(node.nodeType == Node.ELEMENT_NODE && (node as HTMLElement).tagName == "A") {
+				// don't traverse into anchor tags
+				return;
+			}
 
+			//walk nodes recursively
+			node.childNodes.forEach(walk);
 
-	private setCaretPosition( offset: number): void {
-		const element = this.editor!;
-		element.focus();
-		const selection = window.getSelection();
-		if (!selection) return;
-
-		// Helper to recursively find the node and offset
-		function setRange(node: Node, chars: { count: number }): boolean {
-			if (node.nodeType === Node.TEXT_NODE) {
-				if (node.textContent) {
-					if (chars.count <= node.textContent.length) {
-						const range = document.createRange();
-						range.setStart(node, chars.count);
-						range.collapse(true);
-						selection!.removeAllRanges();
-						selection!.addRange(range);
-						return true;
-					} else {
-						chars.count -= node.textContent.length;
-					}
-				}
-			} else {
-				for (let i = 0; i < node.childNodes.length; i++) {
-					if (setRange(node.childNodes[i], chars)) {
-						return true;
+			if(node.nodeType == Node.TEXT_NODE) {
+				if (node.textContent?.indexOf("http")) {
+					const anchored = Format.convertUrisToAnchors(node.textContent);
+					if (anchored != node.textContent) {
+						const tmp = document.createElement("span");
+						tmp.innerHTML = anchored;
+						(node as Text).replaceWith(tmp);
 					}
 				}
 			}
-			return false;
 		}
 
-		setRange(element, { count: offset });
+		walk(this.editor!);
 	}
-
 }
-
 
 class SourceEditWindow extends Window {
 	private textArea: TextAreaField;
