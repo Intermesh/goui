@@ -8,6 +8,9 @@ describe('Router class', () => {
 
 			let routeNo;
 
+			// To ignore/supress jsdom not imnlemented error
+			window.scrollTo = () => {};
+
 			// create route with a param
 			router.add(/^test\/(\d+)$/, (no) => {
 
