@@ -45,7 +45,10 @@ export class ToolTip extends Component {
 			this.close()
 		}).on('contextmenu', _e => {
 			this.close()
-		});
+		}).on('mousedown', _e => {
+			// close when mousing down because of dragging events for example
+			this.close()
+		})
 
 		this.el.on("mouseenter", () => {
 			// keep tooltip open if moving mouse into the tooltip
