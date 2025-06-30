@@ -83,16 +83,16 @@ export class Format {
 	}
 
 	/**
-	 * Convert URI's in HTML to anchor tags.
+	 * Convert URI's in text to anchor tags.
 	 *
-	 * @param html
+	 * @param text
 	 */
-	public static convertUrisToAnchors(html: string): string {
+	public static convertUrisToAnchors(text: string): string {
 		// Regular expression to match URIs that are not inside anchor tags
-		const uriRegex = /(?<!<a[^>]*>)(?<!href=["'])(https?:\/\/[^\s<]+)(?!<\/a>)(?!["'])/g;
+		const uriRegex = /(https?:\/\/[^\s]+|ftp:\/\/[^\s]+)/g;
 
 		// Replace matched URIs with anchor tags
-		return html.replace(uriRegex, (url) => {
+		return text.replace(uriRegex, (url) => {
 			return `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`;
 		});
 	}
