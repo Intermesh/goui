@@ -4,11 +4,11 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {comp, Component, createComponent, REM_UNIT_SIZE} from "./Component.js";
+import {comp, Component, createComponent} from "./Component.js";
 import {tbar, Toolbar} from "./Toolbar.js";
 import {btn} from "./Button.js";
 import {DragData, draggable, DraggableComponent, DraggableComponentEventMap} from "./DraggableComponent.js";
-import {Config, Listener, ObservableListenerOpts} from "./Observable.js";
+import {Config} from "./Observable.js";
 import {root} from "./Root.js";
 import {FunctionUtil} from "../util/FunctionUtil.js";
 import {form} from "./form/Form.js";
