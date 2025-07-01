@@ -2,6 +2,10 @@
 @use "util";
 @use "shadows";
 
+
+button, html, input, select, textarea {
+	font: config.$fontBase
+}
 html {
 	font-size: var(--density); //makes everything smaller on desktop
 }

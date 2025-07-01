@@ -1,5 +1,4 @@
 @use "config";
-@use "theme";
 @use "util";
 @use "layout";
 
@@ -234,9 +233,9 @@ hr.goui {
 	background-size: cover;
 	border-radius: 50%;
 	border: 1px solid var(--fg-line);
-	width: config.$baseLineHeight + util.dp(22);
-	height: config.$baseLineHeight + util.dp(22);
-	line-height: config.$baseLineHeight + util.dp(22);
+	width: config.$baseLineHeight + util.dp(44);
+	height: config.$baseLineHeight + util.dp(44);
+	line-height: config.$baseLineHeight + util.dp(4);
 	font-size: util.dp(16);
 	text-align: center;
 	overflow: hidden;
