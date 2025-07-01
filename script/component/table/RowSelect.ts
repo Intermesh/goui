@@ -314,6 +314,23 @@ export class RowSelect<StoreType extends Store = Store, RecordType extends Store
 		this.lastIndex = index;
 	}
 
+	/**
+	 * Replaces the selected records
+	 * @param records
+	 */
+	public replace(...records: RecordType[]) {
+		this.clear();
+		for(let i = 0, l = records.length; i < l; i++) {
+			this.add(records[i]);
+		}
+	}
+
+	/**
+	 * Adds a selected record.
+	 *
+	 * @param record
+	 * @param append
+	 */
 	public add(record:RecordType, append = false) {
 		if(this.isSelected(record)) {
 			return;
