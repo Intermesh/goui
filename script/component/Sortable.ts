@@ -316,9 +316,8 @@ export class Sortable<Type extends Component> extends Observable<SortableEventMa
 				}
 			} else {
 
-				if(!this.dropOn) {
-					return;
-				}
+				dragData.pos = "before";
+				dragData.toIndex = 0;
 
 				e.preventDefault();
 				e.stopPropagation();
