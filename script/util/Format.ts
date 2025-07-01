@@ -121,7 +121,7 @@ export class Format {
 
 		switch(diff) {
 			case 0:
-				return !showTime ? t("Today") : Format.time(date);
+				return Format.time(date);
 			case -1:
 				return !showTime ? t('Yesterday') : t('Yesterday') + " " + t('at') + " " + Format.time(date);
 			case 1:
