@@ -226,7 +226,7 @@ hr.goui {
 .goui.goui-avatar {
 	cursor: default;
 	position: relative;
-	display: block;
+	display: flex;
 	color:white;
 	padding: 0;
 	background-color: config.$colorTextSecondary;
@@ -235,10 +235,11 @@ hr.goui {
 	border: 1px solid var(--fg-line);
 	width: config.$baseLineHeight + util.dp(22);
 	height: config.$baseLineHeight + util.dp(22);
-	line-height: config.$baseLineHeight + util.dp(22);
 	font-size: util.dp(16);
 	text-align: center;
 	overflow: hidden;
+	align-items: center;
+	justify-content: center;
 	img {
 		height:100%;
 		margin: 0;
@@ -246,7 +247,7 @@ hr.goui {
 	}
 
 	&.inline {
-		display: inline-block;
+		display: inline-flex;
 		margin-right: util.dp(8);
 		vertical-align: middle;
 	}
