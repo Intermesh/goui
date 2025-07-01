@@ -3,9 +3,7 @@
  * @copyright Copyright 2023 Intermesh BV
  * @author Merijn Schering <mschering@intermesh.nl>
  */
-declare global {
-	var GO: any;
-}
+
 
 import {Config, InferComponentEventMap, ListenersConfig, Observable, ObservableEventMap} from "./Observable.js";
 import {State} from "../State.js";
@@ -19,12 +17,7 @@ export type FindComponentPredicate = string | number | Component | ((comp: Compo
 type ClassTypeOf<T> = abstract new (...args: any[]) => T;
 
 const html = document.querySelector('html')!;
-export let REM_UNIT_SIZE = parseFloat(window.getComputedStyle(html).fontSize);
-GO.mainLayout.on('render', function () { // load theme value once applied
-	// TODO: should be removed when MainLayout = GOUI
-	REM_UNIT_SIZE = parseFloat(window.getComputedStyle(document.documentElement).fontSize);
-});
-
+export const REM_UNIT_SIZE = parseFloat(window.getComputedStyle(html).fontSize);
 export interface Constraints {
 	/**
 	 * Left in px
@@ -1277,7 +1270,7 @@ export class Component<EventMapType extends ComponentEventMap = ComponentEventMa
 			maxHeight = constraints.bottom - constraints.top;
 
 		if(this.el.offsetWidth > maxWidth) {
-			this.width = maxWidth * 10 / REM_UNIT_SIZE;
+			this.width = Component.pxToRem(maxWidth);
 			this.el.style.left = constraints.left + "px";
 		} else {
 			const maxLeft = constraints.right - this.el.offsetWidth,
@@ -1293,7 +1286,7 @@ export class Component<EventMapType extends ComponentEventMap = ComponentEventMa
 		}
 
 		if(this.el.offsetHeight > maxHeight) {
-			this.height = maxHeight * 10 / REM_UNIT_SIZE;
+			this.height =  Component.pxToRem(maxHeight);
 			this.el.style.top = constraints.top + "px";
 		} else {
 			const maxTop = constraints.bottom - this.el.offsetHeight,

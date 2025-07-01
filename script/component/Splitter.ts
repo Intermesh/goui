@@ -3,7 +3,7 @@
  * @copyright Copyright 2023 Intermesh BV
  * @author Merijn Schering <mschering@intermesh.nl>
  */
-import {Component, ComponentState, createComponent, FindComponentPredicate, REM_UNIT_SIZE} from "./Component.js";
+import {Component, ComponentState, createComponent} from "./Component.js";
 import {DraggableComponent} from "./DraggableComponent.js";
 import {Config} from "./Observable.js";
 
@@ -98,10 +98,6 @@ export class Splitter extends DraggableComponent {
 				r2 = next.el.getBoundingClientRect(),
 				gap = r2.y - r1.height - r1.y;
 
-			console.log(r1, r2, gap);
-
-			console.log(Component.remToPx(next.minHeight));
-
 			return r1.height + r2.height - gap - Component.remToPx(next.minHeight);
 		}
 
@@ -189,7 +185,7 @@ export class Splitter extends DraggableComponent {
 				if (autoMax) {
 					width = Math.min(autoMax, width);
 				}
-				this._resizeComponent!.width = width * 10 / REM_UNIT_SIZE ;
+				this._resizeComponent!.width = Component.pxToRem(width);
 
 			} else {
 				let offset = dragData.y - dragData.startY;
@@ -202,7 +198,7 @@ export class Splitter extends DraggableComponent {
 				if (autoMax) {
 					height = Math.min(autoMax, height);
 				}
-				this._resizeComponent!.height = height * 10 / REM_UNIT_SIZE;
+				this._resizeComponent!.height = Component.pxToRem(height);
 
 			}
 		});

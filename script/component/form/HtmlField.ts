@@ -655,7 +655,6 @@ export class HtmlField extends Field<HtmlFieldEventMap> {
 			this.fire("insertimage", {file, img: imgEl});
 		}
 	}
-
 	private onPaste(e: ClipboardEvent) {
 
 		if (!e.clipboardData || !e.clipboardData.files) {
@@ -672,12 +671,8 @@ export class HtmlField extends Field<HtmlFieldEventMap> {
 				this.fire("attach", {file});
 			}
 			e.preventDefault();
-
-
 		});
-
 	}
-
 	private onKeyUp(ev: KeyboardEvent) {
 
 		if (ev.key != "Enter" && ev.key != " " && ev.key != "Tab") {
@@ -695,7 +690,6 @@ export class HtmlField extends Field<HtmlFieldEventMap> {
 	private convertUrisToAnchors() {
 
 		const sel = document.getSelection();
-
 		function walk(node: Node) {
 
 			if(node.nodeType == Node.ELEMENT_NODE && (node as HTMLElement).tagName == "A") {
@@ -761,7 +755,6 @@ class SourceEditWindow extends Window {
 			))
 	}
 }
-
 
 class ImageResizer {
 	private wrapper?: HTMLDivElement;
