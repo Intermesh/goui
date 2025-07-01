@@ -73,9 +73,9 @@ $padding: util.dp(8) !default;
 
 $curveStandard: cubic-bezier(0.4, 0.0, 0.2, 1) !default;
 
-$baseLineHeight: util.sp(24) !default;
+$baseLineHeight: util.dp(24) !default;
 $fontSize: util.sp(18) !default;
-$fontFamily: Lato, Arial, Helvetica !default;
+$fontFamily: var(--font-family) !default;
 $fontBase: #{$fontSize}/$baseLineHeight $fontFamily !default;
 
 $zIndexWindow: 200 !default;

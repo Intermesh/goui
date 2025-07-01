@@ -110,7 +110,7 @@
 
         background-color: config.$surfaceLow;
 				font: config.$fontBase;
-				font-size: config.$fontSize * .8;
+				font-size: .8em;
         padding: util.dp(8) util.dp(8);
 
         &.sorted {

@@ -1,11 +1,9 @@
 @use "sass:math";
 
-$font-scale: 1 !default;
-
 @function dp($width) {
 	@return $width * .1rem;
 }
 
 @function sp($size) {
-	@return dp($size) * $font-scale;
+	@return calc(dp($size) * var(--font-scale)) ;
 }

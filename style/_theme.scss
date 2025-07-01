@@ -1,7 +1,11 @@
-:root, body {
-	--density: 54%;
-	--mobile-density: 62.5%;
+html {
+	--density: 8.64px; //54%;
+	--mobile-density: 10px; //62.5%;
+	--font-scale:1;
+	--font-family: Lato, Arial, Helvetica;
+}
 
+:root, body {
 
 	--fg-border:	rgba(68, 68, 68, 0.26); // outline For splitter borders in layout
 	--fg-line:		#{rgba(black, 0.12)}; // outline-variant (thick)

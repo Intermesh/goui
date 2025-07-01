@@ -3,7 +3,9 @@
  * @copyright Copyright 2023 Intermesh BV
  * @author Merijn Schering <mschering@intermesh.nl>
  */
-
+declare global {
+	var GO: any;
+}
 
 import {Config, InferComponentEventMap, ListenersConfig, Observable, ObservableEventMap} from "./Observable.js";
 import {State} from "../State.js";
@@ -17,7 +19,11 @@ export type FindComponentPredicate = string | number | Component | ((comp: Compo
 type ClassTypeOf<T> = abstract new (...args: any[]) => T;
 
 const html = document.querySelector('html')!;
-export const REM_UNIT_SIZE = parseFloat(window.getComputedStyle(html).fontSize);
+export let REM_UNIT_SIZE = parseFloat(window.getComputedStyle(html).fontSize);
+GO.mainLayout.on('render', function () { // load theme value once applied
+	// TODO: should be removed when MainLayout = GOUI
+	REM_UNIT_SIZE = parseFloat(window.getComputedStyle(document.documentElement).fontSize);
+});
 
 export interface Constraints {
 	/**
