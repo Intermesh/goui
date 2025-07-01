@@ -231,7 +231,7 @@ export class Collection<CollectionItem, MapType extends CollectionEventMap<Colle
 		this.fire("remove",  {item, index});
 		this.fire("datachanged", {});
 
-		return true;
+		return item;
 	}
 
 	/**

@@ -315,6 +315,14 @@ export class Sortable<Type extends Component> extends Observable<SortableEventMa
 						break;
 				}
 			} else {
+
+				if(!this.dropOn) {
+					return;
+				}
+
+				e.preventDefault();
+				e.stopPropagation();
+
 				dropPin.hidden = true;
 				e.dataTransfer!.dropEffect = "copy";
 			}
