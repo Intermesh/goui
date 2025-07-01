@@ -14,10 +14,11 @@ import {browser, Collection} from "../util/index.js";
  */
 export type FindComponentPredicate = string | number | Component | ((comp: Component) => boolean | void);
 
+/**
+ * Get's the class type of an instance. Oposite of the InstanceOf<>
+ */
 type ClassTypeOf<T> = abstract new (...args: any[]) => T;
 
-const html = document.querySelector('html')!;
-export const REM_UNIT_SIZE = parseFloat(window.getComputedStyle(html).fontSize);
 export interface Constraints {
 	/**
 	 * Left in px
@@ -815,7 +816,23 @@ export class Component<EventMapType extends ComponentEventMap = ComponentEventMa
 	 * @param px
 	 */
 	public static pxToRem(px:number) :number {
-		return (px / REM_UNIT_SIZE) * 10;
+		return (px / Component.remUnitSize()) * 10;
+	}
+
+	private static _remUnitSize:number | undefined;
+
+	/**
+	 * Calculates and retrieves the size of one rem unit based on the root HTML element's font size.
+	 * If the value is already computed, it will return the cached value.
+	 *
+	 * @return The size of one rem unit in pixels.
+	 */
+	private static remUnitSize() {
+		if(!Component._remUnitSize) {
+			const html = document.querySelector('html')!;
+			Component._remUnitSize = parseFloat(window.getComputedStyle(html).fontSize);
+		}
+		return Component._remUnitSize;
 	}
 
 	/**
@@ -826,7 +843,7 @@ export class Component<EventMapType extends ComponentEventMap = ComponentEventMa
 	 * @param rem
 	 */
 	public static remToPx(rem:number) :number {
-		return (rem * REM_UNIT_SIZE) / 10;
+		return (rem * Component.remUnitSize()) / 10;
 	}
 
 	/**
