@@ -403,9 +403,9 @@ export class List<StoreType extends Store = Store, EventMapType extends ListEven
 	}
 
 	private initNavigateEvent() {
-		this.on('rowmousedown', (ev) => {
-			if (!ev.ev.shiftKey && !ev.ev.ctrlKey) {
-				this.fire("navigate", {storeIndex: ev.storeIndex});
+		this.on('rowmousedown', ({ev, storeIndex}) => {
+			if (!ev.shiftKey && !ev.ctrlKey && !ev.metaKey) {
+				this.fire("navigate", {storeIndex: storeIndex});
 			}
 		});
 
@@ -413,7 +413,7 @@ export class List<StoreType extends Store = Store, EventMapType extends ListEven
 
 			this.el.addEventListener('keydown', (ev) => {
 
-				if (!ev.shiftKey && !ev.ctrlKey && (ev.key == "ArrowDown" || ev.key == "ArrowUp")) {
+				if (!ev.shiftKey && !ev.ctrlKey && !ev.metaKey && (ev.key == "ArrowDown" || ev.key == "ArrowUp")) {
 
 					const selected = this.rowSelect!.getSelected();
 					if (selected.length) {
