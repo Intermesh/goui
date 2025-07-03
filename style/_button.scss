@@ -29,6 +29,7 @@
 
 	&.with-icon:not(.with-text) {
 		//icon only
+		overflow: visible;
 		padding: util.dp(11);
 	}
 
