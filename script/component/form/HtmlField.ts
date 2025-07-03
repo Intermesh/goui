@@ -9,11 +9,10 @@
 import {Field, FieldConfig, FieldEventMap} from "./Field.js";
 import {tbar, Toolbar} from "../Toolbar.js";
 import {btn, Button} from "../Button.js";
-import {Listener, ObservableListenerOpts} from "../Observable.js";
 import {browser} from "../../util/Browser.js";
-import {colormenu, ColorMenu} from "../menu/ColorMenu.js";
+import {colormenu} from "../menu/ColorMenu.js";
 import {Menu} from "../menu/Menu.js";
-import {comp, Component, createComponent} from "../Component.js";
+import {comp, createComponent} from "../Component.js";
 import {FunctionUtil} from "../../util/FunctionUtil.js";
 import {MaterialIcon} from "../MaterialIcon.js";
 import {Window} from "../Window.js";
