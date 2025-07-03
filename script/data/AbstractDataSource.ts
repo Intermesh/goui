@@ -515,7 +515,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	}
 
 	/**
-	 * Does the actual getting of entities. First checks if present in this onbject, otherwise it will be requested
+	 * Does the actual getting of entities. First checks if present in this object, otherwise it will be requested
 	 * from the remote source.
 	 *
 	 * @protected
@@ -582,8 +582,11 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 
 					response.notFound?.forEach((id) => {
 						let r;
-						while (r = this.getIds[id].resolves.shift()) {
-							r.call(this, undefined);
+						while (r = this.getIds[id].rejects.shift()) {
+							r.call(this,  {
+								id: id,
+								error: "Not found"
+							});
 						}
 						delete this.getIds[id];
 					});
