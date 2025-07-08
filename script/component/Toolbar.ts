@@ -69,7 +69,6 @@ export class Toolbar extends AbstractMenu {
 			}));
 
 			ro.observe(this.el);
-
 		}
 
 		return el;
@@ -87,6 +86,14 @@ export class Toolbar extends AbstractMenu {
 
 		this.overflowSpacer = comp({flex: 1, style:{padding:"0", margin:"0"}});
 		this.items.add(this.overflowSpacer, this.overflowMenuBtn);
+
+		// make sure new toolbar items are not after the overflow elements
+		this.items.on("add", e => {
+			const maxIndex = e.target.count() - 3;
+			if(e.index > maxIndex) {
+				this.items.move(e.index, maxIndex);
+			}
+		})
 	}
 
 	private moveLastToMenu() {

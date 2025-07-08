@@ -177,7 +177,16 @@ export class ContainerField<EventMap extends FieldEventMap = FieldEventMap, Valu
 		this.findFields().forEach((field: any) => {
 			//for Extjs compat try .getName() and .getValue()
 			const fieldName = (field.getName ? field.getName() : field.name) as keyof ValueType
-			const fieldVal = field.getValue ? field.getValue() : field.value;
+			let fieldVal;
+			if( field.getValue ) {
+				fieldVal = field.getValue();
+				// @ts-ignore
+				if(Ext.isDate(fieldVal)) {
+					fieldVal = fieldVal.serialize();
+				}
+			} else {
+				fieldVal = field.value
+			}
 
 			if (fieldName) {
 				if(field.disabled) {

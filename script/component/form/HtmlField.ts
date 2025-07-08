@@ -66,8 +66,8 @@ export interface HtmlField extends Field<HtmlFieldEventMap> {
 
 interface CmdConfig {
 	icon: MaterialIcon,
-	applyFn?: (btn: Button) => void,
-	updateFn?: (btn: Button) => void,
+	applyFn?: (this: HtmlField, btn: Button) => void,
+	updateFn?: (this: HtmlField, btn: Button) => void,
 	title: string
 	menu?: Menu
 }
@@ -180,7 +180,6 @@ export class HtmlField extends Field<HtmlFieldEventMap> {
 		"createLink",
 		"-",
 		"sourceEdit"
-
 	];
 
 	private commands: Record<string, CmdConfig> = {
@@ -309,8 +308,6 @@ export class HtmlField extends Field<HtmlFieldEventMap> {
 			}
 		},
 		removeFormat: {icon: 'format_clear', title: "Remove formatting"},
-		// emoji: {icon: 'insert_emoticon'},
-		// html: {icon: 'code'}
 	};
 
 	private updateToolbar() {
@@ -364,7 +361,7 @@ export class HtmlField extends Field<HtmlFieldEventMap> {
 		super.internalRemove();
 	}
 
-	protected getToolbar() {
+	public getToolbar() {
 
 		if (this.tbar) {
 			return this.tbar;

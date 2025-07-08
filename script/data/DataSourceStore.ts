@@ -175,14 +175,15 @@ export class DataSourceStore<
 						if (e) {
 							record[relationName as (keyof dataSourceEntityType<DataSource>)] = e as never;
 						}
-					}));
+					}).catch(e =>{console.warn("Failed to fetch relation", e)})
+					);
 				} else {
 					const idToEntity = (id:EntityID) => {
 						return rel.dataSource.single(id);
 					}
 					promises.push(Promise.all(ids.map(idToEntity)).then((entities:any) => {
 						record[relationName as (keyof dataSourceEntityType<DataSource>)] = entities;
-					}));
+					}).catch(e =>{console.warn("Failed to fetch relation", e)}));
 
 				}
 			}
