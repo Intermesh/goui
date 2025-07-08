@@ -4,11 +4,10 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {Listener, ObservableEventMap, ObservableListenerOpts} from "../Observable.js";
 import {FunctionUtil} from "../../util/index.js";
 import {FieldConfig, FieldEventMap} from "./Field.js";
 import {btn, Button} from "../Button.js";
-import {Component, createComponent} from "../Component.js";
+import {createComponent} from "../Component.js";
 import {List, listStoreType} from "../List.js";
 import {listpicker} from "../picker/index.js";
 import {Menu, menu} from "../menu/index.js";
