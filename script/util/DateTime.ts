@@ -428,16 +428,31 @@ export class DateTime {
 	/**
 	 * Constructor
 	 *
-	 * @param date Can be a date object, a unix timestamp or date string (see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date#date_time_string_format)
+	 * @param date Can be a date object, a unix timestamp or date string
+	 * (see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date#date_time_string_format)
+	 * Note that this object differs from the standard Date constructor. If you pass YYYY-MM-DD it will append T00:00:00
+	 * to avoid shifts in negative timezones.
+	 *
+	 * eg:
+	 *
+	 * ```
+	 * new DateTime("2025-07-10").getDate() //returns 9 when you are in Los Angeles (-8 timezone)
+	 * new DateTime("2025-07-10").getDate() //returns 10 when you are in Los Angeles (-8 timezone)
+	 * ```
 	 */
 	constructor(date?: Date | DateTime | number | string ) {
 
-		if( (date instanceof Date)) {
+		if(date == undefined) {
+			this.date = new Date();
+		} else if( (date instanceof Date)) {
 			this.date = structuredClone(date);
 		} else if (date instanceof DateTime) {
 			this.date = structuredClone(date.date);
 		} else {
-			this.date = date !== undefined ? new Date(date) : new Date();
+			if(typeof date === "string" && date.match(/^\d{4}-\d{2}-\d{2}$/)) {
+				date += "T00:00:00"; //otherwise it's converted to UTC and new Date"2025-07-10").getDate() will be 9 in a negative time zone area.
+			}
+			this.date = new Date(date);
 		}
 	}
 
@@ -1006,8 +1021,7 @@ export class DateTime {
 			return undefined;
 		}
 
-		const date = new DateTime('1970-01-01'); // we want this to always work the same
-		date.setHours(0, 0, 0, 0);
+		const date = new DateTime('1970-01-01T00:00:00'); // we want this to always work the same
 
 		if (timezone) {
 			date.timezone = timezone;
