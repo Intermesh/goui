@@ -665,6 +665,7 @@
 		}
 
 		select {
+			display:none;
 			height: config.$baseLineHeight;
 			appearance: none;
 			border:0;
@@ -676,7 +677,11 @@
 			}
 		}
 
-
+		&.twelvehour {
+			select {
+				display: block;
+			}
+		}
 	}
 
 	&.duration {

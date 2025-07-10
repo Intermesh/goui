@@ -28,11 +28,12 @@ export class TimeField extends Field {
 	private hoursInput?: HTMLInputElement;
 	private minutesInput?: HTMLInputElement;
 
-	public twelveHour = false;
 	private amPm?: HTMLSelectElement;
 
-	constructor(public outputFormat = "H:I") {
+	constructor(public outputFormat = "H:i", public readonly twelveHour = false) {
 		super();
+		if(twelveHour)
+			this.el.classList.add("twelvehour");
 
 		this.createMenu();
 
@@ -139,14 +140,19 @@ export class TimeField extends Field {
 	}
 
 	protected internalSetValue(v?: any) {
-		if(v && this.hoursInput && this.minutesInput) {
-			const dateInterval = DateInterval.createFromFormat(v, this.outputFormat);
-			if (dateInterval) {
-				this.hoursInput.value = dateInterval.format("H");
-				this.minutesInput.value = dateInterval.format("I");
-			} else {
-				this.minutesInput.value = "00";
+		if(v && this.hoursInput && this.minutesInput && this.amPm) {
+			const dt = DateTime.createFromFormat(v, "H:i");
+			if(!dt) {
+				return;
 			}
+
+			if(this.twelveHour) {
+				this.hoursInput.value = dt.format("h");
+				this.amPm.value = dt.format("a");
+			} else {
+				this.hoursInput.value = dt.format("H");
+			}
+			this.minutesInput.value = dt.format("i");
 		}
 	}
 
@@ -155,7 +161,14 @@ export class TimeField extends Field {
 			return undefined;
 		}
 
-		return this.hoursInput!.value + ":" + (this.minutesInput!.value ? this.minutesInput!.value : "00");
+		let hrs = this.hoursInput!.value;
+
+		if(this.twelveHour && this.amPm!.value == "pm") {
+			hrs = (parseInt(hrs) + 12) + "";
+		}
+
+
+		return hrs + ":" + (this.minutesInput!.value ? this.minutesInput!.value : "00");
 
 	}
 
@@ -358,4 +371,4 @@ export class TimeField extends Field {
  *
  * @param config
  */
-export const timefield = (config?: FieldConfig<TimeField>) => createComponent(new TimeField(), config);
+export const timefield = (config?: FieldConfig<TimeField>) => createComponent(new TimeField(config?.outputFormat ?? "H:i", config?.twelveHour), config);
