@@ -628,24 +628,15 @@
 		min-height: (config.$baseLineHeight * 2) + util.dp(22); // add padding
 	}
 
-	&.time {
-		input::-webkit-calendar-picker-indicator {
-			display: none
-		}
-	}
 
-	&.duration {
+	&.duration, &.time {
 		.control {
 			line-height: util.dp(46);
 			display: flex;
 			flex-direction: row;
 			align-items: center;
-		}
 
-		input.hour {
-			width: auto;
-			flex: 1;
-			text-align: right;
+
 		}
 
 		input.text {
@@ -671,6 +662,28 @@
 
 		input.text.year {
 			width: util.dp(44);
+		}
+
+		select {
+			height: config.$baseLineHeight;
+			appearance: none;
+			border:0;
+			background:transparent;
+			padding: 0 util.dp(2);
+			margin: util.dp(11) 0;
+			&:focus {
+				background: var(--bg-selection);
+			}
+		}
+
+
+	}
+
+	&.duration {
+		input.hour {
+			width: auto;
+			flex: 1;
+			text-align: right;
 		}
 	}
 

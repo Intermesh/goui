@@ -1,7 +1,7 @@
 import {TextField} from "./TextField.js";
-import {FieldConfig, FieldEventMap} from "./Field.js";
+import {Field, FieldConfig, FieldEventMap} from "./Field.js";
 import {comp, createComponent} from "../Component.js";
-import {DateTime} from "../../util/index.js";
+import {DateInterval, DateTime, E, FunctionUtil} from "../../util/index.js";
 import {InputField} from "./InputField.js";
 import {Menu, menu} from "../menu/index.js";
 import {btn, Button} from "../Button.js";
@@ -19,31 +19,144 @@ export interface TimeField {
  *
  * @link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/time
  */
-export class TimeField extends InputField {
+export class TimeField extends Field {
 
 
 	protected baseCls = "goui-form-field time no-floating-label";
 	private menu!: Menu;
 
-	constructor() {
-		super();
+	private hoursInput?: HTMLInputElement;
+	private minutesInput?: HTMLInputElement;
 
-		this.type = "time";
+	public twelveHour = false;
+	private amPm?: HTMLSelectElement;
+
+	constructor(public outputFormat = "H:I") {
+		super();
 
 		this.createMenu();
 
 	}
 
-	fireChangeOnBlur = true;
+
+	protected createControl(): HTMLElement | undefined {
+		const ctrl = E("div").cls("goui");
 
 
-	protected createInput() : HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement{
-		const control = document.createElement("input");
-
-		if (this.invalidMsg) {
-			this.applyInvalidMsg();
+		const onBlur = function(this:any) {
+			if(!this.value) {
+				return;
+			}
+			this.value = this.value.padStart(2, "0")
+			return true;
 		}
-		return control;
+
+		const onFocus = function(this:any, ev:any) {
+			ev.preventDefault();
+			this.focus();
+			this.setSelectionRange(0, this.value.length);
+		};
+
+		const onKeyDown = (ev:KeyboardEvent) => {
+			switch(ev.key) {
+				case "Tab":
+				case "Enter":
+				case "Backspace":
+				case "Delete":
+					return true;
+
+				case ':':
+					this.minutesInput!.focus();
+					ev.preventDefault();
+					break;
+
+				default:
+					if(!/^[0-9]$/i.test(ev.key)) {
+						//only allow numbers
+						ev.preventDefault();
+					}
+			}
+		};
+
+
+		this.hoursInput = document.createElement("input");
+		this.hoursInput.classList.add("text");
+		this.hoursInput.classList.add("hour");
+		this.hoursInput.inputMode = "numeric";
+		this.hoursInput.type = "text";
+		this.hoursInput.pattern = "[0-9]+";
+		this.hoursInput.onblur = onBlur;
+		this.hoursInput.onfocus = onFocus;
+		this.hoursInput.onmousedown = onFocus;
+		this.hoursInput.maxLength = 2;
+		this.hoursInput.oninput = FunctionUtil.buffer(500, function(this: any,e:any) {
+			onBlur.call(this);
+			onFocus.call(this, e)
+		});
+
+		this.hoursInput.placeholder = "--";
+		this.hoursInput.autocomplete = "off";
+		this.hoursInput.onkeydown = onKeyDown;
+
+		this.minutesInput = document.createElement("input");
+		this.minutesInput.classList.add("text");
+		this.minutesInput.classList.add("minute");
+		this.minutesInput.inputMode = "numeric";
+		this.minutesInput.type = "text";
+		this.minutesInput.pattern = "[0-9]+";
+		this.minutesInput.maxLength = 2;
+		this.minutesInput.oninput = FunctionUtil.buffer(500, function(this: any,e:any) {
+
+			if(parseInt(this.value) > 59) {
+				this.value = "59";
+			}
+
+			onBlur.call(this);
+			onFocus.call(this, e)
+		});
+		const hoursInput = this.hoursInput!;
+		this.minutesInput.onmousedown = onFocus;
+		this.minutesInput.onblur = function(this:any) {
+			onBlur.call(this);
+			if(!this.value && hoursInput.value) {
+				this.value = "00";
+			}
+		};
+		this.minutesInput.onfocus = onFocus;
+		this.minutesInput.onkeydown = onKeyDown;
+
+		this.minutesInput.placeholder = "--";
+		this.minutesInput.autocomplete = "off";
+
+		this.amPm = document.createElement("select");
+		this.amPm.append(new Option("am", "am", true, true));
+		this.amPm.append(new Option("pm", "pm"));
+
+
+		ctrl.append(this.hoursInput, ":", this.minutesInput, this.amPm);
+
+		return ctrl;
+	}
+
+	protected internalSetValue(v?: any) {
+		if(v && this.hoursInput && this.minutesInput) {
+			const dateInterval = DateInterval.createFromFormat(v, this.outputFormat);
+			if (dateInterval) {
+				this.hoursInput.value = dateInterval.format("H");
+				this.minutesInput.value = dateInterval.format("I");
+			} else {
+				this.minutesInput.value = "00";
+			}
+		}
+	}
+
+	protected internalGetValue(): string | undefined {
+		if(!this.hoursInput!.value) {
+			return undefined;
+		}
+
+		return this.hoursInput!.value + ":" + (this.minutesInput!.value ? this.minutesInput!.value : "00");
+
 	}
 
 
@@ -130,7 +243,7 @@ export class TimeField extends InputField {
 		// otherwise it will be rendered to the root el.
 		// this.menu.parent = this;
 
-		this.input.addEventListener('focus', () => {
+		this.el.addEventListener('focus', () => {
 			this.menu.show();
 
 			const dt = this.getValueAsDateTime();
@@ -157,7 +270,7 @@ export class TimeField extends InputField {
 		// for safari that does not focus on buttons.
 		this.menu.el.tabIndex = -1;
 
-		this.input.addEventListener('blur', (e:any) => {
+		this.el.addEventListener('blur', (e:any) => {
 			setTimeout(() => {
 				if (e.relatedTarget && this.menu.el.contains(e.relatedTarget)) {
 					return;
@@ -203,13 +316,7 @@ export class TimeField extends InputField {
 	 *
 	 * @param min
 	 */
-	public set min(min:string) {
-		this.input!.attr('min', min);
-	}
-
-	public get min() {
-		return this.input!.attr('min');
-	}
+	public min:string|undefined;
 
 	/**
 	 * The maximum number allowed
@@ -218,17 +325,10 @@ export class TimeField extends InputField {
 	 *
 	 * @param max
 	 */
-	public set max(max:string) {
-		this.input!.attr('max', max);
-	}
+	public max:string|undefined;
 
-	public get max() {
-		return this.input!.attr('max');
-	}
 
-	protected outputFormat() {
-		return "H:i";
-	}
+
 
 	/**
 	 * Get the date as DateTime object
@@ -236,7 +336,7 @@ export class TimeField extends InputField {
 	public getValueAsDateTime() {
 
 		let v = this.value as string, date;
-		if (!v || !(date = DateTime.createFromFormat(v, this.outputFormat()))) {
+		if (!v || !(date = DateTime.createFromFormat(v, this.outputFormat))) {
 			return undefined;
 		}
 		return date;
