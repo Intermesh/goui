@@ -387,11 +387,12 @@ export class DateTime {
 	static staticInit(lang: string) {
 		const locale = new Intl.Locale(lang),
 			dayList = ['su', 'mo', 'tu', 'we', 'th', 'fr', 'sa'];
+
 		if ('weekInfo' in locale) {
 			// @ts-ignore
 			DateTime.firstWeekDay = locale.weekInfo.firstDay; // weekInfo might not be supported in all browsers
 		}
-		let tmp = new Date('1970-01-01'),
+		let tmp = new Date('1970-01-01 00:00:00'),
 			intlDays = new Intl.DateTimeFormat(lang, {weekday: 'long'});
 
 		for (let i = 0; i < 7; i++) {  // monday
