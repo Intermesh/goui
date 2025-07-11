@@ -316,24 +316,17 @@ export class Format {
 }
 
 //Create a known date string
-const d = new Date(1999,1,18);
 
-Format.dateFormat = d.toLocaleString()
-	.replace(/1999/,"Y")
-	.replace(/99/,"Y")
-	.replace(/F[^ ]{3,}/i,"M")
-	.replace(/F[^ ]+/i,"m")
-	.replace(/18[^ ]+/,"d") // day number with suffix
-	.replace(/18/,"d");
+Format.dateFormat =  (new Intl.DateTimeFormat().formatToParts(new Date())).map(part => {
+		switch (part.type) {
+			case "day": return "d";
+			case "month": return "m";
+			case "year": return "Y";
+			default: return part.value;
+		}
+	})
+	.join("");
 
-
-Format.timeFormat = d.setHours(13,45,0).toLocaleString()
-	.replace(/PM/,"A")
-	.replace(/pm/,"a")
-	.replace(/13/,"H")
-	.replace(/1/,"h")
-	.replace(/45/,"i")
-	.replace(/00/,"s");
 
 console.log(Format.dateFormat, Format.timeFormat);
 

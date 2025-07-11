@@ -670,10 +670,6 @@
 			padding-left: util.dp(16);
 		}
 
-		input.text.minute {
-			padding-right: dp(2);
-		}
-
 		input.month:placeholder-shown {
 			width: util.sp(30);
 		}
@@ -681,6 +677,9 @@
 		input.text.year {
 			width: util.dp(44);
 		}
+	}
+
+	&.time {
 
 		select {
 			display:none;
@@ -694,7 +693,6 @@
 				background: var(--bg-selection);
 			}
 		}
-
 		&.twelvehour {
 			select {
 				display: block;
@@ -708,10 +706,11 @@
 			flex: 1;
 			text-align: right;
 		}
+
+		input.text.minute {
+			padding-right: util.dp(16);
+		}
 	}
-
-
-
 
 	&.invalid {
 		.wrap {
