@@ -94,6 +94,9 @@ export class DateTimeField extends Field {
 			return;
 		}
 
+		if(withTime) {
+			this.timeField.value = this.defaultTime ?? (new DateTime()).format("H:i")
+		}
 		this.timeField.hidden = !withTime;
 	}
 
