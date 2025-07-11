@@ -4,7 +4,7 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {FieldConfig, FieldEventMap} from "./Field.js";
+import {FieldConfig, FieldEventMap, FieldValue} from "./Field.js";
 import {createComponent} from "../Component.js";
 import {Store} from "../../data/index.js";
 import {InputField} from "./InputField.js";
@@ -121,13 +121,13 @@ export class SelectField extends InputField {
 	}
 
 	set value(v) {
-		super.value = v ?? "__NULL__";
+		super.value = v;
 	}
 
-	get value() {
+	get value() : FieldValue {
 
 		if(!this.rendered) {
-			return (this._value === '__NULL__') ? null : this._value as any;
+			return super.value as FieldValue;
 		}
 		const opts = (this.store ? this.store.all() : this.options);
 
