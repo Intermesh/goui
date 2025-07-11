@@ -415,9 +415,8 @@ export class DateTime {
 	 * users' locale.
 	 */
 	public static hour12() {
-		// debugger;
 		const locale = navigator.language
-		return Intl.DateTimeFormat(locale,  { hour: 'numeric' }).resolvedOptions().hour12;
+		return !!Intl.DateTimeFormat(locale,  { hour: 'numeric' }).resolvedOptions().hour12;
 	}
 
 	/**

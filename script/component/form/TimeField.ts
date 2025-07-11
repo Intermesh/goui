@@ -2,13 +2,14 @@ import {TextField} from "./TextField.js";
 import {Field, FieldConfig} from "./Field.js";
 import {comp, createComponent} from "../Component.js";
 import {DateTime, E, FunctionUtil} from "../../util/index.js";
-import {Menu, menu} from "../menu/index.js";
+import {menu} from "../menu/index.js";
 import {btn, Button} from "../Button.js";
 
 
 export interface TimeField {
 	get input(): HTMLInputElement
 }
+
 /**
  * TimeField component
  *
@@ -20,45 +21,65 @@ export interface TimeField {
  */
 export class TimeField extends Field {
 
-
 	protected baseCls = "goui-form-field time no-floating-label";
-	private menu!: Menu;
 
 	private hoursInput?: HTMLInputElement;
 	private minutesInput?: HTMLInputElement;
-
 	private amPm?: HTMLSelectElement;
+	private menuBtn: Button;
 
-	constructor(public outputFormat = "H:i", public readonly twelveHour = false) {
+	/**
+	 * TimeField constructor
+	 *
+	 * @param outputFormat Output format to the server. See {@link DateTime.format}.
+	 */
+	constructor(public outputFormat = "H:i") {
 		super();
-		if(twelveHour)
-			this.el.classList.add("twelvehour");
 
-		this.createMenu();
+		this.menuBtn = btn({
+			icon: "schedule"
+		});
+		this.addButton(this.menuBtn);
 
+		this.twelveHour = DateTime.hour12();
 	}
 
+	/**
+	 * Use 12h or 24h format. Defaults to the system settings.
+	 * @param twelveHour
+	 */
+	public set twelveHour(twelveHour:boolean) {
+		this.el.classList.toggle("twelvehour", twelveHour);
+
+		this.menuBtn.menu = this.createMenu();
+	}
+
+	/**
+	 * Use 12h or 24h format. Defaults to the system settings.
+	 */
+	public get twelveHour() {
+		return this.el.classList.contains("twelvehour");
+	}
 
 	protected createControl(): HTMLElement | undefined {
 		const ctrl = E("div").cls("goui");
 
-
-		const onBlur = function(this:any) {
-			if(!this.value) {
+		const onBlur = function (this: any) {
+			if (!this.value) {
 				return;
 			}
 			this.value = this.value.padStart(2, "0")
 			return true;
 		}
 
-		const onFocus = function(this:any, ev:any) {
+		const onFocus = function (this: any, ev: any) {
 			ev.preventDefault();
 			this.focus();
 			this.setSelectionRange(0, this.value.length);
 		};
 
-		const onKeyDown = (ev:KeyboardEvent) => {
-			switch(ev.key) {
+		const onKeyDown = (ev: KeyboardEvent) => {
+			switch (ev.key) {
 				case "Tab":
 				case "Enter":
 				case "Backspace":
@@ -71,7 +92,7 @@ export class TimeField extends Field {
 					break;
 
 				default:
-					if(!/^[0-9]$/i.test(ev.key)) {
+					if (!/^[0-9]$/i.test(ev.key)) {
 						//only allow numbers
 						ev.preventDefault();
 					}
@@ -89,7 +110,7 @@ export class TimeField extends Field {
 		this.hoursInput.onfocus = onFocus;
 		this.hoursInput.onmousedown = onFocus;
 		this.hoursInput.maxLength = 2;
-		this.hoursInput.oninput = FunctionUtil.buffer(500, function(this: any,e:any) {
+		this.hoursInput.oninput = FunctionUtil.buffer(500, function (this: any, e: any) {
 			onBlur.call(this);
 			onFocus.call(this, e)
 		});
@@ -105,9 +126,9 @@ export class TimeField extends Field {
 		this.minutesInput.type = "text";
 		this.minutesInput.pattern = "[0-9]+";
 		this.minutesInput.maxLength = 2;
-		this.minutesInput.oninput = FunctionUtil.buffer(500, function(this: any,e:any) {
+		this.minutesInput.oninput = FunctionUtil.buffer(500, function (this: any, e: any) {
 
-			if(parseInt(this.value) > 59) {
+			if (parseInt(this.value) > 59) {
 				this.value = "59";
 			}
 
@@ -116,9 +137,9 @@ export class TimeField extends Field {
 		});
 		const hoursInput = this.hoursInput!;
 		this.minutesInput.onmousedown = onFocus;
-		this.minutesInput.onblur = function(this:any) {
+		this.minutesInput.onblur = function (this: any) {
 			onBlur.call(this);
-			if(!this.value && hoursInput.value) {
+			if (!this.value && hoursInput.value) {
 				this.value = "00";
 			}
 		};
@@ -138,13 +159,13 @@ export class TimeField extends Field {
 	}
 
 	protected internalSetValue(v?: any) {
-		if(v && this.hoursInput && this.minutesInput && this.amPm) {
+		if (v && this.hoursInput && this.minutesInput && this.amPm) {
 			const dt = DateTime.createFromFormat(v, "H:i");
-			if(!dt) {
+			if (!dt) {
 				return;
 			}
 
-			if(this.twelveHour) {
+			if (this.twelveHour) {
 				this.hoursInput.value = dt.format("h");
 				this.amPm.value = dt.format("a");
 			} else {
@@ -155,54 +176,75 @@ export class TimeField extends Field {
 	}
 
 	protected internalGetValue(): string | undefined {
-		if(!this.hoursInput!.value) {
+		if (!this.hoursInput!.value) {
 			return undefined;
 		}
 
 		let hrs = this.hoursInput!.value;
 
-		if(this.twelveHour && this.amPm!.value == "pm") {
+		if (this.twelveHour && this.amPm!.value == "pm") {
 			hrs = (parseInt(hrs) + 12) + "";
 		}
 		return hrs + ":" + (this.minutesInput!.value ? this.minutesInput!.value : "00");
 	}
 
 	private createMenu() {
-
 		const hrsContainer = comp({
-			tagName: "li",
-			flex: 1,
-			cls: "scroll vbox gap"
-		}),
+				tagName: "li",
+				flex: 1,
+				cls: "scroll vbox gap"
+			}),
 			minsContainer = comp({
 				tagName: "li",
 				flex: 1,
 				cls: "scroll vbox gap"
 			});
 
-		const handler = (btn:Button) => {
+		const handler = (btn: Button) => {
 			let dt = this.getValueAsDateTime();
-			if(!dt) {
+			if (!dt) {
 				dt = new DateTime();
 				dt.setHours(0);
 				dt.setMinutes(0);
 
 			}
-			if(btn.dataSet.hour !== undefined) {
+			if (btn.dataSet.hour !== undefined) {
 				dt.setHours(btn.dataSet.hour);
 			}
 
-			if(btn.dataSet.min !== undefined) {
+			if (btn.dataSet.min !== undefined) {
 				dt.setMinutes(btn.dataSet.min);
 			}
 
 			this.value = dt.format("H:i");
+			updateMenuSelection();
 			this.focus();
 		}
 
-		const hourFormat = DateTime.hour12() ? 'h\\&\\n\\b\\s\\p\\;a' : 'H';
+		const hourFormat = this.twelveHour ? 'h\\&\\n\\b\\s\\p\\;a' : 'H';
 
-		for(let h = 0; h < 24; h++) {
+		const updateMenuSelection = () => {
+			const dt = this.getValueAsDateTime();
+
+			if (dt) {
+				mnu.items.get(0)!.items.forEach(b => b.cls = "")
+				mnu.items.get(1)!.items.forEach(b => b.cls = "")
+
+				const activeHour = mnu.items.get(0)!.findItem(dt.getHours())!;
+				activeHour.cls = "pressed";
+
+				if (!activeHour.el.isScrolledIntoView(mnu.items.get(0)!.el))
+					activeHour.el.scrollIntoView();
+
+				const activeMin = mnu.items.get(1)!.findItem(dt.getMinutes())!
+				activeMin.cls = "pressed";
+
+				if (!activeMin.el.isScrolledIntoView(mnu.items.get(1)!.el))
+					activeMin.el.scrollIntoView();
+			}
+		}
+
+		for (let h = 0; h < 24; h++) {
 			hrsContainer.items.add(btn({
 				dataSet: {hour: h},
 				itemId: h,
@@ -211,7 +253,7 @@ export class TimeField extends Field {
 			}))
 		}
 
-		for(let m = 0; m < 60; m++) {
+		for (let m = 0; m < 60; m++) {
 			minsContainer.items.add(btn({
 				dataSet: {min: m},
 				itemId: m,
@@ -220,99 +262,30 @@ export class TimeField extends Field {
 			}))
 		}
 
-		this.menu = menu({
-				// renderTo: this.el,
-				// autoClose: false,
-				removeOnClose: false,
-				hidden: true,
+		const mnu = menu({
 				height: 300,
 				width: 200,
-				isDropdown: true,
+				alignTo: this.wrap,
+				alignToInheritWidth: true,
 				cls: "hbox",
 				listeners: {
-					beforehide: ({target}) => {
-						// cancel hide if field still has focus
-						if(this.el.contains(document.activeElement)) {
-							//hide menu when clicked elsewhere
-							window.addEventListener("mousedown", (ev) => {
-								target.close();
-							}, {once: true});
-
-							return false;
-						}
+					render: ev => {
+						// for safari that does not focus on buttons.
+						ev.target.el.tabIndex = -1;
+					},
+					show: ev => {
+						updateMenuSelection();
 					}
 				}
 			},
 			hrsContainer,
 			minsContainer
-		);
+		)
 
-		const onFocus = () => {
-
-			this.menu.show();
-
-			const dt = this.getValueAsDateTime();
-
-			if(dt) {
-
-				this.menu.items.get(0)!.items.forEach(b => b.cls="")
-				this.menu.items.get(1)!.items.forEach(b => b.cls="")
-
-				const activeHour = this.menu.items.get(0)!.findItem(dt.getHours())!;
-				activeHour.cls="pressed";
-
-				if(!activeHour.el.isScrolledIntoView(this.menu.items.get(0)!.el))
-					activeHour.el.scrollIntoView();
-
-				const activeMin = this.menu.items.get(1)!.findItem(dt.getMinutes())!
-				activeMin.cls="pressed";
-
-				if(!activeMin.el.isScrolledIntoView(this.menu.items.get(1)!.el))
-					activeMin.el.scrollIntoView();
-			}
-		}, onBlur = (e:any) => {
-			setTimeout(() => {
-				if (e.relatedTarget && (this.menu.el.contains(e.relatedTarget) || this.el.contains(e.relatedTarget))) {
-					return;
-				}
-				this.menu.hide();
-			});
-		};
-
-
-		this.hoursInput!.addEventListener('focus', onFocus);
-		this.hoursInput!.addEventListener('blur', onBlur);
-		this.minutesInput!.addEventListener('focus', onFocus);
-		this.minutesInput!.addEventListener('blur', onBlur);
-
-		// for safari that does not focus on buttons.
-		this.menu.el.tabIndex = -1;
-
-
+		return mnu;
 	}
 
-	protected eventTargetIsInFocus(e: FocusEvent): boolean {
-		return super.eventTargetIsInFocus(e) || (e.relatedTarget instanceof HTMLElement) && this.menu.el.contains(e.relatedTarget);
-	}
-
-	protected internalRemove() {
-		if (this.menu) {
-			this.menu.remove();
-		}
-		super.internalRemove();
-	}
-
-	protected internalRender(): HTMLElement {
-
-		const el = super.internalRender();
-
-		this.menu.alignTo = this.wrap;
-		this.menu.alignToInheritWidth = false;
-
-		return el;
-	}
-
-	public set step(v:number) {
+	public set step(v: number) {
 		this.input!.step = v.toString();
 	}
 
@@ -327,7 +300,7 @@ export class TimeField extends Field {
 	 *
 	 * @param min
 	 */
-	public min:string|undefined;
+	public min: string | undefined;
 
 	/**
 	 * The maximum number allowed
@@ -336,10 +309,7 @@ export class TimeField extends Field {
 	 *
 	 * @param max
 	 */
-	public max:string|undefined;
-
-
-
+	public max: string | undefined;
 
 	/**
 	 * Get the date as DateTime object
@@ -357,7 +327,7 @@ export class TimeField extends Field {
 		super.value = v;
 	}
 
-	get value(): string |undefined {
+	get value(): string | undefined {
 		const v = super.value as string | undefined;
 		return v ? v : undefined;
 	}
@@ -369,4 +339,4 @@ export class TimeField extends Field {
  *
  * @param config
  */
-export const timefield = (config?: FieldConfig<TimeField>) => createComponent(new TimeField(config?.outputFormat ?? "H:i", config?.twelveHour), config);
+export const timefield = (config?: FieldConfig<TimeField>) => createComponent(new TimeField(config?.outputFormat ?? "H:i"), config);

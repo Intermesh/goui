@@ -1,4 +1,4 @@
-import {Field, FieldEventMap} from "./Field.js";
+import {Field, FieldEventMap, FieldValue} from "./Field.js";
 
 export abstract class InputField<EventMap extends FieldEventMap = FieldEventMap> extends Field<EventMap> {
 
@@ -89,11 +89,11 @@ export abstract class InputField<EventMap extends FieldEventMap = FieldEventMap>
 		this.applyInvalidMsg();
 	}
 
-	protected internalSetValue(v?: string|number|boolean|undefined|null) {
+	protected internalSetValue(v:FieldValue) {
 		this._input!.value = v !== undefined && v !== null ? v.toString() : "";
 	}
 
-	protected internalGetValue(): string | number | boolean | any[] | Record<string, any> | null | undefined {
+	protected internalGetValue() : FieldValue {
 		return this._input!.value;
 	}
 

@@ -5,7 +5,7 @@
  */
 
 import {createComponent} from "../Component.js";
-import {FieldConfig, FieldEventMap} from "./Field.js";
+import {FieldConfig} from "./Field.js";
 import {DateTime} from "../../util";
 import {InputField} from "./InputField.js";
 
@@ -34,13 +34,6 @@ export class DateField extends InputField {
 
 	protected baseCls = "goui-form-field date no-floating-label";
 
-	/**
-	 * When switching the "withTime" property, this default time will be used.
-	 *
-	 * Use H:i format see {@link DateField.format}
-	 */
-	public defaultTime?: string;
-
 	// Don't use native event as chrome fires change on every key stroke
 	protected fireChangeOnBlur = true;
 
@@ -58,85 +51,23 @@ export class DateField extends InputField {
 	}
 
 	/**
-	 * Also render time input
-	 *
-	 * @param withTime
-	 */
-	public set withTime(withTime: boolean) {
-
-		let v = this.value, newType = withTime ? "datetime-local" : "date";
-
-		if(newType != this.input.type) {
-			this.input.type = newType;
-
-			if(!v) {
-				return;
-			}
-
-			if(withTime) {
-				v = this.appendTime(v);
-			} else {
-				const parts = v.split("T");
-				v = parts[0];
-				this.defaultTime = parts[1];
-			}
-			this.input.value = v;
-		}
-	}
-
-	private appendTime(v:string) {
-		return v + "T" + (this.defaultTime ?? (new DateTime()).format("H:i"));
-	}
-
-	public get withTime() {
-		return this.type == "datetime-local";
-	}
-
-
-	protected internalSetValue(v?: string | undefined) {
-
-		if(v) {
-			const Tindex = v.indexOf("T");
-			if (this.withTime) {
-				if (Tindex == -1) {
-					v = this.appendTime(v);
-				}
-
-				//reformat to strip off timezone info
-				const dt = DateTime.createFromFormat(v, this.outputFormat());
-				if(dt) {
-					v = dt.format(this.outputFormat())
-				}
-
-			} else {
-				if (Tindex != -1) {
-					const parts = v.split("T");
-					v = parts[0];
-					this.defaultTime = parts[1];
-				}
-			}
-		}
-
-		super.internalSetValue(v);
-	}
-
-	protected outputFormat(): string {
-		return this.withTime ? "Y-m-dTH:i" : 'Y-m-d';
-	}
-
-	/**
 	 * The minimum number allowed
 	 *
 	 * The value of the time input is always in 24-hour format that includes leading zeros: hh:mm
 	 *
 	 * @param min
 	 */
-	public set min(min:string) {
-		this.input!.attr('min', min);
+	public set min(min:DateTime|undefined) {
+		this.input!.attr('min', min?.format("Y-m-d"));
 	}
 
 	public get min() {
-		return this.input!.attr('min');
+		const min = this.input!.attr('min');
+		if(!min) {
+			return undefined;
+		}
+
+		return DateTime.createFromFormat(min, "Y-m-d");
 	}
 
 	/**
@@ -146,12 +77,17 @@ export class DateField extends InputField {
 	 *
 	 * @param max
 	 */
-	public set max(max:string) {
-		this.input!.attr('max', max);
+	public set max(max:DateTime|undefined) {
+		this.input!.attr('max', max?.format("Y-m-d"));
 	}
 
 	public get max() {
-		return this.input!.attr('max');
+		const max = this.input!.attr('max');
+		if(!max) {
+			return undefined;
+		}
+
+		return DateTime.createFromFormat(max, "Y-m-d");
 	}
 
 
@@ -161,7 +97,7 @@ export class DateField extends InputField {
 	public getValueAsDateTime() {
 
 		let v = this.value as string, date;
-		if (!v || !(date = DateTime.createFromFormat(v, this.outputFormat()))) {
+		if (!v || !(date = DateTime.createFromFormat(v, 'Y-m-d'))) {
 			return undefined;
 		}
 		return date;

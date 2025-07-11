@@ -405,6 +405,18 @@ export abstract class Field<EventMap extends FieldEventMap = FieldEventMap> exte
 		return this._buttons ?? [];
 	}
 
+	/**
+	 * Add a button
+	 *
+	 * @param btn
+	 */
+	public addButton(btn:Button) {
+		if(!this._buttons) {
+			this._buttons = [];
+		}
+		this._buttons.push(btn);
+	}
+
 	protected createHint(): HTMLDivElement | void {
 		this.hintEl = E('div', this._hint).cls('hint');
 		return this.hintEl;
@@ -589,6 +601,11 @@ export abstract class Field<EventMap extends FieldEventMap = FieldEventMap> exte
 		this.valueOnFocus = v;
 
 		this.checkHasValue();
+
+		if(this.isMarkedInvalid()) {
+			// revalidate if it was marked invalid
+			this.validate();
+		}
 	}
 
 	public get value() {
@@ -660,11 +677,15 @@ export abstract class Field<EventMap extends FieldEventMap = FieldEventMap> exte
 
 		this.clearInvalid();
 
-		if (this._required && this.isEmpty()) {
+		if (this.required && this.isEmpty()) {
 			this.setInvalid(t("This field is required"));
 		}
 
 		this.fire("validate", {});
+	}
+
+	protected get itemContainerEl() {
+		return this.wrap;
 	}
 
 	protected internalRemove() {
