@@ -684,17 +684,12 @@ export abstract class Field<EventMap extends FieldEventMap = FieldEventMap> exte
 		this.fire("validate", {});
 	}
 
-	protected get itemContainerEl() {
-		return this.wrap;
-	}
-
 	protected internalRemove() {
 		if(this.toolbar) {
 			this.toolbar.remove();
 		}
 		super.internalRemove();
 	}
-
 
 	/*
 

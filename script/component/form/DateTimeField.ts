@@ -14,10 +14,16 @@ export class DateTimeField extends Field {
 	constructor() {
 		super();
 
+		this.cls = "datetime";
+
 		this.items.add(
 			this.dateField = datefield({flex:1, cls: "no-border"}),
 			this.timeField = timefield({cls: "no-border"})
 		)
+	}
+
+	protected get itemContainerEl() {
+		return this.wrap;
 	}
 
 

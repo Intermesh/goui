@@ -632,9 +632,19 @@
 		min-height: (config.$baseLineHeight * 2) + util.dp(22); // add padding
 	}
 
-	.date {
-		input {
-			appearance: textfield;
+	&.datetime {
+
+
+		.time {
+			input.text.hour {
+				padding-left:0;
+			}
+		}
+	}
+
+	&.time {
+		.goui-button:first-child {
+			padding-left: util.dp(2) !important;
 		}
 	}
 
@@ -645,8 +655,6 @@
 			display: flex;
 			flex-direction: row;
 			align-items: center;
-
-
 		}
 
 		input.text {
@@ -663,7 +671,7 @@
 		}
 
 		input.text.minute {
-			padding-right: util.dp(16);
+			padding-right: dp(2);
 		}
 
 		input.month:placeholder-shown {
@@ -680,7 +688,7 @@
 			appearance: none;
 			border:0;
 			background:transparent;
-			padding: 0 util.dp(2);
+			padding: 0;
 			margin: util.dp(11) 0;
 			&:focus {
 				background: var(--bg-selection);
@@ -688,12 +696,8 @@
 		}
 
 		&.twelvehour {
-			input.text.minute {
-				padding-right: util.dp(2);
-			}
 			select {
 				display: block;
-				margin-right: util.dp(16);
 			}
 		}
 	}
