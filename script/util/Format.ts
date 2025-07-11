@@ -7,6 +7,8 @@ import {DateTime, Timezone} from "./DateTime.js";
 import {t} from "../Translate.js";
 import {DateInterval} from "./DateInterval";
 
+
+
 /**
  * Formatting utilities
  * @category Utility
@@ -21,7 +23,7 @@ export class Format {
 	/**
 	 * Time format when using time formatting functions
 	 */
-	public static timeFormat = "G:i";
+	public static timeFormat = DateTime.hour12() ? "g:i a" :"G:i";
 
 	/**
 	 * Timezone when using time format functions
@@ -43,6 +45,13 @@ export class Format {
 	 */
 
 	public static thousandsSeparator: string = ",";
+
+	/**
+	 * Checks if the time format uses 12hr
+	 */
+	public static timeFormat12hour() {
+		return Format.timeFormat.includes("a");
+	}
 
 
 	/**
@@ -305,4 +314,26 @@ export class Format {
 	// }
 
 }
+
+//Create a known date string
+const d = new Date(1999,1,18);
+
+Format.dateFormat = d.toLocaleString()
+	.replace(/1999/,"Y")
+	.replace(/99/,"Y")
+	.replace(/F[^ ]{3,}/i,"M")
+	.replace(/F[^ ]+/i,"m")
+	.replace(/18[^ ]+/,"d") // day number with suffix
+	.replace(/18/,"d");
+
+
+Format.timeFormat = d.setHours(13,45,0).toLocaleString()
+	.replace(/PM/,"A")
+	.replace(/pm/,"a")
+	.replace(/13/,"H")
+	.replace(/1/,"h")
+	.replace(/45/,"i")
+	.replace(/00/,"s");
+
+console.log(Format.dateFormat, Format.timeFormat);
 

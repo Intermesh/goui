@@ -1,7 +1,7 @@
 import {TextField} from "./TextField.js";
 import {Field, FieldConfig} from "./Field.js";
 import {comp, createComponent} from "../Component.js";
-import {DateTime, E, FunctionUtil} from "../../util/index.js";
+import {DateTime, E, Format, FunctionUtil} from "../../util/index.js";
 import {menu} from "../menu/index.js";
 import {btn, Button} from "../Button.js";
 
@@ -41,7 +41,7 @@ export class TimeField extends Field {
 		});
 		this.addButton(this.menuBtn);
 
-		this.twelveHour = DateTime.hour12();
+		this.twelveHour = Format.timeFormat12hour();
 	}
 
 	/**
