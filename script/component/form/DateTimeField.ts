@@ -159,6 +159,10 @@ export class DateTimeField extends Field {
 		}
 		return date;
 	}
+
+	protected eventTargetIsInFocus(e: FocusEvent): boolean {
+		return super.eventTargetIsInFocus(e) || (e.relatedTarget instanceof HTMLElement) && this.timeField.menuBtn.menu!.el.contains(e.relatedTarget);
+	}
 }
 
 /**

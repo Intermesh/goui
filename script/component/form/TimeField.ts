@@ -26,7 +26,7 @@ export class TimeField extends Field {
 	private hoursInput?: HTMLInputElement;
 	private minutesInput?: HTMLInputElement;
 	private amPm?: HTMLSelectElement;
-	private menuBtn: Button;
+	public readonly menuBtn: Button;
 
 	/**
 	 * TimeField constructor
@@ -330,6 +330,10 @@ export class TimeField extends Field {
 	get value(): string | undefined {
 		const v = super.value as string | undefined;
 		return v ? v : undefined;
+	}
+
+	protected eventTargetIsInFocus(e: FocusEvent): boolean {
+		return super.eventTargetIsInFocus(e) || (e.relatedTarget instanceof HTMLElement) && this.menuBtn.menu!.el.contains(e.relatedTarget);
 	}
 }
 
