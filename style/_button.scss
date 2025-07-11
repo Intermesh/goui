@@ -65,7 +65,7 @@
 		box-shadow: inset -2px -2px -2 config.$colorOutline; // underline
 		background-color: config.$colorSelectedRow;
 		&:hover {
-			filter: brightness(120%);
+			background-color: config.$colorSelectedRow;
 		}
 	}
 

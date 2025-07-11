@@ -1,8 +1,7 @@
 import {TextField} from "./TextField.js";
-import {Field, FieldConfig, FieldEventMap} from "./Field.js";
+import {Field, FieldConfig} from "./Field.js";
 import {comp, createComponent} from "../Component.js";
-import {DateInterval, DateTime, E, FunctionUtil} from "../../util/index.js";
-import {InputField} from "./InputField.js";
+import {DateTime, E, FunctionUtil} from "../../util/index.js";
 import {Menu, menu} from "../menu/index.js";
 import {btn, Button} from "../Button.js";
 
@@ -133,7 +132,6 @@ export class TimeField extends Field {
 		this.amPm.append(new Option("am", "am", true, true));
 		this.amPm.append(new Option("pm", "pm"));
 
-
 		ctrl.append(this.hoursInput, ":", this.minutesInput, this.amPm);
 
 		return ctrl;
@@ -166,12 +164,8 @@ export class TimeField extends Field {
 		if(this.twelveHour && this.amPm!.value == "pm") {
 			hrs = (parseInt(hrs) + 12) + "";
 		}
-
-
 		return hrs + ":" + (this.minutesInput!.value ? this.minutesInput!.value : "00");
-
 	}
-
 
 	private createMenu() {
 
@@ -253,10 +247,8 @@ export class TimeField extends Field {
 			minsContainer
 		);
 
-		// otherwise it will be rendered to the root el.
-		// this.menu.parent = this;
+		const onFocus = () => {
 
-		this.el.addEventListener('focus', () => {
 			this.menu.show();
 
 			const dt = this.getValueAsDateTime();
@@ -267,30 +259,36 @@ export class TimeField extends Field {
 				this.menu.items.get(1)!.items.forEach(b => b.cls="")
 
 				const activeHour = this.menu.items.get(0)!.findItem(dt.getHours())!;
-				activeHour.cls="primary filled";
+				activeHour.cls="pressed";
 
 				if(!activeHour.el.isScrolledIntoView(this.menu.items.get(0)!.el))
 					activeHour.el.scrollIntoView();
 
 				const activeMin = this.menu.items.get(1)!.findItem(dt.getMinutes())!
-				activeMin.cls="primary filled";
+				activeMin.cls="pressed";
 
 				if(!activeMin.el.isScrolledIntoView(this.menu.items.get(1)!.el))
 					activeMin.el.scrollIntoView();
 			}
-		})
-
-		// for safari that does not focus on buttons.
-		this.menu.el.tabIndex = -1;
-
-		this.el.addEventListener('blur', (e:any) => {
+		}, onBlur = (e:any) => {
 			setTimeout(() => {
-				if (e.relatedTarget && this.menu.el.contains(e.relatedTarget)) {
+				if (e.relatedTarget && (this.menu.el.contains(e.relatedTarget) || this.el.contains(e.relatedTarget))) {
 					return;
 				}
 				this.menu.hide();
 			});
-		})
+		};
+
+
+		this.hoursInput!.addEventListener('focus', onFocus);
+		this.hoursInput!.addEventListener('blur', onBlur);
+		this.minutesInput!.addEventListener('focus', onFocus);
+		this.minutesInput!.addEventListener('blur', onBlur);
+
+		// for safari that does not focus on buttons.
+		this.menu.el.tabIndex = -1;
+
+
 	}
 
 	protected eventTargetIsInFocus(e: FocusEvent): boolean {

@@ -47,10 +47,10 @@ menu.goui-dropdown {
 			text-align: start;
 			padding: util.dp(8) util.dp(16);
 
-			&:hover {
-				color: config.$colorText;
-				background-color: config.$colorHover;
-			}
+			//&:hover {
+			//	color: config.$colorText;
+			//	background-color: config.$colorHover;
+			//}
 
 			&:focus, &:focus-visible {
 				box-shadow: none;
