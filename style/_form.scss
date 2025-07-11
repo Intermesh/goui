@@ -1034,7 +1034,7 @@
 
 
 				&:after {
-					border-left: config.$borderWidth solid config.$colorBorder;
+					//border-left: config.$borderWidth solid config.$colorBorder;
 					position: absolute;
 					display: inline-block;
 					top: 0;//config.$baseLineHeight - util.dp(8);;
