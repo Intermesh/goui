@@ -384,11 +384,15 @@ export class DateTime {
 	static dayMap: string[] = [] // ['mo','tu',...] if week starts on monday else index 0 = 'su'
 	static monthNames: string[] = []
 
-	static staticInit(lang: string) {
+	static staticInit(lang: string, firstWeekDay?:number) {
 		const locale = new Intl.Locale(lang),
 			dayList = ['su', 'mo', 'tu', 'we', 'th', 'fr', 'sa'];
-
-		if ('weekInfo' in locale) {
+		DateTime.dayMap = [];
+		DateTime.monthNames = [];
+		DateTime.dayNames = {};
+		if(firstWeekDay !== undefined) {
+			DateTime.firstWeekDay = firstWeekDay;
+		}else if ('weekInfo' in locale ) {
 			// @ts-ignore
 			DateTime.firstWeekDay = locale.weekInfo.firstDay; // weekInfo might not be supported in all browsers
 		}
