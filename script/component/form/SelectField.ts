@@ -120,6 +120,11 @@ export class SelectField extends InputField {
 		return this._store;
 	}
 
+	protected internalGetValue() : FieldValue {
+		const v = this._input!.value;
+		return (v === '__NULL__') ? null : v
+	}
+
 	set value(v) {
 		super.value = v;
 	}
