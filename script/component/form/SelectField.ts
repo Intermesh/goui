@@ -124,6 +124,9 @@ export class SelectField extends InputField {
 		const v = this._input!.value;
 		return (v === '__NULL__') ? null : v
 	}
+	protected internalSetValue(v:FieldValue) {
+		this._input!.value = v !== undefined && v !== null ? v.toString() : "__NULL__";
+	}
 
 	set value(v) {
 		super.value = v;
