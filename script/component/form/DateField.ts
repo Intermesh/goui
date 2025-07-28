@@ -5,7 +5,7 @@
  */
 
 import {createComponent} from "../Component.js";
-import {FieldConfig} from "./Field.js";
+import {FieldConfig, FieldValue} from "./Field.js";
 import {DateTime} from "../../util";
 import {InputField} from "./InputField.js";
 
@@ -48,6 +48,13 @@ export class DateField extends InputField {
 			this.applyInvalidMsg();
 		}
 		return control;
+	}
+
+	protected internalSetValue(v:FieldValue) {
+		if(this.type === 'date' && v) {
+			v = v.toString().substring(0,10); // remove possible time part
+		}
+		super.internalSetValue(v);
 	}
 
 	/**
