@@ -758,7 +758,16 @@ class ImageResizer {
 	constructor(private field:HtmlField) {
 		field.el.addEventListener("mousedown", ev => this.onMouseDown(ev as MouseEvent & {target:HTMLElement}));
 		field.el.addEventListener("keydown", ev => this.onKeyDown(ev));
+
+		this.onBlur = (ev:MouseEvent) => {
+			const closestWrapper = (ev.target as HTMLElement).closest('.img-wrapper');
+			if (!closestWrapper) { // keep wrapper when clicking inside or in the toolbar
+				this.unwrap();
+			}
+		};
 	}
+
+	private onBlur
 
 	private onMouseDown(ev:MouseEvent & {target:HTMLElement}) {
 		if (ev.target && ev.target.tagName === 'IMG' && !ev.target.closest('.img-wrapper')) {
@@ -769,10 +778,10 @@ class ImageResizer {
 			return;
 		}
 
-		const closestWrapper = ev.target.closest('.img-wrapper');
-		if (!closestWrapper) {
-			this.unwrap();
-		}
+		// const closestWrapper = ev.target.closest('.img-wrapper');
+		// if (!closestWrapper) { // keep wrapper when clicking inside or in the toolbar
+		// 	this.unwrap();
+		// }
 	}
 
 	private wrap() {
@@ -826,14 +835,31 @@ class ImageResizer {
 		}
 		this.img.parentElement.insertBefore(this.wrapper, this.img);
 		this.wrapper.appendChild(this.img);
+
+		document.addEventListener("mousedown", this.onBlur);
 	}
 
 	private unwrap() {
 		if(!this.wrapper || !this.wrapper.parentElement) {
 			return;
 		}
+
+		document.removeEventListener("mousedown", this.onBlur);
+
 		this.wrapper.parentElement.insertBefore(this.img!, this.wrapper);
 		this.wrapper.remove();
+
+		// this selects the image when clicking outside the editable area. This helps when clicking the create link button so
+		// the img will get linked.
+		var range = document.createRange();
+		range.selectNode(this.img!);
+
+		// Select the range in the window selection
+		var selection = window.getSelection();
+		if(selection) {
+			selection.removeAllRanges();
+			selection.addRange(range);
+		}
 	}
 
 	private onKeyDown(ev: KeyboardEvent) {
