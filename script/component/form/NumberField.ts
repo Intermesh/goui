@@ -5,7 +5,7 @@
  */
 
 import {createComponent} from "../Component.js";
-import {FieldConfig, FieldEventMap} from "./Field.js";
+import {FieldConfig} from "./Field.js";
 import {t} from "../../Translate.js";
 import {InputField} from "./InputField.js";
 

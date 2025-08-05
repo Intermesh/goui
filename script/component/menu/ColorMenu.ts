@@ -6,8 +6,8 @@
 
 import {Menu} from "./Menu.js";
 import {btn} from "../Button.js";
-import {Config, Listener, ObservableListenerOpts} from "../Observable.js";
-import {Component, ComponentEventMap, createComponent} from "../Component.js";
+import {Config} from "../Observable.js";
+import {ComponentEventMap, createComponent} from "../Component.js";
 import {t} from "../../Translate";
 
 /**

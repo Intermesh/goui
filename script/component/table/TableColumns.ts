@@ -4,14 +4,13 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {Config, Listener, Observable, ObservableEventMap, ObservableListenerOpts} from "../Observable.js";
+import {Config, Observable, ObservableEventMap} from "../Observable.js";
 import {Table} from "./Table.js";
 import {Component, createComponent} from "../Component.js";
 import {Format} from "../../util/index.js";
 import {checkbox, CheckboxField} from "../form/index.js";
 import {btn} from "../Button.js";
 import {menu} from "../menu/index.js";
-import {Store, StoreRecord} from "../../data/index";
 
 /**
  * Return HTML or component to render into the table cell. Can also be async.

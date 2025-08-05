@@ -5,7 +5,7 @@
  */
 
 import {btn} from "../Button.js";
-import {Config, Listener, ObservableListenerOpts} from "../Observable.js";
+import {Config} from "../Observable.js";
 import {Component, ComponentEventMap, createComponent} from "../Component.js";
 import {t} from "../../Translate";
 

@@ -6,7 +6,7 @@
 
 import {E} from "../../util/Element.js";
 import {Component, createComponent} from "../Component.js";
-import {Field, FieldConfig, FieldEventMap} from "./Field.js";
+import {Field, FieldConfig} from "./Field.js";
 import {MaterialIcon} from "../MaterialIcon.js";
 
 

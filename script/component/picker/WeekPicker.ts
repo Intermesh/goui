@@ -6,7 +6,7 @@
 
 import {comp, Component, ComponentEventMap, createComponent} from "../Component.js";
 import {DateTime} from "../../util";
-import {Config, Listener, ObservableListenerOpts} from "../Observable.js";
+import {Config} from "../Observable.js";
 import {fieldset, NumberField, numberfield} from "../form";
 import {btn} from "../Button";
 

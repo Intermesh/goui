@@ -4,7 +4,7 @@
  * @author Michael de Hart <mdhart@intermesh.nl>
  */
 
-import {Field, FieldConfig, FieldEventMap} from "./Field.js";
+import {Field, FieldConfig} from "./Field.js";
 import {createComponent} from "../Component.js";
 
 type MapFieldConfig = FieldConfig<MapField, "buildField">;

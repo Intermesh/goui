@@ -8,7 +8,6 @@ import {t} from "../Translate.js";
 import {DateInterval} from "./DateInterval";
 
 
-
 /**
  * Formatting utilities
  * @category Utility

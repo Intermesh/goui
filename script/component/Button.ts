@@ -6,7 +6,7 @@
 
 import {Component, ComponentEventMap, createComponent} from "./Component.js";
 import {Menu} from "./menu";
-import {Config, Listener, ObservableListenerOpts} from "./Observable.js";
+import {Config} from "./Observable.js";
 import {MaterialIcon} from "./MaterialIcon.js";
 import {router} from "../Router.js";
 

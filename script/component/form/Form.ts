@@ -5,10 +5,10 @@
  */
 
 import {ContainerField, ContainerFieldValue} from "./ContainerField.js";
-import {Config, Listener, ObservableListenerOpts} from "../Observable.js";
+import {Config} from "../Observable.js";
 import {Notifier} from "../../Notifier.js";
 import {Component, createComponent} from "../Component.js";
-import {Field, FieldConfig, FieldEventMap} from "./Field.js";
+import {Field, FieldEventMap} from "./Field.js";
 import {t} from "../../Translate.js";
 
 

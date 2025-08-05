@@ -1,6 +1,7 @@
-import {AutocompleteEventMap, AutocompleteField} from "./AutocompleteField.js";
+import {AutocompleteField} from "./AutocompleteField.js";
 import {
-	AbstractDataSource, dataSourceEntityType,
+	AbstractDataSource,
+	dataSourceEntityType,
 	DataSourceStore,
 	datasourcestore,
 	DataSourceStoreConfig,
@@ -11,7 +12,6 @@ import {createComponent} from "../Component.js";
 import {Format} from "../../util/index.js";
 import {FieldConfig} from "./Field.js";
 import {t} from "../../Translate";
-import {List} from "../List";
 
 export type ComboBoxStoreConfig<DS extends AbstractDataSource = AbstractDataSource> = Partial<DataSourceStoreConfig<DS, any>>
 export type ComboBoxDS<ComboBoxType> = ComboBoxType extends ComboBox<infer DS> ? DS : never;

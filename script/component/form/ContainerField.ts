@@ -5,7 +5,6 @@
  */
 
 import {Field, FieldConfig, FieldEventMap} from "./Field.js";
-import {Listener, ObservableListenerOpts} from "../Observable.js";
 import {Component, createComponent} from "../Component.js";
 
 

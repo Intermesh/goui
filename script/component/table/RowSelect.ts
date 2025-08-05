@@ -4,7 +4,7 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {Config, Listener, Observable, ObservableEventMap, ObservableListenerOpts} from "../Observable.js";
+import {Config, Observable, ObservableEventMap} from "../Observable.js";
 import {List} from "../List.js";
 import {FunctionUtil} from "../../util";
 import {createComponent} from "../Component.js";

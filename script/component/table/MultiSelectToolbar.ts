@@ -3,7 +3,7 @@
  * @copyright Copyright 2023 Intermesh BV
  * @author Merijn Schering <mschering@intermesh.nl>
  */
-import {comp, Component, ComponentEventMap} from "../Component.js";
+import {comp, Component} from "../Component.js";
 import {tbarItems, Toolbar} from "../Toolbar.js";
 import {Table} from "./Table.js";
 import {t} from "../../Translate.js";

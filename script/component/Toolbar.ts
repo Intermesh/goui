@@ -4,13 +4,12 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {assignComponentConfig, comp, Component, ComponentEventMap, hr} from "./Component.js";
+import {assignComponentConfig, comp, Component, hr} from "./Component.js";
 import {btn, Button} from "./Button.js";
 import {Config} from "./Observable.js";
 import {menu} from "./menu/index.js";
 import {AbstractMenu} from "./AbstractMenu";
 import {FunctionUtil} from "../util";
-
 
 
 /**

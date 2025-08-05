@@ -3,7 +3,7 @@
  * @copyright Copyright 2023 Intermesh BV
  * @author Merijn Schering <mschering@intermesh.nl>
  */
-import {Listener, Observable, ObservableEventMap, ObservableListenerOpts} from "./component";
+import {Observable, ObservableEventMap} from "./component";
 
 export interface Route {
 	re: RegExp

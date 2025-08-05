@@ -3,7 +3,7 @@
  * @copyright Copyright 2023 Intermesh BV
  * @author Merijn Schering <mschering@intermesh.nl>
  */
-import {Field, FieldConfig, FieldEventMap, FieldValue} from "./Field.js";
+import {Field, FieldConfig, FieldValue} from "./Field.js";
 import {createComponent} from "../Component.js";
 
 

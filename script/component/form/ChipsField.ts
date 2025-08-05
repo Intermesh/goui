@@ -2,7 +2,6 @@ import {Field, FieldConfig, FieldEventMap, FieldValue} from "./Field.js";
 import {comp, Component, ComponentEventMap, createComponent, span} from "../Component.js";
 import {btn} from "../Button.js";
 import {t} from "../../Translate.js";
-import {Listener, ObservableListenerOpts} from "../Observable.js";
 
 
 export interface ChipsField {

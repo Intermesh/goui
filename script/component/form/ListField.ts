@@ -4,11 +4,10 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {Component, createComponent} from "../Component.js";
+import {createComponent} from "../Component.js";
 import {Field, FieldConfig, FieldEventMap} from "./Field.js";
 import {btn, Button} from "../Button.js";
 import {Menu, menu} from "../menu/Menu.js";
-import {Listener, ObservableListenerOpts} from "../Observable.js";
 import {listpicker} from "../picker/index.js";
 import {List} from "../List.js";
 

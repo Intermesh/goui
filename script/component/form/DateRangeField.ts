@@ -1,4 +1,4 @@
-import {Field, FieldConfig, FieldEventMap} from "./Field.js";
+import {Field, FieldConfig} from "./Field.js";
 import {btn, Button} from "../Button.js";
 import {Menu, menu} from "../menu/index.js";
 import {t} from "../../Translate.js";

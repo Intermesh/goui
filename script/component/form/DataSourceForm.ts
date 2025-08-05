@@ -6,7 +6,6 @@
 import {Form, FormEventMap} from "./Form.js";
 import {AbstractDataSource, BaseEntity, DataSourceEventMap, DefaultEntity, EntityID} from "../../data/index.js";
 import {t} from "../../Translate.js";
-import {Listener, ObservableListenerOpts} from "../Observable.js";
 import {Component, createComponent} from "../Component.js";
 import {Window} from "../Window.js";
 import {FieldConfig} from "./Field.js";

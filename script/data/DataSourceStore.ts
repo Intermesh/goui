@@ -7,8 +7,8 @@ import {Store, StoreComponent, StoreConfig, StoreEventMap, StoreRecord} from "..
 import {
 	AbstractDataSource,
 	BaseEntity,
-	Changes,
-	dataSourceEntityType, DataSourceEventMap,
+	dataSourceEntityType,
+	DataSourceEventMap,
 	DefaultEntity,
 	EntityID,
 	Filter,

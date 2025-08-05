@@ -3,7 +3,7 @@
  * @copyright Copyright 2023 Intermesh BV
  * @author Merijn Schering <mschering@intermesh.nl>
  */
-import {Component, Config, createComponent, Listener, ObservableListenerOpts} from "../component";
+import {Component, Config, createComponent} from "../component";
 import {ArrayUtil, Collection, CollectionEventMap} from "../util";
 
 /**

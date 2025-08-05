@@ -4,7 +4,7 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {Field, FieldEventMap} from "./Field.js";
+import {Field} from "./Field.js";
 import {createComponent} from "../Component.js";
 import {Config} from "../Observable.js";
 

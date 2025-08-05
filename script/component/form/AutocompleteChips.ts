@@ -3,8 +3,7 @@ import {List, listStoreType} from "../List.js";
 import {Menu, menu} from "../menu/index.js";
 import {btn, Button} from "../Button.js";
 import {FieldConfig, FieldEventMap} from "./Field.js";
-import {Listener, ObservableListenerOpts} from "../Observable.js";
-import {Component, createComponent} from "../Component.js";
+import {createComponent} from "../Component.js";
 import {FunctionUtil} from "../../util/index.js";
 import {storeRecordType} from "../../data/index.js";
 

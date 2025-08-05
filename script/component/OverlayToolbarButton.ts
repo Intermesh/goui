@@ -2,12 +2,12 @@
  * @license https://github.com/Intermesh/goui/blob/main/LICENSE MIT License
  * @copyright Copyright 2023 Intermesh BV
  * @author Merijn Schering <mschering@intermesh.nl>
- */ import {t} from "../Translate";
+ */
+import {t} from "../Translate";
 import {btn, Button, ButtonEventMap} from "./Button";
 import {tbar, tbarItems, Toolbar} from "./Toolbar";
-import {Config, Listener, ObservableListenerOpts} from "./Observable";
-import {assignComponentConfig, comp, Component, createComponent} from "./Component";
-import {SearchButtonEventMap} from "./SearchButton";
+import {Config} from "./Observable";
+import {assignComponentConfig, comp, Component} from "./Component";
 
 
 export interface OverlayToolbarButtonEventMap extends ButtonEventMap {

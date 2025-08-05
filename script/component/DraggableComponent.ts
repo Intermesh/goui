@@ -5,7 +5,7 @@
  */
 
 import {Component, ComponentEventMap, Constraints, createComponent} from "./Component.js";
-import {Config, Listener, ObservableListenerOpts} from "./Observable.js";
+import {Config} from "./Observable.js";
 import {FunctionUtil} from "../util/index.js";
 
 

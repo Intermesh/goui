@@ -4,7 +4,7 @@
  * @author Michael de Hart <mdhart@intermesh.nl>
  */
 
-import {assignComponentConfig, comp, Component, ComponentEventMap, createComponent, span} from "./Component.js";
+import {assignComponentConfig, comp, Component, ComponentEventMap, createComponent} from "./Component.js";
 import {Store, StoreComponent, StoreEventMap, storeRecordType} from "../data";
 import {t} from "../Translate.js";
 import {E, ObjectUtil} from "../util";

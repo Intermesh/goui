@@ -4,7 +4,7 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {Observable, ObservableEventMap, ObservableListenerOpts, root, Window} from "../component/index.js";
+import {Observable, ObservableEventMap, root, Window} from "../component/index.js";
 import {Comparator} from "./Store.js";
 import {ArrayUtil, FunctionUtil, ObjectUtil} from "../util/index.js";
 import {BrowserStore} from "../util/index";

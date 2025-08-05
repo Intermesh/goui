@@ -5,7 +5,7 @@
  */
 
 import {Component, ComponentEventMap, createComponent} from "./Component.js";
-import {Config, Listener, ObservableListenerOpts} from "./Observable.js";
+import {Config} from "./Observable.js";
 
 
 export interface CardContainerEventMap extends ComponentEventMap {

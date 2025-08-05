@@ -5,8 +5,6 @@
  */
 
 import {Component} from "./Component.js";
-import {Theme} from "typedoc";
-
 
 /**
  * Root container to add the top level components to the body.

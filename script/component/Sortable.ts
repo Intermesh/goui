@@ -1,4 +1,4 @@
-import {Listener, Observable, ObservableEventMap, ObservableListenerOpts} from "./Observable.js";
+import {Observable, ObservableEventMap} from "./Observable.js";
 import {comp, Component} from "./Component.js";
 import {root} from "./Root.js";
 

@@ -5,7 +5,7 @@
  */
 
 import {createComponent} from "../Component.js";
-import {FieldConfig, FieldEventMap} from "./Field.js";
+import {FieldConfig} from "./Field.js";
 import {NumberField} from "./NumberField.js";
 
 export class RangeField extends NumberField {

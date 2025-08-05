@@ -4,7 +4,7 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {FieldConfig, FieldEventMap, FieldValue} from "./Field.js";
+import {FieldConfig, FieldValue} from "./Field.js";
 import {createComponent} from "../Component.js";
 import {Store} from "../../data/index.js";
 import {InputField} from "./InputField.js";

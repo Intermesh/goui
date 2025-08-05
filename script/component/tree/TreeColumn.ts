@@ -1,4 +1,4 @@
-import {Table, TableColumn, TableColumnEventMap} from "../table";
+import {Table, TableColumn} from "../table";
 import {a, comp, createComponent, span} from "../Component";
 import {checkbox} from "../form";
 import {TreeRecord} from "./TreeRecord";

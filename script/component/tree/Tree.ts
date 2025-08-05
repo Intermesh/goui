@@ -1,6 +1,6 @@
 import {Table, TableColumn} from "./../table";
 import {createComponent} from ".././Component";
-import {Config, Listener, ObservableListenerOpts} from "./../Observable.js";
+import {Config} from "./../Observable.js";
 import {ListEventMap} from "../List";
 import {TreeStore} from "./TreeStore";
 import {TreeColumn} from "./TreeColumn";
