@@ -152,7 +152,7 @@ export class ContainerField<EventMap extends FieldEventMap = FieldEventMap, Valu
 		this.findFields().forEach((field:any) => {
 			const name = field.getName ? field.getName() : field.name;
 			// We cast to any[] for Ext compatibility. We try setValue() for Ext if it exists
-			if(name in v) {
+			if(v && name in v) {
 				if(field.setValue) {
 					field.setValue(v[name]);
 				} else {
