@@ -18,24 +18,29 @@ declare global {
 
 }
 
+if(!String.hasOwnProperty('capitalize')) {
+	Object.defineProperty(String.prototype, 'capitalize', {
+		value: function () {
+			return this.charAt(0).toUpperCase() + this.slice(1);
+		},
+		enumerable: false
+	});
+}
 
-Object.defineProperty(String.prototype, 'capitalize', {
-	value: function() {
-		return this.charAt(0).toUpperCase() + this.slice(1);
-	},
-	enumerable: false
-});
+if(!String.hasOwnProperty('uncapitalize')) {
+	Object.defineProperty(String.prototype, 'uncapitalize', {
+		value: function () {
+			return this.charAt(0).toLowerCase() + this.slice(1);
+		},
+		enumerable: false
+	});
+}
 
-Object.defineProperty(String.prototype, 'uncapitalize', {
-	value: function() {
-		return this.charAt(0).toLowerCase() + this.slice(1);
-	},
-	enumerable: false
-});
-
-Object.defineProperty(String.prototype, 'htmlEncode', {
-	value: function() {
-		return Format.escapeHTML(this);
-	},
-	enumerable: false
-});
+if(!String.hasOwnProperty('htmlEncode')) {
+	Object.defineProperty(String.prototype, 'htmlEncode', {
+		value: function () {
+			return Format.escapeHTML(this);
+		},
+		enumerable: false
+	});
+}
