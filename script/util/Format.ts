@@ -59,7 +59,7 @@ export class Format {
 	 */
 	public static escapeHTML = function (str: string) {
 		const p = document.createElement('p');
-		p.innerText = str;
+		p.textContent = str;
 		return p.innerHTML;
 	}
 
@@ -80,13 +80,16 @@ export class Format {
 	 * @param text
 	 */
 	public static textToHtml(text:string) {
+
 		if (!text) {
 			return "";
 		}
 		return this.nl2br(
-			this.convertUrisToAnchors(
-				this.escapeHTML(text)
-			)
+
+			this.escapeHTML(this._convertUriToAnchors(text, true))
+				.replace(/_%O%_/g, '<')
+				.replace(/_%C%_/g,'>')
+
 		);
 	}
 
@@ -96,12 +99,19 @@ export class Format {
 	 * @param text
 	 */
 	public static convertUrisToAnchors(text: string): string {
+		return Format._convertUriToAnchors(text);
+	}
+
+	private static _convertUriToAnchors(text: string, tmp = false) {
 		// Regular expression to match URIs that are not inside anchor tags
-		const uriRegex = /(https?:\/\/[^\s]+|ftp:\/\/[^\s]+)/ig;
+		const uriRegex = /(https?:\/\/[^\s<>]+)/ig;
 
 		// Replace matched URIs with anchor tags
 		return text.replace(uriRegex, (url) => {
-			return `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`;
+
+			const close = tmp ? '_%C%_' : '>',  open = tmp ? '_%O%_' : '<'
+
+			return `${open}a href="${url}" target="_blank" rel="noopener noreferrer"${close}${url}${open}/a${close}`;
 		});
 	}
 
