@@ -384,6 +384,11 @@ export class DateTime {
 	static dayMap: string[] = [] // ['mo','tu',...] if week starts on monday else index 0 = 'su'
 	static monthNames: string[] = []
 
+	/**
+	 * Timezone when using time format functions
+	 */
+	public static timezone = SystemTimeZone;
+
 	static staticInit(lang: string, firstWeekDay?:number) {
 		const locale = new Intl.Locale(lang),
 			dayList = ['su', 'mo', 'tu', 'we', 'th', 'fr', 'sa'];
@@ -428,6 +433,9 @@ export class DateTime {
 	 */
 	public timezone: Timezone = SystemTimeZone;
 
+
+	public static defaultTimezone = SystemTimeZone;
+
 	/**
 	 * Constructor
 	 *
@@ -442,11 +450,15 @@ export class DateTime {
 	 * new DateTime("2025-07-10").getDate() //returns 9 when you are in Los Angeles (-8 timezone)
 	 * new DateTime("2025-07-10").getDate() //returns 10 when you are in Los Angeles (-8 timezone)
 	 * ```
+	 * @param timezone
 	 */
-	constructor(date?: Date | DateTime | number | string ) {
+	constructor(date?: Date | DateTime | number | string, timezone: Timezone = DateTime.defaultTimezone ) {
 
 		if(date == undefined) {
 			this.date = new Date();
+
+			this.adjustFromSystemToUserTimezone(timezone);
+
 		} else if( (date instanceof Date)) {
 			this.date = structuredClone(date);
 		} else if (date instanceof DateTime) {
@@ -457,6 +469,9 @@ export class DateTime {
 			}
 			this.date = new Date(date);
 		}
+
+		this.timezone = timezone;
+
 	}
 
 	/**
@@ -523,6 +538,20 @@ export class DateTime {
 		return d;
 	}
 
+	private adjustFromSystemToUserTimezone<T extends string>(timezone: Timezone) {
+
+		if (this.timezone == timezone) {
+			return;
+		}
+
+		const offset = this.getTimezoneOffset();
+		// get the difference in timezone
+		this.timezone = timezone;
+		const newOffset = this.getTimezoneOffset();
+
+		this.setMinutes(this.getMinutes() - newOffset + offset);
+	}
+
 	/**
 	 * Calculate difference between this and the given date
 	 *
@@ -536,7 +565,9 @@ export class DateTime {
 	 * Create a copy of this object without reference
 	 */
 	public clone() {
-		return new DateTime(new Date(this.date));
+		const d = new DateTime(new Date(this.date));
+		d.timezone = this.timezone;
+		return d;
 	}
 
 	/**
