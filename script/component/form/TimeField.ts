@@ -180,10 +180,10 @@ export class TimeField extends Field {
 			return undefined;
 		}
 
-		let hrs = this.hoursInput!.value;
+		let hrs = parseInt(this.hoursInput!.value);
 
-		if (this.twelveHour && this.amPm!.value == "pm") {
-			hrs = (parseInt(hrs) + 12) + "";
+		if (this.twelveHour && hrs < 12 && this.amPm!.value == "pm") {
+			hrs = (hrs + 12);
 		}
 		return hrs + ":" + (this.minutesInput!.value ? this.minutesInput!.value : "00");
 	}
