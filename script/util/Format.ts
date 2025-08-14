@@ -94,7 +94,7 @@ export class Format {
 	}
 
 	/**
-	 * Convert URI's in text to anchor tags.
+	 * Convert http(s) URI's and mail addresses in text to anchor tags.
 	 *
 	 * @param text
 	 */
@@ -104,15 +104,23 @@ export class Format {
 
 	private static _convertUriToAnchors(text: string, tmp = false) {
 		// Regular expression to match URIs that are not inside anchor tags
-		const uriRegex = /(https?:\/\/[^\s<>]+)/ig;
+		const uriRegex = /(https?:\/\/[^\s<>]+)/ig,
+			close = tmp ? '_%C%_' : '>',
+			open = tmp ? '_%O%_' : '<';
 
 		// Replace matched URIs with anchor tags
-		return text.replace(uriRegex, (url) => {
-
-			const close = tmp ? '_%C%_' : '>',  open = tmp ? '_%O%_' : '<'
-
+		text = text.replace(uriRegex, (url) => {
 			return `${open}a href="${url}" target="_blank" rel="noopener noreferrer"${close}${url}${open}/a${close}`;
 		});
+
+		text = text.replace(
+			/([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g,
+			(match) => {
+				return `${open}a href="mailto:${match}"${close}${match}${open}/a${close}`;
+			}
+		);
+
+		return text;
 	}
 
 	/**

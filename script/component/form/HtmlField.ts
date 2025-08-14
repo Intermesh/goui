@@ -702,7 +702,7 @@ export class HtmlField extends Field<HtmlFieldEventMap> {
 			}
 
 			if(node.nodeType == Node.TEXT_NODE) {
-				if (node.textContent && node.textContent.indexOf("http") > -1) {
+				if (node.textContent && (node.textContent.indexOf("http") > -1 || node.textContent.indexOf('@') > -1)) {
 					const anchored = Format.convertUrisToAnchors(node.textContent);
 					if (anchored != node.textContent) {
 						const tmp = document.createElement("span");
