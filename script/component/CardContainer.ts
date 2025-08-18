@@ -117,6 +117,10 @@ export class CardContainer<EventMap extends CardContainerEventMap = CardContaine
 		return this._activeItem!;
 	}
 
+	public getActiveComponent() {
+		return this.items.get(this.activeItem);
+	}
+
 
 	focus(o?: FocusOptions) {
 
