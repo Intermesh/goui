@@ -900,7 +900,7 @@ export class DateTime {
 
 		'O': date => date.getGMTOffset(""),
 		'P': date => date.getGMTOffset(),
-		'U': date => Math.floor(date.getTime() / 1000).toString(),
+		'U': date => Math.floor((date.getTime() / 1000) + date.getSystemTimezoneDiff() * 60).toString(),
 		'c': date => date.format("Y-m-d\TH:i:sP")
 	};
 
