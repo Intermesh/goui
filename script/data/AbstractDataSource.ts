@@ -483,7 +483,12 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 		}
 		while (r = this.getIds[id].resolves.shift()) {
 			// this.getIds[id].rejects.shift();
-			r.call(this, data);
+
+			const d = structuredClone(data);
+			//@ts-ignore
+			delete d.__isComplete;
+
+			r.call(this, d);
 		}
 		delete this.getIds[id];
 	}
@@ -536,9 +541,8 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 				}
 			}
 			if (this.hasData(id, props)) {
-				const data = structuredClone(this.data[id]);
-				//@ts-ignore
-				delete data.__isComplete;
+				const data = this.data[id];
+
 				this.returnGet(data);
 			} else
 			{
@@ -568,7 +572,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 				.then(response => this.checkState(response.state, response))
 				.then(response => {
 					response.list.forEach((e) => {
-						const data = structuredClone(e);
+
 						if(!f.properties.length) {
 							// freeze to mark it as with complete property set
 							// Object.freeze(e);
@@ -577,7 +581,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 						}
 						this.add(e);
 
-						this.returnGet(data);
+						this.returnGet(e);
 					});
 
 					response.notFound?.forEach((id) => {
