@@ -87,9 +87,6 @@ export class ComboBox<DS extends AbstractDataSource = AbstractDataSource> extend
 
 		this.on("autocomplete", async ({input}) => {
 			this.list.store.queryParams.position = 0;
-			if(!this.list.store.queryParams.filter) {
-				this.list.store.queryParams.filter = {};
-			}
 
 			const filterName = (this.filterName ?? this.displayProperty);
 			this.list.store.setFilter(filterName, {[filterName] : input});
