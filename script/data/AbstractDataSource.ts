@@ -361,6 +361,8 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 
 	protected getIds: Record<EntityID, GetData> = {};
 
+	private allIds?:EntityID[];
+
 	/**
 	 * Get entities from the store
 	 *
@@ -374,15 +376,19 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 		const promises: Promise<EntityType | undefined>[] = [], order: Record<EntityID, number> = {};
 
 		if(ids == undefined) {
-			const queryResponse = await this.query();
-			if (queryResponse.list) {
-				return {
-					list: queryResponse.list,
-					notFound: [],
-					state: await this.getState()
-				} //as GetResponse<EntityType>;
+
+			if(!this.allIds) {
+				const queryResponse = await this.query();
+				if (queryResponse.list) {
+					return {
+						list: queryResponse.list,
+						notFound: [],
+						state: await this.getState()
+					};
+				}
+				this.allIds = queryResponse.ids;
 			}
-			ids = (await this.query()).ids;
+			ids = this.allIds;
 		}
 
 		//first see if we have it in our data property
