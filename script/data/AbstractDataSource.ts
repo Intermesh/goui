@@ -376,7 +376,6 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 		const promises: Promise<EntityType | undefined>[] = [], order: Record<EntityID, number> = {};
 
 		if(ids == undefined) {
-
 			if(!this.allIds) {
 				const queryResponse = await this.query();
 				if (queryResponse.list) {
