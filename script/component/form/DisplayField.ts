@@ -121,12 +121,22 @@ export const displayfield = (config: DisplayFieldConfig, ...items: Component[]) 
  * @param config
  * @param items
  */
-export const displaydatefield = (config: DisplayFieldConfig, ...items: Component[]) => {
+export const displaydatefield = (config: DisplayFieldConfig & {
+	/**
+	 * Render field with date and time
+	 */
+	withTime?: boolean
+}, ...items: Component[]) => {
 	if(!config.icon)
 		config.icon = "today";
 
+	let format = Format.dateFormat;
+	if(config.withTime) {
+		format += " " + Format.timeFormat;
+	}
+
 	if(!config.renderer)
-		config.renderer = (v) => v ? (new DateTime(v)).format(Format.dateFormat) : ""
+		config.renderer = (v) => v ? (new DateTime(v)).format(format) : ""
 
 	return createComponent(new DisplayField(config?.tagName ?? "label", config?.renderer ?? defaultDisplayFieldRenderer), config, items);
 }
