@@ -16,9 +16,9 @@ export interface DataSourceFormEventMap<ValueType extends BaseEntity = DefaultEn
 
 	/**
 	 * Fires when the entity is saved successfully
-	 * @param form
-	 * @param data
-	 * @param isNew
+	 *
+	 * @param data The full entity data
+	 * @param isNew Indicates if the entity was new before the save
 	 */
 	save: {data: ValueType, isNew:boolean}
 
@@ -28,14 +28,13 @@ export interface DataSourceFormEventMap<ValueType extends BaseEntity = DefaultEn
 	 * If a listener returns "false", the standard error dialog
 	 * is not shown.
 	 *
-	 * @param form
-	 * @param data
+	 * @param error
 	 */
 	saveerror: {error: any}
 
 	/**
 	 * When the data is fetched from the store. but before it is put into the fields
-	 * @param form
+	 *
 	 * @param data the entity from the store
 	 */
 	load: {data: ValueType},
@@ -53,6 +52,9 @@ export interface DataSourceFormEventMap<ValueType extends BaseEntity = DefaultEn
 
 	/**
 	 * When the data in the fields is serialized to a single json object to be posted to the server.
+	 *
+	 * When this form is updating an entity it will only contain the modified properties.
+	 *
 	 * @param form
 	 * @param data
 	 */
