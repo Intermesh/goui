@@ -188,9 +188,9 @@ export class Form<ValueType extends ContainerFieldValue = ContainerFieldValue, E
 
 				} catch (e: any) {
 					el.cls(['-valid', '+invalid']);
-
-					const msg = typeof (e) == "string" ? e : e.message;
-					Notifier.error(msg);
+					// handlers should handle errors
+					// const msg = typeof (e) == "string" ? e : e.message ?? t("Sorry, an unkown error occurred");
+					// Notifier.error(msg);
 					return false;
 
 				} finally {

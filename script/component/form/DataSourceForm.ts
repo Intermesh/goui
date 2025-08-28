@@ -107,6 +107,8 @@ export class DataSourceForm<ValueType extends BaseEntity = DefaultEntity> extend
 					void Window.error(e);
 				}
 
+				throw e;
+
 			}
 		}
 	}
