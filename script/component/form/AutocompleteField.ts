@@ -79,7 +79,6 @@ export class AutocompleteField<T extends List = List, EventMap extends Autocompl
 				hide: ({target}) => {
 					if(target.rendered) {
 						if(this.name && this.value == undefined) { // @see ParticipantField search
-							debugger;
 							this.input.value = "";
 						}
 						const inputField = target.findAncestorByType(InputField)!;
@@ -254,6 +253,9 @@ export class AutocompleteField<T extends List = List, EventMap extends Autocompl
 
 	private onInput(_ev: Event) {
 		this.menuButton.menu!.show();
+		if(this.list.rowSelection) {
+			this.list.rowSelection.clear();
+		}
 		this.fire("autocomplete", {input: this.input!.value});
 	}
 

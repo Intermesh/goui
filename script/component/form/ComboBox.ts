@@ -159,6 +159,7 @@ export const combobox = (config: ComboBoxConfig) => createComponent(
 		config.valueProperty ?? "id",
 		config.renderer ?? ComboBoxDefaultRenderer,
 		config.storeConfig ?? {	queryParams: {limit: 50}},
-		config.tableConfig ?? {}, config.selectFirst ?? false
+		config.tableConfig ?? {},
+		config.selectFirst ?? false
 	),
 	config);
