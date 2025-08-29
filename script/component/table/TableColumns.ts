@@ -146,7 +146,7 @@ export class TableColumn<EventMap extends TableColumnEventMap = TableColumnEvent
 	sticky?: boolean
 }
 
-type TableColumnConfig = Config<TableColumn> & {
+export type TableColumnConfig<T extends TableColumn = TableColumn> = Config<T> & {
 	/**
 	 * The ID of the column which is also the default for the column 'property'
 	 */
@@ -196,6 +196,8 @@ export class BoolColumn extends TableColumn {
 	width = 64
 }
 
+
+
 /**
  * Create a column showing a boolean value as check or empty
  *
@@ -203,7 +205,16 @@ export class BoolColumn extends TableColumn {
  */
 export const boolcolumn = (config: TableColumnConfig) => createComponent(new BoolColumn(config.id), config);
 
+export class NumberColumn extends TableColumn {
+	renderer = (v: number|undefined) => {
+		return v ? Format.number(v, this.decimals) : "";
+	}
+	align: align = "right"
+	width = 64
+	decimals = 2
+}
 
+export const numbercolumn = (config: TableColumnConfig<NumberColumn>) => createComponent(new NumberColumn(config.id), config);
 
 export interface CheckboxColumnEventMap extends TableColumnEventMap {
 
