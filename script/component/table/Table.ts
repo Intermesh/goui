@@ -117,6 +117,7 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 					continue;
 				}
 				const td = document.createElement("td");
+				row.append(td);
 
 				let value = undefined;
 				try {
@@ -178,7 +179,7 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 					left += c.width;
 
 
-				row.append(td);
+
 			}
 
 		}, "table");
