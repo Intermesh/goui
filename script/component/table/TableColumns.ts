@@ -144,6 +144,12 @@ export class TableColumn<EventMap extends TableColumnEventMap = TableColumnEvent
 	 * Note:  The sticky column needs a background color. It is currently assumed to be on a background with "bg-lowest"
 	 */
 	sticky?: boolean
+
+
+	/**
+	 * HTML encode the value
+	 */
+	htmlEncode: boolean = true
 }
 
 export type TableColumnConfig<T extends TableColumn = TableColumn> = Config<T> & {
