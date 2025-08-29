@@ -127,6 +127,14 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 					//ignore invalid pointers.
 				}
 
+				const strToTd = (str:string) => {
+					if(c.htmlEncode) {
+						td.innerText = str;
+					} else {
+						td.innerHTML = str;
+					}
+				}
+
 				if (c.renderer) {
 					const r = c.renderer(value, record, td, this, storeIndex, c);
 
@@ -135,11 +143,11 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 					if (r) {
 
 						if (typeof r === "string") {
-							td.innerHTML = r;
+							strToTd(r);
 						} else if (r instanceof Component) {
 							r.parent = this;
 							r.render(td);
-						} else {
+						} else if(r instanceof Promise) {
 							r.then((s) => {
 								if (!s) {
 									return;
@@ -148,13 +156,16 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 									s.parent = this;
 									s.render(td);
 								} else {
-									td.innerHTML = s;
+									strToTd(s);
 								}
 							})
+						} else {
+							strToTd(r + "");
 						}
 					}
 				} else {
-					td.innerText = value != undefined && value != null ? value : "";
+
+					strToTd(value != undefined && value != null ? value : "");
 				}
 
 				if (c.align) {
@@ -177,9 +188,6 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 
 				if (c.width)
 					left += c.width;
-
-
-
 			}
 
 		}, "table");

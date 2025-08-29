@@ -200,6 +200,7 @@ export class BoolColumn extends TableColumn {
 	}
 	align: align = "center"
 	width = 64
+	htmlEncode = false;
 }
 
 
@@ -240,6 +241,7 @@ export class CheckboxColumn extends TableColumn<CheckboxColumnEventMap> {
 		super(id);
 
 		this.cls = "checkbox-select-column";
+		this.htmlEncode = false;
 	}
 
 	renderer : TableColumnRenderer = (val, record, td, table, rowIndex, column) => {
@@ -291,7 +293,7 @@ export class CheckboxSelectColumn extends TableColumn {
 		super(id);
 		this.hidable = false;
 		this.sticky = true;
-
+		this.htmlEncode = false;
 		this.cls = "checkbox-select-column";
 	}
 
