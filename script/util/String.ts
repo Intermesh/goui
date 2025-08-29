@@ -14,6 +14,12 @@ declare global {
 		 * Convert characters to their HTML character equivalents for safe display in web pages.
 		 */
 		htmlEncode<T extends string>(this: T) : T,
+
+		/**
+		 * Remove HTML tags
+		 */
+		stripTags<T extends string>(this: T) : T,
+
 	}
 
 }
@@ -40,6 +46,17 @@ if(!String.hasOwnProperty('htmlEncode')) {
 	Object.defineProperty(String.prototype, 'htmlEncode', {
 		value: function () {
 			return Format.escapeHTML(this);
+		},
+		enumerable: false
+	});
+}
+
+if(!String.hasOwnProperty('stripTags')) {
+	Object.defineProperty(String.prototype, 'stripTags', {
+		value: function () {
+			const p = document.createElement('div');
+			p.innerHTML = this;
+			return p.textContent;
 		},
 		enumerable: false
 	});
