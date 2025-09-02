@@ -6,6 +6,7 @@
 
 import {Field, FieldConfig, FieldEventMap} from "./Field.js";
 import {Component, createComponent} from "../Component.js";
+import {ObjectUtil} from "../../util/index";
 
 
 export type ContainerFieldValue = Record<string, any>;
@@ -171,7 +172,7 @@ export class ContainerField<EventMap extends FieldEventMap = FieldEventMap, Valu
 
 		// we have to clone the value to avoid side effects when the value is modified outside the form's
 		// scope. We don't want any external modifications to leak in here because reference is a value.
-		const formProps: ValueType = structuredClone(this._value) as ValueType || {};
+		const formProps: ValueType = structuredClone(this._value) as ValueType || {}, newProps:ValueType = {} as ValueType;
 
 		this.findFields().forEach((field: any) => {
 			//for Extjs compat try .getName() and .getValue()
@@ -191,7 +192,11 @@ export class ContainerField<EventMap extends FieldEventMap = FieldEventMap, Valu
 				if(field.disabled) {
 					delete formProps[fieldName];
 				} else {
-					formProps[fieldName] = fieldVal;
+					if(fieldName in newProps && ObjectUtil.isObject(newProps[fieldName]) && ObjectUtil.isObject(fieldVal)) {
+						newProps[fieldName] = Object.assign(newProps[fieldName], fieldVal);
+					} else {
+						newProps[fieldName] = fieldVal;
+					}
 				}
 			}
 		});
