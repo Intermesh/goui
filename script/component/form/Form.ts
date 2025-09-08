@@ -25,11 +25,13 @@ export interface FormEventMap extends FieldEventMap {
 
 
 	/**
-	 * Fires when the form is valid and submitted. The event is fired after calling the handler.
+	 * Fires when the form is valid (client side) and submitted. The event is fired after calling the handler.
+	 *
+	 * When a server side error occurs handlerResponse will be empty and error will be set
 	 *
 	 * @param form
 	 */
-	submit: {handlerResponse: any},
+	submit: {handlerResponse: any, error: any},
 
 	/**
 	 * Not fired by the framework. But comes in handy when you extend this form and add a cancel button
@@ -191,13 +193,16 @@ export class Form<ValueType extends ContainerFieldValue = ContainerFieldValue, E
 					// handlers should handle errors
 					// const msg = typeof (e) == "string" ? e : e.message ?? t("Sorry, an unkown error occurred");
 					// Notifier.error(msg);
+
+					this.fire("submit", {handlerResponse, error:e});
+
 					return false;
 
 				} finally {
 					this.unmask();
 				}
 			}
-			this.fire("submit", {handlerResponse});
+			this.fire("submit", {handlerResponse, error:undefined});
 
 			return true;
 
