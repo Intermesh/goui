@@ -538,6 +538,15 @@ export class Window<EventMap extends WindowEventMap = WindowEventMap> extends Dr
 
 		console.error(msg);
 
+		msg = this.prepareErrorMessage(msg);
+
+		msg = `<i class="icon">error</i><div class="text">${msg}</div>`;
+
+		return Window.alert(msg, t("Error") + " - " + (new DateTime).format("Y-m-d H:i:s"), "error");
+	}
+
+
+	public static prepareErrorMessage(msg:any):string {
 		if(typeof msg != "string") {
 
 			if(msg.type == "invalidProperties") {
@@ -546,8 +555,8 @@ export class Window<EventMap extends WindowEventMap = WindowEventMap> extends Dr
 					break;
 				}
 			} else {
-				// Javascript errors have message and JMAP errors have description
-				msg = msg.message ?? msg.description;
+				// Javascript errors have message and JMAP errors have description. JMAP Request level errors have a detail prop
+				msg = msg.message ?? msg.description ?? msg.detail;
 			}
 		}
 
@@ -555,9 +564,7 @@ export class Window<EventMap extends WindowEventMap = WindowEventMap> extends Dr
 			msg = t("Sorry, an unknown error occurred")
 		}
 
-		msg = `<i class="icon">error</i><div class="text">${msg}</div>`;
-
-		return Window.alert(msg, t("Error") + " - " + (new DateTime).format("Y-m-d H:i:s"), "error");
+		return msg;
 	}
 
 	/**

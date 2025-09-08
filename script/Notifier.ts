@@ -4,7 +4,7 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {comp, root} from "./component/index";
+import {comp, root, Window} from "./component/index";
 
 /**
  * Notify factory
@@ -25,11 +25,8 @@ export class Notifier {
 	 */
 	public static error(msg: any, timeout = 0) {
 		console.error(msg);
-		if (msg instanceof Object && msg.message) {
-			msg = msg.message;
-		} else if (typeof msg != "string") {
-			msg = msg + "";
-		}
+
+		Window.prepareErrorMessage(msg);
 
 		return new Message(msg as string, "error", timeout);
 	}
