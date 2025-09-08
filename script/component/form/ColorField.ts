@@ -51,7 +51,24 @@ export class ColorField extends Field {
 			this.value = color;
 		});
 
+
+		const resizeObserver = new ResizeObserver((entries) => {
+			this.pickerButton.menu!.align();
+		});
+
+		resizeObserver.observe(picker.el);
+
+		this.on("remove", () => {
+			// not sure if needed but disconnect the resizeobserver when this component is removed.
+			resizeObserver.disconnect();
+		})
+
 		return picker;
+	}
+
+	set required(required: boolean) {
+		super.required = required;
+		this.picker.showAuto = !required;
 	}
 
 	protected createControl(): undefined | HTMLElement {
@@ -77,6 +94,7 @@ export class ColorField extends Field {
 
 	protected internalSetValue(v?: any) {
 		this.control!.style.backgroundColor =  v ? "#" + v : "";
+		this.picker.value = v;
 	}
 }
 

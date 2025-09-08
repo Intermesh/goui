@@ -171,8 +171,27 @@ button.goui-button.has-menu.with-text {
 
 
 menu.goui-dropdown.goui-menu-color, .goui-menu-color {
+	//color: #CDAD00;
+	//color: #E74C3C;
+	//color: #9B59B6;
+	//color: #8E44AD;
+	//color: #2980B9;
+	//color: #3498DB;
+	//color: #1ABC9C;
+	//color: #16A085;
+	//color: #27AE60;
+	//color: #2ECC71;
+	//color: #F1C40F;
+	//color: #F39C12;
+	//color: #E67E22
+	//color: #D35400
+	//color: #95A5A6;
+	//color: #34495E;
+	//color: #808B96;
+	//color: #1652a1;
+
 	overflow: auto;
-	width: (10 * util.dp(38)) + util.dp(32);
+	width: (9 * util.dp(38)) + util.dp(32);
 	display:flex;
 	flex-direction: row;
 	flex-wrap: wrap;
