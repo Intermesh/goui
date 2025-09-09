@@ -344,6 +344,3 @@ Format.dateFormat =  (new Intl.DateTimeFormat().formatToParts(new Date())).map(p
 	})
 	.join("");
 
-
-console.log(Format.dateFormat, Format.timeFormat);
-
