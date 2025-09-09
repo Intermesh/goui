@@ -192,6 +192,7 @@ export class ContainerField<EventMap extends FieldEventMap = FieldEventMap, Valu
 				if(field.disabled) {
 					delete formProps[fieldName];
 				} else {
+					// if there are multiple container fields with the same name then we merge the values here.
 					if(fieldName in newProps && ObjectUtil.isObject(newProps[fieldName]) && ObjectUtil.isObject(fieldVal)) {
 						newProps[fieldName] = Object.assign(newProps[fieldName], fieldVal);
 					} else {
@@ -201,7 +202,7 @@ export class ContainerField<EventMap extends FieldEventMap = FieldEventMap, Valu
 			}
 		});
 
-		return formProps;
+		return Object.assign(formProps, newProps);
 	}
 
 	public getOldValue(): any {
