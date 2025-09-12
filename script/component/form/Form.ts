@@ -130,6 +130,7 @@ export class Form<ValueType extends ContainerFieldValue = ContainerFieldValue, E
 	}
 
 	set value(v: Partial<ValueType>) {
+		console.log("Form load: ", v);
 		super.value = v;
 		this.trackReset();
 	}
