@@ -38,9 +38,19 @@ export class DisplayField extends Field {
 	/**
 	 * Escape value HTML
 	 *
+	 * @deprecated Use htmlEncode
 	 * {@link Format.escapeHTML}
 	 */
-	public escapeValue = true;
+	public set escapeValue(v:boolean){
+		this.htmlEncode = v;
+	}
+
+	/**
+	 * Encod HTML entities
+	 *
+	 * {@link Format.escapeHTML}
+	 */
+	public htmlEncode = true;
 
 
 	/**

@@ -54,10 +54,19 @@ export class Format {
 
 
 	/**
+	 * @deprecated Use htmlEncode()
+	 */
+	public static escapeHTML (str: string) {
+		return Format.htmlEncode(str);
+	}
+
+	/**
 	 * Escape a HTML string for safely inserting it in the DOM tree
+	 * This method is also added to the String class as {@link String.htmlEncode()}
+	 *
 	 * @param str
 	 */
-	public static escapeHTML = function (str: string) {
+	public static htmlEncode (str: string) {
 		const p = document.createElement('p');
 		p.textContent = str;
 		return p.innerHTML;

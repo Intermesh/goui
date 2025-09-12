@@ -45,7 +45,7 @@ if(!String.hasOwnProperty('uncapitalize')) {
 if(!String.hasOwnProperty('htmlEncode')) {
 	Object.defineProperty(String.prototype, 'htmlEncode', {
 		value: function () {
-			return Format.escapeHTML(this);
+			return Format.htmlEncode(this);
 		},
 		enumerable: false
 	});
