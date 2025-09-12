@@ -454,14 +454,13 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	 * @param id
 	 * @param properties
 	 */
-	public async single(id: EntityID, properties:string[] = []): Promise<EntityType | undefined> {
-
-		if(id == undefined) {
-			debugger;
-		}
+	public async single(id: EntityID, properties:string[] = []): Promise<EntityType> {
 		id = id+"";
 		if(!id) {
-			return Promise.resolve(undefined);
+			return Promise.reject({
+				id: id,
+				error: "Not found"
+			});
 		}
 		const p = new Promise((resolve, reject) => {
 			if (!this.getIds[id]) {
@@ -475,7 +474,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 				this.getIds[id].rejects.push(reject);
 				this.getIds[id].properties = ArrayUtil.unique(this.getIds[id].properties.concat(properties));
 			}
-		}) as Promise<EntityType | undefined>;
+		}) as Promise<EntityType>;
 		this.delayedGet();
 		return p;
 	}
