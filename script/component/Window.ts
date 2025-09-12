@@ -167,7 +167,7 @@ export class Window<EventMap extends WindowEventMap = WindowEventMap> extends Dr
 	private _title!:string
 	set title(title: string) {
 		if(this.titleCmp) {
-			this.titleCmp.html = title;
+			this.titleCmp.text = title;
 		}
 		this._title = title;
 	}
@@ -188,7 +188,7 @@ export class Window<EventMap extends WindowEventMap = WindowEventMap> extends Dr
 
 				this.titleCmp = comp({
 					tagName: "h3",
-					html: this.title ?? ""
+					html: this.text ?? ""
 				}),
 
 				'->'
