@@ -188,7 +188,7 @@ export class Window<EventMap extends WindowEventMap = WindowEventMap> extends Dr
 
 				this.titleCmp = comp({
 					tagName: "h3",
-					html: this.text ?? ""
+					text: this.title ?? ""
 				}),
 
 				'->'
