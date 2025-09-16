@@ -1359,16 +1359,16 @@ export const mask = (config?: Config<Mask>) => createComponent(new Mask(), confi
  */
 export const comp = (config?: Config<Component>, ...items: Component[]) => createComponent(new Component(config?.tagName), config, items);
 
-export const span = (config?: Config<Component> | string, ...items: Component[]) => createComponent(new Component("span"), typeof config == 'string' ? {html: config} : config, items);
-export const p = (config?: Config<Component> | string, ...items: Component[]) => createComponent(new Component("p"), typeof config == 'string' ? {html: config} : config, items);
-export const small = (config?: Config<Component> | string, ...items: Component[]) => createComponent(new Component("small"), typeof config == 'string' ? {html: config} : config, items);
-export const h1 = (config?: Config<Component> | string, ...items: Component[]) => createComponent(new Component("h1"), typeof config == 'string' ? {html: config} : config, items);
-export const h2 = (config?: Config<Component> | string, ...items: Component[]) => createComponent(new Component("h2"), typeof config == 'string' ? {html: config} : config, items);
-export const h3 = (config?: Config<Component> | string, ...items: Component[]) => createComponent(new Component("h3"), typeof config == 'string' ? {html: config} : config, items);
-export const h4 = (config?: Config<Component> | string, ...items: Component[]) => createComponent(new Component("h4"), typeof config == 'string' ? {html: config} : config, items);
+export const span = (config?: Config<Component> | string, ...items: Component[]) => createComponent(new Component("span"), typeof config == 'string' ? {text: config} : config, items);
+export const p = (config?: Config<Component> | string, ...items: Component[]) => createComponent(new Component("p"), typeof config == 'string' ? {text: config} : config, items);
+export const small = (config?: Config<Component> | string, ...items: Component[]) => createComponent(new Component("small"), typeof config == 'string' ? {text: config} : config, items);
+export const h1 = (config?: Config<Component> | string, ...items: Component[]) => createComponent(new Component("h1"), typeof config == 'string' ? {text: config} : config, items);
+export const h2 = (config?: Config<Component> | string, ...items: Component[]) => createComponent(new Component("h2"), typeof config == 'string' ? {text: config} : config, items);
+export const h3 = (config?: Config<Component> | string, ...items: Component[]) => createComponent(new Component("h3"), typeof config == 'string' ? {text: config} : config, items);
+export const h4 = (config?: Config<Component> | string, ...items: Component[]) => createComponent(new Component("h4"), typeof config == 'string' ? {text: config} : config, items);
 
-export const code = (config?: Config<Component> | string, ...items: Component[]) => createComponent(new Component("code"), typeof config == 'string' ? {html: config} : config, items);
-export const section = (config?: Config<Component> | string, ...items: Component[]) => createComponent(new Component("section"), typeof config == 'string' ? {html: config} : config, items);
+export const code = (config?: Config<Component> | string, ...items: Component[]) => createComponent(new Component("code"), typeof config == 'string' ? {text: config} : config, items);
+export const section = (config?: Config<Component> | string, ...items: Component[]) => createComponent(new Component("section"), typeof config == 'string' ? {text: config} : config, items);
 export const hr = (config?: Config<Component>) => createComponent(new Component("hr"), config);
 export const br = (config?: Config<Component>) => createComponent(new Component("br"), config);
 export const img = (config: Config<Component> & {src:string, alt?:string}) => {
