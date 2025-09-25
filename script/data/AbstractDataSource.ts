@@ -396,7 +396,9 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 		ids.forEach((id, index) => {
 			//keep order for sorting the result
 			order[id] = index++;
-			promises.push(this.single(id, properties));
+			promises.push(this.single(id, properties).catch((e:any) => {
+				return undefined;
+			}));
 		})
 
 		// Call class method to fetch additional
