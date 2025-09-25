@@ -123,19 +123,14 @@ export class ChipsField<EventMap extends FieldEventMap = FieldEventMap> extends 
 		return this.chipsContainer;
 	}
 
-	// get value(): FieldValue[] {
-	// 	return super.value as FieldValue[];
-	// }
-	//
-	// set value(v: FieldValue[]) {
-	// 	super.value = v;
-	// }
-
 	protected onEditorKeyDown(ev: KeyboardEvent) {
 
 		this.clearInvalid();
 
 		switch (ev.key) {
+
+			case ";":
+			case ",":
 			case "Enter":
 				this.onEnter(ev);
 				break;
@@ -313,6 +308,11 @@ type ChipsConfig = FieldConfig<ChipsField> &
 	Partial<Pick<ChipsField, "textInputToValue" | "chipRenderer">>
 /**
  * Shorthand function to create {@link ChipsField}
+ *
+ * A form field that holds an array value represented in chips (small rectangular items with text). Like a tags
+ * field or recipients field for an e-mail composer for example.
+ *
+ * @link https://goui.io/#form/ChipsField Example
  *
  * @param config
  */
