@@ -10,6 +10,9 @@ import {Config} from "./Observable";
 import {assignComponentConfig, comp, Component} from "./Component";
 
 
+/**
+ * @inheritDoc
+ */
 export interface OverlayToolbarButtonEventMap extends ButtonEventMap {
 
 	/**

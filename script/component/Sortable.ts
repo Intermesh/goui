@@ -108,6 +108,10 @@ const dragData: DragData = {
 
 /**
  * Enables sorting of child elements inside a container
+ *
+ * This class is used by lists, tables and trees but can also be used in custom components
+ *
+ * @link https://goui.io/#draganddrop Examples
  */
 export class Sortable<Type extends Component> extends Observable<SortableEventMap> {
 

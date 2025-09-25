@@ -90,6 +90,8 @@ type ToolbarItems = "-" | "bold" | "italic" | "underline" | "strikeThrough" |
 /**
  * A HTML editor field component
  *
+ * @link https://goui.io/#form/HtmlField Example
+ *
  * @see Form
  */
 export class HtmlField extends Field<HtmlFieldEventMap> {
@@ -879,6 +881,8 @@ class ImageResizer {
 
 /**
  * Shorthand function to create {@link HtmlField}
+ *
+ * @link https://goui.io/#form/HtmlField Examples
  *
  * @param config
  */

@@ -26,6 +26,8 @@ export interface MonthPickerEventMap extends ComponentEventMap {
  * Month picker
  *
  * Select a Month of the year
+ *
+ * @link https://goui.io/#datepicker Example
  */
 export class MonthPicker extends Component<MonthPickerEventMap> {
 
@@ -125,9 +127,11 @@ export class MonthPicker extends Component<MonthPickerEventMap> {
 }
 
 /**
- * Create a Month picker
+ * Create a {@link MonthPicker}
  *
  * Can select a Month of the year
+ *
+ * @link https://goui.io/#datepicker Example
  *
  * @param config
  */

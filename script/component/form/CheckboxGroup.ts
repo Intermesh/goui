@@ -41,4 +41,11 @@ export class CheckboxGroup extends Component {
 	}
 }
 
+/**
+ * Create a {@link CheckboxGroup}
+ *
+ * @link https://goui.io/#form/ChecksAndRadios Example
+ *
+ * @param config
+ */
 export const checkboxgroup = (config?: Config<CheckboxGroup>) => createComponent(new CheckboxGroup(), config);

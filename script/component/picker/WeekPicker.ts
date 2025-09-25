@@ -129,9 +129,11 @@ export class WeekPicker extends Component<WeekPickerEventMap> {
 }
 
 /**
- * Create a week picker
+ * Create a {@link WeekPicker}
  *
  * Can select a week of the year
+ *
+ * @link https://goui.io/#datepicker Example
  *
  * @param config
  */

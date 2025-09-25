@@ -18,6 +18,7 @@ export interface CheckboxField {
 /**
  * Checkbox field
  *
+ * @link https://goui.io/#form/ChecksAndRadios Example
  * @see Form
  */
 export class CheckboxField extends InputField {
@@ -112,6 +113,8 @@ export type CheckboxFieldConfig = Omit<FieldConfig<CheckboxField>, "type"> & {
 
 /**
  * Shorthand function to create {@link CheckboxField}
+ *
+ * @link https://goui.io/#form/ChecksAndRadios Example
  *
  * @param config
  */

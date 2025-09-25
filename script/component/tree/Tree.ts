@@ -7,6 +7,9 @@ import {TreeColumn} from "./TreeColumn";
 import {TreeRecord} from "./TreeRecord";
 
 
+/**
+ * @inheritDoc
+ */
 export interface TreeEventMap extends ListEventMap {
 	/**
 	 * Fires before a node expands
@@ -62,6 +65,8 @@ export type NodeProvider = (record:TreeRecord | undefined, store: TreeStore) => 
 
 /**
  * Tree component
+ *
+ * @link https://goui.io/#tree Examples
  */
 export class Tree<EventMap extends TreeEventMap = TreeEventMap> extends Table<TreeStore, EventMap> {
 	constructor(protected nodeProvider: NodeProvider, columns:TableColumn[] = [new TreeColumn("text")]) {

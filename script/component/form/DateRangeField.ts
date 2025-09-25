@@ -12,6 +12,8 @@ import {comp, Component, createComponent, hr} from "../Component.js";
  * Used to select a date range. The value format is:
  *
  * "YYYY-MM-DD..YYYY-MM-DD"
+ *
+ * @link https://goui.io/#form/DateTime Example
  */
 export class DateRangeField extends Field {
 	private button: Button;
@@ -506,7 +508,9 @@ class DateRangeFieldYearMenu extends Menu {
 }
 
 /**
- * Shorthand function to create {@link DateField}
+ * Shorthand function to create {@link DateRangeField}
+ *
+ * @link https://goui.io/#form/DateTime Example
  *
  * @param config
  */

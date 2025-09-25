@@ -6,6 +6,15 @@
 
 import {FunctionUtil} from "../util/FunctionUtil";
 
+
+/**
+ * A mapping of component events
+ *
+ * The key is the event name and the describes the listener argument that gets passed to it. This event object always
+ * gets an extra property "target" which contains the component emitting the event.
+ *
+ * See {@link ComponentEventMap} for an example
+ */
 export interface ObservableEventMap {
 
 }

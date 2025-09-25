@@ -61,7 +61,9 @@ export interface DataSourceFormEventMap<ValueType extends BaseEntity = DefaultEn
 	beforesave: {data: Partial<ValueType>}
 }
 
-
+/**
+ * A form that loads and saves an entity from a {@link AbstractDataSource}
+ */
 export class DataSourceForm<ValueType extends BaseEntity = DefaultEntity> extends Form<ValueType, DataSourceFormEventMap<ValueType>> {
 
 	public currentId?: EntityID

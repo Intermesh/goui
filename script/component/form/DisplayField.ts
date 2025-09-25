@@ -17,6 +17,8 @@ const defaultDisplayFieldRenderer: DisplayFieldRenderer = (v:any, field:DisplayF
  * Use cls: "pit" to style as an editable form field.
  *
  * A {@link Form} can be used to edit data but also to present data using display fields
+ *
+ * @link https://goui.io/#form/DisplayField Examples
  */
 export class DisplayField extends Field {
 
@@ -120,6 +122,8 @@ type DisplayFieldConfig = FieldConfig<DisplayField> & {
 /**
  * Shortcut function to create a {@link DisplayField}
  *
+ * @link https://goui.io/#form/DisplayField Examples
+ *
  * @param config
  * @param items
  */
@@ -127,6 +131,8 @@ export const displayfield = (config: DisplayFieldConfig, ...items: Component[]) 
 
 /**
  * Create display field with date icon and renderer
+ *
+ * @link https://goui.io/#form/DisplayField Examples
  *
  * @param config
  * @param items

@@ -16,6 +16,8 @@ import {AbstractMenu} from "../AbstractMenu";
  *
  * Can be used as drop down menu or navigation menu.
  *
+ * @link @link https://goui.io/#buttons Examples
+ *
  * @example Navigation menu
  * ```typescript
  * const mainMenu = menu({cls: "main"},
@@ -431,6 +433,8 @@ export class Menu<EventMap extends ComponentEventMap = ComponentEventMap> extend
 
 /**
  * Shorthand function to create {@link Menu}
+ *
+ * @link @link https://goui.io/#buttons Examples
  *
  * @param config
  * @param items

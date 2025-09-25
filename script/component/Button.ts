@@ -62,14 +62,17 @@ export interface ButtonEventMap extends ComponentEventMap {
 /**
  * Button component
  *
+ * @link https://goui.io/#buttons Examples
+ *
  * @example
  *
  * ```typescript
  * btn({
  *   icon: "star",
- *   text: "Test 1"
+ *   text: "Test 1",
  *   handler: (e) => alert("Hi!")
- * })
+ * });
+ *
  * ```
  *
  */
@@ -320,6 +323,8 @@ export class Button<EventMap extends ButtonEventMap= ButtonEventMap> extends Com
 }
 /**
  * Shorthand function to create {@link Button}
+ *
+ * @link @link https://goui.io/#buttons Examples
  *
  * @param config
  */

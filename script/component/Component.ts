@@ -15,7 +15,7 @@ import {browser, Collection} from "../util/index.js";
 export type FindComponentPredicate = string | number | Component | ((comp: Component) => boolean | void);
 
 /**
- * Get's the class type of an instance. Oposite of the InstanceOf<>
+ * Gets the class type of an instance. Opposite of the InstanceOf<>
  */
 type ClassTypeOf<T> = abstract new (...args: any[]) => T;
 
@@ -40,7 +40,12 @@ export interface Constraints {
 	top: number
 }
 
-
+/**
+ * A mapping of component events
+ *
+ * The key is the event name and the describes the listener argument that gets passed to it. This event object always
+ * gets an extra property "target" which contains the component emitting the event.
+ */
 export interface ComponentEventMap extends ObservableEventMap {
 	/**
 	 * Fires when the component renders and is added to the DOM
@@ -161,11 +166,13 @@ export type ComponentState = Record<string, any>;
  * @example
  *
  * ```typescript
- * Component.create({
+ * comp({
  *   tagName: "hr",
  *   cls: "special"
  * })
  * ```
+ *
+ * @link https://goui.io/#component Examples
  */
 export class Component<EventMapType extends ComponentEventMap = ComponentEventMap> extends Observable<EventMapType> {
 
@@ -1355,7 +1362,15 @@ export class Mask extends Component {
 export const mask = (config?: Config<Mask>) => createComponent(new Mask(), config);
 
 /**
- * Shorthand function to create {@link Component}
+ * Shorthand function to create a {@link Component}
+ *
+ * @link https://goui.io/#component Examples
+ *
+ * ```typescript
+ * const c = new comp({
+ * 	text: "Hi!"
+ * });
+ * ```
  */
 export const comp = (config?: Config<Component>, ...items: Component[]) => createComponent(new Component(config?.tagName), config, items);
 
@@ -1392,6 +1407,13 @@ export const a = (config: Config<Component> & {href?:string, target?: string}, .
 export const progress = (config?: Config<Component>) => createComponent(new Component("progress"), config);
 
 
+/**
+ * Helper function to create components by fresh instance, configuration and child components
+ *
+ * @param comp The component instance
+ * @param config Configuration object to apply
+ * @param items The child components
+ */
 export const createComponent = <T extends Observable, C>(comp: T, config?: C, items?: Component[]): T => {
 
 	if (config) {
@@ -1404,6 +1426,12 @@ export const createComponent = <T extends Observable, C>(comp: T, config?: C, it
 }
 
 
+/**
+ * Helper function to assign a Components  configuration object to a Components instance
+ *
+ * @param comp The component instance
+ * @param config Configuration object to apply
+ */
 export function assignComponentConfig<T extends Observable>(comp: T, config: any) {
 	if (config.listeners) {
 		assignComponentListeners(comp, config.listeners);
@@ -1412,6 +1440,12 @@ export function assignComponentConfig<T extends Observable>(comp: T, config: any
 	Object.assign(comp as any, config);
 }
 
+/**
+ * Helper function to assign component listeners to a component instance
+ *
+ * @param comp
+ * @param listeners
+ */
 export function assignComponentListeners<T extends Observable>(comp:T, listeners: ListenersConfig<T, InferComponentEventMap<T>>) {
 
 	for (let key in listeners as any) {

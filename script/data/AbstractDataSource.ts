@@ -271,6 +271,8 @@ type GetData = {
  * Use a {@link DataSourceStore} in components to list data from datasources.
  * The {@link Form} component can also load from a datasource.
  *
+ * @link https://goui.io/#data Examples
+ *
  * @category Data
  */
 export abstract class AbstractDataSource<EntityType extends BaseEntity = DefaultEntity, EventMap extends DataSourceEventMap = DataSourceEventMap> extends Observable<EventMap> {

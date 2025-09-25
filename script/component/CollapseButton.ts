@@ -6,7 +6,7 @@ type CollapseEl = ((btn:CollapseButton) => Component) | Component
 
 /**
  * Button that can be used to hide and show another component
- * Use "stateId" to remember the collapsed state,.
+ * Use "stateId" to remember the collapsed state.
  */
 export class CollapseButton extends Button {
 

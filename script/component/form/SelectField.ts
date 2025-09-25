@@ -13,8 +13,11 @@ import {E} from "../../util";
 /**
  * Select component option
  *
- * By default, it should have a "value" and "name" property. This can be changed with the {@link Select.valueField} and
- * {@link Select.textRenderer}.
+ * By default, it should have a "value" and "name" property. This can be changed with the {@link SelectField.valueField} and
+ * {@link SelectField.textRenderer}.
+ *
+ * @link https://goui.io/#form/Select Examples
+ *
  */
 type SelectOption = { [key: string]: any };
 
@@ -153,6 +156,8 @@ export class SelectField extends InputField {
 
 /**
  * Shorthand function to create {@link SelectField}
+ *
+ * @link https://goui.io/#form/Select Examples
  *
  * @param config
  */

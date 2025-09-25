@@ -5,6 +5,8 @@ import {root} from "./Root";
 /**
  * Tooltip component
  *
+ * @link https://goui.io/#tooltip Examples
+ *
  * @example TIP: For long HTML tooltips use the render event:
  * ```
  * tooltip({
@@ -128,6 +130,8 @@ export class ToolTip extends Component {
 
 /**
  * Creates as {@link ToolTip} Component
+ *
+ * @link https://goui.io/#tooltip Examples
  *
  * @param config
  *

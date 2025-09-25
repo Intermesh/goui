@@ -339,7 +339,9 @@ export class TimeField extends Field {
 
 
 /**
- * Shorthand function to create {@link TextField}
+ * Creates a {@link TimeField}
+ *
+ * @link https://goui.io/#form/DateTime Examples
  *
  * @param config
  */

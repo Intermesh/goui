@@ -26,6 +26,8 @@ export interface Radiofield {
 /**
  * Radio field
  *
+ * @link @link https://goui.io/#form/ChecksAndRadios Example
+ *
  * @example
  * ```
  * radio({
@@ -157,6 +159,8 @@ export class RadioField extends Field {
 
 /**
  * Shorthand function to create {@link RadioField}
+ *
+ * @link @link https://goui.io/#form/ChecksAndRadios Example
  *
  * @param config
  */

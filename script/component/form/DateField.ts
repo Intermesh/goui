@@ -25,6 +25,9 @@ export interface DateField {
 /**
  * Date field
  *
+ * @link https://goui.io/#form/DateTime Examples
+ *
+ *
  * @property min The minimum value allowed. Same format as {@link DateField.value}.
  * @property max The maximum value allowed. Same format as {@link DateField.value}.
  *
@@ -114,6 +117,8 @@ export class DateField extends InputField {
 
 /**
  * Shorthand function to create {@link DateField}
+ *
+ * @link https://goui.io/#form/DateTime Examples
  *
  * @param config
  */

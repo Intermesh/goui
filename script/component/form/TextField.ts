@@ -20,6 +20,7 @@ export interface TextField {
 /**
  * TextField component
  *
+ * @link https://goui.io/#form/TextField Examples
  * @see Form
  */
 export class TextField extends InputField {
@@ -65,6 +66,7 @@ export class TextField extends InputField {
 /**
  * Shorthand function to create {@link TextField}
  *
+ * @link https://goui.io/#form/TextField Examples
  * @param config
  */
 export const textfield = (config?: FieldConfig<TextField>) => createComponent(new TextField(), config);

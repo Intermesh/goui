@@ -14,6 +14,9 @@ import {t} from "../../Translate.js";
 
 export type FormHandler<FormType extends Form> = (<F extends FormType>(form: F) => any | Promise<any>) | undefined;
 
+/**
+ * @inheritDoc
+ */
 export interface FormEventMap extends FieldEventMap {
 
 	/**
@@ -45,6 +48,8 @@ export interface FormEventMap extends FieldEventMap {
  * Form component
  *
  * Forms can be used to submit or present data.
+ *
+ * @example https://goui.io/#form Examples
  *
  * @example Password validation
  *

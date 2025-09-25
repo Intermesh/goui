@@ -1,5 +1,10 @@
 import {MaterialIcon} from "../MaterialIcon";
 
+/**
+ * Tree record type for {@link TreeStore} data stores
+ *
+ * @link https://goui.io/#tree Examples
+ */
 export type TreeRecord = {
 	/**
 	 * Unique ID of the node

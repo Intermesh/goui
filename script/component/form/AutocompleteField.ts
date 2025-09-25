@@ -14,6 +14,9 @@ import {Menu, menu} from "../menu/index.js";
 import {storeRecordType} from "../../data/index.js";
 import {InputField} from "./InputField.js";
 
+/**
+ * @inheritDoc
+ */
 export interface AutocompleteEventMap extends FieldEventMap {
 	/**
 	 * Fires when suggestions need to load
@@ -35,6 +38,8 @@ export interface AutocompleteField<T extends List = List, EventMap extends Autoc
 
 /**
  * Autocomplete field
+ *
+ * @link https://goui.io/#form/Select Example
  */
 export class AutocompleteField<T extends List = List, EventMap extends AutocompleteEventMap = AutocompleteEventMap> extends InputField<EventMap> {
 
@@ -281,6 +286,8 @@ type AutoCompleteConfig<T extends List, Required extends keyof AutocompleteField
 
 /**
  * Shorthand function to create an {@link AutocompleteField}
+ *
+ * @link https://goui.io/#form/Select Example
  *
  * @param config
  */

@@ -14,6 +14,10 @@ export interface ChipEventMap extends ComponentEventMap {
 }
 
 
+/**
+ * A chip used inside a {@link ChipsField}
+ *
+ */
 class Chip extends Component<ChipEventMap> {
 	private textComponent: Component;
 	constructor() {
@@ -46,6 +50,11 @@ class Chip extends Component<ChipEventMap> {
 export type ChipRendered = (chip:Component, value: any) => Promise<void> | void
 /**
  * Chips component
+ *
+ * A form field that holds an array value represented in chips (small rectangular items with text). Like a tags
+ * field or recipients field for an e-mail composer for example.
+ *
+ * @link https://goui.io/#form/ChipsField Example
  */
 export class ChipsField<EventMap extends FieldEventMap = FieldEventMap> extends Field<EventMap> {
 

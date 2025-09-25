@@ -185,4 +185,11 @@ export class DurationField extends Field {
 	}
 }
 
+/**
+ * Create a {@link DurationField}
+ *
+ * @link https://goui.io/#form/DateTime Examples
+ *
+ * @param config
+ */
 export const durationfield = (config?: FieldConfig<DurationField>) => createComponent(new DurationField(config?.outputFormat ?? "h:I"), config);

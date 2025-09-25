@@ -63,6 +63,8 @@ export interface WindowEventMap extends DraggableComponentEventMap {
  * provides functionalities such as maximizing, resizing, collapsing, and modal behavior.
  *
  * @template EventMap Type used for the event map for this class.
+ *
+ * @link https://goui.io/#window Example
  */
 export class Window<EventMap extends WindowEventMap = WindowEventMap> extends DraggableComponent<EventMap> {
 

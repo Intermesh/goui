@@ -99,7 +99,9 @@ export class ColorField extends Field {
 }
 
 /**
- * Shorthand function to create {@link TextField}
+ * Shorthand function to create {@link ColorField}
+ *
+ * @link https://goui.io/#form/Select Example
  *
  * @param config
  */

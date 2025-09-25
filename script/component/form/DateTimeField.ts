@@ -5,6 +5,11 @@ import {DateTime, Format} from "../../util/index";
 import {createComponent} from "../Component";
 import {t} from "../../Translate";
 
+/**
+ * DateTimeField class
+ *
+ * @link https://goui.io/#form/DateTime Examples
+ */
 export class DateTimeField extends Field {
 	private dateField: DateField;
 	private timeField: TimeField;
@@ -167,6 +172,8 @@ export class DateTimeField extends Field {
 
 /**
  * Shorthand function to create {@link DateTimeField}
+ *
+ * @link https://goui.io/#form/DateTime Examples
  *
  * @param config
  */

@@ -172,6 +172,8 @@ export interface ListEventMap extends ComponentEventMap {
  * List component
  *
  * Create a list with a custom item renderer. Also capable of selecting rows.
+ *
+ * @link https://goui.io/#list Examples
  */
 export class List<StoreType extends Store = Store, EventMapType extends ListEventMap = ListEventMap> extends Component<EventMapType> implements StoreComponent<StoreType> {
 	/**

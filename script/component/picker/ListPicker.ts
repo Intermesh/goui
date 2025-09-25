@@ -71,7 +71,7 @@ export type ListPickerConfig<ListType extends List>  =
 	>
 
 /**
- * Shorthand function to create {@link Table}
+ * Shorthand function to create {@link ListPicker}
  *
  * @param config
  */

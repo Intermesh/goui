@@ -16,6 +16,11 @@ export interface MapField {
 	get value(): MapFieldValue
 }
 
+/**
+ * A MapField represents a key value object
+ *
+ * @link https://goui.io/#form/MapField Example
+ */
 export class MapField extends Field {
 
 	/**

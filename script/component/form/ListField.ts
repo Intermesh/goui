@@ -22,7 +22,9 @@ export interface ListFieldEventMap extends FieldEventMap {
 
 
 /**
- * ColorField component
+ * ListField component
+ *
+ * @link https://goui.io/#form/Select Example
  *
  * @see Form
  */
@@ -132,6 +134,8 @@ export type ListFieldConfig <T extends List> = FieldConfig<ListField<T>, "list">
 
 /**
  * Shorthand function to create {@link ListField}
+ *
+ * @link https://goui.io/#form/Select Example
  *
  * @param config
  */

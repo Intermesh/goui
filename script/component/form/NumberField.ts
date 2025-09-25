@@ -16,6 +16,8 @@ export interface NumberField {
 }
 /**
  * NumberField component
+ *
+ * @link https://goui.io/#form/NumberField Examples
  */
 export class NumberField extends InputField {
 
@@ -157,4 +159,10 @@ export class NumberField extends InputField {
 	}
 }
 
+/**
+ * Creator function for a {@link NumberField}
+ *
+ * @link https://goui.io/#form/NumberField Example
+ * @param config
+ */
 export const numberfield = (config?: FieldConfig<NumberField>) => createComponent(new NumberField(), config);

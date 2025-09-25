@@ -210,6 +210,8 @@ export class Router extends Observable<RouterEventMap> {
  *
  * so if the route is /home then both routes will execute
  *
+ * @link https://github.com/Intermesh/goui-docs/blob/main/script/Index.ts Example of GOUI Documentation site
+ *
  * @example Dynamic loading and promises
  * ```
  * router.add('/home', () => {})
@@ -235,5 +237,7 @@ export class Router extends Observable<RouterEventMap> {
  * 					console.log('default');
  * 				});
  * ```
+ *
+ *
  */
 export const router = new Router();

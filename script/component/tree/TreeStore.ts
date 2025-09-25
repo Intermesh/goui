@@ -3,6 +3,11 @@ import {Component, NodeProvider} from "../../component";
 import {TreeRecord} from "./TreeRecord";
 
 
+/**
+ * A data store for {@see Tree} components
+ *
+ * @link https://goui.io/#tree Examples
+ */
 export class TreeStore extends Store<TreeRecord> {
 
 	private expandedRecordCache:Record<string, true> = {};

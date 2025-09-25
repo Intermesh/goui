@@ -20,6 +20,8 @@ import {Sortable} from "../Sortable";
 /**
  * Table component
  *
+ * @link https://goui.io/#table Example
+ *
  * @example
  * ```
  * const records:StoreRecord[] = [];
@@ -75,6 +77,8 @@ import {Sortable} from "../Sortable";
  * 			]
  * 	});
  *  ```
+ *
+ *
  */
 export class Table<StoreType extends Store = Store, EventMap extends ListEventMap = ListEventMap> extends List<StoreType, EventMap > {
 	private _columns!: Record<string,TableColumn>;

@@ -19,6 +19,8 @@ export interface AutocompleteChipsEventMap extends FieldEventMap {
 
 /**
  * Chips component that auto completes user input
+ *
+ * @link https://goui.io/#form/ChipsField Example
  */
 export class AutocompleteChips<T extends List = List, EventMap extends AutocompleteChipsEventMap = AutocompleteChipsEventMap> extends ChipsField<EventMap> {
 	protected readonly menu: Menu;
@@ -240,6 +242,8 @@ type AutoCompleteChipsConfig<ListType extends List = List> = FieldConfig<Autocom
 	Partial<Pick<AutocompleteChips<ListType>, "textInputToValue" | "chipRenderer" | "pickerRecordToValue">>
 /**
  * Shorthand function to create {@link AutocompleteChips}
+ *
+ * @link https://goui.io/#form/ChipsField Example
  *
  * @param config
  */

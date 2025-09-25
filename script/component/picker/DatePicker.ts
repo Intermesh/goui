@@ -9,7 +9,9 @@ import {DateTime} from "../../util/DateTime.js";
 import {E} from "../../util/Element.js";
 import {Config} from "../Observable.js";
 
-// import {Button} from "../Button";
+/**
+ * @inheritDoc
+ */
 export interface DatePickerEventMap extends ComponentEventMap {
 
 	/**
@@ -313,4 +315,11 @@ export class DatePicker extends Component<DatePickerEventMap> {
 	}
 }
 
+/**
+ * Create a {@link DatePicker} component
+ *
+ * @link https://goui.io/#datepicker Example
+ *
+ * @param config
+ */
 export const datepicker = (config?: Config<DatePicker>) => createComponent(new DatePicker(), config);

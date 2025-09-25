@@ -18,9 +18,11 @@ export interface ContainerField<EventMap extends FieldEventMap = FieldEventMap, 
 }
 
 /**
- * Field that contains fields.
+ * A container field is used to create a sub property in the form object.
  *
  * The value that it returns is an object with the field names as keys.
+ *
+ * @link https://goui.io/#form/ContainerField Example
  */
 export class ContainerField<EventMap extends FieldEventMap = FieldEventMap, ValueType extends ContainerFieldValue = ContainerFieldValue> extends Field<EventMap> {
 
@@ -293,6 +295,7 @@ export class ContainerField<EventMap extends FieldEventMap = FieldEventMap, Valu
 /**
  * Shorthand function to create {@link ContainerField}
  *
+ * @link https://goui.io/#form/ContainerField Example
  * @param config
  * @param items
  */

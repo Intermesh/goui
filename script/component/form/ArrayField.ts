@@ -18,16 +18,14 @@ export interface ArrayField<Type extends FieldValue = Record<string, any>> exten
 
 	get value() : Type[]
 	set value(value: Type[])
-
-	// on<K extends keyof FieldEventMap<this>>(eventName: K, listener: Partial<FieldEventMap<this>>[K], options?: ObservableListenerOpts): void
-	//
-	// fire<K extends keyof FieldEventMap<this>>(eventName: K, ...args: Parameters<FieldEventMap<Component>[K]>): boolean
 }
 
 /**
- * Field to return an array with objects
+ * An ArrayField can be used to represent an array of objects like contact e-mail addresses for example
  *
  * @see Form
+ * @link https://goui.io/#form/ArrayField Examples
+ *
  */
 export class ArrayField<Type extends FieldValue = Record<string, any>> extends Field {
 

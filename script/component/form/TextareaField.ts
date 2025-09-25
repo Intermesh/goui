@@ -63,6 +63,8 @@ export class TextAreaField extends InputField {
 /**
  * Shorthand function to create {@link TextAreaField}
  *
+ * @link https://goui.io/#form/TextField Examples
+ *
  * @param config
  */
 export const textarea = (config?: FieldConfig<TextAreaField>) => createComponent(new TextAreaField(), config);

@@ -24,6 +24,8 @@ export const ComboBoxDefaultRenderer:ComboRenderer = (field,r)=> r ? r[field.dis
  *
  * An extension of the Autocomplete field that simplifies the creation of a simple combobox with a
  * valueProperty and displayProperty.
+ *
+ * @link https://goui.io/#form/Select Example
  */
 export class ComboBox<DS extends AbstractDataSource = AbstractDataSource> extends AutocompleteField<Table<DataSourceStore<DS>>> {
 

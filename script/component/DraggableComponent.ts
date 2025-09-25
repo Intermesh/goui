@@ -93,6 +93,11 @@ export interface DraggableComponentEventMap extends ComponentEventMap {
 	dragstart: DraggableEvent
 }
 
+/**
+ * A draggable component
+ *
+ * @link Window
+ */
 export class DraggableComponent<EventMap extends DraggableComponentEventMap = DraggableComponentEventMap> extends Component<EventMap> {
 
 	protected dragData?: DragData;
@@ -282,6 +287,8 @@ export class DraggableComponent<EventMap extends DraggableComponentEventMap = Dr
 
 /**
  * Shorthand function to create {@link DraggableComponent}
+ *
+ * @link Window
  *
  * @param config
  * @param items
