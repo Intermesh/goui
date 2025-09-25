@@ -57,7 +57,7 @@ export class OverlayToolbarButton<EventMap extends OverlayToolbarButtonEventMap 
 	private tbarItemContainer: Component;
 
 	public close() {
-		document.body.removeEventListener("mousedown", this.closeOnClick);
+		// document.body.removeEventListener("mousedown", this.closeOnClick);
 		this.overlayTbar!.hide();
 		this.mainTbar!.show();
 		this.focus();
@@ -70,18 +70,18 @@ export class OverlayToolbarButton<EventMap extends OverlayToolbarButtonEventMap 
 
 		if (!this.overlayTbar) {
 
-			this.closeOnClick = (e:MouseEvent) => {
-				if(!this.overlayTbar!.el.contains(e.target as any)) {
-					this.close();
-				}
-			}
+			// this.closeOnClick = (e:MouseEvent) => {
+			// 	if(!this.overlayTbar!.el.contains(e.target as any)) {
+			// 		this.close();
+			// 	}
+			// }
 
 			this.overlayTbar = tbar({
 					cls: "overlay",
 					hidden: true,
 					listeners: {
 						show: () => {
-							document.body.addEventListener("mousedown", this.closeOnClick)
+							// document.body.addEventListener("mousedown", this.closeOnClick)
 							this.fire("open", {});
 						}
 					}
@@ -118,6 +118,8 @@ export class OverlayToolbarButton<EventMap extends OverlayToolbarButtonEventMap 
 
 /**
  * Shorthand function to create {@link OverlayToolbarButton}
+ *
+ * @link searchbtn
  */
 export const overlaytoolbarbutton = (config?: Config<OverlayToolbarButton>, ...items: (Component | "->" | "-")[]) => {
 	const c = new OverlayToolbarButton();

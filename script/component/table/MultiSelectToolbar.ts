@@ -10,6 +10,12 @@ import {t} from "../../Translate.js";
 import {btn, Button} from "../Button.js";
 import {Config} from "../Observable.js";
 
+/**
+ * A multiselect toolbar that is placed on top over the parent toolbar when a multiselection is made in a {@link Table} component.
+ * This toolbar shows the number of selected items, a clear selection button. Typically a delete button is added.
+ *
+ * @link https://goui.io/#table Example
+ */
 export class MultiSelectToolbar extends Toolbar {
 	private readonly label: Component;
 	private readonly backBtn: Button;
@@ -50,7 +56,12 @@ export class MultiSelectToolbar extends Toolbar {
 /**
  * Create a {@link MultiSelectToolbar} component
  *
+ * A multiselect toolbar that is placed on top over the parent toolbar when a multiselection is made in a {@link Table} component.
+ * This toolbar shows the number of selected items, a clear selection button. Typically a delete button is added.
+ *
  * You can add this to a {@link Toolbar}
+ *
+ * @link https://goui.io/#table Example
  *
  * @example
  * ```
