@@ -8,6 +8,10 @@ import {Component, ComponentEventMap, createComponent} from "./Component.js";
 import {Config} from "./Observable.js";
 
 
+/**
+ * @inheritDoc
+ */
+
 export interface CardContainerEventMap extends ComponentEventMap {
 	/**
 	 * Fires before adding an item. Return false to abort.
@@ -28,7 +32,9 @@ export interface CardContainerEventMap extends ComponentEventMap {
 /**
  * Card container
  *
- * Holds multiple components but only shows one.
+ * Holds multiple components but only shows one. Can be used in combination with a {@link CardMenu} to create a tab panel.
+ *
+ * @link https://goui.io/#cardcontainer Example
  */
 export class CardContainer<EventMap extends CardContainerEventMap = CardContainerEventMap> extends Component<EventMap> {
 
@@ -139,6 +145,10 @@ export class CardContainer<EventMap extends CardContainerEventMap = CardContaine
 
 /**
  * Shorthand function to create {@link CardContainer}
+ *
+ * Holds multiple components but only shows one. Can be used in combination with a {@link CardMenu} to create a tab panel.
+ *
+ * @link https://goui.io/#cardcontainer Example
  *
  * @param config
  * @param items

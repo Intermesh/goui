@@ -11,7 +11,11 @@ import {Config} from "./Observable.js";
 
 
 /**
- * Menu for cards to create a tab panel
+ * CardMenu class
+ *
+ * A menu for cards to create a tab panel in combination with a {@link CardContainer}
+ *
+ * @link https://goui.io/#cardcontainer Example
  */
 
 export class CardMenu extends Component {
@@ -122,6 +126,10 @@ export class CardMenu extends Component {
 
 /**
  * Shorthand function to create {@link CardMenu}
+ *
+ * A menu for cards to create a tab panel in combination with a {@link CardContainer}
+ *
+ * @link https://goui.io/#cardcontainer Example
  *
  * @param config
  * @param items
