@@ -27,7 +27,14 @@ export class AutocompleteChips<T extends List = List, EventMap extends Autocompl
 	protected readonly menuButton: Button;
 	private valuesToCompare?: string[];
 
-	//disable create
+
+	/**
+	 * @inheritDoc
+	 *
+	 * This disables the creation of new items.
+	 *
+	 * @param text
+	 */
 	public textInputToValue = async  (text: string) :Promise<any> => {
 		return false;
 	}
