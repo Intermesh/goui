@@ -235,6 +235,17 @@ export class Collection<CollectionItem, MapType extends CollectionEventMap<Colle
 	}
 
 	/**
+	 * Replace an item with new items
+	 *
+	 * @param index
+	 * @param items
+	 */
+	public replaceAt(index: number, ...items:CollectionItem[]) {
+		this.removeAt(index);
+		this.insert(index, ...items);
+	}
+
+	/**
 	 * Count the number of items
 	 */
 	public count() {

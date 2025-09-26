@@ -10,6 +10,7 @@ import {t} from "../../Translate.js";
 import {btn, Button} from "../Button.js";
 import {Config} from "../Observable.js";
 
+type TableRef = Table | ((mstb:MultiSelectToolbar) => Table);
 /**
  * A multiselect toolbar that is placed on top over the parent toolbar when a multiselection is made in a {@link Table} component.
  * This toolbar shows the number of selected items, a clear selection button. Typically a delete button is added.
@@ -19,20 +20,26 @@ import {Config} from "../Observable.js";
 export class MultiSelectToolbar extends Toolbar {
 	private readonly label: Component;
 	private readonly backBtn: Button;
+	private table?: Table
 
-	constructor(readonly table: Table) {
+	constructor(table: TableRef) {
 		super();
 
-		this.table.rowSelection!.on("selectionchange", ({target}) => {
+		this.on("render", () => {
 
-			const l = target.getSelected().length;
+			this.table = table instanceof Table ? table : table(this);
 
-			this.hidden = l < 2;
+			this.table.rowSelection!.on("selectionchange", ({target}) => {
 
-			if (!this.hidden) {
-				this.label.text = l + " " + t("selected");
-			}
-		});
+				const l = target.getSelected().length;
+
+				this.hidden = l < 2;
+
+				if (!this.hidden) {
+					this.label.text = l + " " + t("selected");
+				}
+			});
+		})
 
 		this.label = comp({tagName: "h3"});
 
@@ -40,7 +47,7 @@ export class MultiSelectToolbar extends Toolbar {
 			title: t("Back"),
 			icon: "chevron_left",
 			handler: () => {
-				this.table.rowSelection!.clear();
+				this.table!.rowSelection!.clear();
 			}
 		})
 
@@ -87,7 +94,7 @@ export class MultiSelectToolbar extends Toolbar {
  * @param config
  * @param items
  */
-export const mstbar = (config: Config<MultiSelectToolbar, "table">, ...items: (Component | "->" | "-")[]) => {
+export const mstbar = (config: Config<MultiSelectToolbar> & {table:TableRef}, ...items: (Component | "->" | "-")[]) => {
 
 	const c = new MultiSelectToolbar(config.table);
 	if (config) {
