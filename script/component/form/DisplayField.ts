@@ -110,7 +110,7 @@ export class DisplayField extends Field {
 		}
 	}
 }
-type DisplayFieldRenderer = (v:any, field:DisplayField) => string|Promise<string>|Component|Promise<Component>;
+type DisplayFieldRenderer = (v:any, field:DisplayField) => Component|string|Promise<string|Component>;
 type DisplayFieldConfig = FieldConfig<DisplayField> & {
 
 	/**

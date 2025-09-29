@@ -213,7 +213,7 @@ export class BoolColumn extends TableColumn {
 export const boolcolumn = (config: TableColumnConfig) => createComponent(new BoolColumn(config.id), config);
 
 export class NumberColumn extends TableColumn {
-	renderer = (v: number|undefined) => {
+	renderer: TableColumnRenderer = (v: number|undefined) => {
 		return v ? Format.number(v, this.decimals) : "";
 	}
 	align: align = "right"
@@ -222,6 +222,19 @@ export class NumberColumn extends TableColumn {
 }
 
 export const numbercolumn = (config: TableColumnConfig<NumberColumn>) => createComponent(new NumberColumn(config.id), config);
+
+
+export class MoneyColumn extends TableColumn {
+	renderer: TableColumnRenderer = (v: number|undefined) => {
+		return v ? Format.money(v) : "";
+	}
+	align: align = "right"
+	width = 64
+	decimals = 2
+}
+
+export const moneycolumn = (config: TableColumnConfig<MoneyColumn>) => createComponent(new MoneyColumn(config.id), config);
+
 
 export interface CheckboxColumnEventMap extends TableColumnEventMap {
 
