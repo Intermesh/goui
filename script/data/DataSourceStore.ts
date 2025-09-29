@@ -74,6 +74,8 @@ export class DataSourceStore<
 	 */
 	public buildRecord: RecordBuilder<dataSourceEntityType<DataSource>, RecordType> = async (entity) => <RecordType><unknown>entity;
 
+	public onBeforeLoad?: <T extends RecordType>(records:T[]) => Promise<T[]>;
+
 	constructor(public dataSource:DataSource) {
 		super();
 
@@ -144,12 +146,22 @@ export class DataSourceStore<
 			list = getResponse.list as dataSourceEntityType<DataSource>[];
 		}
 
-		const entities = await this.fetchRelations(list),
-			records = await Promise.all(entities.map(this.buildRecord));
-
+		const records = await this.buildRecords(await this.fetchRelations(list));
 		this.loadData(records, append);
 
 		return records;
+	}
+
+	protected async buildRecords(entities:dataSourceEntityType<DataSource>[]) {
+
+		let records = await Promise.all(entities.map(this.buildRecord));
+
+		if(this.onBeforeLoad) {
+			records = await this.onBeforeLoad(records);
+		}
+
+		return records;
+
 	}
 
 	private async fetchRelations(records: dataSourceEntityType<DataSource>[]) {
@@ -344,6 +356,8 @@ export type DataSourceStoreConfig<DataSource extends AbstractDataSource, RecordT
 		 * Defaults to returning just the entity
 		 */
 		buildRecord?: RecordBuilder<dataSourceEntityType<DataSource>, RecordType>,
+
+		onBeforeLoad?: <T extends RecordType>(records:T[]) => Promise<T[]>
 
 		/**
 		 * Fetch relations of the entity
