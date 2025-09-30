@@ -47,7 +47,11 @@ class Chip extends Component<ChipEventMap> {
 		this.title = text;
 	}
 }
-export type ChipRendered = (chip:Component, value: any) => Promise<void> | void
+
+/**
+ * Function that renders the chip
+ */
+export type ChipRenderer = (chip:Component, value: any) => Promise<void> | void
 /**
  * Chips component
  *
@@ -75,9 +79,10 @@ export class ChipsField<EventMap extends FieldEventMap = FieldEventMap> extends 
 
 	/**
 	 * Renders a value to the chip component
+	 * @param chip
 	 * @param value
 	 */
-	public chipRenderer : ChipRendered = (chip:Component, value: any) => {
+	public chipRenderer : ChipRenderer = (chip:Component, value: any) => {
 		chip.text = value;
 	}
 
@@ -253,12 +258,14 @@ export class ChipsField<EventMap extends FieldEventMap = FieldEventMap> extends 
 				this.items.removeAt(0);
 			}
 
-			v.forEach((v:any) => {
-				const chip =  this.createChip();
-				this.chipRenderer(chip, v);
-				chip.dataSet.value = v;
-				this.items.insert(-1, chip);
-			});
+			if(v) {
+				v.forEach((v: any) => {
+					const chip = this.createChip();
+					this.chipRenderer(chip, v);
+					chip.dataSet.value = v;
+					this.items.insert(-1, chip);
+				});
+			}
 
 	}
 
