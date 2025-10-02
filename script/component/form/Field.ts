@@ -120,7 +120,7 @@ export type FieldValue = string|number|boolean|any[]|undefined|null|Record<strin
  * Field components should at least implement "createControl" and "internalSetValue".
  */
 export abstract class Field<EventMap extends FieldEventMap = FieldEventMap> extends Component<EventMap> {
-	private _buttons?: Button[];
+	private _buttons?: Component[];
 	private toolbar?: Toolbar;
 	private _wrap?: HTMLDivElement;
 	protected _labelEl?: HTMLElement;
@@ -344,7 +344,7 @@ export abstract class Field<EventMap extends FieldEventMap = FieldEventMap> exte
 			this.toolbar.render(this.wrap);
 
 			this._buttons.forEach((btn) => {
-				if(btn.menu) {
+				if(btn instanceof Button && btn.menu) {
 					this.setupMenu(btn.menu);
 				}
 			})
@@ -393,7 +393,7 @@ export abstract class Field<EventMap extends FieldEventMap = FieldEventMap> exte
 	 * ```
 	 * @param buttons
 	 */
-	public set buttons(buttons: Button[]) {
+	public set buttons(buttons: Component[]) {
 		this._buttons = buttons;
 
 		if(this.rendered) {
