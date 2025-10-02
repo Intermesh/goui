@@ -538,7 +538,7 @@ export class DateTime {
 		return d;
 	}
 
-	private adjustFromSystemToUserTimezone<T extends string>(timezone: Timezone) {
+	private adjustFromSystemToUserTimezone(timezone: Timezone) {
 
 		if (this.timezone == timezone) {
 			return;
@@ -1007,7 +1007,7 @@ export class DateTime {
 					break;
 
 				case 'P':
-					char = "(?<P>[\+\-](\\d{2}):(\\d{2}))";
+					char = "(?<P>(?<Psign>[\+\-])(?<Phour>\\d{2}):(?<Pmin>\\d{2}))";
 					break;
 				case 'c':
 					char = DateTime.createFormatRegex("Y-m-d\TH:i:sP");
@@ -1104,6 +1104,21 @@ export class DateTime {
 
 				case 's':
 					date.setSeconds(parseInt(result.groups[key]));
+					break;
+
+				case 'P':
+
+					const objTZoffset = date.getTimezoneOffset() * -1;
+
+					let strOffset = parseInt(result.groups['Phour']) * 60 + parseInt(result.groups['Pmin']);
+					if(result.groups['Psign'] == '-'){
+						strOffset *= -1;
+					}
+
+					const diff = objTZoffset - strOffset;
+					if(diff) {
+						date.setMinutes(date.getMinutes() + diff);
+					}
 					break;
 			}
 		}

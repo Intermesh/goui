@@ -108,12 +108,12 @@ export class DateTimeField extends Field {
 	/**
 	 * When switching the "withTime" property, this default time will be used.
 	 *
-	 * Use H:i format see {@link DateField.format}
+	 * Use "H:i" format see {@link DateTime.format}
 	 */
 	public defaultTime?: string;
 
 	protected outputFormat(): string {
-		return this.withTime ? "Y-m-dTH:i" : 'Y-m-d';
+		return this.withTime ? "c" : 'Y-m-d';
 	}
 	protected internalSetValue(v?: any) {
 		super.internalSetValue(v);
@@ -139,30 +139,34 @@ export class DateTimeField extends Field {
 	}
 
 	protected internalGetValue(): string | number | boolean | any[] | Record<string, any> | null | undefined {
+
+		const dt = this.getValueAsDateTime();
+
+		if(!dt) {
+			return undefined;
+		}
+
+		return dt.format(this.outputFormat());
+
+	}
+
+	/**
+	 * Get the date as DateTime object
+	 */
+	public getValueAsDateTime() :DateTime | undefined {
+
 		if(!this.dateField.value) {
 			return undefined;
 		}
 		if(!this.withTime) {
-			return this.dateField.value;
+			return this.dateField.getValueAsDateTime();
 		}
 
 		if(!this.timeField.value) {
 			return undefined;
 		}
 
-		return this.dateField.value + "T" + this.timeField.value;
-	}
-
-	/**
-	 * Get the date as DateTime object
-	 */
-	public getValueAsDateTime() {
-
-		let v = this.value as string, date;
-		if (!v || !(date = DateTime.createFromFormat(v, this.outputFormat()))) {
-			return undefined;
-		}
-		return date;
+		return DateTime.createFromFormat(this.dateField.value + " " + this.timeField.value, "Y-m-d H:i");
 	}
 
 	protected eventTargetIsInFocus(e: FocusEvent): boolean {

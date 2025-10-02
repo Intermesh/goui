@@ -30,10 +30,8 @@ export class TimeField extends Field {
 
 	/**
 	 * TimeField constructor
-	 *
-	 * @param outputFormat Output format to the server. See {@link DateTime.format}.
 	 */
-	constructor(public outputFormat = "H:i") {
+	constructor() {
 		super();
 
 		this.menuBtn = btn({
@@ -317,7 +315,7 @@ export class TimeField extends Field {
 	public getValueAsDateTime() {
 
 		let v = this.value as string, date;
-		if (!v || !(date = DateTime.createFromFormat(v, this.outputFormat))) {
+		if (!v || !(date = DateTime.createFromFormat(v, "H:i"))) {
 			return undefined;
 		}
 		return date;
@@ -345,4 +343,4 @@ export class TimeField extends Field {
  *
  * @param config
  */
-export const timefield = (config?: FieldConfig<TimeField>) => createComponent(new TimeField(config?.outputFormat ?? "H:i"), config);
+export const timefield = (config?: FieldConfig<TimeField>) => createComponent(new TimeField(), config);
