@@ -327,7 +327,7 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 					}
 				}
 			}
-			return this.columnSort;
+			return this.columnSort.filter(id => id in this._columns);
 		} else {
 			return this.columns.filter(c => !c.hidden).map(c => c.id);
 		}
