@@ -7,6 +7,7 @@
 import {Field, FieldConfig} from "./Field.js";
 import {Component, createComponent} from "../Component.js";
 import {DateTime, Format} from "../../util";
+import {config} from "chai";
 
 const defaultDisplayFieldRenderer: DisplayFieldRenderer = (v:any, field:DisplayField) => v ?? ""
 /**
@@ -85,13 +86,18 @@ export class DisplayField extends Field {
 						(str as Component).remove();
 					})
 				} else {
-					if (this.escapeValue && (typeof str == 'string')) {
-						str = str.htmlEncode();
-					}
 					if (!this.renderTagOnly) {
-						this.control!.innerHTML = str + "";
+						if(this.htmlEncode) {
+							this.control!.innerText = str + "";
+						} else {
+							this.control!.innerHTML = str + "";
+						}
 					} else {
-						this.el.innerHTML = str + "";
+						if(this.htmlEncode) {
+							this.el.innerText = str + "";
+						} else {
+							this.el.innerHTML = str + "";
+						}
 					}
 					if (this.hideWhenEmpty) {
 						this.hidden = !str;
@@ -143,7 +149,7 @@ export const displaydatefield = (config: DisplayFieldConfig & {
 	 */
 	withTime?: boolean
 }, ...items: Component[]) => {
-	if(!config.icon)
+	if(!("icon" in config))
 		config.icon = "today";
 
 	let format = Format.dateFormat;
@@ -157,4 +163,8 @@ export const displaydatefield = (config: DisplayFieldConfig & {
 	return createComponent(new DisplayField(config?.tagName ?? "label", config?.renderer ?? defaultDisplayFieldRenderer), config, items);
 }
 
+
+export const displaycheckboxfield = (config: Omit<DisplayFieldConfig, "renderer">, ...items: Component[]) => {
+	return createComponent(new DisplayField(config?.tagName ?? "label", (v: string) => v ? '<i class="icon">check</i>' : ""), {...config, htmlEncode: false}, items);
+}
 

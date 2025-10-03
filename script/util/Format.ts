@@ -251,6 +251,11 @@ export class Format {
 	 * @param decimals
 	 */
 	public static number(value: number, decimals = 2): string {
+
+		if(value === null || value == undefined) {
+			return "";
+		}
+
 		const neg = value < 0;
 
 		if (neg) {

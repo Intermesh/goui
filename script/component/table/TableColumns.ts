@@ -25,7 +25,7 @@ import {menu} from "../menu/index.js";
  *
  * You can also return a component  like a {@link Button} or {@link Toolbar}. On a toolbar the CSS class "compact" is recommended.
  */
-export type TableColumnRenderer = (columnValue: any, record: any, td: HTMLTableCellElement, table: Table, storeIndex: number, column: TableColumn) => string | Promise<string> | Component | Promise<Component> | undefined;
+export type TableColumnRenderer = (columnValue: any, record: any, td: HTMLTableCellElement, table: Table, storeIndex: number, column: TableColumn) => string | Component | undefined | Promise<string|Component|undefined>;
 export type HeaderRenderer = (col: TableColumn, headerEl: HTMLTableCellElement, table: Table) => string | Component;
 
 export type align = "left" | "right" | "center";
@@ -195,9 +195,7 @@ export class DateColumn extends TableColumn {
 export const datecolumn = (config: TableColumnConfig) => createComponent(new DateColumn(config.id), config);
 
 export class BoolColumn extends TableColumn {
-	renderer = (v: string) => {
-		return v ? '<i class="icon">check</i>' : "";
-	}
+	renderer = (v: string) => v ? '<i class="icon">check</i>' : ""
 	align: align = "center"
 	width = 64
 	htmlEncode = false;

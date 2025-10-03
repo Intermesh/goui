@@ -283,6 +283,10 @@
 
 .goui-display-field {
 
+	a {
+		color: config.$colorMain;
+	}
+
 	&.pit {
 
 		.wrap {
@@ -1357,11 +1361,6 @@ div.color-dot {
 
 
 .label-align-left {
-	.goui-display-field {
-		//&:not(:last-child) {
-		//	border-bottom: $borderWidth solid $colorLine;
-		//}
-	}
 	.goui-form-field, .goui-display-field {
 		min-width: util.dp(200);
 		.wrap {
