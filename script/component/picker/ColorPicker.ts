@@ -4,7 +4,7 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import Button, {btn} from "../Button.js";
+import {Button,btn} from "../Button.js";
 import {Config} from "../Observable.js";
 import {Component, ComponentEventMap, createComponent} from "../Component.js";
 import {t} from "../../Translate";
@@ -94,7 +94,7 @@ export class ColorPicker extends Component<ColorPickerEventMap> {
 
 		this.items.add(this.moreBtn = btn({
 			text: t("More"),
-			handler: (button, ev) => {
+			handler: () => {
 				this.toggleMore()
 			}
 		}))

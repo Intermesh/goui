@@ -5,7 +5,7 @@
  */
 
 import {assignComponentConfig, comp, Component, hr} from "./Component.js";
-import Button, {btn} from "./Button.js";
+import {btn, Button} from "./Button.js";
 import {Config} from "./Observable.js";
 import {menu} from "./menu/index.js";
 import {AbstractMenu} from "./AbstractMenu";
@@ -63,7 +63,7 @@ export class Toolbar extends AbstractMenu {
 		const el = super.render(parentEl, insertBefore);
 
 		if(this.overflowMenu) {
-			const ro = new ResizeObserver( FunctionUtil.onRepaint((entries) => {
+			const ro = new ResizeObserver( FunctionUtil.onRepaint(() => {
 				this.syncOverFlowMenu();
 			}));
 

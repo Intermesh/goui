@@ -1,5 +1,5 @@
 import {Component, ComponentEventMap} from "./Component";
-import Button from "./Button";
+import {Button} from "./Button";
 import {Menu} from "./menu";
 
 

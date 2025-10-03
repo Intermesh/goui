@@ -8,7 +8,7 @@ import {createComponent} from "../Component.js";
 import {E} from "../../util/Element.js";
 import {ColorPicker} from "../picker/ColorPicker.js";
 import {Field, FieldConfig} from "./Field.js";
-import Button, {btn} from "../Button.js";
+import {btn, Button} from "../Button.js";
 import {menu} from "../menu/Menu.js";
 
 /**
@@ -52,7 +52,7 @@ export class ColorField extends Field {
 		});
 
 
-		const resizeObserver = new ResizeObserver((entries) => {
+		const resizeObserver = new ResizeObserver(() => {
 			this.pickerButton.menu!.align();
 		});
 

@@ -6,7 +6,7 @@
 
 import {createComponent} from "../Component.js";
 import {Field, FieldConfig, FieldEventMap} from "./Field.js";
-import Button, {btn} from "../Button.js";
+import {btn, Button} from "../Button.js";
 import {Menu, menu} from "../menu/Menu.js";
 import {listpicker} from "../picker/index.js";
 import {List} from "../List.js";

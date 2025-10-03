@@ -6,7 +6,7 @@
 
 import {FunctionUtil} from "../../util/index.js";
 import {FieldConfig, FieldEventMap} from "./Field.js";
-import Button, {btn} from "../Button.js";
+import {btn, Button} from "../Button.js";
 import {createComponent} from "../Component.js";
 import {List, listStoreType} from "../List.js";
 import {listpicker} from "../picker/index.js";

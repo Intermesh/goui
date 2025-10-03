@@ -1,9 +1,8 @@
-import {TextField} from "./TextField.js";
 import {Field, FieldConfig} from "./Field.js";
 import {comp, createComponent} from "../Component.js";
 import {DateTime, E, Format, FunctionUtil} from "../../util/index.js";
 import {menu} from "../menu/index.js";
-import Button, {btn} from "../Button.js";
+import {Button,btn} from "../Button.js";
 
 
 export interface TimeField {
@@ -271,7 +270,7 @@ export class TimeField extends Field {
 						// for safari that does not focus on buttons.
 						ev.target.el.tabIndex = -1;
 					},
-					show: ev => {
+					show: () => {
 						updateMenuSelection();
 					}
 				}

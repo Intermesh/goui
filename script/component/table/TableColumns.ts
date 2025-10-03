@@ -41,7 +41,7 @@ export interface TableColumnEventMap extends ObservableEventMap {
 		/**
 		 * The result of the column renderer function
 		 */
-		result: string | Promise<string> | Component | Promise<Component> | undefined,
+		result: string | Promise<string|Component|undefined> | Component | undefined,
 		/**
 		 * The store record
 		 */

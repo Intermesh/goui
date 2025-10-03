@@ -1,7 +1,7 @@
 import {ChipsField} from "./ChipsField.js";
 import {List, listStoreType} from "../List.js";
 import {Menu, menu} from "../menu/index.js";
-import Button, {btn} from "../Button.js";
+import {Button, btn} from "../Button.js";
 import {FieldConfig, FieldEventMap} from "./Field.js";
 import {createComponent} from "../Component.js";
 import {FunctionUtil} from "../../util/index.js";
@@ -33,9 +33,9 @@ export class AutocompleteChips<T extends List = List, EventMap extends Autocompl
 	 *
 	 * This disables the creation of new items.
 	 *
-	 * @param text
+	 * @param _text
 	 */
-	public textInputToValue = async  (text: string) :Promise<any> => {
+	public textInputToValue = async  (_text: string) :Promise<any> => {
 		return false;
 	}
 
@@ -59,7 +59,7 @@ export class AutocompleteChips<T extends List = List, EventMap extends Autocompl
 		this.menuButton = btn({
 			icon: "expand_more",
 			type: "button",
-			handler: (button, ev) => {
+			handler: () => {
 				this.fire("autocomplete", {input: ""});
 			},
 			menu: this.menu
@@ -88,7 +88,7 @@ export class AutocompleteChips<T extends List = List, EventMap extends Autocompl
 		} else {
 			const syncSelection = () => {
 				this.list.rowSelection!.clear();
-				this.list.store.data.forEach((record, index) => {
+				this.list.store.data.forEach((record) => {
 					if(this.isPickerRecordInValue(record)) {
 						this.list.rowSelection!.add(record)
 					}
