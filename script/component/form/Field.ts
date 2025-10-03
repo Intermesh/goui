@@ -418,7 +418,7 @@ export abstract class Field<EventMap extends FieldEventMap = FieldEventMap> exte
 	}
 
 	protected createHint(): HTMLDivElement | void {
-		this.hintEl = E('div', this._hint).cls('hint');
+		this.hintEl = E('div', this._hint || "").cls('hint');
 		return this.hintEl;
 	}
 

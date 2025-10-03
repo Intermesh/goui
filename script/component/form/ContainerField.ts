@@ -20,7 +20,8 @@ export interface ContainerField<EventMap extends FieldEventMap = FieldEventMap, 
 /**
  * A container field is used to create a sub property in the form object.
  *
- * The value that it returns is an object with the field names as keys.
+ * The value that it returns is an object with the field names as keys. You can add multiple container fields with the
+ * same form name to organize the fields. But check {@link keepUnknownValues} when you need this.
  *
  * @link https://goui.io/#form/ContainerField Example
  */
@@ -37,6 +38,16 @@ export class ContainerField<EventMap extends FieldEventMap = FieldEventMap, Valu
 	public hideLabel = true;
 
 	protected fireChangeOnBlur = false;
+
+
+	/**
+	 * When this field is populated with an object that contains properties we don't have form fields for, they will be
+	 * retained when keepUnkownValues is set to true. This is the default.
+	 *
+	 * You can add multiple container fields with the same form name to organize fields. You need to set this to false when
+	 * you do this otherwise fieldB will overwrite fieldA with unknown values.
+	 */
+	public keepUnknownValues = true;
 
 
 	/**
@@ -204,7 +215,7 @@ export class ContainerField<EventMap extends FieldEventMap = FieldEventMap, Valu
 			}
 		});
 
-		return Object.assign(formProps, newProps);
+		return this.keepUnknownValues ? Object.assign(formProps, newProps) : newProps;
 	}
 
 	public getOldValue(): any {
