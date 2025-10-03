@@ -406,3 +406,19 @@ hr.goui {
 .accent {
 	color: config.$colorAccent;
 }
+
+
+.comma-list {
+	display: inline;
+	list-style: none;
+	> * {
+		display: inline;
+		&:after {
+			content: ", ";
+		}
+
+		&:last-child:after {
+			content: ""
+		}
+	}
+}
