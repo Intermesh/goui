@@ -169,7 +169,6 @@ export class DataSourceForm<ValueType extends BaseEntity = DefaultEntity> extend
 	public async load(id: EntityID) {
 
 		this.mask();
-
 		try {
 			this.clear(false);
 			this.currentId = id;
