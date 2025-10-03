@@ -59,15 +59,11 @@ export class ContainerField<EventMap extends FieldEventMap = FieldEventMap, Valu
 		const fields: Field[] = [];
 
 		const fn = (item: any) => {
-
-			if (item == this) {
-				return;
-			}
-
 			if (item.isFormField) {
 				if (!nameOrItemId || (item.name == nameOrItemId || item.itemId == nameOrItemId)) {
 					fields.push(item);
 				}
+				// don't cascade info form fields
 				return false;
 			}
 		};
@@ -162,7 +158,6 @@ export class ContainerField<EventMap extends FieldEventMap = FieldEventMap, Valu
 	}
 
 	protected internalSetValue(v: Partial<ValueType>) {
-
 		this.findFields().forEach((field:any) => {
 			const name = field.getName ? field.getName() : field.name;
 			// We cast to any[] for Ext compatibility. We try setValue() for Ext if it exists

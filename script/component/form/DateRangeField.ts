@@ -1,5 +1,5 @@
 import {Field, FieldConfig} from "./Field.js";
-import {btn, Button} from "../Button.js";
+import Button, {btn} from "../Button.js";
 import {Menu, menu} from "../menu/index.js";
 import {t} from "../../Translate.js";
 import {DatePicker, datepicker} from "../picker/index.js";

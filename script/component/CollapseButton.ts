@@ -1,4 +1,4 @@
-import {Button} from "./Button";
+import Button from "./Button";
 import {Component, ComponentState, createComponent} from "./Component";
 import {Config} from "./Observable";
 

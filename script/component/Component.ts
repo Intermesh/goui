@@ -1027,19 +1027,17 @@ export class Component<EventMapType extends ComponentEventMap = ComponentEventMa
 	/**
 	 * Cascade down the component hierarchy
 	 *
-	 * @param fn When the function returns false then the cascading will be stopped. The current Component will be finished!
+	 * @param fn When the function returns false then the cascading will not go into that component. The current Component will be finished!
 	 */
 	public cascade(fn: (comp: Component) => boolean | void) {
-		if (fn(this) === false) {
-			return this;
-		}
+
 		if (this.items) {
 			for (let cmp of this.items) {
-				cmp.cascade && cmp.cascade(fn);
+				if(cmp.cascade && fn(cmp) !== false) {
+					cmp.cascade(fn);
+				}
 			}
 		}
-
-		return this;
 	}
 
 	private createFindPredicateFunction(predicate: FindComponentPredicate): (comp: Component) => boolean | void {
@@ -1147,7 +1145,7 @@ export class Component<EventMapType extends ComponentEventMap = ComponentEventMa
 			})
 		}
 
-		if(this.maskTimeout || (this._mask && this._mask.hidden == false)) {
+		if(this.maskTimeout || (this._mask && !this._mask.hidden)) {
 			return promise;
 		}
 
@@ -1217,7 +1215,7 @@ export class Component<EventMapType extends ComponentEventMap = ComponentEventMa
 		const oldTitle = document.title;
 		if(this.title) {
 			//replace chars not valid for filenames
-			document.title = this.title.replace(':', '.').replace(/[/\\?%*|"<>]+/g, '-');;
+			document.title = this.title.replace(':', '.').replace(/[/\\?%*|"<>]+/g, '-');
 		}
 
 		if(!browser.isFirefox()){

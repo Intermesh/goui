@@ -7,7 +7,7 @@ import {comp, Component} from "../Component.js";
 import {tbarItems, Toolbar} from "../Toolbar.js";
 import {Table} from "./Table.js";
 import {t} from "../../Translate.js";
-import {btn, Button} from "../Button.js";
+import Button, {btn} from "../Button.js";
 import {Config} from "../Observable.js";
 
 type TableRef = Table | ((mstb:MultiSelectToolbar) => Table);

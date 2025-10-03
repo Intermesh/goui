@@ -1,7 +1,7 @@
 import {ChipsField} from "./ChipsField.js";
 import {List, listStoreType} from "../List.js";
 import {Menu, menu} from "../menu/index.js";
-import {btn, Button} from "../Button.js";
+import Button, {btn} from "../Button.js";
 import {FieldConfig, FieldEventMap} from "./Field.js";
 import {createComponent} from "../Component.js";
 import {FunctionUtil} from "../../util/index.js";

@@ -4,7 +4,7 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {btn, Button} from "../Button.js";
+import Button, {btn} from "../Button.js";
 import {Config} from "../Observable.js";
 import {Component, ComponentEventMap, createComponent} from "../Component.js";
 import {t} from "../../Translate";

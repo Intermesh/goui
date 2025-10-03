@@ -7,9 +7,9 @@
 import {Field, FieldConfig} from "./Field.js";
 import {Component, createComponent} from "../Component.js";
 import {DateTime, Format} from "../../util";
-import {config} from "chai";
+import {t} from "../../Translate";
 
-const defaultDisplayFieldRenderer: DisplayFieldRenderer = (v:any, field:DisplayField) => v ?? ""
+const defaultDisplayFieldRenderer: DisplayFieldRenderer = (v:any, _field:DisplayField) => v ?? ""
 /**
  * Display field
  *
@@ -86,27 +86,28 @@ export class DisplayField extends Field {
 						(str as Component).remove();
 					})
 				} else {
-					if (!this.renderTagOnly) {
-						if(this.htmlEncode) {
-							this.control!.innerText = str + "";
-						} else {
-							this.control!.innerHTML = str + "";
-						}
+					str = str + "";
+
+					const el = this.renderTagOnly ? this.el : this.control!;
+
+					if(this.htmlEncode) {
+						el.innerText = str;
 					} else {
-						if(this.htmlEncode) {
-							this.el.innerText = str + "";
-						} else {
-							this.el.innerHTML = str + "";
-						}
+						el.innerHTML = str;
 					}
+
 					if (this.hideWhenEmpty) {
-						this.hidden = !str;
+						this.hidden = str == "";
 					}
 				}
 			}, str = this.renderer(v, this);
 
-			str instanceof Promise ? str.then(setFn) : setFn(str);
-		// }
+			if(str instanceof Promise) {
+				setFn(t("Loading..."));
+				str.then(setFn)
+			} else {
+				setFn(str);
+			}
 	}
 
 	protected renderControl() {

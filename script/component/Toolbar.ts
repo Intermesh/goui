@@ -5,7 +5,7 @@
  */
 
 import {assignComponentConfig, comp, Component, hr} from "./Component.js";
-import {btn, Button} from "./Button.js";
+import Button, {btn} from "./Button.js";
 import {Config} from "./Observable.js";
 import {menu} from "./menu/index.js";
 import {AbstractMenu} from "./AbstractMenu";

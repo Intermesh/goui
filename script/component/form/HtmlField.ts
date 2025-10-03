@@ -8,7 +8,7 @@
 
 import {Field, FieldConfig, FieldEventMap} from "./Field.js";
 import {tbar, Toolbar} from "../Toolbar.js";
-import {btn, Button} from "../Button.js";
+import Button, {btn} from "../Button.js";
 import {browser} from "../../util/Browser.js";
 import {colormenu} from "../menu/ColorMenu.js";
 import {Menu} from "../menu/Menu.js";

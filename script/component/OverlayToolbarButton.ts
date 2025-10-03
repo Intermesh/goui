@@ -4,7 +4,7 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 import {t} from "../Translate";
-import {btn, Button, ButtonEventMap} from "./Button";
+import Button, {btn, ButtonEventMap} from "./Button";
 import {tbar, tbarItems, Toolbar} from "./Toolbar";
 import {Config} from "./Observable";
 import {assignComponentConfig, comp, Component} from "./Component";

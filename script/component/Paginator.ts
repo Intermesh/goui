@@ -6,7 +6,7 @@
 
 import {Toolbar} from "./Toolbar.js";
 import {Store} from "../data/Store.js";
-import {btn, Button} from "./Button.js";
+import Button, {btn} from "./Button.js";
 import {comp, createComponent} from "./Component.js";
 import {Config} from "./Observable.js";
 
