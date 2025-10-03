@@ -259,7 +259,7 @@ export class CheckboxColumn extends TableColumn<CheckboxColumnEventMap> {
 		return checkbox({
 			value: val,
 			listeners: {
-				change: ({target, newValue, oldValue}) => {
+				change: ({target, newValue}) => {
 					record[column.property] = newValue;
 
 					this.fire("change", {checkbox:target, checked:newValue, record, storeIndex: rowIndex});
@@ -325,7 +325,7 @@ export class CheckboxSelectColumn extends TableColumn {
 		});
 	}
 
-	renderer: TableColumnRenderer = (val: boolean, record, td, table, rowIndex) => {
+	renderer: TableColumnRenderer = (val: boolean, record, td, table) => {
 
 		// add to selection model if value is true
 		if(val && table.rowSelection) {
