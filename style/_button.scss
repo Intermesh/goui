@@ -63,9 +63,9 @@
 
 	&.pressed {
 		box-shadow: inset -2px -2px -2 config.$colorOutline; // underline
-		background-color: config.$colorSelectedRow;
+		background-color: config.$colorFocus;
 		&:hover {
-			background-color: config.$colorSelectedRow;
+			background-color: config.$colorFocus;
 		}
 	}
 
