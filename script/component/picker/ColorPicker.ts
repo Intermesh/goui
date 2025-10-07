@@ -158,7 +158,7 @@ export class ColorPicker extends Component<ColorPickerEventMap> {
 	}
 
 	private static rgb2hex(str: string): string {
-		const rgb = str.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/i);
+		const rgb = str?.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/i);
 		if (!rgb) {
 			return "";
 		}
@@ -175,7 +175,7 @@ export class ColorPicker extends Component<ColorPickerEventMap> {
 		if (hex) {
 			color = hex.toUpperCase();
 		} else {
-			color = color.toUpperCase();
+			color = color ? color.toUpperCase() : '';
 		}
 
 		this._value = color;
