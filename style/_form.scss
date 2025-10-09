@@ -633,7 +633,8 @@
 	textarea {
 		line-height: config.$baseLineHeight;
 		//show textarea as 2 lines by default so it's clear it's a text area
-		min-height: (config.$baseLineHeight * 2) + util.dp(22); // add padding
+		//min-height: (config.$baseLineHeight * 2) + util.dp(22); // add padding
+		min-height: util.dp(46);
 	}
 
 	&.datetime {

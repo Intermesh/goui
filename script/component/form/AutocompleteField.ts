@@ -179,9 +179,11 @@ export class AutocompleteField<T extends List = List, EventMap extends Autocompl
 
 			if(this.input) {
 				super.internalSetValue(textFieldValue);
+				this.checkHasValue();
 			} else {
 				this.on("render", () => {
 					super.internalSetValue(textFieldValue);
+					this.checkHasValue();
 				}, {once: true})
 			}
 		})
