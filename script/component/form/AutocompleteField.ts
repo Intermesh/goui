@@ -152,15 +152,15 @@ export class AutocompleteField<T extends List = List, EventMap extends Autocompl
 	 * This is not necessarily a text value. In conjunction with {@link valueToTextField()} this
 	 * could also be an ID of an object for example.
 	 */
-	public pickerRecordToValue (_field: this, record:storeRecordType<listStoreType<T>>) : any {
+	public pickerRecordToValue (field: this, record:storeRecordType<listStoreType<T>>) : any {
 		return record.id;
 	}
 
 	/**
 	 * This method transforms the value in to a text representation for the input field
 	 */
-	public async valueToTextField(_field: this, _value:any) {
-		return "";
+	public async valueToTextField(field: this, value:any) {
+		return value;
 	}
 
 

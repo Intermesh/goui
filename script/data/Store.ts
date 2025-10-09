@@ -103,6 +103,8 @@ export class Store<RecordType extends StoreRecord  = StoreRecord> extends Collec
 	//  */
 	// public id?: string;
 
+	public queryParams: Record<string, any> = {};
+
 	private _loading?: Promise<RecordType[]>;
 	private _loaded = false;
 
@@ -214,19 +216,30 @@ export class Store<RecordType extends StoreRecord  = StoreRecord> extends Collec
 	}
 
 	/**
+	 * Pass this to implement custom loading logic
+	 */
+	public onLoad?:(store:Store)=> Promise<void> = undefined
+
+	/**
 	 * Returns the loaded records. If append is true it only returns the new records.
 	 * Override this function for new store types.
 	 *
 	 * @param append
 	 * @protected
 	 */
-	protected internalLoad(append: boolean): Promise<RecordType[]> {
+	protected async internalLoad(append: boolean): Promise<RecordType[]> {
 		// async so it works the same as data source stores. This way this.loading is true wghen loadData() is called
-		return new Promise(resolve => setTimeout(() => {
-			const sorted = ArrayUtil.multiSort(this.items, this.sort);
-			this.loadData(sorted, append);
-			resolve(this.items);
-		}));
+		if(this.onLoad) {
+
+			if(!append) {
+				this.clear();
+			}
+
+			await this.onLoad(this);
+		}
+		const sorted = ArrayUtil.multiSort(this.items, this.sort);
+		this.loadData(sorted, append);
+		return this.items;
 	}
 
 	/**
