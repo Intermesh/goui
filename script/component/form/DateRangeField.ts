@@ -60,6 +60,8 @@ export class DateRangeField extends Field {
 
 
 		this.button = this.createButton();
+		this.el.attr('for', this.button.id);
+
 
 		this.baseCls += " date-range";
 
@@ -100,6 +102,7 @@ export class DateRangeField extends Field {
 		});
 	}
 
+
 	protected get itemContainerEl() :HTMLElement{
 		return this.wrap;
 	}
@@ -108,6 +111,7 @@ export class DateRangeField extends Field {
 		return btn({
 			flex: 1,
 			icon: "expand_more",
+			id: "dr-" + Component.uniqueID(),
 			menu: menu({
 					alignToInheritWidth: true,
 					alignTo: this.el
@@ -263,17 +267,30 @@ export class DateRangeField extends Field {
 					}
 				}
 			} else {
-				if(v.substring(0,2) == ">=") {
+				if (v.substring(0, 2) == ">=") {
+					const date = DateTime.createFromFormat(v.substring(2, v.length), DateRangeField.f);
+
+					if (date) {
+						this.valueDisplay.text = "> " + date.format(Format.dateFormat)
+					}
+				} else if(v.substring(0,2) == "<=") {
 					const date = DateTime.createFromFormat(v.substring(2,v.length) , DateRangeField.f);
 
 					if(date) {
-						this.valueDisplay.text = "> " + date.format(Format.dateFormat)
+						this.valueDisplay.text = "<= " + date.format(Format.dateFormat)
 					}
-				} else if(v.substring(0,1) == "<") {
+
+				}else if(v.substring(0,1) == "<") {
 					const date = DateTime.createFromFormat(v.substring(1,v.length) , DateRangeField.f);
 
 					if(date) {
 						this.valueDisplay.text = "<= " + date.addDays(-1).format(Format.dateFormat)
+					}
+				}else if(v.substring(0,1) == ">") {
+					const date = DateTime.createFromFormat(v.substring(1,v.length) , DateRangeField.f);
+
+					if(date) {
+						this.valueDisplay.text = ">= " + date.addDays(-1).format(Format.dateFormat)
 					}
 				}
 			}
