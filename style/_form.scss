@@ -637,9 +637,13 @@
 		min-height: util.dp(46);
 	}
 
+	&.date {
+		input.control {
+			white-space: nowrap; // for ios date field
+		}
+	}
+
 	&.datetime {
-
-
 		.time {
 			input.text.hour {
 				padding-left:0;
