@@ -9,6 +9,7 @@ import {root} from "../Root.js";
 import {Toolbar} from "../Toolbar.js";
 import {Config} from "../Observable.js";
 import {AbstractMenu} from "../AbstractMenu";
+import {FunctionUtil} from "../../util/index";
 
 
 /**
@@ -265,6 +266,7 @@ export class Menu<EventMap extends ComponentEventMap = ComponentEventMap> extend
 		if(!this.alignTo) {
 			return;
 		}
+
 		const rect = this.alignTo.getBoundingClientRect();
 
 		let x = Math.max(0, rect.x);
@@ -308,8 +310,8 @@ export class Menu<EventMap extends ComponentEventMap = ComponentEventMap> extend
 
 		}
 
-		this.x = x;
-		this.y = y;
+		this.x = x + window.scrollX;
+		this.y = y + window.scrollY;
 	}
 
 	/**
@@ -351,6 +353,16 @@ export class Menu<EventMap extends ComponentEventMap = ComponentEventMap> extend
 	}
 
 
+	private listenForScroll() {
+		const onScroll = FunctionUtil.buffer(20, () => {
+			this.align();
+		});
+		window.addEventListener("scroll", onScroll);
+		this.on("hide", ()=>{
+			window.removeEventListener("scroll", onScroll)
+		})
+	}
+
 	protected internalSetHidden(hidden:boolean) {
 
 		if(!hidden) {
@@ -365,7 +377,10 @@ export class Menu<EventMap extends ComponentEventMap = ComponentEventMap> extend
 
 			super.internalSetHidden(hidden);
 
-			this.align();
+			if(this.alignTo) {
+				this.align();
+				this.listenForScroll();
+			}
 
 			if(this.parentMenu)
 			{

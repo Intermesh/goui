@@ -141,6 +141,11 @@ html {
 	gap: util.dp(8);
 }
 
+.goui.wrap {
+	flex-wrap: wrap !important;
+}
+
+
 
 .goui.container {
 	display: flex;

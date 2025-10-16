@@ -24,7 +24,7 @@ menu.goui-dropdown {
 	display: block;
 	z-index: config.$zIndexMenu;
 	list-style: none;
-	position: fixed;
+	position: absolute;
 	min-width: $menuWidth;
 	border: config.$borderWidth solid config.$colorLine;
 	border-radius: util.dp(8);

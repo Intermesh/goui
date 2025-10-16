@@ -17,8 +17,6 @@
 	font: config.$fontBase;
 	font-weight: 600;
 	line-height: util.dp(24); //match icon
-	text-overflow: ellipsis;
-	white-space: nowrap;
 	overflow: hidden;
 
 	//min-height: dp(46); // line-height + padding. This broke chips. Don't know why it was here.
@@ -37,6 +35,8 @@
 		i.icon {
 			margin-right: util.dp(8);
 		}
+
+		min-width: util.dp(100);
 	}
 
 	i.icon {
@@ -47,6 +47,9 @@
 
 	.text {
 		width: 100%;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
 	}
 
 
