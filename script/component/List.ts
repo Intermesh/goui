@@ -251,9 +251,7 @@ export class List<StoreType extends Store = Store, EventMapType extends ListEven
 			this.rowSelect = rowselect({list: this as never});
 		}
 	}
-
-
-	constructor(readonly store: StoreType, readonly renderer: RowRenderer, tagName: keyof HTMLElementTagNameMap = "ul") {
+	constructor(readonly store: StoreType, readonly renderer: RowRenderer, tagName: keyof HTMLElementTagNameMap = "div") {
 		super(tagName);
 		this.tabIndex = 0;
 	}
@@ -370,38 +368,52 @@ export class List<StoreType extends Store = Store, EventMapType extends ListEven
 	}
 
 	public onRecordRemove(ev:StoreEventMap<any>['remove']) {
+
+		let groupEl;
 		const rows = this.getRowElements();
+		if(this.groupBy) {
+			groupEl = rows[ev.index]?.parentElement;
+		}
+
 		rows[ev.index]?.remove();
 
 		// Remove row from selection too if it's not caused by a store load. Then we want to maintain the selection.
 		if (!this.store.loading && this.rowSelection) {
 			this.rowSelection.remove(ev.item, true);
 		}
+
+		//cleanup group if only group header is left
+		if(groupEl && groupEl.children.length == 1) {
+			groupEl.remove();
+			if(this.groupEl == groupEl) {
+				this.groupEl = undefined;
+				this.lastGroup = undefined;
+			}
+		}
 	}
 
 	//todo inserting doesn't work with groups yet. It can only append to the last
 	public onRecordAdd(ev:any) {
 
-		let container = this.groupEl || this.el;
-
 		const newGroup = this.isNewGroup(ev.item);
-		if(newGroup !== false) {
-			container = this.groupEl = this.renderGroup(ev.item);
+		if(!this.groupEl || newGroup !== false) {
+			this.groupEl = this.renderGroup(ev.item);
+			this.el.append(this.groupEl);
 		}
 
 		const row = this.renderRow(ev.item, ev.index);
+
+		// if this is the last row just appended we can append here too. Otherwise we must insert.
 		if (ev.index == ev.target.count() - 1) {
-			container.append(row);
+			this.groupEl.append(row);
 		} else {
 			const before = this.getRowElements()[ev.index];
 			before.parentElement!.insertBefore(row, before);
 		}
-
-		this.onRowAppend(row, ev.item, ev.index);
 	}
 
-	protected getRowElements(): HTMLElement[] {
-		return Array.from(this.el.querySelectorAll(":scope > .data"));
+	protected getRowElements() : HTMLElement[] {
+		return Array.from(this.el.getElementsByClassName("data"))  as HTMLElement[];
 	}
 
 	private initNavigateEvent() {
@@ -498,51 +510,40 @@ export class List<StoreType extends Store = Store, EventMapType extends ListEven
 	protected groupEl: HTMLElement | undefined;
 
 	protected renderRows(records: any[]) {
-		let container = this.groupEl || this.el;
 
 		for (let i = 0, l = records.length; i < l; i++) {
-
 			const newGroup = this.isNewGroup(records[i]);
-			if(newGroup !== false) {
-				container = this.groupEl = this.renderGroup(records[i]);
+			if(!this.groupEl || newGroup !== false) {
+				this.groupEl = this.renderGroup(records[i]);
+				this.el.append(this.groupEl);
 			}
 
 			const row = this.renderRow(records[i], i);
-			container.append(row);
-			this.onRowAppend(row, records[i], i);
+			this.groupEl.append(row);
 		}
 
 		this.fire("renderrows", {records});
 	}
 
 	protected isNewGroup(record:any) {
-
 		const groupBy = this.groupBy ? ObjectUtil.get(record, this.groupBy) : "";
-
-		if(this.lastGroup != groupBy) {
-			this.lastGroup = groupBy;
-			return groupBy;
-		} else
-		{
-			return false;
-		}
+		return this.lastGroup !== groupBy;
 	}
 
-	protected onRowAppend(row: HTMLElement, record: any, index: number) {
-
-	}
 
 	protected renderGroup(record: any): HTMLElement {
-		// return this.fragment!;
+
+		const ul = document.createElement("ul");
+
 		if(this.groupBy) {
-			const li = document.createElement("li");
-			li.classList.add("group");
+			const groupTitle = document.createElement("li");
+			groupTitle.classList.add("group");
 
-			this.renderGroupToEl(record, li);
+			this.renderGroupToEl(record, groupTitle);
 
-			this.el.append(li);
+			ul.append(groupTitle);
 		}
-		return this.el;
+		return ul;
 	}
 
 	private wrapGroupByCollapsible(groupDisplayEl:HTMLElement) {
@@ -571,8 +572,10 @@ export class List<StoreType extends Store = Store, EventMapType extends ListEven
 		return groupDisplayComp.el;
 	}
 
+	protected groupSelector = "ul";
+
 	private toggleGroup(groupRow:Component) {
-		const groupContainer = groupRow.el.closest("tbody");
+		const groupContainer = groupRow.el.closest(this.groupSelector);
 		if (!groupContainer) {
 			return
 		}
@@ -580,7 +583,7 @@ export class List<StoreType extends Store = Store, EventMapType extends ListEven
 		const icon = groupRow.findChild("expander")!;
 		icon.text == "expand_more" ? icon.text = "chevron_right" : icon.text = "expand_more";
 
-		const dataRows = groupContainer.querySelectorAll("tr.data");
+		const dataRows = groupContainer.querySelectorAll(".data");
 
 		dataRows.forEach((row) => {
 			const tableRow = row as HTMLTableRowElement;
@@ -597,6 +600,9 @@ export class List<StoreType extends Store = Store, EventMapType extends ListEven
 		}
 
 		const groupBy = ObjectUtil.get(record, this.groupBy!);
+
+		this.lastGroup = groupBy;
+
 		const r = this.groupByRenderer(groupBy, record, this);
 
 		if(r) {

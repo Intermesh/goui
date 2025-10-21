@@ -226,11 +226,6 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 	 */
 	public reorderColumns = true;
 
-
-	protected getRowElements() : HTMLElement[] {
-		return Array.from(this.el.getElementsByClassName("data"))  as HTMLElement[];
-	}
-
 	protected internalRemove() {
 		if (this.columnMenu) {
 			this.columnMenu.remove();
@@ -654,12 +649,12 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 		}, 0);
 	}
 
+	protected groupSelector = "tbody";
+
 	protected renderGroup(record: any): HTMLElement {
 
 		if (!this.groupBy) {
-			const groupEl = document.createElement('tbody');
-			this.el.append(groupEl);
-			return groupEl;
+			return document.createElement('tbody');
 		}
 
 		const tr = document.createElement("tr");
@@ -674,30 +669,9 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 
 		const groupEl = document.createElement('tbody');
 		groupEl.append(tr);
-
-		this.el.append(groupEl);
-
 		return groupEl;
 	}
 
-	public onRecordRemove(ev:any) {
-
-		let groupEl;
-		if(this.groupBy) {
-			const rows = this.getRowElements();
-			groupEl = rows[ev.index]?.parentElement;
-		}
-		super.onRecordRemove(ev);
-
-		//cleanup group if only group header is left
-		if(groupEl && groupEl.children.length == 1) {
-			groupEl.remove();
-			if(this.groupEl == groupEl) {
-				this.groupEl = undefined;
-				this.lastGroup = undefined;
-			}
-		}
-	}
 
 	focusRow(index: number): boolean {
 		if(this.rowSelection) {
