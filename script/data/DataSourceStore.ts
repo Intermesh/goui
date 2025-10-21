@@ -357,6 +357,11 @@ export type DataSourceStoreConfig<DataSource extends AbstractDataSource, RecordT
 		 */
 		buildRecord?: RecordBuilder<dataSourceEntityType<DataSource>, RecordType>,
 
+		/**
+		 * Can be provided so you can alter the records from the API
+		 *
+		 * @param records
+		 */
 		onBeforeLoad?: <T extends RecordType>(records:T[]) => Promise<T[]>
 
 		/**

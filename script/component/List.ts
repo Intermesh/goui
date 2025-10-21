@@ -673,7 +673,9 @@ export class List<StoreType extends Store = Store, EventMapType extends ListEven
 export type ListConfig<EventMapType extends ListEventMap, StoreType extends Store> = Omit<Config<List<StoreType, EventMapType>, "store" | "renderer">, "rowSelection">
 
 /**
- * Shorthand function to create {@link Table}
+ * Shorthand function to create {@link List}
+ *
+ * @link https://goui.io/#list Examples
  *
  * @param config
  */
