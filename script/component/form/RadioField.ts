@@ -18,7 +18,7 @@ interface RadioOption {
 
 export type RadioType = 'box' | 'button' | 'list';
 
-export interface Radiofield {
+export interface Radiofield extends Field{
 	set value(v: string | number | null)
 	get value(): string | number | null
 }
