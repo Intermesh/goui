@@ -69,10 +69,13 @@ export class NumberField extends InputField {
 
 	protected internalGetValue() {
 
-		let v = this.input!.value == "" ? undefined : parseInt(this.input!.value);
+		let v = this.input!.value == "" ? undefined : parseFloat(this.input!.value);
 		if((v === undefined || this.isEmptyNumber(v)  || isNaN(v))) {
 			return undefined;
 		}
+
+		console.log(v, this.multiplier, this.multiplier, (v / this.multiplier).toFixed(this.decimals))
+
 		return +(v / this.multiplier).toFixed(this.decimals);
 	}
 
