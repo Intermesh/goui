@@ -527,7 +527,7 @@ export class List<StoreType extends Store = Store, EventMapType extends ListEven
 
 	protected isNewGroup(record:any) {
 		const groupBy = this.groupBy ? ObjectUtil.get(record, this.groupBy) : "";
-		return this.lastGroup !== groupBy;
+		return this.lastGroup !== JSON.stringify(groupBy);
 	}
 
 
@@ -603,7 +603,7 @@ export class List<StoreType extends Store = Store, EventMapType extends ListEven
 
 		const groupBy = ObjectUtil.get(record, this.groupBy!);
 
-		this.lastGroup = groupBy;
+		this.lastGroup = JSON.stringify(groupBy);
 
 		const r = this.groupByRenderer(groupBy, record, this);
 

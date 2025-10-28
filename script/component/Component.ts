@@ -707,7 +707,7 @@ export class Component<EventMapType extends ComponentEventMap = ComponentEventMa
 		this.el.style.width = width;
 	}
 
-	get width()  {
+	get width() :number   {
 		const px = this.el.offsetWidth;
 		if(px) {
 			return Component.pxToRem(px);
@@ -738,7 +738,7 @@ export class Component<EventMapType extends ComponentEventMap = ComponentEventMa
 
 	}
 
-	get minWidth() {
+	get minWidth() :number {
 		const w = this.el.style.minWidth;
 		if(w.substring(w.length - 3) == "rem") {
 			return parseFloat(w) * 10;
@@ -764,7 +764,7 @@ export class Component<EventMapType extends ComponentEventMap = ComponentEventMa
 		this.el.style.minHeight = height;
 	}
 
-	get minHeight() {
+	get minHeight() :number  {
 		const h = this.el.style.minHeight;
 		if(h.substring(h.length - 3) == "rem") {
 			return parseFloat(h) * 10;
