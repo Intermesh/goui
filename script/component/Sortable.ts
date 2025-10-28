@@ -180,15 +180,16 @@ export class Sortable<Type extends Component> extends Observable<SortableEventMa
 	 * @private
 	 */
 	private findIndex(sortableItem:HTMLElement) {
-		let index = 0, curr: Element | null = sortableItem;
-
-		while((curr = curr.previousElementSibling)) {
-			if(curr.matches(this.sortableChildSelector)) {
-				index++;
-			}
-		}
-
-		return index;
+		return this.findSortables().indexOf(sortableItem);
+		// let index = 0, curr: Element | null = sortableItem;
+		//
+		// while((curr = curr.previousElementSibling)) {
+		// 	if(curr.matches(this.sortableChildSelector)) {
+		// 		index++;
+		// 	}
+		// }
+		//
+		// return index;
 	}
 
 	/**
@@ -374,6 +375,8 @@ export class Sortable<Type extends Component> extends Observable<SortableEventMa
 			dragData.toIndex = 0;
 		}
 
+		console.log(dragData.toIndex);
+
 		return this.fire("dropallowed", {
 			toIndex: dragData.toIndex,
 			fromIndex: dragData.fromIndex,
@@ -445,6 +448,7 @@ export class Sortable<Type extends Component> extends Observable<SortableEventMa
 		if(dragData.overEl) {
 
 			dragData.toIndex = this.findIndex(dragData.overEl);
+			console.log(dragData.toIndex, dragData.overEl);
 			if (dragData.pos == "after") {
 				dragData.toIndex++;
 			}

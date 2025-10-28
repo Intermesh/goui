@@ -297,6 +297,7 @@ export class List<StoreType extends Store = Store, EventMapType extends ListEven
 		sortable.group = this.sortableGroup;
 
 		sortable.on("sort", (ev) => {
+			debugger;
 			return this.fire("drop", ev);
 		});
 
@@ -542,6 +543,8 @@ export class List<StoreType extends Store = Store, EventMapType extends ListEven
 			this.renderGroupToEl(record, groupTitle);
 
 			ul.append(groupTitle);
+		} else {
+			this.lastGroup = "";
 		}
 		return ul;
 	}
