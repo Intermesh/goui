@@ -699,12 +699,12 @@ export class Component<EventMapType extends ComponentEventMap = ComponentEventMa
 	 * scaled easily for different themes.
 	 *
 	 */
-	set width(width: number | "auto") {
-		if(width == "auto") {
-			this.el.style.width = "auto";
-		} else {
-			this.el.style.width = (width / 10) + "rem";
+	set width(width: number | "auto" | "fit-content" | "min-content" | "max-content") {
+		if(typeof width != "string") {
+			width = (width / 10) + "rem";
 		}
+
+		this.el.style.width = width;
 	}
 
 	get width()  {
@@ -730,8 +730,12 @@ export class Component<EventMapType extends ComponentEventMap = ComponentEventMa
 	 * scaled easily for different themes.
 	 *
 	 */
-	set minWidth(width: number) {
-		this.el.style.minWidth = (width / 10) + "rem";
+	set minWidth(width: number | "auto" | "fit-content" | "min-content" | "max-content") {
+		if(typeof width != "string") {
+			width = (width / 10) + "rem";
+		}
+		this.el.style.minWidth = width;
+
 	}
 
 	get minWidth() {
@@ -753,8 +757,11 @@ export class Component<EventMapType extends ComponentEventMap = ComponentEventMa
 	 * scaled easily for different themes.
 	 *
 	 */
-	set minHeight(height: number) {
-		this.el.style.minHeight = (height / 10) + "rem";
+	set minHeight(height: number | "auto" | "fit-content" | "min-content" | "max-content") {
+		if(typeof height != "string") {
+			height = (height / 10) + "rem";
+		}
+		this.el.style.minHeight = height;
 	}
 
 	get minHeight() {
@@ -793,12 +800,11 @@ export class Component<EventMapType extends ComponentEventMap = ComponentEventMa
 	 *
 	 * @see width
 	 */
-	set height(height: number | "auto") {
-		if(height == "auto") {
-			this.el.style.height = "auto";
-		} else {
-			this.el.style.height = (height / 10) + "rem";
+	set height(height: number | "auto" | "fit-content" | "min-content" | "max-content") {
+		if(typeof height != "string") {
+			height = (height / 10) + "rem";
 		}
+		this.el.style.height = height;
 	}
 
 	get height() {
