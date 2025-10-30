@@ -14,6 +14,8 @@ import {browser, Collection} from "../util/index.js";
  */
 export type FindComponentPredicate = string | number | Component | ((comp: Component) => boolean | void);
 
+export type Length = number | "auto" | "fit-content" | "min-content" | "max-content";
+
 /**
  * Gets the class type of an instance. Opposite of the InstanceOf<>
  */
@@ -699,7 +701,7 @@ export class Component<EventMapType extends ComponentEventMap = ComponentEventMa
 	 * scaled easily for different themes.
 	 *
 	 */
-	set width(width: number | "auto" | "fit-content" | "min-content" | "max-content") {
+	set width(width: Length) {
 		if(typeof width != "string") {
 			width = (width / 10) + "rem";
 		}
@@ -730,7 +732,7 @@ export class Component<EventMapType extends ComponentEventMap = ComponentEventMa
 	 * scaled easily for different themes.
 	 *
 	 */
-	set minWidth(width: number | "auto" | "fit-content" | "min-content" | "max-content") {
+	set minWidth(width: Length) {
 		if(typeof width != "string") {
 			width = (width / 10) + "rem";
 		}
@@ -757,7 +759,7 @@ export class Component<EventMapType extends ComponentEventMap = ComponentEventMa
 	 * scaled easily for different themes.
 	 *
 	 */
-	set minHeight(height: number | "auto" | "fit-content" | "min-content" | "max-content") {
+	set minHeight(height: Length) {
 		if(typeof height != "string") {
 			height = (height / 10) + "rem";
 		}

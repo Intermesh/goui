@@ -5,6 +5,7 @@
  */
 
 import {FunctionUtil} from "../util/FunctionUtil";
+import {Component, Length} from "./Component";
 
 
 /**
@@ -303,15 +304,19 @@ type CompFuncs =  "buildState" |
 	"unmask" |
 	"valueOf" |
 	"items" |
-	"parent"
+	"parent" |
 
-// sometimes setters have a different type than the getters. TS prefers the getter type but not if we omit all the getters.
-// For example get width() and set width() in component
-type LoseGetters<MyType> = Omit<MyType, { [K in keyof MyType]: K extends `get ${string}` ? K : never }[keyof MyType]>;
+	// these will always get the "get width" type :(. See https://github.com/microsoft/TypeScript/issues/53594
+	"width"  |
+	"minWidth" |
+	"height" |
+	"minHeight"
+
 
 type WritablePartial<T> = {
 	-readonly [P in keyof T]?: T[P];
 };
+
 
 /**
  * Generic Config option that allows all public properties as options.
@@ -328,14 +333,14 @@ export type Config<Cmp extends Observable, Required extends keyof Cmp = never> =
 	WritablePartial<
 		//somehow this breaks generic class sometimes : (
 		// Omit<Cmp, Required & FunctionPropertyNames<Cmp>>
-	Omit<LoseGetters<Cmp>, CompFuncs >
+	Omit<Cmp, CompFuncs >
 	>
 
 	&
 
 	Writeable<
 		Pick<Cmp, Required>
-	>
+>
 
 	& {
 	/**
@@ -372,5 +377,41 @@ export type Config<Cmp extends Observable, Required extends keyof Cmp = never> =
 	/**
 	 * The tagname of the HTMLElement created by the component
 	 */
-	tagName?: keyof HTMLElementTagNameMap
+	tagName?: keyof HTMLElementTagNameMap,
+
+
+	// the following need to be here because they have different set and get types.
+
+	/**
+	 * Set the width in scalable pixels
+	 *
+	 * The width is applied in rem units divided by 10. Because the font-size of the html
+	 * element has a font-size of 62.5% this is equals the amount of pixels, but it can be
+	 * scaled easily for different themes.
+	 */
+	width?: Length
+	/**
+	 * Set the minimum width in scalable pixels
+	 *
+	 * The width is applied in rem units divided by 10. Because the font-size of the html
+	 * element has a font-size of 62.5% this is equals the amount of pixels, but it can be
+	 * scaled easily for different themes.
+	 */
+	minWidth?: Length
+	/**
+	 * Set the height in scalable pixels
+	 *
+	 * The width is applied in rem units divided by 10. Because the font-size of the html
+	 * element has a font-size of 62.5% this is equals the amount of pixels, but it can be
+	 * scaled easily for different themes.
+	 */
+	height?: Length
+	/**
+	 * Set the minimum height in scalable pixels
+	 *
+	 * The width is applied in rem units divided by 10. Because the font-size of the html
+	 * element has a font-size of 62.5% this is equals the amount of pixels, but it can be
+	 * scaled easily for different themes.
+	 */
+	minHeight?: Length
 }
