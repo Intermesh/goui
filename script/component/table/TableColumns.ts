@@ -58,13 +58,20 @@ export interface TableColumnEventMap extends ObservableEventMap {
 	}
 }
 
+/**
+ * Table column class
+ *
+ * Contains information to render columns in a {@link Table}
+ */
 export class TableColumn<EventMap extends TableColumnEventMap = TableColumnEventMap> extends Observable<EventMap> {
 
-	public parent: Table | undefined;
+
+
 
 	/**
+	 * Column constructor
 	 *
-	 * The column ID. Also used for 'property'
+	 * @param id The column ID. Also used for {@link property}
 	 */
 	constructor(public id: string) {
 		super();
@@ -73,8 +80,13 @@ export class TableColumn<EventMap extends TableColumnEventMap = TableColumnEvent
 	}
 
 	/**
+	 * Containst the table this column belongs to.
+	 */
+	public parent: Table | undefined;
+
+	/**
 	 * Path to property. If not given then 'id' is used
-	 *
+	 * If the property is an object you can get a nested 'bar' property with: "foo/bar".
 	 * @see ObjectUtil.get()
 	 */
 	public property: string
@@ -82,59 +94,59 @@ export class TableColumn<EventMap extends TableColumnEventMap = TableColumnEvent
 	/**
 	 * Header in the table
 	 */
-	header?: string;
+	public header?: string;
 
 	/**
 	 * Renderer function for the display
 	 */
-	renderer?: TableColumnRenderer
+	public renderer?: TableColumnRenderer
 
 
 	/**
 	 * Renderer function for the header
 	 */
-	headerRenderer?: HeaderRenderer
+	public headerRenderer?: HeaderRenderer
 
 	/**
 	 * Make the column resizable by the user
 	 */
-	resizable = false
+	public resizable = false
 
 	/**
 	 * Make it sortable by the user
 	 */
-	sortable = false
+	public sortable = false
 
 	/**
 	 * Width in rem units
 	 */
-	width?: number
+	public width?: number
 
 	/**
 	 * Text alignment
 	 */
-	align: align = "left"
+	public align: align = "left"
 
 	/**
 	 * Hide the column. It can be enabled by the user via the context menu.
 	 */
-	hidden = false
+	public hidden = false
 
 	/**
 	 * Enable this column in the enabled columns menu
 	 */
-	hidable = true
+	public hidable = true
 
 	/**
 	 * When rendered this is set to the DOM element.
 	 * It's used to update the header width
 	 */
-	headerEl?: HTMLTableCellElement;
+	public headerEl?: HTMLTableCellElement;
 
 	/**
 	 * Add CSS classes
 	 */
-	cls?: string
+	public cls?: string
 
 	/**
 	 * Makes the column stick when scrolling horizontally
@@ -248,6 +260,9 @@ export interface CheckboxColumnEventMap extends TableColumnEventMap {
 }
 
 export class CheckboxColumn extends TableColumn<CheckboxColumnEventMap> {
+	/**
+	 * @inheritDoc
+	 */
 	constructor(id: string) {
 		super(id);
 
