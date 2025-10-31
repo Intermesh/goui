@@ -47,13 +47,17 @@ export class NumberField extends InputField {
 	protected validate() {
 		super.validate();
 		const v = this.value;
-		if (v !== undefined && isNaN(v)) {
-			this.setInvalid("Incorrect number format");
+		if(v === undefined) {
+			return;
 		}
-		if (this.max !== undefined && !this.isEmptyNumber(v) && v! > this.max) {
+		if (isNaN(v)) {
+			this.setInvalid("Incorrect number format");
+			return;
+		}
+		if (this.max !== undefined && v! > this.max) {
 			this.setInvalid(t("Number is bigger than the maximum of {max}.").replace("{max}", this.max.toLocaleString()));
 		}
-		if (this.min !== undefined && (this.isEmptyNumber(v) || v! < this.min)) {
+		if (this.min !== undefined && v! < this.min) {
 			this.setInvalid(t("Number is smaller than the maximum of {min}.").replace("{min}", this.min.toLocaleString()));
 		}
 	}
