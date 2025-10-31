@@ -65,10 +65,9 @@
 		}
 
 		&:not(:first-child) {
-			.wrap {
+			.wrap, .hint {
 				border-top-left-radius: 0;
 				border-bottom-left-radius: 0;
-
 
 				span.box-label {
 					border-top-left-radius: 0;
@@ -78,7 +77,7 @@
 			}
 		}
 		&:not(:last-child) {
-			.wrap {
+			.wrap, .hint {
 				border-right-width: 0;
 				border-top-right-radius: 0;
 				border-bottom-right-radius: 0;
@@ -101,17 +100,17 @@
 		}
 	}
 
-	&>.goui-form-field:focus-within:not(:last-child) {
-		.wrap {
+	&>.goui-form-field:focus-within:not(:last-child), &>.goui-form-field.invalid:not(:last-child){
+		.wrap,.hint {
 			border-right-width: config.$borderWidth;
 		}
 	}
 
-	&>.goui-form-field:focus-within + * {
+	&>.goui-form-field:focus-within + *, &>.goui-form-field.invalid + * {
 		&.goui-button {
 			border-left: 0;
 		}
-		.wrap {
+		.wrap, .hint {
 			border-left: 0;
 			div.label {
 				transform: translateX(0 - config.$borderWidth);
@@ -539,6 +538,9 @@
 			border: config.$borderWidth solid config.$colorOutline;
 			border-radius: 0 0 config.$borderRadius config.$borderRadius;
 			padding: util.dp(3) util.dp(18);
+			&:empty {
+				border-top: 0;
+			}
 		}
 
 		&.invalid {
@@ -1099,8 +1101,6 @@
 			border-color: config.$colorError;
 		}
 	}
-
-
 
 	div.label {
 		top: 0;
