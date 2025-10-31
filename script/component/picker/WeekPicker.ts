@@ -55,7 +55,9 @@ export class WeekPicker extends Component<WeekPickerEventMap> {
 						}
 					}),
 					this.yearField = numberfield({
+						width: 70,
 						decimals: 0,
+						thousandsSeparator: "",
 						value: this.value.getYear(),
 						listeners: {
 							setvalue: () => {

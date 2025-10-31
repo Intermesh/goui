@@ -31,6 +31,17 @@ export class NumberField extends InputField {
 	 */
 	public multiplier = 1;
 
+	/**
+	 * Decimal separator. Defaults to {@link Format.decimalSeparator}
+	 */
+	public decimalSeparator: string = Format.decimalSeparator;
+
+	/**
+	 * Thousands separator. Defaults to {@link Format.thousandsSeparator}
+	 */
+
+	public thousandsSeparator: string = Format.thousandsSeparator
+
 	constructor() {
 		super();
 
@@ -42,7 +53,13 @@ export class NumberField extends InputField {
 
 		});
 
+		// select number on focus so you can enter a new number immediately
+		this._input!.addEventListener("focus", () => {
+			this.select();
+		})
+
 	}
+
 
 	protected validate() {
 		super.validate();
@@ -55,10 +72,10 @@ export class NumberField extends InputField {
 			return;
 		}
 		if (this.max !== undefined && v! > this.max) {
-			this.setInvalid(t("Number is bigger than the maximum of {max}.").replace("{max}", this.max.toLocaleString()));
+			this.setInvalid(t("Number is bigger than the maximum of {max}.").replace("{max}", Format.number(this.max, this.decimals, this.decimalSeparator, this.thousandsSeparator)));
 		}
 		if (this.min !== undefined && v! < this.min) {
-			this.setInvalid(t("Number is smaller than the maximum of {min}.").replace("{min}", this.min.toLocaleString()));
+			this.setInvalid(t("Number is smaller than the maximum of {min}.").replace("{min}", Format.number(this.min, this.decimals, this.decimalSeparator, this.thousandsSeparator)));
 		}
 	}
 
@@ -71,7 +88,7 @@ export class NumberField extends InputField {
 			console.error("Invalid number given for field " + this.name, v);
 			s = undefined;
 		} else {
-			s = Format.number(+(v! * this.multiplier));
+			s = Format.number(+(v! * this.multiplier), this.decimals, this.decimalSeparator, this.thousandsSeparator);
 		}
 
 		super.internalSetValue(s);
@@ -85,7 +102,7 @@ export class NumberField extends InputField {
 		if (!this.input!.value) {
 			return undefined;
 		}
-		const v = Format.parseLocalNumber(this.input!.value);
+		const v = Format.parseLocalNumber(this.input!.value, this.decimalSeparator, this.thousandsSeparator);
 		return +(v / this.multiplier).toFixed(this.decimals);
 	}
 

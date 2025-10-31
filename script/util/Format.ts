@@ -255,8 +255,10 @@ export class Format {
 	 *
 	 * @param value
 	 * @param decimals
+	 * @param decimalSeparator Override {@link decimalSeparator}
+	 * @param thousandsSeparator Override {@link thousandsSeparator}
 	 */
-	public static number(value: number, decimals = 2): string {
+	public static number(value: number, decimals = 2, decimalSeparator = this.decimalSeparator, thousandsSeparator = this.thousandsSeparator): string {
 
 		if(value === null || value == undefined) {
 			return "";
@@ -268,9 +270,6 @@ export class Format {
 			value *= -1;
 		}
 
-		const dec = this.decimalSeparator,
-			tho = this.thousandsSeparator;
-
 		const no = value.toFixed(decimals), parts = no.split('.');
 
 		let formatted = "";
@@ -279,12 +278,12 @@ export class Format {
 			formatted = parts[0][i] + formatted;
 
 			if (i > 0 && (length - i) % 3 == 0) {
-				formatted = tho + formatted;
+				formatted = thousandsSeparator + formatted;
 			}
 		}
 
 		if (decimals) {
-			formatted += dec + parts[1];
+			formatted += decimalSeparator + parts[1];
 		}
 
 		if (neg) {
@@ -296,20 +295,22 @@ export class Format {
 
 	/**
 	 * Parse a local formatted number string into a number.
-	 * Uses {@link decimalSeparator} and {@link thousandsSeparator}
+	 *
 	 * @param value
+	 * @param decimalSeparator Override {@link decimalSeparator}
+	 * @param thousandsSeparator Override {@link thousandsSeparator}
 	 */
-	public static parseLocalNumber(value: string) : number {
+	public static parseLocalNumber(value: string, decimalSeparator = this.decimalSeparator, thousandsSeparator = this.thousandsSeparator) : number {
 		if(!value) {
 			return 0;
 		}
 
-		if(this.thousandsSeparator != ""){
-			const re = new RegExp('[' + this.thousandsSeparator + ']', 'g');
+		if(thousandsSeparator != ""){
+			const re = new RegExp('[' + thousandsSeparator + ']', 'g');
 			value = value.replace(re, "");
 		}
 
-		return parseFloat(value.replace(this.decimalSeparator, "."));
+		return parseFloat(value.replace(decimalSeparator, "."));
 	}
 
 
