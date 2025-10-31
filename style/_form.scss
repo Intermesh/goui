@@ -724,7 +724,7 @@
 	}
 
 	&.invalid {
-		.wrap {
+		>.wrap {
 			border-color: config.$colorErrorBorder;
 			background-color: config.$colorErrorBg;
 			i {
@@ -746,7 +746,7 @@
 			};
 		}
 
-		.hint {
+		>.hint {
 			color: config.$colorError;
 		}
 	}

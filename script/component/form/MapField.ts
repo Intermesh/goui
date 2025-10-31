@@ -32,16 +32,52 @@ export class MapField extends Field {
 	 * Set to the name of the field holding the value if it's a scalar.
 	 */
 	public valueFieldName?: string;
+	private itemsContainer!: HTMLDivElement;
 
 	constructor(public buildField: FieldBuilder) {
 		super('div');
-
-		this.cls = "vbox gap";
 	}
-	protected baseCls = "";
+	protected baseCls = "goui-form-field";
 
 	protected renderControl() {
 		// empty
+		const hint = this.createHint();
+		if (hint) {
+			this.el.appendChild(hint);
+		}
+	}
+
+	protected get itemContainerEl(): HTMLElement {
+		if(!this.itemsContainer) {
+			this.itemsContainer = document.createElement("div");
+			this.itemsContainer.classList.add("goui", "vbox", "gap")
+			this.el.appendChild(this.itemsContainer);
+		}
+
+		return this.itemsContainer;
+	}
+
+	protected validate() {
+		super.validate();
+		let invalid;
+		this.findChildrenByType(Field).forEach((i) => {
+			if (!i.disabled && !i.isValid()) {
+				invalid = i;
+			}
+		})
+		if (invalid) {
+			this.setInvalid("There's an invalid field");
+		}
+	}
+
+	public clearInvalid() {
+
+		super.clearInvalid();
+		const items = this.findChildrenByType(Field);
+
+		items.forEach((field) => {
+			field.clearInvalid();
+		});
 	}
 
 

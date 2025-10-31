@@ -29,7 +29,9 @@ export interface ArrayField<Type extends FieldValue = Record<string, any>> exten
  */
 export class ArrayField<Type extends FieldValue = Record<string, any>> extends Field {
 
-	protected baseCls = '';
+	protected baseCls = 'goui-form-field';
+
+	private itemsContainer!: HTMLDivElement;
 	/**
 	 *
 	 * @param buildField Function that returns a new form field for an array item
@@ -46,8 +48,46 @@ export class ArrayField<Type extends FieldValue = Record<string, any>> extends F
 		});
 	}
 
+
 	protected renderControl() {
 		// empty
+		const hint = this.createHint();
+		if (hint) {
+			this.el.appendChild(hint);
+		}
+	}
+
+	protected get itemContainerEl(): HTMLElement {
+		if(!this.itemsContainer) {
+			this.itemsContainer = document.createElement("div");
+			this.itemsContainer.classList.add("goui", "vbox", "gap")
+			this.el.appendChild(this.itemsContainer);
+		}
+
+		return this.itemsContainer;
+	}
+
+	protected validate() {
+		super.validate();
+		let invalid;
+		this.findChildrenByType(Field).forEach((i) => {
+			if (!i.disabled && !i.isValid()) {
+				invalid = i;
+			}
+		})
+		if (invalid) {
+			this.setInvalid("There's an invalid field");
+		}
+	}
+
+	public clearInvalid() {
+
+		super.clearInvalid();
+		const items = this.findChildrenByType(Field);
+
+		items.forEach((field) => {
+			field.clearInvalid();
+		});
 	}
 
 	private enableChangeEvent = true;
