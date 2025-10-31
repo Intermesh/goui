@@ -24,6 +24,26 @@ export abstract class AbstractMenu<EventMap extends ComponentEventMap = Componen
 	private focusedItemIndex = -1;
 
 	/**
+	 * Automatically focus the first element.
+	 *
+	 * This does not actually focus it but makes it appear selected. Used in the HtmlFieldMentionPLugin
+	 *
+	 * @param v
+	 */
+	public set autoFocusFirst(v:boolean) {
+		if(v) {
+			this.el.classList.add("highlight-first");
+			this.on("show", () => {
+				this.focusedItemIndex = 1;
+			});
+		}
+	}
+
+	public get autoFocusFirst() {
+		return this.el.classList.contains("highligh-first");
+	}
+
+	/**
 	 * Find the first menu in the tree of submenu's
 	 */
 	private findToolbar(): AbstractMenu | undefined {
@@ -119,6 +139,7 @@ export abstract class AbstractMenu<EventMap extends ComponentEventMap = Componen
 
 	public focusNext(inc = 1): boolean {
 
+		console.log(this.focusedItemIndex);
 		const nextIndex = this.focusedItemIndex + inc;
 
 		this.focusedItemIndex = Math.min(Math.max(nextIndex, 0), this.items.count() - 1);
@@ -163,6 +184,7 @@ export abstract class AbstractMenu<EventMap extends ComponentEventMap = Componen
 	}
 
 	public focus(o?: FocusOptions) {
+		console.log(this.focusedItemIndex);
 		if (this.focusedItemIndex > -1) {
 			this.items.get(this.focusedItemIndex)!.focus();
 		} else {

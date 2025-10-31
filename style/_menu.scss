@@ -13,6 +13,16 @@ menu.goui {
 	padding-inline-start: 0;
 }
 
+%menu-item-focused {
+	box-shadow: none;
+	border: 0;
+	background-color: config.$colorHover;
+	color: config.$colorText;
+	input:not(:checked) {
+		border-color: white;
+	}
+}
+
 menu.goui-dropdown {
 	@extend .z12;
 
@@ -32,6 +42,14 @@ menu.goui-dropdown {
 	backdrop-filter: blur(20px);
 	-webkit-backdrop-filter: blur(20px);
 	padding: util.dp(6);
+
+	&.highlight-first:not(:focus-within) {
+		> li:first-child {
+			> button.goui-button {
+				@extend %menu-item-focused
+			}
+		}
+	}
 
 	> li {
 		display:block;
@@ -53,13 +71,7 @@ menu.goui-dropdown {
 			//}
 
 			&:focus, &:focus-visible {
-				box-shadow: none;
-				border: 0;
-				background-color: config.$colorHover;
-				color: config.$colorText;
-				input:not(:checked) {
-					border-color: white;
-				}
+				@extend %menu-item-focused
 			}
 
 		}
