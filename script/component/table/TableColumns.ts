@@ -33,7 +33,6 @@ export type align = "left" | "right" | "center";
 
 export interface TableColumnEventMap extends ObservableEventMap {
 
-
 	/**
 	 * Fires when a table column renders
 	 */
@@ -64,8 +63,6 @@ export interface TableColumnEventMap extends ObservableEventMap {
  * Contains information to render columns in a {@link Table}
  */
 export class TableColumn<EventMap extends TableColumnEventMap = TableColumnEventMap> extends Observable<EventMap> {
-
-
 
 
 	/**
@@ -173,6 +170,7 @@ export type TableColumnConfig<T extends TableColumn = TableColumn> = Config<T> &
 /**
  * Create a table column
  *
+ * @see TableColumn
  * @param config
  */
 export const column = (config: TableColumnConfig) => createComponent(new TableColumn(config.id), config);
@@ -187,6 +185,8 @@ export class DateTimeColumn extends TableColumn {
 
 /**
  * Create a column showing date and time
+ *
+ * @see DateTimeColumn
  * @param config
  */
 export const datetimecolumn = (config: TableColumnConfig) => createComponent(new DateTimeColumn(config.id), config);
@@ -202,6 +202,7 @@ export class DateColumn extends TableColumn {
 /**
  * Create a column showing just a date
  *
+ * @see DateColumn
  * @param config
  */
 export const datecolumn = (config: TableColumnConfig) => createComponent(new DateColumn(config.id), config);
@@ -218,6 +219,7 @@ export class BoolColumn extends TableColumn {
 /**
  * Create a column showing a boolean value as check or empty
  *
+ * @see BoolColumn
  * @param config
  */
 export const boolcolumn = (config: TableColumnConfig) => createComponent(new BoolColumn(config.id), config);
@@ -231,6 +233,12 @@ export class NumberColumn extends TableColumn {
 	decimals = 2
 }
 
+/**
+ * A column to show a number
+ *
+ * @see NumberColumn
+ * @param config
+ */
 export const numbercolumn = (config: TableColumnConfig<NumberColumn>) => createComponent(new NumberColumn(config.id), config);
 
 
@@ -243,6 +251,12 @@ export class MoneyColumn extends TableColumn {
 	decimals = 2
 }
 
+/**
+ * A column to show money values
+ *
+ * @see MoneyColumn
+ * @param config
+ */
 export const moneycolumn = (config: TableColumnConfig<MoneyColumn>) => createComponent(new MoneyColumn(config.id), config);
 
 
@@ -259,6 +273,9 @@ export interface CheckboxColumnEventMap extends TableColumnEventMap {
 	}
 }
 
+/**
+ * A column with a checkbox input
+ */
 export class CheckboxColumn extends TableColumn<CheckboxColumnEventMap> {
 	/**
 	 * @inheritDoc
@@ -303,8 +320,9 @@ type CheckboxColumnConfig = Config<CheckboxColumn> & {
 
 
 /**
- * Create a checkbox column
+ * Create a checkbox input column
  *
+ * @see CheckboxColumn
  * @param config
  */
 export const checkboxcolumn = (config: CheckboxColumnConfig) => createComponent(new CheckboxColumn(config && config.id ? config.id : "checkbox"), config);
