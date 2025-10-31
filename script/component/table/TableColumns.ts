@@ -244,11 +244,19 @@ export const numbercolumn = (config: TableColumnConfig<NumberColumn>) => createC
 
 export class MoneyColumn extends TableColumn {
 	renderer: TableColumnRenderer = (v: number|undefined) => {
-		return v ? Format.money(v) : "";
+		return v ? Format.money(v, this.currency) : "";
 	}
 	align: align = "right"
 	width = 64
+	/**
+	 * Round to this number of decimals
+	 */
 	decimals = 2
+
+	/**
+	 * Override default {@link Format.currency}
+	 */
+	currency = Format.currency
 }
 
 /**

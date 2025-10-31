@@ -242,9 +242,10 @@ export class Format {
 	 * Format a number to money
 	 *
 	 * @param amount
+	 * @param currency Override default {@link Format.currency}
 	 */
-	public static money(amount: number): string {
-		return this.currency + " " + this.number(amount, 2);
+	public static money(amount: number, currency = this.currency): string {
+		return currency + " " + this.number(amount, 2);
 	}
 
 	/**
