@@ -820,6 +820,7 @@ false
 			if(this.iconEl) {
 				this.iconEl.remove();
 				this.el.classList.remove("with-icon");
+				this.iconEl = undefined;
 			}
 		}
 	}
