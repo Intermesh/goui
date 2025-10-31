@@ -36,11 +36,14 @@ export class Format {
 
 	/**
 	 * Decimal separator when using number formatting functions
+	 * They are auto detected from the browser settings at the bottom of this file
 	 */
 	public static decimalSeparator: string = ".";
 
 	/**
 	 * Thousands separator when using number formatting functions
+	 *
+	 * They are auto detected from the browser settings at the bottom of this file
 	 */
 
 	public static thousandsSeparator: string = ",";
@@ -247,6 +250,8 @@ export class Format {
 	/**
 	 * Format a number to a localized string
 	 *
+	 * Uses {@link decimalSeparator} and {@link thousandsSeparator}
+	 *
 	 * @param value
 	 * @param decimals
 	 */
@@ -286,6 +291,24 @@ export class Format {
 		}
 
 		return formatted;
+	}
+
+	/**
+	 * Parse a local formatted number string into a number.
+	 * Uses {@link decimalSeparator} and {@link thousandsSeparator}
+	 * @param value
+	 */
+	public static parseLocalNumber(value: string) : number {
+		if(!value) {
+			return 0;
+		}
+
+		if(this.thousandsSeparator != ""){
+			const re = new RegExp('[' + this.thousandsSeparator + ']', 'g');
+			value = value.replace(re, "");
+		}
+
+		return parseFloat(value.replace(this.decimalSeparator, "."));
 	}
 
 
@@ -346,8 +369,10 @@ export class Format {
 
 }
 
-//Create a known date string
 
+// Set defaults from browser settings
+
+//Create a known date string
 Format.dateFormat =  (new Intl.DateTimeFormat().formatToParts(new Date())).map(part => {
 		switch (part.type) {
 			case "day": return "d";
@@ -357,4 +382,24 @@ Format.dateFormat =  (new Intl.DateTimeFormat().formatToParts(new Date())).map(p
 		}
 	})
 	.join("");
+
+console.log("Detected date format: " + Format.dateFormat + " " + Format.timeFormat);
+
+const numberWithGroupAndDecimalSeparator = 10000.1;
+Intl.NumberFormat()
+	.formatToParts(numberWithGroupAndDecimalSeparator)
+	.forEach(part => {
+		switch(part.type) {
+			case "group":
+				console.log("Detected thousands separator: " + part.value)
+				Format.thousandsSeparator = part.value;
+				break;
+
+			case "decimal":
+				console.log("Detected decimal separator: " + part.value)
+				Format.decimalSeparator = part.value;
+				break;
+		}
+	});
+
 
