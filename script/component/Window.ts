@@ -196,11 +196,6 @@ export class Window<EventMap extends WindowEventMap = WindowEventMap> extends Dr
 				'->'
 			);
 
-			if (this.maximizable) {
-				this.header.items.add(this.initMaximizeTool());
-			}
-
-
 			if (this.collapsible) {
 				this.header.items.add(btn({
 					cls: "collapse-btn",
@@ -209,6 +204,10 @@ export class Window<EventMap extends WindowEventMap = WindowEventMap> extends Dr
 						this.collapsed = !this.collapsed;
 					}
 				}));
+			}
+
+			if (this.maximizable) {
+				this.header.items.add(this.initMaximizeTool());
 			}
 
 			if (this.closable) {
