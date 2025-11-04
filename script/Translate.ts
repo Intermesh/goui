@@ -23,7 +23,6 @@ export class Translate {
 	}
 
 	public load(lang: lang, pkg = "core", module = "core") {
-
 		if (!this.lang[pkg]) {
 			this.lang[pkg] = {};
 		}
@@ -45,7 +44,6 @@ export class Translate {
 	 * @param module The module name
 	 */
 	public static t(key: string, pkg?: string, module?: string): any {
-
 
 		if (!pkg) {
 			pkg = translate.defaultPkg;
