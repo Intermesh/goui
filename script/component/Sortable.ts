@@ -375,8 +375,6 @@ export class Sortable<Type extends Component> extends Observable<SortableEventMa
 			dragData.toIndex = 0;
 		}
 
-		console.log(dragData.toIndex);
-
 		return this.fire("dropallowed", {
 			toIndex: dragData.toIndex,
 			fromIndex: dragData.fromIndex,
@@ -448,7 +446,6 @@ export class Sortable<Type extends Component> extends Observable<SortableEventMa
 		if(dragData.overEl) {
 
 			dragData.toIndex = this.findIndex(dragData.overEl);
-			console.log(dragData.toIndex, dragData.overEl);
 			if (dragData.pos == "after") {
 				dragData.toIndex++;
 			}
