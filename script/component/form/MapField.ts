@@ -45,6 +45,10 @@ export class MapField extends Field {
 		if (hint) {
 			this.el.appendChild(hint);
 		}
+
+		this.items.on("datachanged", () => {
+			this.checkHasValue();
+		}, {buffer: 1});
 	}
 
 	protected get itemContainerEl(): HTMLElement {

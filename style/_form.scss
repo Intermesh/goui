@@ -261,12 +261,14 @@
 	@extend %control-pit;
 
 	// draws line between items inside a pit in event dialog for example
-	> div + div {
+	> div > div + div {
 		border-top: config.$borderWidth solid config.$colorOutline;
 	}
-	&:not(:empty){
+	border: 0;
+	&:not(.goui-form-field):not(:empty), &.has-value{
 		padding-bottom: util.dp(12);
 		margin-bottom: util.dp(-12);
+		border: config.$borderWidth solid config.$colorOutline;
 	}
 }
 
@@ -767,7 +769,8 @@
 		padding: util.dp(4) util.dp(18) util.dp(4);
 
 		&:empty {
-			padding: 0;
+			//padding: 0;
+			display:none;
 		}
 	}
 
