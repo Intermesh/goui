@@ -10,7 +10,7 @@ import {Component, createComponent} from "../Component.js";
 import {Format} from "../../util/index.js";
 import {checkbox, CheckboxField} from "../form/index.js";
 import {btn} from "../Button.js";
-import {menu} from "../menu/index.js";
+import {Menu, menu} from "../menu/index.js";
 
 /**
  * Return HTML or component to render into the table cell. Can also be async.
@@ -103,6 +103,12 @@ export class TableColumn<EventMap extends TableColumnEventMap = TableColumnEvent
 	 * Renderer function for the header
 	 */
 	public headerRenderer?: HeaderRenderer
+
+
+	/**
+	 * Optional Initialize function
+	 */
+	public init?: (table:Table) => void;
 
 	/**
 	 * Make the column resizable by the user
@@ -409,24 +415,61 @@ export const checkboxselectcolumn = (config?: CheckboxColumnConfig) => createCom
 
 
 /**
- * Creates a menu button.
+ * Creates a menu button
  *
- * All items will have a property dataSet.rowIndex and dataSet.table so you know which record has been clicked on.
+ * It reuses a single menu for each row
  *
+ * The menu will have a property dataSet.rowIndex and dataSet.table so you know which record has been clicked on.
+ *
+ * @example
+ * ```
+ * menucolumn(
+ * 		btn({
+ * 			text: t("Open"),
+ * 			icon: "open_in_new",
+ * 			handler: (b) => {
+ * 				this.open(b.parent!.dataSet.rowIndex);
+ * 			}
+ * 		})
+ * 	)
+ * ```
+ *
+ * @param config
  * @param items
  */
-export const menucolumn = (...items:Component[]) => column({
+export const menucolumn = (config:Config<TableColumn> & {menu: Menu}) => {
+
+	config.menu.isDropdown = true;
+	config.menu.removeOnClose = false;
+
+
+	return column({
+		sticky: true,
 		width: 48,
 		id: "btn",
+		init: (tbl) => {
+			tbl.on("remove", () => {
+				config.menu.remove();
+			})
+		},
 		renderer: (columnValue: any, record, td, table, rowIndex) => {
-			items.forEach(i => {
-				i.dataSet.table = table;
-				i.dataSet.rowIndex = rowIndex;
-			});
 
 			return btn({
 				icon: "more_vert",
-				menu: menu({}, ...items)
+				listeners: {
+					click: ({ev, target}) => {
+
+						// to allow click on menu button without firing row click
+						ev.stopPropagation();
+
+						config.menu.alignTo = target.el;
+						config.menu.dataSet.table = table;
+						config.menu.dataSet.rowIndex = rowIndex;
+						config.menu.show();
+					}
+				}
 			})
-		}
+		},
+		...config
 	});
+}

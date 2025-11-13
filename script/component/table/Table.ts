@@ -92,6 +92,10 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 		this._columns = {};
 		columns.forEach(c => {
 			this._columns[c.id] = c;
+
+			if(c.init) {
+				c.init.call(c, this);
+			}
 		})
 		if(this.rendered) {
 			this.rerender();

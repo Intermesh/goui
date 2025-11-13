@@ -8,6 +8,7 @@
 import {Config, InferComponentEventMap, ListenersConfig, Observable, ObservableEventMap} from "./Observable.js";
 import {State} from "../State.js";
 import {browser, Collection} from "../util/index.js";
+import {MaterialIcon} from "./MaterialIcon";
 
 /**
  * A component identifier by id, itemId, Component instance or custom function
@@ -802,14 +803,14 @@ export class Component<EventMapType extends ComponentEventMap = ComponentEventMa
 	 *
 	 * @see width
 	 */
-	set height(height: number | "auto" | "fit-content" | "min-content" | "max-content") {
+	set height(height: Length) {
 		if(typeof height != "string") {
 			height = (height / 10) + "rem";
 		}
 		this.el.style.height = height;
 	}
 
-	get height() {
+	get height() : number {
 		const px = this.el.offsetHeight;
 		if(px) {
 			return Component.pxToRem(px);
@@ -1380,6 +1381,7 @@ export const mask = (config?: Config<Mask>) => createComponent(new Mask(), confi
  */
 export const comp = (config?: Config<Component>, ...items: Component[]) => createComponent(new Component(config?.tagName), config, items);
 
+export const i = (config?: Config<Component> | MaterialIcon, ...items: Component[]) => createComponent(new Component("i"), typeof config == 'string' ? {text: config, cls: "icon"} : config, items);
 export const span = (config?: Config<Component> | string, ...items: Component[]) => createComponent(new Component("span"), typeof config == 'string' ? {text: config} : config, items);
 export const p = (config?: Config<Component> | string, ...items: Component[]) => createComponent(new Component("p"), typeof config == 'string' ? {text: config} : config, items);
 export const small = (config?: Config<Component> | string, ...items: Component[]) => createComponent(new Component("small"), typeof config == 'string' ? {text: config} : config, items);
