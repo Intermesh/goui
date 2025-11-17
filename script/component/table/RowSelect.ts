@@ -104,6 +104,13 @@ export class RowSelect<StoreType extends Store = Store, RecordType extends Store
 
 	private readonly selected: SelectedRow<StoreType, RecordType>[] = [];
 
+
+	/**
+	 * When trie it behaves like a list of checkboxes
+	 * A click will add it to the selection instead of clearing the selection.
+	 */
+	public clickToAdd = false;
+
 	/**
 	 * Last selected index used for multi selection with shift
 	 * @private
@@ -308,7 +315,10 @@ export class RowSelect<StoreType extends Store = Store, RecordType extends Store
 			return;
 		}
 
-		this.clear();
+		if(!this.clickToAdd) {
+			this.clear();
+		}
+
 		this.add(list.store.get(index) as RecordType)
 
 		this.lastIndex = index;
@@ -439,7 +449,10 @@ export class RowSelect<StoreType extends Store = Store, RecordType extends Store
 			}
 		} else {
 			if(!this.listHasCheckbox()) {
-				this.clear();
+
+				if(!this.clickToAdd) {
+					this.clear();
+				}
 				this.add(this.list.store.get(index) as RecordType)
 			}
 

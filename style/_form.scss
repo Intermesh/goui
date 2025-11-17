@@ -568,7 +568,7 @@
 		position:absolute;
 		left: util.dp(16);
 		padding: 0 util.dp(4);
-		top: math.div(config.$baseLineHeight, 2) + util.dp(11);
+		top: util.dp(23);//math.div(config.$baseLineHeight, 2) + util.dp(11);
 		height: config.$borderWidth;
 		background-color: config.$colorBackgroundInput;
 		transition: top .15s cubic-bezier(.4,0,.2,1), left .15s cubic-bezier(.4,0,.2,1), font-size .15s cubic-bezier(.4,0,.2,1);

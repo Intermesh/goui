@@ -181,7 +181,7 @@ export class List<StoreType extends Store = Store, EventMapType extends ListEven
 	 */
 	public emptyStateHtml = `<div class="goui-empty-state"><i class="icon">article</i><p>${t("No items found")}</p></div>`
 
-	protected emptyStateTag: keyof HTMLElementTagNameMap = 'li';
+	protected emptyStateTag: keyof HTMLElementTagNameMap = 'div';
 	private emptyEl?: HTMLElement
 
 	private rowSelect?: RowSelect<StoreType, storeRecordType<StoreType>>;
@@ -233,7 +233,7 @@ export class List<StoreType extends Store = Store, EventMapType extends ListEven
 	protected itemTag: keyof HTMLElementTagNameMap = 'li'
 
 
-	protected lastGroup?: string;
+	protected lastGroup: string = JSON.stringify("");
 
 	/**
 	 * Row selection object
@@ -387,7 +387,7 @@ export class List<StoreType extends Store = Store, EventMapType extends ListEven
 			groupEl.remove();
 			if(this.groupEl == groupEl) {
 				this.groupEl = undefined;
-				this.lastGroup = undefined;
+				this.lastGroup = JSON.stringify("");
 			}
 		}
 	}
@@ -502,7 +502,7 @@ export class List<StoreType extends Store = Store, EventMapType extends ListEven
 	protected rerender() {
 		const el = this.el;
 		this.groupEl = undefined;
-		this.lastGroup = undefined;
+		this.lastGroup = JSON.stringify("");
 		el.innerHTML = "";
 		this.renderBody();
 	}
@@ -514,6 +514,7 @@ export class List<StoreType extends Store = Store, EventMapType extends ListEven
 		for (let i = 0, l = records.length; i < l; i++) {
 			const newGroup = this.isNewGroup(records[i]);
 			if(!this.groupEl || newGroup !== false) {
+
 				this.groupEl = this.renderGroup(records[i]);
 				this.el.append(this.groupEl);
 			}
@@ -526,13 +527,15 @@ export class List<StoreType extends Store = Store, EventMapType extends ListEven
 	}
 
 	protected isNewGroup(record:any) {
-		const groupBy = this.groupBy ? ObjectUtil.get(record, this.groupBy) : "";
-		return this.lastGroup !== JSON.stringify(groupBy);
+		const groupBy = JSON.stringify(this.groupBy ? ObjectUtil.get(record, this.groupBy) : "");
+
+		return this.lastGroup !== groupBy;
 	}
 
 
 	protected renderGroup(record: any): HTMLElement {
 
+			debugger;
 		const ul = document.createElement("ul");
 
 		if(this.groupBy) {
@@ -543,7 +546,7 @@ export class List<StoreType extends Store = Store, EventMapType extends ListEven
 
 			ul.append(groupTitle);
 		} else {
-			this.lastGroup = "";
+			this.lastGroup = JSON.stringify("");
 		}
 		return ul;
 	}

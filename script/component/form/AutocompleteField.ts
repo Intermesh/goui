@@ -12,12 +12,12 @@ import {List, listStoreType} from "../List.js";
 import {listpicker} from "../picker/index.js";
 import {Menu, menu} from "../menu/index.js";
 import {storeRecordType} from "../../data/index.js";
-import {InputField} from "./InputField.js";
+import {InputField, InputFieldEventMap} from "./InputField.js";
 
 /**
  * @inheritDoc
  */
-export interface AutocompleteEventMap extends FieldEventMap {
+export interface AutocompleteEventMap extends InputFieldEventMap {
 	/**
 	 * Fires when suggestions need to load
 	 *

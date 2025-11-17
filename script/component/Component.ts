@@ -18,7 +18,7 @@ export type FindComponentPredicate = string | number | Component | ((comp: Compo
 export type Length = number | "auto" | "fit-content" | "min-content" | "max-content";
 
 /**
- * Gets the class type of an instance. Opposite of the InstanceOf<>
+ * Gets the class type of an instance and allows abstract constructors. Opposite of the InstanceOf<>
  */
 type ClassTypeOf<T> = abstract new (...args: any[]) => T;
 
@@ -960,10 +960,10 @@ export class Component<EventMapType extends ComponentEventMap = ComponentEventMa
 	 * ```
 	 * @param cls
 	 */
-	public findAncestorByType<T extends ClassTypeOf<Component>>(cls: T): InstanceType<T> | undefined {
+	public findAncestorByType<T extends Component>(cls: ClassTypeOf<T>): T | undefined {
 		const p = this.findAncestor(cmp => cmp instanceof cls);
 		if (p) {
-			return p as InstanceType<T>;
+			return p as T;
 		} else {
 			return undefined;
 		}

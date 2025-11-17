@@ -279,18 +279,42 @@ export class Button<EventMap extends ButtonEventMap= ButtonEventMap> extends Com
 	}
 
 	/**
-	 * Set's the button icon and adds a "icon" css class
+	 * Set's the button icon and adds an "icon" css class
 	 */
 	set icon(icon: MaterialIcon | "" | undefined) {
 		this._icon = icon;
 
-		if (this._icon != undefined) {
+		if (this._icon != undefined || this._iconCls != undefined) {
 			this.el.classList.add("with-icon");
 		} else {
 			this.el.classList.remove("with-icon");
 		}
 
 		this.iconEl!.innerText = icon ?? "";
+	}
+
+	private _iconCls:string|undefined;
+	get iconCls() {
+		return this._iconCls;
+	}
+
+	/**
+	 * Set's the button icon and adds the given css classes
+	 */
+	set iconCls(iconCls: string | undefined) {
+		this._iconCls = iconCls;
+
+		if (this._icon != undefined || this._iconCls != undefined) {
+			this.el.classList.add("with-icon");
+		} else {
+			this.el.classList.remove("with-icon");
+		}
+
+		if(iconCls) {
+			this.iconEl!.className = iconCls + " icon";
+		} else{
+			this.iconEl!.className = "icon";
+		}
 	}
 
 	get icon() {

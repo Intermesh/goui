@@ -1,6 +1,20 @@
 import {Field, FieldEventMap, FieldValue} from "./Field.js";
+import {FunctionUtil} from "../../util/index";
 
-export abstract class InputField<EventMap extends FieldEventMap = FieldEventMap> extends Field<EventMap> {
+
+export interface InputFieldEventMap extends FieldEventMap {
+
+	/**
+	 * Fires on input
+	 */
+	input: {
+		value: any
+	}
+}
+
+
+
+export abstract class InputField<EventMap extends InputFieldEventMap = InputFieldEventMap> extends Field<EventMap> {
 
 	protected _input: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement | undefined;
 
@@ -16,6 +30,24 @@ export abstract class InputField<EventMap extends FieldEventMap = FieldEventMap>
 	 */
 	public get input() {
 		return this._input;
+	}
+
+	protected onFirstListenerAdded(eventName: keyof EventMap) {
+		super.onFirstListenerAdded(eventName);
+
+		if(eventName == "input") {
+			if(!this.rendered) {
+				this.on("render", () => {
+					this.input!.addEventListener('input', (ev) => {
+						this.fire("input", {value: this.input!.value})
+					})
+				});
+			} else {
+				this.input!.addEventListener('input', (ev) => {
+					this.fire("input", {value: this.input!.value})
+				})
+			}
+		}
 	}
 
 	set title(title: string) {

@@ -9,7 +9,7 @@ import {Config} from "../Observable.js";
 import {Button} from "../Button.js";
 import {tbar, Toolbar} from "../Toolbar.js";
 import {t} from "../../Translate.js";
-import {E} from "../../util";
+import {E, FunctionUtil} from "../../util";
 import {MaterialIcon} from "../MaterialIcon.js";
 import {Menu} from "../menu";
 

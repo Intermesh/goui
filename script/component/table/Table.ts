@@ -658,7 +658,7 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 	protected renderGroup(record: any): HTMLElement {
 
 		if (!this.groupBy) {
-			this.lastGroup = "";
+			this.lastGroup = JSON.stringify("");
 			return document.createElement('tbody');
 		}
 

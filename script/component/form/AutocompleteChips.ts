@@ -23,8 +23,8 @@ export interface AutocompleteChipsEventMap extends FieldEventMap {
  * @link https://goui.io/#form/ChipsField Example
  */
 export class AutocompleteChips<T extends List = List, EventMap extends AutocompleteChipsEventMap = AutocompleteChipsEventMap> extends ChipsField<EventMap> {
-	protected readonly menu: Menu;
-	protected readonly menuButton: Button;
+	protected menu?: Menu;
+	protected menuButton?: Button;
 	private valuesToCompare?: string[];
 
 
@@ -48,25 +48,17 @@ export class AutocompleteChips<T extends List = List, EventMap extends Autocompl
 	constructor(readonly list: T, private buffer = 300) {
 		super();
 
-		this.menu = menu({
+	}
+
+	protected createMenu() {
+		return menu({
 				cls: "goui-dropdown scroll",
+				style: {padding: "0"},
 				removeOnClose: false,
 				height: 400
 			},
-			list
+			this.list
 		);
-
-		this.menuButton = btn({
-			icon: "expand_more",
-			type: "button",
-			handler: () => {
-				this.fire("autocomplete", {input: ""});
-			},
-			menu: this.menu
-		});
-
-		this.initList();
-
 	}
 
 	private initList() {
@@ -79,7 +71,7 @@ export class AutocompleteChips<T extends List = List, EventMap extends Autocompl
 
 			this.list.on("rowclick", () => {
 				this.addSelected();
-				this.menu.hide();
+				this.menu!.hide();
 			});
 
 			this.list.store.on("datachanged", () => {
@@ -94,14 +86,14 @@ export class AutocompleteChips<T extends List = List, EventMap extends Autocompl
 					}
 				})
 			}
-			this.menu.on("show", () => {
+			this.menu!.on("show", () => {
 				syncSelection()
 			}, {buffer: 0});
 			this.list.store.on("datachanged", () => {
 				syncSelection()
 			}, {buffer: 0});
 
-			this.menu.on("hide", () => {
+			this.menu!.on("hide", () => {
 				this.addSelected()
 			})
 		}
@@ -142,6 +134,19 @@ export class AutocompleteChips<T extends List = List, EventMap extends Autocompl
 
 	protected internalRender(): HTMLElement {
 
+		this.menu = this.createMenu();
+
+		this.menuButton = btn({
+			icon: "expand_more",
+			type: "button",
+			handler: () => {
+				this.fire("autocomplete", {input: ""});
+			},
+			menu: this.menu
+		});
+
+		this.initList();
+
 		this.buttons = this.buttons || [];
 		this.buttons.push(this.menuButton);
 
@@ -165,11 +170,11 @@ export class AutocompleteChips<T extends List = List, EventMap extends Autocompl
 				ev.preventDefault();
 				ev.stopPropagation();
 
-				if(this.menuButton.menu!.hidden) {
+				if(this.menuButton!.menu!.hidden) {
 					if(!this.list.store.loaded) {
 						this.fire("autocomplete", {input:""});
 					}
-					this.menuButton.menu!.show();
+					this.menuButton!.menu!.show();
 				} else if(this.list.rowSelection) {
 					this.list.rowSelection.selectNext();
 				}
@@ -179,9 +184,9 @@ export class AutocompleteChips<T extends List = List, EventMap extends Autocompl
 			case 'ArrowUp':
 				ev.preventDefault();
 				ev.stopPropagation();
-				if(this.menuButton.menu!.hidden) {
+				if(this.menuButton!.menu!.hidden) {
 					this.fire("autocomplete", {input: ""});
-					this.menuButton.menu!.show();
+					this.menuButton!.menu!.show();
 				} else if(this.list.rowSelection) {
 					this.list.rowSelection.selectPrevious();
 				}
@@ -189,8 +194,8 @@ export class AutocompleteChips<T extends List = List, EventMap extends Autocompl
 				break;
 
 			case 'Escape':
-				if (!this.menu.hidden) {
-					this.menu.hide();
+				if (!this.menu!.hidden) {
+					this.menu!.hide();
 					ev.preventDefault();
 					ev.stopPropagation();
 					this.focus();
@@ -207,9 +212,9 @@ export class AutocompleteChips<T extends List = List, EventMap extends Autocompl
 			this.addSelected();
 		}
 
-		if(!this.menu.hidden) {
+		if(!this.menu!.hidden) {
 			ev.preventDefault();
-			this.menu.hide();
+			this.menu!.hide();
 		}
 	}
 
@@ -237,7 +242,7 @@ export class AutocompleteChips<T extends List = List, EventMap extends Autocompl
 	}
 
 	private onInput(_ev: Event) {
-		this.menuButton.menu!.show();
+		this.menuButton!.menu!.show();
 		this.fire("autocomplete", {input: this.editor.el.innerText});
 	}
 
