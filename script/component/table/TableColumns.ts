@@ -445,7 +445,7 @@ export const menucolumn = (config:Config<TableColumn> & {menu: Menu}) => {
 
 	return column({
 		sticky: true,
-		width: 48,
+		width: 40,
 		id: "btn",
 		init: (tbl) => {
 			tbl.on("remove", () => {

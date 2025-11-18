@@ -65,7 +65,8 @@
       border-bottom: 1px solid config.$colorDivider;
 
       &.group {
-        color: config.$colorAccent;
+        color: config.$colorTextSecondary;
+				font-size: util.sp(14);
       }
 
       &.data {

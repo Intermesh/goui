@@ -35,7 +35,7 @@ type Relation<EntityType extends BaseEntity> = Partial<Record<keyof EntityType, 
 	path: string
 }>>
 
-type RecordBuilder<EntityType, StoreRecord> = (entity: EntityType) => Promise<StoreRecord>;
+type RecordBuilder<EntityType, StoreRecord> = (entity: EntityType) => Promise<StoreRecord> | StoreRecord;
 
 /**
  * DataSourceStore class
