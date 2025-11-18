@@ -535,7 +535,6 @@ export class List<StoreType extends Store = Store, EventMapType extends ListEven
 
 	protected renderGroup(record: any): HTMLElement {
 
-			debugger;
 		const ul = document.createElement("ul");
 
 		if(this.groupBy) {
