@@ -121,6 +121,8 @@ export interface ListEventMap extends ComponentEventMap {
 	navigate: {
 		/** The index in the store. */
 		storeIndex: number;
+		/** The store record */
+		record: any;
 	};
 
 	/**
@@ -417,13 +419,14 @@ export class List<StoreType extends Store = Store, EventMapType extends ListEven
 	}
 
 	private initNavigateEvent() {
-		this.on('rowmousedown', ({ev, storeIndex}) => {
-			if (!ev.shiftKey && !ev.ctrlKey && !ev.metaKey) {
-				this.fire("navigate", {storeIndex: storeIndex});
-			}
-		});
 
 		if (this.rowSelection) {
+
+			this.rowSelection.on("selectionchange", ({selected}) => {
+				if (selected.length) {
+					this.fire("navigate", {storeIndex: selected[0].storeIndex, record: selected[0].record});
+				}
+			});
 
 			this.el.addEventListener('keydown', (ev) => {
 
@@ -431,11 +434,16 @@ export class List<StoreType extends Store = Store, EventMapType extends ListEven
 
 					const selected = this.rowSelect!.getSelected();
 					if (selected.length) {
-						this.fire("navigate", {storeIndex: selected[0].storeIndex});
+						this.fire("navigate", {storeIndex: selected[0].storeIndex, record: selected[0].record});
 					}
 				}
 			});
 
+		} else {
+			this.on('rowmousedown', ({ev, storeIndex}) => {
+				const record = this.store.get(storeIndex);
+				this.fire("navigate", {storeIndex: storeIndex, record: record});
+			});
 		}
 	}
 
