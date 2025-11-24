@@ -124,22 +124,11 @@ export class SelectField extends InputField {
 	}
 
 	protected internalGetValue() : FieldValue {
-		const v = this._input!.value;
-		return (v === '__NULL__') ? null : v
-	}
-	protected internalSetValue(v:FieldValue) {
-		this._input!.value = v !== undefined && v !== null ? v.toString() : "__NULL__";
-	}
-
-	set value(v) {
-		super.value = v;
-	}
-
-	get value() : FieldValue {
 
 		if(!this.rendered) {
-			return super.value as FieldValue;
+			return structuredClone(this._value);
 		}
+
 		const opts = (this.store ? this.store.all() : this.options);
 
 		let index = this.input!.selectedIndex;
@@ -148,9 +137,13 @@ export class SelectField extends InputField {
 		if(opts[index]) {
 			v = opts[index][this.valueField]
 		} else {
-			v = undefined;
+			v = null;
 		}
-		return v;
+
+		return (v === '__NULL__') ? null : v
+	}
+	protected internalSetValue(v:FieldValue) {
+		this._input!.value = v !== undefined && v !== null ? v.toString() : "__NULL__";
 	}
 }
 
