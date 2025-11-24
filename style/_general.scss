@@ -176,8 +176,7 @@ hr.goui {
 	//text-align: center;
 	button.goui-button {
 		display: inline-block;
-		padding: util.dp(12) util.dp(18);
-		margin: 0 util.dp(24) 0 0;
+		padding: util.dp(8) util.dp(18);
 		background: none;
 		border: none;
 		border-radius: 0;
@@ -185,8 +184,10 @@ hr.goui {
 		border-bottom: util.dp(4) solid transparent;
 		//border-top: dp(4) solid transparent;
 		color: config.$colorTextSecondary;
+		border-top: 4px solid transparent;
+		border-bottom: 4px solid transparent;
 		&.active {
-			border-bottom: 4px solid config.$colorSecondary;
+			border-bottom-color: config.$colorSecondary;
 			color: config.$colorText;
 		}
 
