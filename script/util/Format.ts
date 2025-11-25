@@ -140,6 +140,8 @@ export class Format {
 	 * 
 	 * @param date
 	 * @param showTime
+	 *
+	 * todo 11 nov etc.
 	 */
 	public static smartDateTime (date: string | DateTime | Date, showTime:boolean = true) {
 

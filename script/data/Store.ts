@@ -292,6 +292,10 @@ export class Store<RecordType extends StoreRecord  = StoreRecord> extends Collec
 	 */
 	public addScrollLoader(el: HTMLElement) {
 
+		if(!this.queryParams.limit) {
+			this.queryParams.limit = 30;
+		}
+
 		const onScroll = () => {
 			const pixelsLeft = el.scrollHeight - el.scrollTop - el.offsetHeight;
 
