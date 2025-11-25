@@ -107,6 +107,60 @@ export class DateRangeField extends Field {
 		return this.wrap;
 	}
 
+	public setToday() {
+		const today = new DateTime();
+
+		this.startPicker.value = today;
+		this.endPicker.value = today;
+
+		this.value = this.startPicker.value.format(DateRangeField.f) +
+			".." +
+			this.endPicker.value.format(DateRangeField.f);
+
+		this.fireChange();
+	}
+
+	public setYesterday() {
+		const yesterday =( new DateTime()).addDays(-1);
+
+		this.startPicker.value = yesterday;
+		this.endPicker.value = yesterday;
+
+		this.value = this.startPicker.value.format(DateRangeField.f) +
+			".." +
+			this.endPicker.value.format(DateRangeField.f);
+
+		this.fireChange();
+	}
+
+	public setThisWeek() {
+		const today = new DateTime(),
+			weekDay = parseInt(today.format('N')),
+			thisWeekStart = (new DateTime(today)).addDays((weekDay - 1) * -1),
+			thisWeekEnd = thisWeekStart.clone().addDays(6);
+		this.startPicker.value = thisWeekStart;
+		this.endPicker.value = thisWeekEnd;
+
+		this.value = this.startPicker.value.format(DateRangeField.f) +
+			".." +
+			this.endPicker.value.format(DateRangeField.f);
+		this.fireChange();
+	}
+
+	public setLastWeek() {
+		const today = new DateTime(),
+			weekDay = parseInt(today.format('N')),
+			thisWeekStart = (new DateTime(today)).addDays(((weekDay - 1) * -1) - 7),
+			thisWeekEnd = thisWeekStart.clone().addDays(6);
+		this.startPicker.value = thisWeekStart;
+		this.endPicker.value = thisWeekEnd;
+
+		this.value = this.startPicker.value.format(DateRangeField.f) +
+			".." +
+			this.endPicker.value.format(DateRangeField.f);
+		this.fireChange();
+	}
+
 	private createButton() {
 		return btn({
 			flex: 1,
@@ -119,17 +173,7 @@ export class DateRangeField extends Field {
 				btn({
 					text: t("Today"),
 					handler: () => {
-
-						const today = new DateTime();
-
-						this.startPicker.value = today;
-						this.endPicker.value = today;
-
-						this.value = this.startPicker.value.format(DateRangeField.f) +
-							".." +
-							this.endPicker.value.format(DateRangeField.f);
-
-						this.fireChange();
+						this.setToday();
 					}
 				}),
 
@@ -137,52 +181,21 @@ export class DateRangeField extends Field {
 					text: t("Yesterday"),
 					handler: () => {
 
-						const yesterday =( new DateTime()).addDays(-1);
-
-						this.startPicker.value = yesterday;
-						this.endPicker.value = yesterday;
-
-						this.value = this.startPicker.value.format(DateRangeField.f) +
-							".." +
-							this.endPicker.value.format(DateRangeField.f);
-
-						this.fireChange();
+						this.setYesterday()
 					}
 				}),
 
 				btn({
 					text: t("This week"),
 					handler: () => {
-
-						const today = new DateTime(),
-							weekDay = parseInt(today.format('N')),
-							thisWeekStart = (new DateTime(today)).addDays((weekDay - 1) * -1),
-							thisWeekEnd = thisWeekStart.clone().addDays(6);
-						this.startPicker.value = thisWeekStart;
-						this.endPicker.value = thisWeekEnd;
-
-						this.value = this.startPicker.value.format(DateRangeField.f) +
-							".." +
-							this.endPicker.value.format(DateRangeField.f);
-						this.fireChange();
+						this.setThisWeek()
 					}
 				}),
 
 				btn({
 					text: t("Last week"),
 					handler: () => {
-
-						const today = new DateTime(),
-							weekDay = parseInt(today.format('N')),
-							thisWeekStart = (new DateTime(today)).addDays(((weekDay - 1) * -1) - 7),
-							thisWeekEnd = thisWeekStart.clone().addDays(6);
-						this.startPicker.value = thisWeekStart;
-						this.endPicker.value = thisWeekEnd;
-
-						this.value = this.startPicker.value.format(DateRangeField.f) +
-							".." +
-							this.endPicker.value.format(DateRangeField.f);
-						this.fireChange();
+						this.setLastWeek();
 					}
 				}),
 
