@@ -6,7 +6,6 @@
 import {DateTime, Timezone} from "./DateTime.js";
 import {t} from "../Translate.js";
 import {DateInterval} from "./DateInterval";
-import {diff} from "node:util";
 
 
 /**

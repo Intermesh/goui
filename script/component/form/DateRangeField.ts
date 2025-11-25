@@ -37,7 +37,7 @@ export class DateRangeField extends Field {
 
 			this.button.menu?.close()
 
-			this.fireChange();
+			this.fireChange(false);
 		})
 
 
@@ -47,7 +47,7 @@ export class DateRangeField extends Field {
 
 			this.button.menu?.close()
 
-			this.fireChange();
+			this.fireChange(false);
 		})
 		this.untilPicker = datepicker();
 		this.untilPicker.on("select", () => {
@@ -55,7 +55,7 @@ export class DateRangeField extends Field {
 
 			this.button.menu?.close()
 
-			this.fireChange();
+			this.fireChange(false);
 		})
 
 
@@ -73,7 +73,7 @@ export class DateRangeField extends Field {
 				icon: "clear",
 				handler: ()=>{
 					this.value = undefined;
-					this.fireChange();
+					this.fireChange(false);
 				}
 			}),
 
@@ -116,8 +116,6 @@ export class DateRangeField extends Field {
 		this.value = this.startPicker.value.format(DateRangeField.f) +
 			".." +
 			this.endPicker.value.format(DateRangeField.f);
-
-		this.fireChange();
 	}
 
 	public setYesterday() {
@@ -129,8 +127,6 @@ export class DateRangeField extends Field {
 		this.value = this.startPicker.value.format(DateRangeField.f) +
 			".." +
 			this.endPicker.value.format(DateRangeField.f);
-
-		this.fireChange();
 	}
 
 	public setThisWeek() {
@@ -144,7 +140,6 @@ export class DateRangeField extends Field {
 		this.value = this.startPicker.value.format(DateRangeField.f) +
 			".." +
 			this.endPicker.value.format(DateRangeField.f);
-		this.fireChange();
 	}
 
 	public setLastWeek() {
@@ -158,7 +153,6 @@ export class DateRangeField extends Field {
 		this.value = this.startPicker.value.format(DateRangeField.f) +
 			".." +
 			this.endPicker.value.format(DateRangeField.f);
-		this.fireChange();
 	}
 
 	private createButton() {
@@ -174,21 +168,23 @@ export class DateRangeField extends Field {
 					text: t("Today"),
 					handler: () => {
 						this.setToday();
+						this.fireChange(false);
 					}
 				}),
 
 				btn({
 					text: t("Yesterday"),
 					handler: () => {
-
 						this.setYesterday()
+						this.fireChange(false);
 					}
 				}),
 
 				btn({
 					text: t("This week"),
 					handler: () => {
-						this.setThisWeek()
+						this.setThisWeek();
+						this.fireChange(false);
 					}
 				}),
 
@@ -196,6 +192,7 @@ export class DateRangeField extends Field {
 					text: t("Last week"),
 					handler: () => {
 						this.setLastWeek();
+						this.fireChange(false);
 					}
 				}),
 
@@ -203,6 +200,7 @@ export class DateRangeField extends Field {
 					text: t("This month"),
 					handler: () => {
 						this.setMonth();
+						this.fireChange(false);
 					}
 				}),
 
@@ -210,6 +208,7 @@ export class DateRangeField extends Field {
 					text: t("Last month"),
 					handler: () => {
 						this.setMonth(parseInt((new DateTime()).format("m")) - 1);
+						this.fireChange(false);
 					}
 				}),
 
@@ -217,6 +216,7 @@ export class DateRangeField extends Field {
 					text: t("This year"),
 					handler: () => {
 						this.setYear();
+						this.fireChange(false);
 					},
 					menu: new DateRangeFieldYearMenu(this)
 				}),
@@ -343,7 +343,6 @@ export class DateRangeField extends Field {
 			".." +
 			this.endPicker.value.format(DateRangeField.f);
 
-		this.fireChange();
 	}
 
 	/**
@@ -365,7 +364,6 @@ export class DateRangeField extends Field {
 			".." +
 			this.endPicker.value.format(DateRangeField.f);
 
-		this.fireChange();
 	}
 
 	public setQuarter(q:number, year?:number) {
@@ -383,7 +381,6 @@ export class DateRangeField extends Field {
 			".." +
 			this.endPicker.value.format(DateRangeField.f);
 
-		this.fireChange();
 	}
 
 	private yearsMenu() {
