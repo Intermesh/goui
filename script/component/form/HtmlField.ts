@@ -272,6 +272,9 @@ export class HtmlField extends Field<HtmlFieldEventMap> {
 			applyFn: () => {
 				const w = new SourceEditWindow(this);
 				w.show();
+				setTimeout(() => {
+					w.focus();
+				})
 			}
 		},
 		createLink: {
@@ -729,6 +732,10 @@ class SourceEditWindow extends Window {
 
 		this.width = 1000;
 		this.height = 800;
+
+		this.on("focus", () => {
+			this.textArea.focus();
+		})
 
 		this.items.add(fieldset({flex: 1, cls: "vbox"},
 
