@@ -10,7 +10,7 @@
 	background-color: transparent;
 	border: config.$borderWidth solid transparent;
 	border-radius: config.$buttonBorderRadius;
-	padding: util.dp(8) util.dp(18); //padding 11 because line height is 24 instead of 22
+	padding: util.dp(11) util.dp(18); //padding 11 because line height is 24 instead of 22. Buttons align with form fields in height!
 	display: flex;
 	align-items: center;
 	position: relative;
@@ -19,8 +19,6 @@
 	line-height: util.dp(24); //match icon
 	overflow: hidden;
 
-	//min-height: dp(46); // line-height + padding. This broke chips. Don't know why it was here.
-
 	&.caps {
 		text-transform: uppercase;
 	}
@@ -28,7 +26,7 @@
 	&.with-icon:not(.with-text) {
 		//icon only
 		overflow: visible;
-		padding: util.dp(8);
+		padding: util.dp(11);
 	}
 
 	&.with-text {
