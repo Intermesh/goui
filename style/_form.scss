@@ -1303,6 +1303,10 @@ div.color-dot {
 .goui-form-field {
 	&.date-range {
 		.value-display {
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+
 			flex: 1;
 			align-self: stretch;
 			padding: util.dp(11) util.dp(16);

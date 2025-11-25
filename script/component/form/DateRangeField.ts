@@ -269,13 +269,13 @@ export class DateRangeField extends Field {
 				const date1 = DateTime.createFromFormat(parts[0], DateRangeField.f)
 
 				if (date1) {
-					this.valueDisplay.text = date1.format(Format.dateFormat);
+					this.valueDisplay.text = Format.smartDateTime(date1, false);//.format(Format.dateFormat);
 
 					if (parts[0] != parts[1]) {
 						const date2 = DateTime.createFromFormat(parts[1], DateRangeField.f);
 
 						if (date2) {
-							this.valueDisplay.text += " - " + date2.format(Format.dateFormat);
+							this.valueDisplay.text += " - " + Format.smartDateTime(date2, false);//.format(Format.dateFormat);
 						}
 					}
 				}
@@ -284,26 +284,26 @@ export class DateRangeField extends Field {
 					const date = DateTime.createFromFormat(v.substring(2, v.length), DateRangeField.f);
 
 					if (date) {
-						this.valueDisplay.text = "> " + date.format(Format.dateFormat)
+						this.valueDisplay.text = "> " + Format.smartDateTime(date, false);//.format(Format.dateFormat)
 					}
 				} else if(v.substring(0,2) == "<=") {
 					const date = DateTime.createFromFormat(v.substring(2,v.length) , DateRangeField.f);
 
 					if(date) {
-						this.valueDisplay.text = "<= " + date.format(Format.dateFormat)
+						this.valueDisplay.text = "<= " + Format.smartDateTime(date, false);
 					}
 
 				}else if(v.substring(0,1) == "<") {
 					const date = DateTime.createFromFormat(v.substring(1,v.length) , DateRangeField.f);
 
 					if(date) {
-						this.valueDisplay.text = "<= " + date.addDays(-1).format(Format.dateFormat)
+						this.valueDisplay.text = "<= " + Format.smartDateTime(date.addDays(-1), false);//.format(Format.dateFormat)
 					}
 				}else if(v.substring(0,1) == ">") {
 					const date = DateTime.createFromFormat(v.substring(1,v.length) , DateRangeField.f);
 
 					if(date) {
-						this.valueDisplay.text = ">= " + date.addDays(-1).format(Format.dateFormat)
+						this.valueDisplay.text = ">= " + Format.smartDateTime(date.addDays(-1), false);//.format(Format.dateFormat)
 					}
 				}
 			}
