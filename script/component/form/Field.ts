@@ -67,7 +67,7 @@ export interface FieldEventMap extends ComponentEventMap {
 	}
 
 	/**
-	 * Fires when the field value is set
+	 * Fires when the field value is set programmatically or changed by the user
 	 */
 	setvalue: {
 		/**
