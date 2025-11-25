@@ -7,7 +7,7 @@
 import {Config, Observable, ObservableEventMap} from "../Observable.js";
 import {Table} from "./Table.js";
 import {Component, createComponent} from "../Component.js";
-import {Format} from "../../util/index.js";
+import {DateTime, Format} from "../../util/index.js";
 import {checkbox, CheckboxField} from "../form/index.js";
 import {btn} from "../Button.js";
 import {Menu, menu} from "../menu/index.js";
@@ -182,8 +182,10 @@ export type TableColumnConfig<T extends TableColumn = TableColumn> = Config<T> &
 export const column = (config: TableColumnConfig) => createComponent(new TableColumn(config.id), config);
 
 export class DateTimeColumn extends TableColumn {
-	renderer = (date: string) => {
-		return Format.smartDateTime(date);
+	renderer:TableColumnRenderer = (date: string, record:any, td:any) => {
+		const dt = new DateTime(date);
+		td.title = dt.format(Format.dateFormat+ " " + Format.timeFormat);
+		return Format.smartDateTime(dt);
 	}
 	align: align = "right"
 	width = 190
@@ -198,8 +200,11 @@ export class DateTimeColumn extends TableColumn {
 export const datetimecolumn = (config: TableColumnConfig) => createComponent(new DateTimeColumn(config.id), config);
 
 export class DateColumn extends TableColumn {
-	renderer = (date: string) => {
-		return Format.smartDateTime(date, false);
+	renderer:TableColumnRenderer  = (date: string, record, td) => {
+		const dt = new DateTime(date);
+		td.title = dt.format(Format.dateFormat+ " " + Format.timeFormat);
+
+		return Format.smartDateTime(dt, false);
 	}
 	align: align = "right"
 	width = 128
