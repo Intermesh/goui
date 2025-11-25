@@ -132,12 +132,28 @@
 		border-bottom: config.$borderWidth solid config.$colorBorderWindow;
 	}
 
-	.header {
-		padding: util.dp(12) util.dp(18);
-		height: util.dp(74);
-		background-color: config.$surfaceHigh;
+	.header.goui-toolbar  {
+		padding: util.dp(12) util.dp(8) util.dp(12) util.dp(18);
+		//height: util.dp(74);
+		//background-color: config.$surfaceHigh;
 		position: relative;
 		margin: 0;
+
+
+		gap: util.dp(2);
+
+		> .goui-button {
+
+			padding: .6rem;
+			i.icon,i.icon::after {
+				width: 2rem;
+				height: 2rem;
+				line-height: 2rem;
+				font-size: 2rem;
+
+			}
+
+		}
 
 			//& + *:not(.goui-cardmenu):not(form) {
 			//	margin-top: 0;
