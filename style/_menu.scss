@@ -171,7 +171,7 @@ button.goui-button.has-menu.with-text {
 
 	&:after {
 		position: absolute;
-		top: util.dp(12);
+		//top: util.dp(12);
 		right: util.dp(8);
 		@extend %icon;
 		margin-right: 0;

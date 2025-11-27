@@ -78,7 +78,9 @@ export class ToolTip extends Component {
 				});
 			});
 		}
-		this.observer.observe(this.targetEl!.parentNode!, {childList: true});
+		if(this.targetEl?.parentNode) {
+			this.observer.observe(this.targetEl.parentNode, {childList: true});
+		}
 
 		return super.internalRender();
 	}

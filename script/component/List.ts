@@ -253,6 +253,9 @@ export class List<StoreType extends Store = Store, EventMapType extends ListEven
 			this.rowSelect = rowselect({list: this as never});
 		}
 	}
+
+	protected baseCls = "list";
+
 	constructor(readonly store: StoreType, readonly renderer: RowRenderer, tagName: keyof HTMLElementTagNameMap = "div") {
 		super(tagName);
 		this.tabIndex = 0;

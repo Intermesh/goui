@@ -67,7 +67,7 @@ export interface FieldEventMap extends ComponentEventMap {
 	}
 
 	/**
-	 * Fires when the field value is set
+	 * Fires when the field value is set programmatically or changed by the user
 	 */
 	setvalue: {
 		/**
@@ -594,9 +594,12 @@ export abstract class Field<EventMap extends FieldEventMap = FieldEventMap> exte
 	/**
 	 * Helper to fire "change" event. Child classes must implement this.
 	 */
-	protected fireChange() {
+	protected fireChange(fireSetValue = true) {
 		const v = this.value;
-		this.fire("setvalue", {newValue: v, oldValue: this.valueOnFocus});
+
+		if(fireSetValue)
+			this.fire("setvalue", {newValue: v, oldValue: this.valueOnFocus});
+
 		this.fire("change", {newValue: v, oldValue: this.valueOnFocus});
 		this.valueOnFocus = v;
 

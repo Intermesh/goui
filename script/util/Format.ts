@@ -140,6 +140,10 @@ export class Format {
 	 * 
 	 * @param date
 	 * @param showTime
+	 *
+	 * Todo 11 nov etc.
+	 *
+	 *
 	 */
 	public static smartDateTime (date: string | DateTime | Date, showTime:boolean = true) {
 
@@ -155,9 +159,9 @@ export class Format {
 		const now = new DateTime(),
 			nowYmd = parseInt(now.format("Ymd")),
 			vYmd = parseInt(date.format("Ymd")),
-			diff = vYmd - nowYmd;
+			diffDays = vYmd - nowYmd;
 
-		switch(diff) {
+		switch(diffDays) {
 			case 0:
 				return Format.time(date);
 			case -1:
@@ -168,21 +172,21 @@ export class Format {
 
 		let format = Format.dateFormat;
 
-		// //past or upcoming week
-		// if(diff > -6 && diff < 6) {
-		// 	format = "l";
-		// }
-		//
-		// if (now.getYear() === date.getYear()) {
-		// 	let dayIndex = Format.dateFormat.indexOf('d'),
-		// 		monthIndex = Format.dateFormat.indexOf('m');
-		//
-		// 	if(dayIndex == -1) {
-		// 		dayIndex = Format.dateFormat.indexOf('j');
-		// 	}
-		//
-		// 	format = dayIndex > monthIndex ? 'M j' : 'j M'
-		// }
+		//past or upcoming week
+		if(diffDays > -6 && diffDays < 6) {
+			format = "l";
+		}
+
+		if (now.getYear() === date.getYear()) {
+			let dayIndex = Format.dateFormat.indexOf('d'),
+				monthIndex = Format.dateFormat.indexOf('m');
+
+			if(dayIndex == -1) {
+				dayIndex = Format.dateFormat.indexOf('j');
+			}
+
+			format = dayIndex > monthIndex ? 'M j' : 'j M'
+		}
 
 		if(showTime) {
 			format +=  " " + Format.timeFormat;
