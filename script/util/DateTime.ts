@@ -431,7 +431,7 @@ export class DateTime {
 	/**
 	 * The timezone of the date
 	 */
-	public timezone: Timezone = SystemTimeZone;
+	protected timezone: Timezone = SystemTimeZone;
 
 
 	public static defaultTimezone = SystemTimeZone;
@@ -453,6 +453,8 @@ export class DateTime {
 	 * @param timezone
 	 */
 	constructor(date?: Date | DateTime | number | string, timezone: Timezone = DateTime.defaultTimezone ) {
+
+		timezone = timezone.toLowerCase() as Timezone ;
 
 		if(date == undefined) {
 			this.date = new Date();
@@ -522,6 +524,8 @@ export class DateTime {
 	 * @param timezone eg. europe/amsterdam
 	 */
 	public toTimezone<T extends string>(timezone: Timezone) {
+
+		timezone = timezone.toLowerCase() as Timezone ;
 
 		if (this.timezone == timezone) {
 			return this.clone();
@@ -1058,7 +1062,7 @@ export class DateTime {
 		const date = new DateTime('1970-01-01T00:00:00'); // we want this to always work the same
 
 		if (timezone) {
-			date.timezone = timezone;
+			date.timezone = timezone.toLowerCase() as Timezone;
 		}
 
 		// Set year and month first...
