@@ -431,7 +431,14 @@ export class DateTime {
 	/**
 	 * The timezone of the date
 	 */
-	protected timezone: Timezone = SystemTimeZone;
+	private _timezone: Timezone = SystemTimeZone;
+
+	/**
+	 * The timezone of the date
+	 */
+	public get timezone() {
+		return this._timezone;
+	}
 
 
 	public static defaultTimezone = SystemTimeZone;
@@ -472,7 +479,7 @@ export class DateTime {
 			this.date = new Date(date);
 		}
 
-		this.timezone = timezone;
+		this._timezone = timezone;
 
 	}
 
@@ -527,14 +534,14 @@ export class DateTime {
 
 		timezone = timezone.toLowerCase() as Timezone ;
 
-		if (this.timezone == timezone) {
+		if (this._timezone == timezone) {
 			return this.clone();
 		}
 
 		const offset = this.getTimezoneOffset();
 		// get the difference in timezone
 		const d = this.clone();
-		d.timezone = timezone;
+		d._timezone = timezone;
 		const newOffset = d.getTimezoneOffset();
 
 		d.setMinutes(d.getMinutes() - newOffset + offset);
@@ -544,13 +551,13 @@ export class DateTime {
 
 	private adjustFromSystemToUserTimezone(timezone: Timezone) {
 
-		if (this.timezone == timezone) {
+		if (this._timezone == timezone) {
 			return;
 		}
 
 		const offset = this.getTimezoneOffset();
 		// get the difference in timezone
-		this.timezone = timezone;
+		this._timezone = timezone;
 		const newOffset = this.getTimezoneOffset();
 
 		this.setMinutes(this.getMinutes() - newOffset + offset);
@@ -570,7 +577,7 @@ export class DateTime {
 	 */
 	public clone() {
 		const d = new DateTime(new Date(this.date));
-		d.timezone = this.timezone;
+		d._timezone = this._timezone;
 		return d;
 	}
 
@@ -602,12 +609,12 @@ export class DateTime {
 	 */
 	private getSystemTimezoneDiff() {
 
-		if (this.timezone == SystemTimeZone) {
+		if (this._timezone == SystemTimeZone) {
 			return 0;
 		}
 
 		//calculate diff in minutes when changing to given timezone.
-		const local = DateTime.getFormatter(this.timezone).format(this.date);
+		const local = DateTime.getFormatter(this._timezone).format(this.date);
 		// const local = this.date.toLocaleString("en-US", {timeZone: this.timezone});
 		const d = new Date(local);
 
@@ -1062,7 +1069,7 @@ export class DateTime {
 		const date = new DateTime('1970-01-01T00:00:00'); // we want this to always work the same
 
 		if (timezone) {
-			date.timezone = timezone.toLowerCase() as Timezone;
+			date._timezone = timezone.toLowerCase() as Timezone;
 		}
 
 		// Set year and month first...
