@@ -112,8 +112,14 @@ export class DateTimeField extends Field {
 	 */
 	public defaultTime?: string;
 
+
+	/**
+	 * Include timezone information in the value submitted
+	 */
+	public withTimeZone = true;
+
 	protected outputFormat(): string {
-		return this.withTime ? "Y-m-dTH:i:s" : 'Y-m-d';
+		return this.withTime ? ( this.withTimeZone ? "c" : "Y-m-dTH:i:s") : 'Y-m-d';
 	}
 	protected internalSetValue(v?: any) {
 		super.internalSetValue(v);
