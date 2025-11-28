@@ -461,7 +461,7 @@ export class DateTime {
 	 */
 	constructor(date?: Date | DateTime | number | string, timezone: Timezone = DateTime.defaultTimezone ) {
 
-		timezone = timezone.toLowerCase() as Timezone ;
+		timezone = timezone ? timezone.toLowerCase() as Timezone  : DateTime.defaultTimezone
 
 		if(date == undefined) {
 			this.date = new Date();
