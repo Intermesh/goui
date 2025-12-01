@@ -98,7 +98,8 @@ export class Form<ValueType extends ContainerFieldValue = ContainerFieldValue, E
 	/**
 	 * Executed when form is submitted.
 	 *
-	 * If a promise is returned the "submit" event will fire after it has been resolved.
+	 * If a promise is returned the "submit" event will fire after it has been resolved. Also, the form will be masked during
+	 * the promise.
 	 *
 	 * @param form
 	 */
