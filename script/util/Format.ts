@@ -163,7 +163,7 @@ export class Format {
 
 		switch(diffDays) {
 			case 0:
-				return Format.time(date);
+				return !showTime ? t('Today') : Format.time(date);
 			case -1:
 				return !showTime ? t('Yesterday') : t('Yesterday') + " " + t('at') + " " + Format.time(date);
 			case 1:

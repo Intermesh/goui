@@ -310,16 +310,6 @@ export class DateRangeField extends Field {
 		}
 	}
 
-	private updateBtnText() {
-		if(this.value == null) {
-			this.button.text = "";
-			return;
-		}
-		this.button.text = Format.date(this.startPicker.value) + ' - ' + Format.date(this.endPicker.value);
-
-	}
-
-
 	/**
 	 * Set the month
 	 *
