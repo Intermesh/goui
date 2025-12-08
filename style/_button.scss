@@ -234,7 +234,7 @@
 	h4 {
 		display: block;
 		margin: 0;
-		color: inherit;
+		color: config.$colorTextSecondary;
 		font-size: util.sp(16);
 		letter-spacing: 0.4px;
 		font-weight: normal;
