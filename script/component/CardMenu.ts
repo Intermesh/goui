@@ -8,6 +8,7 @@ import {Component, createComponent} from "./Component.js";
 import {CardContainer} from "./CardContainer.js";
 import {btn} from "./Button.js";
 import {Config} from "./Observable.js";
+import {Toolbar} from "./Toolbar.js";
 
 
 /**
@@ -18,7 +19,7 @@ import {Config} from "./Observable.js";
  * @link https://goui.io/#cardcontainer Example
  */
 
-export class CardMenu extends Component {
+export class CardMenu extends Toolbar {
 
 	/**
 	 * The card container this menu is for.
@@ -26,7 +27,7 @@ export class CardMenu extends Component {
 	 * If not given it will be looked up in the parent of the menu.
 	 */
 	public cardContainer?: CardContainer
-	protected baseCls = "goui-cardmenu";
+	protected baseCls = "goui-toolbar goui-cardmenu";
 
 	focus(o?: FocusOptions) {
 		const first = this.cardContainer?.items.first();
@@ -38,7 +39,7 @@ export class CardMenu extends Component {
 	}
 
 	public constructor() {
-		super("menu");
+		super();
 
 		this.on("beforerender", () => {
 			if (!this.cardContainer) {
@@ -90,7 +91,7 @@ export class CardMenu extends Component {
 				item.itemId = 'card-' + index;
 			}
 
-			if (this.findItem(item.itemId)) {
+			if (this.findChild(item.itemId)) {
 				return;
 			}
 

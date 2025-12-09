@@ -169,8 +169,8 @@ hr.goui {
 	}
 }
 
-.goui-cardmenu {
-	margin: 0;
+menu.goui-toolbar.goui-cardmenu {
+
 	padding: 0;
 
 	//text-align: center;
@@ -201,27 +201,28 @@ hr.goui {
 	}
 }
 
-.hbox > .goui-cardmenu {
-	height: 100%;
-	border-right: config.$borderWidth solid config.$colorBorder;
-	button.goui-button {
-		margin: 0;
-		width: util.dp(200);
-		text-align: left;
-		display:block;
-		//border-right: dp(4) solid transparent;
-
-		border-bottom: none;
-		border-bottom: none;
-		&.active {
-			//border-right: dp(4) solid $colorSecondary;
-			//border-bottom: none;
-			color: config.$colorText;
-			background-color: config.$colorSelectedRow;
-		}
-	}
-
-}
+//MS: This interfered with main header in community/main. Don't know what breaks without it
+//.hbox > .goui-cardmenu {
+//	height: 100%;
+//	border-right: config.$borderWidth solid config.$colorBorder;
+//	button.goui-button {
+//		margin: 0;
+//		width: util.dp(200);
+//		text-align: left;
+//		display:block;
+//		//border-right: dp(4) solid transparent;
+//
+//		border-bottom: none;
+//		border-bottom: none;
+//		&.active {
+//			//border-right: dp(4) solid $colorSecondary;
+//			//border-bottom: none;
+//			color: config.$colorText;
+//			background-color: config.$colorSelectedRow;
+//		}
+//	}
+//
+//}
 
 .goui.goui-avatar {
 	cursor: default;

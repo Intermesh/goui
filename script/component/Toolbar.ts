@@ -79,6 +79,9 @@ export class Toolbar extends AbstractMenu {
 		if(!cfg.icon) {
 			cfg.icon = "more_vert";
 		}
+		if(!cfg.itemId) {
+			cfg.itemId = "overflow";
+		}
 		cfg.menu = menu()
 
 		this.overflowMenuBtn = btn(cfg);
