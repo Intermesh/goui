@@ -104,11 +104,15 @@ export class Window<EventMap extends WindowEventMap = WindowEventMap> extends Dr
 	/**
 	 * Make the window modal so the user can only interact with this window.
 	 */
-	public modal = false
+	public modal = false;
 
+	/**
+	 * Render a header with title and controls
+	 */
+	public header = true;
 
 	private titleCmp!: Component;
-	private header!: Toolbar;
+	private headerCmp!: Toolbar;
 	private modalOverlay: Component | undefined;
 
 	/**
@@ -183,46 +187,51 @@ export class Window<EventMap extends WindowEventMap = WindowEventMap> extends Dr
 	}
 
 	public getHeader() {
-		if (!this.header) {
-			this.header = tbar({
-					cls: "header"
-				},
-
-				this.titleCmp = comp({
-					tagName: "h3",
-					text: this.title ?? ""
-				}),
-
-				'->'
-			);
-
-			if (this.collapsible) {
-				this.header.items.add(btn({
-					cls: "collapse-btn",
-					icon: "", // set empty so 'collapsed class can set it class can set it
-					handler: () => {
-						this.collapsed = !this.collapsed;
-					}
-				}));
-			}
-
-			if (this.maximizable) {
-				this.header.items.add(this.initMaximizeTool());
-			}
-
-			if (this.closable) {
-				this.header.items.add(btn({
-					icon: "close",
-					handler: () => {
-						this.internalClose(true);
-					}
-				}));
-			}
+		if (!this.headerCmp) {
+			this.headerCmp = this.createHeader();
 		}
 
-		this.header.parent = this;
+		this.headerCmp.parent = this;
 
-		return this.header;
+		return this.headerCmp;
+	}
+
+	protected createHeader() {
+		const header = tbar({
+				cls: "header"
+			},
+
+			this.titleCmp = comp({
+				tagName: "h3",
+				text: this.title ?? ""
+			}),
+
+			'->'
+		);
+
+		if (this.collapsible) {
+			header.items.add(btn({
+				cls: "collapse-btn",
+				icon: "", // set empty so 'collapsed class can set it class can set it
+				handler: () => {
+					this.collapsed = !this.collapsed;
+				}
+			}));
+		}
+
+		if (this.maximizable) {
+			header.items.add(this.initMaximizeTool());
+		}
+
+		if (this.closable) {
+			header.items.add(btn({
+				icon: "close",
+				handler: () => {
+					this.internalClose(true);
+				}
+			}));
+		}
+		return header;
 	}
 
 	public set collapsed(collapsed) {
@@ -236,8 +245,10 @@ export class Window<EventMap extends WindowEventMap = WindowEventMap> extends Dr
 	protected internalRender() {
 
 		// header does not belong to the items and is rendered first.
-		const header = this.getHeader();
-		header.render();
+		if(this.header) {
+			const header = this.getHeader();
+			header.render();
+		}
 
 		const el = super.internalRender();
 
@@ -386,11 +397,6 @@ export class Window<EventMap extends WindowEventMap = WindowEventMap> extends Dr
 
 		if(!hidden) {
 
-			//Close opened menu's becuase they have a higher z-index. They need work inside modal windows.
-			// if(Toolbar.openedMenu) {
-			// 	Menu.openedMenu.close();
-			// }
-
 			this.focussedBeforeOpen = document.activeElement || undefined;
 
 			if (!this.rendered) {
@@ -398,21 +404,8 @@ export class Window<EventMap extends WindowEventMap = WindowEventMap> extends Dr
 				root.items.add(this);
 
 				if (this.modal) {
-					this.modalOverlay = comp({
-						cls: "goui-window-modal-overlay goui-goui-fade-in goui-goui-fade-out",
-						hidden: true
-					});
-
-					this.modalOverlay.el.style.zIndex = (parseInt(getComputedStyle(this.el).zIndex)).toString()
-
-					root.items.insert(-1, this.modalOverlay);
-
+					this.modalOverlay = this.createModalOverlay();
 					this.disableBodyScroll();
-
-					this.modalOverlay.el.addEventListener("click", () => {
-						this.focus();
-					});
-
 					this.modalOverlay.show();
 				}
 
@@ -427,6 +420,28 @@ export class Window<EventMap extends WindowEventMap = WindowEventMap> extends Dr
 		}
 	}
 
+	/**
+	 * Creates the modal overlay behind the window to prevent user interaction
+	 *
+	 * @protected
+	 */
+	protected createModalOverlay() {
+		const modalOverlay = comp({
+			cls: "goui-window-modal-overlay goui-goui-fade-in goui-goui-fade-out",
+			hidden: true
+		});
+
+		modalOverlay.el.style.zIndex = (parseInt(getComputedStyle(this.el).zIndex)).toString()
+
+		root.items.insert(-1, modalOverlay);
+
+		modalOverlay.el.addEventListener("click", () => {
+			this.focus();
+		});
+
+		return modalOverlay;
+	}
+
 	protected internalRemove() {
 		if (this.focussedBeforeOpen instanceof HTMLElement) {
 			this.focussedBeforeOpen.focus();
@@ -436,7 +451,7 @@ export class Window<EventMap extends WindowEventMap = WindowEventMap> extends Dr
 			this.enableBodyScroll();
 			this.modalOverlay.remove();
 		}
-		this.header.remove();
+		this.headerCmp.remove();
 
 		super.internalRemove();
 	}
