@@ -308,6 +308,13 @@ export abstract class Field<EventMap extends FieldEventMap = FieldEventMap> exte
 	}
 
 
+	/**
+	 *
+	 * Renders wrap with icon and buttons etc. If you want complete control over the rendered components then override this
+	 * to do nothing and add child items.
+	 *
+	 * @protected
+	 */
 	protected renderControl() {
 
 

@@ -253,6 +253,11 @@ aside.goui-cardmenu.goui-toolbar {
 		margin-right: util.dp(8);
 		vertical-align: middle;
 	}
+
+	&.large {
+		width: config.$baseLineHeight + util.dp(64);
+		height: config.$baseLineHeight + util.dp(64);
+	}
 }
 
 

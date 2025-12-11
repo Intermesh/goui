@@ -39,8 +39,8 @@ export class Avatar extends Component {
 	}
 
 	private setBackground() {
-		this.el.style.backgroundColor = this.el.style.backgroundImage != "none" && this.bgColor  ? this.bgColor : "transparent";
-		this.el.style.backgroundImage = this.imgUrl ? `url(${this.imgUrl})` : "none";
+		this.el.style.backgroundColor = this.el.style.backgroundImage != "none" && this.bgColor  ? this.bgColor : "";
+		this.el.style.backgroundImage = this.imgUrl ? `url(${this.imgUrl})` : "";
 
 		if(this.imgUrl) {
 			this.text = "";
