@@ -425,25 +425,25 @@ menu.goui-toolbar.goui-cardmenu {
 }
 
 
-.goui a {
-	color: config.$colorMain;
-}
+//.goui a {
+//	color: config.$colorMain;
+//}
 
 
-.goui.list {
-	ul {
-		padding: 0;
-		margin: 0;
-	}
-	li {
-		padding: 0 util.dp(16);
-		margin: 0;
-
-		.goui-form-field.check {
-			.box-label {
-				padding-top: .4rem;
-				padding-bottom: .4rem;
-			}
-		}
-	}
-}
+//.goui.list {
+//	ul {
+//		padding: 0;
+//		margin: 0;
+//	}
+//	li {
+//		padding: 0 util.dp(16);
+//		margin: 0;
+//
+//		.goui-form-field.check {
+//			.box-label {
+//				padding-top: .4rem;
+//				padding-bottom: .4rem;
+//			}
+//		}
+//	}
+//}
