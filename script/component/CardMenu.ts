@@ -38,8 +38,14 @@ export class CardMenu extends Toolbar {
 		}
 	}
 
-	public constructor() {
-		super();
+
+	/**
+	 * CardMenu constructor
+	 *
+	 * @param tagName Set to "aside" for a vertical menu
+	 */
+	public constructor(tagName: keyof HTMLElementTagNameMap = "menu") {
+		super(tagName);
 
 		this.on("beforerender", () => {
 			if (!this.cardContainer) {
@@ -135,4 +141,4 @@ export class CardMenu extends Toolbar {
  * @param config
  * @param items
  */
-export const cardmenu = (config?: Config<CardMenu>, ...items: Component[]) => createComponent(new CardMenu(), config, items);
+export const cardmenu = (config?: Config<CardMenu>, ...items: Component[]) => createComponent(new CardMenu(config?.tagName ?? "menu"), config, items);
