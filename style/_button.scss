@@ -178,15 +178,10 @@
 	//min-height: util.dp(62);
 	margin: 0;
 
-	// toolbar inside a toolbar will be an overlay
-	> .goui.goui-toolbar {
-		position: absolute;
-		//top: 0; //allows create link field to overflow parent toolbar on top
-		left: 0;
-		right: 0;
-		bottom: 0;
-		background-color: config.$surfaceLow;
-	}
+	//// toolbar inside a toolbar will be an overlay
+	//> .goui.goui-toolbar {
+	//
+	//}
 
 	&.compact {
 		gap: util.dp(4);
@@ -198,6 +193,12 @@
 
 	&.overlay {
 		z-index: 1;
+		position: absolute;
+		//top: 0; //allows create link field to overflow parent toolbar on top
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background-color: config.$surfaceLow;
 	}
 
 	&.multiselect {
