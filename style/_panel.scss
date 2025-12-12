@@ -5,6 +5,9 @@
 @use "general";
 
 .goui.panel {
+	display: flex;
+	flex-direction: column;
+
 	.item-container {
 		@extend .goui, .vbox;
 		flex: 1;
