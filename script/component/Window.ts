@@ -247,7 +247,7 @@ export class Window<EventMap extends WindowEventMap = WindowEventMap> extends Dr
 		// header does not belong to the items and is rendered first.
 		if(this.header) {
 			const header = this.getHeader();
-			header.render();
+			header.render(this.el);
 		}
 
 		const el = super.internalRender();

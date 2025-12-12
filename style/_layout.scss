@@ -296,6 +296,10 @@ html {
 	> .goui-fieldset:first-child {
 		margin-top: dp(16);
 	}
+
+	> p, .item-container p, > h4, .item-container h4, > h5, .item-container h5 {
+		padding-left: util.dp(16);
+	}
 }
 
 

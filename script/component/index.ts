@@ -23,3 +23,4 @@ export * from './tree/index.js';
 export * from './Sortable.js';
 export * from './OverlayToolbarButton.js';
 export * from './CollapseButton.js'
+export * from './Panel.js'
