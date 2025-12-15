@@ -27,11 +27,9 @@
 	padding-inline-end: 0;
 	padding-block-end: 0;
 
-	h3.legend {
-		//color: $colorTextSecondary;
-		//font: $fontBase;
-		//margin: dp(24) 0 dp(8) 0;
-
+	.radio-field-label {
+		margin-top: util.dp(16);
+		margin-bottom: util.dp(8);
 		&:empty {
 			display: none;
 		}
