@@ -35,18 +35,6 @@ export interface ListEventMap extends ComponentEventMap {
 	};
 
 	/**
-	 * Fires when the user sorts the list by drag and drop.
-	 */
-	sortchange: {
-		/** The record being moved. */
-		record: any;
-		/** The new index after dropping. */
-		dropIndex: number;
-		/** The previous index before moving. */
-		oldIndex: number;
-	};
-
-	/**
 	 * Fires when a row is mousedowned.
 	 */
 	rowmousedown: {
