@@ -43,9 +43,29 @@
 	-webkit-font-feature-settings: 'liga';
 	-webkit-font-smoothing: antialiased;
 
+	&.error {
+		color: config.$colorError;
+	}
+	&.warning {
+		color: config.$colorWarning;
+	}
 
-	width: auto; //needed in Group-Office as it sets widht and height to 21px
-	height: auto;
+	&.success {
+		color: config.$colorSuccess;
+	}
+
+	&.notice {
+		color: config.$colorNotice;
+	}
+
+	&.primary {
+		color: config.$colorPrimary;
+	}
+
+	&.accent {
+		color: config.$colorAccent;
+	}
+
 }
 
 .goui {
