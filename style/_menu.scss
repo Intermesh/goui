@@ -58,6 +58,10 @@ menu.goui-dropdown {
 		margin: 0;
 		width: 100%;
 
+		p, h2, h3, h4 {
+			padding-left: util.dp(16);
+		}
+
 		> button.goui-button {
 			font-weight: normal;
 			border: 0;
