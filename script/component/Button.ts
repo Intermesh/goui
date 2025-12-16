@@ -171,6 +171,15 @@ export class Button<EventMap extends ButtonEventMap= ButtonEventMap> extends Com
 		// visible in windows. Sub menu's are rendered inside the parent menu button.
 		if (this.menu) {
 			this.menu.hide();
+
+			this.menu.on("show", ({target}) => {
+				this.el.classList.add("menu-open");
+			});
+
+			this.menu.on("hide", ({target}) => {
+				this.el.classList.remove("menu-open");
+			})
+
 			this.el.addEventListener("mouseenter", this.onMenuMouseEnter.bind(this));
 			this.el.addEventListener("click", this.onMenuButtonClick.bind(this));
 		}
