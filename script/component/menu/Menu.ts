@@ -423,8 +423,15 @@ export class Menu<EventMap extends ComponentEventMap = ComponentEventMap> extend
 	 * @param coords
 	 */
 	showAt(coords: { x: number, y: number } | MouseEvent) {
-		this.x = coords.x;
-		this.y = coords.y;
+
+		if(coords instanceof MouseEvent) {
+			this.x = coords.pageX;
+			this.y = coords.pageY;
+		} else {
+
+			this.x = coords.x;
+			this.y = coords.y;
+		}
 
 		this.show();
 

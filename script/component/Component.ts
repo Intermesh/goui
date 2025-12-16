@@ -1259,8 +1259,10 @@ export class Component<EventMapType extends ComponentEventMap = ComponentEventMa
 
 		if (el instanceof Window) {
 			//window is a special case. The page might be scrolled and we want to constrain to the viewport then.
-			box.right = window.innerWidth;
-			box.bottom = window.innerHeight;
+			box.right = window.innerWidth + window.scrollX;
+			box.bottom = window.innerHeight + window.scrollY;
+			box.left = window.scrollX;
+			box.top = window.scrollY;
 		} else {
 			const rect = el.getBoundingClientRect();
 			box.left = rect.left;
