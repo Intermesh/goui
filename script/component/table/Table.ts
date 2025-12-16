@@ -631,7 +631,7 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 				col.width = Table.pxToRem(col.headerEl!.offsetWidth);
 				col.headerEl!.style.width = col.width / 10 + "rem";
 			}
-		};
+		}
 
 		this.el!.style.minWidth = "";
 		this.el!.style.width = this.calcTableWidth() / 10 + "rem";
