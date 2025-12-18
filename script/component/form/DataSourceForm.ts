@@ -10,7 +10,6 @@ import {Component, createComponent} from "../Component.js";
 import {Window} from "../Window.js";
 import {FieldConfig} from "./Field.js";
 import {Format, ObjectUtil} from "../../util/index";
-import {create} from "node:domain";
 
 
 export interface DataSourceFormEventMap<ValueType extends BaseEntity = DefaultEntity> extends FormEventMap {
