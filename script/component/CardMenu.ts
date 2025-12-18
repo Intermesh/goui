@@ -6,7 +6,7 @@
 
 import {Component, createComponent} from "./Component.js";
 import {CardContainer} from "./CardContainer.js";
-import {btn} from "./Button.js";
+import {btn, Button} from "./Button.js";
 import {Config} from "./Observable.js";
 import {Toolbar} from "./Toolbar.js";
 
@@ -15,6 +15,8 @@ import {Toolbar} from "./Toolbar.js";
  * CardMenu class
  *
  * A menu for cards to create a tab panel in combination with a {@link CardContainer}
+ *
+ * If items in the card container have an "icon" in their {@link Component.dataSet} property then it will be used as {@link Button.icon}
  *
  * @link https://goui.io/#cardcontainer Example
  */
@@ -101,16 +103,7 @@ export class CardMenu extends Toolbar {
 				return;
 			}
 
-			const b = btn({
-				disabled: item.disabled,
-				type: "button",
-				itemId: item.itemId,
-				cls: index == this.cardContainer!.activeItem ? "active" : "",
-				text: item.title,
-				handler: () => {
-					this.cardContainer!.activeItem = item;
-				}
-			})
+			const b = this.itemToButton(item, index);
 
 			item.on('disable', () => {
 				b.disabled = true;
@@ -127,6 +120,20 @@ export class CardMenu extends Toolbar {
 			item.title = "";
 
 		});
+	}
+
+	protected itemToButton(item: Component, index:number) {
+		return btn({
+			disabled: item.disabled,
+			type: "button",
+			itemId: item.itemId,
+			cls: index == this.cardContainer!.activeItem ? "active" : "",
+			text: item.title,
+			icon: item.dataSet.icon ?? undefined,
+			handler: () => {
+				this.cardContainer!.activeItem = item;
+			}
+		})
 	}
 }
 
