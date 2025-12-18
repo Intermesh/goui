@@ -72,14 +72,19 @@ export class DataSourceForm<ValueType extends BaseEntity = DefaultEntity> extend
 	/**
 	 * When set to true a modified entity will be set as JSON patch object
 	 */
-	public patchMode = false;
+	public set patchMode (patchMode:boolean) {
+		this.keepUnknownValues = !patchMode;
+		this._patchMode = patchMode;
+	}
+
+	private _patchMode = false;
 
 	constructor(public dataSource: AbstractDataSource<ValueType, DataSourceEventMap>) {
 		super();
 
 		this.handler = async form1 => {
 
-			if(this.patchMode) {
+			if(this._patchMode) {
 				this.keepUnknownValues = false;
 			}
 
@@ -89,7 +94,7 @@ export class DataSourceForm<ValueType extends BaseEntity = DefaultEntity> extend
 				if(!this.currentId) {
 					v = this.value;
 				} else {
-					if(this.patchMode) {
+					if(this._patchMode) {
 						v = ObjectUtil.diff(this.getOldValue(), this.value);
 					} else {
 						v = this.modified;
