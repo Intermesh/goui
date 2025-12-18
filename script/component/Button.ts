@@ -308,7 +308,7 @@ export class Button<EventMap extends ButtonEventMap= ButtonEventMap> extends Com
 	}
 
 	/**
-	 * Set's the button icon and adds the given css classes
+	 * Sets the button icon and adds the given css classes
 	 */
 	set iconCls(iconCls: string | undefined) {
 		this._iconCls = iconCls;
@@ -326,6 +326,9 @@ export class Button<EventMap extends ButtonEventMap= ButtonEventMap> extends Com
 		}
 	}
 
+	/**
+	 * The button icon.
+	 */
 	get icon() {
 		return this._icon;
 	}
