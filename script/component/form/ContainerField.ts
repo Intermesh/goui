@@ -221,7 +221,7 @@ export class ContainerField<EventMap extends FieldEventMap = FieldEventMap, Valu
 
 			if (fieldName) {
 				if(!field.disabled) {
-					old[fieldName] = field.resetValue;
+					old[fieldName] = field.getOldValue ? field.getOldValue() : field.resetValue;
 				}
 			}
 		});

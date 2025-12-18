@@ -9,7 +9,8 @@ import {t} from "../../Translate.js";
 import {Component, createComponent} from "../Component.js";
 import {Window} from "../Window.js";
 import {FieldConfig} from "./Field.js";
-import {Format} from "../../util/index";
+import {Format, ObjectUtil} from "../../util/index";
+import {create} from "node:domain";
 
 
 export interface DataSourceFormEventMap<ValueType extends BaseEntity = DefaultEntity> extends FormEventMap {
@@ -66,15 +67,36 @@ export interface DataSourceFormEventMap<ValueType extends BaseEntity = DefaultEn
  */
 export class DataSourceForm<ValueType extends BaseEntity = DefaultEntity> extends Form<ValueType, DataSourceFormEventMap<ValueType>> {
 
-	public currentId?: EntityID
+	public currentId?: EntityID;
+
+	/**
+	 * When set to true a modified entity will be set as JSON patch object
+	 */
+	public patchMode = false;
 
 	constructor(public dataSource: AbstractDataSource<ValueType, DataSourceEventMap>) {
 		super();
 
 		this.handler = async form1 => {
+
+			if(this.patchMode) {
+				this.keepUnknownValues = false;
+			}
+
 			try {
-				let data,
-					v = this.currentId ? this.modified : this.value;
+				let data, v;
+
+				if(!this.currentId) {
+					v = this.value;
+				} else {
+					if(this.patchMode) {
+						v = ObjectUtil.diff(this.getOldValue(), this.value);
+					} else {
+						v = this.modified;
+					}
+				}
+
+
 				if(this.fire('beforesave', {data:v}) === false) {
 					return;
 				}
