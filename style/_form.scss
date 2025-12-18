@@ -537,7 +537,7 @@
 			background-color: config.$colorBackgroundInput;
 			border: config.$borderWidth solid config.$colorOutline;
 			border-radius: 0 0 config.$borderRadius config.$borderRadius;
-			padding: util.dp(3) util.dp(18);
+			padding: util.dp(3) util.dp(16);
 			&:empty {
 				border-top: 0;
 			}
@@ -564,7 +564,7 @@
 		vertical-align: top;
 		pointer-events: none;
 		position:absolute;
-		left: util.dp(16);
+		left: util.dp(12);
 		padding: 0 util.dp(4);
 		top: util.dp(23);//math.div(config.$baseLineHeight, 2) + util.dp(11);
 		height: config.$borderWidth;
@@ -590,7 +590,7 @@
 	&.no-floating-label, &.has-value, &:focus-within {
 		div.label {
 			top: 0;
-			left: util.dp(16);
+			left: util.dp(12);
 			font-size: util.sp(13);
 		}
 	}
@@ -764,7 +764,7 @@
 		font-size: util.dp(14);
 		color: config.$colorTextSecondary;
 		line-height: util.dp(20); //match icon
-		padding: util.dp(4) util.dp(18) util.dp(4);
+		padding: util.dp(4) util.dp(16); // aligned with label
 
 		&:empty {
 			//padding: 0;
