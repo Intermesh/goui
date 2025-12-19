@@ -487,10 +487,10 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 		const id = data.id;
 		let r;
 		if(!this.getIds[id]) {
+			console.error("No get promise for " + id);
 			return;
 		}
 		while (r = this.getIds[id].resolves.shift()) {
-			// this.getIds[id].rejects.shift();
 
 			const d = structuredClone(data);
 			//@ts-ignore
