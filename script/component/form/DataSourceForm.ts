@@ -172,11 +172,13 @@ export class DataSourceForm<ValueType extends BaseEntity = DefaultEntity> extend
 	public create(data: any) {
 		this.clear();
 
-		this.fire('load', {data});
+		this.fire('beforeload', {data});
 		if (data) {
 			this.value = data;
 			this.trackReset();
 		}
+
+		this.fire('load', {data});
 	}
 
 
