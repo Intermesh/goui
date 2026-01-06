@@ -623,13 +623,14 @@ export class Window<EventMap extends WindowEventMap = WindowEventMap> extends Dr
 	/**
 	 * Prompt the user for a text input value.
 	 *
-	 * @param text - The message to display to the user.
+	 *
 	 * @param inputLabel - The label for the input field.
 	 * @param [defaultValue=""] - The default value for the input field.
 	 * @param [title="Please enter"] - The title for the prompt window.
+	 * @param [text=""] - The message to display to the user.
 	 * @returns {Promise<string | undefined>} - A promise that resolves with the input value or undefined if the user cancelled.
 	 */
-	public static prompt(text: string, inputLabel: string, defaultValue = "", title: string = t("Please enter")): Promise<string | undefined> {
+	public static prompt(inputLabel: string, defaultValue = "", title: string = t("Please enter"), text: string = ""): Promise<string | undefined> {
 
 		return new Promise((resolve) => {
 
@@ -666,7 +667,8 @@ export class Window<EventMap extends WindowEventMap = WindowEventMap> extends Dr
 						},
 						comp({
 							tagName: "p",
-							html: text
+							html: text,
+							hidden: !text
 						}),
 
 						textfield({
