@@ -33,11 +33,18 @@ export interface DataSourceFormEventMap<ValueType extends BaseEntity = DefaultEn
 	saveerror: {error: any}
 
 	/**
-	 * When the data is fetched from the store. but before it is put into the fields
+	 * When the data is fetched from the store and set on the form.
 	 *
 	 * @param data the entity from the store
 	 */
 	load: {data: ValueType},
+
+	/**
+	 * When the data is fetched from the store, but before it is set on the fields.
+	 *
+	 * @param data the entity from the store
+	 */
+	beforeload: {data: ValueType},
 
 	/**
 	 * Fires when an error occurred when loading.
@@ -202,8 +209,9 @@ export class DataSourceForm<ValueType extends BaseEntity = DefaultEntity> extend
 			if (!entity) {
 				throw "Failed to load entity with id " + id;
 			}
-			this.fire('load', {data:entity});
+			this.fire('beforeload', {data:entity});
 			this.value = entity as ValueType;
+			this.fire('load', {data:entity});
 		} catch (e:any) {
 			console.error(t("Error"), e);
 			if(this.fire('loaderror', {error: e}) !== false) {
