@@ -231,6 +231,7 @@
 			user-select: none;
 			-webkit-user-select: none;
 			-moz-user-select: none;
+			color: config.$colorText;
 		}
 
 	}
@@ -1179,6 +1180,8 @@ form {
 	.goui-button {
 		margin:0;
 	}
+
+	color: config.$colorTextSecondary
 }
 
 
