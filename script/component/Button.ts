@@ -295,11 +295,14 @@ export class Button<EventMap extends ButtonEventMap= ButtonEventMap> extends Com
 
 		if (this._icon != undefined || this._iconCls != undefined) {
 			this.el.classList.add("with-icon");
+			this.iconEl!.innerText = this._icon!;
 		} else {
 			this.el.classList.remove("with-icon");
+			if(this._iconEl) {
+				this._iconEl.remove();
+				this._iconEl = undefined;
+			}
 		}
-
-		this.iconEl!.innerText = icon ?? "";
 	}
 
 	private _iconCls:string|undefined;
