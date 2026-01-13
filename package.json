@@ -3,7 +3,6 @@
   "devDependencies": {
     "@types/chai": "latest",
     "@types/mocha": "latest",
-    "@types/node": "latest",
     "chai": "latest",
     "esbuild": "latest",
     "fake-indexeddb": "latest",
@@ -11,7 +10,6 @@
     "jsdom-global": "latest",
     "mocha": "latest",
     "sass": "latest",
-    "ts-node": "latest",
     "typedoc": "latest",
     "typescript": "latest"
   },
