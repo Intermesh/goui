@@ -140,6 +140,12 @@
 		cursor: pointer;
 	}
 
+	&.vertical-stack {
+		label.control {
+			width: 100%;
+		}
+	}
+
 	&.box input {
 		margin: 0;
 		color: config.$colorMain;
