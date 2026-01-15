@@ -1087,8 +1087,9 @@
 	.legend {
 		display: block;
 		line-height:normal;
-		font-size: util.dp(18);
-		font-weight: 500;
+		font-size: util.sp(22);
+		font-weight: bold;
+		color: config.$colorText;
 		padding: util.dp(8) util.dp(16) util.dp(8) 0;
 	}
 
@@ -1189,7 +1190,7 @@ form.goui {
 		margin:0;
 	}
 
-	color: config.$colorTextSecondary
+	//color: config.$colorTextSecondary
 }
 
 

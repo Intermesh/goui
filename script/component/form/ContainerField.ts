@@ -39,6 +39,11 @@ export class ContainerField<EventMap extends FieldEventMap = FieldEventMap, Valu
 
 	protected fireChangeOnBlur = false;
 
+	/**
+	 * Not needed on container field as the fields within handle this.
+	 */
+	public validateOnBlur = false;
+
 
 	/**
 	 * When this field is populated with an object that contains properties we don't have form fields for, they will be
@@ -229,7 +234,17 @@ export class ContainerField<EventMap extends FieldEventMap = FieldEventMap, Valu
 		return old;
 	}
 
+	isValid(): boolean {
+		// because container fields have no change event we need to clear the invalid msg here so the children will manage the validated state.
+		this.invalidMsg = "";
+
+		return super.isValid();
+	}
+
 	protected validate() {
+		// because container fields have no change event we need to clear the invalid msg here so the children will manage the validated state.
+		this.invalidMsg = "";
+
 		super.validate();
 		let invalid;
 		this.findFields().forEach((i) => {
@@ -271,10 +286,6 @@ export class ContainerField<EventMap extends FieldEventMap = FieldEventMap, Valu
 		});
 	}
 
-	/**
-	 * Not needed on container field as the fields within handle this.
-	 */
-	public validateOnBlur = false;
 
 	protected applyInvalidMsg() {
 		if (this.invalidMsg) {

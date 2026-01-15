@@ -180,8 +180,6 @@ export class Form<ValueType extends ContainerFieldValue = ContainerFieldValue, E
 
 		const el = this.el as HTMLFormElement;
 
-		this.clearInvalid();
-
 		if (this.isValid()) {
 			el.cls(['+valid', '-invalid']);
 

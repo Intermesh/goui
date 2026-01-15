@@ -566,6 +566,9 @@ export abstract class Field<EventMap extends FieldEventMap = FieldEventMap> exte
 	 * Set the field value
 	 */
 	public set value(v: FieldValue) {
+
+		this.clearInvalid();
+
 		// Store old value through getter because it might do some extra processing. Like DateField does.
 		const oldValue = this.value;
 		if(v === oldValue) {
@@ -614,6 +617,7 @@ export abstract class Field<EventMap extends FieldEventMap = FieldEventMap> exte
 
 		if(this.isMarkedInvalid()) {
 			// revalidate if it was marked invalid
+			this.clearInvalid();
 			this.validate();
 		}
 	}
@@ -684,8 +688,6 @@ export abstract class Field<EventMap extends FieldEventMap = FieldEventMap> exte
 	}
 
 	protected validate() {
-
-		this.clearInvalid();
 
 		if (this.required && this.isEmpty()) {
 			this.setInvalid(t("This field is required"));
@@ -804,11 +806,11 @@ false
 	 * If you want to check if the field is marked as invalid without validation use isMarkedInvalid()
 	 */
 	public isValid() {
-		if (this.invalidMsg != "") {
+		if (this.isMarkedInvalid()) {
 			return false;
 		}
 		this.validate();
-		if (this.invalidMsg != "") {
+		if (this.isMarkedInvalid()) {
 			console.warn("Field '" + this.name + "' is invalid: " + this.invalidMsg, this);
 		}
 		return this.invalidMsg == "";
