@@ -140,11 +140,7 @@
 		cursor: pointer;
 	}
 
-	&.vertical-stack {
-		label.control {
-			width: 100%;
-		}
-	}
+
 
 	&.box input {
 		margin: 0;
@@ -794,6 +790,12 @@
 
 	&.radiogroup {
 		@extend .checkbox-group;
+
+		&.vertical-stack {
+			label.control {
+				width: 100%;
+			}
+		}
 
 		//width: auto;
 		.radio.control {
