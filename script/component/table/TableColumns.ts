@@ -182,7 +182,8 @@ export type TableColumnConfig<T extends TableColumn = TableColumn> = Config<T> &
 export const column = (config: TableColumnConfig) => createComponent(new TableColumn(config.id), config);
 
 export class DateTimeColumn extends TableColumn {
-	renderer:TableColumnRenderer = (date: string, record:any, td:any) => {
+	renderer:TableColumnRenderer = (date: string|null, record:any, td:any) => {
+		if(!date) return "-";
 		const dt = new DateTime(date);
 		td.title = dt.format(Format.dateFormat+ " " + Format.timeFormat);
 		return Format.smartDateTime(dt);
@@ -200,7 +201,8 @@ export class DateTimeColumn extends TableColumn {
 export const datetimecolumn = (config: TableColumnConfig) => createComponent(new DateTimeColumn(config.id), config);
 
 export class DateColumn extends TableColumn {
-	renderer:TableColumnRenderer  = (date: string, record, td) => {
+	renderer:TableColumnRenderer  = (date: string|null, record, td) => {
+		if(!date) return "-";
 		const dt = new DateTime(date);
 		td.title = dt.format(Format.dateFormat+ " " + Format.timeFormat);
 
