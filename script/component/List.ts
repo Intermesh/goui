@@ -313,10 +313,18 @@ export class List<StoreType extends Store = Store, EventMapType extends ListEven
 		})
 	}
 
+	/**
+	 * Fires the delete event. Doesn't actually do anything else but this way you can implement the same logic for
+	 * pressing the delete key or clicking the delete button.
+	 */
+	public delete() {
+		this.fire("delete", {});
+	}
+
 	protected onKeyDown(e: KeyboardEvent) {
 		if (e.key == "Delete" || e.metaKey && e.key == "Backspace") {
 			e.preventDefault();
-			this.fire("delete", {});
+			this.delete();
 		}
 
 		if(e.key == "Enter") {
