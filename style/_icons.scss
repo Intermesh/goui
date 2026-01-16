@@ -30,8 +30,8 @@
 	font-weight: normal;
 	font-style: normal;
 	font-size: util.dp(24);  /* Google Preferred icon size = dp(24) */
-	width: auto; //needed in Group-Office as it sets widht and height to 21px
-	height: auto;
+	//width: auto; //needed in Group-Office as it sets widht and height to 21px
+	//height: auto;
 	display: inline-block;
 	vertical-align: middle;
 	line-height: 1;
@@ -69,7 +69,7 @@
 }
 
 .goui {
-	i.icon, i.icon:after {
+	i.icon, i.icon::after {
 		@extend %icon;
 	}
 }
