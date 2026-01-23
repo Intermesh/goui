@@ -90,7 +90,7 @@ export class DataSourceStore<
 	 *
 	 * @protected
 	 */
-	protected onDSChange(ev:any) {
+	protected onDSChange() {
 		if (this.loaded && this.monitorChanges && !this.loading) {
 			void this.reload();
 		}
@@ -165,16 +165,18 @@ export class DataSourceStore<
 	}
 
 	private async fetchRelations(records: dataSourceEntityType<DataSource>[]) {
+
 		if (!this.relations) {
 			return records;
 		}
+
 		const promises:Promise<any>[] = [];
 
 		for (const relationName in this.relations) {
 
 			const rel = this.relations[relationName as keyof DefaultEntity]!;
 
-			let ids;
+			let ids:any;
 			for (const record of records) {
 				ids = ObjectUtil.get(record, rel.path);
 
