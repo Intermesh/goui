@@ -139,6 +139,9 @@ export const displayfield = (config: DisplayFieldConfig, ...items: Component[]) 
 /**
  * Create display field with date icon and renderer
  *
+ * If you pass {tagName: "h3"} or another tag that's not "label", it will not render a field but instead loads
+ * data directly into that element.
+ *
  * @link https://goui.io/#form/DisplayField Examples
  *
  * @param config
