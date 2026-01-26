@@ -97,6 +97,11 @@ export interface FieldEventMap extends ComponentEventMap {
 	}
 
 	/**
+	 * Fires when the field loses focus
+	 */
+	blur: {},
+
+	/**
 	 * Fires when validated
 	 *
 	 * Use {@link setInvalid()} to mark field invalid
@@ -225,6 +230,8 @@ export abstract class Field<EventMap extends FieldEventMap = FieldEventMap> exte
 		if(this.fireChangeOnBlur && this.isChangedSinceFocus()) {
 			this.fireChange();
 		}
+
+		this.fire("blur", {})
 	}
 
 	/**
@@ -263,6 +270,8 @@ export abstract class Field<EventMap extends FieldEventMap = FieldEventMap> exte
 		this.hasFocus = true;
 
 		this.captureValueForChange();
+
+		this.fire("focus", {});
 	}
 
 	protected captureValueForChange() {
