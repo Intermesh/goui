@@ -13,10 +13,18 @@ import {root} from "./Root.js";
 import {FunctionUtil} from "../util/FunctionUtil.js";
 import {form} from "./form/Form.js";
 import {fieldset} from "./form/Fieldset.js";
-import {textfield} from "./form/TextField.js";
+import {textfield, TextFieldType} from "./form/TextField.js";
 import {t} from "../Translate.js";
 import {DateTime} from "../util/index.js";
 
+
+interface PromptConfig {
+	inputLabel: string,
+	defaultValue?: string
+	title?: string
+	text?: string
+	fieldType?: TextFieldType
+}
 
 /**
  * @inheritDoc
@@ -619,81 +627,39 @@ export class Window<EventMap extends WindowEventMap = WindowEventMap> extends Dr
 		});
 	}
 
+	// old way: prompt(inputLabel, defaultValue = "", title = "", text = "")
+	public static prompt(cfg: PromptConfig): Promise<string | undefined> {
+		cfg.title ??= t("Please enter");
+		cfg.text ??= "";
+		cfg.defaultValue ??= "";
+		cfg.fieldType ??= "text";
 
-	/**
-	 * Prompt the user for a text input value.
-	 *
-	 *
-	 * @param inputLabel - The label for the input field.
-	 * @param [defaultValue=""] - The default value for the input field.
-	 * @param [title="Please enter"] - The title for the prompt window.
-	 * @param [text=""] - The message to display to the user.
-	 * @returns {Promise<string | undefined>} - A promise that resolves with the input value or undefined if the user cancelled.
-	 */
-	public static prompt(inputLabel: string, defaultValue = "", title: string = t("Please enter"), text: string = ""): Promise<string | undefined> {
-
-		return new Promise((resolve) => {
-
-			let cancelled = true;
-
-			const w = win({
-					modal: true,
-					title: title,
-					width: 600,
-					listeners: {
-						focus: () => {
-							w.items.get(0)!.focus();
-						},
-						close: () => {
-							if (cancelled) {
-								resolve(undefined);
-							}
-						}
-					}
-				},
-
-				form({
-						flex: 1,
-						cls: "vbox",
-						handler: (form) => {
-							resolve(form.value.input);
-							cancelled = false;
-							w.close();
-						}
-					},
-
-					fieldset({
-							flex: 1
-						},
-						comp({
-							tagName: "p",
-							html: text,
-							hidden: !text
-						}),
-
-						textfield({
-							label: inputLabel,
-							name: "input",
-							required: true,
-							value: defaultValue
-						})
-					),
-
-					tbar({},
-						comp({
-							flex: 1
-						}),
-
-						btn({
-							type: "submit",
-							text: "Ok"
-						})
-					)
+		return new Promise((resolve, reject) => {
+			const txt = textfield({
+				label: cfg.inputLabel,
+				type: cfg.fieldType,
+				name: "input",
+				required: true,
+				value: cfg.defaultValue
+			}), w = win({
+				cls: "vbox",
+				width: 600,
+				modal: true,
+				title: cfg.title,
+				listeners: {
+					focus: () => { w.items.get(0)!.focus(); },
+					close: e => { if(e.byUser) resolve(undefined); }
+				}
+			},fieldset({flex: 1},
+					comp({tagName: "p",html: cfg.text,hidden: !cfg.text}),
+					txt
+				),
+				tbar({},'->',
+					btn({text: "Ok"}).on('click', () => { resolve(txt.value); w.close();})
 				)
-			);
-
+			)
 			w.show();
-		});
+		})
 	}
 
 	/**
