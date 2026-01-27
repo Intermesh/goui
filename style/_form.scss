@@ -27,11 +27,9 @@
 	padding-inline-end: 0;
 	padding-block-end: 0;
 
-	h3.legend {
-		//color: $colorTextSecondary;
-		//font: $fontBase;
-		//margin: dp(24) 0 dp(8) 0;
-
+	.radio-field-label {
+		margin-top: util.dp(16);
+		margin-bottom: util.dp(8);
 		&:empty {
 			display: none;
 		}
@@ -142,6 +140,8 @@
 		cursor: pointer;
 	}
 
+
+
 	&.box input {
 		margin: 0;
 		color: config.$colorMain;
@@ -233,6 +233,7 @@
 			user-select: none;
 			-webkit-user-select: none;
 			-moz-user-select: none;
+			color: config.$colorText;
 		}
 
 	}
@@ -539,7 +540,7 @@
 			background-color: config.$colorBackgroundInput;
 			border: config.$borderWidth solid config.$colorOutline;
 			border-radius: 0 0 config.$borderRadius config.$borderRadius;
-			padding: util.dp(3) util.dp(18);
+			padding: util.dp(3) util.dp(16);
 			&:empty {
 				border-top: 0;
 			}
@@ -566,7 +567,7 @@
 		vertical-align: top;
 		pointer-events: none;
 		position:absolute;
-		left: util.dp(16);
+		left: util.dp(12);
 		padding: 0 util.dp(4);
 		top: util.dp(23);//math.div(config.$baseLineHeight, 2) + util.dp(11);
 		height: config.$borderWidth;
@@ -592,7 +593,7 @@
 	&.no-floating-label, &.has-value, &:focus-within {
 		div.label {
 			top: 0;
-			left: util.dp(16);
+			left: util.dp(12);
 			font-size: util.sp(13);
 		}
 	}
@@ -766,7 +767,7 @@
 		font-size: util.dp(14);
 		color: config.$colorTextSecondary;
 		line-height: util.dp(20); //match icon
-		padding: util.dp(4) util.dp(18) util.dp(4);
+		padding: util.dp(4) util.dp(16); // aligned with label
 
 		&:empty {
 			//padding: 0;
@@ -789,6 +790,12 @@
 
 	&.radiogroup {
 		@extend .checkbox-group;
+
+		&.vertical-stack {
+			label.control {
+				width: 100%;
+			}
+		}
 
 		//width: auto;
 		.radio.control {
@@ -1080,8 +1087,9 @@
 	.legend {
 		display: block;
 		line-height:normal;
-		font-size: util.dp(18);
-		font-weight: 500;
+		font-size: util.sp(22);
+		font-weight: bold;
+		color: config.$colorText;
 		padding: util.dp(8) util.dp(16) util.dp(8) 0;
 	}
 
@@ -1161,7 +1169,7 @@
 
 
 
-form {
+form.goui {
 	// for loading mask
 	position: relative;
 
@@ -1181,6 +1189,8 @@ form {
 	.goui-button {
 		margin:0;
 	}
+
+	//color: config.$colorTextSecondary
 }
 
 

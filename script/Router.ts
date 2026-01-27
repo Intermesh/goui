@@ -45,7 +45,15 @@ export class Router extends Observable<RouterEventMap> {
 		super();
 
 		window.addEventListener('hashchange', () => {
-			void this.start();
+			if (this.suspendEvent) {
+				setTimeout(() => {
+					this.suspendEvent = false;
+				});
+
+				return Promise.resolve();
+			} else {
+				void this.start();
+			}
 		}, false);
 	}
 
@@ -147,13 +155,7 @@ export class Router extends Observable<RouterEventMap> {
 
 		this.params = match;
 
-		if (this.suspendEvent) {
-			setTimeout(() => {
-				this.suspendEvent = false;
-			});
 
-			return Promise.resolve();
-		}
 
 
 		this.routing = true;

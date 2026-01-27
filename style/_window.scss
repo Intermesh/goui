@@ -31,6 +31,9 @@
 	@extend .z12;
 	position: fixed;
 
+	display: flex;
+	flex-direction: column;
+
 	background-color: config.$surfaceLow;
 	backdrop-filter: blur(20px);
 	-webkit-backdrop-filter: blur(20px);
@@ -43,12 +46,10 @@
 	min-width: util.dp(160);
 
 
-	.item-container{
+	> .item-container {
 		@extend .goui, .vbox;
- 		width: 100%;
-		height: 100%;
+ 		flex: 1;
 		overflow: hidden;
-		border-radius: util.dp(12);
 	}
 
 	&.modal {
@@ -63,20 +64,19 @@
 	}
 
 	&.collapsed {
-		height: util.dp(60) !important;
 		min-height: 0 !important;
-		.item-container {
+		height: auto !important;
 
-			.collapse-btn {
-				i:after {
-					content: "expand_more";
-				}
-			}
-
-			> *:not(.header) {
-				display: none;
+		.collapse-btn {
+			i:after {
+				content: "expand_more";
 			}
 		}
+
+		> *:not(.header) {
+			display: none;
+		}
+
 	}
 
 	&.maximized
@@ -91,8 +91,11 @@
 		height: auto !important;
 		resize: none !important;
 
-		.collapse-btn {
-			@extend *, [disabled];
+		>.header {
+			.collapse-btn {
+
+				@extend *, [disabled];
+			}
 		}
 	}
 
@@ -132,7 +135,7 @@
 		border-bottom: config.$borderWidth solid config.$colorBorderWindow;
 	}
 
-	.header.goui-toolbar  {
+	> .header.goui-toolbar  {
 		padding: util.dp(12) util.dp(12) util.dp(12) util.dp(18);
 		//height: util.dp(74);
 		height: util.dp(60);

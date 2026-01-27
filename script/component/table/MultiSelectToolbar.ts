@@ -55,7 +55,7 @@ export class MultiSelectToolbar extends Toolbar {
 
 		this.hidden = true;
 
-		this.cls = "multiselect";
+		this.cls = "overlay multiselect";
 	}
 }
 

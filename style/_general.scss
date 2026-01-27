@@ -201,28 +201,29 @@ menu.goui-toolbar.goui-cardmenu {
 	}
 }
 
-//MS: This interfered with main header in community/main. Don't know what breaks without it
-//.hbox > .goui-cardmenu {
-//	height: 100%;
-//	border-right: config.$borderWidth solid config.$colorBorder;
-//	button.goui-button {
-//		margin: 0;
-//		width: util.dp(200);
-//		text-align: left;
-//		display:block;
-//		//border-right: dp(4) solid transparent;
-//
-//		border-bottom: none;
-//		border-bottom: none;
-//		&.active {
-//			//border-right: dp(4) solid $colorSecondary;
-//			//border-bottom: none;
-//			color: config.$colorText;
-//			background-color: config.$colorSelectedRow;
-//		}
-//	}
-//
-//}
+// for vertically stacked tab menu's
+aside.goui-cardmenu.goui-toolbar {
+	height: 100%;
+	border-right: config.$borderWidth solid config.$colorBorder;
+	flex-direction: column;
+	button.goui-button {
+		margin: 0;
+		width: 100%;
+		text-align: left;
+		display:block;
+		//border-right: dp(4) solid transparent;
+
+		border-bottom: none;
+		border-bottom: none;
+		&.active {
+			//border-right: dp(4) solid $colorSecondary;
+			//border-bottom: none;
+			color: config.$colorText;
+			background-color: config.$colorSelectedRow;
+		}
+	}
+
+}
 
 .goui.goui-avatar {
 	cursor: default;
@@ -233,7 +234,7 @@ menu.goui-toolbar.goui-cardmenu {
 	background-color: config.$colorTextSecondary;
 	background-size: cover;
 	border-radius: 50%;
-	border: 1px solid var(--fg-line);
+	//border: 1px solid var(--fg-line);
 	width: config.$baseLineHeight + util.dp(22);
 	height: config.$baseLineHeight + util.dp(22);
 	font-size: util.dp(16);
@@ -251,6 +252,11 @@ menu.goui-toolbar.goui-cardmenu {
 		display: inline-flex;
 		margin-right: util.dp(8);
 		vertical-align: middle;
+	}
+
+	&.large {
+		width: config.$baseLineHeight + util.dp(64);
+		height: config.$baseLineHeight + util.dp(64);
 	}
 }
 
@@ -425,25 +431,25 @@ menu.goui-toolbar.goui-cardmenu {
 }
 
 
-.goui a {
-	color: config.$colorMain;
-}
+//.goui a {
+//	color: config.$colorMain;
+//}
 
 
-.goui.list {
-	ul {
-		padding: 0;
-		margin: 0;
-	}
-	li {
-		padding: 0 util.dp(16);
-		margin: 0;
-
-		.goui-form-field.check {
-			.box-label {
-				padding-top: .4rem;
-				padding-bottom: .4rem;
-			}
-		}
-	}
-}
+//.goui.list {
+//	ul {
+//		padding: 0;
+//		margin: 0;
+//	}
+//	li {
+//		padding: 0 util.dp(16);
+//		margin: 0;
+//
+//		.goui-form-field.check {
+//			.box-label {
+//				padding-top: .4rem;
+//				padding-bottom: .4rem;
+//			}
+//		}
+//	}
+//}

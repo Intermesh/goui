@@ -133,6 +133,10 @@ export class AutocompleteField<T extends List = List, EventMap extends Autocompl
 		this.fireChangeOnBlur = true;
 	}
 
+	protected eventTargetIsInFocus(e: FocusEvent): boolean {
+		return super.eventTargetIsInFocus(e) || (e.relatedTarget instanceof HTMLElement) && this.menu.el.contains(e.relatedTarget);
+	}
+
 	protected createInput() : HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement{
 		const control = document.createElement("input");
 

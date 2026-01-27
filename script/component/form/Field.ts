@@ -97,6 +97,11 @@ export interface FieldEventMap extends ComponentEventMap {
 	}
 
 	/**
+	 * Fires when the field loses focus
+	 */
+	blur: {},
+
+	/**
 	 * Fires when validated
 	 *
 	 * Use {@link setInvalid()} to mark field invalid
@@ -225,6 +230,8 @@ export abstract class Field<EventMap extends FieldEventMap = FieldEventMap> exte
 		if(this.fireChangeOnBlur && this.isChangedSinceFocus()) {
 			this.fireChange();
 		}
+
+		this.fire("blur", {})
 	}
 
 	/**
@@ -263,6 +270,8 @@ export abstract class Field<EventMap extends FieldEventMap = FieldEventMap> exte
 		this.hasFocus = true;
 
 		this.captureValueForChange();
+
+		this.fire("focus", {});
 	}
 
 	protected captureValueForChange() {
@@ -308,6 +317,13 @@ export abstract class Field<EventMap extends FieldEventMap = FieldEventMap> exte
 	}
 
 
+	/**
+	 *
+	 * Renders wrap with icon and buttons etc. If you want complete control over the rendered components then override this
+	 * to do nothing and add child items.
+	 *
+	 * @protected
+	 */
 	protected renderControl() {
 
 
@@ -559,6 +575,9 @@ export abstract class Field<EventMap extends FieldEventMap = FieldEventMap> exte
 	 * Set the field value
 	 */
 	public set value(v: FieldValue) {
+
+		this.clearInvalid();
+
 		// Store old value through getter because it might do some extra processing. Like DateField does.
 		const oldValue = this.value;
 		if(v === oldValue) {
@@ -607,6 +626,7 @@ export abstract class Field<EventMap extends FieldEventMap = FieldEventMap> exte
 
 		if(this.isMarkedInvalid()) {
 			// revalidate if it was marked invalid
+			this.clearInvalid();
 			this.validate();
 		}
 	}
@@ -677,8 +697,6 @@ export abstract class Field<EventMap extends FieldEventMap = FieldEventMap> exte
 	}
 
 	protected validate() {
-
-		this.clearInvalid();
 
 		if (this.required && this.isEmpty()) {
 			this.setInvalid(t("This field is required"));
@@ -797,11 +815,11 @@ false
 	 * If you want to check if the field is marked as invalid without validation use isMarkedInvalid()
 	 */
 	public isValid() {
-		if (this.invalidMsg != "") {
+		if (this.isMarkedInvalid()) {
 			return false;
 		}
 		this.validate();
-		if (this.invalidMsg != "") {
+		if (this.isMarkedInvalid()) {
 			console.warn("Field '" + this.name + "' is invalid: " + this.invalidMsg, this);
 		}
 		return this.invalidMsg == "";

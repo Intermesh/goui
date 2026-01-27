@@ -290,11 +290,15 @@ html {
 	border-radius: config.$borderRadius;
 	margin: util.dp(8);
 	background-color: var(--bg-lowest);
-	overflow:hidden;
+	//overflow:hidden; // this didn't work in css grid for mdoules
 	@extend .z2;
 
 	> .goui-fieldset:first-child {
 		margin-top: dp(16);
+	}
+
+	> p, .item-container p, > h4, .item-container h4, > h5, .item-container h5 {
+		padding: 0 util.dp(16);
 	}
 }
 

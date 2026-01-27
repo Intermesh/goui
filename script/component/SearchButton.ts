@@ -56,7 +56,7 @@ export class SearchButton extends OverlayToolbarButton<SearchButtonEventMap> {
 		this.title = t("Search");
 
 		this.searchField = textfield({
-			label: t("Search"),
+			placeholder: t("Search") + "...",
 			flex: 1,
 
 			buttons: [

@@ -22,6 +22,9 @@ export class Avatar extends Component {
 		'00695C', '2E7D32', '558B2F', '9E9D24', 'F9A825', 'FF8F00', 'EF6C00', '424242'
 	];
 
+	private imgUrl: string|undefined;
+	private bgColor: string|undefined
+
 	set displayName(displayName: string) {
 
 		this.text = Avatar.initials(displayName);
@@ -31,7 +34,17 @@ export class Avatar extends Component {
 		for (let i = 0, l = this.displayName.length; i < l; i++) {
 			j += displayName.charCodeAt(i);
 		}
-		this.el.style.backgroundColor = "#" + Avatar.colors[j % Avatar.colors.length];
+		this.bgColor = "#" + Avatar.colors[j % Avatar.colors.length];
+		this.setBackground();
+	}
+
+	private setBackground() {
+		this.el.style.backgroundColor = this.el.style.backgroundImage != "none" && this.bgColor  ? this.bgColor : "";
+		this.el.style.backgroundImage = this.imgUrl ? `url(${this.imgUrl})` : "";
+
+		if(this.imgUrl) {
+			this.text = "";
+		}
 	}
 
 	get displayName() {
@@ -39,10 +52,8 @@ export class Avatar extends Component {
 	}
 
 	set backgroundImage(imgUrl: string | undefined) {
-		this.el.style.backgroundImage = imgUrl ? "url("+imgUrl+")" : "none";
-		if(imgUrl) {
-			this.text = "";
-		}
+		this.imgUrl = imgUrl;
+		this.setBackground()
 	}
 
 	get backgroundImage() :string {

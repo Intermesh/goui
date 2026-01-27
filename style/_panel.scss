@@ -1,0 +1,38 @@
+@use "config";
+@use "util";
+@use "layout";
+@use "shadows";
+@use "general";
+
+.goui.panel {
+	display: flex;
+	flex-direction: column;
+
+	.item-container {
+		@extend .goui, .vbox;
+		flex: 1;
+	}
+
+
+	.collapse-btn {
+		i:after {
+			content: "expand_less";
+		}
+	}
+
+	&.collapsed {
+		min-height: 0 !important;
+		height: auto !important;
+
+		.collapse-btn {
+			i:after {
+				content: "expand_more";
+			}
+		}
+
+		> *:not(.header) {
+			display: none;
+		}
+
+	}
+}

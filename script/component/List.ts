@@ -35,18 +35,6 @@ export interface ListEventMap extends ComponentEventMap {
 	};
 
 	/**
-	 * Fires when the user sorts the list by drag and drop.
-	 */
-	sortchange: {
-		/** The record being moved. */
-		record: any;
-		/** The new index after dropping. */
-		dropIndex: number;
-		/** The previous index before moving. */
-		oldIndex: number;
-	};
-
-	/**
 	 * Fires when a row is mousedowned.
 	 */
 	rowmousedown: {
@@ -325,10 +313,18 @@ export class List<StoreType extends Store = Store, EventMapType extends ListEven
 		})
 	}
 
+	/**
+	 * Fires the delete event. Doesn't actually do anything else but this way you can implement the same logic for
+	 * pressing the delete key or clicking the delete button.
+	 */
+	public delete() {
+		this.fire("delete", {});
+	}
+
 	protected onKeyDown(e: KeyboardEvent) {
 		if (e.key == "Delete" || e.metaKey && e.key == "Backspace") {
 			e.preventDefault();
-			this.fire("delete", {});
+			this.delete();
 		}
 
 		if(e.key == "Enter") {

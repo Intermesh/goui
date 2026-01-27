@@ -38,7 +38,12 @@ export interface OverlayToolbarButtonEventMap extends ButtonEventMap {
 export class OverlayToolbarButton<EventMap extends OverlayToolbarButtonEventMap = OverlayToolbarButtonEventMap> extends Button<EventMap> {
 
 	private overlayTbar?: Toolbar;
-	private mainTbar?: Toolbar;
+
+	/**
+	 * Component it will be placed upon when opened.
+	 * If not given it will try to find the parent toolbar
+	 */
+	public overlayComponent?: Component | ((btn:OverlayToolbarButton) => Component);
 
 	constructor() {
 		super();
@@ -48,40 +53,36 @@ export class OverlayToolbarButton<EventMap extends OverlayToolbarButtonEventMap 
 
 	public handler = (button: Button, ev?: MouseEvent) => {
 
-		this.mainTbar = button.findAncestorByType(Toolbar);
-		if(!this.mainTbar) {
-			throw "Search button must be inside a Toolbar";
+		if(!this.overlayComponent) {
+			this.overlayComponent = button.findAncestorByType(Toolbar);
+			if (!this.overlayComponent) {
+				throw "Search button must be inside a Toolbar";
+			}
+		} else if(!(this.overlayComponent instanceof Component)) {
+			this.overlayComponent = this.overlayComponent(this);
 		}
 		this.getOverlayTBar().show();
 	}
-	private tbarItemContainer: Component;
+	private readonly tbarItemContainer: Component;
 
 	public close() {
 		// document.body.removeEventListener("mousedown", this.closeOnClick);
 		this.overlayTbar!.hide();
-		this.mainTbar!.show();
+		(this.overlayComponent as Component).show();
 		this.focus();
 		this.fire("close", {});
 	}
 
-	private closeOnClick:any;
 
 	protected getOverlayTBar() {
 
 		if (!this.overlayTbar) {
-
-			// this.closeOnClick = (e:MouseEvent) => {
-			// 	if(!this.overlayTbar!.el.contains(e.target as any)) {
-			// 		this.close();
-			// 	}
-			// }
 
 			this.overlayTbar = tbar({
 					cls: "overlay",
 					hidden: true,
 					listeners: {
 						show: () => {
-							// document.body.addEventListener("mousedown", this.closeOnClick)
 							this.fire("open", {});
 						}
 					}
@@ -103,9 +104,9 @@ export class OverlayToolbarButton<EventMap extends OverlayToolbarButtonEventMap 
 					e.stopPropagation();
 					this.close();
 				}
-			})
+			});
 
-			this.mainTbar!.items.add(this.overlayTbar);
+			(this.overlayComponent as Component).items.add(this.overlayTbar);
 		}
 
 		return this.overlayTbar;

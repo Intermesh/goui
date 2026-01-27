@@ -171,6 +171,15 @@ export class Button<EventMap extends ButtonEventMap= ButtonEventMap> extends Com
 		// visible in windows. Sub menu's are rendered inside the parent menu button.
 		if (this.menu) {
 			this.menu.hide();
+
+			this.menu.on("show", ({target}) => {
+				this.el.classList.add("menu-open");
+			});
+
+			this.menu.on("hide", ({target}) => {
+				this.el.classList.remove("menu-open");
+			})
+
 			this.el.addEventListener("mouseenter", this.onMenuMouseEnter.bind(this));
 			this.el.addEventListener("click", this.onMenuButtonClick.bind(this));
 		}
@@ -286,11 +295,14 @@ export class Button<EventMap extends ButtonEventMap= ButtonEventMap> extends Com
 
 		if (this._icon != undefined || this._iconCls != undefined) {
 			this.el.classList.add("with-icon");
+			this.iconEl!.innerText = this._icon!;
 		} else {
 			this.el.classList.remove("with-icon");
+			if(this._iconEl) {
+				this._iconEl.remove();
+				this._iconEl = undefined;
+			}
 		}
-
-		this.iconEl!.innerText = icon ?? "";
 	}
 
 	private _iconCls:string|undefined;
@@ -299,7 +311,7 @@ export class Button<EventMap extends ButtonEventMap= ButtonEventMap> extends Com
 	}
 
 	/**
-	 * Set's the button icon and adds the given css classes
+	 * Sets the button icon and adds the given css classes
 	 */
 	set iconCls(iconCls: string | undefined) {
 		this._iconCls = iconCls;
@@ -317,6 +329,9 @@ export class Button<EventMap extends ButtonEventMap= ButtonEventMap> extends Com
 		}
 	}
 
+	/**
+	 * The button icon.
+	 */
 	get icon() {
 		return this._icon;
 	}

@@ -140,7 +140,42 @@ export class ObjectUtil {
 		}
 
 		return doc;
+	}
 
+	/**
+	 * Create JMAP PatchObject
+	 *
+	 * @link https://jmap.io/spec-core.html#set
+	 */
+	public static diff(a: any, b: any) {
+		const diff = {};
+		this.internalDiff(a, b, diff);
+		return diff;
+	}
+
+	private static empty(v:any) {
+		return v === null || v === undefined || v === "";
+	}
+
+	private static internalDiff(a: any, b: any, diff:any, prefix:string = "/") {
+		Object.keys(b).forEach(key => {
+			if(a[key] != null && b[key] != null && typeof a[key] === 'object' && typeof b[key] === 'object' && Array.isArray(b[key]) === false && Array.isArray(a[key]) === false) {
+				this.internalDiff(a[key], b[key], diff, prefix + key + "/");
+			} else {
+				if(a[key] !== b[key] && (a[key] !== null || b[key] !== null)) {
+					if(!this.empty(a[key]) || !this.empty(b[key])) {
+						// console.log("diff", prefix + key, a[key], b[key])
+						diff[prefix + key] = b[key];
+					}
+				}
+			}
+		})
+
+		// Object.keys(a).forEach(key => {
+		// 	if(!(key in b)) {
+		// 		diff[prefix + key] = null;
+		// 	}
+		// })
 	}
 
 	//

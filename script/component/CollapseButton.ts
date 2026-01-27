@@ -2,7 +2,7 @@ import {Button} from "./Button";
 import {Component, ComponentState, createComponent} from "./Component";
 import {Config} from "./Observable";
 
-type CollapseEl = ((btn:CollapseButton) => Component) | Component
+type CollapseTarget = ((btn:CollapseButton) => Component) | Component
 
 /**
  * Button that can be used to hide and show another component
@@ -13,17 +13,17 @@ export class CollapseButton extends Button {
 	/**
 	 * Constructor
 	 *
-	 * @param collapseEl Pass a component or a function that returns the component after render
+	 * @param target Pass a component or a function that returns the component after render
 	 */
-	constructor(private collapseEl:CollapseEl) {
+	constructor(private target:CollapseTarget) {
 		super();
 
 		this.on("beforerender", () => {
-			this.icon = this.getCollapseEl().hidden ? "expand_more" : "expand_less";
+			this.icon = this.getCollapseTarget().hidden ? "expand_more" : "expand_less";
 		});
 
 		this.handler = () => {
-			const el = this.getCollapseEl();
+			const el = this.getCollapseTarget();
 			if (el.hidden) {
 				el.hidden = false;
 				this.icon = "expand_less";
@@ -38,7 +38,7 @@ export class CollapseButton extends Button {
 
 	protected buildState(): ComponentState {
 		return {
-			collapsed: this.getCollapseEl().hidden
+			collapsed: this.getCollapseTarget().hidden
 		}
 	}
 
@@ -46,15 +46,15 @@ export class CollapseButton extends Button {
 		super.restoreState(state);
 
 		if("collapsed" in state) {
-			this.getCollapseEl().hidden = state.collapsed;
+			this.getCollapseTarget().hidden = state.collapsed;
 		}
 	}
 
-	private getCollapseEl() {
-		if(this.collapseEl instanceof Component) {
-			return this.collapseEl;
+	private getCollapseTarget() {
+		if(this.target instanceof Component) {
+			return this.target;
 		} else {
-			return this.collapseEl(this);
+			return this.target(this);
 		}
 	}
 }
@@ -69,5 +69,5 @@ export const collapsebtn = (config: Config<CollapseButton> & {
 	/**
 	 * Pass a component or a function that returns the component after render
 	 */
-	collapseEl: CollapseEl
-}) => createComponent(new CollapseButton(config.collapseEl), config);
+	target: CollapseTarget
+}) => createComponent(new CollapseButton(config.target), config);

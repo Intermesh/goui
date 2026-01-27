@@ -9,7 +9,7 @@ import {t} from "../../Translate.js";
 import {Component, createComponent} from "../Component.js";
 import {Window} from "../Window.js";
 import {FieldConfig} from "./Field.js";
-import {Format} from "../../util/index";
+import {Format, ObjectUtil} from "../../util/index";
 
 
 export interface DataSourceFormEventMap<ValueType extends BaseEntity = DefaultEntity> extends FormEventMap {
@@ -33,11 +33,18 @@ export interface DataSourceFormEventMap<ValueType extends BaseEntity = DefaultEn
 	saveerror: {error: any}
 
 	/**
-	 * When the data is fetched from the store. but before it is put into the fields
+	 * When the data is fetched from the store and set on the form.
 	 *
 	 * @param data the entity from the store
 	 */
 	load: {data: ValueType},
+
+	/**
+	 * When the data is fetched from the store, but before it is set on the fields.
+	 *
+	 * @param data the entity from the store
+	 */
+	beforeload: {data: ValueType},
 
 	/**
 	 * Fires when an error occurred when loading.
@@ -66,15 +73,41 @@ export interface DataSourceFormEventMap<ValueType extends BaseEntity = DefaultEn
  */
 export class DataSourceForm<ValueType extends BaseEntity = DefaultEntity> extends Form<ValueType, DataSourceFormEventMap<ValueType>> {
 
-	public currentId?: EntityID
+	public currentId?: EntityID;
+
+	/**
+	 * When set to true a modified entity will be set as JSON patch object
+	 */
+	public set patchMode (patchMode:boolean) {
+		this.keepUnknownValues = !patchMode;
+		this._patchMode = patchMode;
+	}
+
+	private _patchMode = false;
 
 	constructor(public dataSource: AbstractDataSource<ValueType, DataSourceEventMap>) {
 		super();
 
 		this.handler = async form1 => {
+
+			if(this._patchMode) {
+				this.keepUnknownValues = false;
+			}
+
 			try {
-				let data,
-					v = this.currentId ? this.modified : this.value;
+				let data, v;
+
+				if(!this.currentId) {
+					v = this.value;
+				} else {
+					if(this._patchMode) {
+						v = ObjectUtil.diff(this.getOldValue(), this.value);
+					} else {
+						v = this.modified;
+					}
+				}
+
+
 				if(this.fire('beforesave', {data:v}) === false) {
 					return;
 				}
@@ -139,11 +172,13 @@ export class DataSourceForm<ValueType extends BaseEntity = DefaultEntity> extend
 	public create(data: any) {
 		this.clear();
 
-		this.fire('load', {data});
+		this.fire('beforeload', {data});
 		if (data) {
 			this.value = data;
 			this.trackReset();
 		}
+
+		this.fire('load', {data});
 	}
 
 
@@ -176,8 +211,9 @@ export class DataSourceForm<ValueType extends BaseEntity = DefaultEntity> extend
 			if (!entity) {
 				throw "Failed to load entity with id " + id;
 			}
-			this.fire('load', {data:entity});
+			this.fire('beforeload', {data:entity});
 			this.value = entity as ValueType;
+			this.fire('load', {data:entity});
 		} catch (e:any) {
 			console.error(t("Error"), e);
 			if(this.fire('loaderror', {error: e}) !== false) {

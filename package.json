@@ -10,7 +10,6 @@
     "jsdom-global": "latest",
     "mocha": "latest",
     "sass": "latest",
-    "ts-node": "latest",
     "typedoc": "latest",
     "typescript": "latest"
   },

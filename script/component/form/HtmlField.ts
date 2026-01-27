@@ -279,11 +279,24 @@ export class HtmlField extends Field<HtmlFieldEventMap> {
 		},
 		createLink: {
 			icon: "link",
-			title: "Create link",
+			title: t("Create link"),
 			applyFn: () => {
-				const url = prompt(t("Enter URL"), "https://");
-				if (url)
-					this.execCmd("createLink", url);
+
+				const node = this.getSelectedNode();
+
+				const a = node?.closest("a");
+
+				if (!a) {
+					const url = prompt(t("Enter URL"), "https://");
+					if (url)
+						this.execCmd("createLink", url);
+				} else {
+					const url = prompt(t("Enter URL"), a.href);
+					if (url) {
+						a.href = url;
+					}
+				}
+				this.focus();
 			}
 		},
 		image: {
@@ -314,6 +327,25 @@ export class HtmlField extends Field<HtmlFieldEventMap> {
 		},
 		removeFormat: {icon: 'format_clear', title: "Remove formatting"},
 	};
+
+	private getSelectedNode() {
+		const selection = window.getSelection();
+		if (!selection || !selection.rangeCount) return undefined;
+
+		let node = selection.anchorNode;
+		if(!node) {
+			return;
+		}
+		if (node.nodeType === Node.TEXT_NODE) {
+			node = node.parentNode;
+			if(!node) {
+				return;
+			}
+		}
+
+		return node as HTMLElement;
+	}
+
 
 	private updateToolbar() {
 

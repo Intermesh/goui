@@ -1,6 +1,6 @@
 import {Component, ComponentEventMap} from "./Component";
 import {Button} from "./Button";
-import {Menu} from "./menu";
+import {menu, Menu} from "./menu";
 
 
 export abstract class AbstractMenu<EventMap extends ComponentEventMap = ComponentEventMap> extends Component<EventMap> {
@@ -11,8 +11,8 @@ export abstract class AbstractMenu<EventMap extends ComponentEventMap = Componen
 	 */
 	protected orientation = "horizontal";
 
-	constructor() {
-		super("menu");
+	constructor(tagName: keyof HTMLElementTagNameMap = "menu") {
+		super(tagName);
 		this.setupKeyboardNav();
 	}
 

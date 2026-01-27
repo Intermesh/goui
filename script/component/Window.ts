@@ -13,10 +13,18 @@ import {root} from "./Root.js";
 import {FunctionUtil} from "../util/FunctionUtil.js";
 import {form} from "./form/Form.js";
 import {fieldset} from "./form/Fieldset.js";
-import {textfield} from "./form/TextField.js";
+import {textfield, TextFieldType} from "./form/TextField.js";
 import {t} from "../Translate.js";
 import {DateTime} from "../util/index.js";
 
+
+interface PromptConfig {
+	inputLabel: string,
+	defaultValue?: string
+	title?: string
+	text?: string
+	fieldType?: TextFieldType
+}
 
 /**
  * @inheritDoc
@@ -104,11 +112,15 @@ export class Window<EventMap extends WindowEventMap = WindowEventMap> extends Dr
 	/**
 	 * Make the window modal so the user can only interact with this window.
 	 */
-	public modal = false
+	public modal = false;
 
+	/**
+	 * Render a header with title and controls
+	 */
+	public header = true;
 
 	private titleCmp!: Component;
-	private header!: Toolbar;
+	private headerCmp!: Toolbar;
 	private modalOverlay: Component | undefined;
 
 	/**
@@ -183,46 +195,51 @@ export class Window<EventMap extends WindowEventMap = WindowEventMap> extends Dr
 	}
 
 	public getHeader() {
-		if (!this.header) {
-			this.header = tbar({
-					cls: "header"
-				},
-
-				this.titleCmp = comp({
-					tagName: "h3",
-					text: this.title ?? ""
-				}),
-
-				'->'
-			);
-
-			if (this.collapsible) {
-				this.header.items.add(btn({
-					cls: "collapse-btn",
-					icon: "", // set empty so 'collapsed class can set it class can set it
-					handler: () => {
-						this.collapsed = !this.collapsed;
-					}
-				}));
-			}
-
-			if (this.maximizable) {
-				this.header.items.add(this.initMaximizeTool());
-			}
-
-			if (this.closable) {
-				this.header.items.add(btn({
-					icon: "close",
-					handler: () => {
-						this.internalClose(true);
-					}
-				}));
-			}
+		if (!this.headerCmp) {
+			this.headerCmp = this.createHeader();
 		}
 
-		this.header.parent = this;
+		this.headerCmp.parent = this;
 
-		return this.header;
+		return this.headerCmp;
+	}
+
+	protected createHeader() {
+		const header = tbar({
+				cls: "header"
+			},
+
+			this.titleCmp = comp({
+				tagName: "h3",
+				text: this.title ?? ""
+			}),
+
+			'->'
+		);
+
+		if (this.collapsible) {
+			header.items.add(btn({
+				cls: "collapse-btn",
+				icon: "", // set empty so 'collapsed class can set it class can set it
+				handler: () => {
+					this.collapsed = !this.collapsed;
+				}
+			}));
+		}
+
+		if (this.maximizable) {
+			header.items.add(this.initMaximizeTool());
+		}
+
+		if (this.closable) {
+			header.items.add(btn({
+				icon: "close",
+				handler: () => {
+					this.internalClose(true);
+				}
+			}));
+		}
+		return header;
 	}
 
 	public set collapsed(collapsed) {
@@ -236,8 +253,10 @@ export class Window<EventMap extends WindowEventMap = WindowEventMap> extends Dr
 	protected internalRender() {
 
 		// header does not belong to the items and is rendered first.
-		const header = this.getHeader();
-		header.render();
+		if(this.header) {
+			const header = this.getHeader();
+			header.render(this.el);
+		}
 
 		const el = super.internalRender();
 
@@ -386,11 +405,6 @@ export class Window<EventMap extends WindowEventMap = WindowEventMap> extends Dr
 
 		if(!hidden) {
 
-			//Close opened menu's becuase they have a higher z-index. They need work inside modal windows.
-			// if(Toolbar.openedMenu) {
-			// 	Menu.openedMenu.close();
-			// }
-
 			this.focussedBeforeOpen = document.activeElement || undefined;
 
 			if (!this.rendered) {
@@ -398,21 +412,8 @@ export class Window<EventMap extends WindowEventMap = WindowEventMap> extends Dr
 				root.items.add(this);
 
 				if (this.modal) {
-					this.modalOverlay = comp({
-						cls: "goui-window-modal-overlay goui-goui-fade-in goui-goui-fade-out",
-						hidden: true
-					});
-
-					this.modalOverlay.el.style.zIndex = (parseInt(getComputedStyle(this.el).zIndex)).toString()
-
-					root.items.insert(-1, this.modalOverlay);
-
+					this.modalOverlay = this.createModalOverlay();
 					this.disableBodyScroll();
-
-					this.modalOverlay.el.addEventListener("click", () => {
-						this.focus();
-					});
-
 					this.modalOverlay.show();
 				}
 
@@ -427,6 +428,28 @@ export class Window<EventMap extends WindowEventMap = WindowEventMap> extends Dr
 		}
 	}
 
+	/**
+	 * Creates the modal overlay behind the window to prevent user interaction
+	 *
+	 * @protected
+	 */
+	protected createModalOverlay() {
+		const modalOverlay = comp({
+			cls: "goui-window-modal-overlay goui-goui-fade-in goui-goui-fade-out",
+			hidden: true
+		});
+
+		modalOverlay.el.style.zIndex = (parseInt(getComputedStyle(this.el).zIndex)).toString()
+
+		root.items.insert(-1, modalOverlay);
+
+		modalOverlay.el.addEventListener("click", () => {
+			this.focus();
+		});
+
+		return modalOverlay;
+	}
+
 	protected internalRemove() {
 		if (this.focussedBeforeOpen instanceof HTMLElement) {
 			this.focussedBeforeOpen.focus();
@@ -436,7 +459,7 @@ export class Window<EventMap extends WindowEventMap = WindowEventMap> extends Dr
 			this.enableBodyScroll();
 			this.modalOverlay.remove();
 		}
-		this.header.remove();
+		this.headerCmp.remove();
 
 		super.internalRemove();
 	}
@@ -604,79 +627,39 @@ export class Window<EventMap extends WindowEventMap = WindowEventMap> extends Dr
 		});
 	}
 
+	// old way: prompt(inputLabel, defaultValue = "", title = "", text = "")
+	public static prompt(cfg: PromptConfig): Promise<string | undefined> {
+		cfg.title ??= t("Please enter");
+		cfg.text ??= "";
+		cfg.defaultValue ??= "";
+		cfg.fieldType ??= "text";
 
-	/**
-	 * Prompt the user for a text input value.
-	 *
-	 * @param text - The message to display to the user.
-	 * @param inputLabel - The label for the input field.
-	 * @param [defaultValue=""] - The default value for the input field.
-	 * @param [title="Please enter"] - The title for the prompt window.
-	 * @returns {Promise<string | undefined>} - A promise that resolves with the input value or undefined if the user cancelled.
-	 */
-	public static prompt(text: string, inputLabel: string, defaultValue = "", title: string = t("Please enter")): Promise<string | undefined> {
-
-		return new Promise((resolve) => {
-
-			let cancelled = true;
-
-			const w = win({
-					modal: true,
-					title: title,
-					width: 600,
-					listeners: {
-						focus: () => {
-							w.items.get(0)!.focus();
-						},
-						close: () => {
-							if (cancelled) {
-								resolve(undefined);
-							}
-						}
-					}
-				},
-
-				form({
-						flex: 1,
-						cls: "vbox",
-						handler: (form) => {
-							resolve(form.value.input);
-							cancelled = false;
-							w.close();
-						}
-					},
-
-					fieldset({
-							flex: 1
-						},
-						comp({
-							tagName: "p",
-							html: text
-						}),
-
-						textfield({
-							label: inputLabel,
-							name: "input",
-							required: true,
-							value: defaultValue
-						})
-					),
-
-					tbar({},
-						comp({
-							flex: 1
-						}),
-
-						btn({
-							type: "submit",
-							text: "Ok"
-						})
-					)
+		return new Promise((resolve, reject) => {
+			const txt = textfield({
+				label: cfg.inputLabel,
+				type: cfg.fieldType,
+				name: "input",
+				required: true,
+				value: cfg.defaultValue
+			}), w = win({
+				cls: "vbox",
+				width: 600,
+				modal: true,
+				title: cfg.title,
+				listeners: {
+					focus: () => { w.items.get(0)!.focus(); },
+					close: e => { if(e.byUser) resolve(undefined); }
+				}
+			},fieldset({flex: 1},
+					comp({tagName: "p",html: cfg.text,hidden: !cfg.text}),
+					txt
+				),
+				tbar({},'->',
+					btn({text: "Ok"}).on('click', () => { resolve(txt.value); w.close();})
 				)
-			);
-
+			)
 			w.show();
-		});
+		})
 	}
 
 	/**

@@ -396,7 +396,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 		ids.forEach((id, index) => {
 			//keep order for sorting the result
 			order[id] = index++;
-			promises.push(this.single(id, properties).catch((e:any) => {
+			promises.push(this.single(id, properties).catch(() => {
 				return undefined;
 			}));
 		})
@@ -460,7 +460,8 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	 */
 	public async single(id: EntityID, properties:string[] = []): Promise<EntityType> {
 		id = id+"";
-		if(!id) {
+		if(!id || id === "0") {
+			console.error("Invalid id: " + id);
 			return Promise.reject({
 				id: id,
 				error: "Not found"
@@ -487,10 +488,10 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 		const id = data.id;
 		let r;
 		if(!this.getIds[id]) {
+			console.error("No get promise for " + id);
 			return;
 		}
 		while (r = this.getIds[id].resolves.shift()) {
-			// this.getIds[id].rejects.shift();
 
 			const d = structuredClone(data);
 			//@ts-ignore
