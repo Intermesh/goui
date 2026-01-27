@@ -3,7 +3,6 @@
   "devDependencies": {
     "@types/chai": "latest",
     "@types/mocha": "latest",
-    "@types/node": "latest",
     "chai": "latest",
     "esbuild": "latest",
     "fake-indexeddb": "latest",
