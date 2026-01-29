@@ -48,6 +48,12 @@ export class ArrayField<Type extends FieldValue = Record<string, any>> extends F
 		});
 	}
 
+	/**
+	 * CSS class to apply to the item container
+	 * @default goui vbox gap
+	 */
+	public itemContainerCls = "goui vbox gap";
+
 
 	protected renderControl() {
 		// empty
@@ -60,7 +66,7 @@ export class ArrayField<Type extends FieldValue = Record<string, any>> extends F
 	protected get itemContainerEl(): HTMLElement {
 		if(!this.itemsContainer) {
 			this.itemsContainer = document.createElement("div");
-			this.itemsContainer.classList.add("goui", "vbox", "gap")
+			this.itemsContainer.className = this.itemContainerCls;
 			this.el.appendChild(this.itemsContainer);
 		}
 

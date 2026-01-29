@@ -387,7 +387,29 @@ export class HtmlField extends Field<HtmlFieldEventMap> {
 	 * @param html
 	 */
 	public insertHtml(html: string) {
-		document.execCommand("insertHTML", false, html);
+		// document.execCommand("insertHTML", false, html);
+
+		this.editor!.focus();
+
+		const selection = window.getSelection()!;
+		const range = document.createRange();
+		range.selectNodeContents(this.editor!);
+		range.collapse(false); // insert at end
+
+		selection.removeAllRanges();
+		selection.addRange(range);
+
+		const fragment = range.createContextualFragment(html);
+		const lastNode = fragment.lastChild;
+
+		range.insertNode(fragment);
+
+		// move caret after inserted HTML
+		range.setStartAfter(lastNode!);
+		range.collapse(true);
+
+		selection.removeAllRanges();
+		selection.addRange(range);
 	}
 
 	// noinspection JSUnusedGlobalSymbols
@@ -445,6 +467,7 @@ export class HtmlField extends Field<HtmlFieldEventMap> {
 
 		this.editor = document.createElement("div");
 		this.editor.contentEditable = "true";
+		this.editor.tabIndex = 0;
 		this.editor.classList.add("editor");
 		this.editor.classList.add("text");
 
@@ -499,12 +522,16 @@ export class HtmlField extends Field<HtmlFieldEventMap> {
 		}
 
 		this.editor!.addEventListener("drop", ev => {
+			//to prevent other listeners from firing and cancelling the drop event
+			ev.stopPropagation();
 			this.onDrop(ev);
 		});
 
 		this.editor!.addEventListener("dragover", ev => {
-			// Prevent default behavior (Prevent file from being opened)
+			//to prevent other listeners from firing and cancelling the drop event
 			ev.preventDefault();
+			ev.dataTransfer!.dropEffect = "copy";
+			ev.stopPropagation();
 		});
 
 		this.editor!.addEventListener('paste', ev => {
@@ -676,6 +703,7 @@ export class HtmlField extends Field<HtmlFieldEventMap> {
 
 			const img = `<img id="${uid}" src="${objectURL}" alt="${file.name}" />`;
 
+			this.focus();
 			this.insertHtml(img);
 			imgEl = document.getElementById(uid) as HTMLImageElement;
 			imgEl.removeAttribute("id");
