@@ -114,6 +114,13 @@ export class CardContainer<EventMap extends CardContainerEventMap = CardContaine
 	}
 
 	/**
+	 * The active card component. Defaults to the first card if not given.
+	 */
+	get activeItemComponent() {
+		return this.items.get(this.activeItem);
+	}
+
+	/**
 	 * The active card index. Defaults to 0 if not given.
 	 */
 	get activeItem(): number {

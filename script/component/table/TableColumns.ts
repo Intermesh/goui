@@ -418,7 +418,14 @@ export class CheckboxSelectColumn extends TableColumn {
 	}
 }
 
-export const checkboxselectcolumn = (config?: CheckboxColumnConfig) => createComponent(new CheckboxSelectColumn(config && config.id ? config.id : "checkboxselect"), config);
+/**
+ * Create a checkbox that interacts with the row selection model
+ *
+ * @link Table.rowSelection
+ *
+ * @param config
+ */
+export const checkboxselectcolumn = (config?: Config<CheckboxColumn>) => createComponent(new CheckboxSelectColumn(config && config.id ? config.id : "checkboxselect"), config);
 
 
 /**
