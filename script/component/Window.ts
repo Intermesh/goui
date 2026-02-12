@@ -428,6 +428,9 @@ export class Window<EventMap extends WindowEventMap = WindowEventMap> extends Dr
 		}
 	}
 
+	protected createModalOverlayCls() {
+		return "goui-window-modal-overlay goui-goui-fade-in goui-goui-fade-out";
+	}
 	/**
 	 * Creates the modal overlay behind the window to prevent user interaction
 	 *
@@ -435,7 +438,7 @@ export class Window<EventMap extends WindowEventMap = WindowEventMap> extends Dr
 	 */
 	protected createModalOverlay() {
 		const modalOverlay = comp({
-			cls: "goui-window-modal-overlay goui-goui-fade-in goui-goui-fade-out",
+			cls: this.createModalOverlayCls(),
 			hidden: true
 		});
 
