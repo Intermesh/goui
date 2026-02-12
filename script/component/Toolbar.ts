@@ -82,6 +82,7 @@ export class Toolbar extends AbstractMenu {
 		if(!cfg.itemId) {
 			cfg.itemId = "overflow";
 		}
+		cfg.cls = "btn-overflow";
 		cfg.menu = menu()
 
 		this.overflowMenuBtn = btn(cfg);
