@@ -99,12 +99,28 @@
 	You can add class "goui-fade-in" or "goui-fade-out" to fade it out or in with opacity:0 and visibility:hidden
  */
 .goui-fade-out  {
-	transition: all 0s;
+	&:not(.goui-fade-in) {
+		transition: opacity 0s;
+	}
+	&[hidden] {
+		transition: opacity 160ms cubic-bezier(0.32, 0, 0.67, 0);
+		display:initial !important;
+		opacity: 0;
+		pointer-events: none;
+	}
 }
 
 .goui-fade-in {
 	//https://easings.net/#easeInCubic
-	transition: all 1000ms cubic-bezier(0.32, 0, 0.67, 0);
+	transition: opacity 160ms cubic-bezier(0.32, 0, 0.67, 0);
+	opacity: 1;
+	&[hidden] {
+		opacity: 0;
+	}
+
+	&[hidden]:not(.goui-fade-out) {
+		transition: opacity 0s;
+	}
 }
 
 
