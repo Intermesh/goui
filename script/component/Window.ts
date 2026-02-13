@@ -11,7 +11,6 @@ import {DragData, draggable, DraggableComponent, DraggableComponentEventMap} fro
 import {Config} from "./Observable.js";
 import {root} from "./Root.js";
 import {FunctionUtil} from "../util/FunctionUtil.js";
-import {form} from "./form/Form.js";
 import {fieldset} from "./form/Fieldset.js";
 import {textfield, TextFieldType} from "./form/TextField.js";
 import {t} from "../Translate.js";
@@ -135,7 +134,6 @@ export class Window<EventMap extends WindowEventMap = WindowEventMap> extends Dr
 		if(!this._itemContainerEl) {
 			this._itemContainerEl = document.createElement("div");
 			this._itemContainerEl.classList.add("item-container");
-			this.el.appendChild(this._itemContainerEl);
 		}
 		return this._itemContainerEl;
 	}
@@ -250,13 +248,24 @@ export class Window<EventMap extends WindowEventMap = WindowEventMap> extends Dr
 		return this.el.classList.contains("collapsed");
 	}
 
+	private resizeHandlePadder?: HTMLDivElement;
+
 	protected internalRender() {
+
+
+		// we need a wrapper el that has padding so the handles can be outside the window. The inner el needs overflow
+		// hidden to have a border radius.
+		this.resizeHandlePadder = document.createElement("div");
+		this.resizeHandlePadder.classList.add("resize-handle-padder");
+		this.el.appendChild(this.resizeHandlePadder);
 
 		// header does not belong to the items and is rendered first.
 		if(this.header) {
 			const header = this.getHeader();
-			header.render(this.el);
+			header.render(this.resizeHandlePadder);
 		}
+
+		this.resizeHandlePadder.appendChild(this.itemContainerEl);
 
 		const el = super.internalRender();
 
@@ -425,11 +434,15 @@ export class Window<EventMap extends WindowEventMap = WindowEventMap> extends Dr
 				this.constrainTo(window);
 			}
 			this.focus();
+		} else {
+			if(this.modalOverlay) {
+				this.modalOverlay.hide();
+			}
 		}
 	}
 
 	protected createModalOverlayCls() {
-		return "goui-window-modal-overlay goui-goui-fade-in goui-goui-fade-out";
+		return "goui-window-modal-overlay goui-fade-in goui-fade-out";
 	}
 	/**
 	 * Creates the modal overlay behind the window to prevent user interaction

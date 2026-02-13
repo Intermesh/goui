@@ -7,7 +7,6 @@
 .goui-window-modal-overlay {
 
 	backdrop-filter: blur(2px);
-
 	top: 0;
 	left:0;
 	bottom:0;
@@ -28,33 +27,44 @@
 }
 .goui-window {
 
-	@extend .z12;
+
 	position: fixed;
 
 	display: flex;
 	flex-direction: column;
 
-	background-color: config.$surfaceLow;
-	backdrop-filter: blur(20px);
-	-webkit-backdrop-filter: blur(20px);
-
-	border: config.$borderWidth solid config.$colorBorderWindow;
-	border-radius: util.dp(12);
 	z-index: config.$zIndexWindow;
-	//overflow: hidden; taken off to allow resizer draghandles to be outside of the window
-	min-height: util.dp(160);
-	min-width: util.dp(160);
+	padding: util.dp(8);// half the resizer handles
 
 
-	> .item-container {
-		@extend .goui, .vbox;
- 		flex: 1;
+	> .resize-handle-padder {
+		@extend .z12;
+		background-color: config.$surfaceLow;
+		backdrop-filter: blur(20px);
+		-webkit-backdrop-filter: blur(20px);
+		min-height: util.dp(160);
+		min-width: util.dp(160);
+		border: config.$borderWidth solid config.$colorBorderWindow;
+		border-radius: util.dp(12);
 		overflow: hidden;
+		display: flex;
+		flex-direction: column;
+		flex: 1;
+
+		> .item-container {
+			@extend .goui, .vbox;
+			flex: 1;
+			min-height: 0;
+		}
 	}
 
+
+
 	&.modal {
-		@extend .z24;
-		border: 0;
+		> .resize-handle-padder {
+			@extend .z24;
+			border: 0;
+		}
 	}
 
 	.collapse-btn {
@@ -64,17 +74,19 @@
 	}
 
 	&.collapsed {
-		min-height: 0 !important;
 		height: auto !important;
-
-		.collapse-btn {
-			i:after {
-				content: "expand_more";
+		min-height: 0 !important;
+		> .resize-handle-padder {
+			min-height: 0 !important;
+			.collapse-btn {
+				i:after {
+					content: "expand_more";
+				}
 			}
-		}
 
-		> *:not(.header) {
-			display: none;
+			> *:not(.header) {
+				display: none;
+			}
 		}
 
 	}
@@ -85,16 +97,18 @@
 		bottom: 0 !important;
 		left: 0 !important;
 		right: 0 !important;
-		border-radius: 0 !important;
-		border: 0 !important;
 		width: auto !important;
 		height: auto !important;
-		resize: none !important;
+		padding:0;
+		> .resize-handle-padder {
+			border-radius: 0 !important;
+			border: 0 !important;
 
-		>.header {
-			.collapse-btn {
+			> .header {
+				.collapse-btn {
 
-				@extend *, [disabled];
+					@extend *, [disabled];
+				}
 			}
 		}
 	}
