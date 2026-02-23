@@ -190,6 +190,9 @@ export class Component<EventMapType extends ComponentEventMap = ComponentEventMa
 	constructor(tagName: keyof HTMLElementTagNameMap = "div") {
 		super();
 		this.el = this.initEl(tagName);
+
+		// for debugging it can be useful to assign id's for each component in the DOM
+		// this.el.id = Component.uniqueID();
 	}
 
 	protected initEl(tagName: keyof HTMLElementTagNameMap) {
