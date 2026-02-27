@@ -137,4 +137,12 @@ export class NumberField extends InputField {
  * @link https://goui.io/#form/NumberField Example
  * @param config
  */
-export const numberfield = (config?: FieldConfig<NumberField>) => createComponent(new NumberField(), config);
+export const numberfield = (config?: FieldConfig<NumberField>) => {
+
+	if(config && "decimals" in config) {
+		//make sure decimals is applied before value becuase it depends on it
+		config = Object.assign({decimals: 2}, config);
+	}
+
+	return createComponent(new NumberField(), config);
+}
