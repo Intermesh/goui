@@ -23,10 +23,25 @@ export class ToolTip extends Component {
 	 * Tooltip shows with a delay in ms
 	 */
 	public delay = 300;
+
+	/**
+	 * Delay before removing the tooltip in ms
+	 */
 	public closeDelay = 100;
 
 
+	/**
+	 * Timeout before showing the tooltip
+	 *
+	 * @type {any}
+	 */
 	private timeout: any = undefined;
+
+	/**
+	 * Timeout before removing the tooltip
+	 *
+	 * @private
+	 */
 	private closeTimeout: any;
 	private observer: MutationObserver|undefined;
 	private targetEl?: HTMLElement;
@@ -36,6 +51,11 @@ export class ToolTip extends Component {
 		this.baseCls = "goui-dropdown";
 	}
 
+	/**
+	 * The element to attach the tooltip to
+	 *
+	 * @param targetEl
+	 */
 	set target(targetEl: HTMLElement) {
 
 		this.targetEl = targetEl
@@ -67,20 +87,14 @@ export class ToolTip extends Component {
 	protected internalRender(): HTMLElement {
 
 		if(!this.observer) {
-			this.observer  = new MutationObserver((mutationsList) => {
-				mutationsList.forEach((mutation) => {
-					mutation.removedNodes.forEach((removedNode) => {
-						if (removedNode === this.targetEl) {
-							this.observer!.disconnect(); // Optional: stop observing after removal
-							this.remove();
-						}
-					});
-				});
+			this.observer  = new MutationObserver(() => {
+				if (!this.targetEl!.isConnected) {
+						this.remove();
+				}
 			});
 		}
-		if(this.targetEl?.parentNode) {
-			this.observer.observe(this.targetEl.parentNode, {childList: true});
-		}
+
+		this.observer.observe(root.el, {childList: true, subtree: true});
 
 		return super.internalRender();
 	}
