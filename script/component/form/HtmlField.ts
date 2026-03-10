@@ -563,20 +563,20 @@ export class HtmlField extends Field<HtmlFieldEventMap> {
 	private lineIndex = 0;
 	private lineSequence = "";
 
-	/**
-	 * Removes a specified number of characters from the current cursor position in the selected text range.
-	 *
-	 * @param count - The number of characters to remove starting from the cursor's current position.
-	 */
-	private static removeCharsFromCursorPos(count: number) {
-		const sel = window.getSelection();
-		const range = sel!.getRangeAt(0);
-		const clone = range.cloneRange();
-
-		clone.setStart(range.startContainer, range.startOffset - count);
-		clone.setEnd(range.startContainer, range.startOffset);
-		clone.deleteContents();
-	}
+	// /**
+	//  * Removes a specified number of characters from the current cursor position in the selected text range.
+	//  *
+	//  * @param count - The number of characters to remove starting from the cursor's current position.
+	//  */
+	// private static removeCharsFromCursorPos(count: number) {
+	// 	const sel = window.getSelection();
+	// 	const range = sel!.getRangeAt(0);
+	// 	const clone = range.cloneRange();
+	//
+	// 	clone.setStart(range.startContainer, range.startOffset - count);
+	// 	clone.setEnd(range.startContainer, range.startOffset);
+	// 	clone.deleteContents();
+	// }
 
 
 	private onKeyDown(ev: KeyboardEvent) {
@@ -618,16 +618,23 @@ export class HtmlField extends Field<HtmlFieldEventMap> {
 
 			// Auto lists
 			if (this.lineSequence == "1. ") {
-				HtmlField.removeCharsFromCursorPos(2);
 				this.execCmd("insertOrderedList");
+				const node = this.getSelectedNode();
+				if(node) {
+					node.textContent = "";
+				}
 
 				this.lineIndex = 0;
 				this.lineSequence = "";
 
 				ev.preventDefault();
 			} else if (this.lineSequence == "- ") {
-				HtmlField.removeCharsFromCursorPos(1);
+
 				this.execCmd("insertUnorderedList");
+				const node = this.getSelectedNode();
+				if(node) {
+					node.textContent = "";
+				}
 
 				this.lineIndex = 0;
 				this.lineSequence = "";
