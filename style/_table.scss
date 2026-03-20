@@ -92,6 +92,7 @@
     position: sticky;
     top: 0;
     z-index: 2;
+		inset-block-start: 0;
 
     tr {
 
@@ -107,6 +108,8 @@
         &.accent {
           color: config.$colorAccent;
         }
+
+				cursor: default;
 
 
         background-color: config.$surfaceLow;
@@ -164,6 +167,25 @@
       }
     }
   }
+
+	tfoot {
+		position: sticky;
+		bottom: 0;
+		z-index: 2;
+		background-color: config.$surfaceLowest;
+		font: config.$fontBase;
+		font-size: .8em;
+		inset-block-end: 0;
+
+		&:before {
+			content: " ";
+			position: absolute;
+			left: 0;
+			top: 0;
+			width: 100%;
+			border-top: config.$borderWidth solid config.$colorBorder;
+		}
+	}
 
 
   td, th {

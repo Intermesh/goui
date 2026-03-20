@@ -27,6 +27,7 @@ import {Menu, menu} from "../menu/index.js";
  */
 export type TableColumnRenderer = (columnValue: any, record: any, td: HTMLTableCellElement, table: Table, storeIndex: number, column: TableColumn) => string | Component | undefined | Promise<string|Component|undefined>;
 export type HeaderRenderer = (col: TableColumn, headerEl: HTMLTableCellElement, table: Table) => string | Component;
+export type FooterRenderer = (columnValue: any, record: any, td: HTMLTableCellElement, table: Table, column: TableColumn) => string | Component | undefined | Promise<string|Component|undefined>;
 
 export type align = "left" | "right" | "center";
 
@@ -103,6 +104,12 @@ export class TableColumn<EventMap extends TableColumnEventMap = TableColumnEvent
 	 * Renderer function for the header
 	 */
 	public headerRenderer?: HeaderRenderer
+
+
+	/**
+	 * Renderer function for the footer
+	 */
+	public footerRenderer?: FooterRenderer
 
 
 	/**

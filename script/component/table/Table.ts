@@ -143,10 +143,24 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 					}
 				}
 
-				if (c.renderer) {
-					const r = c.renderer(value, record, td, this, storeIndex, c);
 
-					c.fire("render", {result:r, record, storeIndex, td});
+				let r, rendered = false;
+				if(storeIndex === -1) {
+					// rendering footer
+					if(c.footerRenderer) {
+						r = c.footerRenderer(value, record, td, this, c);
+						rendered = true;
+					}
+
+				} else {
+					if(c.renderer) {
+						r = c.renderer(value, record, td, this, storeIndex, c);
+						c.fire("render", {result:r, record, storeIndex, td});
+						rendered = true;
+					}
+				}
+
+				if (rendered) {
 
 					if (r) {
 
@@ -345,6 +359,8 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 		}
 
 		super.renderBody();
+
+		this.renderFooter();
 	}
 
 	private columnMenu: Menu | undefined;
@@ -453,6 +469,36 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 		this.el!.appendChild(colGroup);
 
 		return colGroup;
+	}
+
+	private footerRecord: any;
+	private footerEl : HTMLTableSectionElement | undefined ;
+
+	/**
+	 * Set record to be used as footer row
+	 *
+	 * @see TableColumn.footerRenderer
+	 * @param record
+	 */
+	public setFooter(record:any) {
+		this.footerRecord = record;
+		this.renderFooter();
+	}
+
+	private renderFooter() {
+		if(!this.footerRecord) {
+			return;
+		}
+		if(!this.footerEl) {
+			this.footerEl = document.createElement('tfoot');
+		} else {
+			this.footerEl.innerHTML = "";
+		}
+		const footRow = document.createElement("tr");
+		this.footerEl.append(footRow);
+		this.el!.appendChild(this.footerEl);
+
+		this.renderer(this.footerRecord, footRow, this, -1);
 	}
 
 	private renderHeaders() {
