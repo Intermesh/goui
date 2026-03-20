@@ -16,9 +16,9 @@
 	position: absolute;
 	transform: translate(0, 0);
 
-	#goui & {
-		z-index: config.$zIndexMask;
-	}
+	pointer-events: none;
+	z-index: config.$zIndexMask;
+
 
 	.spinner,
 	.spinner div,

@@ -291,6 +291,12 @@ html {
 	margin: util.dp(8);
 	background-color: var(--bg-lowest);
 	//overflow:hidden; // this didn't work in css grid for mdoules
+
+	// for masking
+	position: relative;
+	overflow: hidden;
+	// end for masking
+
 	@extend .z2;
 
 	> .goui-fieldset:first-child {
