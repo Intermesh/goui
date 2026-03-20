@@ -145,17 +145,17 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 
 
 				let r, rendered = false;
-				if(storeIndex === -1) {
+				if(storeIndex === -1 && c.footerRenderer) {
 					// rendering footer
-					if(c.footerRenderer) {
-						r = c.footerRenderer(value, record, td, this, c);
-						rendered = true;
-					}
+					r = c.footerRenderer(value, record, td, this, c);
+					rendered = true;
 
 				} else {
 					if(c.renderer) {
 						r = c.renderer(value, record, td, this, storeIndex, c);
-						c.fire("render", {result:r, record, storeIndex, td});
+						if(storeIndex !== -1) {
+							c.fire("render", {result: r, record, storeIndex, td});
+						}
 						rendered = true;
 					}
 				}
