@@ -174,6 +174,45 @@ export class ArrayField<Type extends FieldValue = Record<string, any>> extends F
  *
  * @see https://github.com/Intermesh/goui-docs/blob/main/script/form/ArrayFieldPage.ts
  *
+ * @example scalar value
+ *
+ * ```typescript`
+ *
+ * 			this.labels = arrayfield<EntityID>({
+ * 				itemContainerCls: "",
+ * 				name: "labels",
+ * 				buildField: (v) => {
+ *
+ * 					return	displayfield({
+ * 						tagName: "div",
+ * 						cls: "comment-editor-label",
+ * 						htmlEncode: false,
+ * 						flex: 1,
+ * 						renderer: (value, record) => {
+ *
+ * 							return commentLabelDS.single(value).then(lbl => {
+ * 								return comp({
+ * 									cls: "hbox fit",
+ *
+ * 								},
+ * 									comp({
+ * 										html: `<i class="icon" style="color: #${lbl.color}">label</i> ${lbl.name.htmlEncode()}`,
+ * 										flex: 1
+ * 									}),
+ * 									btn({
+ * 										icon: "delete",
+ * 										handler: (button) => {
+ * 											button.findAncestorByType(DisplayField)!.remove()
+ * 										}
+ * 									}))
+ *
+ * 								});
+ * 						}
+ * 					});
+ * 				}
+ * 			})
+ * 		```
+ *
  * @param config
  * @param items
  */

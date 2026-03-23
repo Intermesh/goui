@@ -425,7 +425,7 @@ export class Component<EventMapType extends ComponentEventMap = ComponentEventMa
 		return this._cls ?? "";
 	}
 
-	private initClassName() {
+	protected initClassName() {
 		if (this.el.classList.contains("goui")) {
 			return;
 		}

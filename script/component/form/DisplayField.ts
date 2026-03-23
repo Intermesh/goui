@@ -36,7 +36,6 @@ export class DisplayField extends Field {
 		}
 	}
 
-	protected baseCls = 'goui-display-field';
 
 	/**
 	 * Escape value HTML
@@ -68,6 +67,15 @@ export class DisplayField extends Field {
 		return document.createElement("div");
 	}
 
+	protected initClassName() {
+		if(!this.renderTagOnly) {
+			this.baseCls = "goui-display-field"
+		} else {
+			this.baseCls = ""
+		}
+		super.initClassName();
+	}
+
 	protected internalSetValue(v?: any) {
 
 		// if(this.control) {
@@ -81,6 +89,8 @@ export class DisplayField extends Field {
 						this.el.innerHTML = "";
 						str.render(this.el);
 					}
+
+					str.parent = this;
 
 					this.on("remove", ()=> {
 						(str as Component).remove();
