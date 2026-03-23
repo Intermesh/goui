@@ -10,8 +10,11 @@
     "module":"preserve",
     "baseUrl": ".",
     "outDir": "./dist",
+    "tsBuildInfoFile": "./dist/tsconfig.tsbuildinfo",
+    "rootDir": "./script",
     "declaration": true,
-    "declarationMap": true
+    "declarationMap": true,
+    "composite": true
   },
 
   "include": [
