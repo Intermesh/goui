@@ -146,11 +146,23 @@ export class DataSourceStore<
 			list = getResponse.list as dataSourceEntityType<DataSource>[];
 		}
 
+		if(queryResponse.total) {
+			this.total = queryResponse.total;
+		} else {
+			this.total = undefined;
+		}
+
 		const records = await this.buildRecords(await this.fetchRelations(list));
 		this.loadData(records, append);
 
 		return records;
 	}
+
+	/**
+	 * When the queryParams have calculateTotal set to true, this will hold the total number of records
+	 * on the server.
+	 */
+	public total:number|undefined;
 
 	protected async buildRecords(entities:dataSourceEntityType<DataSource>[]) {
 
