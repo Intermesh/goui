@@ -157,6 +157,14 @@ export abstract class InputField<EventMap extends InputFieldEventMap = InputFiel
 
 	set autocomplete(autocomplete: AutoFill) {
 		this._input!.autocomplete = autocomplete;
+
+		if(autocomplete == "off") {
+			// Password manager don't listen to "off" so we must set their own variants :(
+			this._input!.dataset['1pIgnore'] = "true"; //1Password
+			this._input!.dataset['bwignore'] = "true"; //Bitwarden
+			this._input!.dataset['lpignore'] = "true"; //Lastpass
+			this._input!.dataset['formType'] = "other"; //Dashlane
+		}
 	}
 
 	get autocomplete() {

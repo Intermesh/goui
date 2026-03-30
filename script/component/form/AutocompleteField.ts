@@ -145,6 +145,8 @@ export class AutocompleteField<T extends List = List, EventMap extends Autocompl
 			this.select();
 		})
 
+
+
 		if (this.invalidMsg) {
 			this.applyInvalidMsg();
 		}
