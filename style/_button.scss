@@ -211,14 +211,17 @@
 		margin: 0;
 		color: inherit;
 		font-size: util.sp(24);
-
+		line-height: normal;
 		font-weight: normal;
-		line-height: 2.4rem; //align line-height, border and padding with buttons
-		padding: 1.1rem 0;
-		border: 1px solid transparent;
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
+	}
+
+	>h2,>h3,>h4 {
+		line-height: 2.4rem; //align line-height, border and padding with buttons
+		padding: 1.1rem 0;
+		border: 1px solid transparent;
 	}
 
 	h3 {
@@ -227,12 +230,10 @@
 		color: inherit;
 		font-size: util.sp(20);
 		font-weight: normal;
-		line-height: 2.4rem; //align line-height, border and padding with buttons
-		padding: 1.1rem 0;
-		border: 1px solid transparent;
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
+		line-height: normal;
 	}
 
 	h4 {
@@ -242,9 +243,7 @@
 		font-size: util.sp(16);
 		letter-spacing: 0.4px;
 		font-weight: normal;
-		line-height: 2.4rem; //align line-height, border and padding with buttons
-		padding: 1.1rem 0;
-		border: 1px solid transparent;
+		line-height: normal;
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
