@@ -14,7 +14,6 @@ import {Component} from "./Component.js";
 class Root extends Component {
 
 	protected internalRender() {
-		debugger;
 		this.renderItems();
 		return this.el;
 	}
