@@ -4,7 +4,7 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {Component, ComponentEventMap} from "../Component.js";
+import {comp, Component, ComponentEventMap} from "../Component.js";
 import {Config} from "../Observable.js";
 import {Button} from "../Button.js";
 import {tbar, Toolbar} from "../Toolbar.js";
@@ -333,6 +333,7 @@ export abstract class Field<EventMap extends FieldEventMap = FieldEventMap> exte
 			this.wrap!.append(label);
 		}
 
+		// this.renderPrefix();
 		this.renderIcon();
 
 		if (this.control) {
@@ -354,12 +355,25 @@ export abstract class Field<EventMap extends FieldEventMap = FieldEventMap> exte
 	}
 
 	private renderButtons() {
+
+		const cmps = [];
+		if(this._suffix) {
+			cmps.push(comp({
+				cls: "suffix",
+				html: this._suffix
+			}))
+		}
+
 		if (this._buttons && this._buttons.length) {
-			this.toolbar = tbar({}, ...this._buttons);
+			cmps.push(...this._buttons);
+		}
+
+		if (cmps.length) {
+			this.toolbar = tbar({}, ...cmps);
 			this.toolbar.parent = this;
 			this.toolbar.render(this.wrap);
 
-			this._buttons.forEach((btn) => {
+			cmps.forEach((btn) => {
 				if(btn instanceof Button && btn.menu) {
 					this.setupMenu(btn.menu);
 				}
@@ -419,6 +433,19 @@ export abstract class Field<EventMap extends FieldEventMap = FieldEventMap> exte
 
 	public get buttons() {
 		return this._buttons ?? [];
+	}
+
+	private _suffix:string|undefined;
+
+	public set suffix(suffix:string|undefined) {
+		this._suffix = suffix;
+		if(this.rendered) {
+			this.renderButtons();
+		}
+	}
+
+	public get suffix() {
+		return this._suffix;
 	}
 
 	/**
@@ -850,6 +877,28 @@ false
 		if(this.wrap && this.iconEl) {
 			this.wrap.insertBefore(this.iconEl, this.wrap.firstChild);
 		}
+	}
+
+
+	private _prefix: string|undefined;
+	public set prefix(prefix:string|undefined) {
+		this._prefix = prefix;
+	}
+
+	public get prefix() {
+		return this._prefix;
+	}
+
+	private renderPrefix() {
+		if(!this._prefix) {
+			return;
+		}
+
+		const p = document.createElement("div");
+		p.classList.add("prefix");
+		p.innerHTML = this._prefix;
+
+		this.wrap.insertBefore(p, this.wrap.firstChild);
 	}
 }
 

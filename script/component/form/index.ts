@@ -25,6 +25,7 @@ export * from './DurationField.js';
 export * from './TimeField.js';
 export * from './ListField.js';
 export * from './InputField.js';
+export * from './TextInputField.js';
 export * from './DateRangeField.js';
 export * from './HiddenField.js';
 export * from './DateTimeField.js';

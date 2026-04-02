@@ -281,6 +281,16 @@
 //	width: 100%;
 	margin: 0;
 	position: relative;
+
+	.suffix {
+		padding-right: .8rem;
+		color: var(--fg-secondary-text);
+	}
+
+	.prefix {
+		padding: 1.1rem 0 1.1rem .8rem;
+		line-height: 2.4rem;
+	}
 }
 
 .goui-display-field {

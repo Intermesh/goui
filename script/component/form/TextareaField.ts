@@ -6,13 +6,14 @@
 import {createComponent} from "../Component.js";
 import {FieldConfig} from "./Field.js";
 import {InputField} from "./InputField.js";
+import {TextInputField} from "./TextInputField.js";
 
 /**
  * Text Area component
  *
  * @see Form
  */
-export class TextAreaField extends InputField {
+export class TextAreaField extends TextInputField {
 
 	protected baseCls = 'goui-form-field textarea';
 

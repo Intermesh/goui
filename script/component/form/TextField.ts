@@ -4,9 +4,9 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {FieldConfig, FieldEventMap} from "./Field.js";
+import {FieldConfig} from "./Field.js";
 import {createComponent} from "../Component.js";
-import {InputField} from "./InputField.js";
+import {TextInputField} from "./TextInputField.js";
 
 
 export type TextFieldType = ("text" | "password" | "email" | "url" | "tel" | "search" );
@@ -23,7 +23,7 @@ export interface TextField {
  * @link https://goui.io/#form/TextField Examples
  * @see Form
  */
-export class TextField extends InputField {
+export class TextField extends TextInputField {
 
 	protected baseCls = 'goui-form-field text';
 
@@ -32,8 +32,6 @@ export class TextField extends InputField {
 
 		this.type = "text";
 	}
-
-
 
 	/**
 	 * The input type
