@@ -303,6 +303,7 @@ export abstract class Field<EventMap extends FieldEventMap = FieldEventMap> exte
 	 */
 	private calcLabelLeft() {
 		if(this._labelEl && (this._icon || this._suffix)) {
+			this._labelEl.style.left = "auto";
 			const s = window.getComputedStyle(this._labelEl);
 			this._labelEl.style.left =  (this._labelEl.offsetLeft - parseFloat(s.marginLeft)) + "px";
 		}
@@ -927,7 +928,8 @@ false
 		if(!this.prefixEl) {
 			this.prefixEl = document.createElement("div");
 			this.prefixEl.classList.add("prefix");
-			this.wrap.insertBefore(this.prefixEl, this.wrap.firstChild);
+			const before = this.iconEl ? this.iconEl.nextElementSibling : this.wrap!.firstChild
+			this.wrap.insertBefore(this.prefixEl, before);
 		}
 		this.prefixEl.innerHTML = this._prefix;
 
