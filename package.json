@@ -11,7 +11,7 @@
     "mocha": "latest",
     "sass": "latest",
     "typedoc": "latest",
-    "typescript": "latest"
+    "typescript": "5.9.*"
   },
   "scripts": {
     "test": "mocha",
