@@ -139,6 +139,7 @@ export abstract class Field<EventMap extends FieldEventMap = FieldEventMap> exte
 	 */
 	private hasFocus: boolean = false;
 	private inputWrap?: HTMLDivElement;
+	private prefixEl?: HTMLDivElement;
 
 	constructor(tagName: keyof HTMLElementTagNameMap = "label") {
 		super(tagName);
@@ -378,6 +379,10 @@ export abstract class Field<EventMap extends FieldEventMap = FieldEventMap> exte
 
 	private renderButtons() {
 
+		if(this.toolbar) {
+			this.toolbar.remove();
+		}
+
 		const cmps = [];
 		if(this._suffix) {
 			cmps.push(comp({
@@ -401,10 +406,6 @@ export abstract class Field<EventMap extends FieldEventMap = FieldEventMap> exte
 				}
 			})
 
-		} else {
-			if(this.toolbar) {
-				this.toolbar.remove();
-			}
 		}
 	}
 
@@ -529,9 +530,6 @@ export abstract class Field<EventMap extends FieldEventMap = FieldEventMap> exte
 		this._required = required;
 		if(this._labelEl) {
 			this._labelEl.innerHTML = this.getLabelText();
-		}
-		if (this.rendered) {
-			this.clearInvalid();
 		}
 	}
 
@@ -899,12 +897,18 @@ false
 		if(this.wrap && this.iconEl) {
 			this.wrap.insertBefore(this.iconEl, this.wrap.firstChild);
 		}
+		this.calcLabelLeft();
 	}
 
 
 	private _prefix: string|undefined;
 	public set prefix(prefix:string|undefined) {
 		this._prefix = prefix;
+
+		if(this.rendered) {
+			this.renderPrefix();
+			this.calcLabelLeft();
+		}
 	}
 
 	public get prefix() {
@@ -913,14 +917,21 @@ false
 
 	private renderPrefix() {
 		if(!this._prefix) {
+			if(this.prefixEl) {
+				this.prefixEl.remove();
+				this.prefixEl = undefined;
+			}
 			return;
 		}
 
-		const p = document.createElement("div");
-		p.classList.add("prefix");
-		p.innerHTML = this._prefix;
+		if(!this.prefixEl) {
+			this.prefixEl = document.createElement("div");
+			this.prefixEl.classList.add("prefix");
+			this.wrap.insertBefore(this.prefixEl, this.wrap.firstChild);
+		}
+		this.prefixEl.innerHTML = this._prefix;
 
-		this.wrap.insertBefore(p, this.wrap.firstChild);
+
 	}
 }
 

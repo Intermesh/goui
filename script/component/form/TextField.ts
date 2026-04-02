@@ -55,7 +55,11 @@ export class TextField extends TextInputField {
 	 * @param pattern
 	 */
 	set pattern(pattern: HTMLInputElement["pattern"]) {
-		this.input!.pattern = pattern;
+		if(!pattern) {
+			this.input!.removeAttribute("pattern");
+		} else {
+			this.input!.pattern = pattern;
+		}
 	}
 
 	get pattern() {
