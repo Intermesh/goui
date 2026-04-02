@@ -138,6 +138,7 @@ export abstract class Field<EventMap extends FieldEventMap = FieldEventMap> exte
 	 * @private
 	 */
 	private hasFocus: boolean = false;
+	private inputWrap?: HTMLDivElement;
 
 	constructor(tagName: keyof HTMLElementTagNameMap = "label") {
 		super(tagName);
@@ -288,7 +289,22 @@ export abstract class Field<EventMap extends FieldEventMap = FieldEventMap> exte
 		this.el.addEventListener("focusin", this.onFocusIn.bind(this));
 		this.el.addEventListener("focusout", this.onFocusOut.bind(this));
 
+		this.calcLabelLeft();
+
 		return el;
+	}
+
+	/**
+	 * When using a prefix or icon we don't know the exact position of the label.
+	 * We need to calculate the left position of the label based on the position of the icon.
+	 * Otherwise the CSS transition won't work.
+	 * @private
+	 */
+	private calcLabelLeft() {
+		if(this._labelEl && (this._icon || this._suffix)) {
+			const s = window.getComputedStyle(this._labelEl);
+			this._labelEl.style.left =  (this._labelEl.offsetLeft - parseFloat(s.marginLeft)) + "px";
+		}
 	}
 
 	isFocusable(): boolean {
@@ -327,22 +343,28 @@ export abstract class Field<EventMap extends FieldEventMap = FieldEventMap> exte
 	protected renderControl() {
 
 
+		this.renderPrefix();
+		this.renderIcon();
+
+		this.inputWrap = document.createElement("div");
+		this.inputWrap.classList.add("input");
+
 		// label must follow input so we can make the transform transition with pure css with input::focus & input::placeholder-shown + label
 		const label = this.createLabel();
 		if (label) {
-			this.wrap!.append(label);
+			this.inputWrap.append(label);
 		}
 
-		// this.renderPrefix();
-		this.renderIcon();
 
 		if (this.control) {
-			this.wrap.append(this.control.cls('+control'));
+			this.inputWrap.append(this.control.cls('+control'));
 
 			if (this.title) {
 				this.control.title = this.title;
 			}
 		}
+
+		this.wrap.append(this.inputWrap)
 
 		this.renderButtons();
 

@@ -121,7 +121,7 @@
 
 
 %control-pit {
-	overflow:hidden;
+	//overflow:hidden; // use border-radius: inherit;
 	transition: border-color 100ms linear;
 	border-radius: config.$borderRadius;
 	background-color: config.$colorBackgroundInput;
@@ -243,6 +243,7 @@
 %input {
 	//background-color:transparent; // Transparent Makes date field in safari unusable
 	background-color: config.$colorBackgroundInput;
+	border-radius: inherit;
 	font: config.$fontBase;
 	//min-width: dp(100); //for select element
 	margin: 0;
@@ -283,13 +284,16 @@
 	position: relative;
 
 	.suffix {
-		padding-right: .8rem;
+		padding-right: 1.6rem;
 		color: var(--fg-secondary-text);
 	}
 
 	.prefix {
-		padding: 1.1rem 0 1.1rem .8rem;
+		padding: 1.1rem 0 1.1rem 1.6rem;
 		line-height: 2.4rem;
+		color: var(--fg-secondary-text);
+		pointer-events: none;
+		cursor: default;
 	}
 }
 
@@ -333,8 +337,8 @@
 	&.with-icon {
 		.wrap {
 			div.label {
-				left: util.dp(48);
-				padding: 0 util.dp(4);
+				//left: util.dp(48);
+				//padding: 0 util.dp(4);
 			}
 			.control {
 				padding-left: util.dp(10);
@@ -508,7 +512,7 @@
 
 	&.with-icon {
 		div.label {
-			left: util.dp(48);
+			//left: util.dp(48);
 		}
 		input {
 			padding-left: util.dp(10);
@@ -565,6 +569,11 @@
 	}
 
 
+	.input {
+		//position: relative;
+		flex: 1;
+		border-radius: inherit;
+	}
 
 
 	div.label {
@@ -577,7 +586,8 @@
 		vertical-align: top;
 		pointer-events: none;
 		position:absolute;
-		left: util.dp(12);
+		margin-left: util.dp(12);
+		//left: util.dp(12); // auto but will be calculated in JS to allow smooth transition
 		padding: 0 util.dp(4);
 		top: util.dp(23);//math.div(config.$baseLineHeight, 2) + util.dp(11);
 		height: config.$borderWidth;
@@ -602,8 +612,8 @@
 
 	&.no-floating-label, &.has-value, &:focus-within {
 		div.label {
-			top: 0;
-			left: util.dp(12);
+			top: 0;// - config.$borderWidth;
+			left: 0 !important;//util.dp(12);
 			font-size: util.sp(13);
 		}
 	}
@@ -1124,7 +1134,7 @@
 	}
 
 	div.label {
-		top: 0;
+		top: 0 - config.$borderWidth;
 		left: util.dp(16);
 		font-size: util.sp(13);
 	}
