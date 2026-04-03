@@ -236,14 +236,14 @@ export class ContainerField<EventMap extends FieldEventMap = FieldEventMap, Valu
 
 	public async isValid() {
 		// because container fields have no change event we need to clear the invalid msg here so the children will manage the validated state.
-		this.invalidMsg = "";
+		this.clearInvalid()
 
 		return super.isValid();
 	}
 
 	protected async validate() {
 		// because container fields have no change event we need to clear the invalid msg here so the children will manage the validated state.
-		this.invalidMsg = "";
+		// this.invalidMsg = "";
 
 		await super.validate();
 
