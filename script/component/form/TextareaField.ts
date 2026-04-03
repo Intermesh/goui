@@ -5,7 +5,6 @@
  */
 import {createComponent} from "../Component.js";
 import {FieldConfig} from "./Field.js";
-import {InputField} from "./InputField.js";
 import {TextInputField} from "./TextInputField.js";
 
 /**
@@ -33,6 +32,8 @@ export class TextAreaField extends TextInputField {
 
 	/**
 	 * Let the textarea grow to it's content
+	 *
+	 * If the height is set then the minimum height will be set to this value.
 	 *
 	 * @param v
 	 */
