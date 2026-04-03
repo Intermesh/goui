@@ -5,6 +5,7 @@
 .goui-mask {
 	//backdrop-filter: blur(5px) brightness(40%) ;
 	//-webkit-backdrop-filter: blur(5px) brightness(40%);
+	border-radius: inherit;
 	opacity: .8;
 	background-color: #7b7a7a;
 	top: 0;

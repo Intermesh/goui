@@ -1153,7 +1153,10 @@
 			border: none;
 			border-bottom: config.$borderWidth solid config.$colorBorder;
 			border-left: none;
-			border-radius: 0;
+
+			border-radius: inherit;
+			border-bottom-right-radius: 0;
+			border-bottom-left-radius: 0;
 		}
 	}
 
