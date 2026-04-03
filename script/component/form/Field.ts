@@ -302,10 +302,15 @@ export abstract class Field<EventMap extends FieldEventMap = FieldEventMap> exte
 	 * @private
 	 */
 	private calcLabelLeft() {
-		if(this._labelEl && (this._icon || this._suffix)) {
-			this._labelEl.style.left = "auto";
-			const s = window.getComputedStyle(this._labelEl);
-			this._labelEl.style.left =  (this._labelEl.offsetLeft - parseFloat(s.marginLeft)) + "px";
+
+		if(!this._labelEl) {
+			return;
+		}
+
+		this._labelEl.style.left = "auto";
+		if(this._icon || this._prefix) {
+			const s = window.getComputedStyle(this._labelEl!);
+			this._labelEl!.style.left =  (this._labelEl!.offsetLeft - parseFloat(s.marginLeft)) + "px";
 		}
 	}
 

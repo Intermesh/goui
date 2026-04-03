@@ -46,6 +46,13 @@ export class TextAreaField extends TextInputField {
 		input.on('input',(ev) => {
 			this.resize(input);
 		});
+
+		//if height is set then use this as minimum height
+		if(this.el.style.height) {
+			input.style.minHeight = this.el.style.height;
+			this.el.style.height = '';
+		}
+
 		this.on("render", ()=>{this.resize(input);});
 		this.on("show", ()=>{this.resize(input);});
 		this.on('setvalue', ()=>{this.resize(input);});
