@@ -1,7 +1,7 @@
-import {InputField} from "./InputField.js";
+import {InputField, InputFieldEventMap} from "./InputField.js";
 import {t} from "../../Translate.js";
 
-export abstract class TextInputField extends InputField {
+export abstract class TextInputField<EventMap extends InputFieldEventMap = InputFieldEventMap> extends InputField<EventMap> {
 	/**
 	 * The minimum required input length
 	 *

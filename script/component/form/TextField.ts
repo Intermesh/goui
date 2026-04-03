@@ -7,6 +7,7 @@
 import {FieldConfig} from "./Field.js";
 import {createComponent} from "../Component.js";
 import {TextInputField} from "./TextInputField.js";
+import {InputFieldEventMap} from "./InputField.js";
 
 
 export type TextFieldType = ("text" | "password" | "email" | "url" | "tel" | "search" );
@@ -23,7 +24,7 @@ export interface TextField {
  * @link https://goui.io/#form/TextField Examples
  * @see Form
  */
-export class TextField extends TextInputField {
+export class TextField<EventMap extends InputFieldEventMap = InputFieldEventMap> extends TextInputField<EventMap> {
 
 	protected baseCls = 'goui-form-field text';
 

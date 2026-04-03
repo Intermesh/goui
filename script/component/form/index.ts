@@ -15,6 +15,7 @@ export * from './RadioField.js';
 export * from './RangeField.js';
 export * from './SelectField.js';
 export * from './TextField.js';
+export * from './PasswordField.js';
 export * from './TextareaField.js';
 export * from './CheckboxGroup.js';
 export * from './ChipsField.js';
