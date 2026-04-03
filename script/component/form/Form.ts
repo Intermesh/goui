@@ -176,11 +176,12 @@ export class Form<ValueType extends ContainerFieldValue = ContainerFieldValue, E
 	/**
 	 * Validates the form and submits it using the handler function passed with the config.
 	 */
-	public async submit() : Promise<boolean>{
+	public async submit() : Promise<boolean> {
 
 		const el = this.el as HTMLFormElement;
 
-		if (this.isValid()) {
+		const formValid = await this.isValid();
+		if (formValid) {
 			el.cls(['+valid', '-invalid']);
 
 			if(this.fire("beforesubmit", {}) === false) {

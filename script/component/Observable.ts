@@ -5,7 +5,7 @@
  */
 
 import {FunctionUtil} from "../util/FunctionUtil";
-import {Component, Length} from "./Component";
+import {Length} from "./Component";
 
 
 /**
@@ -209,14 +209,29 @@ export class Observable<EventMapType extends ObservableEventMap = ObservableEven
 	/**
 	 * Fire an event
 	 *
-	 * When a listener returns false this function will return false too.
+	 * When one of the listeners returns false, this function will return false too.
 	 *
 	 * @param eventName
 	 * @param ev
 	 */
 	public fire<K extends keyof EventMapType>(eventName: K, ev: EventMapType[K]) {
+		return this.internalFire(eventName, ev) as boolean
+	}
 
-		if(Observable.DEBUG) {
+	/**
+	 * Fire an event asynchronously so it can be awaited.
+	 *
+	 * Returns all promises returned by the listeners.
+	 *
+	 * @param eventName
+	 * @param ev
+	 */
+	public async fireAsync<K extends keyof EventMapType>(eventName: K, ev: EventMapType[K]) {
+		return this.internalFire(eventName, ev, true) as Promise<any[]>
+	}
+
+	private internalFire<K extends keyof EventMapType>(eventName: K, ev: EventMapType[K], async = false) {
+		if (Observable.DEBUG) {
 			console.log(eventName, ev);
 		}
 
@@ -229,14 +244,13 @@ export class Observable<EventMapType extends ObservableEventMap = ObservableEven
 		// @ts-ignore
 		ev.target = this;
 
-		for (let l of this.lisnrs[eventName]) {
+		const results = this.lisnrs[eventName].map((l:any) => l.listener.call(this, ev));
 
-			if (l.listener.call(this, ev) === false) {
-				ret = false;
-			}
+		if(async) {
+			return Promise.all(results);
+		} else {
+			return results.filter((r:any) => r === false).length === 0;
 		}
-
-		return ret;
 	}
 
 	protected relayEvent(comp:Observable<ObservableEventMap>, type: any) {

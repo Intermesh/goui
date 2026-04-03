@@ -37,8 +37,8 @@ export class DurationField extends Field {
 		super();
 	}
 
-  protected validate() {
-    super.validate();
+  protected async validate() {
+    await super.validate();
 
 		const v = this.getValueAsDateInterval();
 

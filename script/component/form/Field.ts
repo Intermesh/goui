@@ -104,6 +104,8 @@ export interface FieldEventMap extends ComponentEventMap {
 	/**
 	 * Fires when validated
 	 *
+	 * This event is fired async so it can be awaited
+	 *
 	 * Use {@link setInvalid()} to mark field invalid
 	 */
 	validate: {}
@@ -749,13 +751,13 @@ export abstract class Field<EventMap extends FieldEventMap = FieldEventMap> exte
 		return v === undefined || v === null || v === "" || (Array.isArray(v) && v.length == 0) ;
 	}
 
-	protected validate() {
+	protected async validate() {
 
 		if (this.required && this.isEmpty()) {
 			this.setInvalid(t("This field is required"));
 		}
 
-		this.fire("validate", {});
+		await this.fireAsync("validate", {});
 	}
 
 	protected internalRemove() {
@@ -867,11 +869,11 @@ false
 	 * Checks if the field is valid. It performs validation too.
 	 * If you want to check if the field is marked as invalid without validation use isMarkedInvalid()
 	 */
-	public isValid() {
+	public async isValid() {
 		if (this.isMarkedInvalid()) {
 			return false;
 		}
-		this.validate();
+		await this.validate();
 		if (this.isMarkedInvalid()) {
 			console.warn("Field '" + this.name + "' is invalid: " + this.invalidMsg, this);
 		}

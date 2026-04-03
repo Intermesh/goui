@@ -61,8 +61,8 @@ export class NumberField extends InputField {
 	}
 
 
-	protected validate() {
-		super.validate();
+	protected async validate() {
+		await super.validate();
 		const v = this.value;
 		if(v === undefined) {
 			return;

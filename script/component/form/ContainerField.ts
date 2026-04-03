@@ -234,25 +234,22 @@ export class ContainerField<EventMap extends FieldEventMap = FieldEventMap, Valu
 		return old;
 	}
 
-	isValid(): boolean {
+	public async isValid() {
 		// because container fields have no change event we need to clear the invalid msg here so the children will manage the validated state.
 		this.invalidMsg = "";
 
 		return super.isValid();
 	}
 
-	protected validate() {
+	protected async validate() {
 		// because container fields have no change event we need to clear the invalid msg here so the children will manage the validated state.
 		this.invalidMsg = "";
 
-		super.validate();
-		let invalid;
-		this.findFields().forEach((i) => {
-			if (!i.disabled && !i.isValid()) {
-				invalid = i;
-			}
-		})
-		if (invalid) {
+		await super.validate();
+
+		// handle invalid field async
+		const isValidItems = await Promise.all(this.findFields().filter((i) => !i.disabled).map(i => i.isValid()));
+		if (isValidItems.filter(i => i === false).length > 0) {
 			this.setInvalid("There's an invalid field");
 		}
 	}

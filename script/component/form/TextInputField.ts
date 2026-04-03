@@ -17,9 +17,9 @@ export abstract class TextInputField extends InputField {
 	 */
 	public maxLength: number | undefined;
 
-	protected validate() {
+	protected async validate() {
 
-		super.validate();
+		await super.validate();
 
 		const v = this.value as string;
 		if(!v) {

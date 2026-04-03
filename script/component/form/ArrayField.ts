@@ -73,8 +73,8 @@ export class ArrayField<Type extends FieldValue = Record<string, any>> extends F
 		return this.itemsContainer;
 	}
 
-	protected validate() {
-		super.validate();
+	protected async validate() {
+		await super.validate();
 		let invalid;
 		this.findChildrenByType(Field).forEach((i) => {
 			if (!i.disabled && !i.isValid()) {
