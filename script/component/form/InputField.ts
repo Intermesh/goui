@@ -234,11 +234,12 @@ export abstract class InputField<EventMap extends InputFieldEventMap = InputFiel
 		super.disabled = disabled;
 	}
 
-	protected async validate() {
-		await super.validate();
+	protected validate() {
+		super.validate();
 
 		//this implements the native browser validation
 		if (this._input) {
+
 			this.setValidityState(this._input);
 		}
 	}

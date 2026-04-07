@@ -64,8 +64,8 @@ export class DateTimeField extends Field {
 		return this._max;
 	}
 
-	protected async validate() {
-		await super.validate();
+	protected validate() {
+		super.validate();
 		if(this._max || this._min) {
 
 			const v = this.getValueAsDateTime();

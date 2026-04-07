@@ -527,10 +527,8 @@
 				color: config.$colorMain;
 			}
 
-			>.input {
-				.label {
-					color: config.$colorMain;
-				}
+			>.label {
+				color: config.$colorMain;
 			}
 		}
 	}
@@ -763,11 +761,9 @@
 				background-color: config.$colorErrorBg;
 			}
 
-			>.input{
-				.label {
-					background-color: config.$colorErrorBg;
-					color: config.$colorError;
-				}
+			> .label {
+				background-color: config.$colorErrorBg;
+				color: config.$colorError;
 			}
 
 			menu.goui-toolbar {

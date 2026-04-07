@@ -17,9 +17,9 @@ export abstract class TextInputField<EventMap extends InputFieldEventMap = Input
 	 */
 	public maxLength: number | undefined;
 
-	protected async validate() {
+	protected validate() {
 
-		await super.validate();
+		super.validate();
 
 		const v = this.value as string;
 		if(!v) {
