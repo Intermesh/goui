@@ -8,7 +8,7 @@
     "fake-indexeddb": "latest",
     "jsdom": "latest",
     "jsdom-global": "latest",
-    "mocha": "latest",
+    "mocha": "^11.3.0",
     "sass": "latest",
     "typedoc": "latest",
     "typescript": "5.9.*"
@@ -60,8 +60,5 @@
     ".": {
       "import": "./dist/index.js"
     }
-  },
-  "dependencies": {
-
   }
 }
