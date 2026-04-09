@@ -92,7 +92,7 @@ export class Form<ValueType extends ContainerFieldValue = ContainerFieldValue, E
 		super("form");
 	}
 
-	public readonly el!: HTMLFormElement;
+	declare readonly el: HTMLFormElement;
 
 
 	/**

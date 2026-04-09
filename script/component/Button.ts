@@ -78,7 +78,7 @@ export interface ButtonEventMap extends ComponentEventMap {
  */
 export class Button<EventMap extends ButtonEventMap= ButtonEventMap> extends Component<EventMap> {
 
-	public readonly el!: HTMLButtonElement;
+	declare readonly el: HTMLButtonElement;
 
 	private _iconEl?: HTMLElement;
 	private _textEl?: HTMLElement;
