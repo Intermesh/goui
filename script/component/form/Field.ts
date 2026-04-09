@@ -301,7 +301,7 @@ export abstract class Field<EventMap extends FieldEventMap = FieldEventMap> exte
 	 * Otherwise the CSS transition won't work.
 	 * @private
 	 */
-	private calcLabelLeft() {
+	protected calcLabelLeft() {
 
 		if(!this._labelEl) {
 			return;
