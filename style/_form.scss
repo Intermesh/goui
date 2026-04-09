@@ -1085,6 +1085,8 @@
 			.select-wrapper {
 
 				position: relative;
+				flex: 1;
+				border-radius: inherit;
 
 
 				&:after {
@@ -1092,8 +1094,8 @@
 					position: absolute;
 					display: inline-block;
 					top: 0;//config.$baseLineHeight - util.dp(8);;
-					padding: 1.4rem 1.1rem;
-					right: config.$borderWidth * -1;
+					margin: 1.4rem 1.1rem;
+					right: 0;
 					@extend %icon;
 					color: config.$colorTextSecondary;
 					font-size: 2rem;
