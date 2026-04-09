@@ -36,6 +36,10 @@ export class DisplayField extends Field {
 		}
 	}
 
+	protected calcLabelLeft() {
+		//not needed for dispklay field
+	}
+
 
 	/**
 	 * Escape value HTML

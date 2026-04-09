@@ -295,6 +295,13 @@
 		pointer-events: none;
 		cursor: default;
 	}
+
+	.input {
+		//position: relative;
+		flex: 1;
+		border-radius: inherit;
+		display: flex;
+	}
 }
 
 .goui-display-field {
@@ -571,12 +578,12 @@
 	}
 
 
-	.input {
-		//position: relative;
-		flex: 1;
-		border-radius: inherit;
-		display: flex;
-	}
+	//.input {
+	//	//position: relative;
+	//	flex: 1;
+	//	border-radius: inherit;
+	//	display: flex;
+	//}
 
 
 	div.label {
