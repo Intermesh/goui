@@ -165,7 +165,7 @@ export interface ListEventMap extends ComponentEventMap {
  *
  * @link https://goui.io/#list Examples
  */
-export class List<StoreType extends Store = Store, EventMapType extends ListEventMap = ListEventMap> extends Component<EventMapType> implements StoreComponent<StoreType> {
+export class List<StoreType extends Store = Store, EventMapType extends ListEventMap = ListEventMap, ElementType extends HTMLElement = HTMLElement> extends Component<EventMapType, ElementType> implements StoreComponent<StoreType> {
 	/**
 	 * Shown when the list is empty.
 	 */
@@ -427,7 +427,7 @@ export class List<StoreType extends Store = Store, EventMapType extends ListEven
 				}
 			});
 
-			this.el.addEventListener('keydown', (ev) => {
+			this.el.addEventListener('keydown', (ev:any) => {
 
 				if (!ev.shiftKey && !ev.ctrlKey && !ev.metaKey && (ev.key == "ArrowDown" || ev.key == "ArrowUp")) {
 
@@ -594,11 +594,9 @@ export class List<StoreType extends Store = Store, EventMapType extends ListEven
 		const icon = groupRow.findChild("expander")!;
 		icon.text == "expand_more" ? icon.text = "chevron_right" : icon.text = "expand_more";
 
-		const dataRows = groupContainer.querySelectorAll(".data");
+		const dataRows = groupContainer.querySelectorAll<HTMLTableRowElement>(".data");
 
-		dataRows.forEach((row) => {
-			const tableRow = row as HTMLTableRowElement;
-
+		dataRows.forEach((tableRow) => {
 			tableRow.style.display == "none" ? tableRow.style.display = "" : tableRow.style.display = "none";
 		});
 	}

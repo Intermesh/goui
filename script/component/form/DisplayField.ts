@@ -28,7 +28,7 @@ export class DisplayField extends Field {
 	 * @param tagName Tagname defaults to ="label". If you pass another tag like h3 for example it will render a simple tag: <h3>{renderedValue}</h3>
 	 * @param renderer Renderer function for the value of the field
 	 */
-	constructor(public tagName: keyof HTMLElementTagNameMap = "label", public renderer: DisplayFieldRenderer = defaultDisplayFieldRenderer) {
+	constructor(tagName: keyof HTMLElementTagNameMap = "label", public renderer: DisplayFieldRenderer = defaultDisplayFieldRenderer) {
 		super(tagName);
 
 		if(tagName != "label") {
@@ -181,4 +181,3 @@ export const displaydatefield = (config: DisplayFieldConfig & {
 export const displaycheckboxfield = (config: Omit<DisplayFieldConfig, "renderer">, ...items: Component[]) => {
 	return createComponent(new DisplayField(config?.tagName ?? "label", (v: string) => v ? '<i class="icon">check</i>' : ""), {...config, htmlEncode: false}, items);
 }
-

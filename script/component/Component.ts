@@ -177,7 +177,7 @@ export type ComponentState = Record<string, any>;
  *
  * @link https://goui.io/#component Examples
  */
-export class Component<EventMapType extends ComponentEventMap = ComponentEventMap> extends Observable<EventMapType> {
+export class Component<EventMapType extends ComponentEventMap = ComponentEventMap, ElementType extends HTMLElement = HTMLElement> extends Observable<EventMapType> {
 
 	protected _cls?: string;
 	private maskTimeout?: any;
@@ -187,16 +187,22 @@ export class Component<EventMapType extends ComponentEventMap = ComponentEventMa
 	 *
 	 * @param tagName The tag name used for the root HTMLElement of this component
 	 */
-	constructor(tagName: keyof HTMLElementTagNameMap = "div") {
+	constructor(private tagName: keyof HTMLElementTagNameMap = "div") {
 		super();
-		this.el = this.initEl(tagName);
-
-		// for debugging it can be useful to assign id's for each component in the DOM
-		// this.el.id = Component.uniqueID();
 	}
 
-	protected initEl(tagName: keyof HTMLElementTagNameMap) {
-		return document.createElement(tagName)
+	private _el: ElementType | undefined;
+
+	get el() {
+		if(!this._el) {
+			this._el = this.initEl(this.tagName);
+		}
+
+		return this._el;
+	}
+
+	protected initEl(tagName: keyof HTMLElementTagNameMap) :ElementType {
+		return document.createElement(tagName) as ElementType
 	}
 
 	/**
@@ -234,9 +240,7 @@ export class Component<EventMapType extends ComponentEventMap = ComponentEventMa
 	/**
 	 * When this item is added to a Component this is set to the parent Component
 	 */
-	public parent?: Component;
-
-	public readonly el: HTMLElement;
+	public parent?: Component<ComponentEventMap, any>;
 
 	/**
 	 * Normally components are rendered to its parent component's element. But in some cases like menu's it's desired
@@ -244,7 +248,7 @@ export class Component<EventMapType extends ComponentEventMap = ComponentEventMa
 	 */
 	public renderTo?: HTMLElement;
 
-	private _items?: Collection<Component>;
+	private _items?: Collection<Component<ComponentEventMap, any>>;
 
 	private _mask: Mask | undefined;
 
@@ -527,9 +531,9 @@ export class Component<EventMapType extends ComponentEventMap = ComponentEventMa
 		}
 
 		if (!insertBefore) {
-			parentEl.appendChild(this.el);
+			parentEl!.appendChild(this.el);
 		} else {
-			parentEl.insertBefore(this.el, insertBefore);
+			parentEl!.insertBefore(this.el, insertBefore);
 		}
 	}
 
@@ -978,7 +982,7 @@ export class Component<EventMapType extends ComponentEventMap = ComponentEventMa
 	 */
 	get items() {
 		if (!this._items) {
-			this._items = new Collection<Component>();
+			this._items = new Collection<Component<ComponentEventMap, any>>();
 			this.initItems();
 		}
 		return this._items;
@@ -992,7 +996,7 @@ export class Component<EventMapType extends ComponentEventMap = ComponentEventMa
 		}
 	}
 
-	protected get itemContainerEl() {
+	protected get itemContainerEl() : HTMLElement {
 		return this.el;
 	}
 
@@ -1373,6 +1377,7 @@ export class Mask extends Component {
  */
 export const mask = (config?: Config<Mask>) => createComponent(new Mask(), config);
 
+
 /**
  * Shorthand function to create a {@link Component}
  *
@@ -1384,7 +1389,7 @@ export const mask = (config?: Config<Mask>) => createComponent(new Mask(), confi
  * });
  * ```
  */
-export const comp = (config?: Config<Component>, ...items: Component[]) => createComponent(new Component(config?.tagName), config, items);
+export const comp = <TagName extends keyof HTMLElementTagNameMap = "div">(config?: Config<Component, never, TagName>, ...items: Component[]) => createComponent(new Component<ComponentEventMap, HTMLElementTagNameMap[TagName] & HTMLElement>(config?.tagName), config, items);
 
 export const i = (config?: Config<Component> | MaterialIcon, ...items: Component[]) => createComponent(new Component("i"), typeof config == 'string' ? {text: config, cls: "icon"} : config, items);
 export const span = (config?: Config<Component> | string, ...items: Component[]) => createComponent(new Component("span"), typeof config == 'string' ? {text: config} : config, items);
@@ -1473,3 +1478,8 @@ export function assignComponentListeners<T extends Observable>(comp:T, listeners
 	}
 }
 
+
+const t = comp({tagName: "form"})
+
+const s = span();
+s.el.style.display = "inline-block";

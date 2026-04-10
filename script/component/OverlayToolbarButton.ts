@@ -112,7 +112,7 @@ export class OverlayToolbarButton<EventMap extends OverlayToolbarButtonEventMap 
 		return this.overlayTbar;
 	}
 
-	protected get itemContainerEl(): HTMLElement {
+	protected get itemContainerEl() {
 		return this.tbarItemContainer.el;
 	}
 }

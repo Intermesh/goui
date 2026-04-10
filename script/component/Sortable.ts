@@ -1,5 +1,5 @@
 import {Observable, ObservableEventMap} from "./Observable.js";
-import {comp, Component} from "./Component.js";
+import {comp, Component, ComponentEventMap} from "./Component.js";
 import {root} from "./Root.js";
 
 type SortableDragEvent = DragEvent & {
@@ -198,7 +198,7 @@ export class Sortable<Type extends Component> extends Observable<SortableEventMa
 	 * @param component The container component where the sortables are inside
 	 * @param sortableChildSelector CSS selector to find the sortables. For example a css class ".sortable-item".
 	 */
-	constructor(readonly component:Type, private sortableChildSelector:string) {
+	constructor(readonly component: Type, private sortableChildSelector:string) {
 		super();
 
 		component.el.on("dragstart", (e)=> {

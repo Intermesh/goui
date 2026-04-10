@@ -18,7 +18,7 @@ export class TextAreaField extends TextInputField {
 
 	private _autoHeight: boolean = false;
 
-	protected createInput() : HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement {
+	protected createControl()  {
 		const control = document.createElement("textarea");
 		control.on("change", ()=> {
 			this.fireChange();
@@ -41,7 +41,7 @@ export class TextAreaField extends TextInputField {
 		if(this._autoHeight)
 			return
 		this._autoHeight = true;
-		const input = this._input as HTMLTextAreaElement;
+		const input = this.input as HTMLTextAreaElement;
 		input.rows = 1;
 		input.style.overflowY = 'hidden';
 		input.on('input',(ev) => {

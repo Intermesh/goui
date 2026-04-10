@@ -1,5 +1,6 @@
 import {Field, FieldEventMap, FieldValue} from "./Field.js";
 import {FunctionUtil} from "../../util/index";
+import {select} from "./SelectField.js";
 
 
 export interface InputFieldEventMap extends FieldEventMap {
@@ -13,11 +14,8 @@ export interface InputFieldEventMap extends FieldEventMap {
 }
 
 
-
 export abstract class InputField<EventMap extends InputFieldEventMap = InputFieldEventMap> extends Field<EventMap> {
-
-	protected _input: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement | undefined;
-
+	
 	// we handle it with the native change event here
 	protected fireChangeOnBlur = false;
 
@@ -28,8 +26,8 @@ export abstract class InputField<EventMap extends InputFieldEventMap = InputFiel
 	/**
 	 * Get the DOM HTMLInputElement
 	 */
-	public get input() {
-		return this._input;
+	public get input() : HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement {
+		return this.control as HTMLInputElement;
 	}
 
 	protected onFirstListenerAdded(eventName: keyof EventMap) {
@@ -38,13 +36,13 @@ export abstract class InputField<EventMap extends InputFieldEventMap = InputFiel
 		if(eventName == "input") {
 			if(!this.rendered) {
 				this.on("render", () => {
-					this.input!.addEventListener('input', (ev) => {
-						this.fire("input", {value: this.input!.value})
+					this.input.addEventListener('input', () => {
+						this.fire("input", {value: this.input.value})
 					})
 				});
 			} else {
-				this.input!.addEventListener('input', (ev) => {
-					this.fire("input", {value: this.input!.value})
+				this.input.addEventListener('input', () => {
+					this.fire("input", {value: this.input.value})
 				})
 			}
 		}
@@ -53,16 +51,16 @@ export abstract class InputField<EventMap extends InputFieldEventMap = InputFiel
 	set title(title: string) {
 		super.title = title;
 
-		if (this._input) {
-			this._input.title = this.title;
+		if (this.input) {
+			this.input.title = this.title;
 		}
 	}
 
 	public focus(o?: FocusOptions) {
-		if (!this._input) {
+		if (!this.input) {
 			super.focus(o);
 		} else {
-			this._input.focus(o);
+			this.input.focus(o);
 			this.fire("focus", {options: o});
 		}
 	}
@@ -74,15 +72,12 @@ export abstract class InputField<EventMap extends InputFieldEventMap = InputFiel
 	 * [MDN Reference](https://developer.mozilla.org/docs/Web/API/HTMLInputElement/select)
 	 */
 	public select() {
-		(this._input as HTMLInputElement).select();
+		if(!(this.input instanceof HTMLSelectElement))
+			(this.input as HTMLInputElement).select();
 	}
 
 	protected createControl() : HTMLElement {
-		this._input = this.createInput();
-		return this._input;
-	}
 
-	protected createInput() : HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement{
 		const control = document.createElement("input");
 
 		//hack or detecting browser autofill and make label float
@@ -122,16 +117,16 @@ export abstract class InputField<EventMap extends InputFieldEventMap = InputFiel
 	}
 
 	protected internalSetValue(v:FieldValue) {
-		this._input!.value = v !== undefined && v !== null ? v.toString() : "";
+		this.input!.value = v !== undefined && v !== null ? v.toString() : "";
 	}
 
 	protected internalGetValue() : FieldValue {
-		return this._input!.value;
+		return this.input!.value;
 	}
 
 	set name(name: string) {
 		super.name = name;
-		this._input!.name = this.name;
+		this.input!.name = this.name;
 	}
 
 	get name() {
@@ -139,12 +134,12 @@ export abstract class InputField<EventMap extends InputFieldEventMap = InputFiel
 	}
 
 	set type(type: string) {
-		if(this._input instanceof HTMLInputElement)
-			this._input!.type = type;
+		if(this.input instanceof HTMLInputElement)
+			this.input!.type = type;
 	}
 
 	get type() {
-		return this._input!.type;
+		return this.input!.type;
 	}
 
 	/**
@@ -156,19 +151,19 @@ export abstract class InputField<EventMap extends InputFieldEventMap = InputFiel
 	 */
 
 	set autocomplete(autocomplete: AutoFill) {
-		this._input!.autocomplete = autocomplete;
+		this.input!.autocomplete = autocomplete;
 
 		if(autocomplete == "off") {
 			// Password manager don't listen to "off" so we must set their own variants :(
-			this._input!.dataset['1pIgnore'] = "true"; //1Password
-			this._input!.dataset['bwignore'] = "true"; //Bitwarden
-			this._input!.dataset['lpignore'] = "true"; //Lastpass
-			this._input!.dataset['formType'] = "other"; //Dashlane
+			this.input!.dataset['1pIgnore'] = "true"; //1Password
+			this.input!.dataset['bwignore'] = "true"; //Bitwarden
+			this.input!.dataset['lpignore'] = "true"; //Lastpass
+			this.input!.dataset['formType'] = "other"; //Dashlane
 		}
 	}
 
 	get autocomplete() {
-		return this._input!.autocomplete;
+		return this.input!.autocomplete;
 	}
 
 	/**
@@ -179,8 +174,8 @@ export abstract class InputField<EventMap extends InputFieldEventMap = InputFiel
 	 * @param placeholder
 	 */
 	set placeholder(placeholder: string) {
-		if(!(this._input instanceof HTMLSelectElement))
-			this._input!.placeholder = placeholder;
+		if(!(this.input instanceof HTMLSelectElement))
+			this.input!.placeholder = placeholder;
 
 		if(this.placeholder !== " ") {
 			this.el.classList.add("no-floating-label");
@@ -188,8 +183,8 @@ export abstract class InputField<EventMap extends InputFieldEventMap = InputFiel
 	}
 
 	get placeholder() {
-		if(!(this._input instanceof HTMLSelectElement))
-			return this._input!.placeholder;
+		if(!(this.input instanceof HTMLSelectElement))
+			return this.input!.placeholder;
 		else
 			return "";
 	}
@@ -205,8 +200,8 @@ export abstract class InputField<EventMap extends InputFieldEventMap = InputFiel
 	set readOnly(readOnly: boolean) {
 		super.readOnly = readOnly;
 
-		if(!(this._input instanceof HTMLSelectElement))
-			this._input!.readOnly = this.readOnly;
+		if(!(this.input instanceof HTMLSelectElement))
+			this.input!.readOnly = this.readOnly;
 	}
 
 	get readOnly() {
@@ -222,14 +217,14 @@ export abstract class InputField<EventMap extends InputFieldEventMap = InputFiel
 
 	set required(required: boolean) {
 		super.required = required;
-		this._input!.required = this.required;
+		this.input!.required = this.required;
 	}
 	get disabled() {
 		return super.disabled;
 	}
 
 	set disabled(disabled) {
-		this._input!.disabled = disabled;
+		this.input!.disabled = disabled;
 
 		super.disabled = disabled;
 	}
@@ -238,9 +233,9 @@ export abstract class InputField<EventMap extends InputFieldEventMap = InputFiel
 		super.validate();
 
 		//this implements the native browser validation
-		if (this._input) {
+		if (this.input) {
 
-			this.setValidityState(this._input);
+			this.setValidityState(this.input);
 		}
 	}
 

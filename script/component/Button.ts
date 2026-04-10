@@ -76,9 +76,7 @@ export interface ButtonEventMap extends ComponentEventMap {
  * ```
  *
  */
-export class Button<EventMap extends ButtonEventMap= ButtonEventMap> extends Component<EventMap> {
-
-	declare readonly el: HTMLButtonElement;
+export class Button<EventMap extends ButtonEventMap= ButtonEventMap> extends Component<EventMap, HTMLButtonElement> {
 
 	private _iconEl?: HTMLElement;
 	private _textEl?: HTMLElement;
@@ -96,7 +94,7 @@ export class Button<EventMap extends ButtonEventMap= ButtonEventMap> extends Com
 	 * The handler only fires on the primary mouse button and when the button is duoble clicked it will
 	 * only fire once!
 	 */
-	public handler?: (button: this, ev?: MouseEvent) => any;
+	public handler?: (button: Button, ev?: MouseEvent) => any;
 
 	private _menu?: Menu;
 
