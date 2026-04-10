@@ -138,7 +138,7 @@ export class Form<ValueType extends ContainerFieldValue = ContainerFieldValue, E
 		this.trackReset();
 	}
 
-	get value() {
+	get value() : ValueType {
 		return super.value as ValueType;
 	}
 
