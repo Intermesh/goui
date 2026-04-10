@@ -101,7 +101,11 @@ export class SelectField extends InputField {
 		const v = this._value as any;
 
 		this._options = opts;
-		this._input!.empty();
+		if(this._input) {
+			this._input!.empty();
+		} else {
+			this.control; //generate _input
+		}
 		opts.forEach((o: any) => {
 			this._input!.append(new Option(this.textRenderer!(o), o[this.valueField] ?? "__NULL__"));
 		});

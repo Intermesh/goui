@@ -148,7 +148,7 @@ export class DurationField extends Field {
 	}
 
 	protected internalSetValue(v?: any) {
-		if(v && this.hoursInput && this.minutesInput) {
+		if(v && this.control && this.hoursInput && this.minutesInput) {
 			const dateInterval = DateInterval.createFromFormat(v, this.outputFormat);
 			if (dateInterval) {
 				this.hoursInput.value = dateInterval.format("h");
@@ -160,7 +160,7 @@ export class DurationField extends Field {
 	}
 
 	protected internalGetValue(): string | number | boolean | any[] | Record<string, any> | undefined {
-		if(!this.hoursInput!.value) {
+		if(!this.control && !this.hoursInput!.value) {
 			return undefined;
 		}
 
