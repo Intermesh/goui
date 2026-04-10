@@ -77,7 +77,7 @@ export interface FormEventMap extends FieldEventMap {
  * ```
  *
  */
-export class Form<ValueType extends ContainerFieldValue = ContainerFieldValue, EventMap extends FormEventMap = FormEventMap> extends ContainerField<EventMap, ValueType> {
+export class Form<ValueType extends ContainerFieldValue = ContainerFieldValue, EventMap extends FormEventMap = FormEventMap> extends ContainerField<EventMap, ValueType, HTMLFormElement> {
 
 	/**
 	 * When this is set to true, the field will use the values set as their original value, used for resetting and
@@ -91,9 +91,6 @@ export class Form<ValueType extends ContainerFieldValue = ContainerFieldValue, E
 	constructor() {
 		super("form");
 	}
-
-	public readonly el!: HTMLFormElement;
-
 
 	/**
 	 * Executed when form is submitted.
@@ -141,8 +138,8 @@ export class Form<ValueType extends ContainerFieldValue = ContainerFieldValue, E
 		this.trackReset();
 	}
 
-	get value(): ValueType {
-		return super.value;
+	get value() : ValueType {
+		return super.value as ValueType;
 	}
 
 	/**

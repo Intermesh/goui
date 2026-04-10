@@ -12,10 +12,10 @@ import {ObjectUtil} from "../../util/index";
 export type ContainerFieldValue = Record<string, any>;
 
 
-export interface ContainerField<EventMap extends FieldEventMap = FieldEventMap, ValueType extends ContainerFieldValue = ContainerFieldValue> extends Field<EventMap> {
-	set value(v: Partial<ValueType>)
-	get value(): ValueType
-}
+// export interface ContainerField<EventMap extends FieldEventMap = FieldEventMap, ValueType extends ContainerFieldValue = ContainerFieldValue> extends Field<EventMap> {
+// 	set value(v: Partial<ValueType>)
+// 	get value(): ValueType
+// }
 
 /**
  * A container field is used to create a sub property in the form object.
@@ -25,7 +25,7 @@ export interface ContainerField<EventMap extends FieldEventMap = FieldEventMap, 
  *
  * @link https://goui.io/#form/ContainerField Example
  */
-export class ContainerField<EventMap extends FieldEventMap = FieldEventMap, ValueType extends ContainerFieldValue = ContainerFieldValue> extends Field<EventMap> {
+export class ContainerField<EventMap extends FieldEventMap = FieldEventMap, ValueType extends ContainerFieldValue = ContainerFieldValue, ElementType extends HTMLElement = HTMLElement> extends Field<EventMap, ElementType> {
 
 	constructor(tagName: keyof HTMLElementTagNameMap = "div") {
 		super(tagName);

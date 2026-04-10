@@ -5,7 +5,7 @@
  */
 
 import {FieldConfig, FieldValue} from "./Field.js";
-import {createComponent} from "../Component.js";
+import {createComponent, i} from "../Component.js";
 import {Store} from "../../data/index.js";
 import {InputField} from "./InputField.js";
 import {E} from "../../util";
@@ -21,9 +21,6 @@ import {E} from "../../util";
  */
 type SelectOption = { [key: string]: any };
 
-export interface SelectField {
-	get input(): HTMLSelectElement
-}
 /**
  * Select field
  *
@@ -55,6 +52,7 @@ export class SelectField extends InputField {
 			.on('change', _ => this.fireChange());
 	}
 
+	private _input?: HTMLSelectElement;
 	protected createControl() {
 
 		this._input = this.createInput();
@@ -64,6 +62,11 @@ export class SelectField extends InputField {
 		return E('div',
 			this._input
 		).cls("+select-wrapper");
+	}
+
+	get input(): HTMLSelectElement {
+		this.control;
+		return this._input!;
 	}
 
 	// turned off fireChangeOnBlur but override onFocusIn() to get the oldValue
@@ -98,9 +101,9 @@ export class SelectField extends InputField {
 		const v = this._value as any;
 
 		this._options = opts;
-		this.input!.empty();
+		this._input!.empty();
 		opts.forEach((o: any) => {
-			this.input!.append(new Option(this.textRenderer!(o), o[this.valueField] ?? "__NULL__"));
+			this._input!.append(new Option(this.textRenderer!(o), o[this.valueField] ?? "__NULL__"));
 		});
 
 		this.internalSetValue(v);
@@ -131,7 +134,7 @@ export class SelectField extends InputField {
 
 		const opts = (this.store ? this.store.all() : this.options);
 
-		let index = this.input!.selectedIndex;
+		let index = (this.input as HTMLSelectElement).selectedIndex;
 
 		let v;
 		if(opts[index]) {
@@ -143,7 +146,7 @@ export class SelectField extends InputField {
 		return (v === '__NULL__') ? null : v
 	}
 	protected internalSetValue(v:FieldValue) {
-		this._input!.value = v !== undefined && v !== null ? v.toString() : "__NULL__";
+		this.input.value = v !== undefined && v !== null ? v.toString() : "__NULL__";
 	}
 }
 

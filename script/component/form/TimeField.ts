@@ -162,7 +162,10 @@ export class TimeField extends Field {
 	}
 
 	protected internalSetValue(v?: any) {
-		if (v && this.hoursInput && this.minutesInput && this.amPm) {
+		//ensures control is created
+
+
+		if (v && this.control && this.hoursInput && this.minutesInput && this.amPm) {
 			const dt = DateTime.createFromFormat(v, "H:i");
 			if (!dt) {
 				return;
@@ -179,7 +182,7 @@ export class TimeField extends Field {
 	}
 
 	protected internalGetValue(): string | undefined {
-		if (!this.hoursInput!.value) {
+		if (!this.control || !this.hoursInput!.value) {
 			return undefined;
 		}
 

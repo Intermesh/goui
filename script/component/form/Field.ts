@@ -124,7 +124,7 @@ export type FieldValue = string|number|boolean|any[]|undefined|null|Record<strin
  *
  * Field components should at least implement "createControl" and "internalSetValue".
  */
-export abstract class Field<EventMap extends FieldEventMap = FieldEventMap> extends Component<EventMap> {
+export abstract class Field<EventMap extends FieldEventMap = FieldEventMap, ElementType extends HTMLElement = HTMLElement> extends Component<EventMap, ElementType> {
 	private _buttons?: Component[];
 	private toolbar?: Toolbar;
 	private _wrap?: HTMLDivElement;
@@ -143,7 +143,6 @@ export abstract class Field<EventMap extends FieldEventMap = FieldEventMap> exte
 
 	constructor(tagName: keyof HTMLElementTagNameMap = "label") {
 		super(tagName);
-		this.control = this.createControl();
 	}
 
 	readonly isFormField = true
@@ -166,7 +165,14 @@ export abstract class Field<EventMap extends FieldEventMap = FieldEventMap> exte
 
 	protected _value: FieldValue;
 
-	protected control: HTMLElement | undefined;
+	private _control: HTMLElement | undefined;
+
+	get control() {
+		if(!this._control) {
+			this._control = this.createControl()
+		}
+		return this._control;
+	}
 
 	/**
 	 * The value this field resets to when a form is reset with the reset() function

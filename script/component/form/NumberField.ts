@@ -54,7 +54,7 @@ export class NumberField extends InputField {
 		});
 
 		// select number on focus so you can enter a new number immediately
-		this._input!.addEventListener("focus", () => {
+		this.input.addEventListener("focus", () => {
 			this.select();
 		})
 

@@ -328,7 +328,7 @@ type WritablePartial<T> = {
  * 	Partial<Pick<ChipsField, "textInputToValue" | "chipRenderer">>
  * ```
  */
-export type Config<Cmp extends Observable, Required extends keyof Cmp = never> =
+export type Config<Cmp extends Observable, Required extends keyof Cmp = never, TagName extends keyof HTMLElementTagNameMap = any> =
 
 	WritablePartial<
 		//somehow this breaks generic class sometimes : (
@@ -377,7 +377,7 @@ export type Config<Cmp extends Observable, Required extends keyof Cmp = never> =
 	/**
 	 * The tagname of the HTMLElement created by the component
 	 */
-	tagName?: keyof HTMLElementTagNameMap,
+	tagName?: TagName,
 
 
 	// the following need to be here because they have different set and get types.

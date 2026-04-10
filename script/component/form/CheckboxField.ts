@@ -5,15 +5,12 @@
  */
 
 import {FieldConfig} from "./Field.js";
-import {createComponent} from "../Component.js";
+import {createComponent, i} from "../Component.js";
 import {E} from "../../util/Element.js";
 import {InputField} from "./InputField.js";
 
 type CheckBoxType = 'box' | 'switch' | 'button';
 
-export interface CheckboxField {
-	get input(): HTMLInputElement
-}
 
 /**
  * Checkbox field
@@ -71,30 +68,34 @@ export class CheckboxField extends InputField {
 		}
 	}
 
+	get input(): HTMLInputElement {
+		this.control;
+		return this._input!;
+	}
 
+	private _input : HTMLInputElement | undefined;
 	protected createControl() {
 
-		this._input = this.createInput() as HTMLInputElement;
+		this._input = super.createControl() as HTMLInputElement;
 
-		this._input.on("click", ()=> this.validate());
+		this._input .on("click", ()=> this.validate());
 
 		return E('div',
 			this._input
 		);
+
 	}
 
 	set color(v: string) {
-		this.input!.style.backgroundColor = v || '';
+		this.input.style.backgroundColor = v || '';
 	}
 
 	get color(): string {
-		return this.input!.style.backgroundColor;
+		return this.input.style.backgroundColor;
 	}
 
 	protected internalSetValue(v: boolean) {
-		if (this.input) {
-			this.input.checked = v;
-		}
+		this.input.checked = v;
 	}
 
 	protected internalGetValue() {

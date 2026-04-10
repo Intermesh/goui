@@ -3,7 +3,7 @@
  * @copyright Copyright 2023 Intermesh BV
  * @author Merijn Schering <mschering@intermesh.nl>
  */
-import {Component, Config, createComponent} from "../component";
+import {Component, ComponentEventMap, Config, createComponent} from "../component";
 import {ArrayUtil, Collection, CollectionEventMap} from "../util";
 
 /**
@@ -27,7 +27,7 @@ export type StoreRecord = Record<string, any>
 /**
  * Interface for a component that uses a store to present data
  */
-export interface StoreComponent<StoreType extends Store = Store,RecordType extends StoreRecord = StoreRecord> extends Component {
+export interface StoreComponent<StoreType extends Store = Store,RecordType extends StoreRecord = StoreRecord> extends Component<ComponentEventMap, any> {
 	onStoreLoadException: (ev:StoreEventMap<RecordType>['loadexception'] & {target: StoreType}) => void;
  	onBeforeStoreLoad: (ev:StoreEventMap<RecordType>['beforeload'] & {target: StoreType}) => void
 	onStoreLoad: (ev:StoreEventMap<RecordType>['load'] & {target: StoreType}) => void;
