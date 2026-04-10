@@ -1477,9 +1477,3 @@ export function assignComponentListeners<T extends Observable>(comp:T, listeners
 		}
 	}
 }
-
-
-const t = comp({tagName: "form"})
-
-const s = span();
-s.el.style.display = "inline-block";
