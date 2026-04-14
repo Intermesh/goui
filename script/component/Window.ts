@@ -14,7 +14,7 @@ import {FunctionUtil} from "../util/FunctionUtil.js";
 import {fieldset} from "./form/Fieldset.js";
 import {textfield, TextFieldType} from "./form/TextField.js";
 import {t} from "../Translate.js";
-import {DateTime} from "../util/index.js";
+import {browser, DateTime} from "../util/index.js";
 
 
 interface PromptConfig {
@@ -86,7 +86,7 @@ export class Window<EventMap extends WindowEventMap = WindowEventMap> extends Dr
 	/**
 	 * Maximize the window
 	 */
-	public maximized = false
+	public maximized = browser.isMobile()
 
 	/**
 	 * Enable tool to maximize window
@@ -215,7 +215,7 @@ export class Window<EventMap extends WindowEventMap = WindowEventMap> extends Dr
 			'->'
 		);
 
-		if (this.collapsible) {
+		if (this.collapsible && !browser.isMobile()) {
 			header.items.add(btn({
 				cls: "collapse-btn",
 				icon: "", // set empty so 'collapsed class can set it class can set it
@@ -225,7 +225,7 @@ export class Window<EventMap extends WindowEventMap = WindowEventMap> extends Dr
 			}));
 		}
 
-		if (this.maximizable) {
+		if (this.maximizable && !browser.isMobile()) {
 			header.items.add(this.initMaximizeTool());
 		}
 
