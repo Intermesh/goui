@@ -30,6 +30,7 @@
     "prepare": "npm run build"
   },
   "name": "@intermesh/goui",
+  "types": "script/index.ts",
   "description": "Group-Office User Interface",
   "version": "2.0.8",
   "directories": {
@@ -55,10 +56,10 @@
   },
   "homepage": "https://github.com/Intermesh/goui#readme",
   "module": "./dist/index.js",
-  "typings": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/index.js"
+      "types": "./script/index.ts",
+      "default": "./dist/index.js"
     }
   }
 }
