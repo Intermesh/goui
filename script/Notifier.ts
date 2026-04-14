@@ -24,13 +24,20 @@ type NotificationAction =
 	'complete';
 
 export interface INotification {
-	readonly time?: Date // waiting in the store for this time to be shown
-	readonly icon?: {name: MaterialIcon, color?: string, link?:string} // full path to png icon
-	readonly title?: string // option title
-	readonly text: string // body of notification. (no HTML)
-	readonly category?: NotificationCategory // used for behavior / presentation, defaults to 'message'
-	readonly stale?: Date // time when notification disappears without interaction
-	readonly actions?: {[action:string]:{text:string, icon?:MaterialIcon, run:()=>void}} // optional actions to show
+	/** waiting in the store for this time to be shown */
+	readonly time?: Date
+	/** full path to png icon */
+	readonly icon?: {name: MaterialIcon, color?: string, link?:string}
+	/** option title */
+	readonly title?: string
+	/** body of notification. (no HTML) */
+	readonly text: string
+	/** used for behavior / presentation, defaults to 'message' */
+	readonly category?: NotificationCategory
+	/** time when notification disappears without interaction */
+	readonly stale?: Date
+	/** optional actions to show */
+	readonly actions?: {[action:string]:{text:string, icon?:MaterialIcon, run:()=>void}}
 }
 class NotifierClass extends Observable<{notify:{msg:INotification}}> {
 
