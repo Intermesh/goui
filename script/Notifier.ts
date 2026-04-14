@@ -1,96 +1,76 @@
 /**
  * @license https://github.com/Intermesh/goui/blob/main/LICENSE MIT License
- * @copyright Copyright 2023 Intermesh BV
- * @author Merijn Schering <mschering@intermesh.nl>
+ * @copyright Copyright 2026 Intermesh BV
+ * @author Michael de Hart <mdhart@intermesh.nl>
  */
+import {btn, MaterialIcon, Observable, root} from "./component/index";
 
-import {comp, root, Window} from "./component/index";
+type NotificationCategory =
+            // PURPOSE                   | BEHAVIOUR                                                   | PRESENTATION
+'alarm'   | // critical, time-sensitive  | interruptive, persistent, requires action, may repeat       | high emphasis, title required, actions required
+'error'   | // failure or problem        | persistent until dismissed, non-auto-dismiss, may aggregate | error styling, title required, actionable text
+'system'  | // OS/app state change       | high priority, deduplicated, may persist                    | neutral/system styling, concise, settings/actions
+'event'   | // scheduled/time-based item | triggered at time, may persist or reappear if ignored       | calendar/clock, title required, time/context + actions
+'progress'| // ongoing task              | persistent, updates in place, disappears                    | progress indicator, task title, cancel/pause actions
+'message' | // communication/awareness   | non-blocking, stacks, auto-dismiss, stored in history       | standard styling, optional title, optional actions
+'status';   // informational outcome     | auto-dismiss, non-persistent, no action required            | minimal styling, short text, no/rare actions
+
+type NotificationAction =
+	'click' |
+	'close' |
+	'primary' |
+	'secondary' |
+	'progress' |
+	'complete';
+
+export interface INotification {
+	readonly time?: Date // waiting in the store for this time to be shown
+	readonly icon?: {name: MaterialIcon, color?: string, link?:string} // full path to png icon
+	readonly title?: string // option title
+	readonly text: string // body of notification. (no HTML)
+	readonly category?: NotificationCategory // used for behavior / presentation, defaults to 'message'
+	readonly stale?: Date // time when notification disappears without interaction
+	readonly actions?: {[action:string]:{text:string, icon?:MaterialIcon, run:()=>void}} // optional actions to show
+}
+class NotifierClass extends Observable<{notify:{msg:INotification}}> {
+
+	public notify(msg: INotification) {
+		if(this.fire('notify', {msg}) !== false)
+			this.toast(msg);
+	}
+	/** @deprecated */
+	error(text: any, _?:any) {
+		this.notify({text, category: "error"});
+	}
+	/** @deprecated */
+	success(text: any, _?:any) {
+		this.notify({text, category: "status"});
+	}
+
+	/**
+	 * When no notification handler is implemented while using Goui this is the default
+	 * The "notify" event should return false to prevent this
+	 */
+	private toast(msg: INotification) {
+		const close = () => { alert?.remove() },
+			alert = btn({tagName: "div",
+				cls:"goui-alert " + msg.category,
+				text: msg.text
+			}).on('click', close);
+debugger;
+		if (msg.category !== 'error')
+			setTimeout(close, 3000);
+		root.items.add(alert);
+	}
+}
 
 /**
- * Notify factory
+ * Notifier
  *
  * @example
  *
  * ```
- * Notifier.error("Oops!");
+ * Notifier.notify({text:"Oops!", category: "error"});
  * ```
  */
-export class Notifier {
-
-	/**
-	 * Show an error toast
-	 *
-	 * @param msg any string or object with a message property
-	 * @param timeout Timeout in seconds before it automatically disappears. It also dissappears on any mouseclick
-	 */
-	public static error(msg: any, timeout = 0) {
-		console.error(msg);
-
-		Window.prepareErrorMessage(msg);
-
-		return new Message(msg as string, "error", timeout);
-	}
-
-	/**
-	 * Show success toast
-	 *
-	 * @param msg
-	 * @param timeout
-	 */
-	public static success(msg: string, timeout = 3000) {
-		return new Message(msg, "success", timeout);
-	}
-
-	/**
-	 * Show a notice toast
-	 *
-	 * @param msg
-	 * @param timeout
-	 */
-	public static notice(msg: string, timeout = 3000) {
-		return new Message(msg, "notice", timeout);
-	}
-
-	/**
-	 * Show a warning toast
-	 * @param msg
-	 * @param timeout
-	 */
-	public static warning(msg: string, timeout = 3000) {
-		return new Message(msg, "warning", timeout);
-	}
-
-}
-
-class Message {
-	readonly timeout?: number;
-
-	constructor(msg: string, type: string, timeout = 3000) {
-
-		const alert = comp({
-				cls: "goui-alert " + type
-			},
-			comp({
-				tagName: "span",
-				text: msg
-			})
-		);
-
-		root.items.add(alert);
-
-		if (timeout) {
-			this.timeout = window.setTimeout(() => {
-				alert.remove();
-			}, timeout);
-		}
-
-		setTimeout(() => {
-			document.body.addEventListener("click", () => {
-				alert.remove();
-				if (this.timeout) {
-					clearTimeout(this.timeout);
-				}
-			}, {once: true});
-		});
-	}
-}
+export const Notifier = new NotifierClass();

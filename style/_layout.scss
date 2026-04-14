@@ -235,6 +235,13 @@ html {
 	.bg-highest{
 		background-color: config.$surfaceHighest;
 	}
+
+
+	&.autofit {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+		gap: 1rem;
+	}
 }
 
 .goui.hbox.mobile-cards {
