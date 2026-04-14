@@ -20,7 +20,7 @@
     "start:watch": "npx esbuild ./script/index.ts --bundle --format=esm --outdir=dist --watch",
     "start:watch-dts": "npx tsc --emitDeclarationOnly --watch",
     "start:sass": "npx sass --watch ./style:./dist",
-    "build": "npm run build:sass && npm run build:ts && npm run build:dts",
+    "build": "npm run build:sass && npm run build:ts",
     "build:clean": "rm -rf ./dist/*",
     "build:sass": "npx sass --style=compressed ./style:./dist",
     "build:ts": "npx esbuild ./script/index.ts --bundle --minify --format=esm --outdir=dist",
@@ -30,7 +30,6 @@
     "prepare": "npm run build"
   },
   "name": "@intermesh/goui",
-  "types": "script/index.ts",
   "description": "Group-Office User Interface",
   "version": "2.0.8",
   "directories": {
