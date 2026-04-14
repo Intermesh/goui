@@ -361,6 +361,13 @@ export class Menu<EventMap extends ComponentEventMap = ComponentEventMap> extend
 		this.on("hide", ()=>{
 			window.removeEventListener("scroll", onScroll)
 		})
+
+		// Re-align when height changes. Happens for example on store loads
+		const ro = new ResizeObserver( FunctionUtil.onRepaint(() => {
+			this.align();
+		}));
+
+		ro.observe(this.el);
 	}
 
 	protected internalSetHidden(hidden:boolean) {
@@ -378,7 +385,7 @@ export class Menu<EventMap extends ComponentEventMap = ComponentEventMap> extend
 			super.internalSetHidden(hidden);
 
 			if(this.alignTo) {
-				this.align();
+				// this.align();
 				this.listenForScroll();
 			}
 

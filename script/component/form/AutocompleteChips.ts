@@ -53,9 +53,8 @@ export class AutocompleteChips<T extends List = List, EventMap extends Autocompl
 	protected createMenu() {
 		return menu({
 				cls: "goui-dropdown scroll",
-				style: {padding: "0"},
-				removeOnClose: false,
-				height: 400
+				style: {padding: "0", maxHeight: "40rem"},
+				removeOnClose: false
 			},
 			this.list
 		);

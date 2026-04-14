@@ -78,7 +78,7 @@ export class AutocompleteField<T extends List = List, EventMap extends Autocompl
 
 
 		this.menu = menu({
-			height: 300,
+			style: {maxHeight: "30rem"},
 			cls: "scroll",
 			listeners: {
 				hide: ({target}) => {
@@ -144,8 +144,6 @@ export class AutocompleteField<T extends List = List, EventMap extends Autocompl
 		control.addEventListener("focus", function() {
 			this.select();
 		})
-
-
 
 		if (this.invalidMsg) {
 			this.applyInvalidMsg();
