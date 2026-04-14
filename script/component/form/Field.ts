@@ -119,6 +119,7 @@ export interface FieldEventMap extends ComponentEventMap {
 }
 
 export type FieldValue = string|number|boolean|any[]|undefined|null|Record<string,any>;
+
 /**
  * Base class for a form field
  *
@@ -138,7 +139,7 @@ export abstract class Field<EventMap extends FieldEventMap = FieldEventMap, Elem
 	 * @private
 	 */
 	private hasFocus: boolean = false;
-	private inputWrap?: HTMLDivElement;
+	private _inputWrap?: HTMLDivElement;
 	private prefixEl?: HTMLDivElement;
 
 	constructor(tagName: keyof HTMLElementTagNameMap = "label") {
@@ -320,6 +321,11 @@ export abstract class Field<EventMap extends FieldEventMap = FieldEventMap, Elem
 		}
 	}
 
+	/**
+	 * Determines whether the current element can receive focus.
+	 *
+	 * @return {boolean} Returns `true` if the element is focusable, otherwise `false`.
+	 */
 	isFocusable(): boolean {
 		return !this.hidden;
 	}
@@ -334,7 +340,7 @@ export abstract class Field<EventMap extends FieldEventMap = FieldEventMap, Elem
 	// }
 
 	/**
-	 * A wrapper DIV element that contains input and toolbar for input buttons like an expand button for a drop-down
+	 * A wrapper DIV element that contains input control and toolbar for input buttons like an expand button for a drop-down
 	 */
 	get wrap() {
 		// wrap required to place buttons after element
@@ -343,6 +349,21 @@ export abstract class Field<EventMap extends FieldEventMap = FieldEventMap, Elem
 		}
 
 		return this._wrap;
+	}
+
+	/**
+	 * A wrapper element that contains the label and the input control of the field.
+	 *
+	 * It makes sure the label aligns with the control
+	 */
+	get inputWrap() {
+
+		if(!this._inputWrap) {
+			this._inputWrap = document.createElement("div");
+			this._inputWrap.classList.add("input");
+		}
+
+		return this._inputWrap;
 	}
 
 
@@ -355,19 +376,14 @@ export abstract class Field<EventMap extends FieldEventMap = FieldEventMap, Elem
 	 */
 	protected renderControl() {
 
-
 		this.renderPrefix();
 		this.renderIcon();
-
-		this.inputWrap = document.createElement("div");
-		this.inputWrap.classList.add("input");
 
 		// label must follow input so we can make the transform transition with pure css with input::focus & input::placeholder-shown + label
 		const label = this.createLabel();
 		if (label) {
 			this.inputWrap.append(label);
 		}
-
 
 		if (this.control) {
 			this.inputWrap.append(this.control.cls('+control'));
@@ -385,8 +401,6 @@ export abstract class Field<EventMap extends FieldEventMap = FieldEventMap, Elem
 		if (hint) {
 			this.el.appendChild(hint);
 		}
-
-//		this.internalSetValue(this.value);
 	}
 
 	private renderButtons() {

@@ -104,7 +104,7 @@ export class DateRangeField extends Field {
 
 
 	protected get itemContainerEl() :HTMLElement{
-		return this.wrap;
+		return this.inputWrap;
 	}
 
 	public setToday() {
