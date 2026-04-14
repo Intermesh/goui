@@ -3,7 +3,7 @@
  * @copyright Copyright 2026 Intermesh BV
  * @author Michael de Hart <mdhart@intermesh.nl>
  */
-import {btn, MaterialIcon, Observable, root} from "./component/index";
+import {comp, MaterialIcon, Observable, root} from "./component/index";
 
 type NotificationCategory =
             // PURPOSE                   | BEHAVIOUR                                                   | PRESENTATION
@@ -40,16 +40,16 @@ class NotifierClass extends Observable<{notify:{msg:INotification}}> {
 	}
 	/** @deprecated */
 	error(text: any, _?:any) {
-		this.toast({text, category: "error"}).cls += " goui-error";
+		this.toast({text, category: "error"}).cls += " error";
 	}
 	/** @deprecated */
 	success(text: any, _?:any) {
-		this.toast({text, category: "status"}).cls += " goui-success";
+		this.toast({text, category: "status"}).cls += " success";
 	}
 
 	/** @deprecated */
 	notice(text: any, _?:any) {
-		this.toast({text, category: "status"}).cls += " goui-notice";
+		this.toast({text, category: "status"}).cls += " notice";
 	}
 
 	/**
@@ -57,15 +57,14 @@ class NotifierClass extends Observable<{notify:{msg:INotification}}> {
 	 * The "notify" event should return false to prevent this
 	 */
 	private toast(msg: INotification) {
-		const close = () => { alert?.remove() },
-			alert = btn({tagName: "div",
-				cls:"goui-alert " + msg.category,
-				text: msg.text
-			}).on('click', close);
-
+		const close = () => { alert?.remove() };
+		const alert = comp({cls:"goui-alert " + msg.category},
+			comp({tagName: "span", text: msg.text})
+		)
 		if (msg.category !== 'error')
 			setTimeout(close, 3000);
 		root.items.add(alert);
+		document.body.addEventListener("click", close, {once: true});
 		return alert;
 	}
 }
