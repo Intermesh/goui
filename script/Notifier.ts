@@ -40,11 +40,16 @@ class NotifierClass extends Observable<{notify:{msg:INotification}}> {
 	}
 	/** @deprecated */
 	error(text: any, _?:any) {
-		this.notify({text, category: "error"});
+		this.toast({text, category: "error"}).cls += " goui-error";
 	}
 	/** @deprecated */
 	success(text: any, _?:any) {
-		this.notify({text, category: "status"});
+		this.toast({text, category: "status"}).cls += " goui-success";
+	}
+
+	/** @deprecated */
+	notice(text: any, _?:any) {
+		this.toast({text, category: "status"}).cls += " goui-notice";
 	}
 
 	/**
@@ -57,10 +62,11 @@ class NotifierClass extends Observable<{notify:{msg:INotification}}> {
 				cls:"goui-alert " + msg.category,
 				text: msg.text
 			}).on('click', close);
-debugger;
+
 		if (msg.category !== 'error')
 			setTimeout(close, 3000);
 		root.items.add(alert);
+		return alert;
 	}
 }
 
