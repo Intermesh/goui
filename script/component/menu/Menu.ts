@@ -12,6 +12,20 @@ import {AbstractMenu} from "../AbstractMenu";
 import {FunctionUtil} from "../../util/index";
 
 
+
+/**
+ * @inheritDoc
+ */
+export interface MenuEventMap extends ComponentEventMap {
+	/**
+	 * Fires when menu is closed by the escape button
+	 *
+	 * @param form
+	 */
+	cancel: {}
+}
+
+
 /**
  * Menu class
  *
@@ -85,7 +99,7 @@ import {FunctionUtil} from "../../util/index";
  * 	});
  * ```
  */
-export class Menu<EventMap extends ComponentEventMap = ComponentEventMap> extends AbstractMenu<EventMap> {
+export class Menu<EventMap extends MenuEventMap = MenuEventMap> extends AbstractMenu<EventMap> {
 	private _parentMenu?: Menu | Toolbar | boolean;
 
 	constructor() {
@@ -135,6 +149,9 @@ export class Menu<EventMap extends ComponentEventMap = ComponentEventMap> extend
 					this.close();
 					ev.stopPropagation();
 					ev.preventDefault();
+
+					this.fire("cancel", {});
+
 					break;
 			}
 		});

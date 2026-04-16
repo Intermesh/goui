@@ -99,7 +99,9 @@ export interface FieldEventMap extends ComponentEventMap {
 	/**
 	 * Fires when the field loses focus
 	 */
-	blur: {},
+	blur: {
+		ev: FocusEvent
+	},
 
 	/**
 	 * Fires when validated
@@ -222,9 +224,9 @@ export abstract class Field<EventMap extends FieldEventMap = FieldEventMap, Elem
 		this.defaultValue = this.value;
 	}
 
-	protected onFocusOut(e:FocusEvent) {
+	protected onFocusOut(ev:FocusEvent) {
 
-		if (this.eventTargetIsInFocus(e)) {
+		if (this.eventTargetIsInFocus(ev)) {
 			//focus is still within this field
 			return;
 		}
@@ -240,7 +242,7 @@ export abstract class Field<EventMap extends FieldEventMap = FieldEventMap, Elem
 			this.fireChange();
 		}
 
-		this.fire("blur", {})
+		this.fire("blur", {ev})
 	}
 
 	/**
@@ -453,7 +455,8 @@ export abstract class Field<EventMap extends FieldEventMap = FieldEventMap, Elem
 		});
 		menu.on("hide", () => {
 			this.validateOnBlur = origValidateOnBlur;
-			this.focus();
+			// this caused issues when using tab to move to the next field
+			// this.focus();
 		});
 	}
 

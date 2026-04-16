@@ -130,7 +130,7 @@ export class ComboBox<DS extends AbstractDataSource = AbstractDataSource> extend
 	}
 }
 
-export type ComboBoxConfig<Type extends ComboBox = ComboBox> = FieldConfig<Type, "dataSource"> & {
+export type ComboBoxConfig<Type extends ComboBox = ComboBox> = Omit<FieldConfig<Type, "dataSource">, "menu" | "picker"> & {
 	/**
 	 * Config for the {@link DataSourceStore}
 	 */

@@ -44,11 +44,28 @@ export interface AutocompleteField<T extends List = List, EventMap extends Autoc
 export class AutocompleteField<T extends List = List, EventMap extends AutocompleteEventMap = AutocompleteEventMap> extends InputField<EventMap> {
 
 
+	/**
+	 * The menu that opens when autocompleting
+	 */
 	public readonly menu: Menu;
 	protected readonly menuButton: Button;
+
+	/**
+	 * Picker component inside the menu
+	 */
 	public readonly picker;
 
+	/**
+	 * Adds a clear button
+	 */
 	public readonly clearable!: boolean
+
+	/**
+	 * Allow free text input
+	 *
+	 * Useful when the value is plain text
+	 */
+	public freeInput = false;
 
 	/**
 	 *
@@ -81,14 +98,14 @@ export class AutocompleteField<T extends List = List, EventMap extends Autocompl
 			style: {maxHeight: "30rem"},
 			cls: "scroll",
 			listeners: {
-				hide: ({target}) => {
-					if(target.rendered) {
-						if(this.name && this.value == undefined) { // @see ParticipantField search
-							this.input.value = "";
-						}
+				cancel: ({target}) => {
+					// if(target.rendered) {
+						// if(this.name && this.value == undefined) { // @see ParticipantField search
+						// 	this.input.value = "";
+						// }
 						const inputField = target.findAncestorByType(InputField)!;
 						inputField.focus();
-					}
+					// }
 				}
 			}
 		},
@@ -103,7 +120,6 @@ export class AutocompleteField<T extends List = List, EventMap extends Autocompl
 					this.list.rowSelection.clear();
 				}
 				this.fire("autocomplete", {input: ""});
-
 				this.input.focus();
 			},
 			listeners: {
@@ -131,6 +147,16 @@ export class AutocompleteField<T extends List = List, EventMap extends Autocompl
 		});
 
 		this.fireChangeOnBlur = true;
+
+		this.on("blur", () => {
+			if(!this.menu.hidden)
+				this.menu.hide();
+
+			//clear input if no valid value was set
+			if (this.value == undefined) {
+				this.input.value = "";
+			}
+		})
 	}
 
 	protected eventTargetIsInFocus(e: FocusEvent): boolean {
@@ -167,19 +193,18 @@ export class AutocompleteField<T extends List = List, EventMap extends Autocompl
 		return value;
 	}
 
+	private setValueToken = 0;
 
 	protected internalSetValue(v?: string) {
-
 		if(v == undefined) {
 			return super.internalSetValue(v);
 		}
 
-		this.valueToTextField(this, v + "").then(textFieldValue => {
+		const token = ++this.setValueToken; // Claim this "slot"
 
-			if(v != this.value) {
-				//Quick and dirty way to cancel this promise if the value has changed in the mean time
-				return;
-			}
+		this.valueToTextField(this, v + "").then(textFieldValue => {
+			// make sure we only handle the last set value call
+			if (token !== this.setValueToken) return; // A newer call exists, bail out
 
 			if(this.input) {
 				super.internalSetValue(textFieldValue);
@@ -194,7 +219,12 @@ export class AutocompleteField<T extends List = List, EventMap extends Autocompl
 	}
 
 	protected internalGetValue() {
-		return this._value;
+
+		if(this.freeInput) {
+			return super.internalGetValue()
+		} else {
+			return this._value;
+		}
 	}
 
 	protected internalRender(): HTMLElement {
@@ -284,7 +314,7 @@ export class AutocompleteField<T extends List = List, EventMap extends Autocompl
 
 }
 
-type AutoCompleteConfig<T extends List, Required extends keyof AutocompleteField<T>> = FieldConfig<AutocompleteField<T>, Required> &
+type AutoCompleteConfig<T extends List, Required extends keyof AutocompleteField<T>> = Omit<FieldConfig<AutocompleteField<T>, Required>, "menu" | "picker"> &
 // Add the function properties as they are filtered out
 	Partial<Pick<AutocompleteField<T>, "pickerRecordToValue" | "valueToTextField">>;
 
@@ -298,3 +328,4 @@ type AutoCompleteConfig<T extends List, Required extends keyof AutocompleteField
  * @param config
  */
 export const autocomplete = <T extends List> (config: AutoCompleteConfig<T, "list">) => createComponent(new AutocompleteField(config.list), config);
+
