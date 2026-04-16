@@ -28,7 +28,7 @@ export class DateTimeField extends Field {
 	}
 
 	protected get itemContainerEl() {
-		return this.wrap;
+		return this.inputWrap;
 	}
 
 
