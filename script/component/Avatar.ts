@@ -6,6 +6,7 @@
 
 import {Component, createComponent} from "./Component.js";
 import {Config} from "./Observable.js";
+import {MaterialIcon} from "./MaterialIcon.js";
 
 /**
  * The Avatar class represents a graphical avatar component that displays a user's initials, background color, or an optional image.
@@ -60,6 +61,14 @@ export class Avatar extends Component {
 		return this.el.style.backgroundImage;
 	}
 
+	set icon(icon:MaterialIcon|""|undefined) {
+		this.el.innerText = icon ?? "";
+		this.el.classList.toggle("icon", !!icon);
+	}
+
+	get icon() {
+		return this.el.innerText != "" ? this.el.innerText as MaterialIcon : undefined;
+	}
 
 	/**
 	 * Grabs the first char of the first and last word.

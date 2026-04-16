@@ -4,7 +4,7 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 
-import {Menu} from "./Menu.js";
+import {Menu, MenuEventMap} from "./Menu.js";
 import {btn} from "../Button.js";
 import {Config} from "../Observable.js";
 import {ComponentEventMap, createComponent} from "../Component.js";
@@ -13,7 +13,7 @@ import {t} from "../../Translate";
 /**
  * @inheritDoc
  */
-export interface ColorMenuEventMap extends ComponentEventMap {
+export interface ColorMenuEventMap extends MenuEventMap {
 	/**
 	 * Fires when color is selected
 	 *

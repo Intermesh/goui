@@ -11,14 +11,13 @@
     "mocha": "^11.3.0",
     "sass": "latest",
     "typedoc": "latest",
-    "typescript": "5.9.*"
+    "typescript": "5.9.*",
+    "concurrently": "latest"
   },
   "scripts": {
     "test": "mocha",
-    "start": "npm run start:parallel",
-    "start:parallel": "npm run start:watch & npm run start:sass & npm run start:watch-dts",
+    "start": "npx concurrently \"npm run start:watch\"  \"npm run start:sass\"",
     "start:watch": "npx esbuild ./script/index.ts --bundle --format=esm --outdir=dist --watch",
-    "start:watch-dts": "npx tsc --emitDeclarationOnly --watch",
     "start:sass": "npx sass --watch ./style:./dist",
     "build": "npm run build:sass && npm run build:ts",
     "build:clean": "rm -rf ./dist/*",

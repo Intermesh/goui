@@ -1,6 +1,7 @@
 @use "config";
 @use "util";
 @use "layout";
+@use "icons";
 
 .goui * {
 	text-rendering: optimizeLegibility;
@@ -225,15 +226,18 @@ aside.goui-cardmenu.goui-toolbar {
 }
 
 .goui.goui-avatar {
+
+	@extend %icon;
+
 	cursor: default;
 	position: relative;
 	display: flex;
-	color:white;
+	color: config.$colorTextSecondary;
 	padding: 0;
-	background-color: config.$colorTextSecondary;
+	background-color: config.$surfaceLowest;
 	background-size: cover;
 	border-radius: 50%;
-	//border: 1px solid var(--fg-line);
+	border: 1px solid var(--fg-line);
 	width: config.$baseLineHeight + util.dp(22);
 	height: config.$baseLineHeight + util.dp(22);
 	font-size: util.dp(16);
@@ -256,6 +260,7 @@ aside.goui-cardmenu.goui-toolbar {
 	&.large {
 		width: config.$baseLineHeight + util.dp(64);
 		height: config.$baseLineHeight + util.dp(64);
+		font-size: util.sp(48);
 	}
 }
 
