@@ -1311,6 +1311,7 @@ div.color-dot {
 			flex: 1;
 			overflow: hidden;
 			padding: 0  util.dp(8);
+			min-height: util.dp(46);
 		}
 
 		.chip {
