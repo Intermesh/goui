@@ -64,7 +64,7 @@ export class ChipsField<EventMap extends FieldEventMap = FieldEventMap> extends 
 
 	protected baseCls = 'goui-form-field chips';
 	private _editor?: Component;
-	private chipsContainer?: HTMLDivElement;
+	private _chipsContainer?: HTMLDivElement;
 
 	/**
 	 * Function that transforms the user text input to a chip.
@@ -90,10 +90,16 @@ export class ChipsField<EventMap extends FieldEventMap = FieldEventMap> extends 
 		return this._editor!;
 	}
 
-	protected createControl(): HTMLElement | undefined {
+	protected get chipsContainer() {
+		if(!this._chipsContainer ) {
+			this._chipsContainer = document.createElement("div");
+			this._chipsContainer.classList.add("control-wrap");
+		}
 
-		this.chipsContainer = document.createElement("div");
-		this.chipsContainer.classList.add("control-wrap");
+		return this._chipsContainer;
+	}
+
+	protected createControl(): HTMLElement | undefined {
 
 		this._editor = comp({
 			id: Component.uniqueID(),
