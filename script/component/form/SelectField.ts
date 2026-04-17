@@ -69,10 +69,7 @@ export class SelectField extends InputField {
 		return this._input!;
 	}
 
-	// turned off fireChangeOnBlur but override onFocusIn() to get the oldValue
-	protected onFocusIn(e:FocusEvent) {
-		this.captureValueForChange();
-	}
+
 	/**
 	 * Redraw the options. Can be useful when this.textRenderer() produces another result
 	 */
