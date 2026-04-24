@@ -18,10 +18,27 @@ import {browser, DateTime} from "../util/index.js";
 
 
 interface PromptConfig {
+	/**
+	 * The input label
+	 */
 	inputLabel: string,
+
+	/**
+	 * An optional default value for the input field
+	 */
 	defaultValue?: string
+	/**
+	 * The title for the dialog. Defaults to "Please enter".
+	 */
 	title?: string
+	/**
+	 * A text to inform the user that will be placed above the input field
+	 */
 	text?: string
+
+	/**
+	 * The input field type
+	 */
 	fieldType?: TextFieldType
 }
 
@@ -643,7 +660,19 @@ export class Window<EventMap extends WindowEventMap = WindowEventMap> extends Dr
 		});
 	}
 
-	// old way: prompt(inputLabel, defaultValue = "", title = "", text = "")
+
+	/**
+	 * Displays a prompt dialog to the user with configurable options such as title, input field type, default value, and additional text.
+	 *
+	 * @param {PromptConfig} cfg - The configuration object for the prompt dialog. Contains the following properties:
+	 *   - `title` {string}: The title of the prompt dialog. Defaults to "Please enter".
+	 *   - `text` {string}: Optional descriptive text to display above the input field. Defaults to an empty string.
+	 *   - `defaultValue` {string}: The default value for the input field. Defaults to an empty string.
+	 *   - `fieldType` {string}: The type of the input field (e.g., "text", "password"). Defaults to "text".
+	 *   - `inputLabel` {string}: The label for the input field.
+	 *
+	 * @return {Promise<string | undefined>} A promise that resolves to the user's input as a string if confirmed, or `undefined` if the dialog is closed without confirmation.
+	 */
 	public static prompt(cfg: PromptConfig): Promise<string | undefined> {
 		cfg.title ??= t("Please enter");
 		cfg.text ??= "";
