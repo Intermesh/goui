@@ -73,9 +73,10 @@ export class ComboBox<DS extends AbstractDataSource = AbstractDataSource> extend
 					id: displayProperty,
 					resizable: true,
 					width: 312,
+					htmlEncode:true,
 					sortable: true,
 					renderer:(_columnValue, record) => {
-						return Format.escapeHTML(renderer(this, record));
+						return renderer(this, record);
 					}
 				})
 			]
