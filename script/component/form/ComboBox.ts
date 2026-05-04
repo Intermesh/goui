@@ -36,6 +36,9 @@ export class ComboBox<DS extends AbstractDataSource = AbstractDataSource> extend
 
 	/**
 	 * Set additional filter properties on the store.
+	 *
+	 * eg. {permissionLevel: AclLevel.WRITE}
+	 *
 	 */
 	public filter?: Filter;
 
@@ -107,6 +110,7 @@ export class ComboBox<DS extends AbstractDataSource = AbstractDataSource> extend
 		if(!this.value) {
 			const oldLimit = this.list.store.queryParams.limit;
 			this.list.store.queryParams.limit = 1;
+			this.list.store.setFilter("combo", this.filter);
 			const records = await this.list.store.load()
 			this.list.store.queryParams.limit = oldLimit;
 			//recheck cmp.value because window may have been loaded simultaneously.
