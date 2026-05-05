@@ -280,6 +280,7 @@ export class Menu<EventMap extends MenuEventMap = MenuEventMap> extends Abstract
 	 * Align the menu with it's "alignTo" element.
 	 */
 	public align() {
+		console.log("align");
 		if(!this.alignTo) {
 			return;
 		}
@@ -374,17 +375,30 @@ export class Menu<EventMap extends MenuEventMap = MenuEventMap> extends Abstract
 		const onScroll = FunctionUtil.buffer(20, () => {
 			this.align();
 		});
-		window.addEventListener("scroll", onScroll);
-		this.on("hide", ()=>{
-			window.removeEventListener("scroll", onScroll)
-		})
+
+		let first = true;
 
 		// Re-align when height changes. Happens for example on store loads
 		const ro = new ResizeObserver( FunctionUtil.onRepaint(() => {
-			this.align();
+			if(first) {
+				first = false;
+			} else {
+				this.align();
+			}
 		}));
 
 		ro.observe(this.el);
+
+		window.addEventListener("scroll", onScroll);
+		this.on("hide", ()=>{
+			window.removeEventListener("scroll", onScroll)
+			ro.disconnect();
+		})
+
+		this.on("remove", ()=>{
+			window.removeEventListener("scroll", onScroll)
+			ro.disconnect();
+		})
 	}
 
 	protected internalSetHidden(hidden:boolean) {
@@ -402,7 +416,7 @@ export class Menu<EventMap extends MenuEventMap = MenuEventMap> extends Abstract
 			super.internalSetHidden(hidden);
 
 			if(this.alignTo) {
-				// this.align();
+				this.align();
 				this.listenForScroll();
 			}
 
@@ -447,6 +461,8 @@ export class Menu<EventMap extends MenuEventMap = MenuEventMap> extends Abstract
 	 * @param coords
 	 */
 	showAt(coords: { x: number, y: number } | MouseEvent) {
+
+		this.alignTo = undefined
 
 		if(coords instanceof MouseEvent) {
 			this.x = coords.pageX;

@@ -205,6 +205,7 @@ export class Button<EventMap extends ButtonEventMap= ButtonEventMap> extends Com
 	}
 
 	private onMenuButtonClick() {
+		this._menu!.alignTo = this.el;
 		if (this._menu!.hidden) {
 			this._menu!.show();
 		} else {
@@ -215,6 +216,7 @@ export class Button<EventMap extends ButtonEventMap= ButtonEventMap> extends Com
 	private onMenuMouseEnter() {
 		// open submenu's or toolbar menu's when one menu is already opened by a click
 		if(this._menu && this._menu.hidden && (this._menu.parentMenu instanceof Menu || (this._menu.parentMenu && this._menu.parentMenu.openedMenu))) {
+			this._menu!.alignTo = this.el;
 			this._menu.show();
 		}
 	}
@@ -228,12 +230,6 @@ export class Button<EventMap extends ButtonEventMap= ButtonEventMap> extends Com
 			menu.parent = this;
 			menu.removeOnClose = false;
 			menu.isDropdown = true;
-
-			menu.on("beforeshow", ({target}) => {
-				if(!target.alignTo) {
-					target.alignTo = this.el;
-				}
-			});
 
 			this.el.classList.add("has-menu");
 		}

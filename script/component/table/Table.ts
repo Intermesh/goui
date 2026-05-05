@@ -15,6 +15,8 @@ import {TableColumn} from "./TableColumns.js";
 import {List, ListEventMap} from "../List.js";
 import {Config} from "../Observable.js";
 import {Sortable} from "../Sortable";
+import {btn} from "../Button.js";
+import {t} from "../../Translate.js";
 
 
 /**
@@ -365,9 +367,32 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 
 	private columnMenu: Menu | undefined;
 
-	private showColumnMenu(ev: MouseEvent) {
-		ev.preventDefault();
+	/**
+	 * Generates and returns a button component with a menu for toggling the visibility of columns.
+	 * The button contains an icon and a nested menu for column-related actions.
+	 *
+	 * @return {Object} A button component with an associated menu for column visibility options.
+	 */
+	public getVisibleColumnButton() {
 
+			return btn({
+				menu: this.getVisibleColumnMenu(),
+				icon: "view_column",
+				text: t("View columns")
+			})
+
+	}
+
+	/**
+	 * Retrieves the column menu containing options to toggle the visibility of columns.
+	 * If the menu does not already exist, it is created and populated with checkboxes
+	 * representing the hidable columns of the data grid. Each checkbox allows the user
+	 * to show or hide the corresponding column by modifying its `hidden` property,
+	 * saving the state, and triggering a rerender.
+	 *
+	 * @return {Menu} The column menu with toggle options for visible columns.
+	 */
+	public getVisibleColumnMenu() {
 		if (!this.columnMenu) {
 			this.columnMenu = menu({
 				isDropdown: true,
@@ -391,10 +416,9 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 						}
 					}));
 				}
-			};
+			}
 		}
-
-		this.columnMenu.showAt(ev);
+		return this.columnMenu;
 	}
 
 	private createColumnSplitter(h: TableColumn, header: HTMLTableCellElement, colIndex: number) {
@@ -506,9 +530,9 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 		const thead = document.createElement('thead');
 		this.headersRow = document.createElement("tr");
 
-		this.headersRow.addEventListener('contextmenu', ev => {
-			this.showColumnMenu(ev);
-		})
+		// this.headersRow.addEventListener('contextmenu', ev => {
+		// 	this.showColumnMenu(ev);
+		// })
 
 		let index = -1, left = 0,  stickyLeft = true;
 		for (let id of this.getColumnSort()) {
@@ -744,6 +768,7 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 		}
 		return r;
 	}
+
 }
 
 export type TableConfig<TableType extends Table = Table> = Omit<Config<TableType, "store" | "columns">, "rowSelection">
