@@ -1,5 +1,5 @@
 import {Observable, ObservableEventMap} from "./Observable.js";
-import {comp, Component, ComponentEventMap} from "./Component.js";
+import {comp, Component} from "./Component.js";
 import {root} from "./Root.js";
 
 type SortableDragEvent = DragEvent & {
@@ -320,6 +320,19 @@ export class Sortable<Type extends Component> extends Observable<SortableEventMa
 						break;
 				}
 			} else {
+				const listRect = this.component.el.getBoundingClientRect();
+
+				if (e.y <= listRect.y || e.y < (listRect.y + 20)) {
+					dragData.dataSet = {
+						...dragData.dataSet,
+						beforeItems: true
+					}
+				} else {
+					dragData.dataSet = {
+						...dragData.dataSet,
+						beforeItems: false
+					}
+				}
 
 				dragData.pos = "before";
 				dragData.toIndex = 0;
@@ -468,6 +481,8 @@ export class Sortable<Type extends Component> extends Observable<SortableEventMa
 		}
 
 		dragData.dragSrc = undefined;
+
+		console.log(dragData.toIndex, dragData.pos);
 
 		this.fire("sort", {toIndex: dragData.toIndex, fromIndex: dragData.fromIndex, droppedOn: dragData.pos == "on", source: dragData.sourceonent, dragDataSet: dragData.dataSet});
 		this.fire("dragend", {ev, dragData});
