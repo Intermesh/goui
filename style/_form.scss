@@ -170,8 +170,7 @@
 			//box-shadow: 0 0 0 1px $colorMain;
 		}
 		&[style]:checked:before {
-			color:inherit;
-			text-shadow: 0 0 1px black;
+			color: var(--tickColor, var(--fg-text))
 		}
 	}
 

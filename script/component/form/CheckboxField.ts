@@ -5,9 +5,23 @@
  */
 
 import {FieldConfig} from "./Field.js";
-import {createComponent, i} from "../Component.js";
+import {createComponent} from "../Component.js";
 import {E} from "../../util/Element.js";
 import {InputField} from "./InputField.js";
+
+const rgb = (hex: string) => ({
+	r: parseInt(hex.slice(1,3),16),
+	g: parseInt(hex.slice(3,5),16),
+	b: parseInt(hex.slice(5,7),16)
+});
+function foreground( hex: string ) {
+	console.log(hex);
+	const {r,g,b} = rgb(hex);
+	const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+	return brightness > 125
+		? 'black'
+		: 'white';
+}
 
 type CheckBoxType = 'box' | 'switch' | 'button';
 
@@ -87,6 +101,9 @@ export class CheckboxField extends InputField {
 	}
 
 	set color(v: string) {
+		console.log(v);
+
+		this.input.setAttribute('style', '--tickColor: '+foreground(v));
 		this.input.style.backgroundColor = v || '';
 	}
 
