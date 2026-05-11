@@ -482,8 +482,6 @@ export class Sortable<Type extends Component> extends Observable<SortableEventMa
 
 		dragData.dragSrc = undefined;
 
-		console.log(dragData.toIndex, dragData.pos);
-
 		this.fire("sort", {toIndex: dragData.toIndex, fromIndex: dragData.fromIndex, droppedOn: dragData.pos == "on", source: dragData.sourceonent, dragDataSet: dragData.dataSet});
 		this.fire("dragend", {ev, dragData});
 	}
