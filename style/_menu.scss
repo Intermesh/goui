@@ -225,6 +225,9 @@ menu.goui-dropdown.goui-menu-color, .goui-menu-color {
 			}
 		}
 	}
+	> li {
+		width: auto;
+	}
 
 	button {
 		text-align: center;
