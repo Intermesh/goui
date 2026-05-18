@@ -15,7 +15,6 @@ const rgb = (hex: string) => ({
 	b: parseInt(hex.slice(5,7),16)
 });
 function foreground( hex: string ) {
-	console.log(hex);
 	const {r,g,b} = rgb(hex);
 	const brightness = (r * 299 + g * 587 + b * 114) / 1000;
 	return brightness > 125
@@ -101,8 +100,6 @@ export class CheckboxField extends InputField {
 	}
 
 	set color(v: string) {
-		console.log(v);
-
 		this.input.setAttribute('style', '--tickColor: '+foreground(v));
 		this.input.style.backgroundColor = v || '';
 	}
