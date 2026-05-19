@@ -169,20 +169,16 @@ export class Button<EventMap extends ButtonEventMap= ButtonEventMap> extends Com
 		// visible in windows. Sub menu's are rendered inside the parent menu button.
 		if (this.menu) {
 			this.menu.hide();
-
-			this.menu.on("show", ({target}) => {
-				this.el.classList.add("menu-open");
-			});
-
-			this.menu.on("hide", ({target}) => {
-				this.el.classList.remove("menu-open");
-			})
-
-			this.el.addEventListener("mouseenter", this.onMenuMouseEnter.bind(this));
-			this.el.addEventListener("click", this.onMenuButtonClick.bind(this));
 		}
 
+
+
 		el.addEventListener("click", (ev) => {
+
+			// toggle menu if present
+			if(this._menu) {
+				this._menu.hidden = !this._menu.hidden;
+			}
 			// check detail for being the first click. We don't want double clicks to call the handler twice.
 			// the detail property contains the click count. When spacebar is used it will be 0
 			// Michael had problems with e.detail < 2 but we don't remember why. Discuss when we run into this.
@@ -204,16 +200,9 @@ export class Button<EventMap extends ButtonEventMap= ButtonEventMap> extends Com
 		return el;
 	}
 
-	private onMenuButtonClick() {
-		// this._menu!.alignTo = this.el;
-		if (this._menu!.hidden) {
-			this._menu!.show();
-		} else {
-			this._menu!.hide();
-		}
-	}
 
 	private onMenuMouseEnter() {
+		console.warn("onMenuMouseEnter");
 		// open submenu's or toolbar menu's when one menu is already opened by a click
 		if(this._menu && this._menu.hidden && (this._menu.parentMenu instanceof Menu || (this._menu.parentMenu && this._menu.parentMenu.openedMenu))) {
 			// this._menu!.alignTo = this.el;
@@ -222,6 +211,7 @@ export class Button<EventMap extends ButtonEventMap= ButtonEventMap> extends Com
 	}
 
 
+	private boundOnMenuMouseEnter: any
 	/**
 	 * Add menu to this button
 	 */
@@ -233,6 +223,25 @@ export class Button<EventMap extends ButtonEventMap= ButtonEventMap> extends Com
 			menu.alignTo = this.el;
 
 			this.el.classList.add("has-menu");
+
+			menu.on("show", ({target}) => {
+				this.el.classList.add("menu-open");
+			});
+
+			menu.on("hide", ({target}) => {
+				this.el.classList.remove("menu-open");
+			})
+
+			if(!this.boundOnMenuMouseEnter) {
+				this.boundOnMenuMouseEnter = this.onMenuMouseEnter.bind(this);
+			}
+			this.el.addEventListener("mouseenter", this.boundOnMenuMouseEnter);
+		} else {
+			if(this.boundOnMenuMouseEnter) {
+				this.el.removeEventListener("mouseenter", this.boundOnMenuMouseEnter);
+			}
+
+			this.el.classList.remove("has-menu");
 		}
 
 		this._menu = menu;
