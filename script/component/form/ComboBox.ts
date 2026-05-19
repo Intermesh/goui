@@ -9,7 +9,6 @@ import {
 } from "../../data/index.js";
 import {column, Table, table, TableConfig} from "../table/index.js";
 import {createComponent} from "../Component.js";
-import {Format} from "../../util/index.js";
 import {FieldConfig} from "./Field.js";
 import {t} from "../../Translate";
 
