@@ -298,6 +298,7 @@
 		border-radius: inherit;
 		display: flex;
 		min-width: 0; // for shrinking smaller than content
+		min-height: 0;
 	}
 }
 
@@ -461,7 +462,10 @@
 		flex: 1;
 		@extend %control-pit;
 		display: flex;
-		flex-flow: row nowrap;
+		//flex-flow: row nowrap;
+		min-height: 0;
+		min-width: 0;
+
 		>.control {
 			flex: 1;
 			appearance: none;
