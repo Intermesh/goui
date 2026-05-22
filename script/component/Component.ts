@@ -578,7 +578,7 @@ export class Component<EventMapType extends ComponentEventMap = ComponentEventMa
 	}
 
 	protected internalRemove() {
-		this.items.clear();
+		// this.items.clear();
 		this.detach();
 	}
 
