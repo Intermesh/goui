@@ -146,7 +146,7 @@ export class DataSourceStore<
 			list = getResponse.list as dataSourceEntityType<DataSource>[];
 		}
 
-		if(queryResponse.total) {
+		if(queryResponse.total !== undefined) {
 			this.total = queryResponse.total;
 		} else {
 			this.total = undefined;
