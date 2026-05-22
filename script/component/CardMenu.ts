@@ -85,6 +85,7 @@ export class CardMenu extends Toolbar {
 
 			if (activeItem && (item.itemId == activeItem.itemId || item.itemId == activeItem.id)) {
 				item.el.classList.add("active");
+				item.el.scrollIntoView();
 			} else {
 				item.el.classList.remove("active");
 			}
