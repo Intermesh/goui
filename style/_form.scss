@@ -1319,7 +1319,8 @@ div.color-dot {
 			flex-direction: row;
 			float: left;
 			border-radius: util.dp(4);
-			background-color: var(--bg-highest);
+			color: var(--bg-dim);
+			background-color: color-mix(in srgb, currentColor 48%, transparent);
 			padding: 0 util.dp(10);
 			margin: util.dp(9) util.dp(4);
 			max-width: util.dp(240);
@@ -1329,6 +1330,7 @@ div.color-dot {
 
 			> span {
 				flex: 1;
+				color: var(--fg-text);
 				overflow: hidden;
 				text-overflow: ellipsis;
 				white-space: nowrap;
