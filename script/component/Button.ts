@@ -112,6 +112,14 @@ export class Button<EventMap extends ButtonEventMap= ButtonEventMap> extends Com
 	constructor() {
 		super("button");
 		this.type = "button";
+
+		let added = false;
+		this.on("added", (ev) => {
+			if(!added && ev.parent instanceof Menu) {
+				this.el.addEventListener("mouseenter", this.onMenuMouseEnter.bind(this));
+				added = true;
+			}
+		})
 	}
 
 	/**
@@ -171,8 +179,6 @@ export class Button<EventMap extends ButtonEventMap= ButtonEventMap> extends Com
 			this.menu.hide();
 		}
 
-
-
 		el.addEventListener("click", (ev) => {
 
 			// toggle menu if present
@@ -208,10 +214,10 @@ export class Button<EventMap extends ButtonEventMap= ButtonEventMap> extends Com
 			// this._menu!.alignTo = this.el;
 			this._menu.show();
 		}
+		if(!this._menu && this.parent instanceof Menu) {
+			this.parent.openedMenu?.close();
+		}
 	}
-
-
-	private boundOnMenuMouseEnter: any
 	/**
 	 * Add menu to this button
 	 */
@@ -233,16 +239,7 @@ export class Button<EventMap extends ButtonEventMap= ButtonEventMap> extends Com
 			menu.on("hide", ({target}) => {
 				this.el.classList.remove("menu-open");
 			})
-
-			if(!this.boundOnMenuMouseEnter) {
-				this.boundOnMenuMouseEnter = this.onMenuMouseEnter.bind(this);
-			}
-			this.el.addEventListener("mouseenter", this.boundOnMenuMouseEnter);
 		} else {
-			if(this.boundOnMenuMouseEnter) {
-				this.el.removeEventListener("mouseenter", this.boundOnMenuMouseEnter);
-			}
-
 			this.el.classList.remove("has-menu");
 		}
 
