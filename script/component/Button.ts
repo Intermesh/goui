@@ -220,7 +220,9 @@ export class Button<EventMap extends ButtonEventMap= ButtonEventMap> extends Com
 			menu.parent = this;
 			menu.removeOnClose = false;
 			menu.isDropdown = true;
-			menu.alignTo = this.el;
+			if(!menu.alignTo) {
+				menu.alignTo = this.el;
+			}
 
 			this.el.classList.add("has-menu");
 
