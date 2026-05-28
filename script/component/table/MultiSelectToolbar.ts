@@ -55,7 +55,7 @@ export class MultiSelectToolbar extends Toolbar {
 
 		this.hidden = true;
 
-		this.cls = "overlay multiselect";
+		this.baseCls = "goui-toolbar overlay multiselect";
 	}
 }
 
