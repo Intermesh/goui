@@ -53,7 +53,13 @@
 
 
 	&.small {
-		transform: scale(.8);
+		padding: .6rem !important;
+		i.icon {
+			height: 1.8rem;
+			width: 1.8rem;
+			line-height: 1.8rem;
+			font-size: 1.8rem;
+		}
 	}
 
 
@@ -260,7 +266,7 @@
 	> .goui-form-field {
 		//adjust to match button height. Take off 3px of padding at top and bottom
 		align-self: center;
-		padding: 0 util.dp(8) 0 0;
+		padding: 0;// util.dp(8) 0 0;
 		.hint {
 			display: none;
 			padding-bottom: 0;

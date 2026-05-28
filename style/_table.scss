@@ -54,7 +54,8 @@
 
   //applies to th, td and col
   .checkbox-select-column {
-    width: util.dp(48);
+    width: util.dp(40);
+		padding-right: 0;
   }
 
 
