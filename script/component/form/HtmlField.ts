@@ -387,17 +387,20 @@ export class HtmlField extends Field<HtmlFieldEventMap> {
 	 * @param html
 	 */
 	public insertHtml(html: string) {
-		// document.execCommand("insertHTML", false, html);
-
 		this.editor!.focus();
 
 		const selection = window.getSelection()!;
-		const range = document.createRange();
-		range.selectNodeContents(this.editor!);
-		range.collapse(false); // insert at end
 
-		selection.removeAllRanges();
-		selection.addRange(range);
+		// Use existing selection/cursor position, or fall back to end of editor
+		if (!selection.rangeCount) {
+			const range = document.createRange();
+			range.selectNodeContents(this.editor!);
+			range.collapse(false);
+			selection.addRange(range);
+		}
+
+		const range = selection.getRangeAt(0);
+		range.deleteContents(); // remove selected text if any
 
 		const fragment = range.createContextualFragment(html);
 		const lastNode = fragment.lastChild;
@@ -405,11 +408,12 @@ export class HtmlField extends Field<HtmlFieldEventMap> {
 		range.insertNode(fragment);
 
 		// move caret after inserted HTML
-		range.setStartAfter(lastNode!);
-		range.collapse(true);
-
-		selection.removeAllRanges();
-		selection.addRange(range);
+		if (lastNode) {
+			range.setStartAfter(lastNode);
+			range.collapse(true);
+			selection.removeAllRanges();
+			selection.addRange(range);
+		}
 	}
 
 	// noinspection JSUnusedGlobalSymbols
