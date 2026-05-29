@@ -1,7 +1,6 @@
 import {CheckboxField, FieldConfig} from "../form/index.js";
 import {List} from "../List.js";
 import {createComponent} from "../Component.js";
-import {CheckboxColumn} from "./TableColumns.js";
 
 
 /**
@@ -32,7 +31,7 @@ type SelectAllCheckboxFieldConfig = Omit<FieldConfig<SelectAllCheckboxField>, "t
  *
  * It also automatically updates the checkbox when the selection changes
  *
- * @see CheckboxColumn
+ * @see SelectAllCheckboxField
  * @param config
  */
 export const selectallcheckboxfield = (config: SelectAllCheckboxFieldConfig) => createComponent(new SelectAllCheckboxField(config.list), config);
