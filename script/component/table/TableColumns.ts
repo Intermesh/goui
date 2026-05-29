@@ -11,6 +11,7 @@ import {DateTime, Format} from "../../util/index.js";
 import {checkbox, CheckboxField} from "../form/index.js";
 import {btn} from "../Button.js";
 import {Menu, menu} from "../menu/index.js";
+import {t} from "../../Translate.js";
 
 /**
  * Return HTML or component to render into the table cell. Can also be async.
@@ -373,6 +374,11 @@ export class CheckboxSelectColumn extends TableColumn {
 
 		return checkbox({
 			listeners: {
+				render: ({target}) => {
+					table.rowSelection!.on("selectionchange", ({selected}) => {
+						target.value = selected.length == table.store.count();
+					});
+				},
 				change: ({newValue}) => {
 
 					if (newValue) {
@@ -409,6 +415,17 @@ export class CheckboxSelectColumn extends TableColumn {
 					table.rowSelection!.on("selectionchange", () => {
 						target.value = table.rowSelection!.isSelected(record);
 					});
+
+
+					target.el.addEventListener('contextmenu', (ev) => {
+						ev.preventDefault();
+						const m = menu({isDropdown:true},
+							btn({text: t('Select all'),handler:()=>{table.rowSelection!.selectAll()}}),
+							btn({text: t('Select none'),handler:()=>{table.rowSelection!.clear()}}),
+							btn({text: t('Deselect others'),handler:()=>{table.rowSelection!.clear();table.rowSelection!.add(record)}}),
+						);
+						m.showAt(ev);
+					})
 
 				},
 				change: ( {newValue}) => {
