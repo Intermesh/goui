@@ -4,15 +4,16 @@
     "@types/chai": "latest",
     "@types/mocha": "latest",
     "chai": "latest",
+    "concurrently": "latest",
     "esbuild": "latest",
     "fake-indexeddb": "latest",
-    "jsdom": "latest",
-    "jsdom-global": "latest",
+    "jsdom": "^29.1.1",
+    "jsdom-global": "^3.0.2",
     "mocha": "^11.3.0",
     "sass": "latest",
+    "tsx": "^4.22.4",
     "typedoc": "latest",
-    "typescript": "5.9.*",
-    "concurrently": "latest"
+    "typescript": "5.9.*"
   },
   "scripts": {
     "test": "mocha",
