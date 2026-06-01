@@ -77,12 +77,11 @@ export abstract class InputField<EventMap extends InputFieldEventMap = InputFiel
 	}
 
 	protected createControl() : HTMLElement {
+		return this.createInput();
+	}
 
-
-		// TODO createInput(tagName)
-
-
-		const control = document.createElement("input");
+	protected createInput(tagName:"input"|"textarea"|"select" = "input") : HTMLElement {
+		const control = document.createElement(tagName ?? "input") as HTMLTextAreaElement;
 
 		//hack or detecting browser autofill and make label float
 		control.addEventListener("animationstart", ({target, animationName}) => {
@@ -96,7 +95,7 @@ export abstract class InputField<EventMap extends InputFieldEventMap = InputFiel
 			}
 		}, false);
 
-		control.on("change", (e)=> {
+		control.addEventListener("change", (e)=> {
 			this.fireChange();
 		});
 

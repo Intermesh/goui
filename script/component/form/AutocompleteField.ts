@@ -164,12 +164,18 @@ export class AutocompleteField<T extends List = List, EventMap extends Autocompl
 	}
 
 
-	protected createControl() {
+	protected createControl() :HTMLElement {
 		const control = super.createControl() as HTMLInputElement;
 
 		// select the text so users can type right away
 		control.addEventListener("focus", function() {
 			this.select();
+		})
+
+		control.addEventListener("input", (ev) => {
+			if(this.freeInput) {
+				this._value = control.value;
+			}
 		})
 
 		return control;
@@ -198,6 +204,8 @@ export class AutocompleteField<T extends List = List, EventMap extends Autocompl
 			return super.internalSetValue(v);
 		}
 
+		this._value = v;
+
 		const token = ++this.setValueToken; // Claim this "slot"
 
 		this.valueToTextField(this, v + "").then(textFieldValue => {
@@ -217,12 +225,7 @@ export class AutocompleteField<T extends List = List, EventMap extends Autocompl
 	}
 
 	protected internalGetValue() {
-
-		if(this.freeInput) {
-			return super.internalGetValue()
-		} else {
-			return this._value;
-		}
+		return this._value;
 	}
 
 	protected internalRender(): HTMLElement {

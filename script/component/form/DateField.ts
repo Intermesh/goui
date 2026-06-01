@@ -45,14 +45,6 @@ export class DateField extends InputField {
 		this.type = "date";
 	}
 
-	protected createInput() : HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement{
-		const control = document.createElement("input");
-		if (this.invalidMsg) {
-			this.applyInvalidMsg();
-		}
-		return control;
-	}
-
 	protected internalSetValue(v:FieldValue) {
 		if(this.type === 'date' && v) {
 			v = v.toString().substring(0,10); // remove possible time part
