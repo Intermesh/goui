@@ -229,7 +229,26 @@ export class AutocompleteChips<T extends List = List, EventMap extends Autocompl
 
 		// set value after focus as this will start tracking for the change event
 		if(this.list.rowSelection!.multiSelect) {
-			this.value = newValues;
+			// todo: only works if pickerRecordToValue returns a scalar
+
+			const patch = this.list.store.data.reduce((acc: any, v) => {
+				acc[v.id] = newValues.includes(v.id);
+				return acc;
+			}, {});
+
+			const v = this.value || [];
+			for(const id in patch) {
+				if(patch[id]) {
+					if(!v.includes(id))
+						v.push(id);
+				} else {
+					const idx = v.indexOf(id);
+					if (idx !== -1) {
+						v.splice(idx, 1);
+					}
+				}
+			}
+			this.value = v;
 		} else
 		{
 
