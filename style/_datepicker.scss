@@ -147,67 +147,52 @@ menu.goui-dropdown {
 		}
 	}
 
-	@keyframes go-top {
-		from {transform: translateY(0);}
-		to {	transform: translateY(-101%);}
-	}
-	@keyframes go-bottom {
-		from {transform: translateY(0);}
-		to {	transform: translateY(101%);}
-	}
-
-	$duration: 400ms;
+	$duration: 300ms;
 	.cards {
 		position: relative;
 		height: 7 * ($buttonSize + util.dp(4)) + util.dp(12);//20.8rem; /* 6x28 + 12m */
 		overflow: hidden;
 		user-select:none;
-		&.top {
-			position: absolute;
-			//top: dp(50);
-			bottom: 0;
-			width: 100%;
-			> * { // todo
-				transform: translateY(-100%);
-				z-index: 1;
-			}
-		}
-
 		&.animate {
 
 			> * {
 				position: absolute;
 				transition: transform $duration linear; // go out to bottom
-				transform: translateY(100%);
+				transform: translateX(100%);
 			}
-
 			> .active {
 				z-index: 1;
 				transition: transform $duration linear; // come in from top
-				transform: translateY(0);
+				transform: translateX(0) translateY(0);
 			}
-
 			> .active + div {
 				transition: transform $duration linear; // come in from top
-				transform: translateY(-100%);
+				transform: translateX(-100%);
 			}
 
 			&.reverse {
 				> * {
 					position: absolute;
 					transition: transform $duration linear; // go out to bottom
-					transform: translateY(-100%);
+					transform: translateX(-100%);
 				}
-
 				> .active {
 					z-index: 1;
 					transition: transform $duration linear; // come in from top
-					transform: translateY(0);
+					transform: translateX(0)  translateY(0);
 				}
-
 				> .active + div {
 					transition: transform $duration linear; // come in from top
-					transform: translateY(100%);
+					transform: translateX(100%);
+				}
+			}
+			&.top {
+				position: absolute;
+				bottom: 0;
+				width: 100%;
+				> * { // todo
+					transform: translateY(-100%);
+					z-index: 1;
 				}
 			}
 		}
