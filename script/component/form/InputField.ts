@@ -78,6 +78,10 @@ export abstract class InputField<EventMap extends InputFieldEventMap = InputFiel
 
 	protected createControl() : HTMLElement {
 
+
+		// TODO createInput(tagName)
+
+
 		const control = document.createElement("input");
 
 		//hack or detecting browser autofill and make label float

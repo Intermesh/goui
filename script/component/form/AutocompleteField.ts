@@ -163,17 +163,15 @@ export class AutocompleteField<T extends List = List, EventMap extends Autocompl
 		return super.eventTargetIsInFocus(e) || (e.relatedTarget instanceof HTMLElement) && this.menu.el.contains(e.relatedTarget);
 	}
 
-	protected createInput() : HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement{
-		const control = document.createElement("input");
+
+	protected createControl() {
+		const control = super.createControl() as HTMLInputElement;
 
 		// select the text so users can type right away
 		control.addEventListener("focus", function() {
 			this.select();
 		})
 
-		if (this.invalidMsg) {
-			this.applyInvalidMsg();
-		}
 		return control;
 	}
 
