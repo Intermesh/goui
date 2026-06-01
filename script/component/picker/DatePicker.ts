@@ -76,8 +76,8 @@ export class DatePicker extends Component<DatePickerEventMap> {
 				this.yearEl = E('button').cls("goui-button").attr("type", "button").on('click', _ => {
 					this.years.cls('!active');
 					this.months.cls('-active');
-					// scroll half way
-					this.years.scrollTop = (this.years.scrollHeight / 2) - (this.years.clientHeight / 2);
+					// scroll 3/2 way
+					this.years.scrollTop = (this.years.scrollHeight / 3 * 2) - (this.years.clientHeight / 2);
 				}),
 				E('button', E('i', "chevron_right").cls("icon")).attr("type", "button").cls(["goui-button", "nav", "with-icon"], true).on('click', _ => {
 					this.moveMonth(1)
@@ -104,7 +104,7 @@ export class DatePicker extends Component<DatePickerEventMap> {
 		);
 
 		// minimum and maximum year
-		for (let i = -100; i < 100; i++) {
+		for (let i = -100; i < 50; i++) {
 			this.years.append(E('li', (this.value.getYear() + i) + "").cls('now', i === 0));
 		}
 		this.months.replaceChildren(...DateTime.monthNames.map((name, i) =>

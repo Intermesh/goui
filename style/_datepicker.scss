@@ -41,6 +41,7 @@ menu.goui-dropdown {
 			grid-template-columns: repeat(4, 1fr);
 		}
 		> li {
+			&.now{font-weight: 600; border: 1px solid var(--fg-main);}
 			cursor: pointer;
 		}
 	}
