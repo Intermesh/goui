@@ -30,9 +30,8 @@ export class BufferedFunction<F extends (...args: any) => any> {
 	 * @param scope
 	 */
 	buffer(args: any[] = [], scope:any) : Promise<ReturnType<F>> {
-		this.cancel();
-
 		return new Promise(resolve => {
+			this.cancel();
 			this.id = setTimeout(() => {
 				this.cancel();
 				resolve(this.fn.apply(scope, args));
