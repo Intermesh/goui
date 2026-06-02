@@ -347,7 +347,11 @@ export class Component<EventMapType extends ComponentEventMap = ComponentEventMa
 	 * @protected
 	 */
 	protected restoreState(state: ComponentState) {
+		const s = this.getState();
 
+		if(s && "hidden" in s) {
+			this.hidden = s.hidden;
+		}
 	}
 
 	/**
@@ -358,7 +362,7 @@ export class Component<EventMapType extends ComponentEventMap = ComponentEventMa
 	 *
 	 * @protected
 	 */
-	protected saveState() {
+	public saveState() {
 		if (this.stateId) {
 			State.get().setItem(this.stateId, this.buildState());
 		}
@@ -367,11 +371,13 @@ export class Component<EventMapType extends ComponentEventMap = ComponentEventMa
 	/**
 	 * Build state for the component
 	 *
+	 * By default the hidden property is the only stateful property
+	 *
 	 * @see saveState();
 	 * @protected
 	 */
 	protected buildState(): ComponentState {
-		return {};
+		return {hidden: this.hidden};
 	}
 
 	/**

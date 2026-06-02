@@ -186,6 +186,15 @@
 		>.goui-button {
 			padding: util.dp(3);
 		}
+
+		.toolbar-spacer {
+			margin: 0 util.dp(-4); //remove gap
+		}
+	}
+
+	.toolbar-spacer {
+		flex: 1;
+		margin: 0 util.dp(-8); //remove gap
 	}
 
 	&.overlay {

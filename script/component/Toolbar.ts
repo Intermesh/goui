@@ -230,7 +230,7 @@ export const tbarItems = (items: (Component | "->" | "-")[]): Component[] => ite
 		switch (i) {
 			case '->':
 				return comp({
-					flex: 1
+					cls: "toolbar-spacer",
 				});
 			case '-':
 				return hr();
