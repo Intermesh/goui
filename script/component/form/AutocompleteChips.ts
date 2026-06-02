@@ -25,7 +25,6 @@ export interface AutocompleteChipsEventMap extends FieldEventMap {
 export class AutocompleteChips<T extends List = List, EventMap extends AutocompleteChipsEventMap = AutocompleteChipsEventMap> extends ChipsField<EventMap> {
 	protected menu?: Menu;
 	protected menuButton?: Button;
-	private valuesToCompare?: string[];
 
 
 	/**
@@ -47,7 +46,6 @@ export class AutocompleteChips<T extends List = List, EventMap extends Autocompl
 	 */
 	constructor(readonly list: T, private buffer = 300) {
 		super();
-
 	}
 
 	protected createMenu() {
@@ -76,20 +74,14 @@ export class AutocompleteChips<T extends List = List, EventMap extends Autocompl
 			this.list.store.on("datachanged", () => {
 				this.list.rowSelection!.selectIndex(0);
 			}, {buffer: 0});
+
 		} else {
-			const syncSelection = () => {
-				this.list.rowSelection!.clear();
-				this.list.store.data.forEach((record) => {
-					if(this.isPickerRecordInValue(record)) {
-						this.list.rowSelection!.add(record)
-					}
-				})
-			}
+
 			this.menu!.on("show", () => {
-				syncSelection()
+				this.syncSelection()
 			}, {buffer: 0});
 			this.list.store.on("datachanged", () => {
-				syncSelection()
+				this.syncSelection()
 			}, {buffer: 0});
 
 			this.menu!.on("hide", () => {
@@ -97,26 +89,32 @@ export class AutocompleteChips<T extends List = List, EventMap extends Autocompl
 			})
 		}
 
-
 	}
 
-	private isPickerRecordInValue(record: any) {
-
+	private syncSelection() {
+		this.list.rowSelection!.clear();
 		if(!this.value || !this.value.length) {
 			return false;
 		}
-		if(!this.valuesToCompare) {
-			this.valuesToCompare = this.value.map((i: any) => JSON.stringify(i));
-			// clear cache after event loop
-			setTimeout(() => {
-				this.valuesToCompare = undefined;
-			});
-		}
+		const valueKeys = this.value.map((i: any) => this.valueToKey(i));
+		this.list.store.data.forEach((record) => {
+			const key = this.valueToKey(this.pickerRecordToValue(this, record as storeRecordType<listStoreType<T>>));
+			if(valueKeys.includes(key)) {
+				this.list.rowSelection!.add(record);
+			}
+		})
+	}
 
-		const v = JSON.stringify(this.pickerRecordToValue(this, record));
-
-		return this.valuesToCompare!.indexOf(v) > -1;
-
+	/**
+	 * The returned key is used to check if the list contains a record that is already in this field's value.
+	 * When changing the value, the key is used to find what to add/remove exists/not-exists
+	 * override when needed. JSON.stringify() might not work if properties are in a different order.
+	 * @see patchValue() and syncSelection()
+	 * @param value the value pickerRecordToValue() returns
+	 * @returns a unique key to know which records are already in the field value
+	 */
+	public valueToKey(value: any) {
+		return typeof value === 'string' ? value : JSON.stringify(value);
 	}
 
 	/**
@@ -217,6 +215,40 @@ export class AutocompleteChips<T extends List = List, EventMap extends Autocompl
 		}
 	}
 
+	/**
+	 * Compare the new values with the current value.
+	 * - add what is selected but not in the current value
+	 * - remove what is not selected but in the current value
+	 * - Leave the rest if the value as is.
+	 * @param newValues selected picker values
+	 * @returns the new value
+	 */
+	private patchValue(newValues: any[]) {
+		// patch = {key => value|null}
+		const newKeys = newValues.map(this.valueToKey.bind(this));
+		const patch = this.list.store.data.reduce((acc: any, record) => {
+			const value = this.pickerRecordToValue(this, record as storeRecordType<listStoreType<T>>);
+			const key = this.valueToKey(value);
+			acc[key] = newKeys.includes(key) ? value : null;
+			return acc;
+		}, {});
+
+		const v = this.value || [];
+		const valueKeys = v.map(this.valueToKey.bind(this));
+		for(const key in patch) {
+			if(patch[key]) {
+				if(!valueKeys.includes(key))
+					v.push(patch[key]);
+			} else {
+				const idx = valueKeys.indexOf(key);
+				if (idx !== -1) {
+					v.splice(idx, 1);
+				}
+			}
+		}
+		return v
+	}
+
 
 	private addSelected() {
 		const newValues = this.list.rowSelection!.getSelected().map((row) => {
@@ -229,33 +261,9 @@ export class AutocompleteChips<T extends List = List, EventMap extends Autocompl
 
 		// set value after focus as this will start tracking for the change event
 		if(this.list.rowSelection!.multiSelect) {
-			// todo: only works if pickerRecordToValue returns a scalar
-
-			const patch = this.list.store.data.reduce((acc: any, v) => {
-				acc[v.id] = newValues.includes(v.id);
-				return acc;
-			}, {});
-
-			const v = this.value || [];
-			for(const id in patch) {
-				if(patch[id]) {
-					if(!v.includes(id))
-						v.push(id);
-				} else {
-					const idx = v.indexOf(id);
-					if (idx !== -1) {
-						v.splice(idx, 1);
-					}
-				}
-			}
-			this.value = v;
-		} else
-		{
-
-			if(!this.value) {
-				this.value = [];
-			}
-			this.value = this.value.concat(newValues);
+			this.value = this.patchValue(newValues);
+		} else {
+			this.value = (this.value || []).concat(newValues);
 		}
 	}
 
@@ -269,7 +277,7 @@ export class AutocompleteChips<T extends List = List, EventMap extends Autocompl
 
 type AutoCompleteChipsConfig<ListType extends List = List> = FieldConfig<AutocompleteChips<ListType>, "list"> &
 	// Add the function properties as they are filtered out
-	Partial<Pick<AutocompleteChips<ListType>, "textInputToValue" | "chipRenderer" | "pickerRecordToValue">>
+	Partial<Pick<AutocompleteChips<ListType>, "textInputToValue" | "chipRenderer" | "pickerRecordToValue" | "valueToKey">>
 /**
  * Shorthand function to create {@link AutocompleteChips}
  *
