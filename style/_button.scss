@@ -23,7 +23,7 @@
 		text-transform: uppercase;
 	}
 
-	&.with-icon:not(.with-text) {
+	&.with-icon:not(.with-text):not(.small) {
 		//icon only
 		overflow: visible;
 		padding: util.dp(11);
@@ -53,7 +53,7 @@
 
 
 	&.small {
-		padding: .6rem !important;
+		padding: .6rem;
 		i.icon {
 			height: 1.8rem;
 			width: 1.8rem;

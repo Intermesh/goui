@@ -1322,7 +1322,7 @@ div.color-dot {
 			border-radius: util.dp(4);
 			color: var(--bg-dim);
 			background-color: color-mix(in srgb, currentColor 48%, transparent);
-			padding: 0 util.dp(10);
+			padding: util.dp(2) util.dp(10);
 			margin: util.dp(9) util.dp(4);
 			max-width: util.dp(240);
 			min-width: util.dp(60);
