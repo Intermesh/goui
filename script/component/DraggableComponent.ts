@@ -103,7 +103,7 @@ export class DraggableComponent<EventMap extends DraggableComponentEventMap = Dr
 	protected dragData?: DragData;
 
 	private constrainBox?: Constraints;
-	private _dragConstrainTo: Window | HTMLElement = window
+	private _dragConstrainTo: Window | HTMLElement | undefined;
 	private _dragConstrainPad?: Partial<Constraints>;
 
 	/**
@@ -237,7 +237,7 @@ export class DraggableComponent<EventMap extends DraggableComponentEventMap = Dr
 
 	private onDragStart(e: MouseEvent) {
 		e.preventDefault();
-		this.constrainBox = this.elToConstraints(this._dragConstrainTo, this._dragConstrainPad);
+		this.constrainBox = this.elToConstraints(this._dragConstrainTo ?? window, this._dragConstrainPad);
 
 		const onDrag = FunctionUtil.onRepaint((e: MouseEvent) => {
 			this.onDrag(e);

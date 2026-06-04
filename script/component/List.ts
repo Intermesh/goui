@@ -274,6 +274,31 @@ export class List<StoreType extends Store = Store, EventMapType extends ListEven
 		this.initStore();
 		this.initSortable();
 
+		if (this.rowSelect) {
+
+			this.rowSelect.on('rowselect', (ev) => {
+
+				const tr = this.getRowElements()[ev.row.storeIndex];
+
+				if (!tr) {
+					//row not rendered (yet?). selected class will also be added on render
+					return;
+				}
+				tr.classList.add('selected');
+
+				tr.scrollIntoView({block: "nearest", inline: "nearest"});
+			});
+
+			this.rowSelect.on('rowdeselect', (ev) => {
+				const tr = this.getRowElements()[ev.row.storeIndex];
+				if (!tr) {
+					console.error("No row found for selected index: " + ev.row.storeIndex + ". Maybe it's not rendered yet?");
+					return;
+				}
+				tr.classList.remove('selected');
+			});
+		}
+
 		return el;
 	}
 
@@ -454,32 +479,7 @@ export class List<StoreType extends Store = Store, EventMapType extends ListEven
 	}
 
 	protected renderBody() {
-
 		this.renderRows(this.store.all());
-
-		if (this.rowSelect) {
-			this.rowSelect.on('rowselect', (ev) => {
-
-				const tr = this.getRowElements()[ev.row.storeIndex];
-
-				if (!tr) {
-					//row not rendered (yet?). selected class will also be added on render
-					return;
-				}
-				tr.classList.add('selected');
-
-				tr.scrollIntoView({block: "nearest", inline: "nearest"});
-			});
-
-			this.rowSelect.on('rowdeselect', (ev) => {
-				const tr = this.getRowElements()[ev.row.storeIndex];
-				if (!tr) {
-					console.error("No row found for selected index: " + ev.row.storeIndex + ". Maybe it's not rendered yet?");
-					return;
-				}
-				tr.classList.remove('selected');
-			});
-		}
 	}
 
 	public focusRow(index: number) {
@@ -507,10 +507,11 @@ export class List<StoreType extends Store = Store, EventMapType extends ListEven
 	}
 
 	protected rerender() {
-		const el = this.el;
+		this.emptyEl = undefined;
 		this.groupEl = undefined;
 		this.lastGroup = JSON.stringify("");
-		el.innerHTML = "";
+		this.el.innerHTML = "";
+
 		this.renderBody();
 	}
 
@@ -530,6 +531,7 @@ export class List<StoreType extends Store = Store, EventMapType extends ListEven
 			this.groupEl.append(row);
 		}
 
+		this.groupEl = undefined;
 		this.fire("renderrows", {records});
 	}
 
@@ -622,7 +624,7 @@ export class List<StoreType extends Store = Store, EventMapType extends ListEven
 			} else if (r instanceof Promise) {
 				r.then((s) => {
 
-					if (!s) {
+					if (!s || this.removed) {
 						return;
 					}
 

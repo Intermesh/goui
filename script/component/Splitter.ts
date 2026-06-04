@@ -30,16 +30,6 @@ export class Splitter extends DraggableComponent {
 	 */
 	public invert?: boolean;
 
-	// /**
-	//  * The minimum size it will set. Note that you can also put a min-width or min-height on the element with css.
-	//  */
-	// public minSize = 50;
-
-	// /**
-	//  * The maximum size it will set. Note that you can also put a max-width or max-height on the element with css.
-	//  */
-	// public maxSize?: number;
-
 	/**
 	 *
 	 * @param resizeComponent 	The component to resize in height or width.
@@ -49,18 +39,24 @@ export class Splitter extends DraggableComponent {
 	constructor(resizeComponent: ResizeComponent) {
 		super("hr");
 
+		const onBeforeRender = () => {
+			this._resizeComponent = resizeComponent instanceof Component ? resizeComponent : resizeComponent(this);
+
+			const state = this.getState();
+			if (state) {
+				this.applyStateToResizeComp(state);
+			}
+		};
+
 		// determine resize component as early as possible. This is just before the parent component renders.
 		// Then the sizes can be set before the resizeComponent renders itself.
 		this.on("added", ({parent}) => {
-			parent.on("beforerender", () => {
-				this._resizeComponent = resizeComponent instanceof Component ? resizeComponent : resizeComponent(this);
-
-				const state = this.getState();
-				if (state) {
-					this.applyStateToResizeComp(state);
-				}
-			});
+			parent.on("beforerender", onBeforeRender);
 		});
+
+		this.on("remove", () => {
+			this.parent?.un("beforerender", onBeforeRender);
+		})
 	}
 
 	private applyStateToResizeComp(state: ComponentState) {

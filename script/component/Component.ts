@@ -182,6 +182,14 @@ export class Component<EventMapType extends ComponentEventMap = ComponentEventMa
 	protected _cls?: string;
 	private maskTimeout?: any;
 
+
+	/**
+	 * Holds weak references from DOM elemenet to GOUI Component.
+	 *
+	 * Useful with event handlers that need to loopup components from DOM elements
+	 */
+	public static registry : WeakMap<HTMLElement, Component> = new WeakMap()
+
 	/**
 	 * Component constructor
 	 *
@@ -197,6 +205,8 @@ export class Component<EventMapType extends ComponentEventMap = ComponentEventMa
 		if(!this._el) {
 			this._el = this.initEl(this.tagName);
 		}
+
+		Component.registry.set(this._el, this);
 
 		return this._el;
 	}
@@ -569,7 +579,16 @@ export class Component<EventMapType extends ComponentEventMap = ComponentEventMa
 	}
 
 	/**
-	 * Remove component from the component tree
+	 * Check if this component was remvoed / destroyed
+	 */
+	public get removed(){
+		return this._removed;
+	}
+
+	private _removed = false;
+
+	/**
+	 * Removes the component from the component tree
 	 */
 	public remove() {
 		if (!this.fire("beforeremove", {})) {
@@ -577,14 +596,20 @@ export class Component<EventMapType extends ComponentEventMap = ComponentEventMa
 		}
 
 		this.internalRemove();
-
 		this.fire("remove", {});
+		this._removed = true;
 
 		return true;
 	}
 
 	protected internalRemove() {
-		// this.items.clear();
+
+		if (this.maskTimeout) {
+			clearTimeout(this.maskTimeout);
+			this.maskTimeout = undefined;
+		}
+
+		this.items.clear();
 		this.detach();
 	}
 
@@ -1240,16 +1265,7 @@ export class Component<EventMapType extends ComponentEventMap = ComponentEventMa
 			document.title = this.title.replace(':', '.').replace(/[/\\?%*|"<>]+/g, '-');
 		}
 
-		if(!browser.isFirefox()){
-			Promise.all(Array.from(document.images).filter(img => !img.complete).map(img => new Promise(resolve => { img.onload = img.onerror = resolve; }))).then(() => {
-				browser.isSafari() ? document.execCommand('print') : window.print();
-			});
-		} else {
-			// this is not needed in firefox and somehow it also fails to resolve the promises above.
-			window.print();
-		}
-
-		window.addEventListener("afterprint" , () => {
+		const afterPrint = () => {
 			if(oldTitle) {
 				document.title = oldTitle;
 			}
@@ -1257,7 +1273,21 @@ export class Component<EventMapType extends ComponentEventMap = ComponentEventMa
 			if(paper) {
 				paper.innerHTML = "";
 			}
-		}, {once: true});
+		};
+
+		if(!browser.isFirefox()){
+			Promise.all(Array.from(document.images).filter(img => !img.complete).map(img => new Promise(resolve => { img.onload = img.onerror = resolve; }))).then(() => {
+
+				window.addEventListener("afterprint" , afterPrint, {once: true});
+				browser.isSafari() ? document.execCommand('print') : window.print();
+			});
+		} else {
+			// this is not needed in firefox and somehow it also fails to resolve the promises above.
+			window.addEventListener("afterprint" , afterPrint, {once: true});
+			window.print();
+		}
+
+
 
 	}
 

@@ -91,20 +91,10 @@ type DragData = {
 	fromIndex: number,
 	toIndex: number,
 	group: string,
-	sourceonent: Component
+	sourceComponent: Component
 	dataSet: Record<string, any>
 }
 
-const dragData: DragData = {
-	dragSrc: undefined,
-	pos: "before",
-  overEl: undefined,
-	fromIndex: -1,
-	toIndex: -1,
-	group:"",
-	sourceonent: root,
-	dataSet: {}
-}
 
 /**
  * Enables sorting of child elements inside a container
@@ -114,6 +104,8 @@ const dragData: DragData = {
  * @link https://goui.io/#draganddrop Examples
  */
 export class Sortable<Type extends Component> extends Observable<SortableEventMap> {
+	
+	public static dragData: DragData | undefined;
 
 	/**
 	 * Only allow drag and drop to Sortable's from the same group
@@ -181,15 +173,6 @@ export class Sortable<Type extends Component> extends Observable<SortableEventMa
 	 */
 	private findIndex(sortableItem:HTMLElement) {
 		return this.findSortables().indexOf(sortableItem);
-		// let index = 0, curr: Element | null = sortableItem;
-		//
-		// while((curr = curr.previousElementSibling)) {
-		// 	if(curr.matches(this.sortableChildSelector)) {
-		// 		index++;
-		// 	}
-		// }
-		//
-		// return index;
 	}
 
 	/**
@@ -214,26 +197,33 @@ export class Sortable<Type extends Component> extends Observable<SortableEventMa
 
 			// had to add this class because otherwise dragleave fires immediately on child nodes: https://stackoverflow.com/questions/7110353/html5-dragleave-fired-when-hovering-a-child-element
 			root.el.cls("+dragging");
+			
+			Sortable.dragData = {
+				dragSrc: undefined,
+				pos: "before",
+				overEl: undefined,
+				fromIndex: -1,
+				toIndex: -1,
+				group:"",
+				sourceComponent: root,
+				dataSet: {}
+			}
 
-			dragData.group = this.group;
-			dragData.dragSrc = e.target;
-			dragData.sourceonent = this.component;
+			Sortable.dragData.group = this.group;
+			Sortable.dragData.dragSrc = e.target;
+			Sortable.dragData.sourceComponent = this.component;
 
-			dragData.fromIndex = this.findIndex(e.target);
+			Sortable.dragData.fromIndex = this.findIndex(e.target);
 
 			e.dataTransfer!.setData('text/plain', 'goui');
 			e.dataTransfer!.effectAllowed = "copyMove";
 			e.target.classList.add("drag-src");
+			(e as SortableDragEvent).setDragComponent = function(this:DragEvent,comp:Component)  {
+				Sortable.getDragImg().items.replace(comp);
+				this.dataTransfer!.setDragImage(comp.el, 0, 0)
+			}.bind(e);
 
-			const ev : SortableDragEvent =
-				Object.assign(e, {setDragComponent: function(this:DragEvent,comp:Component)  {
-					Sortable.getDragImg().items.replace(comp);
-					this.dataTransfer!.setDragImage(comp.el, 0, 0)
-				}
-				});
-
-			this.fire("dragstart", {ev, dragData});
-
+			this.fire("dragstart", {ev: e as SortableDragEvent, dragData: Sortable.dragData});
 		})
 
 		component.el.on("drop", (e)=> {
@@ -248,7 +238,7 @@ export class Sortable<Type extends Component> extends Observable<SortableEventMa
 
 		component.el.on("dragover", (e) => {
 
-			if(dragData.group != this.group) {
+			if(!Sortable.dragData || Sortable.dragData.group != this.group) {
 				return;
 			}
 
@@ -256,7 +246,7 @@ export class Sortable<Type extends Component> extends Observable<SortableEventMa
 				return;
 			}
 
-			dragData.overEl = e.target.closest(this.sortableChildSelector) as HTMLElement;
+			Sortable.dragData.overEl = e.target.closest(this.sortableChildSelector) as HTMLElement;
 
 			if(!this.dropAllowed()) {
 				return;
@@ -264,12 +254,12 @@ export class Sortable<Type extends Component> extends Observable<SortableEventMa
 
 			const dropPin = Sortable.getDropPin();
 
-			if(dragData.overEl) {
+			if(Sortable.dragData.overEl) {
 
-				const rect = dragData.overEl.getBoundingClientRect();
-				dragData.pos = this.getDragPos(rect, e);
+				const rect = Sortable.dragData.overEl.getBoundingClientRect();
+				Sortable.dragData.pos = this.getDragPos(rect, e);
 
-				switch(dragData.pos) {
+				switch(Sortable.dragData.pos) {
 					case "before":
 						e.preventDefault();
 						e.stopPropagation();
@@ -277,11 +267,11 @@ export class Sortable<Type extends Component> extends Observable<SortableEventMa
 						dropPin.hidden = false;
 
 						if(this.horizontal) {
-							dropPin.el.style.top = rect.y + "px"; // (rect.y - this.gap(dragData.overEl)) + "px";
-							dropPin.el.style.left = (rect.x - this.gap(dragData.overEl)) + "px";
+							dropPin.el.style.top = rect.y + "px"; // (rect.y - this.gap(Sortable.dragData.overEl)) + "px";
+							dropPin.el.style.left = (rect.x - this.gap(Sortable.dragData.overEl)) + "px";
 							dropPin.el.style.height = rect.height + "px";
 						} else {
-							dropPin.el.style.top = (rect.y - this.gap(dragData.overEl)) + "px";
+							dropPin.el.style.top = (rect.y - this.gap(Sortable.dragData.overEl)) + "px";
 							dropPin.el.style.left = rect.x + "px";
 							dropPin.el.style.width = rect.width + "px";
 						}
@@ -307,11 +297,11 @@ export class Sortable<Type extends Component> extends Observable<SortableEventMa
 
 						if(this.horizontal) {
 							dropPin.el.style.top = rect.y + "px";
-							dropPin.el.style.left = (rect.x + rect.width + this.gap(dragData.overEl)) + "px";
+							dropPin.el.style.left = (rect.x + rect.width + this.gap(Sortable.dragData.overEl)) + "px";
 							dropPin.el.style.height = rect.height + "px";
 							dropPin.el.style.width = "";
 						} else {
-							dropPin.el.style.top = (rect.y + rect.height + this.gap(dragData.overEl)) + "px";
+							dropPin.el.style.top = (rect.y + rect.height + this.gap(Sortable.dragData.overEl)) + "px";
 							dropPin.el.style.left = rect.x + "px";
 							dropPin.el.style.width = rect.width + "px";
 							dropPin.el.style.height = "";
@@ -320,22 +310,19 @@ export class Sortable<Type extends Component> extends Observable<SortableEventMa
 						break;
 				}
 			} else {
+
+				// this happens when the user drops outside the sortable container. We'll check if it was above or beneath it.
 				const listRect = this.component.el.getBoundingClientRect();
 
-				if (e.y <= listRect.y || e.y < (listRect.y + 20)) {
-					dragData.dataSet = {
-						...dragData.dataSet,
-						beforeItems: true
-					}
+				if((e.y <= listRect.y || e.y < (listRect.y + 20))) {
+					// dropped above
+					Sortable.dragData.pos = "before";
+					Sortable.dragData.toIndex = 0;
 				} else {
-					dragData.dataSet = {
-						...dragData.dataSet,
-						beforeItems: false
-					}
+					// dropped beneath
+					Sortable.dragData.pos = "after";
+					Sortable.dragData.toIndex = this.findSortables().length -1;
 				}
-
-				dragData.pos = "before";
-				dragData.toIndex = 0;
 
 				e.preventDefault();
 				e.stopPropagation();
@@ -379,21 +366,24 @@ export class Sortable<Type extends Component> extends Observable<SortableEventMa
 	}
 
 	private dropAllowed() {
-		if(dragData.overEl) {
-			dragData.toIndex = this.findIndex(dragData.overEl);
-			if (dragData.pos == "after") {
-				dragData.toIndex++;
+		if(!Sortable.dragData) {
+			return false;
+		}
+		if(Sortable.dragData.overEl) {
+			Sortable.dragData.toIndex = this.findIndex(Sortable.dragData.overEl);
+			if (Sortable.dragData.pos == "after") {
+				Sortable.dragData.toIndex++;
 			}
 		} else {
-			dragData.toIndex = 0;
+			Sortable.dragData.toIndex = 0;
 		}
 
 		return this.fire("dropallowed", {
-			toIndex: dragData.toIndex,
-			fromIndex: dragData.fromIndex,
-			droppedOn: dragData.pos == "on",
-			source: dragData.sourceonent,
-			dragDataSet: dragData.dataSet
+			toIndex: Sortable.dragData.toIndex,
+			fromIndex: Sortable.dragData.fromIndex,
+			droppedOn: Sortable.dragData.pos == "on",
+			source: Sortable.dragData.sourceComponent,
+			dragDataSet: Sortable.dragData.dataSet
 		});
 	}
 
@@ -436,54 +426,67 @@ export class Sortable<Type extends Component> extends Observable<SortableEventMa
 
 		Sortable.getDropPin().hidden = true;
 
-		if(dragData.group != this.group) {
+		if(!Sortable.dragData || Sortable.dragData.group != this.group) {
+			console.trace("1");
 			//not our item
 			return;
 		}
 
-		if(!dragData.dragSrc) {
-			this.fire("dragend", {ev, dragData});
+		if(!Sortable.dragData.dragSrc) {
+			this.fire("dragend", {ev, dragData: Sortable.dragData});
+			Sortable.dragData = undefined;
+			console.log("2");
 			return;
 		}
 
-		dragData.dragSrc!.classList.remove("drag-src");
+		Sortable.dragData.dragSrc!.classList.remove("drag-src");
 
 		root.el.cls("-dragging");
 
 		if((!this.dropOn && !this.dropBetween) || !this.dropAllowed()) {
-			dragData.dragSrc = undefined;
-			this.fire("dragend", {ev, dragData});
+			Sortable.dragData.dragSrc = undefined;
+			this.fire("dragend", {ev, dragData: Sortable.dragData});
+			Sortable.dragData = undefined;
+			console.log("3");
 			return;
 		}
 
-		if(dragData.overEl) {
+		if(Sortable.dragData.overEl) {
 
-			dragData.toIndex = this.findIndex(dragData.overEl);
-			if (dragData.pos == "after") {
-				dragData.toIndex++;
+			Sortable.dragData.toIndex = this.findIndex(Sortable.dragData.overEl);
+			if (Sortable.dragData.pos == "after") {
+				Sortable.dragData.toIndex++;
 			}
 
 			if(this.updateDom) {
-				switch (dragData.pos) {
+				switch (Sortable.dragData.pos) {
 					case "before":
-						dragData.overEl.parentNode!.insertBefore(dragData.dragSrc!, dragData.overEl);
+						Sortable.dragData.overEl.parentNode!.insertBefore(Sortable.dragData.dragSrc!, Sortable.dragData.overEl);
 						break;
 
 					case "on":
-						dragData.dragSrc!.parentNode!.removeChild(dragData.dragSrc!);
+						Sortable.dragData.dragSrc!.parentNode!.removeChild(Sortable.dragData.dragSrc!);
 						break;
 
 					case "after":
-						dragData.overEl.parentNode!.insertBefore(dragData.dragSrc!, dragData.overEl.nextSibling);
+						Sortable.dragData.overEl.parentNode!.insertBefore(Sortable.dragData.dragSrc!, Sortable.dragData.overEl.nextSibling);
 						break;
 				}
 			}
 		}
 
-		dragData.dragSrc = undefined;
+		Sortable.dragData.dragSrc = undefined;
 
-		this.fire("sort", {toIndex: dragData.toIndex, fromIndex: dragData.fromIndex, droppedOn: dragData.pos == "on", source: dragData.sourceonent, dragDataSet: dragData.dataSet});
-		this.fire("dragend", {ev, dragData});
+		this.fire("sort", {
+			toIndex: Sortable.dragData.toIndex,
+			fromIndex: Sortable.dragData.fromIndex,
+			droppedOn: Sortable.dragData.pos == "on",
+			source: Sortable.dragData.sourceComponent,
+			dragDataSet: Sortable.dragData.dataSet
+		});
+		this.fire("dragend", {ev, dragData: Sortable.dragData});
+		Sortable.dragData = undefined;
+		console.trace("4");
 	}
 
 	private findSortables() {

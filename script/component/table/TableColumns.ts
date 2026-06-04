@@ -5,7 +5,7 @@
  */
 
 import {Config, Observable, ObservableEventMap} from "../Observable.js";
-import {Table} from "./Table.js";
+import {table, Table} from "./Table.js";
 import {Component, createComponent} from "../Component.js";
 import {DateTime, Format} from "../../util/index.js";
 import {checkbox, CheckboxField} from "../form/index.js";
@@ -116,7 +116,7 @@ export class TableColumn<EventMap extends TableColumnEventMap = TableColumnEvent
 	/**
 	 * Optional Initialize function
 	 */
-	public init?: (table:Table) => void;
+	public init(table:Table): void {};
 
 	/**
 	 * Make the column resizable by the user
@@ -180,6 +180,8 @@ export type TableColumnConfig<T extends TableColumn = TableColumn> = Config<T> &
 	 * The ID of the column which is also the default for the column 'property'
 	 */
 	id: string
+
+	init?: (this:T, table:Table) => void
 };
 /**
  * Create a table column
@@ -316,23 +318,18 @@ export class CheckboxColumn extends TableColumn<CheckboxColumnEventMap> {
 		this.htmlEncode = false;
 	}
 
+	init(table:Table){
+		table.enableCheckboxColumnListeners();
+	}
+
 	renderer : TableColumnRenderer = (val, record, td, table, rowIndex, column) => {
 		return checkbox({
 			value: val,
 			listeners: {
 				change: ({target, newValue}) => {
 					record[column.property] = newValue;
-
 					this.fire("change", {checkbox:target, checked:newValue, record, storeIndex: rowIndex});
-				},
-				render: ({target}) => {
-
-					table.el.addEventListener("keydown", (e) => {
-						if(e.key == " " && e.target == td.parentNode) {
-							target.value = !target.value;
-						}
-					});
-				},
+				}
 			}
 		});
 	}
@@ -370,23 +367,22 @@ export class CheckboxSelectColumn extends TableColumn {
 		this.cls = "checkbox-select-column";
 	}
 
+	init(table: Table) {
+		super.init(table);
+		table.enableCheckboxSelectColumnListeners();
+	}
+
 	headerRenderer: HeaderRenderer = (col, headerEl, table) => {
 
 		return checkbox({
+			cls: "header-checkbox",
 			listeners: {
-				render: ({target}) => {
-					table.rowSelection!.on("selectionchange", ({selected}) => {
-						target.value = selected.length == table.store.count();
-					});
-				},
 				change: ({newValue}) => {
-
 					if (newValue) {
 						table.rowSelection!.selectAll();
 					} else {
 						table.rowSelection!.clear();
 					}
-
 				}
 			}
 		});
@@ -400,6 +396,7 @@ export class CheckboxSelectColumn extends TableColumn {
 		}
 
 		return checkbox({
+			cls: "rowselect-checkbox",
 			value: val,
 			listeners: {
 				render: ({target}) => {
@@ -412,14 +409,12 @@ export class CheckboxSelectColumn extends TableColumn {
 
 					target.value = table.rowSelection!.isSelected(record);
 
-					table.rowSelection!.on("selectionchange", () => {
-						target.value = table.rowSelection!.isSelected(record);
-					});
-
+					// we need this in the rowselect listener of the table. {@link Table.enableCheckboxSelectColumnListeners()}
+					target.dataSet.record = record;
 
 					target.el.addEventListener('contextmenu', (ev) => {
 						ev.preventDefault();
-						const m = menu({isDropdown:true},
+						const m = menu({isDropdown:true, removeOnClose: true},
 							btn({text: t('Select all'),handler:()=>{table.rowSelection!.selectAll()}}),
 							btn({text: t('Select none'),handler:()=>{table.rowSelection!.clear()}}),
 							btn({text: t('Deselect others'),handler:()=>{table.rowSelection!.clear();table.rowSelection!.add(record)}}),

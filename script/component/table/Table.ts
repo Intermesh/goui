@@ -8,7 +8,7 @@ import {comp, Component, ComponentState, createComponent} from "../Component.js"
 import {Store} from "../../data/Store.js";
 import {ArrayUtil, ObjectUtil} from "../../util/index";
 import {menu, Menu} from "../menu/Menu.js";
-import {checkbox} from "../form/index";
+import {checkbox, CheckboxField} from "../form/index";
 import {Notifier} from "../../Notifier.js";
 import {draggable} from "../DraggableComponent.js";
 import {TableColumn} from "./TableColumns.js";
@@ -85,6 +85,8 @@ import {t} from "../../Translate.js";
 export class Table<StoreType extends Store = Store, EventMap extends ListEventMap = ListEventMap> extends List<StoreType, EventMap > {
 	private _columns!: Record<string,TableColumn>;
 
+	private columnsInitialized = false;
+
 	/**
 	 * The table columns
 	 *
@@ -92,13 +94,11 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 	 */
 	public set columns(columns:TableColumn[]) {
 		this._columns = {};
+		this.columnsInitialized = false;
 		columns.forEach(c => {
 			this._columns[c.id] = c;
+		});
 
-			if(c.init) {
-				c.init.call(c, this);
-			}
-		})
 		if(this.rendered) {
 			this.rerender();
 		}
@@ -173,7 +173,7 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 							r.render(td);
 						} else if(r instanceof Promise) {
 							r.then((s) => {
-								if (!s) {
+								if (!s || this.removed) {
 									return;
 								}
 								if (s instanceof Component) {
@@ -253,6 +253,28 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 		return super.internalRemove();
 	}
 
+	protected internalRender() {
+
+		this.initColumns();
+
+		return super.internalRender();
+	}
+
+
+	private initColumns() {
+		if (!this.columnsInitialized) {
+
+			this.columns.forEach(c => {
+				this._columns[c.id] = c;
+
+				if (c.init) {
+					c.init.call(c, this);
+				}
+			})
+
+			this.columnsInitialized = true;
+		}
+	}
 
 	protected restoreState(state: ComponentState) {
 		if (state.sort) {
@@ -530,10 +552,6 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 		const thead = document.createElement('thead');
 		this.headersRow = document.createElement("tr");
 
-		// this.headersRow.addEventListener('contextmenu', ev => {
-		// 	this.showColumnMenu(ev);
-		// })
-
 		let index = -1, left = 0,  stickyLeft = true;
 		for (let id of this.getColumnSort()) {
 			const h = this._columns[id];
@@ -631,6 +649,7 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 				this.columnSort = ArrayUtil.move(this.getColumnSort(), fromIndex, toIndex);
 				this.saveState();
 				this.rerender();
+
 			});
 
 			headerSorter.on("dropallowed",( {toIndex}) => {
@@ -767,6 +786,72 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 			}
 		}
 		return r;
+	}
+
+
+
+
+	private checkboxColumnListenerEnabled = false;
+	public enableCheckboxColumnListeners() {
+		if(this.checkboxColumnListenerEnabled) {
+			return;
+		}
+		this.checkboxColumnListenerEnabled = true;
+
+		const onKeyDown = (e:any) => {
+			if(e.key != " ") {
+				return;
+			}
+
+			// look for checkbox components
+			const checkboxes = (e.target as HTMLElement).querySelectorAll<HTMLElement>(".goui-form-field.check");
+			checkboxes.forEach((cbEl) => {
+				const checkbox = Component.registry.get(cbEl) as CheckboxField | undefined;
+				if(checkbox) {
+					checkbox.value = !checkbox.value;
+				}
+			})
+		};
+
+		this.el.addEventListener("keydown", onKeyDown);
+	}
+
+
+
+	private checkboxSelectColumnListenerEnabled = false;
+	public enableCheckboxSelectColumnListeners() {
+		if(this.checkboxSelectColumnListenerEnabled) {
+			return;
+		}
+		this.checkboxSelectColumnListenerEnabled = true;
+
+
+		const onSelectionChange = (ev:any) => {
+
+			if(this.headersRow) {
+				const cbs = this.headersRow.querySelectorAll<HTMLElement>(".header-checkbox");
+				cbs.forEach((cbEl) => {
+					const checkbox = Component.registry.get(cbEl) as CheckboxField | undefined;
+					if(checkbox) {
+						checkbox.value = ev.selected.length == this.store.count();
+					}
+				})
+			}
+
+			const checkboxes = this.el.querySelectorAll<HTMLElement>(".rowselect-checkbox");
+			checkboxes.forEach((cbEl) => {
+				const checkbox = Component.registry.get(cbEl) as CheckboxField | undefined;
+				if(checkbox) {
+					// checkbox.dataSet.record is set in the CheckboxColumn.renderer
+					checkbox.value = this.rowSelection!.isSelected(checkbox.dataSet.record);
+				}
+			})
+
+
+		};
+		this.rowSelection!.on("selectionchange", onSelectionChange);
+
+
 	}
 
 }
