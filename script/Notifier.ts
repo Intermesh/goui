@@ -16,15 +16,19 @@ type NotificationCategory =
 'status';   // informational outcome     | auto-dismiss, non-persistent, no action required            | minimal styling, short text, no/rare actions
 
 type NotificationAction =
-	'click' |
-	'close' |
 	'primary' |
 	'secondary' |
 	'progress' |
 	'complete';
 
+type NotificationVariant =
+	'success' |
+	'warning' |
+	'info' |
+	'error';
+
 export interface INotification {
-	/** waiting in the store for this time to be shown */
+	/** Will not show before the time */
 	readonly time?: Date
 	/** full path to png icon */
 	readonly icon?: {name: MaterialIcon, color?: string, link?:string}
@@ -34,44 +38,49 @@ export interface INotification {
 	readonly text: string
 	/** used for behavior / presentation, defaults to 'message' */
 	readonly category?: NotificationCategory
+	/** theme/color variant of the notification */
+	readonly variant?: NotificationVariant
 	/** time when notification disappears without interaction */
 	readonly stale?: Date
 	/** optional actions to show */
 	readonly actions?: {[action:string]:{text:string, icon?:MaterialIcon, run:()=>void}}
+	onClose?: ()=>void
+	onClick?: ()=>void
+	onProcessed?: (loaded:number,total:number)=>void
 }
 class NotifierClass extends Observable<{notify:{msg:INotification}}> {
 
 	public notify(msg: INotification) {
 		if(this.fire('notify', {msg}) !== false)
-			this.toast(msg);
+			this.toast(msg).cls += " notice";
 	}
 	/** @deprecated */
 	error(text: any, _?:any) {
-		this.toast({text, category: "error"}).cls += " error";
+		this.toast({text, category: "status",variant:'error'});
 	}
 	/** @deprecated */
 	success(text: any, _?:any) {
-		this.toast({text, category: "status"}).cls += " success";
+		this.toast({text, category: "status",variant:'success'});
 	}
 
 	/** @deprecated */
 	notice(text: any, _?:any) {
-		this.toast({text, category: "status"}).cls += " notice";
+		this.toast({text, category: "status",variant:'info'});
 	}
 
 	/**
-	 * When no notification handler is implemented while using Goui this is the default
+	 * When no notify listener is attached or returning false toast is the default
 	 * The "notify" event should return false to prevent this
 	 */
 	private toast(msg: INotification) {
 		const close = () => { alert?.remove() };
-		const alert = comp({cls:"goui-alert " + msg.category},
+		const alert = comp({cls:"goui-alert " + msg.variant},
 			comp({tagName: "span", text: msg.text})
 		)
-		if (msg.category !== 'error')
+		if (msg.variant !== 'error')
 			setTimeout(close, 3000);
 		root.items.add(alert);
-		document.body.addEventListener("click", close, {once: true});
+		document.body.addEventListener("mousedown", close, {once: true});
 		return alert;
 	}
 }
