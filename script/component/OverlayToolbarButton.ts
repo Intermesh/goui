@@ -4,7 +4,7 @@
  * @author Merijn Schering <mschering@intermesh.nl>
  */
 import {t} from "../Translate";
-import {tbar, tbarItems, Toolbar} from "./Toolbar";
+import {tbar, tbarItems, Toolbar, ToolbarItems} from "./Toolbar";
 import {Config} from "./Observable";
 import {assignComponentConfig, comp, Component} from "./Component";
 import {btn, Button, ButtonEventMap} from "./Button";
@@ -35,7 +35,7 @@ export interface OverlayToolbarButtonEventMap extends ButtonEventMap {
  * @template EventMap - The event map type for the button.
  * @extends Button
  */
-export class OverlayToolbarButton<EventMap extends OverlayToolbarButtonEventMap = OverlayToolbarButtonEventMap> extends Button<EventMap> {
+export abstract class OverlayToolbarButton<EventMap extends OverlayToolbarButtonEventMap = OverlayToolbarButtonEventMap> extends Button<EventMap> {
 
 	private overlayTbar?: Toolbar;
 
@@ -43,27 +43,20 @@ export class OverlayToolbarButton<EventMap extends OverlayToolbarButtonEventMap 
 	 * Component it will be placed upon when opened.
 	 * If not given it will try to find the parent toolbar
 	 */
-	public overlayComponent?: Component | ((btn:OverlayToolbarButton) => Component);
-
-	constructor() {
-		super();
-
-		this.tbarItemContainer = comp({flex: 1});
-	}
+	public overlayComponent?: Component | ((btn: OverlayToolbarButton) => Component);
 
 	public handler = (button: Button, ev?: MouseEvent) => {
 
-		if(!this.overlayComponent) {
+		if (!this.overlayComponent) {
 			this.overlayComponent = button.findAncestorByType(Toolbar);
 			if (!this.overlayComponent) {
 				throw "Search button must be inside a Toolbar";
 			}
-		} else if(!(this.overlayComponent instanceof Component)) {
+		} else if (!(this.overlayComponent instanceof Component)) {
 			this.overlayComponent = this.overlayComponent(this);
 		}
 		this.getOverlayTBar().show();
 	}
-	private readonly tbarItemContainer: Component;
 
 	public close() {
 		// document.body.removeEventListener("mousedown", this.closeOnClick);
@@ -95,11 +88,11 @@ export class OverlayToolbarButton<EventMap extends OverlayToolbarButtonEventMap 
 						this.close();
 					}
 				}),
-				this.tbarItemContainer
+				...this.getTbarItems()
 			);
 
 			this.overlayTbar.el.addEventListener("keydown", (e) => {
-				if(e.key == "Escape") {
+				if (e.key == "Escape") {
 					e.preventDefault();
 					e.stopPropagation();
 					this.close();
@@ -112,22 +105,10 @@ export class OverlayToolbarButton<EventMap extends OverlayToolbarButtonEventMap 
 		return this.overlayTbar;
 	}
 
-	protected get itemContainerEl() {
-		return this.tbarItemContainer.el;
-	}
-}
-
-/**
- * Shorthand function to create {@link OverlayToolbarButton}
- *
- * @link searchbtn
- */
-export const overlaytoolbarbutton = (config?: Config<OverlayToolbarButton>, ...items: (Component | "->" | "-")[]) => {
-	const c = new OverlayToolbarButton();
-	if (config) {
-		assignComponentConfig(c, config);
-	}
-
-	c.items.add(...tbarItems(items));
-	return c;
+	/**
+	 * Override this function to create tbar components
+	 *
+	 * @protected
+	 */
+	protected abstract getTbarItems(): ToolbarItems[]
 }

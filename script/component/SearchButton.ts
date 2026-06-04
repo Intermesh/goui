@@ -11,6 +11,7 @@ import {createComponent} from "./Component.js";
 import {FunctionUtil} from "../util/FunctionUtil.js";
 import {Config} from "./Observable.js";
 import {OverlayToolbarButton, OverlayToolbarButtonEventMap} from "./OverlayToolbarButton";
+import {ToolbarItems} from "./Toolbar.js";
 
 
 /**
@@ -44,7 +45,7 @@ export interface SearchButtonEventMap extends OverlayToolbarButtonEventMap {
  * - `input`: Triggered when the input value in the search field changes.
  */
 export class SearchButton extends OverlayToolbarButton<SearchButtonEventMap> {
-	private readonly searchField: TextField;
+	private searchField?: TextField;
 
 	private buffer = 300;
 
@@ -54,6 +55,11 @@ export class SearchButton extends OverlayToolbarButton<SearchButtonEventMap> {
 		this.icon = "search";
 
 		this.title = t("Search");
+
+
+	}
+
+	protected getTbarItems() {
 
 		this.searchField = textfield({
 			placeholder: t("Search") + "...",
@@ -67,35 +73,30 @@ export class SearchButton extends OverlayToolbarButton<SearchButtonEventMap> {
 						this.reset();
 					}
 				})
-			]
-		});
+			],
+			listeners: {
+				render: ({target}) => {
+					target.input.addEventListener('input', FunctionUtil.buffer(this.buffer, this.onInput.bind(this)))
 
-		this.searchField.on("render", () => {
-			this.searchField.input.addEventListener('input', FunctionUtil.buffer(this.buffer, this.onInput.bind(this)))
-
-			this.searchField.el.addEventListener('keydown', (e:KeyboardEvent) => {
-				if(e.key == "Enter") {
-					e.preventDefault();
-					e.stopPropagation();
+					target.el.addEventListener('keydown', (e:KeyboardEvent) => {
+						if (e.key == "Enter") {
+							e.preventDefault();
+							e.stopPropagation();
+						}
+					});
 				}
-
-				// if(e.key == "Escape") {
-				// 	e.preventDefault();
-				// 	e.stopPropagation();
-				// 	this.close();
-				// }
-			})
+			}
 		})
-
-		this.items.add(this.searchField);
 
 		this.on("open", () => {
-			this.searchField.select()
+			this.searchField?.select()
 		})
+
+		return [this.searchField];
 	}
 
 	public reset() {
-		this.searchField.reset();
+		this.searchField?.reset();
 		this.close();
 
 		this.fire("reset", {});
@@ -106,9 +107,9 @@ export class SearchButton extends OverlayToolbarButton<SearchButtonEventMap> {
 
 
 	private onInput() {
-		this.el.classList.toggle("accent", !!this.searchField.value);
-		this.el.classList.toggle("filled", !!this.searchField.value);
-		this.fire("input", {text: this.searchField.value});
+		this.el.classList.toggle("accent", !!this.searchField!.value);
+		this.el.classList.toggle("filled", !!this.searchField!.value);
+		this.fire("input", {text: this.searchField!.value});
 	}
 
 }

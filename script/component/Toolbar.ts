@@ -179,6 +179,16 @@ export class Toolbar extends AbstractMenu {
 }
 
 /**
+ * Toolbar items.
+ *
+ * Can have some extra shortcuts options:
+ *
+ * -> = comp({flex:1}
+ * - = hr()
+ */
+export type ToolbarItems = Component | "->" | "-";
+
+/**
  * Create a {@link Toolbar} Component
  *
  * @example
@@ -216,7 +226,7 @@ export class Toolbar extends AbstractMenu {
  * @param config
  * @param items
  */
-export const tbar = (config?: Config<Toolbar>, ...items: (Component | "->" | "-")[]) => {
+export const tbar = (config?: Config<Toolbar>, ...items: ToolbarItems[]) => {
 	const c = new Toolbar();
 	if (config) {
 		assignComponentConfig(c, config);
@@ -226,7 +236,9 @@ export const tbar = (config?: Config<Toolbar>, ...items: (Component | "->" | "-"
 	return c;
 }
 
-export const tbarItems = (items: (Component | "->" | "-")[]): Component[] => items.map(i => {
+
+
+export const tbarItems = (items: ToolbarItems[]): Component[] => items.map(i => {
 		switch (i) {
 			case '->':
 				return comp({
