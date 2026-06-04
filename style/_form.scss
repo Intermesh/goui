@@ -1317,6 +1317,7 @@ div.color-dot {
 		.chip {
 			display: flex;
 			flex-direction: row;
+			align-items: center;
 			float: left;
 			border-radius: util.dp(4);
 			color: var(--bg-dim);
