@@ -24,7 +24,7 @@ export interface SearchButtonEventMap extends OverlayToolbarButtonEventMap {
 	 */
 	input: {
 		/**
-		 * The text that was entered by the user
+		 * The text that was entered by the user. Unlike the regular input event this event buffers for 300ms by default
 		 */
 		text: string
 	}
@@ -45,7 +45,7 @@ export interface SearchButtonEventMap extends OverlayToolbarButtonEventMap {
  * - `input`: Triggered when the input value in the search field changes.
  */
 export class SearchButton extends OverlayToolbarButton<SearchButtonEventMap> {
-	private searchField?: TextField;
+	private _searchField?: TextField;
 
 	private buffer = 300;
 
@@ -53,45 +53,49 @@ export class SearchButton extends OverlayToolbarButton<SearchButtonEventMap> {
 		super();
 
 		this.icon = "search";
-
 		this.title = t("Search");
-
-
 	}
 
-	protected getTbarItems() {
+	public get searchField() {
+		if(!this._searchField) {
+			this._searchField = textfield({
+				placeholder: t("Search") + "...",
+				flex: 1,
 
-		this.searchField = textfield({
-			placeholder: t("Search") + "...",
-			flex: 1,
-
-			buttons: [
-				btn({
-					type: "button",
-					icon: "clear",
-					handler: () => {
-						this.reset();
-					}
-				})
-			],
-			listeners: {
-				render: ({target}) => {
-					target.input.addEventListener('input', FunctionUtil.buffer(this.buffer, this.onInput.bind(this)))
-
-					target.el.addEventListener('keydown', (e:KeyboardEvent) => {
-						if (e.key == "Enter") {
-							e.preventDefault();
-							e.stopPropagation();
+				buttons: [
+					btn({
+						type: "button",
+						icon: "clear",
+						handler: () => {
+							this.reset();
 						}
-					});
+					})
+				],
+				listeners: {
+					render: ({target}) => {
+						target.input.addEventListener('input', FunctionUtil.buffer(this.buffer, this.onInput.bind(this)))
+
+						target.el.addEventListener('keydown', (e: KeyboardEvent) => {
+							if (e.key == "Enter") {
+								e.preventDefault();
+								e.stopPropagation();
+							}
+						});
+					}
 				}
-			}
-		})
+			})
 
-		this.on("open", () => {
-			this.searchField?.select()
-		})
+			this.on("open", () => {
+				this._searchField!.select()
+			})
+		}
 
+		return this._searchField;
+	}
+
+
+
+	protected getTbarItems() {
 		return [this.searchField];
 	}
 
