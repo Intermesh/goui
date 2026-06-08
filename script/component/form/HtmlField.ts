@@ -325,8 +325,35 @@ export class HtmlField extends Field<HtmlFieldEventMap> {
 				inp.click();
 			}
 		},
-		removeFormat: {icon: 'format_clear', title: "Remove formatting"},
+		removeFormat: {icon: 'format_clear', title: "Remove formatting", applyFn: () => {
+			this.clearFormatting();
+		}},
 	};
+
+	clearFormatting(): void {
+		const selection = window.getSelection();
+		if (!selection || !selection.rangeCount || selection.isCollapsed) return;
+
+		document.execCommand('removeFormat');
+
+		const range = selection.getRangeAt(0);
+		const ancestor = range.commonAncestorContainer;
+		const root = ancestor.nodeType === Node.ELEMENT_NODE
+			? ancestor as Element
+			: ancestor.parentElement;
+
+		if (!root) return;
+
+		root.querySelectorAll<HTMLElement>('[style]').forEach(el => {
+			if (range.intersectsNode(el)) {
+				el.removeAttribute('style');
+			}
+		});
+
+		if (root.hasAttribute('style') && range.intersectsNode(root)) {
+			root.removeAttribute('style');
+		}
+	}
 
 	private getSelectedNode() {
 		const selection = window.getSelection();
@@ -377,8 +404,6 @@ export class HtmlField extends Field<HtmlFieldEventMap> {
 				t.findChild(cmd)!.el.classList.toggle("pressed", document.queryCommandState(cmd));
 			}
 		}
-
-		this.editor!.focus();
 	}
 
 	/**
@@ -456,6 +481,10 @@ export class HtmlField extends Field<HtmlFieldEventMap> {
 						} else {
 							config.applyFn.call(this, btn);
 						}
+
+						// Force Firefox to re-anchor the caret otherwise it's gone!
+						this.editor!.blur();
+						this.editor!.focus();
 					}
 				}));
 			}
