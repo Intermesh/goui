@@ -645,11 +645,11 @@ export class HtmlField extends Field<HtmlFieldEventMap> {
 				ev.preventDefault();
 			} else if (ev.key == "Tab") {
 				ev.preventDefault();
-				if (document.queryCommandState('insertorderedlist') || document.queryCommandState('insertunorderedlist')) {
+				// if (document.queryCommandState('insertorderedlist') || document.queryCommandState('insertunorderedlist')) {
 					this.execCmd(ev.shiftKey ? 'outdent' : 'indent');
-				} else {
-					this.execCmd('InsertText', '\t');
-				}
+				// } else {
+				// 	this.execCmd('InsertText', '\t');
+				// }
 				this.focus();
 			}
 

@@ -30,8 +30,9 @@
 
 	blockquote {
 		display: block;
-		margin: 1em util.dp(40);
-		padding: 0 util.dp(16);
+		// for indenting and outdenting in editor too!
+		margin: 0 0 0 util.dp(40);
+		padding: 0;//0 util.dp(16);
 	}
 
 	td {
