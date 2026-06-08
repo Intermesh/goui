@@ -248,90 +248,103 @@ export class Sortable<Type extends Component> extends Observable<SortableEventMa
 
 			Sortable.dragData.overEl = e.target.closest(this.sortableChildSelector) as HTMLElement;
 
+			this.setIndex(e);
+
 			if(!this.dropAllowed()) {
 				return;
 			}
 
 			const dropPin = Sortable.getDropPin();
 
+			let rect;
 			if(Sortable.dragData.overEl) {
-
-				const rect = Sortable.dragData.overEl.getBoundingClientRect();
+				rect = Sortable.dragData.overEl.getBoundingClientRect();
 				Sortable.dragData.pos = this.getDragPos(rect, e);
-
-				switch(Sortable.dragData.pos) {
-					case "before":
-						e.preventDefault();
-						e.stopPropagation();
-						e.dataTransfer!.dropEffect = "move";
-						dropPin.hidden = false;
-
-						if(this.horizontal) {
-							dropPin.el.style.top = rect.y + "px"; // (rect.y - this.gap(Sortable.dragData.overEl)) + "px";
-							dropPin.el.style.left = (rect.x - this.gap(Sortable.dragData.overEl)) + "px";
-							dropPin.el.style.height = rect.height + "px";
-						} else {
-							dropPin.el.style.top = (rect.y - this.gap(Sortable.dragData.overEl)) + "px";
-							dropPin.el.style.left = rect.x + "px";
-							dropPin.el.style.width = rect.width + "px";
-						}
-						break;
-
-					case "on":
-						if(!this.dropOn) {
-							return;
-						}
-						e.dataTransfer!.dropEffect = "copy";
-						dropPin.hidden = true;
-
-						e.preventDefault();
-						e.stopPropagation();
-
-						break;
-
-					case "after":
-						e.preventDefault();
-						e.stopPropagation();
-						e.dataTransfer!.dropEffect = "move";
-						dropPin.hidden = false;
-
-						if(this.horizontal) {
-							dropPin.el.style.top = rect.y + "px";
-							dropPin.el.style.left = (rect.x + rect.width + this.gap(Sortable.dragData.overEl)) + "px";
-							dropPin.el.style.height = rect.height + "px";
-							dropPin.el.style.width = "";
-						} else {
-							dropPin.el.style.top = (rect.y + rect.height + this.gap(Sortable.dragData.overEl)) + "px";
-							dropPin.el.style.left = rect.x + "px";
-							dropPin.el.style.width = rect.width + "px";
-							dropPin.el.style.height = "";
-						}
-
-						break;
-				}
 			} else {
-
-				// this happens when the user drops outside the sortable container. We'll check if it was above or beneath it.
-				const listRect = this.component.el.getBoundingClientRect();
-
-				if((e.y <= listRect.y || e.y < (listRect.y + 20))) {
-					// dropped above
-					Sortable.dragData.pos = "before";
-					Sortable.dragData.toIndex = 0;
-				} else {
-					// dropped beneath
-					Sortable.dragData.pos = "after";
-					Sortable.dragData.toIndex = this.findSortables().length -1;
-				}
-
-				e.preventDefault();
-				e.stopPropagation();
-
-				dropPin.hidden = true;
-				e.dataTransfer!.dropEffect = "copy";
+				rect = this.component.el.getBoundingClientRect();
 			}
 
+			switch(Sortable.dragData.pos) {
+				case "before":
+					e.preventDefault();
+					e.stopPropagation();
+					e.dataTransfer!.dropEffect = "move";
+					dropPin.hidden = false;
+
+					if(this.horizontal) {
+						dropPin.el.style.top = rect.y + "px"; // (rect.y - this.gap(Sortable.dragData.overEl)) + "px";
+						dropPin.el.style.left = (rect.x - this.gap(Sortable.dragData.overEl)) + "px";
+						dropPin.el.style.height = rect.height + "px";
+					} else {
+						dropPin.el.style.top = (rect.y - this.gap(Sortable.dragData.overEl)) + "px";
+						dropPin.el.style.left = rect.x + "px";
+						dropPin.el.style.width = rect.width + "px";
+					}
+					break;
+
+				case "on":
+					if(!this.dropOn) {
+						return;
+					}
+					e.dataTransfer!.dropEffect = "copy";
+					dropPin.hidden = true;
+
+					e.preventDefault();
+					e.stopPropagation();
+
+					break;
+
+				case "after":
+					e.preventDefault();
+					e.stopPropagation();
+					e.dataTransfer!.dropEffect = "move";
+					dropPin.hidden = false;
+
+					if(this.horizontal) {
+						dropPin.el.style.top = rect.y + "px";
+						dropPin.el.style.left = (rect.x + rect.width + this.gap(Sortable.dragData.overEl)) + "px";
+						dropPin.el.style.height = rect.height + "px";
+						dropPin.el.style.width = "";
+					} else {
+						dropPin.el.style.top = (rect.y + rect.height + this.gap(Sortable.dragData.overEl)) + "px";
+						dropPin.el.style.left = rect.x + "px";
+						dropPin.el.style.width = rect.width + "px";
+						dropPin.el.style.height = "";
+					}
+
+					break;
+			}
+
+
 		})
+	}
+
+	private setIndex(e:DragEvent) {
+
+		if(Sortable.dragData!.overEl) {
+			Sortable.dragData!.toIndex = this.findIndex(Sortable.dragData!.overEl);
+			if (Sortable.dragData!.pos == "after") {
+				Sortable.dragData!.toIndex++;
+			}
+		} else {
+			Sortable.dragData!.toIndex = 0;
+
+			// this happens when the user drops outside the sortable container. We'll check if it was above or beneath it.
+			const listRect = this.component.el.getBoundingClientRect(), sortables =  this.findSortables();
+
+			if((e.y <= listRect.y || e.y < (listRect.y + 20))) {
+				// dropped above
+				Sortable.dragData!.pos = "before";
+				Sortable.dragData!.toIndex = 0;
+				Sortable.dragData!.overEl = sortables[0] ?? undefined;
+			} else {
+				// dropped beneath
+				Sortable.dragData!.pos = "after";
+				Sortable.dragData!.toIndex = sortables.length;
+				Sortable.dragData!.overEl = sortables[Sortable.dragData!.toIndex - 1] ?? undefined;
+			}
+
+		}
 	}
 
 	private getDragPos(rect: DOMRect, e:DragEvent) {
@@ -369,14 +382,6 @@ export class Sortable<Type extends Component> extends Observable<SortableEventMa
 		if(!Sortable.dragData) {
 			return false;
 		}
-		if(Sortable.dragData.overEl) {
-			Sortable.dragData.toIndex = this.findIndex(Sortable.dragData.overEl);
-			if (Sortable.dragData.pos == "after") {
-				Sortable.dragData.toIndex++;
-			}
-		} else {
-			Sortable.dragData.toIndex = 0;
-		}
 
 		return this.fire("dropallowed", {
 			toIndex: Sortable.dragData.toIndex,
@@ -395,6 +400,7 @@ export class Sortable<Type extends Component> extends Observable<SortableEventMa
 	private gap(item:HTMLElement) {
 
 		if(this._gap !== undefined) {
+			console.log(this._gap);
 			return this._gap;
 		}
 
@@ -418,7 +424,7 @@ export class Sortable<Type extends Component> extends Observable<SortableEventMa
 			? (r1.x + r1.width - r2.x) / 2
 			: (r1.y + r1.height - r2.y) / 2
 
-
+		console.log(this._gap);
 		return this._gap;
 	}
 
@@ -427,15 +433,13 @@ export class Sortable<Type extends Component> extends Observable<SortableEventMa
 		Sortable.getDropPin().hidden = true;
 
 		if(!Sortable.dragData || Sortable.dragData.group != this.group) {
-			console.trace("1");
-			//not our item
+			// not our item
 			return;
 		}
 
 		if(!Sortable.dragData.dragSrc) {
 			this.fire("dragend", {ev, dragData: Sortable.dragData});
 			Sortable.dragData = undefined;
-			console.log("2");
 			return;
 		}
 
@@ -447,7 +451,6 @@ export class Sortable<Type extends Component> extends Observable<SortableEventMa
 			Sortable.dragData.dragSrc = undefined;
 			this.fire("dragend", {ev, dragData: Sortable.dragData});
 			Sortable.dragData = undefined;
-			console.log("3");
 			return;
 		}
 
@@ -484,12 +487,13 @@ export class Sortable<Type extends Component> extends Observable<SortableEventMa
 			source: Sortable.dragData.sourceComponent,
 			dragDataSet: Sortable.dragData.dataSet
 		});
+
 		this.fire("dragend", {ev, dragData: Sortable.dragData});
+
 		Sortable.dragData = undefined;
-		console.trace("4");
 	}
 
 	private findSortables() {
-		return Array.from(this.component.el.querySelectorAll(this.sortableChildSelector));
+		return Array.from(this.component.el.querySelectorAll(this.sortableChildSelector)) as HTMLElement[];
 	}
 }
