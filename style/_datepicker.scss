@@ -41,7 +41,7 @@ menu.goui-dropdown {
 			grid-template-columns: repeat(4, 1fr);
 		}
 		> li {
-			&.now{font-weight: 600; border: 1px solid var(--fg-main);}
+			&.now{ font-weight: 600; border: 1px solid var(--fg-main); }
 			cursor: pointer;
 		}
 	}
@@ -159,7 +159,7 @@ menu.goui-dropdown {
 			> * {
 				position: absolute;
 				transition: transform $duration linear; // go out to bottom
-				transform: translateX(100%);
+				transform: translateX(-100%);
 			}
 			> .active {
 				z-index: 1;
@@ -168,14 +168,14 @@ menu.goui-dropdown {
 			}
 			> .active + div {
 				transition: transform $duration linear; // come in from top
-				transform: translateX(-100%);
+				transform: translateX(100%);
 			}
 
 			&.reverse {
 				> * {
 					position: absolute;
 					transition: transform $duration linear; // go out to bottom
-					transform: translateX(-100%);
+					transform: translateX(100%);
 				}
 				> .active {
 					z-index: 1;
@@ -184,7 +184,7 @@ menu.goui-dropdown {
 				}
 				> .active + div {
 					transition: transform $duration linear; // come in from top
-					transform: translateX(100%);
+					transform: translateX(-100%);
 				}
 			}
 			&.top {
