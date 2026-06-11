@@ -316,10 +316,11 @@ export class Component<EventMapType extends ComponentEventMap = ComponentEventMa
 		this.items.on("remove", (e) => {
 			if (e.item.parent) {
 				e.item.parent = undefined;
+				// Should we destroy on remove?
 				if((e.item as any).supr) {
 
 					// compat with extjs components
-					(e.item as any).destroy();
+					(e.item as any).onRemoved();
 
 				} else {
 					e.item.remove();
@@ -588,7 +589,9 @@ export class Component<EventMapType extends ComponentEventMap = ComponentEventMa
 	private _removed = false;
 
 	/**
-	 * Removes the component from the component tree
+	 * Removes the component from the component tree.
+	 *
+	 * The children will stay present in the component. It will not be destroyed but can be reused until garbage collected.
 	 */
 	public remove() {
 		if (!this.fire("beforeremove", {})) {
@@ -609,7 +612,9 @@ export class Component<EventMapType extends ComponentEventMap = ComponentEventMa
 			this.maskTimeout = undefined;
 		}
 
-		this.items.clear();
+		// do not cascade but keep this component
+		//this.items.clear();
+
 		this.detach();
 	}
 
