@@ -415,13 +415,20 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 	 * @return {Menu} The column menu with toggle options for visible columns.
 	 */
 	public getVisibleColumnMenu() {
+
+		this.restoreState(this.getState());
+
 		if (!this.columnMenu) {
 			this.columnMenu = menu({
 				isDropdown: true,
 				removeOnClose: false
 			});
 
-			for (let id in this._columns) {
+			const sortedKeys = Object.keys(this._columns).sort((a, b) =>
+				(this._columns[a].header ?? "").localeCompare(this._columns[b].header ?? "")
+			);
+
+			for (let id of sortedKeys) {
 				const c = this._columns[id];
 
 				if (c.header && c.hidable) {
@@ -440,6 +447,7 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 				}
 			}
 		}
+
 		return this.columnMenu;
 	}
 
