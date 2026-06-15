@@ -56,7 +56,7 @@ export class DataSourceStore<
 	/**
 	 * En entity relations
 	 */
-	public relations?: Relation<DefaultEntity>;
+	public relations?: Relation<any>;
 
 	/**
 	 * The server properties required
@@ -152,7 +152,7 @@ export class DataSourceStore<
 			this.total = undefined;
 		}
 
-		const records = await this.buildRecords(await this.fetchRelations(list));
+		const records = await this.buildRecords(await this.fetchRelations(list, this.relations));
 		this.loadData(records, append);
 
 		return records;
@@ -176,21 +176,41 @@ export class DataSourceStore<
 
 	}
 
-	private async fetchRelations(records: dataSourceEntityType<DataSource>[]) {
+	private async fetchRelations(records: dataSourceEntityType<DataSource>[], relations: Relation<any>|undefined) {
 
-		if (!this.relations) {
+		if (!relations) {
 			return records;
 		}
 
 		const promises:Promise<any>[] = [];
 
-		for (const relationName in this.relations) {
+		const nextRunRelations: Relation<any> = {};
 
-			const rel = this.relations[relationName as keyof DefaultEntity]!;
+		for (const relationName in relations) {
+
+			const rel = relations[relationName]!// as Relation<any>;
+
+			const parts = ObjectUtil.explodePointer(rel.path);
+
+			let requiredRelation = parts[0];
+
+			if(requiredRelation in relations) {
+				// this relation depends on another relation not resolved yet.
+				nextRunRelations[relationName] = rel;
+				continue;
+			}
 
 			let ids:any;
 			for (const record of records) {
-				ids = ObjectUtil.get(record, rel.path);
+
+				try {
+					ids = ObjectUtil.get(record, rel.path);
+				}catch(e) {
+
+					// could be normal that a relation is not found
+					console.warn("Failed to fetch relation", e);
+					continue;
+				}
 
 				if (!ids) {
 					continue;
@@ -198,25 +218,38 @@ export class DataSourceStore<
 
 				if (!Array.isArray(ids)) {
 					promises.push(rel.dataSource.single(ids).then((e) => {
-						if (e) {
-							record[relationName as (keyof dataSourceEntityType<DataSource>)] = e as never;
-						}
-					}).catch(e =>{console.warn("Failed to fetch relation", e)})
+							if (e) {
+								record[relationName as (keyof dataSourceEntityType<DataSource>)] = e as never;
+							}
+						}).catch(e => {
+							console.warn("Failed to fetch relation", e)
+						})
 					);
 				} else {
-					const idToEntity = (id:EntityID) => {
+					const idToEntity = (id: EntityID) => {
 						return rel.dataSource.single(id);
 					}
-					promises.push(Promise.all(ids.map(idToEntity)).then((entities:any) => {
+					promises.push(Promise.all(ids.map(idToEntity)).then((entities: any) => {
+
 						record[relationName as (keyof dataSourceEntityType<DataSource>)] = entities;
-					}).catch(e =>{console.warn("Failed to fetch relation", e)}));
+					}).catch(e => {
+						console.warn("Failed to fetch relation", e)
+					}));
 
 				}
 			}
 
 		}
 
-		return Promise.all(promises).then(() => records);
+		return Promise.all(promises).then(async ():Promise<dataSourceEntityType<DataSource>[]> => {
+
+			if(Object.keys(nextRunRelations).length) {
+				console.log("Next pass for relations", nextRunRelations)
+				return await this.fetchRelations(records, nextRunRelations);
+			} else {
+				return records
+			}
+		});
 	}
 
 	private keepPosition = false;
@@ -380,6 +413,22 @@ export type DataSourceStoreConfig<DataSource extends AbstractDataSource, RecordT
 
 		/**
 		 * Fetch relations of the entity
+		 *
+
+		 * For example:
+		 * ```
+		 * relations: {
+		 *  			project: {
+		 * 					path: "projectId",
+		 * 					dataSource: jmapds("Project3")
+		 * 				},
+		 * 				customer: {
+		 * 					// this sub path will require an extra async pass as the "project" relation above must be fetched first.
+		 * 					path: "project/customerId",
+		 * 					dataSource: jmapds("Contact")
+		 * 				}
+		 * }
+		 * 	```
 		 */
 		relations?: Relation<DefaultEntity>,
 

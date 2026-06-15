@@ -85,7 +85,7 @@ export class ObjectUtil {
 		return structuredClone(source);
 	}
 
-	private static explodePointer(path:string) {
+	public static explodePointer(path:string) {
 		const parts = path.replace(/^\//, "").split('/');
 		// ignore leading / as it is implicit
 		for(let i=0; i < parts.length; i++) {
