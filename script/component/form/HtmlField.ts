@@ -237,24 +237,20 @@ export class HtmlField extends Field<HtmlFieldEventMap> {
 
 							if(s.block === "code") {
 
-								const code = document.createElement("code");
+								const code = document.createElement("code"),
+									selection = window.getSelection()!,
+									range = selection.getRangeAt(0);
 
-								let node = this.getSelectedNode() ?? null;
-								const insert = node && node != this.editor! ? node.parentElement! : this.editor!;
-								insert.insertBefore(code, node?.nextSibling ?? null)
-
-								const range = window.getSelection();
-								if(range) {
-									code.innerHTML = range.toString();
-									range.deleteFromDocument();
+								try {
+									range.surroundContents(code);
+								} catch {
+									// Fallback for partial element selections
+									const fragment = range.extractContents();
+									code.appendChild(fragment);
+									range.insertNode(code);
 								}
 
-								if(!node) {
-									node = document.createElement("div")
-									code.append(node);
-								}
-
-								this.focusEl(code.lastElementChild ?? code);
+								this.focusEl(code);
 
 
 							} else {
