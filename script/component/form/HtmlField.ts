@@ -11,7 +11,7 @@ import {tbar, Toolbar} from "../Toolbar.js";
 import {btn, Button} from "../Button.js";
 import {browser} from "../../util/Browser.js";
 import {colormenu} from "../menu/ColorMenu.js";
-import {Menu} from "../menu/Menu.js";
+import {menu, Menu} from "../menu/Menu.js";
 import {comp, createComponent} from "../Component.js";
 import {FunctionUtil} from "../../util/FunctionUtil.js";
 import {MaterialIcon} from "../MaterialIcon.js";
@@ -84,7 +84,8 @@ type ToolbarItems = "-" | "bold" | "italic" | "underline" | "strikeThrough" |
 	"outdent" |
 	"image" |
 	"createLink" |
-	"sourceEdit"
+	"sourceEdit" |
+	"style"
 
 
 /**
@@ -166,6 +167,8 @@ export class HtmlField extends Field<HtmlFieldEventMap> {
 	 * ```
 	 */
 	public toolbarItems: ToolbarItems[] = [
+		"style",
+		"-",
 		"bold", "italic", "underline", "strikeThrough",
 		"-",
 		"foreColor", "backColor", "removeFormat",
@@ -184,7 +187,108 @@ export class HtmlField extends Field<HtmlFieldEventMap> {
 		"sourceEdit"
 	];
 
+	private styles: {icon: MaterialIcon, block: keyof HTMLElementTagNameMap, text:string}[] = [
+		{
+			icon: "format_paragraph",
+			block: "div",
+			text: t("Paragraph")
+		},
+		{
+			icon: "format_h1",
+			block: "h1",
+			text: t("Heading 1")
+		},
+		{
+			icon: "format_h2",
+			block: "h2",
+			text: t("Heading 2")
+		},
+		{
+			icon: "format_h3",
+			block: "h3",
+			text: t("Heading 3")
+		},
+		{
+			icon: "format_h4",
+			block: "h4",
+			text: t("Heading 4")
+		},
+
+		{
+			icon: "code",
+			block: "code",
+			text: t("Code")
+		}
+	];
+
 	private commands: Record<string, CmdConfig> = {
+		style: {
+			icon: "format_paragraph",
+			title: "Style",
+			menu: menu({},
+
+				...this.styles.map(s => {
+					return btn({
+						icon: s.icon,
+						text: s.text,
+						dataSet: {block: s.block},
+						handler: button => {
+							(button.parent!.parent as Button).icon = button.icon;
+
+							if(s.block === "code") {
+
+								const code = document.createElement("code");
+
+								let node = this.getSelectedNode() ?? null;
+								const insert = node && node != this.editor! ? node.parentElement! : this.editor!;
+								insert.insertBefore(code, node?.nextSibling ?? null)
+
+								const range = window.getSelection();
+								if(range) {
+									code.innerHTML = range.toString();
+									range.deleteFromDocument();
+								}
+
+								if(!node) {
+									node = document.createElement("div")
+									code.append(node);
+								}
+
+								this.focusEl(code.lastElementChild ?? code);
+
+
+							} else {
+								this.execCmd("removeformat");
+								this.execCmd("formatblock", `<${s.block}>`);
+								this.focus()
+							}
+						}
+					})
+				})
+
+				),
+			applyFn: () => {
+			},
+			updateFn: (btn) => {
+				const node = this.getSelectedNode();
+				if(!node) {
+					return;
+				}
+
+				let found = false;
+				btn.menu!.items.forEach((i) => {
+
+					if(i.dataSet.block === node.tagName.toLowerCase()){
+						btn.icon = (i as Button).icon;
+						found = true;
+					}
+				})
+
+				if(!found) {
+					btn.icon = "format_paragraph";
+				}
+			}
+		},
 		bold: {icon: 'format_bold', title: "Bold"},
 		italic: {icon: 'format_italic', title: "Italic"},
 		underline: {icon: 'format_underlined', title: "Underline"},
@@ -267,7 +371,7 @@ export class HtmlField extends Field<HtmlFieldEventMap> {
 		outdent: {icon: 'format_indent_decrease', title: "Outdent"},
 
 		sourceEdit: {
-			icon: "code",
+			icon: "html",
 			title: t("Edit source"),
 			applyFn: () => {
 				const w = new SourceEditWindow(this);
@@ -443,7 +547,7 @@ export class HtmlField extends Field<HtmlFieldEventMap> {
 	}
 
 
-	private focusEl(el: HTMLLIElement) {
+	private focusEl(el: Element) {
 		const sel = window.getSelection();
 		if (!sel) return;
 		const range = document.createRange();
@@ -889,7 +993,6 @@ export class HtmlField extends Field<HtmlFieldEventMap> {
 		}
 		this.focusEl(li);
 	}
-
 }
 
 class SourceEditWindow extends Window {

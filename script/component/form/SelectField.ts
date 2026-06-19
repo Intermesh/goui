@@ -86,10 +86,16 @@ export class SelectField extends InputField {
 	/**
 	 * Provide select input with options
 	 *
-	 * It should have at least have a field that corresponds with {@link Select.valueField}
+	 * It should have at least have a field that corresponds with {@link SelectField.valueField}
 	 *
-	 * By default, it should have a "value" and "name" property. This can be changed with the {@link Select.valueField} and
-	 * {@link Select.textRenderer}.
+	 * By default you could use:
+	 *
+	 * ```
+	 * [{value: "1", text: "One"}]
+	 * ```
+	 *
+	 * By default, it should have a "value" and "name" property. This can be changed with the {@link SelectField.valueField} and
+	 * {@link SelectField.textRenderer}.
 	 *
 	 * @param opts
 	 */
@@ -159,3 +165,4 @@ export class SelectField extends InputField {
  * @param config
  */
 export const select = (config?: FieldConfig<SelectField>) => createComponent(new SelectField(), config);
+export const selectfield = (config?: FieldConfig<SelectField>) => createComponent(new SelectField(), config);
