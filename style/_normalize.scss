@@ -101,7 +101,9 @@
 		margin: util.dp(24) 0;
 		padding:0;
 	}
+}
 
+.normalize-code {
 	code {
 		font-family: monospace;
 		border: none;
@@ -112,6 +114,5 @@
 		color: var(--fg-text);
 		overflow: visible;
 	}
-
 }
 

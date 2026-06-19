@@ -639,8 +639,8 @@ export class HtmlField extends Field<HtmlFieldEventMap> {
 		this.editor = document.createElement("div");
 		this.editor.contentEditable = "true";
 		this.editor.tabIndex = 0;
-		this.editor.classList.add("editor");
-		this.editor.classList.add("text");
+		this.editor.classList.add("editor", "text");
+
 
 		if (this.placeholder) {
 			this.editor.dataset.placeholder = this.placeholder;

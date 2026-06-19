@@ -424,6 +424,19 @@ aside.goui-cardmenu.goui-toolbar {
 }
 
 
+.code-blocks {
+	code {
+		display: block;
+		word-break: break-all;
+		white-space: break-spaces;
+		background-color: config.$surfaceLow;
+		border: config.$borderWidth solid config.$colorBorder;
+		border-radius: config.$borderRadius / 2;
+		padding: util.dp(8);
+		line-height:normal;
+	}
+}
+
 //.goui a {
 //	color: config.$colorMain;
 //}

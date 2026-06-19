@@ -1,3 +1,4 @@
+@use "general";
 @use "config";
 @use "util";
 @use "icons";
@@ -5,6 +6,7 @@
 @use "normalize";
 @use "shadows";
 @use "button";
+
 
 
 @keyframes onautofillstart {
@@ -1176,6 +1178,7 @@
 	div.editor {
 		@extend %input;
 		@extend .normalize;
+		@extend .code-blocks;
 		min-height: util.dp(100);
 
 		img {
