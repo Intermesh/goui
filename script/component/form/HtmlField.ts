@@ -374,6 +374,7 @@ export class HtmlField extends Field<HtmlFieldEventMap> {
 	}
 
 
+
 	private updateToolbar() {
 
 		const t = this.tbar!;
@@ -439,6 +440,39 @@ export class HtmlField extends Field<HtmlFieldEventMap> {
 			selection.removeAllRanges();
 			selection.addRange(range);
 		}
+	}
+
+
+	private focusEl(el: HTMLLIElement) {
+		const sel = window.getSelection();
+		if (!sel) return;
+		const range = document.createRange();
+		const textNode = this.getLastTextNode(el);
+		if (textNode) {
+			range.setStart(textNode, textNode.length);
+		} else {
+			range.setStart(el, el.childNodes.length);
+		}
+		range.collapse(true);
+		sel.removeAllRanges();
+		sel.addRange(range);
+	}
+
+	private getLastTextNode(el: Node): Text | null {
+		for (let i = el.childNodes.length - 1; i >= 0; i--) {
+			const child = el.childNodes[i];
+			if (child.nodeType === Node.TEXT_NODE && child.textContent!.length > 0) {
+				return child as Text;
+			}
+			if (child.nodeType === Node.ELEMENT_NODE) {
+				// const tag = (child as HTMLElement).tagName;
+				// if (tag !== 'UL' && tag !== 'OL') {
+				const found = this.getLastTextNode(child);
+				if (found) return found;
+				// }
+			}
+		}
+		return null;
 	}
 
 	// noinspection JSUnusedGlobalSymbols
@@ -674,11 +708,18 @@ export class HtmlField extends Field<HtmlFieldEventMap> {
 				ev.preventDefault();
 			} else if (ev.key == "Tab") {
 				ev.preventDefault();
-				// if (document.queryCommandState('insertorderedlist') || document.queryCommandState('insertunorderedlist')) {
+				if (browser.isSafari()) {
+					// Safari doesn't support indent/outdent in lists via execCommand
+					const li = this.getSelectedNode()?.closest("li");
+					if (li) {
+						ev.shiftKey ? this.outdentListItem(li) : this.indentListItem(li);
+					} else {
+						this.execCmd(ev.shiftKey ? 'outdent' : 'indent');
+					}
+				} else {
 					this.execCmd(ev.shiftKey ? 'outdent' : 'indent');
-				// } else {
-				// 	this.execCmd('InsertText', '\t');
-				// }
+				}
+
 				this.focus();
 			}
 
@@ -820,6 +861,35 @@ export class HtmlField extends Field<HtmlFieldEventMap> {
 
 		walk(this.editor!);
 	}
+
+
+	private indentListItem(li: HTMLLIElement) {
+		const prevLi = li.previousElementSibling;
+		if (!prevLi) return; // can't indent the first item
+
+		const listEl = li.parentElement!;
+		let nestedList = prevLi;
+		if (nestedList.tagName != "OL" && nestedList.tagName != "UL") {
+			nestedList = document.createElement(listEl.tagName);
+			listEl.insertBefore(nestedList, li.nextSibling);
+		}
+		nestedList.appendChild(li);
+		this.focusEl(li);
+	}
+
+	private outdentListItem(li: HTMLLIElement) {
+		const list = li.parentElement!;
+		const parentList = list.parentElement;
+		if (!parentList || (parentList.tagName !== 'OL' && parentList.tagName !== 'UL')) return;
+
+		parentList.insertBefore(li, list.nextSibling);
+
+		if (list.children.length === 0) {
+			list.remove();
+		}
+		this.focusEl(li);
+	}
+
 }
 
 class SourceEditWindow extends Window {
