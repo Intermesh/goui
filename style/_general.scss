@@ -1,6 +1,7 @@
 @use "config";
 @use "util";
 @use "layout";
+@use "sass:math";
 
 .goui * {
 	text-rendering: optimizeLegibility;
@@ -431,7 +432,7 @@ aside.goui-cardmenu.goui-toolbar {
 		white-space: break-spaces;
 		background-color: config.$surfaceLow;
 		border: config.$borderWidth solid config.$colorBorder;
-		border-radius: config.$borderRadius / 2;
+		border-radius: math.div(config.$borderRadius, 2);
 		padding: util.dp(8);
 		line-height:normal;
 	}
