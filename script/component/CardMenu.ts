@@ -100,6 +100,8 @@ export class CardMenu extends Toolbar {
 				item.itemId = 'card-' + index;
 			}
 
+			console.log(item.title, index);
+
 			if (this.findChild(item.itemId)) {
 				return;
 			}
