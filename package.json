@@ -60,5 +60,10 @@
       "types": "./script/index.ts",
       "default": "./dist/index.js"
     }
+  },
+  "allowScripts": {
+    "esbuild@0.28.0": true,
+    "@parcel/watcher@2.5.6": true,
+    "fsevents@2.3.3": true
   }
 }
