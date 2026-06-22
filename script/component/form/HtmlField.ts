@@ -75,7 +75,7 @@ interface CmdConfig {
 /**
  * Available toolbar items
  */
-type ToolbarItems = "-" | "bold" | "italic" | "underline" | "strikeThrough" |
+type ToolbarItems = "-" | "bold" | "italic" | "underline" | "strikeThrough" | "code" |
 	"foreColor" | "backColor" | "removeFormat" |
 	"justifyLeft" | "justifyCenter" | "justifyRight" |
 	"insertOrderedList" |
@@ -169,7 +169,7 @@ export class HtmlField extends Field<HtmlFieldEventMap> {
 	public toolbarItems: ToolbarItems[] = [
 		"style",
 		"-",
-		"bold", "italic", "underline", "strikeThrough",
+		"bold", "italic", "underline", "strikeThrough", "code",
 		"-",
 		"foreColor", "backColor", "removeFormat",
 		"-",
@@ -213,11 +213,10 @@ export class HtmlField extends Field<HtmlFieldEventMap> {
 			block: "h4",
 			text: t("Heading 4")
 		},
-
 		{
-			icon: "code",
-			block: "code",
-			text: t("Code")
+			icon: "text_snippet",
+			block: "pre",
+			text: t("Pre")
 		}
 	];
 
@@ -235,29 +234,10 @@ export class HtmlField extends Field<HtmlFieldEventMap> {
 						handler: button => {
 							(button.parent!.parent as Button).icon = button.icon;
 
-							if(s.block === "code") {
+							this.execCmd("removeformat");
+							this.execCmd("formatblock", `<${s.block}>`);
+							this.focus()
 
-								const code = document.createElement("code"),
-									selection = window.getSelection()!,
-									range = selection.getRangeAt(0);
-
-								try {
-									range.surroundContents(code);
-								} catch {
-									// Fallback for partial element selections
-									const fragment = range.extractContents();
-									code.appendChild(fragment);
-									range.insertNode(code);
-								}
-
-								this.focusEl(code);
-
-
-							} else {
-								this.execCmd("removeformat");
-								this.execCmd("formatblock", `<${s.block}>`);
-								this.focus()
-							}
 						}
 					})
 				})
@@ -289,6 +269,56 @@ export class HtmlField extends Field<HtmlFieldEventMap> {
 		italic: {icon: 'format_italic', title: "Italic"},
 		underline: {icon: 'format_underlined', title: "Underline"},
 		strikeThrough: {icon: 'format_strikethrough', title: "Strikethrough"},
+		code: {
+			icon: "code",
+			title:"Code",
+			applyFn: () => {
+
+				if(this.isInCode()) {
+					// this works for the selected text
+					this.execCmd("removeformat");
+
+					// this will exit a code tag if no text is selected
+					const node = this.getSelectedNode(), code = node?.closest("code");
+					if(code) {
+						const textNode = this.addBlankTextNode(code, true);
+
+						// focus on the textnode
+						const sel = window.getSelection()!;
+						const newRange = document.createRange();
+						newRange.setStart(textNode, 1);
+						newRange.collapse(true);
+						sel.removeAllRanges();
+						sel.addRange(newRange);
+
+					}
+				}else {
+					const code = document.createElement("code"),
+						selection = window.getSelection()!,
+						range = selection.getRangeAt(0);
+
+					const isEmpty = range.collapsed;
+
+					try {
+						range.surroundContents(code);
+					} catch {
+						// Fallback for partial element selections
+						const fragment = range.extractContents();
+						code.appendChild(fragment);
+						range.insertNode(code);
+					}
+
+					if (isEmpty) {
+						this.addBlankTextNode(code);
+					}
+
+					this.focusEl(code);
+				}
+			},
+			updateFn: (btn) => {
+				btn.el.classList.toggle("pressed",this.isInCode());
+			}
+		},
 		foreColor: {
 			title: "Text color",
 			icon: 'format_color_text',
@@ -455,6 +485,47 @@ export class HtmlField extends Field<HtmlFieldEventMap> {
 		}
 	}
 
+
+	/**
+	 * True if caret is inside <code> block
+	 * @private
+	 */
+	private isInCode() {
+		const node = this.getSelectedNode();
+
+		return node && node.closest("code") !== null;
+	}
+
+	/**
+	 * When adding "code" formatting blocks we need a text node with azero width space inside to focus on.
+	 * When the user types the zero width space is cleared.
+	 *
+	 * @param code
+	 * @param after
+	 * @private
+	 */
+	private addBlankTextNode(code: HTMLElement, after = false) : Text {
+		const textNode = document.createTextNode("\u200B");
+		after ? code.after(textNode) : code.appendChild(textNode);
+
+		const removeZWS = (e:Event) => {
+			// Replace ZWS in all text nodes
+			code.childNodes.forEach(node => {
+				if (node.nodeType === Node.TEXT_NODE) {
+					const idx = textNode.textContent!.indexOf("\u200B");
+					if (idx !== -1) {
+						console.log(textNode);
+						(textNode as Text).deleteData(idx, 1);
+					}
+				}
+			});
+		};
+
+		this.editor!.addEventListener("input",removeZWS, { once: true });
+
+		return textNode;
+	}
+
 	private getSelectedNode() {
 		const selection = window.getSelection();
 		if (!selection || !selection.rangeCount) return undefined;
@@ -548,6 +619,8 @@ export class HtmlField extends Field<HtmlFieldEventMap> {
 		if (!sel) return;
 		const range = document.createRange();
 		const textNode = this.getLastTextNode(el);
+
+		console.log(textNode);
 		if (textNode) {
 			range.setStart(textNode, textNode.length);
 		} else {
@@ -773,12 +846,14 @@ export class HtmlField extends Field<HtmlFieldEventMap> {
 		}
 
 		if (
-			browser.isWebkit() && ev.shiftKey && ev.key == "Enter" &&
+			browser.isSafari() && ev.shiftKey && ev.key == "Enter" &&
 			(document.queryCommandState('insertorderedlist') || document.queryCommandState('insertunorderedlist'))
 		) {
-			ev.stopPropagation();
-			//Firefox wants two??
-			this.execCmd('InsertHtml', browser.isFirefox() ? '<br />' : '<br /><br />');
+
+			console.warn("Safari override")
+			ev.preventDefault();
+
+			this.execCmd('InsertHtml','<br /><br />');
 			this.focus();
 		}
 		if (ev.key == " " || ev.key == "Tab") {
