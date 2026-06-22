@@ -123,6 +123,8 @@ export class Router extends Observable<RouterEventMap> {
 
 	/**
 	 * Start the router and run the matching route handlers
+	 *
+	 * This also runs on hash change
 	 */
 	public async start() {
 		const path = this.getPath();
@@ -154,9 +156,6 @@ export class Router extends Observable<RouterEventMap> {
 		}
 
 		this.params = match;
-
-
-
 
 		this.routing = true;
 		try {
