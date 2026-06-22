@@ -20,14 +20,18 @@ export type MaterialIcon =
  "21mp" |
  "22mp" |
  "23mp" |
+ "24fps_select" |
  "24mp" |
  "2d" |
+ "2d_2" |
  "2k" |
  "2k_plus" |
  "2mp" |
  "30fps" |
  "30fps_select" |
  "360" |
+ "3d" |
+ "3d_2" |
  "3d_rotation" |
  "3g_mobiledata" |
  "3g_mobiledata_badge" |
@@ -72,6 +76,7 @@ export type MaterialIcon =
  "accessibility_new" |
  "accessible" |
  "accessible_forward" |
+ "accessible_menu" |
  "account_balance" |
  "account_balance_wallet" |
  "account_box" |
@@ -83,14 +88,18 @@ export type MaterialIcon =
  "account_tree" |
  "action_key" |
  "activity_zone" |
+ "acupuncture" |
  "acute" |
  "ad" |
  "ad_group" |
  "ad_group_off" |
  "ad_off" |
  "ad_units" |
+ "adaptive_audio_mic" |
+ "adaptive_audio_mic_off" |
  "adb" |
  "add" |
+ "add_2" |
  "add_a_photo" |
  "add_ad" |
  "add_alarm" |
@@ -102,7 +111,10 @@ export type MaterialIcon =
  "add_chart" |
  "add_circle" |
  "add_circle_outline" |
+ "add_column_left" |
+ "add_column_right" |
  "add_comment" |
+ "add_diamond" |
  "add_home" |
  "add_home_work" |
  "add_ic_call" |
@@ -114,12 +126,15 @@ export type MaterialIcon =
  "add_photo_alternate" |
  "add_reaction" |
  "add_road" |
+ "add_row_above" |
+ "add_row_below" |
  "add_shopping_cart" |
  "add_task" |
  "add_to_drive" |
  "add_to_home_screen" |
  "add_to_photos" |
  "add_to_queue" |
+ "add_triangle" |
  "addchart" |
  "adf_scanner" |
  "adjust" |
@@ -153,6 +168,7 @@ export type MaterialIcon =
  "alarm_add" |
  "alarm_off" |
  "alarm_on" |
+ "alarm_pause" |
  "alarm_smart_wake" |
  "album" |
  "align_center" |
@@ -196,8 +212,36 @@ export type MaterialIcon =
  "analytics" |
  "anchor" |
  "android" |
+ "android_cell_4_bar" |
+ "android_cell_4_bar_alert" |
+ "android_cell_4_bar_off" |
+ "android_cell_4_bar_plus" |
+ "android_cell_5_bar" |
+ "android_cell_5_bar_alert" |
+ "android_cell_5_bar_off" |
+ "android_cell_5_bar_plus" |
+ "android_cell_dual_4_bar" |
+ "android_cell_dual_4_bar_alert" |
+ "android_cell_dual_4_bar_plus" |
+ "android_cell_dual_5_bar" |
+ "android_cell_dual_5_bar_alert" |
+ "android_cell_dual_5_bar_plus" |
+ "android_wifi_3_bar" |
+ "android_wifi_3_bar_alert" |
+ "android_wifi_3_bar_lock" |
+ "android_wifi_3_bar_off" |
+ "android_wifi_3_bar_plus" |
+ "android_wifi_3_bar_question" |
+ "android_wifi_4_bar" |
+ "android_wifi_4_bar_alert" |
+ "android_wifi_4_bar_lock" |
+ "android_wifi_4_bar_off" |
+ "android_wifi_4_bar_plus" |
+ "android_wifi_4_bar_question" |
+ "animated_images" |
  "animation" |
  "announcement" |
+ "antigravity" |
  "aod" |
  "aod_tablet" |
  "aod_watch" |
@@ -214,6 +258,7 @@ export type MaterialIcon =
  "apparel" |
  "approval" |
  "approval_delegation" |
+ "approval_delegation_off" |
  "apps" |
  "apps_outage" |
  "aq" |
@@ -226,12 +271,14 @@ export type MaterialIcon =
  "arming_countdown" |
  "arrow_and_edge" |
  "arrow_back" |
+ "arrow_back_2" |
  "arrow_back_ios" |
  "arrow_back_ios_new" |
  "arrow_circle_down" |
  "arrow_circle_left" |
  "arrow_circle_right" |
  "arrow_circle_up" |
+ "arrow_cool_down" |
  "arrow_downward" |
  "arrow_downward_alt" |
  "arrow_drop_down" |
@@ -242,28 +289,42 @@ export type MaterialIcon =
  "arrow_insert" |
  "arrow_left" |
  "arrow_left_alt" |
+ "arrow_menu_close" |
+ "arrow_menu_open" |
  "arrow_or_edge" |
  "arrow_outward" |
  "arrow_range" |
  "arrow_right" |
  "arrow_right_alt" |
  "arrow_selector_tool" |
+ "arrow_shape_up" |
+ "arrow_shape_up_stack" |
+ "arrow_shape_up_stack_2" |
  "arrow_split" |
  "arrow_top_left" |
  "arrow_top_right" |
+ "arrow_upload_progress" |
+ "arrow_upload_ready" |
  "arrow_upward" |
  "arrow_upward_alt" |
+ "arrow_warm_up" |
+ "arrows_input" |
+ "arrows_left_right_circle" |
  "arrows_more_down" |
  "arrows_more_up" |
+ "arrows_output" |
  "arrows_outward" |
+ "arrows_up_down_circle" |
  "art_track" |
  "article" |
+ "article_person" |
  "article_shortcut" |
  "artist" |
  "aspect_ratio" |
  "assessment" |
  "assignment" |
  "assignment_add" |
+ "assignment_globe" |
  "assignment_ind" |
  "assignment_late" |
  "assignment_return" |
@@ -285,10 +346,12 @@ export type MaterialIcon =
  "attach_email" |
  "attach_file" |
  "attach_file_add" |
+ "attach_file_off" |
  "attach_money" |
  "attachment" |
  "attractions" |
  "attribution" |
+ "audio_capture" |
  "audio_description" |
  "audio_file" |
  "audio_video_receiver" |
@@ -312,21 +375,28 @@ export type MaterialIcon =
  "auto_read_play" |
  "auto_schedule" |
  "auto_stories" |
+ "auto_stories_off" |
  "auto_timer" |
  "auto_towing" |
  "auto_transmission" |
  "auto_videocam" |
  "autofps_select" |
+ "automation" |
  "autopause" |
  "autopay" |
  "autoplay" |
  "autorenew" |
  "autostop" |
+ "av1" |
  "av_timer" |
+ "avc" |
  "avg_pace" |
  "avg_time" |
+ "avocado_bean" |
+ "award_meal" |
  "award_star" |
  "azm" |
+ "b_circle" |
  "baby_changing_station" |
  "back_hand" |
  "back_to_tab" |
@@ -343,20 +413,24 @@ export type MaterialIcon =
  "backup_table" |
  "badge" |
  "badge_critical_battery" |
+ "badminton" |
  "bakery_dining" |
  "balance" |
  "balcony" |
  "ballot" |
  "bar_chart" |
  "bar_chart_4_bars" |
+ "bar_chart_off" |
  "barcode" |
  "barcode_reader" |
  "barcode_scanner" |
  "barefoot" |
  "batch_prediction" |
+ "bath_bedrock" |
  "bath_outdoor" |
  "bath_private" |
  "bath_public_large" |
+ "bath_soak" |
  "bathroom" |
  "bathtub" |
  "battery_0_bar" |
@@ -373,14 +447,47 @@ export type MaterialIcon =
  "battery_80" |
  "battery_90" |
  "battery_alert" |
+ "battery_android_0" |
+ "battery_android_1" |
+ "battery_android_2" |
+ "battery_android_3" |
+ "battery_android_4" |
+ "battery_android_5" |
+ "battery_android_6" |
+ "battery_android_alert" |
+ "battery_android_bolt" |
+ "battery_android_frame_1" |
+ "battery_android_frame_2" |
+ "battery_android_frame_3" |
+ "battery_android_frame_4" |
+ "battery_android_frame_5" |
+ "battery_android_frame_6" |
+ "battery_android_frame_alert" |
+ "battery_android_frame_bolt" |
+ "battery_android_frame_full" |
+ "battery_android_frame_plus" |
+ "battery_android_frame_question" |
+ "battery_android_frame_share" |
+ "battery_android_frame_shield" |
+ "battery_android_full" |
+ "battery_android_plus" |
+ "battery_android_question" |
+ "battery_android_share" |
+ "battery_android_shield" |
  "battery_change" |
  "battery_charging_20" |
+ "battery_charging_20_2" |
  "battery_charging_30" |
+ "battery_charging_30_2" |
  "battery_charging_50" |
+ "battery_charging_50_2" |
  "battery_charging_60" |
+ "battery_charging_60_2" |
  "battery_charging_80" |
+ "battery_charging_80_2" |
  "battery_charging_90" |
  "battery_charging_full" |
+ "battery_charging_full_2" |
  "battery_error" |
  "battery_full" |
  "battery_full_alt" |
@@ -407,17 +514,22 @@ export type MaterialIcon =
  "bedtime" |
  "bedtime_off" |
  "beenhere" |
+ "beer_meal" |
  "bento" |
  "bia" |
  "bid_landscape" |
  "bid_landscape_disabled" |
  "bigtop_updates" |
+ "bike_dock" |
+ "bike_lane" |
  "bike_scooter" |
  "biotech" |
  "blanket" |
  "blender" |
  "blind" |
  "blinds" |
+ "blinds_2" |
+ "blinds_2_closed" |
  "blinds_closed" |
  "block" |
  "blood_pressure" |
@@ -434,23 +546,35 @@ export type MaterialIcon =
  "blur_off" |
  "blur_on" |
  "blur_short" |
+ "boat_bus" |
+ "boat_railway" |
  "body_fat" |
  "body_system" |
  "bolt" |
+ "bolt_boost" |
  "bomb" |
  "book" |
  "book_2" |
  "book_3" |
  "book_4" |
  "book_5" |
+ "book_6" |
  "book_online" |
+ "book_ribbon" |
  "bookmark" |
  "bookmark_add" |
  "bookmark_added" |
+ "bookmark_bag" |
  "bookmark_border" |
+ "bookmark_check" |
+ "bookmark_flag" |
+ "bookmark_heart" |
  "bookmark_manager" |
  "bookmark_remove" |
+ "bookmark_stacks" |
+ "bookmark_star" |
  "bookmarks" |
+ "books_movies_and_music" |
  "border_all" |
  "border_bottom" |
  "border_clear" |
@@ -463,6 +587,7 @@ export type MaterialIcon =
  "border_style" |
  "border_top" |
  "border_vertical" |
+ "borg" |
  "bottom_app_bar" |
  "bottom_drawer" |
  "bottom_navigation" |
@@ -481,6 +606,8 @@ export type MaterialIcon =
  "breaking_news" |
  "breaking_news_alt_1" |
  "breastfeeding" |
+ "brick" |
+ "briefcase_meal" |
  "brightness_1" |
  "brightness_2" |
  "brightness_3" |
@@ -508,12 +635,15 @@ export type MaterialIcon =
  "bubble" |
  "bubble_chart" |
  "bubbles" |
+ "bucket_check" |
  "bug_report" |
  "build" |
  "build_circle" |
  "bungalow" |
  "burst_mode" |
  "bus_alert" |
+ "bus_map_pin" |
+ "bus_railway" |
  "business" |
  "business_center" |
  "business_chip" |
@@ -521,13 +651,19 @@ export type MaterialIcon =
  "buttons_alt" |
  "cabin" |
  "cable" |
+ "cable_car" |
  "cached" |
+ "cadence" |
  "cake" |
  "cake_add" |
  "calculate" |
  "calendar_add_on" |
  "calendar_apps_script" |
+ "calendar_check" |
  "calendar_clock" |
+ "calendar_lock" |
+ "calendar_meal" |
+ "calendar_meal_2" |
  "calendar_month" |
  "calendar_today" |
  "calendar_view_day" |
@@ -562,17 +698,40 @@ export type MaterialIcon =
  "cancel_schedule_send" |
  "candle" |
  "candlestick_chart" |
+ "cannabis" |
  "captive_portal" |
  "capture" |
  "car_crash" |
+ "car_defrost_left" |
+ "car_defrost_low_left" |
+ "car_defrost_low_right" |
+ "car_defrost_mid_left" |
+ "car_defrost_mid_low_left" |
+ "car_defrost_mid_low_right" |
+ "car_defrost_mid_right" |
+ "car_defrost_right" |
+ "car_fan_low_left" |
+ "car_fan_low_mid_left" |
+ "car_fan_low_right" |
+ "car_fan_mid_left" |
+ "car_fan_mid_low_right" |
+ "car_fan_mid_right" |
+ "car_fan_recirculate" |
+ "car_fan_recirculate_2" |
+ "car_gear" |
+ "car_lock" |
+ "car_mirror_heat" |
  "car_rental" |
  "car_repair" |
  "car_tag" |
  "card_giftcard" |
  "card_membership" |
  "card_travel" |
+ "cardio_load" |
  "cardiology" |
  "cards" |
+ "cards_stack" |
+ "cards_star" |
  "carpenter" |
  "carry_on_bag" |
  "carry_on_bag_checked" |
@@ -587,6 +746,7 @@ export type MaterialIcon =
  "cast_warning" |
  "castle" |
  "category" |
+ "category_search" |
  "celebration" |
  "cell_merge" |
  "cell_tower" |
@@ -595,6 +755,9 @@ export type MaterialIcon =
  "center_focus_weak" |
  "chair" |
  "chair_alt" |
+ "chair_counter" |
+ "chair_fireplace" |
+ "chair_umbrella" |
  "chalet" |
  "change_circle" |
  "change_history" |
@@ -605,16 +768,21 @@ export type MaterialIcon =
  "chat_add_on" |
  "chat_apps_script" |
  "chat_bubble" |
+ "chat_bubble_off" |
  "chat_bubble_outline" |
+ "chat_dashed" |
  "chat_error" |
  "chat_info" |
  "chat_paste_go" |
+ "chat_paste_go_2" |
  "check" |
+ "check_alert" |
  "check_box" |
  "check_box_outline_blank" |
  "check_circle" |
  "check_circle_filled" |
  "check_circle_outline" |
+ "check_circle_unread" |
  "check_in_out" |
  "check_indeterminate_small" |
  "check_small" |
@@ -625,11 +793,25 @@ export type MaterialIcon =
  "checklist_rtl" |
  "checkroom" |
  "cheer" |
+ "chef_hat" |
  "chess" |
+ "chess_bishop" |
+ "chess_bishop_2" |
+ "chess_king" |
+ "chess_king_2" |
+ "chess_knight" |
+ "chess_pawn" |
+ "chess_pawn_2" |
+ "chess_queen" |
+ "chess_rook" |
+ "chevron_backward" |
+ "chevron_forward" |
  "chevron_left" |
+ "chevron_line_up" |
  "chevron_right" |
  "child_care" |
  "child_friendly" |
+ "child_hat" |
  "chip_extraction" |
  "chips" |
  "chrome_reader_mode" |
@@ -639,6 +821,7 @@ export type MaterialIcon =
  "church" |
  "cinematic_blur" |
  "circle" |
+ "circle_circle" |
  "circle_notifications" |
  "circles" |
  "circles_ext" |
@@ -654,6 +837,8 @@ export type MaterialIcon =
  "clear_night" |
  "climate_mini_split" |
  "clinical_notes" |
+ "clock_arrow_down" |
+ "clock_arrow_up" |
  "clock_loader_10" |
  "clock_loader_20" |
  "clock_loader_40" |
@@ -664,12 +849,15 @@ export type MaterialIcon =
  "close_fullscreen" |
  "close_small" |
  "closed_caption" |
+ "closed_caption_add" |
  "closed_caption_disabled" |
  "closed_caption_off" |
  "cloud" |
+ "cloud_alert" |
  "cloud_circle" |
  "cloud_done" |
  "cloud_download" |
+ "cloud_lock" |
  "cloud_off" |
  "cloud_queue" |
  "cloud_sync" |
@@ -682,9 +870,11 @@ export type MaterialIcon =
  "code" |
  "code_blocks" |
  "code_off" |
+ "code_xml" |
  "coffee" |
  "coffee_maker" |
  "cognition" |
+ "cognition_2" |
  "collapse_all" |
  "collapse_content" |
  "collections" |
@@ -692,6 +882,8 @@ export type MaterialIcon =
  "color_lens" |
  "colorize" |
  "colors" |
+ "combine_columns" |
+ "comedy_mask" |
  "comic_bubble" |
  "comment" |
  "comment_bank" |
@@ -708,6 +900,9 @@ export type MaterialIcon =
  "compost" |
  "compress" |
  "computer" |
+ "computer_arrow_up" |
+ "computer_cancel" |
+ "computer_sound" |
  "concierge" |
  "conditions" |
  "confirmation_number" |
@@ -732,17 +927,23 @@ export type MaterialIcon =
  "content_paste_go" |
  "content_paste_off" |
  "content_paste_search" |
+ "contextual_token" |
+ "contextual_token_add" |
  "contract" |
  "contract_delete" |
  "contract_edit" |
  "contrast" |
+ "contrast_circle" |
  "contrast_rtl_off" |
+ "contrast_square" |
  "control_camera" |
  "control_point" |
  "control_point_duplicate" |
  "controller_gen" |
+ "conversation" |
  "conversion_path" |
  "conversion_path_off" |
+ "convert_to_text" |
  "conveyor_belt" |
  "cookie" |
  "cookie_off" |
@@ -767,6 +968,7 @@ export type MaterialIcon =
  "create" |
  "create_new_folder" |
  "credit_card" |
+ "credit_card_clock" |
  "credit_card_gear" |
  "credit_card_heart" |
  "credit_card_off" |
@@ -775,6 +977,8 @@ export type MaterialIcon =
  "crisis_alert" |
  "crop" |
  "crop_16_9" |
+ "crop_21_9" |
+ "crop_2_3" |
  "crop_3_2" |
  "crop_5_4" |
  "crop_7_5" |
@@ -788,6 +992,7 @@ export type MaterialIcon =
  "crop_square" |
  "crossword" |
  "crowdsource" |
+ "crown" |
  "cruelty_free" |
  "css" |
  "csv" |
@@ -798,6 +1003,7 @@ export type MaterialIcon =
  "currency_pound" |
  "currency_ruble" |
  "currency_rupee" |
+ "currency_rupee_circle" |
  "currency_yen" |
  "currency_yuan" |
  "curtains" |
@@ -809,6 +1015,10 @@ export type MaterialIcon =
  "dangerous" |
  "dark_mode" |
  "dashboard" |
+ "dashboard_2" |
+ "dashboard_2_add" |
+ "dashboard_2_edit" |
+ "dashboard_2_gear" |
  "dashboard_customize" |
  "data_alert" |
  "data_array" |
@@ -823,6 +1033,9 @@ export type MaterialIcon =
  "data_thresholding" |
  "data_usage" |
  "database" |
+ "database_off" |
+ "database_search" |
+ "database_upload" |
  "dataset" |
  "dataset_linked" |
  "date_range" |
@@ -837,6 +1050,9 @@ export type MaterialIcon =
  "delete_history" |
  "delete_outline" |
  "delete_sweep" |
+ "delivery_dining" |
+ "delivery_truck_bolt" |
+ "delivery_truck_speed" |
  "demography" |
  "density_large" |
  "density_medium" |
@@ -855,11 +1071,17 @@ export type MaterialIcon =
  "desk" |
  "deskphone" |
  "desktop_access_disabled" |
+ "desktop_cloud" |
+ "desktop_cloud_stack" |
+ "desktop_landscape" |
+ "desktop_landscape_add" |
  "desktop_mac" |
+ "desktop_portrait" |
  "desktop_windows" |
  "destruction" |
  "details" |
  "detection_and_zone" |
+ "detection_and_zone_off" |
  "detector" |
  "detector_alarm" |
  "detector_battery" |
@@ -872,25 +1094,32 @@ export type MaterialIcon =
  "developer_guide" |
  "developer_mode" |
  "developer_mode_tv" |
+ "device_band" |
  "device_hub" |
  "device_reset" |
  "device_thermostat" |
  "device_unknown" |
  "devices" |
  "devices_fold" |
+ "devices_fold_2" |
  "devices_off" |
  "devices_other" |
  "devices_wearables" |
  "dew_point" |
  "diagnosis" |
+ "diagonal_line" |
  "dialer_sip" |
  "dialogs" |
  "dialpad" |
  "diamond" |
+ "diamond_shine" |
  "dictionary" |
  "difference" |
  "digital_out_of_home" |
  "digital_wellbeing" |
+ "dine_heart" |
+ "dine_in" |
+ "dine_lamp" |
  "dining" |
  "dinner_dining" |
  "directions" |
@@ -905,6 +1134,7 @@ export type MaterialIcon =
  "directions_car_filled" |
  "directions_off" |
  "directions_railway" |
+ "directions_railway_2" |
  "directions_railway_filled" |
  "directions_run" |
  "directions_subway" |
@@ -943,9 +1173,11 @@ export type MaterialIcon =
  "dock_to_bottom" |
  "dock_to_left" |
  "dock_to_right" |
+ "docs" |
  "docs_add_on" |
  "docs_apps_script" |
  "document_scanner" |
+ "document_search" |
  "domain" |
  "domain_add" |
  "domain_disabled" |
@@ -985,13 +1217,18 @@ export type MaterialIcon =
  "drawing_recognition" |
  "dresser" |
  "drive_eta" |
+ "drive_export" |
  "drive_file_move" |
  "drive_file_move_outline" |
  "drive_file_move_rtl" |
+ "drive_file_rename" |
  "drive_file_rename_outline" |
  "drive_folder_upload" |
  "drive_fusiontable" |
+ "drone" |
+ "drone_2" |
  "dropdown" |
+ "dropper_eye" |
  "dry" |
  "dry_cleaning" |
  "dual_screen" |
@@ -1003,7 +1240,12 @@ export type MaterialIcon =
  "e911_emergency" |
  "e_mobiledata" |
  "e_mobiledata_badge" |
+ "ear_sound" |
+ "earbud_case" |
+ "earbud_left" |
+ "earbud_right" |
  "earbuds" |
+ "earbuds_2" |
  "earbuds_battery" |
  "early_on" |
  "earthquake" |
@@ -1015,7 +1257,10 @@ export type MaterialIcon =
  "edgesensor_high" |
  "edgesensor_low" |
  "edit" |
+ "edit_arrow_down" |
+ "edit_arrow_up" |
  "edit_attributes" |
+ "edit_audio" |
  "edit_calendar" |
  "edit_document" |
  "edit_location" |
@@ -1053,6 +1298,7 @@ export type MaterialIcon =
  "emoji_events" |
  "emoji_flags" |
  "emoji_food_beverage" |
+ "emoji_language" |
  "emoji_nature" |
  "emoji_objects" |
  "emoji_people" |
@@ -1062,6 +1308,10 @@ export type MaterialIcon =
  "empty_dashboard" |
  "enable" |
  "encrypted" |
+ "encrypted_add" |
+ "encrypted_add_circle" |
+ "encrypted_minus_circle" |
+ "encrypted_off" |
  "endocrinology" |
  "energy" |
  "energy_program_saving" |
@@ -1074,6 +1324,11 @@ export type MaterialIcon =
  "enterprise_off" |
  "equal" |
  "equalizer" |
+ "eraser_size_1" |
+ "eraser_size_2" |
+ "eraser_size_3" |
+ "eraser_size_4" |
+ "eraser_size_5" |
  "error" |
  "error_circle_rounded" |
  "error_med" |
@@ -1107,6 +1362,8 @@ export type MaterialIcon =
  "expand_content" |
  "expand_less" |
  "expand_more" |
+ "expansion_panels" |
+ "expension_panels" |
  "experiment" |
  "explicit" |
  "explore" |
@@ -1122,25 +1379,38 @@ export type MaterialIcon =
  "exposure_zero" |
  "extension" |
  "extension_off" |
+ "eye_tracking" |
+ "eyebrow" |
  "eyeglasses" |
+ "eyeglasses_2" |
+ "eyeglasses_2_sound" |
  "face" |
  "face_2" |
  "face_3" |
  "face_4" |
  "face_5" |
  "face_6" |
+ "face_down" |
+ "face_left" |
+ "face_nod" |
  "face_retouching_natural" |
  "face_retouching_off" |
+ "face_right" |
+ "face_shake" |
  "face_unlock" |
+ "face_up" |
  "fact_check" |
  "factory" |
  "falling" |
  "familiar_face_and_zone" |
+ "family_group" |
  "family_history" |
  "family_home" |
  "family_link" |
  "family_restroom" |
  "family_star" |
+ "fan_focus" |
+ "fan_indirect" |
  "farsight_digital" |
  "fast_forward" |
  "fast_rewind" |
@@ -1167,16 +1437,22 @@ export type MaterialIcon =
  "fiber_pin" |
  "fiber_smart_record" |
  "file_copy" |
+ "file_copy_off" |
  "file_download" |
  "file_download_done" |
  "file_download_off" |
+ "file_export" |
+ "file_json" |
  "file_map" |
+ "file_map_stack" |
  "file_open" |
+ "file_png" |
  "file_present" |
  "file_save" |
  "file_save_off" |
  "file_upload" |
  "file_upload_off" |
+ "files" |
  "filter" |
  "filter_1" |
  "filter_2" |
@@ -1190,6 +1466,7 @@ export type MaterialIcon =
  "filter_9_plus" |
  "filter_alt" |
  "filter_alt_off" |
+ "filter_arrow_right" |
  "filter_b_and_w" |
  "filter_center_focus" |
  "filter_drama" |
@@ -1208,16 +1485,24 @@ export type MaterialIcon =
  "find_in_page" |
  "find_replace" |
  "fingerprint" |
+ "fingerprint_off" |
+ "fire_check" |
  "fire_extinguisher" |
  "fire_hydrant" |
  "fire_truck" |
  "fireplace" |
  "first_page" |
  "fit_page" |
+ "fit_page_height" |
+ "fit_page_width" |
  "fit_screen" |
  "fit_width" |
  "fitness_center" |
+ "fitness_tracker" |
+ "fitness_trackers" |
  "flag" |
+ "flag_2" |
+ "flag_check" |
  "flag_circle" |
  "flag_filled" |
  "flaky" |
@@ -1242,10 +1527,13 @@ export type MaterialIcon =
  "flip_camera_ios" |
  "flip_to_back" |
  "flip_to_front" |
+ "float_landscape_2" |
+ "float_portrait_2" |
  "flood" |
  "floor" |
  "floor_lamp" |
  "flourescent" |
+ "flowchart" |
  "flowsheet" |
  "fluid" |
  "fluid_balance" |
@@ -1253,16 +1541,23 @@ export type MaterialIcon =
  "fluorescent" |
  "flutter" |
  "flutter_dash" |
+ "flyover" |
  "fmd_bad" |
  "fmd_good" |
  "foggy" |
  "folded_hands" |
  "folder" |
+ "folder_check" |
+ "folder_check_2" |
+ "folder_code" |
  "folder_copy" |
  "folder_data" |
  "folder_delete" |
+ "folder_eye" |
+ "folder_info" |
  "folder_limited" |
  "folder_managed" |
+ "folder_match" |
  "folder_off" |
  "folder_open" |
  "folder_shared" |
@@ -1277,8 +1572,10 @@ export type MaterialIcon =
  "footprint" |
  "for_you" |
  "forest" |
+ "fork_chart" |
  "fork_left" |
  "fork_right" |
+ "fork_spoon" |
  "forklift" |
  "format_align_center" |
  "format_align_justify" |
@@ -1295,6 +1592,12 @@ export type MaterialIcon =
  "format_h4" |
  "format_h5" |
  "format_h6" |
+ "format_image_back" |
+ "format_image_break_left" |
+ "format_image_break_right" |
+ "format_image_front" |
+ "format_image_inline_left" |
+ "format_image_inline_right" |
  "format_image_left" |
  "format_image_right" |
  "format_indent_decrease" |
@@ -1313,8 +1616,10 @@ export type MaterialIcon =
  "format_list_numbered_rtl" |
  "format_overline" |
  "format_paint" |
+ "format_paint_off" |
  "format_paragraph" |
  "format_quote" |
+ "format_quote_off" |
  "format_shapes" |
  "format_size" |
  "format_strikethrough" |
@@ -1323,6 +1628,7 @@ export type MaterialIcon =
  "format_text_wrap" |
  "format_textdirection_l_to_r" |
  "format_textdirection_r_to_l" |
+ "format_textdirection_vertical" |
  "format_underlined" |
  "format_underlined_squiggle" |
  "forms_add_on" |
@@ -1337,8 +1643,12 @@ export type MaterialIcon =
  "forward_media" |
  "forward_to_inbox" |
  "foundation" |
+ "fragrance" |
+ "frame_bug" |
+ "frame_exclamation" |
  "frame_inspect" |
  "frame_person" |
+ "frame_person_mic" |
  "frame_person_off" |
  "frame_reload" |
  "frame_source" |
@@ -1351,17 +1661,46 @@ export type MaterialIcon =
  "full_stacked_bar_chart" |
  "fullscreen" |
  "fullscreen_exit" |
+ "fullscreen_portrait" |
  "function" |
  "functions" |
+ "funicular" |
  "g_mobiledata" |
  "g_mobiledata_badge" |
  "g_translate" |
  "gallery_thumbnail" |
+ "game_bumper_left" |
+ "game_bumper_right" |
+ "game_button_l" |
+ "game_button_l1" |
+ "game_button_l2" |
+ "game_button_r" |
+ "game_button_r1" |
+ "game_button_r2" |
+ "game_button_zl" |
+ "game_button_zr" |
+ "game_stick_l3" |
+ "game_stick_left" |
+ "game_stick_r3" |
+ "game_stick_right" |
+ "game_trigger_left" |
+ "game_trigger_right" |
  "gamepad" |
+ "gamepad_circle_down" |
+ "gamepad_circle_left" |
+ "gamepad_circle_right" |
+ "gamepad_circle_up" |
+ "gamepad_down" |
+ "gamepad_left" |
+ "gamepad_right" |
+ "gamepad_up" |
  "games" |
  "garage" |
+ "garage_check" |
  "garage_door" |
+ "garage_door_open" |
  "garage_home" |
+ "garage_money" |
  "garden_cart" |
  "gas_meter" |
  "gastroenterology" |
@@ -1375,17 +1714,23 @@ export type MaterialIcon =
  "gesture_select" |
  "get_app" |
  "gif" |
+ "gif_2" |
  "gif_box" |
  "girl" |
  "gite" |
  "glass_cup" |
  "globe" |
+ "globe_2_cancel" |
+ "globe_2_question" |
  "globe_asia" |
+ "globe_book" |
+ "globe_location_pin" |
  "globe_uk" |
  "glucose" |
  "glyphs" |
  "go_to_line" |
  "golf_course" |
+ "gondola_lift" |
  "google_home_devices" |
  "google_plus_reshare" |
  "google_tv_remote" |
@@ -1400,13 +1745,23 @@ export type MaterialIcon =
  "gradient" |
  "grading" |
  "grain" |
+ "graph_1" |
+ "graph_2" |
+ "graph_3" |
+ "graph_4" |
+ "graph_5" |
+ "graph_6" |
+ "graph_7" |
+ "graph_8" |
  "graphic_eq" |
+ "graphic_eq_off" |
  "grass" |
  "grid_3x3" |
  "grid_3x3_off" |
  "grid_4x4" |
  "grid_goldenratio" |
  "grid_guides" |
+ "grid_layout_side" |
  "grid_off" |
  "grid_on" |
  "grid_view" |
@@ -1415,11 +1770,13 @@ export type MaterialIcon =
  "group_add" |
  "group_off" |
  "group_remove" |
+ "group_search" |
  "group_work" |
  "grouped_bar_chart" |
  "groups" |
  "groups_2" |
  "groups_3" |
+ "guardian" |
  "gynecology" |
  "h_mobiledata" |
  "h_mobiledata_badge" |
@@ -1427,13 +1784,19 @@ export type MaterialIcon =
  "h_plus_mobiledata_badge" |
  "hail" |
  "hallway" |
+ "hanami_dango" |
  "hand_bones" |
  "hand_gesture" |
+ "hand_gesture_off" |
+ "hand_meal" |
+ "hand_package" |
+ "handheld_controller" |
  "handshake" |
  "handwriting_recognition" |
  "handyman" |
  "hangout_video" |
  "hangout_video_off" |
+ "hard_disk" |
  "hard_drive" |
  "hard_drive_2" |
  "hardware" |
@@ -1449,6 +1812,7 @@ export type MaterialIcon =
  "hdr_plus_off" |
  "hdr_strong" |
  "hdr_weak" |
+ "head_mounted_device" |
  "headphones" |
  "headphones_battery" |
  "headset" |
@@ -1457,16 +1821,22 @@ export type MaterialIcon =
  "healing" |
  "health_and_beauty" |
  "health_and_safety" |
+ "health_cross" |
  "health_metrics" |
  "heap_snapshot_large" |
  "heap_snapshot_multiple" |
  "heap_snapshot_thumbnail" |
  "hearing" |
+ "hearing_aid" |
+ "hearing_aid_disabled" |
+ "hearing_aid_disabled_left" |
+ "hearing_aid_left" |
  "hearing_disabled" |
  "heart_broken" |
  "heart_check" |
  "heart_minus" |
  "heart_plus" |
+ "heart_smile" |
  "heat" |
  "heat_pump" |
  "heat_pump_balance" |
@@ -1482,10 +1852,12 @@ export type MaterialIcon =
  "hide" |
  "hide_image" |
  "hide_source" |
+ "high_chair" |
  "high_density" |
  "high_quality" |
  "high_res" |
  "highlight" |
+ "highlight_alt" |
  "highlight_keyboard_focus" |
  "highlight_mouse_cursor" |
  "highlight_off" |
@@ -1497,7 +1869,9 @@ export type MaterialIcon =
  "highlighter_size_5" |
  "hiking" |
  "history" |
+ "history_2" |
  "history_edu" |
+ "history_off" |
  "history_toggle_off" |
  "hive" |
  "hls" |
@@ -1517,24 +1891,34 @@ export type MaterialIcon =
  "home_repair_service" |
  "home_speaker" |
  "home_storage" |
+ "home_storage_gear" |
  "home_work" |
+ "horizontal_align_center" |
+ "horizontal_align_left" |
+ "horizontal_align_right" |
  "horizontal_distribute" |
  "horizontal_rule" |
  "horizontal_split" |
+ "host" |
  "hot_tub" |
  "hotel" |
  "hotel_class" |
  "hourglass" |
+ "hourglass_arrow_down" |
+ "hourglass_arrow_up" |
  "hourglass_bottom" |
+ "hourglass_check" |
  "hourglass_disabled" |
  "hourglass_empty" |
  "hourglass_full" |
+ "hourglass_pause" |
  "hourglass_top" |
  "house" |
  "house_siding" |
  "house_with_shield" |
  "houseboat" |
  "household_supplies" |
+ "hov" |
  "how_to_reg" |
  "how_to_vote" |
  "hr_resting" |
@@ -1550,13 +1934,20 @@ export type MaterialIcon =
  "humidity_mid" |
  "humidity_percentage" |
  "hvac" |
+ "hvac_max_defrost" |
  "ice_skating" |
  "icecream" |
+ "id_card" |
+ "id_card_2" |
+ "identity_aware_proxy" |
+ "identity_platform" |
  "ifl" |
  "iframe" |
  "iframe_off" |
  "image" |
+ "image_arrow_up" |
  "image_aspect_ratio" |
+ "image_inset" |
  "image_not_supported" |
  "image_search" |
  "imagesearch_roller" |
@@ -1569,6 +1960,10 @@ export type MaterialIcon =
  "inactive_order" |
  "inbox" |
  "inbox_customize" |
+ "inbox_text" |
+ "inbox_text_asterisk" |
+ "inbox_text_person" |
+ "inbox_text_share" |
  "incomplete_circle" |
  "indeterminate_check_box" |
  "indeterminate_question_box" |
@@ -1579,8 +1974,10 @@ export type MaterialIcon =
  "ink_eraser_off" |
  "ink_highlighter" |
  "ink_highlighter_move" |
+ "ink_highlighter_off" |
  "ink_marker" |
  "ink_pen" |
+ "ink_selection" |
  "inpatient" |
  "input" |
  "input_circle" |
@@ -1612,6 +2009,8 @@ export type MaterialIcon =
  "iron" |
  "iso" |
  "jamboard_kiosk" |
+ "japanese_curry" |
+ "japanese_flag" |
  "javascript" |
  "join" |
  "join_full" |
@@ -1620,8 +2019,13 @@ export type MaterialIcon =
  "join_right" |
  "joystick" |
  "jump_to_element" |
+ "kanji_alcohol" |
  "kayaking" |
  "kebab_dining" |
+ "keep" |
+ "keep_off" |
+ "keep_pin" |
+ "keep_public" |
  "kettle" |
  "key" |
  "key_off" |
@@ -1646,6 +2050,8 @@ export type MaterialIcon =
  "keyboard_full" |
  "keyboard_hide" |
  "keyboard_keys" |
+ "keyboard_lock" |
+ "keyboard_lock_off" |
  "keyboard_off" |
  "keyboard_onscreen" |
  "keyboard_option_key" |
@@ -1669,6 +2075,9 @@ export type MaterialIcon =
  "labs" |
  "lan" |
  "landscape" |
+ "landscape_2" |
+ "landscape_2_edit" |
+ "landscape_2_off" |
  "landslide" |
  "language" |
  "language_chinese_array" |
@@ -1689,6 +2098,7 @@ export type MaterialIcon =
  "language_us_dvorak" |
  "laps" |
  "laptop" |
+ "laptop_car" |
  "laptop_chromebook" |
  "laptop_mac" |
  "laptop_windows" |
@@ -1717,12 +2127,16 @@ export type MaterialIcon =
  "lift_to_talk" |
  "light" |
  "light_group" |
+ "light_group_2" |
  "light_mode" |
+ "light_mode_auto" |
  "light_off" |
  "lightbulb" |
+ "lightbulb_2" |
  "lightbulb_circle" |
  "lightbulb_outline" |
  "lightning_stand" |
+ "lightstrip" |
  "line_axis" |
  "line_curve" |
  "line_end" |
@@ -1741,13 +2155,17 @@ export type MaterialIcon =
  "line_weight" |
  "linear_scale" |
  "link" |
+ "link_2" |
  "link_off" |
  "linked_camera" |
  "linked_services" |
+ "lips" |
  "liquor" |
  "list" |
  "list_alt" |
  "list_alt_add" |
+ "list_alt_check" |
+ "list_arrow" |
  "lists" |
  "live_help" |
  "live_tv" |
@@ -1797,6 +2215,7 @@ export type MaterialIcon =
  "lock" |
  "lock_clock" |
  "lock_open" |
+ "lock_open_circle" |
  "lock_open_right" |
  "lock_outline" |
  "lock_person" |
@@ -1815,6 +2234,7 @@ export type MaterialIcon =
  "loupe" |
  "low_density" |
  "low_priority" |
+ "lowercase" |
  "loyalty" |
  "lte_mobiledata" |
  "lte_mobiledata_badge" |
@@ -1833,8 +2253,11 @@ export type MaterialIcon =
  "magnify_docked" |
  "magnify_fullscreen" |
  "mail" |
+ "mail_asterisk" |
  "mail_lock" |
+ "mail_off" |
  "mail_outline" |
+ "mail_shield" |
  "male" |
  "man" |
  "man_2" |
@@ -1846,6 +2269,9 @@ export type MaterialIcon =
  "manga" |
  "manufacturing" |
  "map" |
+ "map_pin_heart" |
+ "map_pin_review" |
+ "map_search" |
  "maps_home_work" |
  "maps_ugc" |
  "margin" |
@@ -1861,11 +2287,16 @@ export type MaterialIcon =
  "markunread" |
  "markunread_mailbox" |
  "masked_transitions" |
+ "masked_transitions_add" |
  "masks" |
+ "massage" |
  "match_case" |
+ "match_case_off" |
  "match_word" |
  "matter" |
  "maximize" |
+ "meal_dinner" |
+ "meal_lunch" |
  "measuring_tape" |
  "media_bluetooth_off" |
  "media_bluetooth_on" |
@@ -1884,16 +2315,20 @@ export type MaterialIcon =
  "menstrual_health" |
  "menu" |
  "menu_book" |
+ "menu_book_2" |
  "menu_open" |
  "merge" |
  "merge_type" |
  "message" |
  "metabolism" |
+ "metro" |
  "mfg_nest_yale_lock" |
  "mic" |
+ "mic_alert" |
  "mic_double" |
  "mic_external_off" |
  "mic_external_on" |
+ "mic_gear" |
  "mic_none" |
  "mic_off" |
  "microbiology" |
@@ -1913,9 +2348,60 @@ export type MaterialIcon =
  "mitre" |
  "mixture_med" |
  "mms" |
+ "mobile" |
+ "mobile_2" |
+ "mobile_3" |
+ "mobile_alert" |
+ "mobile_arrow_down" |
+ "mobile_arrow_right" |
+ "mobile_arrow_up_right" |
+ "mobile_block" |
+ "mobile_camera" |
+ "mobile_camera_front" |
+ "mobile_camera_rear" |
+ "mobile_cancel" |
+ "mobile_cast" |
+ "mobile_charge" |
+ "mobile_chat" |
+ "mobile_check" |
+ "mobile_code" |
+ "mobile_dock" |
+ "mobile_dots" |
  "mobile_friendly" |
+ "mobile_gear" |
+ "mobile_hand" |
+ "mobile_hand_left" |
+ "mobile_hand_left_off" |
+ "mobile_hand_off" |
+ "mobile_info" |
+ "mobile_landscape" |
+ "mobile_layout" |
+ "mobile_lock_landscape" |
+ "mobile_lock_portrait" |
+ "mobile_loupe" |
+ "mobile_menu" |
  "mobile_off" |
+ "mobile_question" |
+ "mobile_rotate" |
+ "mobile_rotate_lock" |
  "mobile_screen_share" |
+ "mobile_screensaver" |
+ "mobile_sensor_hi" |
+ "mobile_sensor_lo" |
+ "mobile_share" |
+ "mobile_share_stack" |
+ "mobile_sound" |
+ "mobile_sound_2" |
+ "mobile_sound_off" |
+ "mobile_speaker" |
+ "mobile_text" |
+ "mobile_text_2" |
+ "mobile_theft" |
+ "mobile_ticket" |
+ "mobile_unlock" |
+ "mobile_vibrate" |
+ "mobile_wrench" |
+ "mobiledata_arrows" |
  "mobiledata_off" |
  "mode" |
  "mode_comment" |
@@ -1925,6 +2411,7 @@ export type MaterialIcon =
  "mode_edit" |
  "mode_edit_outline" |
  "mode_fan" |
+ "mode_fan_2" |
  "mode_fan_off" |
  "mode_heat" |
  "mode_heat_cool" |
@@ -1934,10 +2421,13 @@ export type MaterialIcon =
  "mode_off_on" |
  "mode_standby" |
  "model_training" |
+ "modeling" |
  "monetization_on" |
  "money" |
+ "money_bag" |
  "money_off" |
  "money_off_csred" |
+ "money_range" |
  "monitor" |
  "monitor_heart" |
  "monitor_weight" |
@@ -1945,9 +2435,14 @@ export type MaterialIcon =
  "monitor_weight_loss" |
  "monitoring" |
  "monochrome_photos" |
+ "monorail" |
  "mood" |
  "mood_bad" |
+ "mood_heart" |
+ "moon_stars" |
  "mop" |
+ "moped" |
+ "moped_package" |
  "more" |
  "more_down" |
  "more_horiz" |
@@ -1962,13 +2457,17 @@ export type MaterialIcon =
  "motion_photos_on" |
  "motion_photos_pause" |
  "motion_photos_paused" |
+ "motion_play" |
  "motion_sensor_active" |
  "motion_sensor_alert" |
  "motion_sensor_idle" |
  "motion_sensor_urgent" |
  "motorcycle" |
  "mountain_flag" |
+ "mountain_steam" |
  "mouse" |
+ "mouse_lock" |
+ "mouse_lock_off" |
  "move" |
  "move_down" |
  "move_group" |
@@ -1984,18 +2483,26 @@ export type MaterialIcon =
  "movie" |
  "movie_creation" |
  "movie_edit" |
+ "movie_edit_off" |
  "movie_filter" |
  "movie_info" |
+ "movie_off" |
+ "movie_speaker" |
  "moving" |
  "moving_beds" |
  "moving_ministry" |
  "mp" |
  "multicooker" |
  "multiline_chart" |
+ "multimodal_hand_eye" |
+ "multiple_airports" |
  "multiple_stop" |
  "museum" |
  "music_cast" |
+ "music_history" |
  "music_note" |
+ "music_note_2" |
+ "music_note_add" |
  "music_off" |
  "music_video" |
  "my_location" |
@@ -2030,6 +2537,11 @@ export type MaterialIcon =
  "nest_display_max" |
  "nest_doorbell_visitor" |
  "nest_eco_leaf" |
+ "nest_farsight_cool" |
+ "nest_farsight_dual" |
+ "nest_farsight_eco" |
+ "nest_farsight_heat" |
+ "nest_farsight_seasonal" |
  "nest_farsight_weather" |
  "nest_found_savings" |
  "nest_gale_wifi" |
@@ -2063,6 +2575,8 @@ export type MaterialIcon =
  "nest_wifi_router" |
  "network_cell" |
  "network_check" |
+ "network_intel_node" |
+ "network_intelligence" |
  "network_intelligence_history" |
  "network_intelligence_update" |
  "network_locked" |
@@ -2088,6 +2602,7 @@ export type MaterialIcon =
  "next_plan" |
  "next_week" |
  "nfc" |
+ "nfc_off" |
  "night_shelter" |
  "night_sight_auto" |
  "night_sight_auto_off" |
@@ -2132,8 +2647,12 @@ export type MaterialIcon =
  "note_stack_add" |
  "notes" |
  "notification_add" |
+ "notification_audio" |
+ "notification_audio_off" |
  "notification_important" |
  "notification_multiple" |
+ "notification_settings" |
+ "notification_sound" |
  "notifications" |
  "notifications_active" |
  "notifications_none" |
@@ -2146,8 +2665,10 @@ export type MaterialIcon =
  "odt" |
  "offline_bolt" |
  "offline_pin" |
+ "offline_pin_off" |
  "offline_share" |
  "oil_barrel" |
+ "okonomiyaki" |
  "on_device_training" |
  "on_hub_device" |
  "oncology" |
@@ -2162,9 +2683,11 @@ export type MaterialIcon =
  "open_in_new_off" |
  "open_in_phone" |
  "open_jam" |
+ "open_run" |
  "open_with" |
  "ophthalmology" |
  "oral_disease" |
+ "orbit" |
  "order_approve" |
  "order_play" |
  "orders" |
@@ -2187,6 +2710,7 @@ export type MaterialIcon =
  "oven_gen" |
  "overview" |
  "overview_key" |
+ "owl" |
  "oxygen_saturation" |
  "p2p" |
  "pace" |
@@ -2194,8 +2718,12 @@ export type MaterialIcon =
  "package" |
  "package_2" |
  "padding" |
+ "padel" |
  "page_control" |
+ "page_footer" |
+ "page_header" |
  "page_info" |
+ "page_menu_ios" |
  "pageless" |
  "pages" |
  "pageview" |
@@ -2212,14 +2740,22 @@ export type MaterialIcon =
  "panorama_vertical" |
  "panorama_wide_angle" |
  "paragliding" |
+ "parent_child_dining" |
  "park" |
+ "parking_meter" |
+ "parking_sign" |
+ "parking_valet" |
  "partly_cloudy_day" |
  "partly_cloudy_night" |
  "partner_exchange" |
+ "partner_heart" |
  "partner_reports" |
  "party_mode" |
  "passkey" |
+ "passport" |
  "password" |
+ "password_2" |
+ "password_2_off" |
  "patient_list" |
  "pattern" |
  "pause" |
@@ -2228,6 +2764,8 @@ export type MaterialIcon =
  "pause_circle_outline" |
  "pause_presentation" |
  "payment" |
+ "payment_arrow_down" |
+ "payment_card" |
  "payments" |
  "pedal_bike" |
  "pediatrics" |
@@ -2243,6 +2781,7 @@ export type MaterialIcon =
  "people_alt" |
  "people_outline" |
  "percent" |
+ "percent_discount" |
  "performance_max" |
  "pergola" |
  "perm_camera_mic" |
@@ -2268,6 +2807,7 @@ export type MaterialIcon =
  "person_check" |
  "person_edit" |
  "person_filled" |
+ "person_heart" |
  "person_off" |
  "person_outline" |
  "person_pin" |
@@ -2276,6 +2816,8 @@ export type MaterialIcon =
  "person_raised_hand" |
  "person_remove" |
  "person_search" |
+ "person_shield" |
+ "person_text" |
  "personal_bag" |
  "personal_bag_off" |
  "personal_bag_question" |
@@ -2292,6 +2834,7 @@ export type MaterialIcon =
  "phone_android" |
  "phone_bluetooth_speaker" |
  "phone_callback" |
+ "phone_cancel" |
  "phone_disabled" |
  "phone_enabled" |
  "phone_forwarded" |
@@ -2324,6 +2867,7 @@ export type MaterialIcon =
  "physical_therapy" |
  "piano" |
  "piano_off" |
+ "pickleball" |
  "picture_as_pdf" |
  "picture_in_picture" |
  "picture_in_picture_alt" |
@@ -2342,7 +2886,12 @@ export type MaterialIcon =
  "pin" |
  "pin_drop" |
  "pin_end" |
+ "pin_history" |
  "pin_invoke" |
+ "pin_road" |
+ "pin_road_2" |
+ "pinboard" |
+ "pinboard_unread" |
  "pinch" |
  "pinch_zoom_in" |
  "pinch_zoom_out" |
@@ -2352,6 +2901,8 @@ export type MaterialIcon =
  "place" |
  "place_item" |
  "plagiarism" |
+ "plane_contrails" |
+ "planet" |
  "planner_banner_ad_pt" |
  "planner_review" |
  "play_arrow" |
@@ -2362,6 +2913,8 @@ export type MaterialIcon =
  "play_music" |
  "play_pause" |
  "play_shapes" |
+ "playground" |
+ "playground_2" |
  "playing_cards" |
  "playlist_add" |
  "playlist_add_check" |
@@ -2369,6 +2922,7 @@ export type MaterialIcon =
  "playlist_add_circle" |
  "playlist_play" |
  "playlist_remove" |
+ "plug_connect" |
  "plumbing" |
  "plus_one" |
  "podcasts" |
@@ -2376,7 +2930,9 @@ export type MaterialIcon =
  "podium" |
  "point_of_sale" |
  "point_scan" |
+ "poker_chip" |
  "policy" |
+ "policy_alert" |
  "poll" |
  "polyline" |
  "polymer" |
@@ -2393,6 +2949,7 @@ export type MaterialIcon =
  "power_input" |
  "power_off" |
  "power_rounded" |
+ "power_settings_circle" |
  "power_settings_new" |
  "prayer_times" |
  "precision_manufacturing" |
@@ -2464,6 +3021,7 @@ export type MaterialIcon =
  "radio_button_unchecked" |
  "radiology" |
  "railway_alert" |
+ "railway_alert_2" |
  "rainy" |
  "rainy_heavy" |
  "rainy_light" |
@@ -2473,6 +3031,7 @@ export type MaterialIcon =
  "ramp_right" |
  "range_hood" |
  "rate_review" |
+ "rate_review_rtl" |
  "raven" |
  "raw_off" |
  "raw_on" |
@@ -2484,11 +3043,14 @@ export type MaterialIcon =
  "rebase_edit" |
  "receipt" |
  "receipt_long" |
+ "receipt_long_off" |
  "recent_actors" |
  "recent_patient" |
+ "recenter" |
  "recommend" |
  "record_voice_over" |
  "rectangle" |
+ "rectangle_add" |
  "recycling" |
  "redeem" |
  "redo" |
@@ -2518,6 +3080,9 @@ export type MaterialIcon =
  "repeat_on" |
  "repeat_one" |
  "repeat_one_on" |
+ "replace_audio" |
+ "replace_image" |
+ "replace_video" |
  "replay" |
  "replay_10" |
  "replay_30" |
@@ -2531,12 +3096,22 @@ export type MaterialIcon =
  "report_problem" |
  "request_page" |
  "request_quote" |
+ "reset_brightness" |
+ "reset_exposure" |
+ "reset_focus" |
  "reset_image" |
+ "reset_iso" |
+ "reset_settings" |
+ "reset_shadow" |
+ "reset_shutter_speed" |
  "reset_tv" |
+ "reset_white_balance" |
  "reset_wrench" |
  "resize" |
+ "resize_window" |
  "respiratory_rate" |
  "responsive_layout" |
+ "rest_area" |
  "restart_alt" |
  "restaurant" |
  "restaurant_menu" |
@@ -2555,6 +3130,7 @@ export type MaterialIcon =
  "ring_volume" |
  "ring_volume_filled" |
  "ripples" |
+ "road" |
  "robot" |
  "robot_2" |
  "rocket" |
@@ -2568,6 +3144,7 @@ export type MaterialIcon =
  "room_service" |
  "rotate_90_degrees_ccw" |
  "rotate_90_degrees_cw" |
+ "rotate_auto" |
  "rotate_left" |
  "rotate_right" |
  "roundabout_left" |
@@ -2575,6 +3152,7 @@ export type MaterialIcon =
  "rounded_corner" |
  "route" |
  "router" |
+ "router_off" |
  "routine" |
  "rowing" |
  "rss_feed" |
@@ -2599,6 +3177,7 @@ export type MaterialIcon =
  "save" |
  "save_alt" |
  "save_as" |
+ "save_clock" |
  "saved_search" |
  "savings" |
  "scale" |
@@ -2613,6 +3192,7 @@ export type MaterialIcon =
  "school" |
  "science" |
  "science_off" |
+ "scooter" |
  "score" |
  "scoreboard" |
  "screen_lock_landscape" |
@@ -2626,10 +3206,12 @@ export type MaterialIcon =
  "screen_share" |
  "screenshot" |
  "screenshot_frame" |
+ "screenshot_frame_2" |
  "screenshot_keyboard" |
  "screenshot_monitor" |
  "screenshot_region" |
  "screenshot_tablet" |
+ "script" |
  "scrollable_header" |
  "scuba_diving" |
  "sd" |
@@ -2638,9 +3220,19 @@ export type MaterialIcon =
  "sd_storage" |
  "sdk" |
  "search" |
+ "search_activity" |
  "search_check" |
+ "search_check_2" |
+ "search_gear" |
  "search_hands_free" |
+ "search_insights" |
  "search_off" |
+ "seat_cool_left" |
+ "seat_cool_right" |
+ "seat_heat_left" |
+ "seat_heat_right" |
+ "seat_vent_left" |
+ "seat_vent_right" |
  "security" |
  "security_key" |
  "security_update" |
@@ -2652,10 +3244,12 @@ export type MaterialIcon =
  "select_check_box" |
  "select_to_speak" |
  "select_window" |
+ "select_window_2" |
  "select_window_off" |
  "self_care" |
  "self_improvement" |
  "sell" |
+ "sell_cloud" |
  "send" |
  "send_and_archive" |
  "send_money" |
@@ -2682,6 +3276,8 @@ export type MaterialIcon =
  "sentiment_very_dissatisfied" |
  "sentiment_very_satisfied" |
  "sentiment_worried" |
+ "serif" |
+ "server_person" |
  "service_toolbox" |
  "set_meal" |
  "settings" |
@@ -2710,6 +3306,7 @@ export type MaterialIcon =
  "settings_photo_camera" |
  "settings_power" |
  "settings_remote" |
+ "settings_seating" |
  "settings_slow_motion" |
  "settings_suggest" |
  "settings_system_daydream" |
@@ -2718,6 +3315,8 @@ export type MaterialIcon =
  "settings_voice" |
  "settop_component" |
  "severe_cold" |
+ "shades" |
+ "shades_closed" |
  "shadow" |
  "shadow_add" |
  "shadow_minus" |
@@ -2725,28 +3324,37 @@ export type MaterialIcon =
  "shape_recognition" |
  "shapes" |
  "share" |
+ "share_eta" |
  "share_location" |
  "share_off" |
  "share_reviews" |
  "share_windows" |
+ "shaved_ice" |
  "sheets_rtl" |
  "shelf_auto_hide" |
  "shelf_position" |
  "shelves" |
  "shield" |
+ "shield_card" |
  "shield_lock" |
  "shield_locked" |
  "shield_moon" |
  "shield_person" |
  "shield_question" |
+ "shield_radar" |
+ "shield_toggle" |
+ "shield_watch" |
  "shield_with_heart" |
  "shield_with_house" |
  "shift" |
  "shift_lock" |
+ "shift_lock_off" |
+ "shoe_cleats" |
  "shop" |
  "shop_2" |
  "shop_two" |
  "shopping_bag" |
+ "shopping_bag_speed" |
  "shopping_basket" |
  "shopping_cart" |
  "shopping_cart_checkout" |
@@ -2765,6 +3373,8 @@ export type MaterialIcon =
  "sick" |
  "side_navigation" |
  "sign_language" |
+ "sign_language_2" |
+ "sign_language_off" |
  "signal_cellular_0_bar" |
  "signal_cellular_1_bar" |
  "signal_cellular_2_bar" |
@@ -2774,6 +3384,7 @@ export type MaterialIcon =
  "signal_cellular_alt" |
  "signal_cellular_alt_1_bar" |
  "signal_cellular_alt_2_bar" |
+ "signal_cellular_alt_off" |
  "signal_cellular_connected_no_internet_0_bar" |
  "signal_cellular_connected_no_internet_4_bar" |
  "signal_cellular_no_sim" |
@@ -2796,8 +3407,13 @@ export type MaterialIcon =
  "sim_card" |
  "sim_card_alert" |
  "sim_card_download" |
+ "simulation" |
  "single_bed" |
  "sip" |
+ "siren" |
+ "siren_check" |
+ "siren_open" |
+ "siren_question" |
  "skateboarding" |
  "skeleton" |
  "skillet" |
@@ -2805,6 +3421,8 @@ export type MaterialIcon =
  "skip_next" |
  "skip_previous" |
  "skull" |
+ "skull_list" |
+ "slab_serif" |
  "sledding" |
  "sleep" |
  "sleep_score" |
@@ -2813,11 +3431,14 @@ export type MaterialIcon =
  "slideshow" |
  "slow_motion_video" |
  "smart_button" |
+ "smart_card_reader" |
+ "smart_card_reader_off" |
  "smart_display" |
  "smart_outlet" |
  "smart_screen" |
  "smart_toy" |
  "smartphone" |
+ "smartphone_camera" |
  "smb_share" |
  "smoke_free" |
  "smoking_rooms" |
@@ -2826,14 +3447,17 @@ export type MaterialIcon =
  "snippet_folder" |
  "snooze" |
  "snowboarding" |
+ "snowflake" |
  "snowing" |
  "snowing_heavy" |
  "snowmobile" |
  "snowshoeing" |
  "soap" |
+ "soba" |
  "social_distance" |
  "social_leaderboard" |
  "solar_power" |
+ "solo_dining" |
  "sort" |
  "sort_by_alpha" |
  "sos" |
@@ -2841,6 +3465,7 @@ export type MaterialIcon =
  "sound_detection_glass_break" |
  "sound_detection_loud_sound" |
  "sound_sampler" |
+ "soundbar" |
  "soup_kitchen" |
  "source" |
  "source_environment" |
@@ -2852,10 +3477,13 @@ export type MaterialIcon =
  "spa" |
  "space_bar" |
  "space_dashboard" |
+ "space_dashboard_2" |
  "spatial_audio" |
  "spatial_audio_off" |
+ "spatial_speaker" |
  "spatial_tracking" |
  "speaker" |
+ "speaker_2" |
  "speaker_group" |
  "speaker_notes" |
  "speaker_notes_off" |
@@ -2864,15 +3492,38 @@ export type MaterialIcon =
  "specific_gravity" |
  "speech_to_text" |
  "speed" |
+ "speed_0_25" |
+ "speed_0_2x" |
  "speed_0_5" |
+ "speed_0_5x" |
+ "speed_0_75" |
+ "speed_0_7x" |
  "speed_1_2" |
+ "speed_1_25" |
+ "speed_1_2x" |
  "speed_1_5" |
+ "speed_1_5x" |
+ "speed_1_75" |
+ "speed_1_7x" |
+ "speed_2" |
  "speed_2x" |
+ "speed_3" |
+ "speed_4" |
+ "speed_camera" |
  "spellcheck" |
+ "split_scene" |
+ "split_scene_2" |
+ "split_scene_down" |
+ "split_scene_left" |
+ "split_scene_right" |
+ "split_scene_up" |
  "splitscreen" |
  "splitscreen_add" |
  "splitscreen_bottom" |
+ "splitscreen_landscape" |
+ "splitscreen_landscape_add" |
  "splitscreen_left" |
+ "splitscreen_portrait" |
  "splitscreen_right" |
  "splitscreen_top" |
  "splitscreen_vertical_add" |
@@ -2901,10 +3552,15 @@ export type MaterialIcon =
  "sports_volleyball" |
  "sprinkler" |
  "sprint" |
+ "sql" |
  "square" |
+ "square_circle" |
+ "square_dot" |
  "square_foot" |
  "ssid_chart" |
  "stack" |
+ "stack_group" |
+ "stack_hexagon" |
  "stack_off" |
  "stack_star" |
  "stacked_bar_chart" |
@@ -2915,6 +3571,7 @@ export type MaterialIcon =
  "stadia_controller" |
  "stadium" |
  "stairs" |
+ "stairs_2" |
  "star" |
  "star_border" |
  "star_border_purple500" |
@@ -2923,7 +3580,9 @@ export type MaterialIcon =
  "star_purple500" |
  "star_rate" |
  "star_rate_half" |
+ "star_shine" |
  "stars" |
+ "stars_2" |
  "start" |
  "stat_0" |
  "stat_1" |
@@ -2936,6 +3595,7 @@ export type MaterialIcon =
  "stay_current_portrait" |
  "stay_primary_landscape" |
  "stay_primary_portrait" |
+ "steering_wheel_heat" |
  "step" |
  "step_into" |
  "step_out" |
@@ -2945,6 +3605,8 @@ export type MaterialIcon =
  "stethoscope" |
  "stethoscope_arrow" |
  "stethoscope_check" |
+ "sticker" |
+ "sticker_add" |
  "sticky_note" |
  "sticky_note_2" |
  "stock_media" |
@@ -2971,8 +3633,13 @@ export type MaterialIcon =
  "style" |
  "styler" |
  "stylus" |
+ "stylus_brush" |
+ "stylus_fountain_pen" |
+ "stylus_highlighter" |
  "stylus_laser_pointer" |
  "stylus_note" |
+ "stylus_pen" |
+ "stylus_pencil" |
  "subdirectory_arrow_left" |
  "subdirectory_arrow_right" |
  "subheader" |
@@ -2980,8 +3647,11 @@ export type MaterialIcon =
  "subscript" |
  "subscriptions" |
  "subtitles" |
+ "subtitles_gear" |
  "subtitles_off" |
  "subway" |
+ "subway_walk" |
+ "subwoofer" |
  "summarize" |
  "sunny" |
  "sunny_snowing" |
@@ -3006,8 +3676,10 @@ export type MaterialIcon =
  "swipe_down" |
  "swipe_down_alt" |
  "swipe_left" |
+ "swipe_left_2" |
  "swipe_left_alt" |
  "swipe_right" |
+ "swipe_right_2" |
  "swipe_right_alt" |
  "swipe_up" |
  "swipe_up_alt" |
@@ -3015,11 +3687,13 @@ export type MaterialIcon =
  "switch" |
  "switch_access" |
  "switch_access_2" |
+ "switch_access_3" |
  "switch_access_shortcut" |
  "switch_access_shortcut_add" |
  "switch_account" |
  "switch_camera" |
  "switch_left" |
+ "switch_off" |
  "switch_right" |
  "switch_video" |
  "switches" |
@@ -3029,10 +3703,14 @@ export type MaterialIcon =
  "synagogue" |
  "sync" |
  "sync_alt" |
+ "sync_arrow_down" |
+ "sync_arrow_up" |
+ "sync_desktop" |
  "sync_disabled" |
  "sync_lock" |
  "sync_problem" |
  "sync_saved_locally" |
+ "sync_saved_locally_off" |
  "syringe" |
  "system_security_update" |
  "system_security_update_good" |
@@ -3041,30 +3719,40 @@ export type MaterialIcon =
  "system_update_alt" |
  "tab" |
  "tab_close" |
+ "tab_close_inactive" |
  "tab_close_right" |
  "tab_duplicate" |
  "tab_group" |
+ "tab_inactive" |
  "tab_move" |
  "tab_new_right" |
  "tab_recent" |
+ "tab_search" |
  "tab_unselected" |
  "table" |
  "table_bar" |
  "table_chart" |
  "table_chart_view" |
+ "table_convert" |
+ "table_edit" |
+ "table_eye" |
  "table_lamp" |
+ "table_large" |
  "table_restaurant" |
  "table_rows" |
  "table_rows_narrow" |
+ "table_sign" |
  "table_view" |
  "tablet" |
  "tablet_android" |
+ "tablet_camera" |
  "tablet_mac" |
  "tabs" |
  "tactic" |
  "tag" |
  "tag_faces" |
  "takeout_dining" |
+ "takeout_dining_2" |
  "tamper_detection_off" |
  "tamper_detection_on" |
  "tap_and_play" |
@@ -3072,6 +3760,7 @@ export type MaterialIcon =
  "target" |
  "task" |
  "task_alt" |
+ "tatami_seat" |
  "taunt" |
  "taxi_alert" |
  "team_dashboard" |
@@ -3081,8 +3770,11 @@ export type MaterialIcon =
  "temple_hindu" |
  "tenancy" |
  "terminal" |
+ "terminal_2" |
  "terrain" |
  "text_ad" |
+ "text_ad_off" |
+ "text_compare" |
  "text_decrease" |
  "text_fields" |
  "text_fields_alt" |
@@ -3106,6 +3798,7 @@ export type MaterialIcon =
  "text_select_start" |
  "text_snippet" |
  "text_to_speech" |
+ "text_up" |
  "textsms" |
  "texture" |
  "texture_add" |
@@ -3114,14 +3807,18 @@ export type MaterialIcon =
  "theaters" |
  "thermometer" |
  "thermometer_add" |
+ "thermometer_alert" |
  "thermometer_gain" |
  "thermometer_loss" |
  "thermometer_minus" |
  "thermostat" |
+ "thermostat_arrow_down" |
+ "thermostat_arrow_up" |
  "thermostat_auto" |
  "thermostat_carbon" |
  "things_to_do" |
  "thread_unread" |
+ "threat_intelligence" |
  "thumb_down" |
  "thumb_down_alt" |
  "thumb_down_filled" |
@@ -3133,25 +3830,40 @@ export type MaterialIcon =
  "thumb_up_off" |
  "thumb_up_off_alt" |
  "thumbnail_bar" |
+ "thumbs_up_double" |
  "thumbs_up_down" |
  "thunderstorm" |
  "tibia" |
  "tibia_alt" |
+ "tile_large" |
+ "tile_medium" |
+ "tile_small" |
+ "tilt_arrow_down" |
+ "tilt_arrow_up" |
  "time_auto" |
  "time_to_leave" |
  "timelapse" |
  "timeline" |
  "timer" |
+ "timer_1" |
  "timer_10" |
  "timer_10_alt_1" |
  "timer_10_select" |
+ "timer_2" |
  "timer_3" |
  "timer_3_alt_1" |
  "timer_3_select" |
+ "timer_5" |
+ "timer_5_shutter" |
+ "timer_arrow_down" |
+ "timer_arrow_up" |
  "timer_off" |
+ "timer_pause" |
+ "timer_play" |
  "tips_and_updates" |
  "tire_repair" |
  "title" |
+ "titlecase" |
  "toast" |
  "toc" |
  "today" |
@@ -3160,6 +3872,7 @@ export type MaterialIcon =
  "token" |
  "toll" |
  "tonality" |
+ "tonality_2" |
  "toolbar" |
  "tools_flat_head" |
  "tools_installation_kit" |
@@ -3170,12 +3883,17 @@ export type MaterialIcon =
  "tools_power_drill" |
  "tools_wrench" |
  "tooltip" |
+ "tooltip_2" |
  "top_panel_close" |
  "top_panel_open" |
  "topic" |
  "tornado" |
  "total_dissolved_solids" |
  "touch_app" |
+ "touch_double" |
+ "touch_double_2" |
+ "touch_long" |
+ "touch_triple" |
  "touchpad_mouse" |
  "touchpad_mouse_off" |
  "tour" |
@@ -3183,7 +3901,11 @@ export type MaterialIcon =
  "toys_and_games" |
  "toys_fan" |
  "track_changes" |
+ "trackpad_input" |
+ "trackpad_input_2" |
+ "trackpad_input_3" |
  "traffic" |
+ "traffic_jam" |
  "trail_length" |
  "trail_length_medium" |
  "trail_length_short" |
@@ -3194,12 +3916,14 @@ export type MaterialIcon =
  "transform" |
  "transgender" |
  "transit_enterexit" |
+ "transit_ticket" |
  "transition_chop" |
  "transition_dissolve" |
  "transition_fade" |
  "transition_push" |
  "transition_slide" |
  "translate" |
+ "translate_indic" |
  "transportation" |
  "travel" |
  "travel_explore" |
@@ -3207,9 +3931,11 @@ export type MaterialIcon =
  "trending_down" |
  "trending_flat" |
  "trending_up" |
+ "triangle_circle" |
  "trip" |
  "trip_origin" |
  "trolley" |
+ "trolley_cable_car" |
  "trophy" |
  "troubleshoot" |
  "try" |
@@ -3227,8 +3953,10 @@ export type MaterialIcon =
  "turned_in" |
  "turned_in_not" |
  "tv" |
+ "tv_displays" |
  "tv_gen" |
  "tv_guide" |
+ "tv_next" |
  "tv_off" |
  "tv_options_edit_channels" |
  "tv_options_input_settings" |
@@ -3236,14 +3964,17 @@ export type MaterialIcon =
  "tv_signin" |
  "tv_with_assistant" |
  "two_pager" |
+ "two_pager_store" |
  "two_wheeler" |
  "type_specimen" |
  "u_turn_left" |
  "u_turn_right" |
+ "udon" |
  "ulna_radius" |
  "ulna_radius_alt" |
  "umbrella" |
  "unarchive" |
+ "undereye" |
  "undo" |
  "unfold_less" |
  "unfold_less_double" |
@@ -3255,24 +3986,31 @@ export type MaterialIcon =
  "universal_local" |
  "unknown_2" |
  "unknown_5" |
+ "unknown_7" |
  "unknown_document" |
  "unknown_med" |
  "unlicense" |
+ "unpaved_road" |
+ "unpin" |
  "unpublished" |
  "unsubscribe" |
  "upcoming" |
  "update" |
  "update_disabled" |
  "upgrade" |
+ "upi_pay" |
  "upload" |
  "upload_2" |
  "upload_file" |
+ "uppercase" |
  "urology" |
  "usb" |
  "usb_off" |
  "user_attributes" |
  "vaccines" |
  "vacuum" |
+ "vacuum_2" |
+ "vacuum_2_on" |
  "valve" |
  "vape_free" |
  "vaping_rooms" |
@@ -3282,6 +4020,7 @@ export type MaterialIcon =
  "variables" |
  "ventilator" |
  "verified" |
+ "verified_off" |
  "verified_user" |
  "vertical_align_bottom" |
  "vertical_align_center" |
@@ -3293,20 +4032,26 @@ export type MaterialIcon =
  "vibration" |
  "video_call" |
  "video_camera_back" |
+ "video_camera_back_add" |
  "video_camera_front" |
  "video_camera_front_off" |
  "video_chat" |
  "video_file" |
+ "video_frame_copy" |
+ "video_frame_save" |
  "video_label" |
  "video_library" |
  "video_search" |
  "video_settings" |
  "video_stable" |
+ "video_template" |
  "videocam" |
+ "videocam_alert" |
  "videocam_off" |
  "videogame_asset" |
  "videogame_asset_off" |
  "view_agenda" |
+ "view_apps" |
  "view_array" |
  "view_carousel" |
  "view_column" |
@@ -3324,22 +4069,29 @@ export type MaterialIcon =
  "view_kanban" |
  "view_list" |
  "view_module" |
+ "view_object_track" |
  "view_quilt" |
+ "view_real_size" |
  "view_sidebar" |
  "view_stream" |
  "view_timeline" |
  "view_week" |
  "vignette" |
+ "vignette_2" |
  "villa" |
  "visibility" |
  "visibility_lock" |
  "visibility_off" |
  "vital_signs" |
  "vitals" |
+ "vo2_max" |
  "voice_chat" |
+ "voice_chat_off" |
  "voice_over_off" |
  "voice_selection" |
+ "voice_selection_off" |
  "voicemail" |
+ "voicemail_2" |
  "volcano" |
  "volume_down" |
  "volume_down_alt" |
@@ -3352,25 +4104,37 @@ export type MaterialIcon =
  "vpn_key_alert" |
  "vpn_key_off" |
  "vpn_lock" |
+ "vpn_lock_2" |
  "vr180_create2d" |
  "vr180_create2d_off" |
  "vrpano" |
+ "walk_bike" |
  "wall_art" |
  "wall_lamp" |
  "wallet" |
  "wallpaper" |
  "wallpaper_slideshow" |
+ "wand_shine" |
+ "wand_stars" |
  "ward" |
  "warehouse" |
  "warning" |
  "warning_amber" |
  "warning_off" |
  "wash" |
+ "washoku" |
  "watch" |
+ "watch_alert" |
+ "watch_arrow" |
+ "watch_arrow_down" |
+ "watch_button" |
  "watch_button_press" |
+ "watch_check" |
  "watch_later" |
+ "watch_lock" |
  "watch_off" |
  "watch_screentime" |
+ "watch_vibration" |
  "watch_wake" |
  "water" |
  "water_bottle" |
@@ -3378,6 +4142,7 @@ export type MaterialIcon =
  "water_damage" |
  "water_do" |
  "water_drop" |
+ "water_drops" |
  "water_ec" |
  "water_full" |
  "water_heater" |
@@ -3399,6 +4164,7 @@ export type MaterialIcon =
  "wb_shade" |
  "wb_sunny" |
  "wb_twilight" |
+ "wb_twilight_2" |
  "wc" |
  "weather_hail" |
  "weather_mix" |
@@ -3413,8 +4179,13 @@ export type MaterialIcon =
  "weight" |
  "west" |
  "whatshot" |
+ "wheat" |
  "wheelchair_pickup" |
  "where_to_vote" |
+ "widget_medium" |
+ "widget_menu" |
+ "widget_small" |
+ "widget_width" |
  "widgets" |
  "width" |
  "width_full" |
@@ -3428,7 +4199,11 @@ export type MaterialIcon =
  "wifi_calling_1" |
  "wifi_calling_2" |
  "wifi_calling_3" |
+ "wifi_calling_bar_1" |
+ "wifi_calling_bar_2" |
+ "wifi_calling_bar_3" |
  "wifi_channel" |
+ "wifi_device" |
  "wifi_find" |
  "wifi_home" |
  "wifi_lock" |
@@ -3445,6 +4220,10 @@ export type MaterialIcon =
  "window_closed" |
  "window_open" |
  "window_sensor" |
+ "windshield_defrost_auto" |
+ "windshield_defrost_front" |
+ "windshield_defrost_rear" |
+ "windshield_heat_front" |
  "wine_bar" |
  "woman" |
  "woman_2" |
@@ -3463,7 +4242,11 @@ export type MaterialIcon =
  "wrist" |
  "wrong_location" |
  "wysiwyg" |
+ "x_circle" |
+ "y_circle" |
+ "yakitori" |
  "yard" |
+ "yoshoku" |
  "your_trips" |
  "youtube_activity" |
  "youtube_searched_for" |
