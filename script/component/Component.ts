@@ -337,6 +337,8 @@ export class Component<EventMapType extends ComponentEventMap = ComponentEventMa
 	 * @param index
 	 */
 	public onAdded(index:number) {
+
+		this.initState();
 		// fires before render! Menu uses this to modify item.parent
 		this.fire("added", {index: index, parent: this.parent!});
 	}
@@ -350,7 +352,13 @@ export class Component<EventMapType extends ComponentEventMap = ComponentEventMa
 	}
 
 	/**
-	 * Restore state of the component in this function. It's called during rendering.
+	 * Restore state of the component in this function.
+	 *
+	 * We can't call this in the constructor. So it's called once and attempted in:
+	 *
+	 * - creator func
+	 * - when it's added
+	 * - on render
 	 *
 	 * @see saveState();
 	 * @param state
@@ -363,6 +371,33 @@ export class Component<EventMapType extends ComponentEventMap = ComponentEventMa
 		if(s && "hidden" in s) {
 			this.hidden = s.hidden;
 		}
+	}
+
+
+	private stateInitialized = false;
+
+	/**
+	 * Loads the state
+	 *
+	 * We can't call this in the constructor. So it's called once and attempted in:
+	 *
+	 * - creator func
+	 * - when it's added
+	 * - on render
+	 *
+	 * You can also call it manually if you need it sooner.
+	 */
+	public initState() {
+		if(this.stateInitialized) {
+			return;
+		}
+
+		this.stateInitialized = true;
+		if(!this.stateId) {
+			return;
+		}
+
+		this.restoreState(this.getState())
 	}
 
 	/**
@@ -463,9 +498,7 @@ export class Component<EventMapType extends ComponentEventMap = ComponentEventMa
 		this.initClassName();
 		this.renderItems();
 
-		if (this.stateId) {
-			this.restoreState(this.getState());
-		}
+		this.initState();
 
 		return this.el;
 	}
@@ -1497,6 +1530,9 @@ export function assignComponentConfig<T extends Observable>(comp: T, config: any
 		delete config.listeners;
 	}
 	Object.assign(comp as any, config);
+
+	if(comp instanceof Component)
+		comp.initState();
 }
 
 /**
