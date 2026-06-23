@@ -1,5 +1,5 @@
-import {Observable, ObservableEventMap} from "./Observable.js";
-import {comp, Component} from "./Component.js";
+import {Config, Observable, ObservableEventMap} from "./Observable.js";
+import {comp, Component, createComponent} from "./Component.js";
 import {root} from "./Root.js";
 
 type SortableDragEvent = DragEvent & {
@@ -130,6 +130,17 @@ export class Sortable<Type extends Component> extends Observable<SortableEventMa
 	/**
 	 * Move the DOM nodes. Often GOUI components have underlying data stores that need to be updated. The components update
 	 * the UI already when the data in their store changes.
+	 *
+	 * When you are moving items within a parent component. You might want to handle this by sorting its items instead:
+	 *
+	 * ```
+	 * listeners: {
+	 * 				sort: ({fromIndex, toIndex}) =>
+	 * 				{
+	 * 					this.menu.items.move(fromIndex, toIndex);
+	 * 				}
+	 * }
+	 * ```
 	 */
 	public updateDom = false;
 
@@ -179,7 +190,7 @@ export class Sortable<Type extends Component> extends Observable<SortableEventMa
 	 * Constructor
 	 *
 	 * @param component The container component where the sortables are inside
-	 * @param sortableChildSelector CSS selector to find the sortables. For example a css class ".sortable-item".
+	 * @param sortableChildSelector CSS selector to find the sortables. For example a css class ".sortable-item". It has to be found inside the container, but also from any child element up using child.closest() Therefore you can't use something like ":scope > *"
 	 */
 	constructor(readonly component: Type, private sortableChildSelector:string) {
 		super();
@@ -192,6 +203,7 @@ export class Sortable<Type extends Component> extends Observable<SortableEventMa
 
 			// does this item belong to us? Not sure if this is efficient. Perhaps two sortables on the same el is madness.
 			if(this.findSortables().indexOf(e.target) === -1) {
+				console.warn("Sortable item not part of our sortables");
 				return;
 			}
 
@@ -272,11 +284,11 @@ export class Sortable<Type extends Component> extends Observable<SortableEventMa
 					dropPin.hidden = false;
 
 					if(this.horizontal) {
-						dropPin.el.style.top = rect.y + "px"; // (rect.y - this.gap(Sortable.dragData.overEl)) + "px";
-						dropPin.el.style.left = (rect.x - this.gap(Sortable.dragData.overEl)) + "px";
+						dropPin.el.style.top = rect.y + "px";
+						dropPin.el.style.left = (rect.x - this.gap()) + "px";
 						dropPin.el.style.height = rect.height + "px";
 					} else {
-						dropPin.el.style.top = (rect.y - this.gap(Sortable.dragData.overEl)) + "px";
+						dropPin.el.style.top = (rect.y - this.gap()) + "px";
 						dropPin.el.style.left = rect.x + "px";
 						dropPin.el.style.width = rect.width + "px";
 					}
@@ -302,11 +314,11 @@ export class Sortable<Type extends Component> extends Observable<SortableEventMa
 
 					if(this.horizontal) {
 						dropPin.el.style.top = rect.y + "px";
-						dropPin.el.style.left = (rect.x + rect.width + this.gap(Sortable.dragData.overEl)) + "px";
+						dropPin.el.style.left = (rect.x + rect.width + this.gap()) + "px";
 						dropPin.el.style.height = rect.height + "px";
 						dropPin.el.style.width = "";
 					} else {
-						dropPin.el.style.top = (rect.y + rect.height + this.gap(Sortable.dragData.overEl)) + "px";
+						dropPin.el.style.top = (rect.y + rect.height + this.gap()) + "px";
 						dropPin.el.style.left = rect.x + "px";
 						dropPin.el.style.width = rect.width + "px";
 						dropPin.el.style.height = "";
@@ -397,34 +409,26 @@ export class Sortable<Type extends Component> extends Observable<SortableEventMa
 	 *
 	 * @private
 	 */
-	private gap(item:HTMLElement) {
+	private gap() {
 
 		if(this._gap !== undefined) {
-			console.log(this._gap);
+			// console.log(this._gap);
 			return this._gap;
 		}
 
-		let item2 = item.nextElementSibling, r1, r2;
-
-		if(item2 == null) {
-			item2 =  item.previousElementSibling;
-			if(item2 === null) {
-				return 0;
-			}
-
-			r1 = item2.getBoundingClientRect();
-			r2 = item.getBoundingClientRect();
-
-		} else {
-			r1 = item.getBoundingClientRect();
-			r2 = item2.getBoundingClientRect();
+		const sortables = this.findSortables();
+		if(sortables.length < 2) {
+			return 0;
 		}
 
-		this._gap = this.horizontal
-			? (r1.x + r1.width - r2.x) / 2
-			: (r1.y + r1.height - r2.y) / 2
+		const item = sortables[0], item2 = sortables[1],
+			r1 = item.getBoundingClientRect(),
+			r2 = item2.getBoundingClientRect();
 
-		console.log(this._gap);
+		this._gap = this.horizontal
+			? (r2.x - r1.x - r1.width ) / 2
+			: (r2.y - r1.y - r1.height ) / 2
+
 		return this._gap;
 	}
 
@@ -497,3 +501,10 @@ export class Sortable<Type extends Component> extends Observable<SortableEventMa
 		return Array.from(this.component.el.querySelectorAll(this.sortableChildSelector)) as HTMLElement[];
 	}
 }
+type SortableConfig<T extends Component<any>> = Config<Sortable<T>, "component"> & {
+	/**
+	 * CSS selector to find the sortables. For example a css class ".sortable-item". It has to be found inside the container, but also from any child element up using child.closest() Therefore you can't use something like ":scope > *"
+	 */
+	sortableChildSelector: string
+}
+export const sortable = <T extends Component<any>>(config: SortableConfig<T>) => createComponent(new Sortable(config.component, config.sortableChildSelector), config);

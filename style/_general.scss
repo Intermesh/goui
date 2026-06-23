@@ -284,13 +284,13 @@ aside.goui-cardmenu.goui-toolbar {
 	position:fixed;
 	height: 1px;
 	width: 1px;
-	background-color: config.$colorMain;
+	background-color: #{rgba(black, 0.24)};
 	pointer-events: none;
 	&:after {
 		content: " ";
 		display: block;;
 		border-radius: 50%;
-		background-color: config.$colorMain;
+		background-color: #{rgba(black, 0.24)};
 		width: util.dp(8);
 		height: util.dp(8);
 		position: absolute;

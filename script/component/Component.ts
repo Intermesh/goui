@@ -529,6 +529,19 @@ export class Component<EventMapType extends ComponentEventMap = ComponentEventMa
 	}
 
 	/**
+	 * Toggle the draggable state
+	 *
+	 * @param draggable
+	 */
+	set draggable(draggable: boolean) {
+		this.el.draggable = draggable;
+	}
+
+	get draggable() {
+		return this.el.draggable;
+	}
+
+	/**
 	 * Render the component
 	 *
 	 * For overriding from another module see:
