@@ -128,7 +128,6 @@ export class Router extends Observable<RouterEventMap> {
 	 */
 	public async start() {
 		const path = this.getPath();
-
 		const oldPath = this.loadedPath;
 
 		this.loadedPath = path;
