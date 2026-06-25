@@ -604,6 +604,10 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 						delete this.getIds[id];
 					});
 				}).catch((e) => {
+
+				console.error("Error in JMAP " + this.id + "/set request");
+				console.error(e);
+
 				//reject all
 				unknownIds.forEach((id) => {
 					if (this.getIds[id]) {
@@ -975,7 +979,8 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 					destroys[clientId].reject(e);
 				}
 
-				throw e;
+				console.error("Error in JMAP " + this.id + "/set request");
+				console.error(e);
 			})
 
 
