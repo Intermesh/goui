@@ -58,7 +58,7 @@ menu.goui-dropdown {
 		margin: 0;
 		width: 100%;
 
-		p, h2, h3, h4 {
+		>p, >h2, >h3, >h4 {
 			padding-left: util.dp(16);
 		}
 

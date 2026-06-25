@@ -1316,7 +1316,8 @@ div.color-dot {
 		.control-wrap {
 			display:block;
 			flex: 1;
-			overflow: hidden;
+			//overflow: hidden;
+			overflow: auto; // for create link field. Scrolls if there are many.
 			padding: 0  util.dp(8);
 			min-height: util.dp(46);
 		}
