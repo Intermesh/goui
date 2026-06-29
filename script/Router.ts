@@ -15,7 +15,25 @@ export interface Route {
  * @inheritDoc
  */
 export interface RouterEventMap extends ObservableEventMap {
-	change: { path: string, oldPath: string}
+	/**
+	 * Fires when the route changes and is handled
+	 */
+	change: {
+		/**
+		 * New router path
+		 */
+		path: string,
+
+		/**
+		 * Old router path
+		 */
+		oldPath: string,
+
+		/**
+		 * return value of the router function
+		 */
+		returnValue: any
+	}
 }
 
 export type RouterMethod = (...args: string[]) => Promise<any> | any;
@@ -77,12 +95,11 @@ export class Router extends Observable<RouterEventMap> {
 	public setPath(...pathParts: any[]) {
 
 		const path = pathParts.map(p => p ?? "").join("/");
-		//this._setPath = path; //to cancel event
 		if ("#" + path != window.location.hash) {
 			this.suspendEvent = true;
-			const oldPath = this.getPath();
+			// const oldPath = this.getPath();
 			window.location.hash = path;
-			this.fire("change", {path: this.getPath(), oldPath});
+			//this.fire("change", {path: this.getPath(), oldPath});
 		}
 	}
 
@@ -158,11 +175,11 @@ export class Router extends Observable<RouterEventMap> {
 
 		this.routing = true;
 		try {
-			const result = handler.apply({}, match);
+			const returnValue = handler.apply({}, match);
 			window.scrollTo(0,0);
-			this.fire("change", {path: this.getPath(), oldPath});
+			this.fire("change", {path: this.getPath(), oldPath, returnValue});
 
-			return result;
+			return returnValue;
 		} finally {
 			this.routing = false;
 		}
