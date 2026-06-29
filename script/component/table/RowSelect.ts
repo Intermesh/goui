@@ -420,9 +420,17 @@ export class RowSelect<StoreType extends Store = Store, RecordType extends Store
 			this.shiftStartIndex = this.lastIndex;
 		}
 
+		if((e.ctrlKey || e.metaKey) && e.key === "a") {
+			e.preventDefault();
+			e.stopPropagation();
+			this.selectAll();
+			return;
+		}
+
 		if (e.key != "ArrowDown" && e.key != "ArrowUp") {
 			return;
 		}
+
 
 		e.preventDefault();
 		e.stopPropagation();
