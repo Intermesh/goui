@@ -25,7 +25,7 @@
     "build:sass": "npx sass --style=compressed ./style:./dist",
     "build:ts": "npx esbuild ./script/index.ts --bundle --minify --format=esm --target=es2017 --outdir=dist",
     "build:dts": "npx tsc --emitDeclarationOnly",
-    "test:ts": "tsc --noEmit",
+    "test:ts": "npx tsc --noEmit",
     "update-material-icons": "./update_material_icon.sh > script/component/MaterialIcon.ts",
     "prepare": "npm run build"
   },
