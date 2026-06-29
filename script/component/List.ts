@@ -179,7 +179,7 @@ export class List<StoreType extends Store = Store, EventMapType extends ListEven
 	/**
 	 * Allow items to be dragged
 	 */
-	public draggable = false;
+	public draggableRows = false;
 
 	/**
 	 * Allow to drop between items
@@ -303,7 +303,7 @@ export class List<StoreType extends Store = Store, EventMapType extends ListEven
 	}
 
 	protected initSortable() {
-		if(!this.dropBetween && !this.dropOn && !this.draggable) {
+		if(!this.dropBetween && !this.dropOn && !this.draggableRows) {
 			return;
 		}
 		const sortable = new Sortable(this, ".data");
@@ -646,7 +646,7 @@ export class List<StoreType extends Store = Store, EventMapType extends ListEven
 			.cls('+data')
 			.attr('tabindex', '0');
 
-		if (this.draggable) {
+		if (this.draggableRows) {
 			row.draggable = true;
 		}
 		const r = this.renderer(record, row, this, storeIndex);
