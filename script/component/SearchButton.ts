@@ -11,7 +11,6 @@ import {createComponent} from "./Component.js";
 import {FunctionUtil} from "../util/FunctionUtil.js";
 import {Config} from "./Observable.js";
 import {OverlayToolbarButton, OverlayToolbarButtonEventMap} from "./OverlayToolbarButton";
-import {ToolbarItems} from "./Toolbar.js";
 
 
 /**
@@ -54,6 +53,11 @@ export class SearchButton extends OverlayToolbarButton<SearchButtonEventMap> {
 
 		this.icon = "search";
 		this.title = t("Search");
+		this.cls = "search-button";
+
+		this.on("close", () => {
+			this.text = this.searchField.value;
+		})
 	}
 
 	public get searchField() {
