@@ -96,7 +96,9 @@ export class QuoteStripper {
 		let pos = 0, maybePos = 0;
 
 		for (let i = 0, c = lines.length; i < c; i++) {
-			const plain = lines[i].replace(/(<([^>]+)>)/ig, ""); //strip html tags
+			const plain = lines[i]
+				.replace(/(<([^>]+)>)/ig, "")
+				.trim(); //strip html tags and CR LF
 
 			if (plain.match(maybeHeader)) {
 				if (!maybePos) {
@@ -108,11 +110,21 @@ export class QuoteStripper {
 
 			//Match:
 			//ABC: email@domain.com
+
 			if (plain.match(header)) {
 				return maybePos || pos;
 			}
 
 			if (plain.match(greaterThan)) {
+
+				// check for Author wrote at : line. We want to take that off too.
+				const prevLine = lines[i - 1];
+				const plain = prevLine.replace(/(<([^>]+)>)/ig, "").trim();
+
+				if(plain.match(/.+:$/)) {
+					pos -= prevLine.length;
+				}
+
 				return pos;
 			}
 
@@ -120,4 +132,5 @@ export class QuoteStripper {
 		}
 		return -1;
 	}
+
 }
