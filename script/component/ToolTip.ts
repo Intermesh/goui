@@ -89,7 +89,7 @@ export class ToolTip extends Component {
 		if(!this.observer) {
 			this.observer  = new MutationObserver(() => {
 				if (!this.targetEl!.isConnected) {
-						this.remove();
+					this.remove();
 				}
 			});
 		}
@@ -100,6 +100,11 @@ export class ToolTip extends Component {
 	}
 
 	protected internalRemove() {
+		if(this.timeout) {
+			clearTimeout(this.timeout);
+			this.timeout = undefined;
+		}
+
 		this.observer?.disconnect();
 		super.internalRemove();
 	}
