@@ -6,7 +6,7 @@
 import {Form, FormEventMap} from "./Form.js";
 import {AbstractDataSource, BaseEntity, DataSourceEventMap, DefaultEntity, EntityID} from "../../data/index.js";
 import {t} from "../../Translate.js";
-import {Component, createComponent} from "../Component.js";
+import {br, Component, createComponent} from "../Component.js";
 import {Window} from "../Window.js";
 import {FieldConfig} from "./Field.js";
 import {Format, ObjectUtil} from "../../util/index";
@@ -152,9 +152,11 @@ export class DataSourceForm<ValueType extends BaseEntity = DefaultEntity> extend
 
 		console.error(error);
 
+		let missingFieldErrors = [];
 		for(const propertyName in error.validationErrors) {
 			const field = this.findField(propertyName);
 			if(!field) {
+				missingFieldErrors.push(propertyName+ ": " + error.validationErrors[propertyName].description)
 				continue;
 			}
 
@@ -166,7 +168,11 @@ export class DataSourceForm<ValueType extends BaseEntity = DefaultEntity> extend
 			invalid.focus();
 		}
 
-		this.setInvalid(t('You have errors in your form. The invalid fields are marked.'));
+		if(!missingFieldErrors.length) {
+			this.setInvalid(t('You have errors in your form. The invalid fields are marked.'));
+		} else {
+			this.setInvalid(t("You have errors in your form.") + "<br>" +missingFieldErrors.join("<br>"))
+		}
 	}
 
 	public create(data: any) {
