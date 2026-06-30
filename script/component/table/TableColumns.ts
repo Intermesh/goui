@@ -456,15 +456,18 @@ export const checkboxselectcolumn = (config?: Config<CheckboxColumn>) => createC
  *
  * @example
  * ```
- * menucolumn(
- * 		btn({
- * 			text: t("Open"),
- * 			icon: "open_in_new",
- * 			handler: (b) => {
- * 				this.open(b.parent!.dataSet.rowIndex);
- * 			}
- * 		})
- * 	)
+ *
+ * 	menucolumn({
+ * 		menu: menu({},
+ * 			btn({
+ * 				text: t("Open"),
+ * 				icon: "open_in_new",
+ * 				handler: (b) => {
+ * 					this.open(b.parent!.dataSet.rowIndex);
+ * 				}
+ * 			})
+ * 		)
+ * 	}),
  * ```
  *
  * @param config
