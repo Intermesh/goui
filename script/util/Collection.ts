@@ -103,6 +103,7 @@ export class Collection<CollectionItem, MapType extends CollectionEventMap<Colle
 	 * Insert items at the given index
 	 *
 	 * @param index Use negative indexes to insert from the end. For example -1 inserts before the last item.
+	 * @param items
 	 */
 	public insert(index: number, ...items: CollectionItem[]) {
 
