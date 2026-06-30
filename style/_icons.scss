@@ -43,6 +43,9 @@
 	-webkit-font-feature-settings: 'liga';
 	-webkit-font-smoothing: antialiased;
 
+	background-size: contain;
+	background-repeat: no-repeat;
+
 	&.error {
 		color: config.$colorError;
 	}
