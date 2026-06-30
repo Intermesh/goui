@@ -23,7 +23,7 @@ function generatePassword(length = 16) {
 	return password;
 }
 
-type PasswordAutoComplete = "new-password" | "current-password";
+type PasswordAutoComplete = "new-password" | "current-password" | "off";
 
 export interface PasswordFieldEventMap extends InputFieldEventMap {
 	generatepassword: {
