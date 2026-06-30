@@ -1124,9 +1124,10 @@
 	.legend {
 		display: block;
 		line-height:normal;
-		font-size: util.sp(22);
-		font-weight: bold;
-		color: config.$colorText;
+		color: config.$colorTextSecondary;
+		font-size: util.sp(18);
+		letter-spacing: 0.1rem;
+		font-weight: normal;
 		padding: util.dp(8) util.dp(16) util.dp(8) 0;
 	}
 
@@ -1136,6 +1137,10 @@
 
 	> .goui-toolbar {
 		padding: 0;
+	}
+
+	> .card {
+		margin: 0;
 	}
 }
 
