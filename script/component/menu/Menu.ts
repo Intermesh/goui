@@ -169,6 +169,25 @@ export class Menu<EventMap extends MenuEventMap = MenuEventMap> extends Abstract
 		this.on("hide", onClose);
 		this.on("remove", onClose);
 
+
+		if(this.autoClose) {
+			// These should be added only once. Below will be added each time.
+
+			// stop clicks on menu from hiding menu, otherwise it hides before button handlers fire.
+			this.el.addEventListener("mousedown", (ev) => {
+				ev.stopPropagation();
+			});
+
+			this.el.addEventListener("mouseup", (ev) => {
+				// close whole tree of menu's
+				let topMenu:Menu = this;
+				while(topMenu.parentMenu instanceof Menu) {
+					topMenu = topMenu.parentMenu;
+				}
+				topMenu.close();
+			});
+		}
+
 		return el;
 	}
 
@@ -398,23 +417,6 @@ export class Menu<EventMap extends MenuEventMap = MenuEventMap> extends Abstract
 			}
 
 			if (!this.rendered) {
-				if(this.autoClose) {
-					// These should be added only once. Below will be added each time.
-
-					// stop clicks on menu from hiding menu, otherwise it hides before button handlers fire.
-					this.el.addEventListener("mousedown", (ev) => {
-						ev.stopPropagation();
-					});
-
-					this.el.addEventListener("mouseup", (ev) => {
-						// close whole tree of menu's
-						let topMenu:Menu = this;
-						while(topMenu.parentMenu instanceof Menu) {
-							topMenu = topMenu.parentMenu;
-						}
-						topMenu.close();
-					});
-				}
 				this.render();
 			}
 
