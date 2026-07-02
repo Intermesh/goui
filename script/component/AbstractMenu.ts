@@ -184,7 +184,6 @@ export abstract class AbstractMenu<EventMap extends ComponentEventMap = Componen
 	}
 
 	public focus(o?: FocusOptions) {
-		console.log(this.focusedItemIndex);
 		if (this.focusedItemIndex > -1) {
 			this.items.get(this.focusedItemIndex)!.focus();
 		} else {

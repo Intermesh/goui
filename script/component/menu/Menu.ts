@@ -169,18 +169,6 @@ export class Menu<EventMap extends MenuEventMap = MenuEventMap> extends Abstract
 		this.on("hide", onClose);
 		this.on("remove", onClose);
 
-		this.el.addEventListener("click", e => {
-
-			if(e.target == this.el) {
-				this.close();
-			} else {
-				// Menus are rendered inside buttons. So buttons are inside buttons.
-				// We have to stop propagation for the click event otherwise the parent button will fire too.
-				// not sure if this will cause problems.
-				e.stopPropagation();
-			}
-
-		})
 		return el;
 	}
 
@@ -280,7 +268,6 @@ export class Menu<EventMap extends MenuEventMap = MenuEventMap> extends Abstract
 	 * Align the menu with it's "alignTo" element.
 	 */
 	public align() {
-		console.log("align");
 		if(!this.alignTo) {
 			return;
 		}
@@ -359,11 +346,10 @@ export class Menu<EventMap extends MenuEventMap = MenuEventMap> extends Abstract
 		return parseInt(this.el.style.top);
 	}
 
-	get parentMenu():Menu|Toolbar | undefined {
+	get parentMenu(): AbstractMenu | undefined {
 		if(this._parentMenu === undefined) {
 			this._parentMenu = this.findAncestorByType(Menu);
 			if(!this._parentMenu) {
-
 				this._parentMenu = this.findAncestorByType(Toolbar) ?? false;
 			}
 		}
@@ -401,6 +387,8 @@ export class Menu<EventMap extends MenuEventMap = MenuEventMap> extends Abstract
 		})
 	}
 
+
+
 	protected internalSetHidden(hidden:boolean) {
 
 		if(!hidden) {
@@ -410,6 +398,23 @@ export class Menu<EventMap extends MenuEventMap = MenuEventMap> extends Abstract
 			}
 
 			if (!this.rendered) {
+				if(this.autoClose) {
+					// These should be added only once. Below will be added each time.
+
+					// stop clicks on menu from hiding menu, otherwise it hides before button handlers fire.
+					this.el.addEventListener("mousedown", (ev) => {
+						ev.stopPropagation();
+					});
+
+					this.el.addEventListener("mouseup", (ev) => {
+						// close whole tree of menu's
+						let topMenu:Menu = this;
+						while(topMenu.parentMenu instanceof Menu) {
+							topMenu = topMenu.parentMenu;
+						}
+						topMenu.close();
+					});
+				}
 				this.render();
 			}
 
@@ -430,15 +435,10 @@ export class Menu<EventMap extends MenuEventMap = MenuEventMap> extends Abstract
 			}
 
 			if(this.autoClose) {
-				//hide menu when clicked elsewhere
+				// hide menu when clicked elsewhere.
 				window.addEventListener("mousedown", (ev) => {
 					this.close();
 				}, {once: true});
-
-				// stop clicks on menu from hiding menu, otherwise it hides before button handlers fire.
-				this.el.addEventListener("mousedown", (ev) => {
-					ev.stopPropagation();
-				});
 			}
 
 			//put back fade out class removed in mouseenter listener above
@@ -449,8 +449,6 @@ export class Menu<EventMap extends MenuEventMap = MenuEventMap> extends Abstract
 			}
 			super.internalSetHidden(hidden);
 		}
-
-
 	}
 
 	/**

@@ -28,14 +28,18 @@ export class DateRangeField extends Field {
 		super();
 
 		this.startPicker = datepicker();
+
+		this.startPicker.el.addEventListener("mouseup" , (ev) => {
+			// prevent closing of the menu when clicking start date
+			ev.stopPropagation();
+		})
+
 		this.endPicker = datepicker();
 
 		this.endPicker.on("select", () => {
 			this.value = this.startPicker.value.format(DateRangeField.f) +
 				".." +
 				this.endPicker.value.format(DateRangeField.f);
-
-			this.button.menu?.close()
 
 			this.fireChange(false);
 		})
@@ -45,15 +49,12 @@ export class DateRangeField extends Field {
 		this.fromPicker.on("select", () => {
 			this.value = ">=" + this.fromPicker.value.format(DateRangeField.f);
 
-			this.button.menu?.close()
-
 			this.fireChange(false);
 		})
 		this.untilPicker = datepicker();
 		this.untilPicker.on("select", () => {
 			this.value = "<" + this.untilPicker.value.addDays(1).format(DateRangeField.f);
 
-			this.button.menu?.close()
 
 			this.fireChange(false);
 		})
@@ -81,7 +82,6 @@ export class DateRangeField extends Field {
 		];
 
 		this.el!.addEventListener('keydown', (ev) => {
-			console.log(ev.key);
 
 			switch (ev.key) {
 
@@ -92,9 +92,9 @@ export class DateRangeField extends Field {
 					break;
 
 				case 'Escape':
-				this.button.menu!.hide();
-						ev.preventDefault();
-						ev.stopPropagation();
+					this.button.menu!.close();
+					ev.preventDefault();
+					ev.stopPropagation();
 
 
 					break;

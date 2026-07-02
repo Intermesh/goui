@@ -122,27 +122,6 @@ export class Button<EventMap extends ButtonEventMap= ButtonEventMap> extends Com
 		})
 	}
 
-	/**
-	 * Find the first menu in the tree of submenu's
-	 */
-	private findTopMenu(): Menu | undefined {
-		if(!(this.parent instanceof Menu)) {
-			return undefined;
-		}
-
-		if(!(this.parent.parent instanceof Button)) {
-			return this.parent;
-		} else
-		{
-			const next = this.parent.parent.findTopMenu();
-			if(next) {
-				return next;
-			} else
-			{
-				return this.parent;
-			}
-		}
-	}
 
 	/**
 	 * Button type. "button" or "submit", defaults to "button".
@@ -189,15 +168,7 @@ export class Button<EventMap extends ButtonEventMap= ButtonEventMap> extends Com
 			// the detail property contains the click count. When spacebar is used it will be 0
 			// Michael had problems with e.detail < 2 but we don't remember why. Discuss when we run into this.
 			if (this.handler && ev.button == 0 && (this.allowFastClick || ev.detail < 2)) {
-
 				this.handler.call(this, this, ev);
-
-				// close dropdown menu if handler is set
-				const topMenu = this.findTopMenu();
-
-				if (topMenu && topMenu.isDropdown) {
-					topMenu.close();
-				}
 			}
 
 			this.fire("click", {ev});
@@ -208,7 +179,6 @@ export class Button<EventMap extends ButtonEventMap= ButtonEventMap> extends Com
 
 
 	private onMenuMouseEnter() {
-		console.warn("onMenuMouseEnter");
 		// open submenu's or toolbar menu's when one menu is already opened by a click
 		if(this._menu && this._menu.hidden && (this._menu.parentMenu instanceof Menu || (this._menu.parentMenu && this._menu.parentMenu.openedMenu))) {
 			// this._menu!.alignTo = this.el;
