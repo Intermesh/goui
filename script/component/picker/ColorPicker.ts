@@ -94,7 +94,7 @@ export class ColorPicker extends Component<ColorPickerEventMap> {
 
 		this.items.add(this.moreBtn = btn({
 			text: t("More"),
-			handler: () => {
+			handler: (target, ev) => {
 				this.toggleMore()
 			}
 		}))

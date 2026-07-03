@@ -5,7 +5,7 @@
  */
 
 import {Component, ComponentEventMap, createComponent} from "./Component.js";
-import {Menu} from "./menu";
+import {menu, Menu} from "./menu";
 import {Config} from "./Observable.js";
 import {MaterialIcon} from "./MaterialIcon.js";
 import {router} from "../Router.js";
@@ -161,8 +161,10 @@ export class Button<EventMap extends ButtonEventMap= ButtonEventMap> extends Com
 		el.addEventListener("click", (ev) => {
 
 			// toggle menu if present
-			if(this._menu) {
-				this._menu.hidden = !this._menu.hidden;
+			if(this._menu ) {
+				if(!this._menu.parentMenu || !this._menu.parentMenu.hidden) {
+					this._menu.hidden = !this._menu.hidden;
+				}
 			}
 			// check detail for being the first click. We don't want double clicks to call the handler twice.
 			// the detail property contains the click count. When spacebar is used it will be 0
@@ -185,7 +187,7 @@ export class Button<EventMap extends ButtonEventMap= ButtonEventMap> extends Com
 			this._menu.show();
 		}
 		if(!this._menu && this.parent instanceof Menu) {
-			this.parent.openedMenu?.close();
+			this.parent.openedMenu?.close(false);
 		}
 	}
 	/**

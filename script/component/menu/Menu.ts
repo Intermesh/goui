@@ -179,12 +179,22 @@ export class Menu<EventMap extends MenuEventMap = MenuEventMap> extends Abstract
 			});
 
 			this.el.addEventListener("mouseup", (ev) => {
-				// close whole tree of menu's
-				let topMenu:Menu = this;
-				while(topMenu.parentMenu instanceof Menu) {
-					topMenu = topMenu.parentMenu;
+
+				// Auto close menu when a button that is a direct child of the list is clicked. We don't want to close when
+				// form controls or custom controls with nested buttons are clicked.
+				if(!ev.target) {
+					return;
 				}
-				topMenu.close();
+
+				const btn = (ev.target as HTMLElement).closest(".goui-button") as HTMLButtonElement;
+				if(!btn) {
+					return;
+				}
+				if(!btn.parentElement || btn.parentElement.tagName != "LI") {
+					return;
+				}
+
+				this.close();
 			});
 		}
 
@@ -431,15 +441,15 @@ export class Menu<EventMap extends MenuEventMap = MenuEventMap> extends Abstract
 			{
 				if(this.parentMenu.openedMenu) {
 					this.parentMenu.openedMenu.el.classList.remove("goui-fade-out");
-					this.parentMenu.openedMenu.close();
+					this.parentMenu.openedMenu.close(false);
 				}
 				this.parentMenu.openedMenu = this;
 			}
 
 			if(this.autoClose) {
 				// hide menu when clicked elsewhere.
-				window.addEventListener("mousedown", (ev) => {
-					this.close();
+				window.addEventListener("mousedown", () => {
+					this.close(false);
 				}, {once: true});
 			}
 
@@ -447,7 +457,7 @@ export class Menu<EventMap extends MenuEventMap = MenuEventMap> extends Abstract
 			this.el.classList.add("goui-fade-out");
 		} else {
 			if(this.openedMenu) {
-				this.openedMenu.hide();
+				this.openedMenu.close(false);
 			}
 			super.internalSetHidden(hidden);
 		}
@@ -483,7 +493,17 @@ export class Menu<EventMap extends MenuEventMap = MenuEventMap> extends Abstract
 	 *
 	 * It will hide or remove it depending on the "removeOnClose" property.
 	 */
-	public close() {
+	public close(withParents = true) {
+
+		if(withParents) {
+			let topMenu: Menu = this;
+
+			while (topMenu.parentMenu instanceof Menu) {
+				topMenu = topMenu.parentMenu;
+			}
+			return topMenu.removeOnClose ? topMenu.remove() : topMenu.hide();
+		}
+
 		return this.removeOnClose ? this.remove() : this.hide();
 	}
 

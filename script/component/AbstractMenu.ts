@@ -139,7 +139,6 @@ export abstract class AbstractMenu<EventMap extends ComponentEventMap = Componen
 
 	public focusNext(inc = 1): boolean {
 
-		console.log(this.focusedItemIndex);
 		const nextIndex = this.focusedItemIndex + inc;
 
 		this.focusedItemIndex = Math.min(Math.max(nextIndex, 0), this.items.count() - 1);
