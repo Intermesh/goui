@@ -305,6 +305,11 @@ export class Component<EventMapType extends ComponentEventMap = ComponentEventMa
 			//@ts-ignore hack for ext comps. They have a supr() method
 			if(!e.item.supr) {
 				e.item.onAdded(e.index);
+				// see static patch method
+				if(!e.item.patched) {
+					e.item._patch();
+					e.item.patched = true;
+				}
 			}
 
 			if (this.rendered) {
@@ -1396,7 +1401,7 @@ export class Component<EventMapType extends ComponentEventMap = ComponentEventMa
 		const maxWidth = constraints.right - constraints.left,
 			maxHeight = constraints.bottom - constraints.top;
 
-		if(this.el.offsetWidth > maxWidth) {
+		if (this.el.offsetWidth > maxWidth) {
 			this.width = Component.pxToRem(maxWidth);
 			this.el.style.left = constraints.left + "px";
 		} else {
@@ -1412,8 +1417,8 @@ export class Component<EventMapType extends ComponentEventMap = ComponentEventMa
 			}
 		}
 
-		if(this.el.offsetHeight > maxHeight) {
-			this.height =  Component.pxToRem(maxHeight);
+		if (this.el.offsetHeight > maxHeight) {
+			this.height = Component.pxToRem(maxHeight);
 			this.el.style.top = constraints.top + "px";
 		} else {
 			const maxTop = constraints.bottom - this.el.offsetHeight,
@@ -1428,8 +1433,47 @@ export class Component<EventMapType extends ComponentEventMap = ComponentEventMa
 			}
 		}
 
+	}
 
 
+	private patched = false;
+
+	private _patch() {
+
+	}
+
+	/**
+	 * Patches the component prototype with a method that will run when it's added to the component hierarchy
+	 *
+	 * @example Patching a dialog
+	 *
+	 * ```
+	 * BusinessDialog.patch( function() {
+	 *
+	 * 	this.addPanel(t("Debtor management", "business", "finance"), new DebtorManagementPanel());
+	 * 	this.mainFs.items.add(new GO.email.SelectAccount({
+	 * 		hiddenName: 'finance.salesInvoiceEmailAccountId',
+	 * 		hint: t("Used for finance. Sending invoices, statements etc.", "business", "finance"),
+	 * 		anchor: "100%"
+	 * 	}));
+	 *
+	 * 	this.form.on("load", ({data}) => {
+	 * 		this.findChildByType(DebtorManagementPanel)!.setBusiness(data.id)
+	 * 	})
+	 * });
+	 * ```
+	 *
+	 * @param fn
+	 */
+	static patch<T extends Component<any, any>>(
+		this: (new (...args: any[]) => T) & typeof Component<any, any>,
+		fn: (this: T) => void
+	) {
+		const original = this.prototype._patch;
+		this.prototype._patch = function (this: T) {
+			original.call(this);
+			fn.call(this);
+		};
 	}
 }
 
