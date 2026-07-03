@@ -67,6 +67,10 @@ class NotifierClass extends Observable<{notify:{msg:INotification}}> {
 	notice(text: any, _?:any) {
 		this.toast({text, category: "status",variant:'info'});
 	}
+	/** @deprecated */
+	warning(text: any, _?:any) {
+		this.toast({text, category: "status",variant:'warning'});
+	}
 
 	/**
 	 * When no notify listener is attached or returning false toast is the default
