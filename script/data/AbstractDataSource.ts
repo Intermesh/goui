@@ -299,7 +299,6 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	 * Extra /set parameters that will reset after commit
 	 */
 	public setParams: {[key:string]: any} = {};
-	private getting: boolean = false;
 	/**
 	 * Get the local server state ID of the store
 	 * @protected
@@ -352,17 +351,8 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 			void this.commit();
 		});
 
-		this.delayedGet = FunctionUtil.buffer(0, async () => {
-
-			if(this.getting) {
-				return;
-			}
-			try {
-				this.getting = true;
-				await this.doGet();
-			} finally {
-				this.getting = false;
-			}
+		this.delayedGet = FunctionUtil.buffer(0, () => {
+			void this.doGet();
 		})
 	}
 
@@ -477,9 +467,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 				error: "Not found"
 			});
 		}
-
 		const p = new Promise((resolve, reject) => {
-
 			if (!this.getIds[id]) {
 				this.getIds[id] = {
 					resolves: [resolve],
@@ -500,7 +488,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 		const id = data.id;
 		let r;
 		if(!this.getIds[id]) {
-			console.error("No get promise for " + this.id + "::" + id);
+			console.warn("No get promise for " + this.id + "::" + id);
 			return;
 		}
 		while (r = this.getIds[id].resolves.shift()) {
