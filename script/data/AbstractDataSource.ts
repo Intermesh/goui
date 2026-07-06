@@ -299,6 +299,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	 * Extra /set parameters that will reset after commit
 	 */
 	public setParams: {[key:string]: any} = {};
+	private getting: boolean = false;
 	/**
 	 * Get the local server state ID of the store
 	 * @protected
@@ -351,8 +352,17 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 			void this.commit();
 		});
 
-		this.delayedGet = FunctionUtil.buffer(0, () => {
-			void this.doGet();
+		this.delayedGet = FunctionUtil.buffer(0, async () => {
+
+			if(this.getting) {
+				return;
+			}
+			try {
+				this.getting = true;
+				await this.doGet();
+			} finally {
+				this.getting = false;
+			}
 		})
 	}
 
@@ -467,7 +477,9 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 				error: "Not found"
 			});
 		}
+
 		const p = new Promise((resolve, reject) => {
+
 			if (!this.getIds[id]) {
 				this.getIds[id] = {
 					resolves: [resolve],
@@ -488,7 +500,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 		const id = data.id;
 		let r;
 		if(!this.getIds[id]) {
-			console.error("No get promise for " + id);
+			console.error("No get promise for " + this.id + "::" + id);
 			return;
 		}
 		while (r = this.getIds[id].resolves.shift()) {
@@ -496,9 +508,9 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 			const d = structuredClone(data);
 			//@ts-ignore
 			delete d.__isComplete;
-
 			r.call(this, d);
 		}
+
 		delete this.getIds[id];
 	}
 
@@ -601,6 +613,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 								error: "Not found"
 							});
 						}
+
 						delete this.getIds[id];
 					});
 				}).catch((e) => {
@@ -615,6 +628,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 						while (r = this.getIds[id].rejects.shift()) {
 							r.call(this, e);
 						}
+
 						delete this.getIds[id];
 					}
 				})
