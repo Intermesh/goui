@@ -194,7 +194,10 @@ export class Menu<EventMap extends MenuEventMap = MenuEventMap> extends Abstract
 					return;
 				}
 
-				this.close();
+				// settimeout allows click handlers to run before closing.
+				setTimeout(() => {
+					this.close();
+				})
 			});
 		}
 
