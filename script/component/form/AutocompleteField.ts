@@ -58,7 +58,7 @@ export class AutocompleteField<T extends List = List, EventMap extends Autocompl
 	/**
 	 * Adds a clear button
 	 */
-	public readonly clearable!: boolean
+	public clearable: boolean =  false;
 
 	/**
 	 * Allow free text input
