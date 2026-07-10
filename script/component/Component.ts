@@ -20,7 +20,7 @@ export type Length = number | "auto" | "fit-content" | "min-content" | "max-cont
 /**
  * Gets the class type of an instance and allows abstract constructors. Opposite of the InstanceOf<>
  */
-type ClassTypeOf<T> = abstract new (...args: any[]) => T;
+export type ClassTypeOf<T> = abstract new (...args: any[]) => T;
 
 export interface Constraints {
 	/**
