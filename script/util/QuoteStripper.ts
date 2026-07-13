@@ -118,7 +118,7 @@ export class QuoteStripper {
 			if (plain.match(greaterThan)) {
 
 				// check for Author wrote at : line. We want to take that off too.
-				const prevLine = lines[i - 1];
+				const prevLine = lines[i - 1] || "";
 				const plain = prevLine.replace(/(<([^>]+)>)/ig, "").trim();
 
 				if(plain.match(/.+:$/)) {
