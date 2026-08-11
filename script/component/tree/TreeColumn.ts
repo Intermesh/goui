@@ -4,10 +4,11 @@ import {checkbox} from "../form";
 import {TreeRecord} from "./TreeRecord";
 import {Tree} from "./Tree";
 import {Config} from "../Observable";
+import {MaterialIcon} from "../MaterialIcon.js";
 
 export class TreeColumn extends TableColumn {
 
-	public defaultIcon?: string
+	public defaultIcon?: MaterialIcon
 	renderer = (columnValue: any, record: TreeRecord, td: HTMLTableCellElement, tree: Table, storeIndex: number, column: TableColumn) => {
 		const node = comp({cls: "node"});
 
