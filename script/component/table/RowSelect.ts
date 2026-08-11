@@ -269,8 +269,6 @@ export class RowSelect<StoreType extends Store = Store, RecordType extends Store
 			const start = Math.min(index, this.lastIndex);
 			const end = Math.max(index, this.lastIndex);
 
-			console.log(list.store.data, start, end);
-
 			for (let i = start; i <= end; i++) {
 				const record = store.get(i);
 				if(record) {
@@ -278,11 +276,6 @@ export class RowSelect<StoreType extends Store = Store, RecordType extends Store
 				}
 			}
 
-		} else if ((e.ctrlKey || e.metaKey ) && this.multiSelect)  {
-			const record = store.get(index);
-			if(record) {
-				this.toggle(record as RecordType)
-			}
 		} else {
 
 			if(e.ctrlKey || e.metaKey) {
@@ -317,9 +310,10 @@ export class RowSelect<StoreType extends Store = Store, RecordType extends Store
 
 		if(!this.clickToAdd) {
 			this.clear();
+			this.add(list.store.get(index) as RecordType)
+		} else {
+			this.toggle(list.store.get(index) as RecordType);
 		}
-
-		this.add(list.store.get(index) as RecordType)
 
 		this.lastIndex = index;
 	}
@@ -397,9 +391,13 @@ export class RowSelect<StoreType extends Store = Store, RecordType extends Store
 		}
 	}
 
-	public toggle(record:RecordType) {
+	public toggle(record:RecordType, check?: boolean) {
 
-		if(this.isSelected(record)) {
+		if(check === undefined) {
+			check = !this.isSelected(record);
+		}
+
+		if(!check) {
 			if(this.multiSelect) {
 				this.remove(record);
 			} else {
