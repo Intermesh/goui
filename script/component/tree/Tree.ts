@@ -77,10 +77,6 @@ export class Tree<EventMap extends TreeEventMap = TreeEventMap> extends Table<Tr
 		this.baseCls = this.baseCls + " tree";
 
 		this.cls = "no-row-lines";
-
-		this.on("render", async () => {
-			void this.store.load();
-		})
 	}
 
 	protected renderRow(record: any, storeIndex: number): HTMLElement {
