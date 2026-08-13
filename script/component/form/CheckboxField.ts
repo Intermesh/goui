@@ -100,7 +100,9 @@ export class CheckboxField extends InputField {
 	}
 
 	set color(v: string) {
-		this.input.setAttribute('style', '--tickColor: '+foreground(v));
+		if(v) {
+			this.input.setAttribute('style', '--tickColor: ' + foreground(v));
+		}
 		this.input.style.backgroundColor = v || '';
 	}
 
