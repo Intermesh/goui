@@ -475,6 +475,7 @@ export class Menu<EventMap extends MenuEventMap = MenuEventMap> extends Abstract
 	 */
 	showAt(coords: { x: number, y: number } | MouseEvent) {
 
+		const oldAlignTo = this.alignTo;
 		this.alignTo = undefined
 
 		if(coords instanceof MouseEvent) {
@@ -489,6 +490,8 @@ export class Menu<EventMap extends MenuEventMap = MenuEventMap> extends Abstract
 		this.show();
 
 		this.constrainTo(window);
+
+		this.alignTo = oldAlignTo;
 	}
 
 	/**
