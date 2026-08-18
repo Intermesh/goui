@@ -221,7 +221,7 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 
 	/**
 	 * Make the table fits its container in width by setting min-width: 100%
-	 * Defaults to true
+	 * Defaults to false
 	 */
 	public fitParent = false;
 
