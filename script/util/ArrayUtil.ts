@@ -44,7 +44,7 @@ export class ArrayUtil {
 	 * @param array
 	 * @param comparators
 	 */
-	public static multiSort(array: any[], comparators: Comparator[]) {
+	public static multiSort<T extends any>(array: T[], comparators: Comparator[]) {
 
 		if (!comparators.length) {
 			return array;
@@ -68,7 +68,7 @@ export class ArrayUtil {
 			return a > b ? direction : -1 * direction;
 		};
 
-		return array.sort((a, b) => {
+		return array.sort((a:any, b:any) => {
 			let sorted = 0;
 			let index = 0;
 
