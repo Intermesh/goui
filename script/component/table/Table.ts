@@ -221,7 +221,7 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 
 	/**
 	 * Make the table fits its container in width by setting min-width: 100%
-	 * Defaults to true
+	 * Defaults to false
 	 */
 	public fitParent = false;
 
@@ -721,7 +721,7 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 	 * @private
 	 */
 	private fixColumnWidths() {
-
+		this.colsAreFixed = true;
 		for (let id of this.getColumnSort()) {
 			const col = this._columns[id];
 			if (!col.hidden) {

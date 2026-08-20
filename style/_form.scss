@@ -1101,7 +1101,7 @@
 					@extend %icon;
 					color: config.$colorTextSecondary;
 					font-size: 2rem;
-					z-index: 2;
+					z-index: 1;
 					//margin-right: config.$borderWidth * -1;
 					background-color: config.$colorBackgroundInput;
 
