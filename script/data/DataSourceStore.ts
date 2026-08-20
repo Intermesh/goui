@@ -74,6 +74,9 @@ export class DataSourceStore<
 	 */
 	public buildRecord: RecordBuilder<dataSourceEntityType<DataSource>, RecordType> = async (entity) => <RecordType><unknown>entity;
 
+	/**
+	 * Pass a method to alter or client side sort records just before they load into the store.
+	 */
 	public onBeforeLoad?: <T extends RecordType>(records:T[]) => Promise<T[]>;
 
 	constructor(public dataSource:DataSource) {
@@ -169,7 +172,12 @@ export class DataSourceStore<
 		let records = await Promise.all(entities.map(this.buildRecord));
 
 		if(this.onBeforeLoad) {
-			records = await this.onBeforeLoad(records);
+			const r = this.onBeforeLoad(records);
+			if(r instanceof Promise) {
+				records = await this.onBeforeLoad(records);
+			} else {
+				records = r;
+			}
 		}
 
 		return records;
@@ -407,9 +415,30 @@ export type DataSourceStoreConfig<DataSource extends AbstractDataSource, RecordT
 		/**
 		 * Can be provided so you can alter the records from the API
 		 *
+		 * For example:
+		 *
+		 *
+		 * ```
+		 * onBeforeLoad: records => {
+		 *
+		 * 		records = ArrayUtil.multiSort(records, [{
+		 * 			property: "title"
+		 * 		}])
+		 *
+		 * 		records = records.sort((a, b) => {
+		 * 			const groupKey = this.groupId ?? "null";
+		 * 			const checkedA = (a.permissions && a.permissions[groupKey]) ? 1 : 0, checkedB = (b.permissions && b.permissions[groupKey]) ? 1 : 0;
+		 *
+		 * 			return checkedB - checkedA;
+		 * 		})
+		 * 		return records;
+		 * 	}
+		 *
+		 * ```
+		 *
 		 * @param records
 		 */
-		onBeforeLoad?: <T extends RecordType>(records:T[]) => Promise<T[]>
+		onBeforeLoad?: <T extends RecordType>(records:T[]) => Promise<T[]> | T[]
 
 		/**
 		 * Fetch relations of the entity
