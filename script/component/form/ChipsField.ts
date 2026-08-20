@@ -260,21 +260,25 @@ export class ChipsField<EventMap extends FieldEventMap = FieldEventMap> extends 
 	}
 
 	protected internalSetValue(v: any[]) {
+		if(this.rendered) {
+			this.renderValue(v);
+		}
+	}
 
-			//remove all chips except the editor (last item).
-			while(this.items.count() > 1) {
-				this.items.removeAt(0);
-			}
+	private renderValue(v:any[]) {
+		//remove all chips except the editor (last item).
+		while(this.items.count() > 1) {
+			this.items.removeAt(0);
+		}
 
-			if(v) {
-				v.forEach((v: any) => {
-					const chip = this.createChip();
-					this.chipRenderer(chip, v);
-					chip.dataSet.value = v;
-					this.items.insert(-1, chip);
-				});
-			}
-
+		if(v) {
+			v.forEach((v: any) => {
+				const chip = this.createChip();
+				this.chipRenderer(chip, v);
+				chip.dataSet.value = v;
+				this.items.insert(-1, chip);
+			});
+		}
 	}
 
 	protected internalGetValue(): FieldValue {
@@ -289,27 +293,13 @@ export class ChipsField<EventMap extends FieldEventMap = FieldEventMap> extends 
 		return v;
 	}
 
-	// protected internalRender(): HTMLElement {
-	// 	const el = super.internalRender();
-	// 	this.renderValue();
-	// 	return el;
-	// }
-	//
-	// private renderValue() {
-	// 	const v = this.internalGetValue() as Array<any>;
-	//
-	// 	if(!v) {
-	// 		return;
-	// 	}
-	//
-	// 	v.forEach((v:any) => {
-	// 		const chip =  this.createChip();
-	//
-	// 		this.chipRenderer(chip, v).then(() => {
-	// 			this.items.insert(-1, chip);
-	// 		});
-	// 	});
-	// }
+	protected internalRender(): HTMLElement {
+		if(this._value) {
+			this.renderValue(this._value as Array<any>);
+		}
+		return super.internalRender();
+	}
+
 
 	focus(o?: FocusOptions) {
 		this.editor.focus(o);
