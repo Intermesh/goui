@@ -240,8 +240,9 @@ html {
 
 	&.autofit {
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+		grid-template-columns: repeat(auto-fit, minmax(30rem, 1fr));
 		gap: 1rem;
+		max-width: 91rem; // makes it max 2 columns
 	}
 }
 
