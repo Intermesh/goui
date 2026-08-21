@@ -132,9 +132,8 @@
 
 *[disabled], .disabled {
 	cursor: not-allowed;
-	opacity: .4;
-	-moz-opacity: .4;
-	filter: alpha(opacity=40);
+	opacity: .6;
+	filter: alpha(opacity=60);
 	pointer-events: none;
 }
 
