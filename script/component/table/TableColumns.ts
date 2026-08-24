@@ -8,7 +8,7 @@ import {Config, Observable, ObservableEventMap} from "../Observable.js";
 import {table, Table} from "./Table.js";
 import {Component, createComponent} from "../Component.js";
 import {DateTime, Format} from "../../util/index.js";
-import {checkbox, CheckboxField} from "../form/index.js";
+import {checkbox, CheckboxField, CheckboxFieldConfig} from "../form/index.js";
 import {btn} from "../Button.js";
 import {Menu, menu} from "../menu/index.js";
 import {t} from "../../Translate.js";
@@ -318,12 +318,15 @@ export class CheckboxColumn extends TableColumn<CheckboxColumnEventMap> {
 		this.htmlEncode = false;
 	}
 
+	public checkboxConfig?: CheckboxFieldConfig;
+
 	init(table:Table){
 		table.enableCheckboxColumnListeners();
 	}
 
 	renderer : TableColumnRenderer = (val, record, td, table, rowIndex, column) => {
 		return checkbox({
+			...this.checkboxConfig,
 			value: val,
 			listeners: {
 				change: ({target, newValue}) => {
