@@ -165,6 +165,10 @@ export class ContainerField<EventMap extends FieldEventMap = FieldEventMap, Valu
 	protected internalSetValue(v: Partial<ValueType>) {
 		this.findFields().forEach((field:any) => {
 			const name = field.getName ? field.getName() : field.name;
+
+			if(!name) {
+				return;
+			}
 			// We cast to any[] for Ext compatibility. We try setValue() for Ext if it exists
 			if(v && name in v) {
 				if(field.setValue) {
