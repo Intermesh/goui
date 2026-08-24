@@ -464,7 +464,8 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 			console.error("Invalid id: " + id);
 			return Promise.reject({
 				id: id,
-				error: "Not found"
+				error: "Not found",
+				entity: this.id
 			});
 		}
 		const p = new Promise((resolve, reject) => {
@@ -598,7 +599,8 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 						while (r = this.getIds[id].rejects.shift()) {
 							r.call(this,  {
 								id: id,
-								error: "Not found"
+								error: "Not found",
+								entity: this.id
 							});
 						}
 
