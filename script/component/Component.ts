@@ -719,7 +719,7 @@ export class Component<EventMapType extends ComponentEventMap = ComponentEventMa
 	}
 
 	get hidden() {
-		return this.el.hidden;
+		return !!this.el.hidden;
 	}
 
 	/**
