@@ -6,22 +6,8 @@ import {Notifier} from "../../Notifier.js";
 import {FieldConfig, FieldEventMap} from "./Field.js";
 import {createComponent} from "../Component.js";
 import {InputFieldEventMap} from "./InputField.js";
+import {secrets} from "../../util/Secrets.js";
 
-function generatePassword(length = 16) {
-	const charset =
-		"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-_=+[]{};:,.<>?";
-	const charsetLength = charset.length;
-
-	const randomValues = new Uint32Array(length);
-	window.crypto.getRandomValues(randomValues);
-
-	let password = "";
-	for (let i = 0; i < length; i++) {
-		password += charset[randomValues[i] % charsetLength];
-	}
-
-	return password;
-}
 
 type PasswordAutoComplete = "new-password" | "current-password" | "off";
 
@@ -79,7 +65,7 @@ export class PasswordField<EventMap extends PasswordFieldEventMap = PasswordFiel
 					icon: "magic_button",
 					title: t("Generate password"),
 					handler: (btn) => {
-						const password = generatePassword(),
+						const password = secrets.password(),
 							passwordFld = btn.findAncestorByType(TextField)!
 
 						passwordFld.value = password;

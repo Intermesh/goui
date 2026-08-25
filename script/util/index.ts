@@ -14,3 +14,4 @@ export * from './QuoteStripper.js';
 export * from './BrowserStorage.js';
 export * from './String.js';
 export * from './RegExp.js';
+export * from './Secrets.js';
