@@ -156,7 +156,7 @@ export abstract class InputField<EventMap extends InputFieldEventMap = InputFiel
 	set autocomplete(autocomplete: AutoFill) {
 		this.input!.autocomplete = autocomplete;
 
-		if(autocomplete == "off") {
+		if(autocomplete == "off" || autocomplete == 'new-password') {
 			// Password manager don't listen to "off" so we must set their own variants :(
 			this.input!.dataset['1pIgnore'] = "true"; //1Password
 			this.input!.dataset['bwignore'] = "true"; //Bitwarden
