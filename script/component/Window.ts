@@ -297,12 +297,14 @@ export class Window<EventMap extends WindowEventMap = WindowEventMap> extends Dr
 
 		el.setAttribute('tabindex', "-1");
 
-		//remove window on escape
-		this.el!.addEventListener('keydown', (e: KeyboardEvent) => {
-			if (e.key == "Escape") {
-				this.internalClose(true);
-			}
-		});
+		if(this.closable) {
+			//remove window on escape
+			this.el!.addEventListener('keydown', (e: KeyboardEvent) => {
+				if (e.key == "Escape") {
+					this.internalClose(true);
+				}
+			});
+		}
 
 		if (this.resizable) {
 			this.initResizable();
