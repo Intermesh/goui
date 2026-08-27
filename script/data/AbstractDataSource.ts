@@ -38,7 +38,7 @@ export interface GetResponse<EntityType extends BaseEntity> {
 export interface SetRequest<EntityType> {
 	[key:string]: any
 	create: Record<EntityID, Partial<EntityType>>
-	update: Record<EntityID, Partial<EntityType>>
+	update: Record<EntityID, Partial<EntityType> | Record<string, any>>
 	destroy: EntityID[],
 	ifInstate?: string
 }
@@ -243,7 +243,7 @@ export interface DataSourceEventMap extends ObservableEventMap{
 export type dataSourceEntityType<DS> = DS extends AbstractDataSource<infer EntityType> ? EntityType : never;
 
 type SaveData<EntityType extends BaseEntity> = {
-	data: Partial<EntityType>,
+	data: Partial<EntityType> | Record<string, any>,
 	resolve: (value: any) => void, //changing this to EntityType somehow breaks!?
 	reject: (reason?: any) => void,
 	promise?: Promise<EntityType>
@@ -684,7 +684,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	 * @param id
 	 * @param data
 	 */
-	public update(id:EntityID, data: Partial<EntityType>): Promise<EntityType> {
+	public update(id:EntityID, data: Partial<EntityType>|Record<string, any>): Promise<EntityType> {
 
 		if(this.updates[id]) {
 			// update is called twice with the same ID before the commit() was done to the server. We'll merge the data into
@@ -881,7 +881,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 		this.setParams = {}; // unset after /set is sent
 
 		for (let id in this.creates) {
-			params.create[id] = this.creates[id].data;
+			params.create[id] = this.creates[id].data as Partial<EntityType>;
 		}
 
 		for (let id in this.updates) {
