@@ -393,10 +393,11 @@ export class CheckboxSelectColumn extends TableColumn {
 
 	renderer: TableColumnRenderer = (val: boolean, record, td, table) => {
 
+		// MS: Not sure if this has purpose. It was falsely selecting records if an id was given to the checkbox select column
 		// add to selection model if value is true
-		if(val && table.rowSelection) {
-			table.rowSelection.add(record);
-		}
+		// if(val && table.rowSelection) {
+		// 	table.rowSelection.add(record);
+		// }
 
 		return checkbox({
 			cls: "rowselect-checkbox",
