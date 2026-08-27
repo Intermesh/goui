@@ -324,6 +324,9 @@ export class ChipsField<EventMap extends FieldEventMap = FieldEventMap> extends 
 			})
 		}
 
+		// make sure the editor is rendered before renderValue is called
+		const c = this.control;
+
 		if(this._value) {
 			this.renderValue(this._value as Array<any>);
 		}
