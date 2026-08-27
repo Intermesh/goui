@@ -2,6 +2,7 @@ import {Field, FieldConfig, FieldEventMap, FieldValue} from "./Field.js";
 import {comp, Component, ComponentEventMap, createComponent, span} from "../Component.js";
 import {btn} from "../Button.js";
 import {t} from "../../Translate.js";
+import {sortable} from "../Sortable.js";
 
 
 export interface ChipsField {
@@ -65,6 +66,11 @@ export class ChipsField<EventMap extends FieldEventMap = FieldEventMap> extends 
 	protected baseCls = 'goui-form-field chips';
 	private _editor?: Component;
 	private _chipsContainer?: HTMLDivElement;
+
+	/**
+	 * Allow sorting of chips with drag and drop
+	 */
+	public sortable = false;
 
 	/**
 	 * Function that transforms the user text input to a chip.
@@ -210,6 +216,10 @@ export class ChipsField<EventMap extends FieldEventMap = FieldEventMap> extends 
 	private createChip() {
 
 		const chip = new Chip();
+
+		if(this.sortable) {
+			chip.draggable = true;
+		}
 		chip.on("deleteclick", comp1 => {
 			this.captureValueForChange();
 			const index = this.items.indexOf(chip);
@@ -299,6 +309,21 @@ export class ChipsField<EventMap extends FieldEventMap = FieldEventMap> extends 
 	}
 
 	protected internalRender(): HTMLElement {
+
+		if(this.sortable) {
+			sortable({
+				component: this,
+				sortableChildSelector: ".chip",
+				horizontal: true,
+				listeners: {
+					sort: ({fromIndex, toIndex}) =>
+					{
+						this.items.move(fromIndex, toIndex);
+					}
+				}
+			})
+		}
+
 		if(this._value) {
 			this.renderValue(this._value as Array<any>);
 		}
