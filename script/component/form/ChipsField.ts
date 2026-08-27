@@ -282,6 +282,11 @@ export class ChipsField<EventMap extends FieldEventMap = FieldEventMap> extends 
 	}
 
 	protected internalGetValue(): FieldValue {
+
+		if(!this.rendered) {
+			return this._value;
+		}
+
 		const v: any[] = [];
 
 		this.items.forEach((item) => {
