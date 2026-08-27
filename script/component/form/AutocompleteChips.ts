@@ -275,7 +275,7 @@ export class AutocompleteChips<T extends List = List, EventMap extends Autocompl
 
 }
 
-type AutoCompleteChipsConfig<ListType extends List = List> = FieldConfig<AutocompleteChips<ListType>, "list"> &
+export type AutoCompleteChipsConfig<ListType extends List = List> = FieldConfig<AutocompleteChips<ListType>, "list"> &
 	// Add the function properties as they are filtered out
 	Partial<Pick<AutocompleteChips<ListType>, "textInputToValue" | "chipRenderer" | "pickerRecordToValue" | "valueToKey">>
 /**

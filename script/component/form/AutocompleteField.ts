@@ -315,7 +315,7 @@ export class AutocompleteField<T extends List = List, EventMap extends Autocompl
 
 }
 
-type AutoCompleteConfig<T extends List, Required extends keyof AutocompleteField<T>> = Omit<FieldConfig<AutocompleteField<T>, Required>, "menu" | "picker"> &
+export type AutoCompleteConfig<T extends List> = Omit<FieldConfig<AutocompleteField<T>, "list">, "menu" | "picker"> &
 // Add the function properties as they are filtered out
 	Partial<Pick<AutocompleteField<T>, "pickerRecordToValue" | "valueToTextField">>;
 
@@ -328,5 +328,5 @@ type AutoCompleteConfig<T extends List, Required extends keyof AutocompleteField
  *
  * @param config
  */
-export const autocomplete = <T extends List> (config: AutoCompleteConfig<T, "list">) => createComponent(new AutocompleteField(config.list), config);
+export const autocomplete = <T extends List> (config: AutoCompleteConfig<T>) => createComponent(new AutocompleteField(config.list), config);
 
