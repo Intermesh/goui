@@ -1,7 +1,7 @@
 import {ChipsField} from "./ChipsField.js";
 import {List, listStoreType} from "../List.js";
 import {Menu, menu} from "../menu/index.js";
-import {Button, btn} from "../Button.js";
+import {btn, Button} from "../Button.js";
 import {FieldConfig, FieldEventMap} from "./Field.js";
 import {createComponent} from "../Component.js";
 import {FunctionUtil} from "../../util/index.js";
@@ -81,7 +81,8 @@ export class AutocompleteChips<T extends List = List, EventMap extends Autocompl
 				this.syncSelection()
 			}, {buffer: 0});
 			this.list.store.on("datachanged", () => {
-				this.syncSelection()
+				this.syncSelection();
+				this.menu?.align();
 			}, {buffer: 0});
 
 			this.menu!.on("hide", () => {
@@ -206,7 +207,8 @@ export class AutocompleteChips<T extends List = List, EventMap extends Autocompl
 		if(!this.list.rowSelection!.getSelected().length) {
 			super.onEnter(ev);
 		} else {
-			this.addSelected();
+			//this.addSelected();
+			// do nothing on hide will add selection
 		}
 
 		if(!this.menu!.hidden) {
@@ -255,16 +257,17 @@ export class AutocompleteChips<T extends List = List, EventMap extends Autocompl
 			return this.pickerRecordToValue(this, row.record as storeRecordType<listStoreType<T>>);
 		});
 
-		this.list.rowSelection!.clear();
-		this.editor.el.innerText = "";
-		this.focus();
-
 		// set value after focus as this will start tracking for the change event
 		if(this.list.rowSelection!.multiSelect) {
 			this.value = this.patchValue(newValues);
 		} else {
 			this.value = (this.value || []).concat(newValues);
 		}
+
+		this.list.rowSelection!.clear();
+		this.editor.el.innerText = "";
+		this.list.store.clear();
+		this.focus();
 	}
 
 	private onInput(_ev: Event) {
