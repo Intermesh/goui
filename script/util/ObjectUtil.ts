@@ -12,7 +12,7 @@ type KeyValue = Record<string, any>
  */
 export class ObjectUtil {
 	public static isObject = (obj: any) => {
-		return Object.prototype.toString.call(obj) === '[object Object]';
+		return typeof obj === 'object' && obj !== null && !Array.isArray(obj);
 	}
 
 	/**
@@ -147,36 +147,61 @@ export class ObjectUtil {
 	 *
 	 * @link https://jmap.io/spec-core.html#set
 	 */
-	public static diff(a: any, b: any) {
-		const diff = {};
-		this.internalDiff(a, b, diff);
+	public static diff<T extends Record<string, unknown>>(a: T, b: T) : Partial<T> {
+
+		const diff:Partial<T> = {};
+
+		Object.keys(b).forEach(key => {
+
+			const aVal = a[key as keyof T];
+			const bVal = b[key as keyof T];
+
+			if (this.isEqual(aVal, bVal)) {
+				return;
+			}
+
+			if (this.isObject(aVal) && this.isObject(bVal)) {
+				const nestedDiff = this.diff(
+					aVal as Record<string, unknown>,
+					bVal as Record<string, unknown>
+				);
+				if (Object.keys(nestedDiff).length > 0) {
+					diff[key as keyof T] = nestedDiff  as T[keyof T];
+				}
+			} else {
+				// Arrays, primitives, added/removed keys — take the new value wholesale.
+				diff[key as keyof T] = bVal;
+			}
+
+		});
+
 		return diff;
 	}
 
-	private static empty(v:any) {
-		return v === null || v === undefined || v === "";
+	// private static empty(v:any) {
+	// 	return v === null || v === undefined || v === "";
+	// }
+
+	private static isEqual(a: any, b: any): boolean {
+		if (a === b) return true;
+		if (typeof a !== typeof b) return false;
+
+		if (Array.isArray(a) && Array.isArray(b)) {
+			if (a.length !== b.length) return false;
+			return a.every((val, i) => this.isEqual(val, b[i]));
+		}
+
+		if (this.isObject(a) && this.isObject(b)) {
+			const keysA = Object.keys(a);
+			const keysB = Object.keys(b);
+			if (keysA.length !== keysB.length) return false;
+			return keysA.every((key) => this.isEqual(a[key], b[key]));
+		}
+
+		return false;
 	}
 
-	private static internalDiff(a: any, b: any, diff:any, prefix:string = "/") {
-		Object.keys(b).forEach(key => {
-			if(a[key] != null && b[key] != null && typeof a[key] === 'object' && typeof b[key] === 'object' && Array.isArray(b[key]) === false && Array.isArray(a[key]) === false) {
-				this.internalDiff(a[key], b[key], diff, prefix + key + "/");
-			} else {
-				if(a[key] !== b[key] && (a[key] !== null || b[key] !== null)) {
-					if(!this.empty(a[key]) || !this.empty(b[key])) {
-						// console.log("diff", prefix + key, a[key], b[key])
-						diff[prefix + key] = b[key];
-					}
-				}
-			}
-		})
 
-		// Object.keys(a).forEach(key => {
-		// 	if(!(key in b)) {
-		// 		diff[prefix + key] = null;
-		// 	}
-		// })
-	}
 
 	//
 	// private static deepClone(source: any, hash = new WeakMap()): any {
