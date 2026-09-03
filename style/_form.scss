@@ -43,8 +43,8 @@
 
 .goui.group {
 	display:flex;
-	align-items: start; // needed this for DateTimeField where the timefield must not strech when date error shows
-	//align-items: stretch;
+	//align-items: start; // needed this for DateTimeField where the timefield must not strech when date error shows
+	align-items: stretch;
 
 	.goui-form-field, .goui-display-field {
 		margin: 0;
@@ -684,6 +684,7 @@
 
 	&.datetime {
 		.time {
+			align-self: start;
 			input.text.hour {
 				padding-left:0;
 			}
