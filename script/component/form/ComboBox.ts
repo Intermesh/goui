@@ -16,7 +16,7 @@ export type ComboBoxStoreConfig<DS extends AbstractDataSource = AbstractDataSour
 export type ComboBoxDS<ComboBoxType> = ComboBoxType extends ComboBox<infer DS> ? DS : never;
 export type ComboRenderer = (field:ComboBox, record:any) => string;
 
-export const ComboBoxDefaultRenderer:ComboRenderer = (field,r)=> r ? r[field.displayProperty] : t("Not found");
+export const ComboBoxDefaultRenderer:ComboRenderer = (field,r)=> r ? r[field.displayProperty]?.htmlEncode() : t("Not found");
 
 /**
  * Combo box
@@ -75,7 +75,7 @@ export class ComboBox<DS extends AbstractDataSource = AbstractDataSource> extend
 					id: displayProperty,
 					resizable: true,
 					width: 312,
-					htmlEncode:true,
+					htmlEncode:false,
 					sortable: true,
 					renderer:(_columnValue, record) => {
 						return renderer(this, record);
@@ -124,13 +124,13 @@ export class ComboBox<DS extends AbstractDataSource = AbstractDataSource> extend
 		return record[this.valueProperty];
 	}
 
-	async valueToTextField(_field: this, value: string): Promise<string> {
+	async valueToTextField(field: this, value: string): Promise<string> {
 		if(value === "") {
 			return "";
 		}
 		const record = await this.dataSource.single(value);
 
-		return this.renderer(_field, record);
+		return record[field.displayProperty] ?? "-";
 	}
 }
 
