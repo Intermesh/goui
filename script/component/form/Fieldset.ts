@@ -14,6 +14,7 @@ import {Config} from "../Observable.js";
  * @see Form
  */
 export class Fieldset extends Component {
+	private legendEl?: HTMLHeadingElement;
 
 	constructor() {
 		super("fieldset");
@@ -24,20 +25,37 @@ export class Fieldset extends Component {
 	protected baseCls = "goui-fieldset";
 
 	/**
-	 * The legend to display
+	 * The fieldset legend
+	 * @param legend
 	 */
-	public legend?: string;
+	public set legend(legend:string|undefined) {
+		if(legend) {
+			if (!this.legendEl) {
+				this.legendEl = document.createElement("h3"); // no legend tag as it's behaving wierd
+				this.legendEl.classList.add("legend");
+			}
+			this.legendEl.innerHTML = legend ?? "";
+
+			if(this.rendered) {
+				this.el.insertBefore(this.legendEl, this.el.firstChild);
+			}
+		} else {
+			this.legendEl?.remove();
+			this.legendEl = undefined
+		}
+	}
+
+	public get legend() {
+		return this.legendEl?.innerHTML;
+	}
+
 
 
 	internalRender() {
 		const el = super.internalRender();
 
-		if (this.legend) {
-			const l = document.createElement("h3"); // no legend tag as it's behaving wierd
-			l.innerHTML = this.legend;
-			l.classList.add("legend");
-
-			el.insertBefore(l, el.firstChild);
+		if(this.legendEl) {
+			el.insertBefore(this.legendEl, el.firstChild);
 		}
 
 		return el;
