@@ -68,7 +68,6 @@ export class ComboBox<DS extends AbstractDataSource = AbstractDataSource> extend
 
 		const dropDownTable = table(Object.assign({
 			headers: false,
-			fitParent: true,
 			store: datasourcestore(storeConfig as DataSourceStoreConfig<any, any>),
 			columns:[
 				column({

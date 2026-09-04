@@ -13,7 +13,6 @@ export class ListPicker<ListType extends List = List> extends Component<ListPick
 		super();
 
 		this.list.rowSelectionConfig = {multiSelect: false};
-		// this.list.fitParent = true;
 
 		this.items.add(list);
 
