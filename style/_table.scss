@@ -56,6 +56,10 @@
   //applies to th, td and col
   .checkbox-select-column {
 		padding-right: 0;
+
+		hr {
+			display: none;
+		}
   }
 
 
