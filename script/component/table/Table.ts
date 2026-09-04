@@ -219,11 +219,6 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 		this.columns = columns;
 	}
 
-	/**
-	 * Make the table fits its container in width by setting min-width: 100%
-	 * Defaults to false
-	 */
-	public fitParent = false;
 
 	/**
 	 * Show headers
@@ -372,10 +367,6 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 
 	protected renderBody() {
 
-		if (this.fitParent) {
-			this.el.style.minWidth = "100%";
-		}
-
 		if (this.headers) {
 			this.renderHeaders();
 		} else {
@@ -505,9 +496,11 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 			}
 			const col = document.createElement("col");
 
-			if (h.width) {
-				col.style.width = h.width / 10 + "rem";
+			if (!h.width) {
+				h.width = this.autoColumnWidth();
 			}
+
+			col.style.width = h.width / 10 + "rem";
 
 			if (h.align) {
 				col.style.textAlign = h.align;
@@ -555,6 +548,28 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 		this.renderer(this.footerRecord, footRow, this, -1);
 	}
 
+	private autoColumnWidth() {
+
+		const containerWidth = this.el.parentElement?.offsetWidth;
+
+		if(!containerWidth) {
+			return 6;
+		}
+
+		let autoColumnCount = 0, reservedWith = 0;
+		this.columns.forEach(c => {
+			if(!c.hidden) {
+				if(!c.width) {
+					autoColumnCount++;
+				} else {
+					reservedWith += c.width;
+				}
+			}
+		})
+
+		return (Component.pxToRem(containerWidth) - reservedWith) / autoColumnCount;
+	}
+
 	private renderHeaders() {
 
 		const thead = document.createElement('thead');
@@ -580,9 +595,11 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 				header.innerHTML = h.header || "";
 			}
 
-			if (h.width) {
-				header.style.width = (h.width / 10) + "rem";
+			if (!h.width) {
+				h.width = this.autoColumnWidth();
 			}
+
+			header.style.width = (h.width / 10) + "rem";
 
 			if (h.align) {
 				header.style.textAlign = h.align;
