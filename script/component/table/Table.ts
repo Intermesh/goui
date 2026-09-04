@@ -384,7 +384,7 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 	 * Generates and returns a button component with a menu for toggling the visibility of columns.
 	 * The button contains an icon and a nested menu for column-related actions.
 	 *
-	 * @return {Object} A button component with an associated menu for column visibility options.
+	 * @return A button component with an associated menu for column visibility options.
 	 */
 	public getVisibleColumnButton() {
 
@@ -403,7 +403,7 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 	 * to show or hide the corresponding column by modifying its `hidden` property,
 	 * saving the state, and triggering a rerender.
 	 *
-	 * @return {Menu} The column menu with toggle options for visible columns.
+	 * @return The column menu with toggle options for visible columns.
 	 */
 	public getVisibleColumnMenu() {
 
