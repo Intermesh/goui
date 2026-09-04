@@ -316,6 +316,7 @@ export class CheckboxColumn extends TableColumn<CheckboxColumnEventMap> {
 
 		this.cls = "checkbox-select-column";
 		this.htmlEncode = false;
+		this.width = 40;
 	}
 
 	public checkboxConfig?: CheckboxFieldConfig;
@@ -368,6 +369,7 @@ export class CheckboxSelectColumn extends TableColumn {
 		this.sticky = true;
 		this.htmlEncode = false;
 		this.cls = "checkbox-select-column";
+		this.width = 40;
 	}
 
 	init(table: Table) {
