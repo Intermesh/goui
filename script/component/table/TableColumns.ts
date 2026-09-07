@@ -134,6 +134,16 @@ export class TableColumn<EventMap extends TableColumnEventMap = TableColumnEvent
 	public width?: number
 
 	/**
+	 * Internal to keep track of auto managed width
+	 */
+	public autoWidth = false;
+
+	/**
+	 * Internally used to remember if this was an autosized column
+ 	 */
+	public initialAutoWidth = false;
+
+	/**
 	 * Text alignment
 	 */
 	public align: align = "left"
@@ -166,16 +176,16 @@ export class TableColumn<EventMap extends TableColumnEventMap = TableColumnEvent
 	 *
 	 * Note:  The sticky column needs a background color. It is currently assumed to be on a background with "bg-lowest"
 	 */
-	sticky?: boolean
+	public sticky?: boolean
 
 
 	/**
 	 * HTML encode the value
 	 */
-	htmlEncode: boolean = true
+	public htmlEncode: boolean = true
 }
 
-export type TableColumnConfig<T extends TableColumn = TableColumn> = Config<T> & {
+export type TableColumnConfig<T extends TableColumn = TableColumn> = Omit<Config<T>, "headerAl" | "autoWidth"> & {
 	/**
 	 * The ID of the column which is also the default for the column 'property'
 	 */
