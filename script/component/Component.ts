@@ -663,13 +663,15 @@ export class Component<EventMapType extends ComponentEventMap = ComponentEventMa
 			this.maskTimeout = undefined;
 		}
 
-		// do not cascade but keep this component
-		//this.items.clear();
+		this.items.clear();
 
 		this.detach();
 	}
 
-	protected detach() {
+	/**
+	 * Remove it from the component hierarchy but keep the component intact for re-adding it to another.
+	 */
+	public detach() {
 		// remove this item from parent the Component
 		if (this.parent) {
 

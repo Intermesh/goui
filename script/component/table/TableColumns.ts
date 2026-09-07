@@ -162,7 +162,7 @@ export class TableColumn<EventMap extends TableColumnEventMap = TableColumnEvent
 	 * When rendered this is set to the DOM element.
 	 * It's used to update the header width
 	 */
-	public headerEl?: HTMLTableCellElement;
+	public headerEl?: HTMLTableCellElement|HTMLTableColElement;
 
 	/**
 	 * Add CSS classes

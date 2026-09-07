@@ -521,6 +521,11 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 			}
 			const col = document.createElement("col");
 
+			if(!h.width || h.initialAutoWidth) {
+				this.hasAutoSizeCol = true;
+				h.autoWidth = true;
+			}
+
 			if (!h.width) {
 				h.width = this.autoColumnWidth();
 			}
@@ -534,6 +539,8 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 			if (h.cls) {
 				col.classList.add(...h.cls.split(" "));
 			}
+
+			h.headerEl = col;
 
 			colGroup.appendChild(col);
 		}
@@ -591,6 +598,10 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 				}
 			}
 		})
+
+		if(!autoColumnCount) {
+			return 6;
+		}
 
 		return Math.max((Component.pxToRem(containerWidth) - reservedWith) / autoColumnCount, 6);
 	}
@@ -696,6 +707,8 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 
 	private observeContainer() {
 			const observer = new ResizeObserver(FunctionUtil.onRepaint(() => {
+
+				console.log("remove")
 
 			// When a user resizes an auto sizing column it will stick to that width until the user makes the container smaller
 			// or bigger than the table. Then we will start auto sizing it again.
