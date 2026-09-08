@@ -226,13 +226,15 @@ export class Menu<EventMap extends MenuEventMap = MenuEventMap> extends Abstract
 			return super.renderItem(item);
 		}
 
-		const insertBefore = this.getInsertBeforeForMenuItem(item);
+		const insertBefore = this.getInsertBeforeForMenuItem(item), li = this.wrapLI(item);
 
 		if (!insertBefore) {
-			this.itemContainerEl.appendChild(this.wrapLI(item));
+			this.itemContainerEl.appendChild(li);
 		} else {
-			this.itemContainerEl.insertBefore(this.wrapLI(item), insertBefore);
+			this.itemContainerEl.insertBefore(li, insertBefore);
 		}
+
+		item.render(li);
 	}
 
 	/**
@@ -264,7 +266,7 @@ export class Menu<EventMap extends MenuEventMap = MenuEventMap> extends Abstract
 
 		const li = document.createElement("li");
 
-		item.render(li);
+		//item.render(li);
 
 		// cleanup li when item is removed
 		item.on("remove", () => {
@@ -429,11 +431,11 @@ export class Menu<EventMap extends MenuEventMap = MenuEventMap> extends Abstract
 				root.items.add(this);
 			}
 
+			super.internalSetHidden(hidden);
+
 			if (!this.rendered) {
 				this.render();
 			}
-
-			super.internalSetHidden(hidden);
 
 			if(this.alignTo) {
 				this.align();

@@ -6,7 +6,7 @@
 
 import {comp, Component, ComponentState, createComponent} from "../Component.js";
 import {Store} from "../../data/Store.js";
-import {ArrayUtil, ObjectUtil} from "../../util/index";
+import {ArrayUtil, FunctionUtil, ObjectUtil} from "../../util/index";
 import {menu, Menu} from "../menu/Menu.js";
 import {checkbox, CheckboxField} from "../form/index";
 import {Notifier} from "../../Notifier.js";
@@ -86,6 +86,9 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 	private _columns!: Record<string,TableColumn>;
 
 	private columnsInitialized = false;
+	private autoColumnWidthDisabled: boolean = false;
+	private containerIsBigger: boolean = false;
+	private hasAutoSizeCol: boolean = false;
 
 	/**
 	 * The table columns
@@ -219,11 +222,6 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 		this.columns = columns;
 	}
 
-	/**
-	 * Make the table fits its container in width by setting min-width: 100%
-	 * Defaults to false
-	 */
-	public fitParent = false;
 
 	/**
 	 * Show headers
@@ -257,7 +255,17 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 
 		this.initColumns();
 
-		return super.internalRender();
+		const el =  super.internalRender();
+
+		if(this.autoColumnWidthDisabled) {
+			this.containerIsBigger = this.el.offsetWidth < this.el.parentElement!.offsetWidth;
+		}
+
+		if(this.hasAutoSizeCol) {
+			this.observeContainer();
+		}
+
+		return el;
 	}
 
 
@@ -273,6 +281,26 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 			})
 
 			this.columnsInitialized = true;
+		}
+	}
+
+	protected buildState(): ComponentState {
+		const cols: any = {};
+
+		for(const id in this._columns) {
+			cols[id] = {
+				initialAutoWidth: this._columns[id].initialAutoWidth,
+				autoWidth: this._columns[id].autoWidth,
+				width: this._columns[id].width,
+				hidden: this._columns[id].hidden
+			}
+		}
+
+		return {
+			autoColumnWidthDisabled: this.autoColumnWidthDisabled,
+			sort: this.store.sort,
+			columns: cols,
+			columnSort: this.columnSort
 		}
 	}
 
@@ -293,6 +321,9 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 		if(state.columnSort) {
 			this.columnSort = state.columnSort;
 		}
+
+		this.autoColumnWidthDisabled = state.autoColumnWidthDisabled ?? false;
+
 	}
 
 	/**
@@ -335,22 +366,7 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 		return true;
 	}
 
-	protected buildState(): ComponentState {
-		const cols: any = {};
 
-		for(const id in this._columns) {
-			cols[id] = {
-				width: this._columns[id].width,
-				hidden: this._columns[id].hidden
-			}
-		}
-
-		return {
-			sort: this.store.sort,
-			columns: cols,
-			columnSort: this.columnSort
-		}
-	}
 
 	protected columnSort: string[]|undefined;
 
@@ -372,10 +388,6 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 
 	protected renderBody() {
 
-		if (this.fitParent) {
-			this.el.style.minWidth = "100%";
-		}
-
 		if (this.headers) {
 			this.renderHeaders();
 		} else {
@@ -393,7 +405,7 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 	 * Generates and returns a button component with a menu for toggling the visibility of columns.
 	 * The button contains an icon and a nested menu for column-related actions.
 	 *
-	 * @return {Object} A button component with an associated menu for column visibility options.
+	 * @return A button component with an associated menu for column visibility options.
 	 */
 	public getVisibleColumnButton() {
 
@@ -412,7 +424,7 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 	 * to show or hide the corresponding column by modifying its `hidden` property,
 	 * saving the state, and triggering a rerender.
 	 *
-	 * @return {Menu} The column menu with toggle options for visible columns.
+	 * @return The column menu with toggle options for visible columns.
 	 */
 	public getVisibleColumnMenu() {
 
@@ -482,6 +494,10 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 			});
 
 			splitter.on("drop", () => {
+				h.autoWidth = false;
+
+				this.autoColumnWidthDisabled = true;
+				this.containerIsBigger = this.el.offsetWidth < this.el.parentElement!.offsetWidth;
 				this.saveState();
 			});
 
@@ -505,9 +521,16 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 			}
 			const col = document.createElement("col");
 
-			if (h.width) {
-				col.style.width = h.width / 10 + "rem";
+			if(!h.width || h.initialAutoWidth) {
+				this.hasAutoSizeCol = true;
+				h.autoWidth = true;
 			}
+
+			if (!h.width) {
+				h.width = this.autoColumnWidth();
+			}
+
+			col.style.width = h.width / 10 + "rem";
 
 			if (h.align) {
 				col.style.textAlign = h.align;
@@ -516,6 +539,8 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 			if (h.cls) {
 				col.classList.add(...h.cls.split(" "));
 			}
+
+			h.headerEl = col;
 
 			colGroup.appendChild(col);
 		}
@@ -555,12 +580,38 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 		this.renderer(this.footerRecord, footRow, this, -1);
 	}
 
+	private autoColumnWidth() {
+
+		const containerWidth = this.el.parentElement?.offsetWidth;
+
+		if(!containerWidth) {
+			return 6;
+		}
+
+		let autoColumnCount = 0, reservedWith = 0;
+		this.columns.forEach(c => {
+			if(!c.hidden) {
+				if(!c.width || c.autoWidth) {
+					autoColumnCount++;
+				} else {
+					reservedWith += c.width;
+				}
+			}
+		})
+
+		if(!autoColumnCount) {
+			return 6;
+		}
+
+		return Math.max((Component.pxToRem(containerWidth) - reservedWith) / autoColumnCount, 6);
+	}
+
 	private renderHeaders() {
 
 		const thead = document.createElement('thead');
 		this.headersRow = document.createElement("tr");
 
-		let index = -1, left = 0,  stickyLeft = true;
+		let index = -1, left = 0,  stickyLeft = true, tableWidth = 0;
 		for (let id of this.getColumnSort()) {
 			const h = this._columns[id];
 			index++;
@@ -580,7 +631,15 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 				header.innerHTML = h.header || "";
 			}
 
-			if (h.width) {
+			if(!h.width || h.initialAutoWidth) {
+				this.hasAutoSizeCol = true;
+			}
+
+			if (!h.width) {
+				tableWidth += this.autoColumnWidth();
+				h.autoWidth = h.initialAutoWidth = true;
+			} else {
+				tableWidth += h.width;
 				header.style.width = (h.width / 10) + "rem";
 			}
 
@@ -640,8 +699,53 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 		thead.appendChild(this.headersRow);
 		this.el!.appendChild(thead);
 
+		this.el.style.width = (tableWidth / 10) + "rem";
+
 		return this.headersRow
 	}
+
+
+	private observeContainer() {
+			const observer = new ResizeObserver(FunctionUtil.onRepaint(() => {
+
+				console.log("remove")
+
+			// When a user resizes an auto sizing column it will stick to that width until the user makes the container smaller
+			// or bigger than the table. Then we will start auto sizing it again.
+			if(this.autoColumnWidthDisabled) {
+
+				const containerWidth = this.el.parentElement!.offsetWidth, tableWidth = this.el.offsetWidth;
+				const containerIsBigger = containerWidth > tableWidth;
+				if(this.containerIsBigger != containerIsBigger) {
+					this.containerIsBigger = containerIsBigger;
+					this.autoColumnWidthDisabled = true;
+					this.columns.forEach(c => {
+						c.autoWidth = c.initialAutoWidth;
+					})
+				}
+			}
+
+			const autoColWidth = this.autoColumnWidth();
+
+			this.columns.forEach(c => {
+				if(!c.hidden && c.autoWidth) {
+					c.width = autoColWidth;
+					c.headerEl!.style.width = (c.width / 10) + "rem";
+				}
+			})
+
+			this.el!.style.width = this.calcTableWidth() / 10 + "rem";
+
+			this.saveState();
+		}));
+
+		observer.observe(this.el.parentElement!);
+
+		this.on("remove", () => {
+			observer.disconnect();
+		})
+	}
+
 
 	protected initSortable() {
 		super.initSortable();
