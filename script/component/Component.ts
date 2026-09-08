@@ -1556,6 +1556,10 @@ export const a = (config: Config<Component> & {href?:string, target?: string}, .
 		href: config.href ?? "",
 		target: config.target ?? ""
 	}
+
+	if(!config.html && !config.text && config.href) {
+		a.text = config.href;
+	}
 	return a;
 }
 
