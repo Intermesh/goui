@@ -48,8 +48,7 @@ export class CardContainer<EventMap extends CardContainerEventMap = CardContaine
 		this.items.on("beforeadd", ({item}) => {
 			item.hide();
 			item.on('show', ({target}) => {
-				const index = this.findItemIndex(target);
-				this.activeItem = index;
+				this.activeItem = this.findItemIndex(target);
 			});
 
 			item.el.classList.add('card-container-item');
@@ -75,6 +74,18 @@ export class CardContainer<EventMap extends CardContainerEventMap = CardContaine
 				}
 			});
 		}
+	}
+
+	protected renderItem(item: Component) {
+// if items are hidden then defer rendering until item is shown
+		if(item.hidden) {
+			item.on("show", ({target}) => {
+				this.renderItem(item);
+			}, {once: true})
+			return;
+		}
+
+		super.renderItem(item);
 	}
 
 	private setCardVisibilities() {
