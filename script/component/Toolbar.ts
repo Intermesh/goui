@@ -56,19 +56,15 @@ export class Toolbar extends AbstractMenu {
  	 */
 	public overflowMenuBtnConfig:undefined|Config<Button> = undefined;
 
-	render(parentEl?: Node, insertBefore?: Node): HTMLElement {
+	protected internalRender() {
 		if(this.overflowMenu) {
 			this.initOverFlowMenu();
-		}
-		const el = super.render(parentEl, insertBefore);
-
-		if(this.overflowMenu) {
 			let ro:ResizeObserver|undefined;
 
 			this.on("attach", () => {
-				ro = new ResizeObserver( FunctionUtil.onRepaint(() => {
+				ro = new ResizeObserver( () => {
 					this.syncOverFlowMenu();
-				}));
+				});
 
 				ro.observe(this.el);
 			}).on("detach", () => {
@@ -78,8 +74,7 @@ export class Toolbar extends AbstractMenu {
 				}
 			})
 		}
-
-		return el;
+		return super.internalRender();
 	}
 
 	private initOverFlowMenu() {

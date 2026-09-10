@@ -700,6 +700,7 @@ export class HtmlField extends Field<HtmlFieldEventMap> {
 		return this.tbar;
 	}
 
+
 	protected createControl(): undefined | HTMLElement {
 
 		//grab value before creating this.editor otherwise it will return the input value

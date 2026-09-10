@@ -513,6 +513,8 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 
 		const colGroup = document.createElement("colgroup");
 
+		const containerWidth = this.el.parentElement?.offsetWidth;
+
 		let index = -1;
 		for (let id of this.getColumnSort()) {
 			const h = this._columns[id];
@@ -528,7 +530,7 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 			}
 
 			if (!h.width) {
-				h.width = this.autoColumnWidth();
+				h.width = this.autoColumnWidth(containerWidth);
 			}
 
 			col.style.width = h.width / 10 + "rem";
@@ -581,9 +583,7 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 		this.renderer(this.footerRecord, footRow, this, -1);
 	}
 
-	private autoColumnWidth() {
-
-		const containerWidth = this.el.parentElement?.offsetWidth;
+	private autoColumnWidth(containerWidth:number|undefined) {
 
 		if(!containerWidth) {
 			return 6;
@@ -612,6 +612,8 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 		const thead = document.createElement('thead');
 		this.headersRow = document.createElement("tr");
 
+		const containerWidth = this.el.parentElement?.offsetWidth;
+
 		let index = -1, left = 0,  stickyLeft = true, tableWidth = 0;
 		for (let id of this.getColumnSort()) {
 			const h = this._columns[id];
@@ -637,7 +639,7 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 			}
 
 			if (!h.width) {
-				tableWidth += this.autoColumnWidth();
+				tableWidth += this.autoColumnWidth(containerWidth);
 				h.autoWidth = h.initialAutoWidth = true;
 			} else {
 				tableWidth += h.width;
@@ -716,37 +718,57 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 				return;
 			}
 
-			ro = new ResizeObserver(FunctionUtil.onRepaint(() => {
-				// When a user resizes an auto sizing column it will stick to that width until the user makes the container smaller
-				// or bigger than the table. Then we will start auto sizing it again.
-				if (this.autoColumnWidthDisabled) {
+			// we don't want to save more than once per sec
+			const bufferedSaveState = FunctionUtil.buffer(1000, () => {this.saveState()});
 
-					const containerWidth = this.el.parentElement!.offsetWidth, tableWidth = this.el.offsetWidth;
-					const containerIsBigger = containerWidth > tableWidth;
-					if (this.containerIsBigger != containerIsBigger) {
-						this.containerIsBigger = containerIsBigger;
-						this.autoColumnWidthDisabled = true;
-						this.columns.forEach(c => {
-							c.autoWidth = c.initialAutoWidth;
-						})
+			let prevWidth:number|undefined;
+			ro = new ResizeObserver(
+				(entries) => {
+					if(!prevWidth) {
+						// observer always fires a first time. We want to ignore that and keep the width to check for width change later
+						prevWidth = entries[0].contentRect.width;
+						return;
 					}
+
+					if(prevWidth == entries[0].contentRect.width) {
+						//height change not relevant
+						return;
+					}
+
+					prevWidth = entries[0].contentRect.width;
+
+					// When a user resizes an auto sizing column it will stick to that width until the user makes the container smaller
+					// or bigger than the table. Then we will start auto sizing it again.
+					if (this.autoColumnWidthDisabled) {
+
+						const containerWidth = entries[0].contentRect.width, tableWidth = this.el.offsetWidth;
+
+						const containerIsBigger = containerWidth > tableWidth;
+						if (this.containerIsBigger != containerIsBigger) {
+							this.containerIsBigger = containerIsBigger;
+							this.autoColumnWidthDisabled = true;
+							this.columns.forEach(c => {
+								c.autoWidth = c.initialAutoWidth;
+							})
+						}
+					}
+
+					const autoColWidth = this.autoColumnWidth(entries[0].contentRect.width);
+
+					this.columns.forEach(c => {
+						if (!c.hidden && c.autoWidth) {
+							c.width = autoColWidth;
+							c.headerEl!.style.width = (c.width / 10) + "rem";
+						}
+					})
+
+					this.el!.style.width = this.calcTableWidth() / 10 + "rem";
+
+					void bufferedSaveState();
 				}
+			);
 
-				const autoColWidth = this.autoColumnWidth();
-
-				this.columns.forEach(c => {
-					if (!c.hidden && c.autoWidth) {
-						c.width = autoColWidth;
-						c.headerEl!.style.width = (c.width / 10) + "rem";
-					}
-				})
-
-				this.el!.style.width = this.calcTableWidth() / 10 + "rem";
-
-				this.saveState();
-			}));
-
-			ro.observe(this.el.parentElement!);
+			ro.observe(this.el.parentElement!, {box: "border-box"});
 		}).on("detach", () => {
 			if(ro) {
 				ro.disconnect();
