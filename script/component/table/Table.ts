@@ -724,6 +724,12 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 			let prevWidth:number|undefined;
 			ro = new ResizeObserver(
 				(entries) => {
+
+					if(!entries[0].contentRect.width) {
+						// hidden?
+						return;
+					}
+
 					if(!prevWidth) {
 						// observer always fires a first time. We want to ignore that and keep the width to check for width change later
 						prevWidth = entries[0].contentRect.width;
