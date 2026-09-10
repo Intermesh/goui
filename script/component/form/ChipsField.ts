@@ -134,9 +134,6 @@ export class ChipsField<EventMap extends FieldEventMap = FieldEventMap> extends 
 			this._editor!.el.innerText = "";
 		})
 
-		// this happens inside internalRender() so adding it to the items won't render it
-		this._editor.render(this.chipsContainer!);
-
 		this.items.add(this._editor);
 
 		return this.chipsContainer;
