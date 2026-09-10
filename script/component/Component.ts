@@ -140,6 +140,22 @@ export interface ComponentEventMap extends ObservableEventMap {
 	}
 
 	/**
+	 * Fires after the component has attached to the DOM.
+	 *
+	 * This is different from added because it can also be attached because a parent component was added to the dom with
+	 * child components
+	 */
+	attach: {}
+
+	/**
+	 * Fires after the component was detached from the DOM.
+	 *
+	 * This is different from added because it can also be detached because a parent component was removed
+	 * child components
+	 */
+	detach: {}
+
+	/**
 	 * Fires when the component is disabled
 	 *
 
@@ -189,6 +205,7 @@ export class Component<EventMapType extends ComponentEventMap = ComponentEventMa
 	 * Useful with event handlers that need to loopup components from DOM elements
 	 */
 	public static registry : WeakMap<HTMLElement, Component> = new WeakMap()
+
 
 	/**
 	 * Component constructor
@@ -562,6 +579,11 @@ export class Component<EventMapType extends ComponentEventMap = ComponentEventMa
 
 			//move to new parent
 			this.addToDom(parentEl, insertBefore);
+
+			// re attaching so we cascade the attach event. When the component is not rendered yet the internalRender function
+			// will cascade through the items as well.
+			this.cascade(comp => comp.fireAttach());
+
 			return this.el;
 		}
 
@@ -582,6 +604,7 @@ export class Component<EventMapType extends ComponentEventMap = ComponentEventMa
 	}
 
 	private addToDom(parentEl: Node | undefined, insertBefore: Node | undefined) {
+
 		// If parent is already rendered then we must determine the DOM index of this child item
 		// if parent is rendering then we can simply add it
 		if (!parentEl) {
@@ -603,6 +626,16 @@ export class Component<EventMapType extends ComponentEventMap = ComponentEventMa
 		} else {
 			parentEl!.insertBefore(this.el, insertBefore);
 		}
+
+		this.fireAttach();
+	}
+
+	private attachCount:number = 0;
+
+	protected fireAttach() {
+
+		++this.attachCount;
+		this.fire("attach", {});
 	}
 
 	/**
@@ -663,7 +696,7 @@ export class Component<EventMapType extends ComponentEventMap = ComponentEventMa
 			this.maskTimeout = undefined;
 		}
 
-		this.items.clear();
+		// this.items.clear();
 
 		this.detach();
 	}
@@ -671,7 +704,7 @@ export class Component<EventMapType extends ComponentEventMap = ComponentEventMa
 	/**
 	 * Remove it from the component hierarchy but keep the component intact for re-adding it to another.
 	 */
-	public detach() {
+	protected detach() {
 		// remove this item from parent the Component
 		if (this.parent) {
 
@@ -686,6 +719,17 @@ export class Component<EventMapType extends ComponentEventMap = ComponentEventMa
 		if (this.el) {
 			this.el.remove();
 		}
+
+		// fire detach in the component hierarchy
+		this.fireDetach();
+
+		this.cascade(comp => comp.fireDetach());
+	}
+
+	protected fireDetach() {
+		--this.attachCount
+		// console.log("detach", this.attachCount, this);
+		this.fire("detach", {});
 	}
 
 	/**
