@@ -10,6 +10,7 @@ import {ColorPicker} from "../picker/ColorPicker.js";
 import {Field, FieldConfig} from "./Field.js";
 import {btn, Button} from "../Button.js";
 import {menu} from "../menu/Menu.js";
+import {FunctionUtil} from "../../util/index.js";
 
 /**
  * ColorField component
@@ -52,15 +53,19 @@ export class ColorField extends Field {
 		});
 
 
-		const resizeObserver = new ResizeObserver(() => {
-			this.pickerButton.menu!.align();
-		});
+		let ro:ResizeObserver|undefined;
 
-		resizeObserver.observe(picker.el);
+		this.on("attach", () => {
+			ro = new ResizeObserver( FunctionUtil.onRepaint(() => {
+				this.pickerButton.menu!.align();
+			}));
 
-		this.on("remove", () => {
-			// not sure if needed but disconnect the resizeobserver when this component is removed.
-			resizeObserver.disconnect();
+			ro.observe(picker.el);
+		}).on("detach", () => {
+			if(ro) {
+				ro.disconnect();
+				ro = undefined;
+			}
 		})
 
 		return picker;

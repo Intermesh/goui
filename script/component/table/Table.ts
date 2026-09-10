@@ -706,43 +706,49 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 
 
 	private observeContainer() {
-			const observer = new ResizeObserver(FunctionUtil.onRepaint(() => {
 
+		let ro:ResizeObserver|undefined;
+
+		this.on("attach", () => {
+
+			ro = new ResizeObserver(FunctionUtil.onRepaint(() => {
 				console.log("remove")
 
-			// When a user resizes an auto sizing column it will stick to that width until the user makes the container smaller
-			// or bigger than the table. Then we will start auto sizing it again.
-			if(this.autoColumnWidthDisabled) {
+				// When a user resizes an auto sizing column it will stick to that width until the user makes the container smaller
+				// or bigger than the table. Then we will start auto sizing it again.
+				if (this.autoColumnWidthDisabled) {
 
-				const containerWidth = this.el.parentElement!.offsetWidth, tableWidth = this.el.offsetWidth;
-				const containerIsBigger = containerWidth > tableWidth;
-				if(this.containerIsBigger != containerIsBigger) {
-					this.containerIsBigger = containerIsBigger;
-					this.autoColumnWidthDisabled = true;
-					this.columns.forEach(c => {
-						c.autoWidth = c.initialAutoWidth;
-					})
+					const containerWidth = this.el.parentElement!.offsetWidth, tableWidth = this.el.offsetWidth;
+					const containerIsBigger = containerWidth > tableWidth;
+					if (this.containerIsBigger != containerIsBigger) {
+						this.containerIsBigger = containerIsBigger;
+						this.autoColumnWidthDisabled = true;
+						this.columns.forEach(c => {
+							c.autoWidth = c.initialAutoWidth;
+						})
+					}
 				}
+
+				const autoColWidth = this.autoColumnWidth();
+
+				this.columns.forEach(c => {
+					if (!c.hidden && c.autoWidth) {
+						c.width = autoColWidth;
+						c.headerEl!.style.width = (c.width / 10) + "rem";
+					}
+				})
+
+				this.el!.style.width = this.calcTableWidth() / 10 + "rem";
+
+				this.saveState();
+			}));
+
+			ro.observe(this.el.parentElement!);
+		}).on("detach", () => {
+			if(ro) {
+				ro.disconnect();
+				ro = undefined;
 			}
-
-			const autoColWidth = this.autoColumnWidth();
-
-			this.columns.forEach(c => {
-				if(!c.hidden && c.autoWidth) {
-					c.width = autoColWidth;
-					c.headerEl!.style.width = (c.width / 10) + "rem";
-				}
-			})
-
-			this.el!.style.width = this.calcTableWidth() / 10 + "rem";
-
-			this.saveState();
-		}));
-
-		observer.observe(this.el.parentElement!);
-
-		this.on("remove", () => {
-			observer.disconnect();
 		})
 	}
 

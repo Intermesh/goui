@@ -63,11 +63,20 @@ export class Toolbar extends AbstractMenu {
 		const el = super.render(parentEl, insertBefore);
 
 		if(this.overflowMenu) {
-			const ro = new ResizeObserver( FunctionUtil.onRepaint(() => {
-				this.syncOverFlowMenu();
-			}));
+			let ro:ResizeObserver|undefined;
 
-			ro.observe(this.el);
+			this.on("attach", () => {
+				ro = new ResizeObserver( FunctionUtil.onRepaint(() => {
+					this.syncOverFlowMenu();
+				}));
+
+				ro.observe(this.el);
+			}).on("detach", () => {
+				if(ro) {
+					ro.disconnect();
+					ro = undefined;
+				}
+			})
 		}
 
 		return el;

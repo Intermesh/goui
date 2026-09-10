@@ -415,7 +415,7 @@ export class Menu<EventMap extends MenuEventMap = MenuEventMap> extends Abstract
 			ro.disconnect();
 		})
 
-		this.on("remove", ()=>{
+		this.on("detach", ()=>{
 			window.removeEventListener("scroll", onScroll)
 			ro.disconnect();
 		})
