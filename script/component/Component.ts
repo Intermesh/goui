@@ -582,6 +582,7 @@ export class Component<EventMapType extends ComponentEventMap = ComponentEventMa
 
 			// re attaching so we cascade the attach event. When the component is not rendered yet the internalRender function
 			// will cascade through the items as well.
+			this.fireAttach();
 			this.cascade(comp => comp.fireAttach());
 
 			return this.el;
@@ -598,6 +599,8 @@ export class Component<EventMapType extends ComponentEventMap = ComponentEventMa
 
 		this._rendered = true;
 
+		this.fireAttach();
+		this.cascade(comp => comp.fireAttach());
 		this.fire("render", {});
 
 		return this.el;
@@ -627,7 +630,7 @@ export class Component<EventMapType extends ComponentEventMap = ComponentEventMa
 			parentEl!.insertBefore(this.el, insertBefore);
 		}
 
-		this.fireAttach();
+
 	}
 
 	private attachCount:number = 0;

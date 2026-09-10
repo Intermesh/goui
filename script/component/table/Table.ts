@@ -220,6 +220,9 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 		}, "table");
 
 		this.columns = columns;
+
+
+		this.observeContainer();
 	}
 
 
@@ -255,14 +258,12 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 
 		this.initColumns();
 
+
+
 		const el =  super.internalRender();
 
 		if(this.autoColumnWidthDisabled) {
 			this.containerIsBigger = this.el.offsetWidth < this.el.parentElement!.offsetWidth;
-		}
-
-		if(this.hasAutoSizeCol) {
-			this.observeContainer();
 		}
 
 		return el;
@@ -711,9 +712,11 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 
 		this.on("attach", () => {
 
-			ro = new ResizeObserver(FunctionUtil.onRepaint(() => {
-				console.log("remove")
+			if(!this.hasAutoSizeCol) {
+				return;
+			}
 
+			ro = new ResizeObserver(FunctionUtil.onRepaint(() => {
 				// When a user resizes an auto sizing column it will stick to that width until the user makes the container smaller
 				// or bigger than the table. Then we will start auto sizing it again.
 				if (this.autoColumnWidthDisabled) {
