@@ -50,7 +50,7 @@ export interface HtmlFieldEventMap extends FieldEventMap {
 	/**
 	 * Fires when a non image is pasted or dropped into the field
 	 */
-	attach: {
+	attachfile: {
 		/**
 		 * The insert File object
 		 */
