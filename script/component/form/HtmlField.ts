@@ -938,7 +938,7 @@ export class HtmlField extends Field<HtmlFieldEventMap> {
 			if (file.type.match(/^image\//)) {
 				this.handleImage(file);
 			} else {
-				this.fire("attach", {file});
+				this.fire("attachfile", {file});
 			}
 		});
 	}
@@ -985,7 +985,7 @@ export class HtmlField extends Field<HtmlFieldEventMap> {
 			if (file.type.match(/^image\//)) {
 				this.handleImage(file);
 			} else {
-				this.fire("attach", {file});
+				this.fire("attachfile", {file});
 			}
 			e.preventDefault();
 		});
