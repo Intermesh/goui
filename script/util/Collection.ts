@@ -211,9 +211,13 @@ export class Collection<CollectionItem, MapType extends CollectionEventMap<Colle
 	/**
 	 * Remove an item
 	 *
-	 * @param index Item index
+	 * @param index Item index. When negative it will be indexed from the end. eg. -1 for the last item.
 	 */
 	public removeAt(index: number) {
+
+		if (index < 0) {
+			index = this.count() + index;
+		}
 
 		const item = this.get(index);
 		if(!item) {
@@ -242,6 +246,11 @@ export class Collection<CollectionItem, MapType extends CollectionEventMap<Colle
 	 * @param items
 	 */
 	public replaceAt(index: number, ...items:CollectionItem[]) {
+
+		if (index < 0) {
+			index = this.count() + index;
+		}
+
 		this.removeAt(index);
 		this.insert(index, ...items);
 	}
