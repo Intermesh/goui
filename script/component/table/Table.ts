@@ -613,6 +613,8 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 	private autoColumnWidth(containerWidth:number|undefined) {
 
 		if(!containerWidth) {
+			console.warn("Could not determine auto column width for table. Probably rendering it hidden. Will auto size when I'm visible.", this)
+			this.autoSizeWhenVisible();
 			return 6;
 		}
 
@@ -634,6 +636,30 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 		return Math.max((Component.pxToRem(containerWidth) - reservedWith) / autoColumnCount, 6);
 	}
 
+	private autoSizeWhenVisible() {
+		const mo = new IntersectionObserver(
+			(entries) => {
+				for (const entry of entries) {
+					if (entry.isIntersecting) {
+						const containerWidth = this.el.parentElement?.offsetWidth
+						if(containerWidth) {
+							console.warn("Auto sizing because i'm visible")
+							this.doAutoSizeColumns(this.el.parentElement?.offsetWidth)
+							mo.disconnect();
+						}
+					}
+				}
+			},
+			{ threshold: 0.01 } // fires as soon as even 1% is visible
+		);
+
+		mo.observe(this.el);
+
+		this.on("detach", () => {
+			mo.disconnect();
+		})
+
+	}
 	private renderHeaders() {
 
 		const thead = document.createElement('thead');
@@ -773,32 +799,7 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 
 					prevWidth = entries[0].contentRect.width;
 
-					// When a user resizes an auto sizing column it will stick to that width until the user makes the container smaller
-					// or bigger than the table. Then we will start auto sizing it again.
-					if (this.autoColumnWidthDisabled) {
-
-						const containerWidth = entries[0].contentRect.width, tableWidth = this.el.offsetWidth;
-
-						const containerIsBigger = containerWidth > tableWidth;
-						if (this.containerIsBigger != containerIsBigger) {
-							this.containerIsBigger = containerIsBigger;
-							this.autoColumnWidthDisabled = true;
-							this.columns.forEach(c => {
-								c.autoWidth = c.initialAutoWidth;
-							})
-						}
-					}
-
-					const autoColWidth = this.autoColumnWidth(entries[0].contentRect.width);
-
-					this.columns.forEach(c => {
-						if (!c.hidden && c.autoWidth) {
-							c.width = autoColWidth;
-							c.headerEl!.style.width = (c.width / 10) + "rem";
-						}
-					})
-
-					this.el!.style.width = this.calcTableWidth() / 10 + "rem";
+					this.doAutoSizeColumns(prevWidth);
 
 					void bufferedSaveState();
 				}
@@ -811,6 +812,34 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 				ro = undefined;
 			}
 		})
+	}
+
+	private doAutoSizeColumns(containerWidth:number) {
+		// When a user resizes an auto sizing column it will stick to that width until the user makes the container smaller
+		// or bigger than the table. Then we will start auto sizing it again.
+		if (this.autoColumnWidthDisabled) {
+			const tableWidth = this.el.offsetWidth;
+
+			const containerIsBigger = containerWidth > tableWidth;
+			if (this.containerIsBigger != containerIsBigger) {
+				this.containerIsBigger = containerIsBigger;
+				this.autoColumnWidthDisabled = true;
+				this.columns.forEach(c => {
+					c.autoWidth = c.initialAutoWidth;
+				})
+			}
+		}
+
+		const autoColWidth = this.autoColumnWidth(containerWidth);
+
+		this.columns.forEach(c => {
+			if (!c.hidden && c.autoWidth) {
+				c.width = autoColWidth;
+				c.headerEl!.style.width = (c.width / 10) + "rem";
+			}
+		})
+
+		this.el!.style.width = this.calcTableWidth() / 10 + "rem";
 	}
 
 
