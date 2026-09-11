@@ -45,7 +45,7 @@ import {t} from "../../Translate.js";
  * 			},
  * 			sort: [{property: "name", isAscending: true}]
  * 		}),
- * 		cls: "fit",
+ *
  * 		columns: [
  * 			{
  * 				header: "Index",
@@ -225,12 +225,25 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 		this.observeContainer();
 	}
 
-
 	/**
 	 * Show headers
+	 *
+	 * When disabled, a colgroup element will be rendered for the column sizes instead.
+	 *
+	 * If there are no headers and there is an auto size column (column without width) {@link fit} will be enabled automatically.
 	 */
 	public headers = true;
 
+	/**
+	 * Fit the table to its container width
+	 *
+	 * When fit is enabled the table width will be set to 100% which won't allow any vertical scrolling and auto column.
+	 * This disables JS to automatically size columns and will use CSS styles to automatically size any columns without
+	 * widths.
+	 *
+	 * If {@link headers} = false and there is an auto size column (column without width), {@link fit} will be enabled automatically.
+	 */
+	public fit = false;
 
 	protected emptyStateTag: keyof HTMLElementTagNameMap = 'caption'
 
@@ -258,20 +271,24 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 
 		this.initColumns();
 
-
-
 		const el =  super.internalRender();
 
-		if(this.autoColumnWidthDisabled) {
+		if(!this.fit && this.autoColumnWidthDisabled) {
 			this.containerIsBigger = this.el.offsetWidth < this.el.parentElement!.offsetWidth;
+		}
+
+		if(this.fit) {
+			this.el.style.width = "100%";
 		}
 
 		return el;
 	}
 
-
 	private initColumns() {
+
 		if (!this.columnsInitialized) {
+
+			this.initState();
 
 			this.columns.forEach(c => {
 				this._columns[c.id] = c;
@@ -279,9 +296,17 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 				if (c.init) {
 					c.init.call(c, this);
 				}
+
+				if(!c.width || c.initialAutoWidth) {
+					this.hasAutoSizeCol = true;
+				}
 			})
 
 			this.columnsInitialized = true;
+
+			if(this.hasAutoSizeCol && !this.headers) {
+				this.fit = true;
+			}
 		}
 	}
 
@@ -306,6 +331,7 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 	}
 
 	protected restoreState(state: ComponentState) {
+
 		if (state.sort) {
 			this.store.sort = state.sort;
 		}
@@ -429,7 +455,7 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 	 */
 	public getVisibleColumnMenu() {
 
-		this.restoreState(this.getState());
+		this.initColumns()
 
 		if (!this.columnMenu) {
 			this.columnMenu = menu({
@@ -525,15 +551,16 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 			const col = document.createElement("col");
 
 			if(!h.width || h.initialAutoWidth) {
-				this.hasAutoSizeCol = true;
 				h.autoWidth = true;
 			}
 
-			if (!h.width) {
+			if (!h.width && !this.fit) {
 				h.width = this.autoColumnWidth(containerWidth);
 			}
 
-			col.style.width = h.width / 10 + "rem";
+			if(h.width) {
+				col.style.width = h.width / 10 + "rem";
+			}
 
 			if (h.align) {
 				col.style.textAlign = h.align;
@@ -634,13 +661,12 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 				header.innerHTML = h.header || "";
 			}
 
-			if(!h.width || h.initialAutoWidth) {
-				this.hasAutoSizeCol = true;
-			}
-
 			if (!h.width) {
-				tableWidth += this.autoColumnWidth(containerWidth);
-				h.autoWidth = h.initialAutoWidth = true;
+				// when fit is enabled we let the CSS do all the work
+				if(!this.fit) {
+					tableWidth += this.autoColumnWidth(containerWidth);
+					h.autoWidth = h.initialAutoWidth = true;
+				}
 			} else {
 				tableWidth += h.width;
 				header.style.width = (h.width / 10) + "rem";
@@ -702,7 +728,9 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 		thead.appendChild(this.headersRow);
 		this.el!.appendChild(thead);
 
-		this.el.style.width = (tableWidth / 10) + "rem";
+		if(!this.fit) {
+			this.el.style.width = (tableWidth / 10) + "rem";
+		}
 
 		return this.headersRow
 	}
@@ -714,7 +742,9 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 
 		this.on("attach", () => {
 
-			if(!this.hasAutoSizeCol) {
+			console.log(this.stateId, this.hasAutoSizeCol, this.fit);
+
+			if(!this.hasAutoSizeCol || this.fit) {
 				return;
 			}
 

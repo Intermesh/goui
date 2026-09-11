@@ -15,7 +15,7 @@ import {MaterialIcon} from "./MaterialIcon";
  */
 export type FindComponentPredicate = string | number | Component | ((comp: Component) => boolean | void);
 
-export type Length = number | "auto" | "fit-content" | "min-content" | "max-content";
+export type Length = number | "auto" | "fit-content" | "min-content" | "max-content" | "100%" | string;
 
 /**
  * Gets the class type of an instance and allows abstract constructors. Opposite of the InstanceOf<>

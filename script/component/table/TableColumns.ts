@@ -130,6 +130,8 @@ export class TableColumn<EventMap extends TableColumnEventMap = TableColumnEvent
 
 	/**
 	 * Width in rem units
+	 *
+	 * If no width is supplied, this column will automatically expand to so the table fits it's container.
 	 */
 	public width?: number
 
