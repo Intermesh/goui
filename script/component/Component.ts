@@ -388,10 +388,8 @@ export class Component<EventMapType extends ComponentEventMap = ComponentEventMa
 	 * @protected
 	 */
 	protected restoreState(state: ComponentState) {
-		const s = this.getState();
-
-		if(s && "hidden" in s) {
-			this.hidden = s.hidden;
+		if(state && "hidden" in state) {
+			this.hidden = state.hidden;
 		}
 	}
 
