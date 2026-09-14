@@ -148,12 +148,19 @@ export class DurationField extends Field {
 	}
 
 	protected internalSetValue(v?: any) {
-		if(v && this.control && this.hoursInput && this.minutesInput) {
-			const dateInterval = DateInterval.createFromFormat(v, this.outputFormat);
-			if (dateInterval) {
-				this.hoursInput.value = dateInterval.format("h");
-				this.minutesInput.value = dateInterval.format("I");
-			} else {
+		if(v !== undefined && this.control && this.hoursInput && this.minutesInput) {
+			try {
+				const dateInterval = DateInterval.createFromFormat(v, this.outputFormat);
+				if (dateInterval) {
+					this.hoursInput.value = dateInterval.format("h");
+					this.minutesInput.value = dateInterval.format("I");
+				} else {
+					this.hoursInput.value = "0";
+					this.minutesInput.value = "00";
+				}
+
+			}catch (e) {
+				this.hoursInput.value = "0";
 				this.minutesInput.value = "00";
 			}
 		}
