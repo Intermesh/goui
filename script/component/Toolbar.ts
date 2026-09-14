@@ -119,6 +119,11 @@ export class Toolbar extends AbstractMenu {
 			last.text = last.title;
 		}
 
+		// needs to be rendered because we're adding rendered elements to it.
+		if (!this.overflowMenuBtn!.menu!.rendered) {
+			this.overflowMenuBtn!.menu!.render();
+		}
+
 		this.overflowMenuBtn!.menu!.items.insert(0, last);
 
 		return true;
