@@ -223,6 +223,8 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 
 
 		this.observeContainer();
+
+		this.reorderColumns = true;
 	}
 
 	/**
@@ -279,6 +281,10 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 
 		if(this.fit) {
 			this.el.style.width = "100%";
+		}
+
+		if(this.headers && this.reorderColumns) {
+			this.getHeaderSortable().connect();
 		}
 
 		return el;
@@ -846,11 +852,10 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 		this.el!.style.width = this.calcTableWidth() / 10 + "rem";
 	}
 
+	private headerSortable: Sortable<this>|undefined;
+	protected getHeaderSortable() {
 
-	protected initSortable() {
-		super.initSortable();
-
-		if(this.reorderColumns) {
+		if(!this.headerSortable) {
 			const headerSorter = new Sortable(this, 'th');
 			headerSorter.dropOn = false;
 			headerSorter.dropBetween = true;
@@ -864,17 +869,20 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 
 			});
 
-			headerSorter.on("dropallowed",( {toIndex}) => {
+			headerSorter.on("dropallowed", ({toIndex}) => {
 				const cols = this.columns;
 
-				if(!cols[toIndex]) {
+				if (!cols[toIndex]) {
 					return false;
 				} else {
 					return !cols[toIndex].sticky;
 				}
-
 			})
+
+			this.headerSortable = headerSorter;
 		}
+
+		return this.headerSortable;
 	}
 
 	private onSort(dataIndex: string, header: HTMLTableCellElement) {

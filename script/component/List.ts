@@ -177,24 +177,50 @@ export class List<StoreType extends Store = Store, EventMapType extends ListEven
 	private rowSelect?: RowSelect<StoreType, storeRecordType<StoreType>>;
 
 	/**
-	 * Allow items to be dragged
+	 * Allow rows to be dragged
+	 *
+	 * This adds a draggable attribute to the rows when rendering them. So when you toggle this it only has affect after
+	 * rendering rows. It may require a reload
+	 *
 	 */
 	public draggableRows = false;
 
 	/**
 	 * Allow to drop between items
 	 */
-	public dropBetween = false;
+	public set dropBetween(dropBetween:boolean) {
+		this.getSortable().dropBetween = dropBetween;
+		this.toggleSortable();
+	}
+	public get dropBetween() {
+		return this.getSortable().dropBetween;
+	}
+
+	private toggleSortable() {
+		(this.dropBetween || this.dropOn) ? this.getSortable().connect() : this.getSortable().disconnect();
+	}
 
 	/**
 	 * Allow to drop on items
 	 */
-	public dropOn = false;
+	public set dropOn(dropOn:boolean) {
+		this.getSortable().dropOn = dropOn;
+		this.toggleSortable();
+	}
+	public get dropOn() {
+		return this.getSortable().dropOn;
+	}
 
 	/**
 	 * Group for sortable when drag and drop is used
 	 */
-	public sortableGroup:string|undefined = undefined;
+	public set sortableGroup(group:string|undefined) {
+		this.getSortable().group = group;
+	};
+
+	public get sortableGroup() {
+		return this.getSortable().group;
+	}
 
 
 	/**
@@ -272,10 +298,8 @@ export class List<StoreType extends Store = Store, EventMapType extends ListEven
 		this.renderEmptyState();
 		this.renderBody();
 		this.initStore();
-		this.initSortable();
 
 		if (this.rowSelect) {
-
 			this.rowSelect.on('rowselect', (ev) => {
 
 				const tr = this.getRowElements()[ev.row.storeIndex];
@@ -302,40 +326,43 @@ export class List<StoreType extends Store = Store, EventMapType extends ListEven
 		return el;
 	}
 
-	protected initSortable() {
-		if(!this.dropBetween && !this.dropOn && !this.draggableRows) {
-			return;
+	private sortable:Sortable<this>|undefined;
+
+	protected getSortable() {
+
+		if(!this.sortable) {
+			const sortable = new Sortable(this, ".data");
+			sortable.dropOn = false;
+			sortable.dropBetween = false;
+			sortable.group = "sortable-" + Component.uniqueID();
+
+			sortable.on("sort", (ev) => {
+				return this.fire("drop", ev);
+			});
+
+			sortable.on("dropallowed", (ev) => {
+				return this.fire("dropallowed", ev);
+			});
+
+			sortable.on("dragstart", (ev) => {
+
+				//Multiselect movement support here. Don't move selection if the dragged element wasn't part of the selection
+				if (this.rowSelect && this.rowSelect.multiSelect && this.rowSelect.getSelected().length > 1 && this.rowSelect.isSelected(this.store.get(ev.dragData.fromIndex) as storeRecordType<StoreType>)) {
+					ev.dragData.dataSet.selectedRowIndexes = this.rowSelect.getSelected();
+					ev.ev.setDragComponent(comp({cls: "card pad", html: this.rowSelect.getSelected().length + " selected rows"}))
+				} else {
+					ev.dragData.dataSet.selectedRowIndexes = [new SelectedRow(this.store, this.store.get(ev.dragData.fromIndex)!)];
+				}
+			});
+
+			sortable.on("dragend", (ev) => {
+				delete ev.dragData.dataSet.selectedRowIndexes;
+			})
+
+			this.sortable = sortable;
 		}
-		const sortable = new Sortable(this, ".data");
-		sortable.dropOn = this.dropOn;
-		sortable.dropBetween = this.dropBetween;
-		if(!this.sortableGroup) {
-			this.sortableGroup = "sortable-" + Component.uniqueID();
-		}
-		sortable.group = this.sortableGroup;
 
-		sortable.on("sort", (ev) => {
-			return this.fire("drop", ev);
-		});
-
-		sortable.on("dropallowed", (ev) => {
-			return this.fire("dropallowed", ev);
-		});
-
-		sortable.on("dragstart",(ev) => {
-
-			//Multiselect movement support here. Don't move selection if the dragged element wasn't part of the selection
-			if(this.rowSelect && this.rowSelect.multiSelect && this.rowSelect.getSelected().length > 1 && this.rowSelect.isSelected(this.store.get(ev.dragData.fromIndex) as storeRecordType<StoreType>)) {
-				ev.dragData.dataSet.selectedRowIndexes = this.rowSelect.getSelected();
-				ev.ev.setDragComponent(comp({cls: "card pad", html: this.rowSelect.getSelected().length + " selected rows"}))
-			} else {
-				ev.dragData.dataSet.selectedRowIndexes = [new SelectedRow(this.store, this.store.get(ev.dragData.fromIndex)!)];
-			}
-		});
-
-		sortable.on("dragend", (ev) => {
-			delete ev.dragData.dataSet.selectedRowIndexes;
-		})
+		return this.sortable;
 	}
 
 	/**

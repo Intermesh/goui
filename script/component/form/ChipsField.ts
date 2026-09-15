@@ -318,7 +318,7 @@ export class ChipsField<EventMap extends FieldEventMap = FieldEventMap> extends 
 						this.items.move(fromIndex, toIndex);
 					}
 				}
-			})
+			}).connect();
 		}
 
 		// make sure the editor is rendered before renderValue is called

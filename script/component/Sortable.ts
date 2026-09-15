@@ -186,6 +186,8 @@ export class Sortable<Type extends Component> extends Observable<SortableEventMa
 		return this.findSortables().indexOf(sortableItem);
 	}
 
+	private _isConnected: boolean = false;
+
 	/**
 	 * Constructor
 	 *
@@ -194,142 +196,176 @@ export class Sortable<Type extends Component> extends Observable<SortableEventMa
 	 */
 	constructor(readonly component: Type, private sortableChildSelector:string) {
 		super();
-
-		component.el.on("dragstart", (e)=> {
-
-			if(!this.group) {
-				this.group = "sortable-" + Component.uniqueID();
-			}
-
-			// does this item belong to us? Not sure if this is efficient. Perhaps two sortables on the same el is madness.
-			if(this.findSortables().indexOf(e.target) === -1) {
-				console.warn("Sortable item not part of our sortables");
-				return;
-			}
-
-			// had to add this class because otherwise dragleave fires immediately on child nodes: https://stackoverflow.com/questions/7110353/html5-dragleave-fired-when-hovering-a-child-element
-			root.el.cls("+dragging");
-			
-			Sortable.dragData = {
-				dragSrc: undefined,
-				pos: "before",
-				overEl: undefined,
-				fromIndex: -1,
-				toIndex: -1,
-				group:"",
-				sourceComponent: root,
-				dataSet: {}
-			}
-
-			Sortable.dragData.group = this.group;
-			Sortable.dragData.dragSrc = e.target;
-			Sortable.dragData.sourceComponent = this.component;
-
-			Sortable.dragData.fromIndex = this.findIndex(e.target);
-
-			e.dataTransfer!.setData('text/plain', 'goui');
-			e.dataTransfer!.effectAllowed = "copyMove";
-			e.target.classList.add("drag-src");
-			(e as SortableDragEvent).setDragComponent = function(this:DragEvent,comp:Component)  {
-				Sortable.getDragImg().items.replace(comp);
-				this.dataTransfer!.setDragImage(comp.el, 0, 0)
-			}.bind(e);
-
-			this.fire("dragstart", {ev: e as SortableDragEvent, dragData: Sortable.dragData});
-		})
-
-		component.el.on("drop", (e)=> {
-			e.preventDefault();
-			this.endDrag(e);
-		})
-
-		component.el.on("dragend", (e)=> {
-			e.preventDefault();
-			this.endDrag(e);
-		})
-
-		component.el.on("dragover", (e) => {
-
-			if(!Sortable.dragData || Sortable.dragData.group != this.group) {
-				return;
-			}
-
-			if(!this.dropOn && !this.dropBetween) {
-				return;
-			}
-
-			Sortable.dragData.overEl = e.target.closest(this.sortableChildSelector) as HTMLElement;
-
-			this.setIndex(e);
-
-			if(!this.dropAllowed()) {
-				return;
-			}
-
-			const dropPin = Sortable.getDropPin();
-
-			let rect;
-			if(Sortable.dragData.overEl) {
-				rect = Sortable.dragData.overEl.getBoundingClientRect();
-				Sortable.dragData.pos = this.getDragPos(rect, e);
-			} else {
-				rect = this.component.el.getBoundingClientRect();
-			}
-
-			switch(Sortable.dragData.pos) {
-				case "before":
-					e.preventDefault();
-					e.stopPropagation();
-					e.dataTransfer!.dropEffect = "move";
-					dropPin.hidden = false;
-
-					if(this.horizontal) {
-						dropPin.el.style.top = rect.y + "px";
-						dropPin.el.style.left = (rect.x - this.gap()) + "px";
-						dropPin.el.style.height = rect.height + "px";
-					} else {
-						dropPin.el.style.top = (rect.y - this.gap()) + "px";
-						dropPin.el.style.left = rect.x + "px";
-						dropPin.el.style.width = rect.width + "px";
-					}
-					break;
-
-				case "on":
-					if(!this.dropOn) {
-						return;
-					}
-					e.dataTransfer!.dropEffect = "copy";
-					dropPin.hidden = true;
-
-					e.preventDefault();
-					e.stopPropagation();
-
-					break;
-
-				case "after":
-					e.preventDefault();
-					e.stopPropagation();
-					e.dataTransfer!.dropEffect = "move";
-					dropPin.hidden = false;
-
-					if(this.horizontal) {
-						dropPin.el.style.top = rect.y + "px";
-						dropPin.el.style.left = (rect.x + rect.width + this.gap()) + "px";
-						dropPin.el.style.height = rect.height + "px";
-						dropPin.el.style.width = "";
-					} else {
-						dropPin.el.style.top = (rect.y + rect.height + this.gap()) + "px";
-						dropPin.el.style.left = rect.x + "px";
-						dropPin.el.style.width = rect.width + "px";
-						dropPin.el.style.height = "";
-					}
-
-					break;
-			}
-
-
-		})
 	}
+
+	/**
+	 * Connects the sortable to the component
+	 */
+	public connect() {
+		if(!this._isConnected) {
+			this._isConnected = true;
+
+			this.component.el.addEventListener("dragstart", this.onDragStart)
+			this.component.el.addEventListener("drop", this.onDrop)
+			this.component.el.addEventListener("dragend", this.onDragEnd)
+			this.component.el.addEventListener("dragover", this.onDragOver)
+		}
+	}
+
+	/**
+	 * Disconnect the sortable
+	 */
+	public disconnect() {
+		if(this._isConnected) {
+			this._isConnected = false;
+			this.component.el.removeEventListener("dragstart", this.onDragStart)
+			this.component.el.removeEventListener("drop", this.onDrop)
+			this.component.el.removeEventListener("dragend", this.onDragEnd)
+			this.component.el.removeEventListener("dragover", this.onDragOver)
+		}
+	}
+
+	/**
+	 * Check if the sortable is connected to the component
+	 */
+	public isConnected() {
+		return this._isConnected;
+	}
+
+	private onDragStart = (e:  DragEvent)=> {
+
+		if(!this.group) {
+			this.group = "sortable-" + Component.uniqueID();
+		}
+		const target = e.target as HTMLElement;
+
+		// does this item belong to us? Not sure if this is efficient. Perhaps two sortables on the same el is madness.
+		if(this.findSortables().indexOf(target) === -1) {
+			console.warn("Sortable item not part of our sortables");
+			return;
+		}
+
+		// had to add this class because otherwise dragleave fires immediately on child nodes: https://stackoverflow.com/questions/7110353/html5-dragleave-fired-when-hovering-a-child-element
+		root.el.cls("+dragging");
+
+		Sortable.dragData = {
+			dragSrc: undefined,
+			pos: "before",
+			overEl: undefined,
+			fromIndex: -1,
+			toIndex: -1,
+			group:"",
+			sourceComponent: root,
+			dataSet: {}
+		}
+
+		Sortable.dragData.group = this.group;
+		Sortable.dragData.dragSrc = target;
+		Sortable.dragData.sourceComponent = this.component;
+
+		Sortable.dragData.fromIndex = this.findIndex(target);
+
+		e.dataTransfer!.setData('text/plain', 'goui');
+		e.dataTransfer!.effectAllowed = "copyMove";
+		target.classList.add("drag-src");
+		(e as SortableDragEvent).setDragComponent = function(this:DragEvent,comp:Component)  {
+			Sortable.getDragImg().items.replace(comp);
+			this.dataTransfer!.setDragImage(comp.el, 0, 0)
+		}.bind(e);
+
+		this.fire("dragstart", {ev: e as SortableDragEvent, dragData: Sortable.dragData});
+	}
+
+	private onDrop = (e:  DragEvent)=> {
+		e.preventDefault();
+		this.endDrag(e);
+	}
+
+	private onDragEnd = (e:  DragEvent)=> {
+		e.preventDefault();
+		this.endDrag(e);
+	}
+
+	private onDragOver = (e:  DragEvent) => {
+
+		if(!Sortable.dragData || Sortable.dragData.group != this.group) {
+			return;
+		}
+
+		if(!this.dropOn && !this.dropBetween) {
+			return;
+		}
+
+		const target = e.target as HTMLElement;
+		Sortable.dragData.overEl = target.closest(this.sortableChildSelector) as HTMLElement;
+
+		this.setIndex(e);
+
+		if(!this.dropAllowed()) {
+			return;
+		}
+
+		const dropPin = Sortable.getDropPin();
+
+		let rect;
+		if(Sortable.dragData.overEl) {
+			rect = Sortable.dragData.overEl.getBoundingClientRect();
+			Sortable.dragData.pos = this.getDragPos(rect, e);
+		} else {
+			rect = this.component.el.getBoundingClientRect();
+		}
+
+		switch(Sortable.dragData.pos) {
+			case "before":
+				e.preventDefault();
+				e.stopPropagation();
+				e.dataTransfer!.dropEffect = "move";
+				dropPin.hidden = false;
+
+				if(this.horizontal) {
+					dropPin.el.style.top = rect.y + "px";
+					dropPin.el.style.left = (rect.x - this.gap()) + "px";
+					dropPin.el.style.height = rect.height + "px";
+				} else {
+					dropPin.el.style.top = (rect.y - this.gap()) + "px";
+					dropPin.el.style.left = rect.x + "px";
+					dropPin.el.style.width = rect.width + "px";
+				}
+				break;
+
+			case "on":
+				if(!this.dropOn) {
+					return;
+				}
+				e.dataTransfer!.dropEffect = "copy";
+				dropPin.hidden = true;
+
+				e.preventDefault();
+				e.stopPropagation();
+
+				break;
+
+			case "after":
+				e.preventDefault();
+				e.stopPropagation();
+				e.dataTransfer!.dropEffect = "move";
+				dropPin.hidden = false;
+
+				if(this.horizontal) {
+					dropPin.el.style.top = rect.y + "px";
+					dropPin.el.style.left = (rect.x + rect.width + this.gap()) + "px";
+					dropPin.el.style.height = rect.height + "px";
+					dropPin.el.style.width = "";
+				} else {
+					dropPin.el.style.top = (rect.y + rect.height + this.gap()) + "px";
+					dropPin.el.style.left = rect.x + "px";
+					dropPin.el.style.width = rect.width + "px";
+					dropPin.el.style.height = "";
+				}
+
+				break;
+		}
+	};
 
 	private setIndex(e:DragEvent) {
 
