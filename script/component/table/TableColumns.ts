@@ -138,7 +138,7 @@ export class TableColumn<EventMap extends TableColumnEventMap = TableColumnEvent
 	/**
 	 * Minimum width of the column
 	 */
-	public minWidth:number = 60;
+	public minWidth:number = 40;
 
 	/**
 	 * Internal to keep track of auto managed width
@@ -486,6 +486,7 @@ export const checkboxselectcolumn = (config?: Config<CheckboxColumn>) => createC
  * 				text: t("Open"),
  * 				icon: "open_in_new",
  * 				handler: (b) => {
+ * 					const tbl = b.parent!.dataSet.table;
  * 					this.open(b.parent!.dataSet.rowIndex);
  * 				}
  * 			})
@@ -505,6 +506,7 @@ export const menucolumn = (config:Config<TableColumn> & {menu: Menu}) => {
 	return column({
 		sticky: true,
 		width: 40,
+		minWidth: 40,
 		id: "btn",
 		init: (tbl) => {
 			tbl.on("remove", () => {
