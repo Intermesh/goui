@@ -183,7 +183,16 @@ export class List<StoreType extends Store = Store, EventMapType extends ListEven
 	 * rendering rows. It may require a reload
 	 *
 	 */
-	public draggableRows = false;
+	public get draggableRows() {
+		return this._draggableRows;
+	}
+
+	public set draggableRows(d) {
+		this._draggableRows = d;
+		this.toggleSortable();
+	}
+
+	private _draggableRows = false;
 
 	/**
 	 * Allow to drop between items
@@ -197,7 +206,8 @@ export class List<StoreType extends Store = Store, EventMapType extends ListEven
 	}
 
 	private toggleSortable() {
-		(this.dropBetween || this.dropOn) ? this.getSortable().connect() : this.getSortable().disconnect();
+		//sortable for _draggableRows is needed when dragging rows to another component with a sortable
+		(this.dropBetween || this.dropOn || this._draggableRows) ? this.getSortable().connect() : this.getSortable().disconnect();
 	}
 
 	/**
@@ -673,7 +683,7 @@ export class List<StoreType extends Store = Store, EventMapType extends ListEven
 			.cls('+data')
 			.attr('tabindex', '0');
 
-		if (this.draggableRows) {
+		if (this._draggableRows) {
 			row.draggable = true;
 		}
 		const r = this.renderer(record, row, this, storeIndex);

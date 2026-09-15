@@ -700,6 +700,7 @@
 
 	&.duration, &.time {
 		.control {
+			border-radius: inherit;
 			line-height: util.dp(46);
 			display: flex;
 			flex-direction: row;
@@ -714,6 +715,7 @@
 			box-sizing: content-box;
 			padding-right: util.dp(2);
 			padding-left: util.dp(2);
+			border-radius: inherit;
 		}
 		input.text.hour {
 			padding-left: util.dp(16);

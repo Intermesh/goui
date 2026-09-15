@@ -1625,7 +1625,7 @@ export const a = (config: Config<Component> & {href?:string, target?: string}, .
 		target: config.target ?? ""
 	}
 
-	if(!config.html && !config.text && config.href) {
+	if(!config.html && !config.text && config.href && !items.length) {
 		a.text = config.href;
 	}
 	return a;
