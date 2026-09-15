@@ -514,8 +514,8 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 			});
 
 			splitter.on("drag", ( {dragData}) => {
-				const w = dragData.data.startWidth + dragData.x - dragData.startX;
-				header.style.width = Table.pxToRem(w) / 10 + "rem"
+				const w = Math.max(Table.pxToRem(dragData.data.startWidth + dragData.x - dragData.startX), h.minWidth);
+				header.style.width = (w / 10 ) + "rem"
 				h.width = w;
 				this.el!.style.width = this.calcTableWidth() / 10 + "rem";
 			});
@@ -698,6 +698,10 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 				header.style.width = (h.width / 10) + "rem";
 			}
 
+			if(h.minWidth) {
+				header.style.minWidth = (h.minWidth / 10) + "rem";
+			}
+
 			if (h.align) {
 				header.style.textAlign = h.align;
 			}
@@ -834,7 +838,7 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 
 		this.columns.forEach(c => {
 			if (!c.hidden && c.autoWidth) {
-				c.width = autoColWidth;
+				c.width = Math.max(autoColWidth, c.minWidth);
 				c.headerEl!.style.width = (c.width / 10) + "rem";
 			}
 		})

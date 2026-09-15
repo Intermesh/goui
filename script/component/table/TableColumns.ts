@@ -136,6 +136,11 @@ export class TableColumn<EventMap extends TableColumnEventMap = TableColumnEvent
 	public width?: number
 
 	/**
+	 * Minimum width of the column
+	 */
+	public minWidth:number = 60;
+
+	/**
 	 * Internal to keep track of auto managed width
 	 */
 	public autoWidth = false;
