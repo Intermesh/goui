@@ -28,6 +28,8 @@ type NotificationVariant =
 	'error';
 
 export interface INotification {
+	/** Use to override previous existing notification */
+	readonly tag?: string
 	/** Will not show before the time */
 	readonly time?: Date
 	/** full path to png icon */
