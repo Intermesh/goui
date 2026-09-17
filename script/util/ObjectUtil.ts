@@ -65,8 +65,11 @@ export class ObjectUtil {
 			return o2;
 		}
 
-		for (let key in o2) {
-			if (key in o1 && this.isObject(o1[key])) {
+		for (const key of Object.keys(o2)) {
+			if (ObjectUtil.isUnsafeKey(key)) {
+				continue;
+			}
+			if (Object.hasOwn(o1, key) && this.isObject(o1[key])) {
 				o1[key] = this.merge(o1[key], o2[key]);
 			} else {
 				o1[key] = o2[key];
@@ -85,12 +88,20 @@ export class ObjectUtil {
 		return structuredClone(source);
 	}
 
+	/**
+	 * Keys that would reach or replace an object's prototype
+	 */
+	private static isUnsafeKey(key: string) {
+		return key === "__proto__" || key === "constructor" || key === "prototype";
+	}
+
 	public static explodePointer(path:string) {
 		const parts = path.replace(/^\//, "").split('/');
 		// ignore leading / as it is implicit
 		for(let i=0; i < parts.length; i++) {
-			parts[i].replace('~1', '/')
-				.replace('~0', '~');
+			// ~1 must be decoded before ~0 so "~01" becomes "~1" and not "/"
+			parts[i] = parts[i].replaceAll('~1', '/')
+				.replaceAll('~0', '~');
 		}
 		return parts;
 	}
@@ -105,7 +116,7 @@ export class ObjectUtil {
 			doc = {}; // server will return null for empty maps
 		}
 
-		if(!(part in doc) && length > 0) {
+		if(!Object.hasOwn(doc, part) && length > 0) {
 			throw new Error('patching item in non-existing objects')
 		}
 
@@ -133,7 +144,12 @@ export class ObjectUtil {
 
 		for(const p in patch) {
 			try {
-				doc = ObjectUtil.internalPatch(doc, ObjectUtil.explodePointer(p), patch[p]);
+				const path = ObjectUtil.explodePointer(p);
+				// validate the whole path before mutating anything
+				if(path.some(ObjectUtil.isUnsafeKey)) {
+					throw new Error('Unsafe key in JSON pointer');
+				}
+				doc = ObjectUtil.internalPatch(doc, path, patch[p]);
 			} catch(e) {
 				console.warn("Error patching object: ", p, patch, doc)
 			}
