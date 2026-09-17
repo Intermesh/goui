@@ -3,7 +3,7 @@
  * @copyright Copyright 2026 Intermesh BV
  * @author Michael de Hart <mdhart@intermesh.nl>
  */
-import {comp, MaterialIcon, Observable, root} from "./component/index";
+import {comp, Component, MaterialIcon, Observable, root} from "./component/index";
 
 type NotificationCategory =
             // PURPOSE                   | BEHAVIOUR                                                   | PRESENTATION
@@ -27,6 +27,8 @@ type NotificationVariant =
 	'info' |
 	'error';
 
+type btnAction = {text:string, icon?:MaterialIcon, run:()=>void};
+
 export interface INotification {
 	/** Use to override previous existing notification */
 	readonly tag?: string
@@ -39,13 +41,15 @@ export interface INotification {
 	/** body of notification. (no HTML) */
 	readonly text: string
 	/** used for behavior / presentation, defaults to 'message' */
-	readonly category?: NotificationCategory
+	readonly category: NotificationCategory
 	/** theme/color variant of the notification */
 	readonly variant?: NotificationVariant
 	/** time when notification disappears without interaction */
 	readonly stale?: Date
+	/** an optional reference to a rendered component for updating */
+	card?: Component
 	/** optional actions to show */
-	readonly actions?: {[action:string]:{text:string, icon?:MaterialIcon, run:()=>void}}
+	readonly actions?: {primary: btnAction, secondary?: btnAction}
 	onClose?: ()=>void
 	onClick?: ()=>void
 	onProcessed?: (loaded:number,total:number)=>void
