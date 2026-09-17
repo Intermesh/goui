@@ -6,7 +6,8 @@ type CollapseTarget = ((btn:CollapseButton) => Component) | Component
 
 /**
  * Button that can be used to hide and show another component
- * Use "stateId" to remember the collapsed state.
+ *
+ * Use a "stateId" on the target component to remember the collapsed state.
  */
 export class CollapseButton extends Button {
 
@@ -32,21 +33,7 @@ export class CollapseButton extends Button {
 				this.icon = "expand_more";
 			}
 
-			this.saveState();
-		}
-	}
-
-	protected buildState(): ComponentState {
-		return {
-			collapsed: this.getCollapseTarget().hidden
-		}
-	}
-
-	protected restoreState(state: ComponentState) {
-		super.restoreState(state);
-
-		if("collapsed" in state) {
-			this.getCollapseTarget().hidden = state.collapsed;
+			el.saveState();
 		}
 	}
 
