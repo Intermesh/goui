@@ -778,8 +778,6 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 
 		this.on("attach", () => {
 
-			console.log(this.stateId, this.hasAutoSizeCol, this.fit);
-
 			if(!this.hasAutoSizeCol || this.fit) {
 				return;
 			}

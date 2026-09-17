@@ -284,16 +284,15 @@ export class Window<EventMap extends WindowEventMap = WindowEventMap> extends Dr
 
 		this.resizeHandlePadder.appendChild(this.itemContainerEl);
 
+		if (this.maximized) {
+			this.maximize();
+		}
+
 		const el = super.internalRender();
 
 		this.on("drop", () => {
 			this.saveState();
 		});
-
-
-		if (this.maximized) {
-			this.maximize();
-		}
 
 		el.setAttribute('tabindex', "-1");
 
