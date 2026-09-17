@@ -5,7 +5,7 @@ import {
 	DataSourceStore,
 	datasourcestore,
 	DataSourceStoreConfig,
-	Filter,
+	Filter, store,
 } from "../../data/index.js";
 import {column, Table, table, TableConfig} from "../table/index.js";
 import {createComponent} from "../Component.js";
@@ -67,13 +67,13 @@ export class ComboBox<DS extends AbstractDataSource = AbstractDataSource> extend
 		storeConfig.dataSource = dataSource;
 
 		const dropDownTable = table(Object.assign({
+			fit: true,
 			headers: false,
 			store: datasourcestore(storeConfig as DataSourceStoreConfig<any, any>),
 			columns:[
 				column({
 					id: displayProperty,
 					resizable: true,
-					width: 312,
 					htmlEncode:false,
 					sortable: true,
 					renderer:(_columnValue, record) => {
