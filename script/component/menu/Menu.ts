@@ -119,7 +119,7 @@ export class Menu<EventMap extends MenuEventMap = MenuEventMap> extends Abstract
 	public alignTo?: HTMLElement;
 
 	/**
-	 * Make the menu at least as wide as the component it aligns too.
+	 * Make the menu as wide as the component it aligns too.
 	 */
 	public alignToInheritWidth = false;
 
@@ -317,8 +317,8 @@ export class Menu<EventMap extends MenuEventMap = MenuEventMap> extends Abstract
 		}
 
 		if(this.alignToInheritWidth) {
-			// make the menu at least as wide as the component it aligns too.
-			this.el.style.minWidth = rect.width + "px";
+			// make the menu as wide as the component it aligns too.
+			this.el.style.width = rect.width + "px";
 		}
 
 		// make sure menu is not off screen
