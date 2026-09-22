@@ -19,7 +19,7 @@ import {E} from "../../util";
  * @link https://goui.io/#form/Select Examples
  *
  */
-type SelectOption = { [key: string]: any };
+export type SelectOption = { [key: string]: any };
 
 /**
  * Select field
