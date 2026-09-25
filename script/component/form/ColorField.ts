@@ -33,7 +33,7 @@ export class ColorField extends Field {
 				menu:
 					menu({
 							alignTo:  this.el,
-							alignToInheritWidth: true
+							//alignToInheritWidth: true
 						},
 						this.picker
 					)
@@ -51,22 +51,6 @@ export class ColorField extends Field {
 			//important to set value after focus so change event will fire on focusout
 			this.value = color;
 		});
-
-
-		let ro:ResizeObserver|undefined;
-
-		this.on("attach", () => {
-			ro = new ResizeObserver( FunctionUtil.onRepaint(() => {
-				this.pickerButton.menu!.align();
-			}));
-
-			ro.observe(picker.el);
-		}).on("detach", () => {
-			if(ro) {
-				ro.disconnect();
-				ro = undefined;
-			}
-		})
 
 		return picker;
 	}
