@@ -83,6 +83,9 @@ export class DataSourceStore<
 		super();
 
 		// Always start listening for changes. If no component is bound then it will always stay in memory.
+
+
+		// I must evaluate this.
 		this.listen();
 	}
 
@@ -183,6 +186,21 @@ export class DataSourceStore<
 			this.dataSource.un("change", this.onDSChange);
 			this.listening = false;
 		}
+	}
+
+	/**
+	 * Stops listening for datasource changes so this store can be garbage collected.
+	 *
+	 * A store bound to a component already stops listening once its last component unbinds (see
+	 * {@link unbindComponent}). This is only needed for a store that's used without ever binding a
+	 * component - for example one that's just loaded and queried directly. Without calling this,
+	 * such a store stays subscribed to its datasource for as long as the datasource lives, per the
+	 * comment in the constructor.
+	 */
+	public destroy() {
+		this.cancelPostponedReload();
+		this.dataSource.un("change", this.onDSChange);
+		this.listening = false;
 	}
 
 
