@@ -89,19 +89,82 @@ export class DataSourceStore<
 	private listening = false;
 
 	/**
-	 * Reloads the store when the datasource changes
+	 * Set when the datasource changed but none of the bound components were visible, so the reload
+	 * was postponed. The store will reload as soon as a bound component becomes visible.
+	 */
+	private dirty = false;
+
+	private visibilityObserver?: IntersectionObserver;
+
+	/**
+	 * Reloads the store when the datasource changes.
+	 *
+	 * If none of the bound components are currently visible, the reload is postponed until one of
+	 * them becomes visible so we don't reload data that isn't shown to the user.
 	 *
 	 * @protected
 	 */
 	protected onDSChange() {
-		if (this.loaded && this.monitorChanges && !this.loading) {
-			void this.reload();
+		if (!this.loaded || !this.monitorChanges || this.loading) {
+			return;
 		}
+
+		if (!this.components.length || this.hasVisibleComponent()) {
+			void this.reload();
+		} else {
+			this.dirty = true;
+			this.watchForVisibility();
+		}
+	}
+
+	/**
+	 * Clears a reload that was postponed by {@link onDSChange} because nothing was visible.
+	 *
+	 * @private
+	 */
+	private cancelPostponedReload() {
+		this.dirty = false;
+		this.visibilityObserver?.disconnect();
+		this.visibilityObserver = undefined;
+	}
+
+	/**
+	 * Checks if any of it's bound components is visible
+	 * @private
+	 */
+	private hasVisibleComponent() {
+		return this.components.some(comp => comp.el.isConnected && comp.el.getClientRects().length > 0);
+	}
+
+	/**
+	 * Watches the bound components and reloads the store as soon as one of them becomes visible.
+	 * Used to postpone a reload triggered by {@link onDSChange} while nothing is visible.
+	 *
+	 * @private
+	 */
+	private watchForVisibility() {
+
+		console.log("watch");
+		if (!this.visibilityObserver) {
+			this.visibilityObserver = new IntersectionObserver(entries => {
+				if (entries.some(entry => entry.isIntersecting)) {
+
+					console.log("reload!");
+					void this.reload();
+				}
+			}, {threshold: 0.01}); // fires as soon as even 1% is visible
+		}
+
+		this.components.forEach(comp => this.visibilityObserver!.observe(comp.el));
 	}
 
 	bindComponent(comp: StoreComponent<this, RecordType>) {
 		super.bindComponent(comp);
 		this.listen();
+
+		if (this.dirty) {
+			this.watchForVisibility();
+		}
 	}
 
 	private listen() {
@@ -114,6 +177,8 @@ export class DataSourceStore<
 	unbindComponent(comp: StoreComponent<this, RecordType>) {
 		super.unbindComponent(comp);
 
+		this.visibilityObserver?.unobserve(comp.el);
+
 		if(!this.components.length) {
 			this.dataSource.un("change", this.onDSChange);
 			this.listening = false;
@@ -122,6 +187,8 @@ export class DataSourceStore<
 
 
 	protected async internalLoad(append = false) {
+
+		this.cancelPostponedReload();
 
 		const queryParams:QueryParams = structuredClone(this.queryParams);
 		queryParams.sort = this.sort;
