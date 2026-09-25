@@ -408,14 +408,11 @@ export class Component<EventMapType extends ComponentEventMap = ComponentEventMa
 	 * You can also call it manually if you need it sooner.
 	 */
 	public initState() {
-		if(this.stateInitialized) {
+		if(this.stateInitialized || !this.stateId) {
 			return;
 		}
 
 		this.stateInitialized = true;
-		if(!this.stateId) {
-			return;
-		}
 
 		this.restoreState(this.getState())
 	}
