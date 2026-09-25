@@ -264,6 +264,28 @@ html {
 			height: 100% !important;
 		}
 	}
+
+
+	.main-3-col {
+		.west {
+			position:absolute;
+			top: 0;
+			bottom: 0;
+			background-color: #f1f1f1;
+
+			z-index: 301;
+
+
+			transform: translate3d(-100%, 0, 0);
+			transition: transform 100ms cubic-bezier(0.32, 0, 0.67, 0);
+
+			&.active {
+				border-right: config.$borderWidth solid config.$colorBorder;
+				box-shadow: 10px 0 5px -2px config.$ambient;
+				transform: translate3d(0, 0, 0);
+			}
+		}
+	}
 }
 @media only screen and ((max-width: config.$breakpointSmall)) {
 	.not-small-device {
@@ -277,6 +299,37 @@ html {
 		> * {
 			width: 100% !important; //important to override inline width applied by splitter state.
 			height: 100% !important;
+		}
+	}
+
+
+	.main-3-col {
+		.center {
+			position:absolute;
+			top: 0;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			background-color: config.$surfaceLowest;
+			z-index: 300;
+
+			width: 100% !important; //important to override inline width applied by splitter state.
+			height: 100% !important;
+		}
+		.east {
+			position:absolute;
+			top: 0;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			background-color: config.$surfaceLowest;
+			z-index: 301;
+			transform: translate3d(100%, 0, 0);
+			width: 100% !important; //important to override inline width applied by splitter state.
+			height: 100% !important;
+			&.active {
+				transform: translate3d(0, 0, 0);
+			}
 		}
 	}
 }
@@ -324,6 +377,9 @@ html {
 		border-top-right-radius: inherit;
 	}
 }
+
+
+
 
 
 

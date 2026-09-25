@@ -84,9 +84,9 @@ $zIndexAlert: 40000 !default;
 $zIndexMenu: 50000 !default;
 $zIndexMask: 30000;
 
-$breakpointXL: 1200px !default;
-$breakpointLarge: 992px !default;
-$breakpointMedium: 932px !default;
+//$breakpointXL: 1200px !default; // not used
+//$breakpointLarge: 992px !default; // not used
+$breakpointMedium: 1200px !default;
 $breakpointSmall: 576px !default;
 
 
