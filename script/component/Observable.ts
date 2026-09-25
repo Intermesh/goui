@@ -231,8 +231,14 @@ export class Observable<EventMapType extends ObservableEventMap = ObservableEven
 
 		for (let l of this.lisnrs[eventName]) {
 
-			if (l.listener.call(this, ev) === false) {
-				ret = false;
+			try {
+				if (l.listener.call(this, ev) === false) {
+					ret = false;
+				}
+			} catch(e) {
+				// todo: Is this correct behaviour to catch all exceptions here? it allows a module to fail loading which is good
+				// but in some cases you might want to stop on exceptions.
+				console.error(`Exception while calling ${eventName.toString()} listener of object ${this.constructor.name}`, e);
 			}
 		}
 
