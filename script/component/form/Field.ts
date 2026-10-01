@@ -299,28 +299,7 @@ export abstract class Field<EventMap extends FieldEventMap = FieldEventMap, Elem
 		this.el.addEventListener("focusin", this.onFocusIn.bind(this));
 		this.el.addEventListener("focusout", this.onFocusOut.bind(this));
 
-		this.calcLabelLeft();
-
 		return el;
-	}
-
-	/**
-	 * When using a prefix or icon we don't know the exact position of the label.
-	 * We need to calculate the left position of the label based on the position of the icon.
-	 * Otherwise the CSS transition won't work.
-	 * @private
-	 */
-	protected calcLabelLeft() {
-
-		if(!this._labelEl) {
-			return;
-		}
-
-		this._labelEl.style.left = "auto";
-		if(this._icon || this._prefix) {
-			const s = window.getComputedStyle(this._labelEl!);
-			this._labelEl!.style.left =  (this._labelEl!.offsetLeft - parseFloat(s.marginLeft)) + "px";
-		}
 	}
 
 	/**
@@ -926,7 +905,6 @@ false
 		if(this.wrap && this.iconEl) {
 			this.wrap.insertBefore(this.iconEl, this.wrap.firstChild);
 		}
-		this.calcLabelLeft();
 	}
 
 
@@ -936,7 +914,6 @@ false
 
 		if(this.rendered) {
 			this.renderPrefix();
-			this.calcLabelLeft();
 		}
 	}
 

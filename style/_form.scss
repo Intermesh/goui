@@ -301,6 +301,7 @@
 		display: flex;
 		min-width: 0; // for shrinking smaller than content
 		min-height: 0;
+		anchor-name: --ctl;
 	}
 }
 
@@ -600,7 +601,7 @@
 		pointer-events: none;
 		position:absolute;
 		margin-left: util.dp(12);
-		//left: util.dp(12); // auto but will be calculated in JS to allow smooth transition
+		left: anchor(--ctl left); // doesn't animate on firefox. Hopefully will be fixed soon: https://bugzilla.mozilla.org/show_bug.cgi?id=1924226
 		padding: 0 util.dp(4);
 		top: util.dp(23);//math.div(config.$baseLineHeight, 2) + util.dp(11);
 		height: config.$borderWidth;
