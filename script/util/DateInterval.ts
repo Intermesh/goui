@@ -1,9 +1,57 @@
 import {DateTime} from "./DateTime.js";
+import {t} from "../Translate.js";
 
 function pad(n: any): string {
 	return n.toString().padStart(2, "0");
 }
 
+function toText(dateInterval: DateInterval) {
+	const parts = [];
+
+	if(dateInterval.years) {
+		parts.push(dateInterval.years + " " + t("years"));
+	}
+	if(dateInterval.months) {
+		parts.push(dateInterval.months + " " + t("months"));
+	}
+	if(dateInterval.days) {
+		parts.push(dateInterval.days + " " + t("days"));
+	}
+
+	if(dateInterval.hours) {
+		parts.push(dateInterval.hours + " " + t("hours"));
+	}
+
+	if(dateInterval.minutes) {
+		parts.push(dateInterval.minutes + " " + t("minutes"));
+	}
+
+	if(dateInterval.seconds) {
+		parts.push(dateInterval.seconds + " " + t("seconds"));
+	}
+
+	let text = "";
+	switch(parts.length) {
+		case 0:
+			return t("now");
+
+		case 1:
+			text = parts[0];
+		break;
+		default:
+			const last = parts.pop();
+
+			text =  parts.join(t(", ")) + " " + t("and") + " " + last;
+			break;
+	}
+
+	if(dateInterval.invert) {
+		return text + " " + t("ago");
+	} else {
+		return t("in") + " " + text;
+	}
+
+}
 
 /**
  * DateInterval class
@@ -98,6 +146,8 @@ export class DateInterval {
 
 		'R': dateInterval => dateInterval.invert ? "-" : "+",
 		'r': dateInterval => dateInterval.invert ? "-" : "",
+
+		'T': dateInterval => toText(dateInterval)
 
 	};
 
@@ -276,6 +326,8 @@ export class DateInterval {
 	 * f	Microseconds, numeric, eg.	7701, 52738, 428291
 	 * R	Sign "-" when negative, "+" when positive, eg.	-, +
 	 * r	Sign "-" when negative, empty when positive, eg.	-,
+	 *
+	 * T  2 days, 5 hours and 30 minutes
 	 *
 	 * @param format
 	 */
