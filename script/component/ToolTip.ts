@@ -48,7 +48,7 @@ export class ToolTip extends Component {
 
 	constructor() {
 		super("menu");
-		this.baseCls = "goui-dropdown";
+		this.baseCls = "goui-dropdown tooltip";
 	}
 
 	/**
