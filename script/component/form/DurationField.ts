@@ -172,8 +172,8 @@ export class DurationField extends Field {
 		}
 
 		const dateInterval = new DateInterval();
-		dateInterval.hours = parseInt(this.hoursInput!.value);
-		dateInterval.minutes = parseInt(this.minutesInput!.value);
+		dateInterval.hours = this.hoursInput!.value ? parseInt(this.hoursInput!.value) : 0;
+		dateInterval.minutes = this.minutesInput!.value ? parseInt(this.minutesInput!.value) : 0;
 
 		if(this.outputFormat == 'j') {
 			return dateInterval.getTotalMinutes();
