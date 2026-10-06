@@ -793,8 +793,20 @@ export class HtmlField extends Field<HtmlFieldEventMap> {
 		if (!this.editor) {
 			return this._value as string;
 		} else {
-			return this.editor.innerHTML;
+			return this.editorIsEmpty() ? "" : this.editor.innerHTML;
 		}
+	}
+
+	/**
+	 * When the user removes all text the browser often leaves markup behind like <br>, <div><br></div> or empty
+	 * formatting tags. Treat that as empty.
+	 */
+	private editorIsEmpty() {
+		const editor = this.editor!;
+		if (editor.textContent?.trim()) {
+			return false;
+		}
+		return !editor.querySelector("img,hr,table,video,audio,iframe,object,embed,svg,canvas,input");
 	}
 
 	public focus(o?: FocusOptions) {
