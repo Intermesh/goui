@@ -15,7 +15,7 @@ import {
 	QueryParams
 } from "./AbstractDataSource.js";
 import {ObjectUtil} from "../util/index.js";
-import {createComponent, ListenersConfig} from "../component/index.js";
+import {Component, createComponent, ListenersConfig} from "../component/index.js";
 
 
 /**
@@ -107,8 +107,16 @@ export class DataSourceStore<
 	 *
 	 * @protected
 	 */
-	protected onDSChange() {
+	protected onDSChange(ev?: DataSourceEventMap['change']) {
 		if (!this.loaded || !this.monitorChanges || this.loading) {
+			return;
+		}
+
+		if (ev && this.isOwnChange(ev)) {
+			// We made this change ourselves and were in sync before it, so we're still up-to-date. The origin
+			// already shows the new values, but our records don't have them yet.
+			this.applyPatches(ev.patches);
+			this.loadedState = ev.changes.newState;
 			return;
 		}
 
@@ -118,6 +126,46 @@ export class DataSourceStore<
 			this.dirty = true;
 			this.watchForVisibility();
 		}
+	}
+
+	/**
+	 * The data source state the current data was loaded in. Used to verify that nothing else changed between
+	 * loading and a change that we made ourselves.
+	 */
+	private loadedState?: string;
+
+	private applyPatches(patches?: DataSourceEventMap['change']['patches']) {
+		for (const id of Object.keys(patches ?? {})) {
+			const record = this.findById(id);
+			if (record) {
+				ObjectUtil.patch(record, patches![id]);
+			}
+		}
+	}
+
+	/**
+	 * Checks if a data source change was made by this store (or a component bound to it) and nothing else changed
+	 * since we loaded. In that case there's no need to reload.
+	 *
+	 * Only updates qualify. Creating or destroying entities always changes the list.
+	 *
+	 * @private
+	 */
+	private isOwnChange({changes, origin, patches}: DataSourceEventMap['change']) {
+		if (!origin || !patches || !this.loadedState || changes.oldState !== this.loadedState || !changes.newState) {
+			return false;
+		}
+
+		if (changes.created?.length || changes.destroyed?.length) {
+			return false;
+		}
+
+		if (origin === this) {
+			return true;
+		}
+
+		// Every bound component must belong to the origin. Otherwise another component would keep showing old data.
+		return this.components.length > 0 && this.components.every(comp => comp === origin || (origin instanceof Component && origin.el.contains(comp.el)));
 	}
 
 	/**
@@ -217,6 +265,8 @@ export class DataSourceStore<
 		}
 
 		const queryResponse = await this.dataSource.query(queryParams);
+		// query() brings the data source up-to-date, so this is the state our data corresponds to.
+		const state = await this.dataSource.getState();
 
 		if (this.queryParams.limit) {
 			// check if the server has more data.
@@ -242,6 +292,7 @@ export class DataSourceStore<
 
 		const records = await this.buildRecords(await this.fetchRelations(list, this.relations));
 		this.loadData(records, append);
+		this.loadedState = state;
 
 		return records;
 	}

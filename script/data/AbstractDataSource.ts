@@ -237,7 +237,19 @@ export interface DataSourceEventMap extends ObservableEventMap{
 	/**
 	 * Fires when data changed in the store
 	 */
-	change: {changes: Changes}
+	change: {
+		changes: Changes,
+		/**
+		 * The object that passed itself as origin to create(), update() or destroy(). Only set when all entities
+		 * in the commit came from the same origin. A {@link DataSourceStore} uses it to skip reloading after a
+		 * change it made itself.
+		 */
+		origin?: object,
+		/**
+		 * The patches that were sent to the server, by entity ID. Only set for commits.
+		 */
+		patches?: Record<EntityID, Record<string, any>>
+	}
 }
 
 export type dataSourceEntityType<DS> = DS extends AbstractDataSource<infer EntityType> ? EntityType : never;
@@ -246,12 +258,14 @@ type SaveData<EntityType extends BaseEntity> = {
 	data: Partial<EntityType> | Record<string, any>,
 	resolve: (value: any) => void, //changing this to EntityType somehow breaks!?
 	reject: (reason?: any) => void,
-	promise?: Promise<EntityType>
+	promise?: Promise<EntityType>,
+	origin?: object
 }
 
 interface DestroyData {
 	resolve: (value: EntityID) => void,
-	reject: (reason?: any) => void
+	reject: (reason?: any) => void,
+	origin?: object
 }
 
 type GetData = {
@@ -643,8 +657,9 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	 *
 	 * @param data
 	 * @param createId The create ID to use when committing this entity to the server
+	 * @param origin See {@link update}
 	 */
-	public create(data: Partial<EntityType>, createId?: EntityID): Promise<EntityType> {
+	public create(data: Partial<EntityType>, createId?: EntityID, origin?: object): Promise<EntityType> {
 
 		if (createId === undefined) {
 			createId = this.createID()
@@ -654,7 +669,8 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 			this.creates[createId!] = {
 				data: data,
 				resolve: resolve,
-				reject: reject
+				reject: reject,
+				origin: origin
 			}
 		}).finally(() => {
 			delete this.creates[createId!];
@@ -683,13 +699,22 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	 *
 	 * @param id
 	 * @param data
+	 * @param origin The store or component that made this change and already shows the new values. A store won't reload
+	 *  when the change comes back from the server if it is the origin, or if all of its bound components are the
+	 *  origin or inside it, and it was in sync with the server state before the change. It then patches its
+	 *  records in place. A store that also has components outside the origin reloads. Only pass it when the change can't affect which
+	 *  records the origin's query returns, or their order.
 	 */
-	public update(id:EntityID, data: Partial<EntityType>|Record<string, any>): Promise<EntityType> {
+	public update(id:EntityID, data: Partial<EntityType>|Record<string, any>, origin?: object): Promise<EntityType> {
 
 		if(this.updates[id]) {
 			// update is called twice with the same ID before the commit() was done to the server. We'll merge the data into
 			// one action here and return the original promise.
 			Object.assign(this.updates[id].data, data);
+			if(this.updates[id].origin !== origin) {
+				// can't attribute the merged change to a single origin
+				this.updates[id].origin = undefined;
+			}
 			return this.updates[id].promise!;
 		}
 
@@ -697,7 +722,8 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 			this.updates[id] = {
 				data: data,
 				resolve: resolve,
-				reject: reject
+				reject: reject,
+				origin: origin
 			}
 		}).finally(() => {
 			delete this.updates[id];
@@ -722,12 +748,14 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	 * Multiple calls will be joined together in a single call on the next event loop
 	 *
 	 * @param id
+	 * @param origin See {@link update}
 	 */
-	public destroy(id: EntityID) : Promise<EntityID> {
+	public destroy(id: EntityID, origin?: object) : Promise<EntityID> {
 		const p = new Promise((resolve, reject) => {
 			this.destroys[id] = {
 				resolve: resolve,
-				reject: reject
+				reject: reject,
+				origin: origin
 			}
 		}).finally(() => {
 			delete this.destroys[id];
@@ -902,6 +930,10 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 		this.updates = {};
 		this.destroys = {};
 
+		// Only attribute the commit to an origin if every entity in it came from that same origin.
+		const origins = new Set([...Object.values(creates), ...Object.values(updates), ...Object.values(destroys)].map(e => e.origin));
+		const origin = origins.size === 1 ? [...origins][0] : undefined;
+
 		this.internalCommit(params).then(async (response) => {
 
 			if (response.created) {
@@ -969,7 +1001,9 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 					destroyed: response.destroyed || [],
 					oldState: response.oldState,
 					newState: response.newState
-				}
+				},
+				origin: origin,
+				patches: params.update as Record<EntityID, Record<string, any>>
 			});
 		})
 			.catch(e => {
