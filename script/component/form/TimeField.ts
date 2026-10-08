@@ -103,7 +103,14 @@ export class TimeField extends Field {
 		this.hoursInput.inputMode = "numeric";
 		this.hoursInput.type = "text";
 		this.hoursInput.pattern = "[0-9]+";
-		this.hoursInput.onblur = onBlur;
+		this.hoursInput.onblur = function (this: any) {
+			onBlur.call(this);
+
+			const max = this.twelveHour ? 11 : 23;
+			if (parseInt(this.value) > max) {
+				this.value = max + "";
+			}
+		};;
 		this.hoursInput.onfocus = onFocus;
 		this.hoursInput.onmousedown = onFocus;
 		this.hoursInput.maxLength = 2;
