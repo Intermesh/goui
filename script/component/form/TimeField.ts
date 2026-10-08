@@ -114,11 +114,6 @@ export class TimeField extends Field {
 		this.hoursInput.onfocus = onFocus;
 		this.hoursInput.onmousedown = onFocus;
 		this.hoursInput.maxLength = 2;
-		// this is annoying and not sure why it was needed
-		// this.hoursInput.oninput = FunctionUtil.buffer(500, function (this: any, e: any) {
-		// 	onBlur.call(this);
-		// 	onFocus.call(this, e)
-		// });
 
 		this.hoursInput.placeholder = "--";
 		this.hoursInput.autocomplete = "off";
@@ -131,16 +126,7 @@ export class TimeField extends Field {
 		this.minutesInput.type = "text";
 		this.minutesInput.pattern = "[0-9]+";
 		this.minutesInput.maxLength = 2;
-		// // this is annoying and not sure why it was needed
-		// this.minutesInput.oninput = FunctionUtil.buffer(500, function (this: any, e: any) {
-		//
-		// 	if (parseInt(this.value) > 59) {
-		// 		this.value = "59";
-		// 	}
-		//
-		// 	onBlur.call(this);
-		// 	onFocus.call(this, e)
-		// });
+
 		const hoursInput = this.hoursInput!;
 		this.minutesInput.onmousedown = onFocus;
 		this.minutesInput.onblur = function (this: any) {
