@@ -39,6 +39,11 @@ export class TimeField extends Field {
 		this.addButton(this.menuBtn);
 
 		this.twelveHour = Format.timeFormat12hour();
+
+		this.on("blur", () => {
+			if(!this.menuBtn.menu!.hidden)
+				this.menuBtn.menu!.close();
+		})
 	}
 
 	/**
@@ -265,6 +270,7 @@ export class TimeField extends Field {
 				height: 300,
 				width: 200,
 				alignTo: this.wrap,
+				closeOnButtonClick: false,
 				alignToInheritWidth: true,
 				cls: "hbox",
 				listeners: {

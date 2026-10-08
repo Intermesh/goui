@@ -102,6 +102,7 @@ export interface MenuEventMap extends ComponentEventMap {
 export class Menu<EventMap extends MenuEventMap = MenuEventMap> extends AbstractMenu<EventMap> {
 	private _parentMenu?: Menu | Toolbar | boolean;
 
+
 	constructor() {
 		super();
 		this.baseCls = "";
@@ -112,6 +113,12 @@ export class Menu<EventMap extends MenuEventMap = MenuEventMap> extends Abstract
 	 * Automatically close the menu when the user clicks outside.
 	 */
 	public autoClose = true;
+
+
+	/**
+	 * Close the menu when a button is clicked
+	 */
+	public closeOnButtonClick: boolean = true;
 
 	/**
 	 * Align the menu to this element
@@ -178,6 +185,10 @@ export class Menu<EventMap extends MenuEventMap = MenuEventMap> extends Abstract
 				ev.stopPropagation();
 			});
 
+
+		}
+
+		if(this.closeOnButtonClick) {
 			this.el.addEventListener("mouseup", (ev) => {
 
 				// Auto close menu when a button that is a direct child of the list is clicked. We don't want to close when
