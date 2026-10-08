@@ -7,6 +7,7 @@ import {Store, StoreComponent, StoreConfig, StoreEventMap, StoreRecord} from "..
 import {
 	AbstractDataSource,
 	BaseEntity,
+	Changes,
 	dataSourceEntityType,
 	DataSourceEventMap,
 	DefaultEntity,
@@ -144,6 +145,16 @@ export class DataSourceStore<
 	}
 
 	/**
+	 * True if the change is just updates, and we know what changed for every updated entity. The server can also
+	 * update entities we sent no patch for (for example related events). We know nothing about those.
+	 *
+	 * @private
+	 */
+	private isOnlyPatched(changes: Changes, patches: Record<EntityID, Record<string, any>>) {
+		return !changes.created?.length && !changes.destroyed?.length && (changes.updated ?? []).every(id => id in patches);
+	}
+
+	/**
 	 * Checks if a data source change was made by this store (or a component bound to it) and nothing else changed
 	 * since we loaded. In that case there's no need to reload.
 	 *
@@ -156,7 +167,7 @@ export class DataSourceStore<
 			return false;
 		}
 
-		if (changes.created?.length || changes.destroyed?.length) {
+		if (!this.isOnlyPatched(changes, patches)) {
 			return false;
 		}
 

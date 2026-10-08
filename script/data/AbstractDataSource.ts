@@ -246,7 +246,8 @@ export interface DataSourceEventMap extends ObservableEventMap{
 		 */
 		origin?: object,
 		/**
-		 * The patches that were sent to the server, by entity ID. Only set for commits.
+		 * The changes by entity ID: the patches that were sent to the server, with the properties the server set
+		 * in response merged over them. Only set for commits.
 		 */
 		patches?: Record<EntityID, Record<string, any>>
 	}
@@ -896,6 +897,19 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	protected abstract internalRemoteChanges(state: string | undefined): Promise<Changes>
 
 	/**
+	 * Merges the properties the server set in response to /set over the patches that were sent.
+	 *
+	 * Entities the server updated that we didn't send a patch for are not included.
+	 */
+	private mergeServerUpdates(sent: Record<EntityID, Record<string, any>> | undefined, fromServer: Record<EntityID, Partial<EntityType> | null> | undefined) {
+		const patches: Record<EntityID, Record<string, any>> = {};
+		for (const id in sent ?? {}) {
+			patches[id] = Object.assign({}, sent![id], fromServer?.[id] ?? {});
+		}
+		return patches;
+	}
+
+	/**
 	 * Commit pending changes to remote
 	 */
 	private async commit() {
@@ -951,6 +965,9 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 				}
 			}
 
+			// What changed per entity: the patches we sent with the properties the server set merged over them.
+			const patches = this.mergeServerUpdates(params.update, response.updated);
+
 			if (response.updated) {
 				for (let serverId in response.updated) {
 
@@ -967,8 +984,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 					} else {
 
 						//merge existing data, with updates from client and server
-						let data = params.update && params.update[serverId] ? ObjectUtil.patch(this.data[serverId], params.update[serverId]) : this.data[serverId];
-						data = Object.assign(data, response.updated[serverId] || {});
+						const data = patches[serverId] ? ObjectUtil.patch(this.data[serverId], patches[serverId]) : this.data[serverId];
 						this.add(data).then(onUpdated);
 					}
 				}
@@ -1003,7 +1019,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 					newState: response.newState
 				},
 				origin: origin,
-				patches: params.update as Record<EntityID, Record<string, any>>
+				patches: patches
 			});
 		})
 			.catch(e => {
