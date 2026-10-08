@@ -363,7 +363,7 @@ export class DataSourceStore<
 				}catch(e) {
 
 					// could be normal that a relation is not found
-					console.warn("Failed to fetch relation", e);
+					console.warn("Failed to fetch relation '" + relationName + '"', e, record);
 					continue;
 				}
 
@@ -377,7 +377,7 @@ export class DataSourceStore<
 								record[relationName as (keyof dataSourceEntityType<DataSource>)] = e as never;
 							}
 						}).catch(e => {
-							console.warn("Failed to fetch relation", e)
+							console.warn("Failed to fetch relation '" + relationName + '"', e, record)
 						})
 					);
 				} else {
@@ -388,7 +388,7 @@ export class DataSourceStore<
 
 						record[relationName as (keyof dataSourceEntityType<DataSource>)] = entities;
 					}).catch(e => {
-						console.warn("Failed to fetch relation", e)
+						console.warn("Failed to fetch relation '" + relationName + '"', e, record)
 					}));
 
 				}
