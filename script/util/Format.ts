@@ -216,13 +216,20 @@ export class Format {
 	/**
 	 * Format a time to a string
 	 * @param date
+	 * @param leadingZero
 	 */
-	public static time(date: string | DateTime | Date) {
+	public static time(date: string | DateTime | Date, leadingZero = false) {
 		if (!(date instanceof DateTime)) {
 			date = new DateTime(date);
 		}
 
-		return date.toTimezone(this.timezone).format(Format.timeFormat)
+		let f = Format.timeFormat;
+
+		if(leadingZero) {
+			f = f.replace("g", "h").replace("G", "H")
+		}
+
+		return date.toTimezone(this.timezone).format(f)
 	}
 
 	/**
@@ -231,14 +238,20 @@ export class Format {
 	 * @see Format.dateFormat
 	 * @see Format.timeFormat
 	 * @param date
+	 * @param leadingZero We want leading zero's in full date time strings so they align.
 	 */
-	public static dateTime(date: string | DateTime | Date) {
+	public static dateTime(date: string | DateTime | Date, leadingZero = true) {
 		if (!(date instanceof DateTime)) {
 			date = new DateTime(date);
 		}
 
-		//We want leading zero's in full date time strings so they align. There for replace g and H
-		return date.toTimezone(this.timezone).format(Format.dateFormat + " " + Format.timeFormat.replace("g", "h").replace("G", "H"))
+		let f = Format.timeFormat;
+
+		if(leadingZero) {
+			f = f.replace("g", "h").replace("G", "H")
+		}
+
+		return date.toTimezone(this.timezone).format(Format.dateFormat + " " + f)
 	}
 
 
