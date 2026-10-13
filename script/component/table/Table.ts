@@ -976,11 +976,12 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 		th.colSpan = this.columns.length;
 
 		this.renderGroupToEl(record, th);
-
 		tr.append(th);
 
 		const groupEl = document.createElement('tbody');
-		groupEl.append(tr);
+		if(th.innerHTML != "") {
+			groupEl.append(tr);
+		}
 		return groupEl;
 	}
 

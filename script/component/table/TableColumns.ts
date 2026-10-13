@@ -375,8 +375,62 @@ type CheckboxColumnConfig = Config<CheckboxColumn> & {
 export const checkboxcolumn = (config: CheckboxColumnConfig) => createComponent(new CheckboxColumn(config && config.id ? config.id : "checkbox"), config);
 
 
+/**
+ * Checkbox renderer for checkbox select column. Can be used to override for setting the color property for example.
+ *
+ * @param val
+ * @param record
+ * @param td
+ * @param table
+ */
+export const checkboxSelectColumnRenderer : TableColumnRenderer = (val: boolean, record, td, table) : CheckboxField => {
 
+	// MS: Not sure if this has purpose. It was falsely selecting records if an id was given to the checkbox select column
+	// add to selection model if value is true
+	// if(val && table.rowSelection) {
+	// 	table.rowSelection.add(record);
+	// }
 
+	return checkbox({
+		cls: "rowselect-checkbox",
+		value: val,
+		listeners: {
+			render: ({target}) => {
+				target.el.addEventListener("mousedown", (ev) => {
+					ev.stopPropagation()
+				});
+				target.el.addEventListener("click", (ev) => {
+					ev.stopPropagation()
+				});
+
+				target.value = table.rowSelection!.isSelected(record);
+
+				// we need this in the rowselect listener of the table. {@link Table.enableCheckboxSelectColumnListeners()}
+				target.dataSet.record = record;
+
+				target.el.addEventListener('contextmenu', (ev) => {
+					ev.preventDefault();
+					const m = menu({isDropdown:true, removeOnClose: true},
+						btn({text: t('Select all'),handler:()=>{table.rowSelection!.selectAll()}}),
+						btn({text: t('Select none'),handler:()=>{table.rowSelection!.clear()}}),
+						btn({text: t('Deselect others'),handler:()=>{table.rowSelection!.clear();table.rowSelection!.add(record)}}),
+					);
+					m.showAt(ev);
+				})
+
+			},
+			change: ( {newValue}) => {
+
+				if (newValue) {
+					table.rowSelection!.add(record);
+				} else {
+					table.rowSelection!.remove(record);
+				}
+
+			}
+		}
+	});
+}
 
 export class CheckboxSelectColumn extends TableColumn {
 
@@ -410,54 +464,7 @@ export class CheckboxSelectColumn extends TableColumn {
 		});
 	}
 
-	renderer: TableColumnRenderer = (val: boolean, record, td, table) => {
-
-		// MS: Not sure if this has purpose. It was falsely selecting records if an id was given to the checkbox select column
-		// add to selection model if value is true
-		// if(val && table.rowSelection) {
-		// 	table.rowSelection.add(record);
-		// }
-
-		return checkbox({
-			cls: "rowselect-checkbox",
-			value: val,
-			listeners: {
-				render: ({target}) => {
-					target.el.addEventListener("mousedown", (ev) => {
-						ev.stopPropagation()
-					});
-					target.el.addEventListener("click", (ev) => {
-						ev.stopPropagation()
-					});
-
-					target.value = table.rowSelection!.isSelected(record);
-
-					// we need this in the rowselect listener of the table. {@link Table.enableCheckboxSelectColumnListeners()}
-					target.dataSet.record = record;
-
-					target.el.addEventListener('contextmenu', (ev) => {
-						ev.preventDefault();
-						const m = menu({isDropdown:true, removeOnClose: true},
-							btn({text: t('Select all'),handler:()=>{table.rowSelection!.selectAll()}}),
-							btn({text: t('Select none'),handler:()=>{table.rowSelection!.clear()}}),
-							btn({text: t('Deselect others'),handler:()=>{table.rowSelection!.clear();table.rowSelection!.add(record)}}),
-						);
-						m.showAt(ev);
-					})
-
-				},
-				change: ( {newValue}) => {
-
-					if (newValue) {
-						table.rowSelection!.add(record);
-					} else {
-						table.rowSelection!.remove(record);
-					}
-
-				}
-			}
-		});
-	}
+	renderer = checkboxSelectColumnRenderer
 }
 
 /**
