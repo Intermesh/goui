@@ -511,9 +511,10 @@ export const menucolumn = (config:Config<TableColumn> & {menu: Menu}) => {
 
 
 	return column({
+		cls: "menu-column",
 		sticky: true,
-		width: 40,
-		minWidth: 40,
+		width: 32,
+		minWidth: 32,
 		id: "btn",
 		init: (tbl) => {
 			tbl.on("remove", () => {
@@ -523,6 +524,7 @@ export const menucolumn = (config:Config<TableColumn> & {menu: Menu}) => {
 		renderer: (columnValue: any, record, td, table, rowIndex) => {
 
 			return btn({
+				cls: "small",
 				icon: "more_vert",
 				listeners: {
 					click: ({ev, target}) => {

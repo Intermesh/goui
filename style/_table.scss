@@ -292,6 +292,12 @@
 		td.sticky-col {
 			background-color: color-mix(in srgb, config.$surfaceMid, #000 4%);
 		}
+
+		td.menu-column {
+			.goui-button {
+				visibility: visible;
+			}
+		}
 	}
 	tr.data.selected {
 		td.sticky-col {
@@ -396,4 +402,12 @@
 	}
 }
 
-
+@media only screen and (min-device-width: config.$breakpointMedium) {
+	.goui-table {
+		td.menu-column {
+			.goui-button {
+				visibility: hidden;
+			}
+		}
+	}
+}

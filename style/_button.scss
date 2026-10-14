@@ -181,11 +181,29 @@
 	padding: util.dp(8) util.dp(16);
 	margin: 0;
 
+
+	//&.small {
+	//	padding: .6rem;
+	//	i.icon {
+	//		height: 1.8rem;
+	//		width: 1.8rem;
+	//		line-height: 1.8rem;
+	//		font-size: 1.8rem;
+	//	}
+	//}
+
 	&.compact {
 		gap: util.dp(4);
-		padding:0;
+		padding: 0;
 		>.goui-button {
-			padding: util.dp(3);
+			padding: util.dp(6);
+
+			i.icon {
+				height: 1.8rem;
+				width: 1.8rem;
+				line-height: 1.8rem;
+				font-size: 1.8rem;
+			}
 		}
 
 		.toolbar-spacer {
@@ -196,6 +214,14 @@
 	.toolbar-spacer {
 		flex: 1;
 		margin: 0 util.dp(-8); //remove gap
+	}
+
+	// Toolbar above a table (or a scroll container wrapping one): align a trailing icon-only button with a button
+	// in the table's last column. Icon edge: table = td padding 16 - margin 8 + button padding 3 = 11,
+	// toolbar = padding 16 + button padding 11 = 27. Pull the button 16px outward; text buttons keep their gap.
+	&.table-aligned {
+		padding: util.dp(8) util.dp(4) util.dp(8) util.dp(16);
+		gap: util.dp(8);
 	}
 
 	&.overlay {
