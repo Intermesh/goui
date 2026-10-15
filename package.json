@@ -30,8 +30,8 @@
     "prepare": "npm run build"
   },
   "name": "@intermesh/goui",
-  "description": "Group-Office User Interface",
-  "version": "2.0.9",
+  "description": "GroupOffice User Interface",
+  "version": "2.0.10",
   "directories": {
     "test": "tests"
   },
