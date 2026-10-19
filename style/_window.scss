@@ -201,6 +201,10 @@
 		padding-right: util.dp(18);
 	}
 
+	.body {
+		padding: 0 util.dp(16) util.dp(16) util.dp(16);
+	}
+
 	&.error {
 		.body {
 			display: flex;
@@ -208,6 +212,8 @@
 			align-items: start;
 			i {
 				font-size: util.dp(44);
+				width: util.dp(44);
+				height: util.dp(44);
 				color: config.$colorError;
 				margin-right: util.dp(16);
 			}

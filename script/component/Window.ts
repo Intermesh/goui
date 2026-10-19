@@ -642,7 +642,7 @@ export class Window<EventMap extends WindowEventMap = WindowEventMap> extends Dr
 		
 		return new Promise((resolve) => {
 			win({
-				cls: cls,
+				cls: "alert " + cls,
 				width: 600,
 				modal: true,
 				title: title,
@@ -654,7 +654,7 @@ export class Window<EventMap extends WindowEventMap = WindowEventMap> extends Dr
 			},
 				comp({
 					flex: 1,
-					cls: "body scroll pad",
+					cls: "body scroll",
 					html: text
 				})
 			).show();
