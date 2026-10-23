@@ -500,14 +500,14 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 		return p;
 	}
 
-	protected returnGet(data: EntityType) {
+	protected returnGet(data: EntityType, getIds: Record<EntityID, GetData> = this.getIds) {
 		const id = data.id;
 		let r;
-		if(!this.getIds[id]) {
+		if(!getIds[id]) {
 			console.warn("No get promise for " + this.id + "::" + id);
 			return;
 		}
-		while (r = this.getIds[id].resolves.shift()) {
+		while (r = getIds[id].resolves.shift()) {
 
 			const d = structuredClone(data);
 			//@ts-ignore
@@ -515,7 +515,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 			r.call(this, d);
 		}
 
-		delete this.getIds[id];
+		delete getIds[id];
 	}
 
 	private hasData(id: EntityID, properties: string[]): boolean {
@@ -552,15 +552,25 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 	 */
 	protected async doGet() {
 
+		// Take over the pending requests. A single() call made while this batch waits for the server starts a new
+		// batch: if it joined this one, the first response would resolve and delete it and the second fetch of
+		// the same id would find no promise left.
+		const getIds = this.getIds;
+		this.getIds = {};
+
 		const serverFetches: {properties: string[], ids: EntityID[]}[] = [];
 
 		let unknownIds: EntityID[] = [], lastProps;
-		for (let id in this.getIds) {
+		for (let id in getIds) {
 
-			const props = this.getIds[id].properties;
+			const props = getIds[id].properties;
 
 			if(!this.data[id] && this.persist) {
-				const data = await this.browserStore.getItem(id);
+				// A failing browser storage must not strand the requests this batch took over: fetch them instead
+				const data = await this.browserStore.getItem(id).catch((e) => {
+					console.warn(e);
+					return undefined;
+				});
 				if (data) {
 					this.data[id] = data;
 				}
@@ -568,7 +578,7 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 			if (this.hasData(id, props)) {
 				const data = this.data[id];
 
-				this.returnGet(data);
+				this.returnGet(data, getIds);
 			} else
 			{
 				if(lastProps && lastProps !=props) {
@@ -606,12 +616,15 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 						}
 						this.add(e);
 
-						this.returnGet(e);
+						this.returnGet(e, getIds);
 					});
 
 					response.notFound?.forEach((id) => {
+						if (!getIds[id]) {
+							return;
+						}
 						let r;
-						while (r = this.getIds[id].rejects.shift()) {
+						while (r = getIds[id].rejects.shift()) {
 							r.call(this,  {
 								id: id,
 								error: "Not found",
@@ -619,22 +632,22 @@ export abstract class AbstractDataSource<EntityType extends BaseEntity = Default
 							});
 						}
 
-						delete this.getIds[id];
+						delete getIds[id];
 					});
 				}).catch((e) => {
 
 				console.error("Error in JMAP " + this.id + "/set request");
 				console.error(e);
 
-				//reject all
-				unknownIds.forEach((id) => {
-					if (this.getIds[id]) {
+				//reject all of this fetch
+				f.ids.forEach((id) => {
+					if (getIds[id]) {
 						let r;
-						while (r = this.getIds[id].rejects.shift()) {
+						while (r = getIds[id].rejects.shift()) {
 							r.call(this, e);
 						}
 
-						delete this.getIds[id];
+						delete getIds[id];
 					}
 				})
 			});
