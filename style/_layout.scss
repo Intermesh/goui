@@ -360,11 +360,15 @@ html {
 	@extend .z2;
 
 	> .goui-fieldset:first-child {
-		margin-top: dp(16);
+		margin-top: util.dp(16);
 	}
 
-	> p, .item-container p, > h4, .item-container h4, > h5, .item-container h5 {
+	> p, .item-container p, > h3, .item-container h3, > h4, .item-container h4, > h5, .item-container h5 {
 		padding: 0 util.dp(16);
+	}
+
+	h3:first-child, h4:first-child {
+		margin-top: util.dp(16);
 	}
 
 	> :last-child {
