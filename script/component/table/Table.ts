@@ -119,8 +119,9 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 
 		super(store, (record, row, me, storeIndex) => {
 
+			const sort = this.getColumnSort(), frozenIndex = this.getFrozenIndex(sort);
 			let left = 0, stickyLeft = true, index = -1;
-			for (let id of this.getColumnSort()) {
+			for (let id of sort) {
 				const c = this._columns[id];
 				index++
 
@@ -203,18 +204,20 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 					td.classList.add(...c.cls.split(" "));
 				}
 
-				if (c.sticky) {
+				if (this.isSticky(c, index, frozenIndex)) {
 					td.classList.add("sticky-col");
-					if (stickyLeft)
+					if (stickyLeft) {
 						td.style.left = left / 10 + "rem";
-					else
+						if (c.width)
+							left += c.width;
+						if (index == frozenIndex)
+							td.classList.add("sticky-last");
+					} else {
 						td.style.right = this.calcStickyRight(index) / 10 + "rem";
+					}
 				} else {
 					stickyLeft = false;
 				}
-
-				if (c.width)
-					left += c.width;
 			}
 
 		}, "table");
@@ -261,6 +264,20 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 	 * Allow reordering columns by drag and drop
 	 */
 	public reorderColumns = true;
+
+	/**
+	 * Freeze all columns up to and including the column with this id.
+	 *
+	 * Frozen columns stick to the left side when scrolling horizontally. It's saved in the component state.
+	 *
+	 * @see freezeUpTo()
+	 */
+	public frozenColumn?: string;
+
+	/**
+	 * Allow users to freeze columns via the header context menu
+	 */
+	public freezeColumns = true;
 
 	protected internalRemove() {
 		if (this.columnMenu) {
@@ -332,7 +349,9 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 			autoColumnWidthDisabled: this.autoColumnWidthDisabled,
 			sort: this.store.sort,
 			columns: cols,
-			columnSort: this.columnSort
+			columnSort: this.columnSort,
+			// null so an unfrozen state overrides a configured frozenColumn
+			frozenColumn: this.frozenColumn ?? null
 		}
 	}
 
@@ -353,6 +372,10 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 
 		if(state.columnSort) {
 			this.columnSort = state.columnSort;
+		}
+
+		if(state.frozenColumn !== undefined) {
+			this.frozenColumn = state.frozenColumn ?? undefined;
 		}
 
 		this.autoColumnWidthDisabled = state.autoColumnWidthDisabled ?? false;
@@ -532,6 +555,12 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 				this.autoColumnWidthDisabled = true;
 				this.containerIsBigger = this.el.offsetWidth < this.el.parentElement!.offsetWidth;
 				this.saveState();
+
+				const sort = this.getColumnSort();
+				if(this.isSticky(h, colIndex, this.getFrozenIndex(sort))) {
+					// the offsets of the other sticky columns depend on this width
+					this.rerender();
+				}
 			});
 
 			return splitter;
@@ -673,14 +702,21 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 
 		const containerWidth = this.el.parentElement?.offsetWidth;
 
+		const sort = this.getColumnSort(), frozenIndex = this.getFrozenIndex(sort);
 		let index = -1, left = 0,  stickyLeft = true, tableWidth = 0;
-		for (let id of this.getColumnSort()) {
+		for (let id of sort) {
 			const h = this._columns[id];
 			index++;
 			if (h.hidden) {
 				continue;
 			}
 			const header = document.createElement("th");
+			const sticky = this.isSticky(h, index, frozenIndex);
+
+			if(sticky && !h.width && !this.fit) {
+				// sticky columns need a width to calculate the offsets of the other sticky columns
+				h.width = Math.max(this.autoColumnWidth(containerWidth), h.minWidth);
+			}
 
 			if (h.headerRenderer) {
 				const r = h.headerRenderer(h, header, this);
@@ -716,16 +752,21 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 				header.classList.add(...h.cls.split(" "));
 			}
 
-			if(h.sticky) {
+			if(sticky) {
 				header.classList.add("sticky-col");
 
 				if(stickyLeft) {
 					header.style.left = (left / 10) + "rem";
+					if(h.width)
+						left += h.width;
+					if(index == frozenIndex) {
+						header.classList.add("sticky-last");
+						// :after is used by the sort arrow
+						header.append(Object.assign(document.createElement("span"), {className: "sticky-shadow"}));
+					}
 				}else{
 					header.style.right = (this.calcStickyRight(index) / 10) + "rem";
 				}
-				if(h.width)
-					left += h.width;
 
 			} else {
 				stickyLeft = false;
@@ -736,6 +777,17 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 			}
 
 			h.headerEl = header;
+
+			if(this.freezeColumns && !this.fit && !h.sticky) {
+				header.addEventListener("contextmenu", (ev) => {
+					ev.preventDefault();
+					ev.stopPropagation();
+					menu({isDropdown: true, removeOnClose: true},
+						btn({text: t("Freeze up to here"), handler: () => this.freezeUpTo(h.id)}),
+						btn({text: t("Unfreeze columns"), disabled: !this.frozenColumn, handler: () => this.freezeUpTo(undefined)})
+					).showAt(ev);
+				});
+			}
 
 			if (h.resizable) {
 				const splitter = this.createColumnSplitter(h, header, index);
@@ -823,6 +875,9 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 	}
 
 	private doAutoSizeColumns(containerWidth:number) {
+		const sort = this.getColumnSort(), frozenIndex = this.getFrozenIndex(sort),
+			isSticky = (c: TableColumn) => this.isSticky(c, sort.indexOf(c.id), frozenIndex);
+
 		// When a user resizes an auto sizing column it will stick to that width until the user makes the container smaller
 		// or bigger than the table. Then we will start auto sizing it again.
 		if (this.autoColumnWidthDisabled) {
@@ -833,7 +888,9 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 				this.containerIsBigger = containerIsBigger;
 				this.autoColumnWidthDisabled = true;
 				this.columns.forEach(c => {
-					c.autoWidth = c.initialAutoWidth;
+					if(!isSticky(c)) {
+						c.autoWidth = c.initialAutoWidth;
+					}
 				})
 			}
 		}
@@ -841,7 +898,8 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 		const autoColWidth = this.autoColumnWidth(containerWidth);
 
 		this.columns.forEach(c => {
-			if (!c.hidden && c.autoWidth) {
+			// sticky columns keep their width, otherwise the offsets of the other sticky columns are wrong
+			if (!c.hidden && c.autoWidth && !isSticky(c)) {
 				c.width = Math.max(autoColWidth, c.minWidth);
 				c.headerEl!.style.width = (c.width / 10) + "rem";
 			}
@@ -868,12 +926,14 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 			});
 
 			headerSorter.on("dropallowed", ({toIndex}) => {
-				const cols = this.columns;
+				const sort = this.getColumnSort(), frozenIndex = this.getFrozenIndex(sort),
+					visible = sort.filter(id => !this._columns[id].hidden);
 
-				if (!cols[toIndex]) {
+				const c = this._columns[visible[toIndex]];
+				if (!c) {
 					return false;
 				} else {
-					return !cols[toIndex].sticky;
+					return !this.isSticky(c, sort.indexOf(c.id), frozenIndex);
 				}
 			})
 
@@ -999,12 +1059,74 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 		const sort = this.getColumnSort();
 
 		for(let i = index + 1, l = sort.length; i < l; i++) {
-			const id = sort[i];
-			if(this._columns[id].width) {
-				r += this._columns[id].width!;
+			const c = this._columns[sort[i]];
+			if(!c.hidden && c.width) {
+				r += c.width;
 			}
 		}
 		return r;
+	}
+
+	/**
+	 * Get the index in the column sort of the last frozen column. -1 if none.
+	 */
+	private getFrozenIndex(sort: string[]) {
+		return this.frozenColumn ? sort.indexOf(this.frozenColumn) : -1;
+	}
+
+	private isSticky(c: TableColumn, index: number, frozenIndex: number) {
+		return !!c.sticky || (index > -1 && index <= frozenIndex);
+	}
+
+	/**
+	 * Freeze all columns up to and including the given column so they stick to the left when scrolling horizontally.
+	 *
+	 * Frozen columns get a fixed width because the offsets of the sticky columns are calculated from them.
+	 *
+	 * @param id The column id or undefined to unfreeze
+	 */
+	public freezeUpTo(id: string | undefined) {
+		const sort = this.getColumnSort(),
+			prevFrozenIndex = this.getFrozenIndex(sort),
+			frozenIndex = id ? sort.indexOf(id) : -1;
+
+		const containerWidth = this.el.parentElement?.offsetWidth;
+		if(containerWidth) {
+			let frozenWidth = 0;
+			sort.forEach((colId, index) => {
+				const c = this._columns[colId];
+				if (!c.hidden && (c.sticky || index <= frozenIndex)) {
+					frozenWidth += c.headerEl ? Table.pxToRem(c.headerEl.offsetWidth) : (c.width ?? 0);
+				}
+			});
+
+			// leave room to scroll the other columns
+			if (frozenWidth > Table.pxToRem(containerWidth) * 0.75) {
+				Notifier.warning(t("The frozen columns are too wide for the available space"));
+				return;
+			}
+		}
+
+		sort.forEach((colId, index) => {
+			const c = this._columns[colId];
+			if (c.hidden || c.sticky) {
+				return;
+			}
+
+			if (index <= frozenIndex) {
+				if (c.autoWidth && c.headerEl) {
+					c.width = Math.max(Table.pxToRem(c.headerEl.offsetWidth), c.minWidth);
+				}
+				c.autoWidth = false;
+			} else if (index <= prevFrozenIndex && c.initialAutoWidth) {
+				// no longer frozen so it may auto size again
+				c.autoWidth = true;
+			}
+		});
+
+		this.frozenColumn = id;
+		this.saveState();
+		this.rerender();
 	}
 
 

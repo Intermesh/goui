@@ -288,6 +288,33 @@
 		z-index: 1;
 	}
 
+	// marks the edge of the frozen columns
+	th.sticky-last, td.sticky-last {
+		// allow the shadow to paint outside the cell. Browsers without overflow-clip-margin only show the line.
+		overflow: clip;
+		overflow-clip-margin: util.dp(8);
+
+		// remove draghandle background because edge stands out now
+		hr.goui-draghandle {
+			background: none;
+		}
+	}
+
+	// th uses :before and :after for the border and sort arrow so it renders a span for the shadow
+	td.sticky-last:after, th.sticky-last .sticky-shadow {
+		content: "";
+		position: absolute;
+		top: 0;
+		// cover the row border below the cell too
+		bottom: -1px;
+		right: util.dp(-8);
+		box-sizing: border-box;
+		width: calc(#{util.dp(8)} + #{config.$borderWidth});
+		pointer-events: none;
+		border-left: config.$borderWidth solid config.$colorBorder;
+		background: linear-gradient(to right, config.$penumbra, transparent);
+	}
+
 	tr.data:hover {
 		td.sticky-col {
 			background-color: color-mix(in srgb, config.$surfaceMid, #000 4%);
