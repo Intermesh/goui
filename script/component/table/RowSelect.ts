@@ -216,6 +216,11 @@ export class RowSelect<StoreType extends Store = Store, RecordType extends Store
 		return index;
 	}
 
+	/**
+	 * Clears and selects the index
+	 *
+	 * @param index
+	 */
 	public selectIndex(index:number) {
 		this.clear();
 		const r = this.list.store.get(index);
