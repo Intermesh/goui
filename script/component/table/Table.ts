@@ -293,7 +293,7 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 		const el =  super.internalRender();
 
 		if(!this.fit && this.autoColumnWidthDisabled) {
-			this.containerIsBigger = this.el.offsetWidth < this.el.parentElement!.offsetWidth;
+			this.containerIsBigger = this.el.offsetWidth < this.getContainerWidth();
 		}
 
 		if(this.fit) {
@@ -553,7 +553,7 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 				h.autoWidth = false;
 
 				this.autoColumnWidthDisabled = true;
-				this.containerIsBigger = this.el.offsetWidth < this.el.parentElement!.offsetWidth;
+				this.containerIsBigger = this.el.offsetWidth < this.getContainerWidth();
 				this.saveState();
 
 				const sort = this.getColumnSort();
@@ -574,7 +574,7 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 
 		const colGroup = document.createElement("colgroup");
 
-		const containerWidth = this.el.parentElement?.offsetWidth;
+		const containerWidth = this.getContainerWidth();
 
 		let index = -1;
 		for (let id of this.getColumnSort()) {
@@ -590,7 +590,7 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 			}
 
 			if (!h.width && !this.fit) {
-				h.width = this.autoColumnWidth(containerWidth);
+				h.width = Math.max(this.autoColumnWidth(containerWidth), h.minWidth);
 			}
 
 			if(h.width) {
@@ -659,7 +659,8 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 				if(!c.width || c.autoWidth) {
 					autoColumnCount++;
 				} else {
-					reservedWith += c.width;
+					// the browser renders at least the min width
+					reservedWith += Math.max(c.width, c.minWidth ?? 0);
 				}
 			}
 		})
@@ -671,15 +672,28 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 		return Math.max((Component.pxToRem(containerWidth) - reservedWith) / autoColumnCount, 6);
 	}
 
+	/**
+	 * The width available for the table in px. This is the content width of the parent element, so it excludes
+	 * its padding, border and vertical scrollbar. Using offsetWidth makes the table slightly bigger than its container.
+	 */
+	private getContainerWidth() {
+		const parent = this.el.parentElement;
+		if(!parent || !parent.clientWidth) {
+			return 0;
+		}
+		const style = window.getComputedStyle(parent);
+		return parent.clientWidth - (parseFloat(style.paddingLeft) || 0) - (parseFloat(style.paddingRight) || 0);
+	}
+
 	private autoSizeWhenVisible() {
 		const mo = new IntersectionObserver(
 			(entries) => {
 				for (const entry of entries) {
 					if (entry.isIntersecting) {
-						const containerWidth = this.el.parentElement?.offsetWidth
+						const containerWidth = this.getContainerWidth();
 						if(containerWidth) {
 							console.warn("Auto sizing because i'm visible")
-							this.doAutoSizeColumns(this.el.parentElement?.offsetWidth)
+							this.doAutoSizeColumns(containerWidth)
 							mo.disconnect();
 						}
 					}
@@ -700,7 +714,7 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 		const thead = document.createElement('thead');
 		this.headersRow = document.createElement("tr");
 
-		const containerWidth = this.el.parentElement?.offsetWidth;
+		const containerWidth = this.getContainerWidth();
 
 		const sort = this.getColumnSort(), frozenIndex = this.getFrozenIndex(sort);
 		let index = -1, left = 0,  stickyLeft = true, tableWidth = 0;
@@ -732,11 +746,11 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 			if (!h.width) {
 				// when fit is enabled we let the CSS do all the work
 				if(!this.fit) {
-					tableWidth += this.autoColumnWidth(containerWidth);
+					tableWidth += Math.max(this.autoColumnWidth(containerWidth), h.minWidth);
 					h.autoWidth = h.initialAutoWidth = true;
 				}
 			} else {
-				tableWidth += h.width;
+				tableWidth += Math.max(h.width, h.minWidth);
 				header.style.width = (h.width / 10) + "rem";
 			}
 
@@ -837,27 +851,30 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 			// we don't want to save more than once per sec
 			const bufferedSaveState = FunctionUtil.buffer(1000, () => {this.saveState()});
 
-			let prevWidth:number|undefined;
+			// start with the current width so a change between rendering and the first observer callback (eg. a
+			// vertical scrollbar that appeared when the rows rendered) is not ignored
+			let prevWidth:number|undefined = this.getContainerWidth() || undefined;
 			ro = new ResizeObserver(
 				(entries) => {
 
-					if(!entries[0].contentRect.width) {
+					const width = this.getContainerWidth();
+					if(!width) {
 						// hidden?
 						return;
 					}
 
 					if(!prevWidth) {
 						// observer always fires a first time. We want to ignore that and keep the width to check for width change later
-						prevWidth = entries[0].contentRect.width;
+						prevWidth = width;
 						return;
 					}
 
-					if(prevWidth == entries[0].contentRect.width) {
+					if(prevWidth == width) {
 						//height change not relevant
 						return;
 					}
 
-					prevWidth = entries[0].contentRect.width;
+					prevWidth = width;
 
 					this.doAutoSizeColumns(prevWidth);
 
@@ -865,7 +882,8 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 				}
 			);
 
-			ro.observe(this.el.parentElement!, {box: "border-box"});
+			// observe the content box so a vertical scrollbar appearing also triggers a resize
+			ro.observe(this.el.parentElement!);
 		}).on("detach", () => {
 			if(ro) {
 				ro.disconnect();
@@ -1015,7 +1033,7 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 			if (nextValue.hidden || (untilColumnIndex > -1 && currentIndex >= untilColumnIndex)) {
 				return previousValue;
 			}
-			return previousValue + nextValue.width!;
+			return previousValue + Math.max(nextValue.width!, nextValue.minWidth ?? 0);
 
 		}, 0);
 	}
@@ -1090,7 +1108,7 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 			prevFrozenIndex = this.getFrozenIndex(sort),
 			frozenIndex = id ? sort.indexOf(id) : -1;
 
-		const containerWidth = this.el.parentElement?.offsetWidth;
+		const containerWidth = this.getContainerWidth();
 		if(containerWidth) {
 			let frozenWidth = 0;
 			sort.forEach((colId, index) => {
