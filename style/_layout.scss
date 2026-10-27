@@ -363,8 +363,10 @@ html {
 		margin-top: util.dp(16);
 	}
 
-	> p, .item-container p, > h3, .item-container h3, > h4, .item-container h4, > h5, .item-container h5 {
-		padding: 0 util.dp(16);
+	&:not(.pad) {
+		> p, .item-container p, > h3, .item-container h3, > h4, .item-container h4, > h5, .item-container h5 {
+			padding: 0 util.dp(16);
+		}
 	}
 
 	h3:first-child, h4:first-child {
