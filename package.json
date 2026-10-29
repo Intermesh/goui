@@ -48,7 +48,8 @@
   "author": "Intermesh",
   "license": "MIT",
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "tag": "latest"
   },
   "bugs": {
     "url": "https://github.com/Intermesh/goui/issues"
