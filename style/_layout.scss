@@ -369,7 +369,7 @@ html {
 		}
 	}
 
-	h3:first-child, h4:first-child {
+	> h3:first-child, > h4:first-child {
 		margin-top: util.dp(16);
 	}
 
