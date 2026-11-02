@@ -252,8 +252,6 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 
 	protected emptyStateTag: keyof HTMLElementTagNameMap = 'caption'
 
-	private minCellWidth = 30
-
 	protected baseCls = "goui-table";
 
 	private headersRow?: HTMLTableRowElement;
@@ -535,9 +533,8 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 				}
 
 				dragData.data.startWidth = header.offsetWidth;
-
 				splitter.dragConstrainTo(this.headersRow!, {
-					left: this.calcTableWidth(colIndex) + this.minCellWidth,
+					left: Component.remToPx(this.calcTableWidth(colIndex) + h.minWidth),
 					right: -10000
 				});
 			});
@@ -1023,7 +1020,7 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 	}
 
 	/**
-	 * Returns the sum of column widths
+	 * Returns the sum of column widths in rem units
 	 *
 	 * @param untilColumnIndex Calc width until this column
 	 */
