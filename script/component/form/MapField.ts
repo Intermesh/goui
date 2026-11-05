@@ -126,8 +126,13 @@ export class MapField extends Field {
 	 * @param key
 	 */
 	public add(data: MapFieldValue, key?: string | undefined) {
-		this.internalAdd(-1,data, key);
+		const field = this.internalAdd(-1,data, key);
 		this.fireChange();
+
+		field.focus();
+
+		return field;
+
 	}
 
 	public insert(index:number, data: MapFieldValue, key?: string | undefined) {
@@ -147,6 +152,8 @@ export class MapField extends Field {
 		field.dataSet.key = key || this.nextKey();
 		field.value = this.valueFieldName ? {[this.valueFieldName]:data, [this.keyFieldName!]: key} : data;
 		index < 0 ? this.items.add(field) : this.items.insert(index,field);
+
+		return field;
 	}
 
 	private _nextKey = 0;

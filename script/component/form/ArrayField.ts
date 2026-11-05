@@ -136,7 +136,9 @@ export class ArrayField<Type extends FieldValue = Record<string, any>> extends F
 			this.captureValueForChange();
 		}
 
-		return this.internalAddValue(value);
+		const field = this.internalAddValue(value);
+		field.focus();
+		return field;
 	}
 
 	private internalAddValue(value:Type) {
@@ -144,8 +146,6 @@ export class ArrayField<Type extends FieldValue = Record<string, any>> extends F
 		field.value = value;
 
 		this.items.add(field);
-
-		field.focus();
 
 		return field;
 	}
