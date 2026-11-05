@@ -277,6 +277,13 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 	 */
 	public freezeColumns = true;
 
+	/**
+	 * Show the full text as a tooltip when hovering a cell whose text is cut off with an ellipsis.
+	 *
+	 * A title that is set by a column renderer is never changed.
+	 */
+	public overflowTooltip = true;
+
 	protected internalRemove() {
 		if (this.columnMenu) {
 			this.columnMenu.remove();
@@ -302,7 +309,37 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 			this.getHeaderSortable().connect();
 		}
 
+		if(this.overflowTooltip) {
+			this.el.addEventListener("mouseover", (e) => this.onOverflowMouseOver(e));
+		}
+
 		return el;
+	}
+
+	/**
+	 * Sets the title of a cell (or a line in a multi line cell) when its text overflows.
+	 *
+	 * It's measured on hover so that resizing columns is taken into account.
+	 */
+	private onOverflowMouseOver(e: MouseEvent) {
+		const el = (e.target as HTMLElement).closest<HTMLElement>("td h3, td h4, td h5, td, th");
+		if (!el || !this.el.contains(el)) {
+			return;
+		}
+
+		// leave titles alone that were set by a renderer
+		if (el.title && !el.dataset.overflowTitle) {
+			return;
+		}
+
+		const text = el.innerText.trim();
+		if (text && el.scrollWidth > el.clientWidth) {
+			el.title = text;
+			el.dataset.overflowTitle = "1";
+		} else if (el.dataset.overflowTitle) {
+			el.removeAttribute("title");
+			delete el.dataset.overflowTitle;
+		}
 	}
 
 	private initColumns() {
