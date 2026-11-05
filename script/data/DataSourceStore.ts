@@ -321,7 +321,7 @@ export class DataSourceStore<
 		if(this.onBeforeLoad) {
 			const r = this.onBeforeLoad(records);
 			if(r instanceof Promise) {
-				records = await this.onBeforeLoad(records);
+				records = await r;
 			} else {
 				records = r;
 			}
