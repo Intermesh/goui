@@ -7,11 +7,19 @@ import {DateTime, Format} from "../../util/index.js";
 import {comp, Component, createComponent, hr} from "../Component.js";
 
 /**
+ * Relative periods of the {@link DateRangeField} menu
+ */
+export type DateRangePreset = "today" | "yesterday" | "thisWeek" | "lastWeek" | "thisMonth" | "lastMonth" | "thisYear";
+
+/**
  * Date range field
  *
  * Used to select a date range. The value format is:
  *
  * "YYYY-MM-DD..YYYY-MM-DD"
+ *
+ * When a relative period like "This month" is chosen, {@link preset} is set. Store it instead of the value to
+ * restore the period relative to the current date later with {@link setPreset}.
  *
  * @link https://goui.io/#form/DateTime Example
  */
@@ -24,6 +32,14 @@ export class DateRangeField extends Field {
 	private valueDisplay: Component;
 	private fromPicker: DatePicker;
 	private untilPicker: DatePicker;
+
+	/**
+	 * The relative period that produced the current value. Undefined when the value was set otherwise.
+	 */
+	public preset?: DateRangePreset;
+
+	private applyingPreset = false;
+
 	constructor() {
 		super();
 
@@ -167,7 +183,7 @@ export class DateRangeField extends Field {
 				btn({
 					text: t("Today"),
 					handler: () => {
-						this.setToday();
+						this.setPreset("today");
 						this.fireChange(false);
 					}
 				}),
@@ -175,7 +191,7 @@ export class DateRangeField extends Field {
 				btn({
 					text: t("Yesterday"),
 					handler: () => {
-						this.setYesterday()
+						this.setPreset("yesterday");
 						this.fireChange(false);
 					}
 				}),
@@ -183,7 +199,7 @@ export class DateRangeField extends Field {
 				btn({
 					text: t("This week"),
 					handler: () => {
-						this.setThisWeek();
+						this.setPreset("thisWeek");
 						this.fireChange(false);
 					}
 				}),
@@ -191,7 +207,7 @@ export class DateRangeField extends Field {
 				btn({
 					text: t("Last week"),
 					handler: () => {
-						this.setLastWeek();
+						this.setPreset("lastWeek");
 						this.fireChange(false);
 					}
 				}),
@@ -199,7 +215,7 @@ export class DateRangeField extends Field {
 				btn({
 					text: t("This month"),
 					handler: () => {
-						this.setMonth();
+						this.setPreset("thisMonth");
 						this.fireChange(false);
 					}
 				}),
@@ -207,7 +223,7 @@ export class DateRangeField extends Field {
 				btn({
 					text: t("Last month"),
 					handler: () => {
-						this.setMonth(parseInt((new DateTime()).format("m")) - 1);
+						this.setPreset("lastMonth");
 						this.fireChange(false);
 					}
 				}),
@@ -215,7 +231,7 @@ export class DateRangeField extends Field {
 				btn({
 					text: t("This year"),
 					handler: () => {
-						this.setYear();
+						this.setPreset("thisYear");
 						this.fireChange(false);
 					},
 					menu: new DateRangeFieldYearMenu(this)
@@ -257,6 +273,9 @@ export class DateRangeField extends Field {
 	}
 
 	protected internalSetValue(v?: any) {
+		if (!this.applyingPreset) {
+			this.preset = undefined;
+		}
 		super.internalSetValue(v);
 
 		if (!v) {
@@ -307,6 +326,72 @@ export class DateRangeField extends Field {
 					}
 				}
 			}
+		}
+
+		if (v && this.preset) {
+			// show that the period is relative to the current date
+			this.valueDisplay.text = DateRangeField.presetText(this.preset);
+		}
+	}
+
+	private static presetText(preset: DateRangePreset): string {
+		switch (preset) {
+			case "today":
+				return t("Today");
+			case "yesterday":
+				return t("Yesterday");
+			case "thisWeek":
+				return t("This week");
+			case "lastWeek":
+				return t("Last week");
+			case "thisMonth":
+				return t("This month");
+			case "lastMonth":
+				return t("Last month");
+			case "thisYear":
+				return t("This year");
+		}
+	}
+
+	/**
+	 * Set the value to a period relative to the current date and remember it in {@link preset}
+	 *
+	 * @param preset eg. "thisMonth"
+	 */
+	public setPreset(preset: DateRangePreset) {
+		this.applyingPreset = true;
+		this.preset = preset;
+		try {
+			switch (preset) {
+				case "today":
+					this.setToday();
+					break;
+				case "yesterday":
+					this.setYesterday();
+					break;
+				case "thisWeek":
+					this.setThisWeek();
+					break;
+				case "lastWeek":
+					this.setLastWeek();
+					break;
+				case "thisMonth":
+					this.setMonth();
+					break;
+				case "lastMonth":
+					const lastMonth = new DateTime();
+					// first day of the month to prevent overflow on the 31st
+					lastMonth.setMonthDay(1).addMonths(-1);
+					this.setMonth(lastMonth.getMonth(), lastMonth.getYear());
+					break;
+				case "thisYear":
+					this.setYear();
+					break;
+				default:
+					this.preset = undefined;
+			}
+		} finally {
+			this.applyingPreset = false;
 		}
 	}
 
