@@ -15,7 +15,7 @@ import {TableColumn} from "./TableColumns.js";
 import {List, ListEventMap} from "../List.js";
 import {Config} from "../Observable.js";
 import {Sortable} from "../Sortable";
-import {btn} from "../Button.js";
+import {btn, Button} from "../Button.js";
 import {t} from "../../Translate.js";
 
 
@@ -498,12 +498,13 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 	 *
 	 * @return A button component with an associated menu for column visibility options.
 	 */
-	public getVisibleColumnButton() {
+	public getVisibleColumnButton(cfg?:Config<Button>) {
 
 			return btn({
 				menu: this.getVisibleColumnMenu(),
 				icon: "view_column",
-				text: t("View columns")
+				text: t("View columns"),
+				...cfg
 			})
 
 	}
