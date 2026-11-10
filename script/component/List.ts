@@ -237,7 +237,7 @@ export class List<StoreType extends Store = Store, EventMapType extends ListEven
 	 * When enabled, it will register it's container as scrolling element to the {@link Store}.
 	 * @see Store.addScrollLoader();
 	 */
-	public scrollLoad = false;
+	public scrollLoad:boolean|number = false;
 
 
 	/**
@@ -402,7 +402,8 @@ export class List<StoreType extends Store = Store, EventMapType extends ListEven
 		this.store.bindComponent(this);
 
 		if (this.scrollLoad && this.parent) {
-			this.store.addScrollLoader(this.parent.el);
+			const pageSize = typeof this.scrollLoad === "number" ? this.scrollLoad : 30;
+			this.store.addScrollLoader(this.parent.el, pageSize);
 		}
 	}
 

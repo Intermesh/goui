@@ -289,11 +289,12 @@ export class Store<RecordType extends StoreRecord  = StoreRecord> extends Collec
 	 * Load more data when this element is scrolled down
 	 *
 	 * @param el
+	 * @param pageSize
 	 */
-	public addScrollLoader(el: HTMLElement) {
+	public addScrollLoader(el: HTMLElement, pageSize:number = 30) {
 
 		if(!this.queryParams.limit) {
-			this.queryParams.limit = 30;
+			this.queryParams.limit = pageSize;
 		}
 
 		const onScroll = () => {
