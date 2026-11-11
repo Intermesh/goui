@@ -1038,7 +1038,7 @@ export class HtmlField extends Field<HtmlFieldEventMap> {
 			if(node.nodeType == Node.TEXT_NODE) {
 				if (node.textContent && (node.textContent.indexOf("http") > -1 || node.textContent.indexOf('@') > -1)) {
 					const anchored = Format.convertUrisToAnchors(node.textContent);
-					if (anchored != node.textContent) {
+					if (anchored != Format.htmlEncode(node.textContent)) {
 						const tmp = document.createElement("span");
 						tmp.innerHTML = anchored;
 						(node as Text).replaceWith(tmp);

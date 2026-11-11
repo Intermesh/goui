@@ -70,9 +70,15 @@ export class Format {
 	 * @param str
 	 */
 	public static htmlEncode (str: string) {
-		const p = document.createElement('p');
-		p.textContent = str;
-		return p.innerHTML;
+		if (str === undefined || str === null) {
+			return "";
+		}
+		return String(str)
+			.replace(/&/g, "&amp;")
+			.replace(/</g, "&lt;")
+			.replace(/>/g, "&gt;")
+			.replace(/"/g, "&quot;")
+			.replace(/'/g, "&#39;");
 	}
 
 
@@ -96,43 +102,27 @@ export class Format {
 		if (!text) {
 			return "";
 		}
-		return this.nl2br(
-
-			this.escapeHTML(this._convertUriToAnchors(text, true))
-				.replace(/_%O%_/g, '<')
-				.replace(/_%C%_/g,'>')
-
-		);
+		return this.nl2br(this.convertUrisToAnchors(text));
 	}
 
 	/**
-	 * Convert http(s) URI's and mail addresses in text to anchor tags.
+	 * Convert plain text to HTML with http(s) URI's and mail addresses as anchor tags.
+	 *
+	 * The text is HTML encoded so the result is safe to insert in the DOM.
 	 *
 	 * @param text
 	 */
 	public static convertUrisToAnchors(text: string): string {
-		return Format._convertUriToAnchors(text);
-	}
-
-	private static _convertUriToAnchors(text: string, tmp = false) {
-		// Regular expression to match URIs that are not inside anchor tags
-		const uriRegex = /(https?:\/\/[^\s<>]+)/ig,
-			close = tmp ? '_%C%_' : '>',
-			open = tmp ? '_%O%_' : '<';
-
-		// Replace matched URIs with anchor tags
-		text = text.replace(uriRegex, (url) => {
-			return `${open}a href="${url}" target="_blank" rel="noopener noreferrer"${close}${url}${open}/a${close}`;
-		});
-
-		text = text.replace(
-			/([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g,
-			(match) => {
-				return `${open}a href="mailto:${match}"${close}${match}${open}/a${close}`;
+		// Match on the encoded text so the URL can't contain quotes or tags. It ends at an encoded <, >, " or '. A single pass makes sure
+		// a mail address inside a URL doesn't create a nested anchor.
+		return Format.htmlEncode(text).replace(
+			/(https?:\/\/(?:[^\s<>"'&]|&(?!lt;|gt;|quot;|#39;))+)|([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/ig,
+			(match, url) => {
+				return url ?
+					`<a href="${match}" target="_blank" rel="noopener noreferrer">${match}</a>` :
+					`<a href="mailto:${match}">${match}</a>`;
 			}
 		);
-
-		return text;
 	}
 
 	/**
