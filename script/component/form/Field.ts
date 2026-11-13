@@ -822,7 +822,7 @@ false
 		} else if(validity.tooLong) {
 			this.setInvalid(t("The maximum length for this field is {max}").replace("{max}", (input as HTMLInputElement).maxLength));
 		} else if(validity.tooShort) {
-			this.setInvalid(t("The minimum length for this field is {max}").replace("{max}", (input as HTMLInputElement).minLength));
+			this.setInvalid(t("The minimum length for this field is {min}").replace("{min}", (input as HTMLInputElement).minLength));
 		}else if(validity.patternMismatch) {
 			this.setInvalid(t("Please match the format requested").replace("{max}", (input as HTMLInputElement).minLength));
 		} else {

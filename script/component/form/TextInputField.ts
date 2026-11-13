@@ -30,7 +30,7 @@ export abstract class TextInputField<EventMap extends InputFieldEventMap = Input
 			this.setInvalid(t("Text is larger than the maximum of {maxLength} characters.").replace("{maxLength}", this.maxLength.toString()));
 		}
 		if (this.minLength !== undefined && v.length < this.minLength) {
-			this.setInvalid(t("Text is shorter than the maximum of {minLength} characters.").replace("{minLength}", this.minLength.toString()));
+			this.setInvalid(t("Text is shorter than the minimum of {minLength} characters.").replace("{minLength}", this.minLength.toString()));
 		}
 
 	}

@@ -75,7 +75,7 @@ export class NumberField extends InputField {
 			this.setInvalid(t("Number is bigger than the maximum of {max}.").replace("{max}", Format.number(this.max, this.decimals, this.decimalSeparator, this.thousandsSeparator)));
 		}
 		if (this.min !== undefined && v! < this.min) {
-			this.setInvalid(t("Number is smaller than the maximum of {min}.").replace("{min}", Format.number(this.min, this.decimals, this.decimalSeparator, this.thousandsSeparator)));
+			this.setInvalid(t("Number is smaller than the minimum of {min}.").replace("{min}", Format.number(this.min, this.decimals, this.decimalSeparator, this.thousandsSeparator)));
 		}
 	}
 
