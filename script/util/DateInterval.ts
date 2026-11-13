@@ -45,10 +45,11 @@ function toText(dateInterval: DateInterval) {
 			break;
 	}
 
+	// One text with a placeholder, so languages can put the words before or after the time ("vor 5 Minuten")
 	if(dateInterval.invert) {
-		return text + " " + t("ago");
+		return t("{time} ago").replace("{time}", text);
 	} else {
-		return t("in") + " " + text;
+		return t("in {time}").replace("{time}", text);
 	}
 
 }
