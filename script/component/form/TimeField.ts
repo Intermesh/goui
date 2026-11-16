@@ -108,14 +108,15 @@ export class TimeField extends Field {
 		this.hoursInput.inputMode = "numeric";
 		this.hoursInput.type = "text";
 		this.hoursInput.pattern = "[0-9]+";
+		const field = this;
 		this.hoursInput.onblur = function (this: any) {
 			onBlur.call(this);
 
-			const max = this.twelveHour ? 11 : 23;
+			const max = field.twelveHour ? 12 : 23;
 			if (parseInt(this.value) > max) {
 				this.value = max + "";
 			}
-		};;
+		};
 		this.hoursInput.onfocus = onFocus;
 		this.hoursInput.onmousedown = onFocus;
 		this.hoursInput.maxLength = 2;
@@ -204,8 +205,9 @@ export class TimeField extends Field {
 
 		let hrs = parseInt(this.hoursInput!.value);
 
-		if (this.twelveHour && hrs < 12 && this.amPm!.value == "pm") {
-			hrs = (hrs + 12);
+		if (this.twelveHour) {
+			// 12 am is 0:00 and 12 pm is 12:00
+			hrs = hrs % 12 + (this.amPm!.value == "pm" ? 12 : 0);
 		}
 		return hrs + ":" + (this.minutesInput!.value ? this.minutesInput!.value : "00");
 	}
