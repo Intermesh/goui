@@ -147,6 +147,24 @@ export class TimeField extends Field {
 		this.minutesInput.onfocus = onFocus;
 		this.minutesInput.onkeydown = onKeyDown;
 
+		/**
+		 * Move to the next input when the typed value can't get another digit, like the browser's date input does.
+		 * For example "14" or "3" (no hour starts with 3) in the hours of a 24h field.
+		 */
+		const autoAdvance = (input: HTMLInputElement, maxFirstDigit: () => number, next: () => HTMLElement | undefined) => {
+			input.addEventListener("input", (ev) => {
+				if ((ev as InputEvent).inputType != "insertText" || !/^[0-9]+$/.test(input.value)) {
+					return;
+				}
+				if (input.value.length >= 2 || parseInt(input.value) > maxFirstDigit()) {
+					next()?.focus();
+				}
+			});
+		}
+
+		autoAdvance(this.hoursInput, () => this.twelveHour ? 1 : 2, () => this.minutesInput);
+		autoAdvance(this.minutesInput, () => 5, () => this.twelveHour ? this.amPm : undefined);
+
 		this.minutesInput.placeholder = "--";
 		this.minutesInput.autocomplete = "off";
 
