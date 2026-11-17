@@ -24,6 +24,7 @@ export interface SearchButtonEventMap extends OverlayToolbarButtonEventMap {
 	input: {
 		/**
 		 * The text that was entered by the user. Unlike the regular input event this event buffers for 300ms by default
+		 * and only fires while typing from {@link SearchButton.minChars} characters or when the field is emptied. Enter fires it right away.
 		 */
 		text: string
 	}
@@ -47,6 +48,14 @@ export class SearchButton extends OverlayToolbarButton<SearchButtonEventMap> {
 	private _searchField?: TextField;
 
 	private buffer = 300;
+
+	/**
+	 * Fire the input event while typing from this number of characters, or when the field is emptied.
+	 * Pressing enter fires it right away for any text. This avoids expensive server queries on one or two characters.
+	 */
+	public minChars = 3;
+
+	private lastText = "";
 
 	constructor() {
 		super();
@@ -83,6 +92,8 @@ export class SearchButton extends OverlayToolbarButton<SearchButtonEventMap> {
 							if (e.key == "Enter") {
 								e.preventDefault();
 								e.stopPropagation();
+								// search right away, also when shorter than minChars
+								this.fireInput(this.searchField.value, true);
 							}
 						});
 					}
@@ -108,16 +119,35 @@ export class SearchButton extends OverlayToolbarButton<SearchButtonEventMap> {
 		this.close();
 
 		this.fire("reset", {});
-		this.fire("input", {text: ""});
+		this.fireInput("", true);
 		this.el.classList.remove("accent");
 		this.el.classList.remove("filled");
 	}
 
 
 	private onInput() {
-		this.el.classList.toggle("accent", !!this.searchField!.value);
-		this.el.classList.toggle("filled", !!this.searchField!.value);
-		this.fire("input", {text: this.searchField!.value});
+		const text = this.searchField!.value;
+		this.el.classList.toggle("accent", !!text);
+		this.el.classList.toggle("filled", !!text);
+
+		if(text === "" || text.trim().length >= this.minChars) {
+			this.fireInput(text);
+		}
+	}
+
+	/**
+	 * Fires the input event
+	 *
+	 * @param text The search text
+	 * @param force Fire also when the text didn't change since the last time. Otherwise the buffered input after
+	 *  pressing enter would search twice.
+	 */
+	private fireInput(text: string, force = false) {
+		if(!force && text === this.lastText) {
+			return;
+		}
+		this.lastText = text;
+		this.fire("input", {text});
 	}
 
 }
