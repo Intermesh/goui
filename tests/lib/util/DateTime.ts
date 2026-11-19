@@ -1,8 +1,25 @@
 import {expect} from "chai";
-import {DateTime} from "../../../script/util/DateTime.js";
+import {DateTime} from "../../../script/index.js";
 import { describe } from "mocha";
 
 describe('Date class', () => {
+
+	// 2026-11-17T23:07:24+00:00
+
+
+	describe("Test date parse()", () => {
+
+		const apiDate = "2026-11-17T23:07:24+00:00"
+
+		const dt = new DateTime(apiDate);
+		const utcDt = dt.toTimezone("UTC");
+
+		it('dates should match', function () {
+			expect(utcDt.format("c")).to.equal(apiDate);
+		});
+
+	});
+
 	describe("Test getTimeZone()", () => {
 
 		const browser = new DateTime("2021-10-21T16:00:00+00:00");
