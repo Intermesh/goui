@@ -477,6 +477,13 @@ export class DateTime {
 				date += "T00:00:00"; //otherwise it's converted to UTC and new Date"2025-07-10").getDate() will be 9 in a negative time zone area.
 			}
 			this.date = new Date(date);
+
+			// A timestamp or a string with "Z" or an offset is an absolute moment. new Date() gives the
+			// system time for it, so shift it to the wall-clock time of the timezone. A string without
+			// an offset is already the wall-clock time of the timezone.
+			if(typeof date === "number" || /T.*(Z|[+-]\d{2}:?\d{2})$/i.test(date)) {
+				this.adjustFromSystemToUserTimezone(timezone);
+			}
 		}
 
 		this._timezone = timezone;
@@ -549,6 +556,26 @@ export class DateTime {
 		return d;
 	}
 
+	/**
+	 * Shift the wall-clock time from the system (browser) timezone to the given timezone, in place.
+	 *
+	 * The internal JS Date always uses the system timezone. A DateTime with another timezone stores
+	 * the wall-clock time of that timezone in it, so getHours() etc. return the hours in that timezone.
+	 * This method moves the time by the difference between the two offsets and sets the timezone. It
+	 * expects the date to hold system time, like a new Date() does, and does nothing when the
+	 * timezone is already set.
+	 *
+	 * eg. on a computer in Amsterdam (+01:00) at 00:07:
+	 *
+	 * ```
+	 * const d = new DateTime(undefined, "UTC"); // calls this method
+	 * d.getHours(); // 23, the previous day
+	 * ```
+	 *
+	 * Unlike {@link toTimezone}, this changes the object instead of returning a clone.
+	 *
+	 * @param timezone eg. europe/amsterdam
+	 */
 	private adjustFromSystemToUserTimezone(timezone: Timezone) {
 
 		if (this._timezone == timezone) {

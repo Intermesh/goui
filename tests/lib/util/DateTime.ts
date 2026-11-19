@@ -9,13 +9,12 @@ describe('Date class', () => {
 
 	describe("Test date parse()", () => {
 
-		const apiDate = "2026-11-17T23:07:24+00:00"
+		const apiDate = "2026-11-17T23:07:24+00:00";
 
-		const dt = new DateTime(apiDate);
-		const utcDt = dt.toTimezone("UTC");
+		const dt = new DateTime(apiDate).toTimezone("europe/london");
 
 		it('dates should match', function () {
-			expect(utcDt.format("c")).to.equal(apiDate);
+			expect(dt.format("c")).to.equal(apiDate);
 		});
 
 	});
