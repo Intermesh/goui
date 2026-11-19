@@ -980,6 +980,9 @@ export class HtmlField extends Field<HtmlFieldEventMap> {
 
 				const width = imgEl.offsetWidth, height = imgEl.offsetHeight;
 				imgEl.setAttribute('style', `max-width: 100%;height:auto;aspect-ratio: ${width} / ${height};`);
+				// Outlook ignores the CSS size of images and uses these attributes
+				imgEl.width = imgEl.naturalWidth;
+				imgEl.height = imgEl.naturalHeight;
 			})
 
 			this.fire("insertimage", {file, img: imgEl});
@@ -1178,8 +1181,7 @@ class ImageResizer {
 								}
 								const newWidth = Math.max(50, startWidth + deltaX),
 									newHeight = Math.floor(newWidth * startHeight / startWidth);
-								this.img!.style.width = newWidth + "px";
-								this.img!.style.height = newHeight + "px";
+								this.setSize(newWidth, newHeight);
 							} else {
 								let deltaY = dragData.y - dragData.startY;
 								if (pos == "top") {
@@ -1187,8 +1189,7 @@ class ImageResizer {
 								}
 								const newHeight = Math.max(50, startHeight + deltaY),
 									newWidth = Math.floor(newHeight * startWidth / startHeight);
-								this.img!.style.width = newWidth + "px";
-								this.img!.style.height = newHeight + "px";
+								this.setSize(newWidth, newHeight);
 							}
 						}
 					}
@@ -1203,6 +1204,19 @@ class ImageResizer {
 		this.wrapper.appendChild(this.img);
 
 		document.addEventListener("mousedown", this.onBlur);
+	}
+
+	/**
+	 * Set the size in the style and in the width and height attributes. Outlook ignores the CSS size of images. When it
+	 * quotes a message in a reply it shows the image at the size of the attributes, or at its original size without them.
+	 */
+	private setSize(width: number, height: number) {
+		width = Math.round(width);
+		height = Math.round(height);
+		this.img!.style.width = width + "px";
+		this.img!.style.height = height + "px";
+		this.img!.width = width;
+		this.img!.height = height;
 	}
 
 	private unwrap() {
