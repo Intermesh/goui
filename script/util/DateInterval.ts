@@ -118,6 +118,7 @@ export class DateInterval {
 
 	private _start?:DateTime;
 	private _end?:DateTime;
+	private _totalSeconds?:number;
 
 	private static converters: { [key: string]: (dateInterval: DateInterval) => string } = {
 		'Y': dateInterval => pad(dateInterval.years),
@@ -154,12 +155,24 @@ export class DateInterval {
 
 
 	/**
-	 * Populate the number of hours, minutes and seconds from a number of seconds.
+	 * Populate the number of days, hours, minutes and seconds from a number of seconds.
+	 *
+	 * The interval is calculated without dates, so it doesn't depend on the system timezone or
+	 * daylight saving time. It has no months or years: 40 days stays 40 days.
 	 *
 	 * @param seconds
 	 */
 	public static createFromSeconds(seconds:number) {
-		return DateInterval.createFromDates(new DateTime(0), new DateTime(seconds * 1000));
+		const di = new DateInterval();
+		di.invert = seconds < 0;
+		seconds = Math.abs(seconds);
+		di._totalSeconds = seconds;
+
+		di.days = Math.floor(seconds / 86400);
+		di.hours = Math.floor(seconds % 86400 / 3600);
+		di.minutes = Math.floor(seconds % 3600 / 60);
+		di.seconds = Math.floor(seconds % 60);
+		return di;
 	}
 
 
@@ -215,6 +228,9 @@ export class DateInterval {
 	 * Only available if this diff was created using {@link DateTime.diff}
 	 */
 	public getTotalDays() {
+		if(this._totalSeconds !== undefined) {
+			return Math.floor(this._totalSeconds / 86400);
+		}
 		if(!this._start || !this._end) {
 			return undefined;
 		}
@@ -231,6 +247,10 @@ export class DateInterval {
 	 * Only available if this diff was created using {@link DateTime.diff}
 	 */
 	public getTotalMinutes() : number|undefined {
+
+		if(this._totalSeconds !== undefined) {
+			return Math.floor(this._totalSeconds / 60);
+		}
 
 		if(this._start && this._end) {
 			return Math.floor(Math.abs(this._start.getTime() - this._end.getTime()) / 60000);
@@ -249,6 +269,10 @@ export class DateInterval {
 	 * Only available if this diff was created using {@link DateTime.diff}
 	 */
 	public getTotalHours() : number|undefined {
+
+		if(this._totalSeconds !== undefined) {
+			return Math.floor(this._totalSeconds / 3600);
+		}
 
 		if(this._start && this._end) {
 			return Math.floor(Math.abs(this._start.getTime() - this._end.getTime()) / 3600000 );
@@ -270,6 +294,8 @@ export class DateInterval {
 		if(!matches) {
 			return false;
 		}
+
+		this._totalSeconds = undefined;
 
 		this.invert = matches[1] !== undefined;
 
