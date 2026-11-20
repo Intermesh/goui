@@ -525,7 +525,8 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 		if (!this.columnMenu) {
 			this.columnMenu = menu({
 				isDropdown: true,
-				removeOnClose: false
+				removeOnClose: false,
+				isolateFormFields: true
 			});
 
 			const sortedKeys = Object.keys(this._columns).sort((a, b) =>
@@ -536,18 +537,19 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 				const c = this._columns[id];
 
 				if (c.header && c.hidable) {
-					this.columnMenu!.items.add(checkbox({
-						label: c.header,
-						name: c.id,
-						value: !c.hidden,
-						listeners: {
-							change: ({target}) => {
-								c.hidden = !target.value;
-								this.saveState();
-								this.rerender();
+					this.columnMenu!.items.add(
+						checkbox({
+							label: c.header,
+							value: !c.hidden,
+							listeners: {
+								change: ({target}) => {
+									c.hidden = !target.value;
+									this.saveState();
+									this.rerender();
+								}
 							}
-						}
-					}));
+						})
+					);
 				}
 			}
 		}

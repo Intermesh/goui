@@ -64,6 +64,9 @@ export class ContainerField<EventMap extends FieldEventMap = FieldEventMap, Valu
 		const fields: Field[] = [];
 
 		const fn = (item: any) => {
+			if(item.isolateFormFields) {
+				return false;
+			}
 			if (item.isFormField) {
 				if (!nameOrItemId || (item.name == nameOrItemId || item.itemId == nameOrItemId)) {
 					fields.push(item);

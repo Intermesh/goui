@@ -275,6 +275,13 @@ export class Component<EventMapType extends ComponentEventMap = ComponentEventMa
 	 */
 	public renderTo?: HTMLElement;
 
+	/**
+	 * Stop forms from cascading into this component to find form fields.
+	 * Useful for components that uses form fields for its own logic. For example
+	 * the {@link Table.getVisibleColumnMenu()}
+	 */
+	public isolateFormFields = false;
+
 	private _items?: Collection<Component<ComponentEventMap, any>>;
 
 	private _mask: Mask | undefined;

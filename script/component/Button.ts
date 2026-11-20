@@ -225,7 +225,7 @@ export class Button<EventMap extends ButtonEventMap= ButtonEventMap> extends Com
 	public cascade(fn: (comp: Component) => (boolean | void)) {
 		super.cascade(fn);
 
-		if(this.menu) {
+		if(this.menu && fn(this.menu) !== false) {
 			this.menu.cascade(fn);
 		}
 
