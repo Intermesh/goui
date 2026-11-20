@@ -62,6 +62,17 @@ export interface ButtonEventMap extends ComponentEventMap {
 /**
  * Button component
  *
+ * By default a button is flat: it only shows a background on hover. Change the style with these classes in "cls":
+ *
+ * - "filled": with a background
+ * - "outlined": with a border
+ * - "primary": in the primary color. Combine it with "filled" or "outlined", like "filled primary" for the main
+ *   action of a form or dialog.
+ * - "accent": in the accent color, also combined with "filled" or "outlined"
+ *
+ * A button with type "submit" is styled as "filled primary". Put several buttons in a {@link tbar} with the main action
+ * on the right, after "->".
+ *
  * @link https://goui.io/#buttons Examples
  *
  * @example
@@ -73,6 +84,11 @@ export interface ButtonEventMap extends ComponentEventMap {
  *   handler: (e) => alert("Hi!")
  * });
  *
+ * tbar({},
+ *   btn({text: "Delete", handler: () => {}}),
+ *   "->",
+ *   btn({cls: "filled primary", text: "Send", handler: () => {}})
+ * );
  * ```
  *
  */
