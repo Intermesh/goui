@@ -5,6 +5,7 @@
     "experimental-specifier-resolution=node",
     "import=tsx"
   ],
-  "require": ["jsdom-global/register.js"],
-  "spec": ["tests/**/*.ts"]
+  "require": ["jsdom-global/register.js", "./tests/setup.ts"],
+  "spec": ["tests/**/*.ts"],
+  "ignore": ["tests/setup.ts"]
 }
