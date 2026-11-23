@@ -39,6 +39,19 @@ describe('NumberField class', () => {
 		expect(f.value).to.equal(10 * 1024 * 1024);
 	});
 
+	it('Rounds the shown number, not the value, with a multiplier', () => {
+		// a percentage: 0.25 is shown as 25
+		const f = numberfield({multiplier: 100, decimals: 0, decimalSeparator: ".", thousandsSeparator: ",", value: 0.25});
+		root.items.add(f);
+
+		expect(f.input.value).to.equal("25");
+		expect(f.value).to.equal(0.25);
+		expect(f.isModified()).to.be.false;
+
+		f.input.value = "12.6";
+		expect(f.value).to.equal(0.13);
+	});
+
 	it('Is undefined when empty and keeps 0', () => {
 		const f = numberfield({decimalSeparator: ".", thousandsSeparator: ","});
 		root.items.add(f);
