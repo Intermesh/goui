@@ -209,7 +209,7 @@ export class TimeField extends Field {
 			// 12 am is 0:00 and 12 pm is 12:00
 			hrs = hrs % 12 + (this.amPm!.value == "pm" ? 12 : 0);
 		}
-		return hrs + ":" + (this.minutesInput!.value ? this.minutesInput!.value : "00");
+		return (hrs + "").padStart(2, "0") + ":" + (this.minutesInput!.value || "0").padStart(2, "0");
 	}
 
 	private createMenu() {

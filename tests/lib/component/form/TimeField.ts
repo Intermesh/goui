@@ -33,17 +33,36 @@ describe('TimeField class', () => {
 			const i = inputs(f);
 			i.hours.value = "9";
 			i.minutes.value = "30";
-			expect(f.value).to.equal("9:30");
+			expect(f.value).to.equal("09:30");
 			expect(f.getValueAsDateTime()!.format("H:i")).to.equal("09:30");
 		});
 
-		it('Fills in 00 minutes when only the hours are typed', () => {
+		it('Pads a single minute digit before it is blurred', () => {
+		const f = timefield({twelveHour: false});
+		root.items.add(f);
+
+		const i = inputs(f);
+		i.hours.value = "7";
+		i.minutes.value = "5";
+		expect(f.value).to.equal("07:05");
+	});
+
+	it('Gives back the value it was set to', () => {
+		const f = timefield({twelveHour: false, value: "09:30"});
+		root.items.add(f);
+
+		expect(f.value).to.equal("09:30");
+		f.trackReset();
+		expect(f.isModified()).to.be.false;
+	});
+
+	it('Fills in 00 minutes when only the hours are typed', () => {
 			const f = timefield({twelveHour: false});
 			root.items.add(f);
 
 			const i = inputs(f);
 			i.hours.value = "8";
-			expect(f.value).to.equal("8:00");
+			expect(f.value).to.equal("08:00");
 		});
 
 		it('Is empty without hours', () => {
@@ -92,7 +111,7 @@ describe('TimeField class', () => {
 			i.minutes.value = "00";
 
 			i.amPm.value = "am";
-			expect(f.value).to.equal("0:00");
+			expect(f.value).to.equal("00:00");
 
 			i.amPm.value = "pm";
 			expect(f.value).to.equal("12:00");
