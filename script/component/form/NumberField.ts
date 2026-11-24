@@ -103,11 +103,12 @@ export class NumberField extends InputField {
 			return undefined;
 		}
 		const v = Format.parseLocalNumber(this.input!.value, this.decimalSeparator, this.thousandsSeparator);
-		return +(v / this.multiplier).toFixed(this.decimals);
+		// Round the number the user sees, not the value. With a multiplier of 100 and 0 decimals, 25 must be 0.25, not 0.
+		return +v.toFixed(this.decimals) / this.multiplier;
 	}
 
 	/**
-	 * Set the number of decimals.
+	 * Set the number of decimals that is shown and typed. With a {@link multiplier} the value can have more decimals.
 	 */
 
 	public decimals = 2;
