@@ -8,6 +8,10 @@
 	display: flex;
 	flex-direction: column;
 
+	.header {
+		cursor: pointer;
+	}
+
 	.item-container {
 		@extend .goui, .vbox;
 		flex: 1;
