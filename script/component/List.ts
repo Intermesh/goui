@@ -171,6 +171,12 @@ export class List<StoreType extends Store = Store, EventMapType extends ListEven
 	 */
 	public emptyStateHtml = `<div class="goui-empty-state"><i class="icon">article</i><p>${t("No items found")}</p></div>`
 
+	/**
+	 * Shown when the list is empty, instead of {@link emptyStateHtml}. Use it for an empty state with buttons, like one
+	 * that creates the first item.
+	 */
+	public emptyState?: Component
+
 	protected emptyStateTag: keyof HTMLElementTagNameMap = 'div';
 	private emptyEl?: HTMLElement
 
@@ -509,10 +515,20 @@ export class List<StoreType extends Store = Store, EventMapType extends ListEven
 		}
 	}
 
+	protected internalRemove() {
+		this.emptyState?.remove();
+		return super.internalRemove();
+	}
+
 	protected renderEmptyState() {
 		this.emptyEl = E(this.emptyStateTag).css({'captionSide': 'bottom', height: '100%'});
 		this.emptyEl.hidden = this.store.count() > 0;
-		this.emptyEl.innerHTML = this.emptyStateHtml;
+		if(this.emptyState) {
+			// On a rerender this moves the component to the new element
+			this.emptyState.render(this.emptyEl);
+		} else {
+			this.emptyEl.innerHTML = this.emptyStateHtml;
+		}
 		this.el.appendChild(this.emptyEl);
 	}
 
