@@ -54,9 +54,12 @@ if(!String.hasOwnProperty('htmlEncode')) {
 if(!String.hasOwnProperty('stripTags')) {
 	Object.defineProperty(String.prototype, 'stripTags', {
 		value: function () {
-			const p = document.createElement('div');
-			p.innerHTML = this;
-			return p.textContent;
+			// Parse in a separate document without a window, where nothing loads or runs. Setting innerHTML on an element
+			// of this document loads images, even when the element isn't added to the page, so <img src=x onerror=...>
+			// would run a script.
+			const doc = document.implementation.createHTMLDocument("");
+			doc.body.innerHTML = this;
+			return doc.body.textContent ?? "";
 		},
 		enumerable: false
 	});
