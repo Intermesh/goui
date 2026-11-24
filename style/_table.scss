@@ -9,6 +9,20 @@
 	border-spacing: 0;
 	table-layout: fixed;
 
+	// The empty state is in the caption, which is as wide as the table. Keep it in the visible part of the container when
+	// the table scrolls horizontally. Table.ts sets the variable.
+	> caption {
+		// Browsers centre the block in a caption with "-webkit-center". It must start on the left to stick there.
+		text-align: start;
+
+		> * {
+			position: sticky;
+			left: 0;
+			box-sizing: border-box;
+			width: var(--goui-table-visible-width, 100%);
+		}
+	}
+
   &:focus-within {
 
     tbody {

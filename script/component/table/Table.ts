@@ -226,6 +226,7 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 
 
 		this.observeContainer();
+		this.observeVisibleWidth();
 
 		this.reorderColumns = true;
 	}
@@ -874,6 +875,32 @@ export class Table<StoreType extends Store = Store, EventMap extends ListEventMa
 		return this.headersRow
 	}
 
+
+	/**
+	 * Keeps the visible width of the container in the CSS variable --goui-table-visible-width. The empty state uses it to
+	 * stay in the centre of the visible area when the table is wider than its container and scrolls horizontally.
+	 */
+	private observeVisibleWidth() {
+		let ro: ResizeObserver | undefined;
+
+		this.on("attach", () => {
+			const parent = this.el.parentElement;
+			if(ro || !parent) {
+				return;
+			}
+
+			ro = new ResizeObserver(() => {
+				const width = this.getContainerWidth();
+				if(width) {
+					this.el.style.setProperty("--goui-table-visible-width", width + "px");
+				}
+			});
+			ro.observe(parent);
+		}).on("detach", () => {
+			ro?.disconnect();
+			ro = undefined;
+		});
+	}
 
 	private observeContainer() {
 
