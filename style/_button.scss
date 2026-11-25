@@ -160,6 +160,7 @@
 	//overflow: hidden; // this doesn't play well with grouping form fields. label overflows
 //	> button {box-shadow: none; border: 1px solid $colorOutline;}
 	> .goui-button {
+		background-color: var(--bg-higher);
 		box-shadow: none;
 		border: config.$borderWidth solid config.$colorOutline;
 		&.active {
