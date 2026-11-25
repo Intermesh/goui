@@ -5,7 +5,7 @@
 
 .goui-table {
   position: relative;
-	border-collapse: collapse;
+	border-collapse: separate;
 	border-spacing: 0;
 	table-layout: fixed;
 
@@ -28,18 +28,20 @@
 
     tbody {
       tr.data.selected {
-        --row-bg: #{config.$colorSelectedRow};
-        outline: none;
-        color: config.$colorSelectedRowText;
+				--row-bg: #{config.$colorSelectedRow};
+				outline: none;
+				color: config.$colorSelectedRowText;
 
-        a, i.icon {
-          color: inherit;
-        }
-      }
+				a, i.icon {
+					color: inherit;
+				}
 
-      tr.data:focus-visible {
-        --row-bg: #{config.$colorFocus};
-      }
+
+
+				tr.data:focus-visible {
+					--row-bg: #{config.$colorFocus};
+				}
+			}
     }
 
   }

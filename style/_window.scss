@@ -40,7 +40,7 @@
 	> .resize-handle-padder {
 		@extend .z12;
 		background-color: config.$surfaceLow;
-		backdrop-filter: blur(20px);
+		//backdrop-filter: blur(60px);
 		-webkit-backdrop-filter: blur(20px);
 		min-height: util.dp(160);
 		min-width: util.dp(160);

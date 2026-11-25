@@ -201,7 +201,7 @@ html {
 	background-color: config.$surfaceLowest;
 
 	> .toolbar {
-		background-color: config.$colorBackgroundDarker;
+		//background-color: config.$colorBackgroundDarker;
 		padding: util.dp(18);
 		border-bottom: config.$borderWidth solid config.$colorBorder;
 	}

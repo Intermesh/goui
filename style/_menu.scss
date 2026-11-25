@@ -38,9 +38,9 @@ menu.goui-dropdown {
 	min-width: $menuWidth;
 	border: config.$borderWidth solid config.$colorLine;
 	border-radius: util.dp(8);
-	background-color: config.$surfaceLayer;
-	backdrop-filter: blur(20px);
-	-webkit-backdrop-filter: blur(20px);
+	//background-color: config.$surfaceLayer;
+	backdrop-filter: blur(40px);
+	-webkit-backdrop-filter: blur(40px);
 	padding: util.dp(6);
 
 	&.highlight-first:not(:focus-within) {

@@ -1172,7 +1172,7 @@
 		.goui.goui-toolbar.html-field-toolbar {
 			flex: none; //prevents squishing
 			border: none;
-			border-bottom: config.$borderWidth solid config.$colorBorder;
+			border-bottom: config.$borderWidth solid config.$colorLine;
 			border-left: none;
 
 			position: sticky;
