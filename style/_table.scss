@@ -23,11 +23,12 @@
 		}
 	}
 
+  // The row state colours are set in --row-bg, so sticky cells can paint the same colour on top of the surface.
   &:focus-within {
 
     tbody {
       tr.data.selected {
-        background-color: config.$colorSelectedRow;
+        --row-bg: #{config.$colorSelectedRow};
         outline: none;
         color: config.$colorSelectedRowText;
 
@@ -37,7 +38,7 @@
       }
 
       tr.data:focus-visible {
-          background-color: config.$colorFocus;
+        --row-bg: #{config.$colorFocus};
       }
     }
 
@@ -86,12 +87,14 @@
       }
 
       &.data {
+        background-color: var(--row-bg, transparent);
+
         &:hover {
-          background-color: config.$colorHover;
+          --row-bg: #{config.$colorHover};
         }
 
         &.selected {
-          background-color: config.$colorSelectedRowInactive;
+          --row-bg: #{config.$colorSelectedRowInactive};
         }
       }
 
@@ -295,8 +298,11 @@
   //  margin-top: util.dp(16);
   //}
 
+	// Sticky cells need an opaque background, or the cells scrolling under them show through. The row state colours are
+	// translucent, so paint the row colour (--row-bg) over the surface the table is on (--table-surface).
 	td.sticky-col {
-		background-color: config.$surfaceMid;
+		background-color: var(--table-surface, #{config.$surfaceMid});
+		background-image: linear-gradient(var(--row-bg, transparent), var(--row-bg, transparent));
 
 		position: sticky;
 		z-index: 1;
@@ -330,117 +336,33 @@
 	}
 
 	tr.data:hover {
-		td.sticky-col {
-			background-color: color-mix(in srgb, config.$surfaceMid, #000 4%);
-		}
-
 		td.menu-column {
 			.goui-button {
 				visibility: visible;
 			}
 		}
 	}
-	tr.data.selected {
-		td.sticky-col {
-			background-color: color-mix(in srgb, config.$surfaceMid, #000 8%);
-		}
-	}
 }
 
+// The surface the table is on, for the background of sticky cells. Custom properties inherit, so the nearest one wins.
 .bg-lowest, .card, .main {
-
-  tr.data {
-		td.sticky-col {
-			background-color: config.$surfaceLowest;
-		}
-		&:hover {
-			td.sticky-col {
-				background-color: color-mix(in srgb, config.$surfaceLowest, #000 4%);
-			}
-		}
-		&.selected {
-			td.sticky-col {
-				background-color: color-mix(in srgb, config.$surfaceLowest, #000 8%);
-			}
-		}
-	}
+	--table-surface: #{config.$surfaceLowest};
 }
 
 .bg-low {
-
-	tr.data {
-		td.sticky-col {
-			background-color: config.$surfaceLow;
-		}
-		&:hover {
-			td.sticky-col {
-				background-color: color-mix(in srgb, config.$surfaceLow, #000 4%);
-			}
-		}
-		&.selected {
-			td.sticky-col {
-				background-color: color-mix(in srgb, config.$surfaceLow, #000 8%);
-			}
-		}
-	}
+	--table-surface: #{config.$surfaceLow};
 }
 
 .bg-mid {
-
-	tr.data {
-		td.sticky-col {
-			background-color: config.$surfaceMid;
-		}
-		tr.data:hover {
-			td.sticky-col {
-				background-color: color-mix(in srgb, config.$surfaceMid, #000 4%);
-			}
-		}
-		&.selected {
-			td.sticky-col {
-				background-color: color-mix(in srgb, config.$surfaceMid, #000 8%);
-			}
-		}
-	}
+	--table-surface: #{config.$surfaceMid};
 }
 
-
 .bg-high {
-
-	tr.data{
-		td.sticky-col {
-			background-color: config.$surfaceHigh;
-		}
-		&:hover {
-			td.sticky-col {
-				background-color: color-mix(in srgb, config.$surfaceHigh, #000 4%);
-			}
-		}
-		&.selected {
-			td.sticky-col {
-				background-color: color-mix(in srgb, config.$surfaceHigh, #000 8%);
-			}
-		}
-	}
+	--table-surface: #{config.$surfaceHigh};
 }
 
 .bg-highest {
-
-	tr.data {
-		td.sticky-col {
-			background-color: config.$surfaceHighest;
-		}
-		&:hover {
-			td.sticky-col {
-				background-color: color-mix(in srgb, config.$surfaceHighest, #000 4%);
-			}
-		}
-		&.selected {
-			td.sticky-col {
-				background-color: color-mix(in srgb, config.$surfaceHighest, #000 8%);
-			}
-		}
-	}
+	--table-surface: #{config.$surfaceHighest};
 }
 
 @media only screen and (min-device-width: config.$breakpointMedium) {
