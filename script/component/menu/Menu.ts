@@ -164,6 +164,7 @@ export class Menu<EventMap extends MenuEventMap = MenuEventMap> extends Abstract
 		});
 
 		const onClose = () => {
+			window.removeEventListener("mousedown", this.closeOnClickOutside);
 
 			if(this.parentMenu) {
 				if(this.parentMenu.openedMenu == this) {
@@ -175,18 +176,6 @@ export class Menu<EventMap extends MenuEventMap = MenuEventMap> extends Abstract
 
 		this.on("hide", onClose);
 		this.on("remove", onClose);
-
-
-		if(this.autoClose) {
-			// These should be added only once. Below will be added each time.
-
-			// stop clicks on menu from hiding menu, otherwise it hides before button handlers fire.
-			this.el.addEventListener("mousedown", (ev) => {
-				ev.stopPropagation();
-			});
-
-
-		}
 
 		if(this.closeOnButtonClick) {
 			this.el.addEventListener("mouseup", (ev) => {
@@ -464,9 +453,7 @@ export class Menu<EventMap extends MenuEventMap = MenuEventMap> extends Abstract
 
 			if(this.autoClose) {
 				// hide menu when clicked elsewhere.
-				window.addEventListener("mousedown", () => {
-					this.close(false);
-				}, {once: true});
+				window.addEventListener("mousedown", this.closeOnClickOutside);
 			}
 
 			//put back fade out class removed in mouseenter listener above
@@ -477,6 +464,20 @@ export class Menu<EventMap extends MenuEventMap = MenuEventMap> extends Abstract
 			}
 			super.internalSetHidden(hidden);
 		}
+	}
+
+	/**
+	 * Close the menu when the mouse is pressed outside it and outside its opened sub menus. They are rendered in the root
+	 * element, so they aren't inside the menu element.
+	 */
+	private closeOnClickOutside = (ev: MouseEvent) => {
+		const target = ev.target as Node;
+		for(let m: Menu | undefined = this; m; m = m.openedMenu) {
+			if(m.el.contains(target)) {
+				return;
+			}
+		}
+		this.close(false);
 	}
 
 	/**
