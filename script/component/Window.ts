@@ -15,6 +15,7 @@ import {fieldset} from "./form/Fieldset.js";
 import {textfield, TextFieldType} from "./form/TextField.js";
 import {t} from "../Translate.js";
 import {browser, DateTime} from "../util/index.js";
+import {form} from "./form/index.js";
 
 
 interface PromptConfig {
@@ -688,7 +689,6 @@ export class Window<EventMap extends WindowEventMap = WindowEventMap> extends Dr
 				required: true,
 				value: cfg.defaultValue
 			}), w = win({
-				cls: "vbox",
 				width: 600,
 				modal: true,
 				title: cfg.title,
@@ -696,12 +696,22 @@ export class Window<EventMap extends WindowEventMap = WindowEventMap> extends Dr
 					focus: () => { w.items.get(0)!.focus(); },
 					close: e => { if(e.byUser) resolve(undefined); }
 				}
-			},fieldset({flex: 1},
-					comp({tagName: "p",html: cfg.text,hidden: !cfg.text}),
-					txt
-				),
-				tbar({},'->',
-					btn({text: "Ok"}).on('click', () => { resolve(txt.value); w.close();})
+			},
+				form({
+					cls: "vbox fit",
+					handler: () => {
+						resolve(txt.value);
+						w.close();
+					}
+				},
+					fieldset({flex: 1},
+						comp({tagName: "p",html: cfg.text,hidden: !cfg.text}),
+						txt
+					),
+					tbar({},
+						'->',
+						btn({text: "Ok", type: "submit"})
+					)
 				)
 			)
 			w.show();
